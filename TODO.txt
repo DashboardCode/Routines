@@ -6,6 +6,7 @@ FUNCTIONALITY
 
 SERVER SIDE
 ------------------------------------------------------------------------------------
+2. Set Assembly.cs AssemblyCompany
 3. Inline includables goes to github as separated "one file" project
 3b. Circular javascript serializer goes to github as "one file" project
 4. Vse release on github
