@@ -6,6 +6,7 @@ using Vse.Routines;
 using Vse.AdminkaV1.Injected.Configuration;
 using Vse.Routines.Storage;
 using Vse.Routines.Injected;
+using NLog.Common;
 
 namespace Vse.AdminkaV1.Injected.Logging
 {
@@ -17,6 +18,7 @@ namespace Vse.AdminkaV1.Injected.Logging
         readonly Func<Exception, string> markdownException;
         readonly Func<object, string> serializeObject;
         readonly Logger logger;
+        readonly NLog.Targets.Target verboseTarget;
 
         public bool UseBufferForVerbose { get; private set; }
         public bool VerboseWithStackTrace { get; private set; }
@@ -48,9 +50,8 @@ namespace Vse.AdminkaV1.Injected.Logging
             VerboseWithStackTrace = loggingVerboseConfiguration.VerboseWithStackTrace;
             var loggerName = "Routine:"+ routineTag.GetCategory();
             logger = LogManager.GetLogger(loggerName); // ~0.5 ms
-            
+            verboseTarget = LogManager.Configuration.FindTargetByName("verbose");
         }
-
 
         public void LogActivityStart(DateTime dateTime)
         {
@@ -95,8 +96,10 @@ namespace Vse.AdminkaV1.Injected.Logging
         {
             var count = verboseMessages.Count();
             var i = 1;
+            var list = new List<AsyncLogEventInfo>();
             foreach (var verbose in verboseMessages)
             {
+                
                 var logEventInfo = new LogEventInfo()
                 {
                     Level = LogLevel.Info,
@@ -108,8 +111,10 @@ namespace Vse.AdminkaV1.Injected.Logging
                 logEventInfo.Properties["Buffered"] = $"{i++}/{count}";
                 if (verbose.StackTrace!=null)
                     logEventInfo.Properties["StackTrace"] = verbose.StackTrace;
-                logger.Log(logEventInfo);
+                list.Add(new AsyncLogEventInfo(logEventInfo, (ex)=> { if (ex!=null) throw ex; }));
             }
+
+            verboseTarget.WriteAsyncLogEvents(list.ToArray());
         }
 
         public void LogException(DateTime dateTime, Exception excepion)
