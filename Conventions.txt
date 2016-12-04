@@ -1,0 +1,50 @@
+Namespaces
+----------------------------------------------------------------------------------------------------------
+V1           - is added because when you have versioning in project names/namespaces it is become possible
+               to develop two "production" versions from one solution (and it is important for "one developer army"). 
+Abstractions - root assembly Vse.AdminkaV1 phisiclly located in the folder named 'Abstractions' just to avoid 
+               "AdminkaV1\Adminka" tautology (also name Abstractions put folder to the first place in folders list).
+DomXxx - Folders/Subnamespace in the root assembly Vse.AdminkaV1 allways starts with 'Dom' prefix to indicate
+		 that this folder/subnamespace is located exactly in root assembly. e.g.  Vse.AdminkaV1.DomAuthentication
+
+Suffixes used in class names
+----------------------------------------------------------------------------------------------------------
+Factory    - class contains only Create* methods;  all returns instances instantioned calling the methods
+Transients - class contains only primitive properties; all returns instances instantioned in class cunstructor
+Container  - class contains only Resolve* methods (instationing should be hidden, usually because it 
+			 has an interface which can have several implementations with different lifetimes strategies)
+Adapter    - class that gets functors in constructor and provide methods to execute functors
+Facade     - class that gets several interfaces, functors in constructor, each Facade's method 
+			 combines calls to them
+Handler    - classes which provides try{..}catch{} or using(..){..} funcitonal way (Hanlde methods)
+
+
+Static classes
+----------------------------------------------------------------------------------------------------------
+Manager    - singleton services, only one in project and handle very different functionalities, usually have a state, 
+	         usually contains factory methods.
+Extensions - pure extensions method (no state), many task oriented files 
+Constants  - static class with only const definitions 
+
+
+Complex Routine and Share Resources Thoughts
+----------------------------------------------------------------------------------------------------------
+Summary: Nice but not actual.
+1) One clear case known: Authentication sub routine. Special new routine can be builded that can help to reuse 
+   DbContext between main and authentication sub routine (authentication sub routine should not close it).
+2) Other case is "MVC redirect". There routine using mvc "TempData"  can be passed between redirects. 
+   But how this works with assync mvc methods? 
+   Note: it is not actual for main Web API that should be main usage pattern.
+3) Correlation token helps a lot to understand routine's sequence during logs analyzes.
+
+Why Routines.Configuration do not depend on Routines?
+----------------------------------------------------------------------------------------------------------
+They can be binded thoug IResolver and IResolvable<T> (Routines.Configuration could use them) but there is better
+way then bind two libs through this interfaces: find the same interfaces in System library.
+1) IResolvable<T>
+	this inteface is replaced with System.IProgress<T> (It is absolutely the same abstraction if you can abstract from names too)
+2) IReslover
+    I would prefer to find such basic interface (one methtod T Xxx<T>() ) in .NET Framework System 
+	libs, but there are no good candidates. But I'm still waiting. May be in future releases.
+    And since it is only one interface left that can be used as depedency between Routines.Configuration and Routines
+	it was easy eliminate that depedency defining an adapter (for Routines.Configuration.IConfigurationContainer). 

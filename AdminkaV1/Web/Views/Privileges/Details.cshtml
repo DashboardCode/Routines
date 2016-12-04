@@ -1,0 +1,57 @@
+﻿@model Privilege
+
+<h3>Role Privilege (@Model.PrivilegeId)</h3>
+
+<div>
+    <hr/>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PrivilegeName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PrivilegeName)
+        </dd>
+
+        <dt>
+            Roles
+        </dt>
+
+        <dd>
+            @{  var roles = Model.GetRoles();
+                foreach (var r in roles)
+                {
+                    <span class="vse-adminka-item">@Html.ActionLink(r.RoleName, "Details", "Roles", new { id = r.RoleId }, null)</span>
+                }
+            }
+        </dd>
+
+        <dt>
+            Groups
+        </dt>
+
+        <dd>
+            @{  var groups = Model.GetGroups();
+                foreach (var r in groups)
+                {
+                    <span class="vse-adminka-item">@Html.ActionLink(r.GroupName, "Details", "Groups", new { id = r.GroupId }, null)</span>
+                }
+            }
+        </dd>
+
+        <dt>
+            Users
+        </dt>
+
+        <dd>
+            @{  var users = Model.GetUsers();
+                foreach (var u in users)
+                {
+                    <span class="vse-adminka-item">@Html.ActionLink(u.LoginName, "Details", "Users", new { id = u.UserId }, null)</span>
+                }
+            }
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

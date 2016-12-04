@@ -1,0 +1,49 @@
+FUNCTIONALITY
+------------------------------------------------------------------------------------
+1. Catch logs to DB.
+2. Search for correlation token.
+3. IAuthenticationService to wcf. 
+
+SERVER SIDE
+------------------------------------------------------------------------------------
+3. Inline includables goes to github as separated "one file" project
+3b. Circular javascript serializer goes to github as "one file" project
+4. Vse release on github
+5. Publish routines, routines.storage.efcore on NUGET.
+6. Create samples https://dotnetfiddle.net/
+7. Write article about includes.
+
+SERVER SIDE (OTHER)
+------------------------------------------------------------------------------------
+7. how to generate DTO classes.
+7b. how to use DTO with automapper, why not to generate dto with mpa function?
+
+	Choose "c# DTO generator" there is number of them
+		1b)  it should generates map methods also
+		1b)  or be "integrated" with automapper
+	
+	Why: 
+	    * size (?) - I'm not sure is this possible
+	    * avoid circular references (?) - so the generator should "guarantee" that DTO would not have them
+	
+	Important:
+		* DTO's should be part of Abstraction assembly to be shared between various services 
+
+
+
+8. Complex routine (1) authentication 2) through TempData); check async.
+9. UserContext Caching.
+10. Bufferize NLog Logging (create custom formater that can process array of events).
+
+Follow EFCore development: complextypes (versioned); many-to-many; columns order.
+
+CLIENT SIDE
+------------------------------------------------------------------------------------
+Plan:
+React / boostrap app
+React / redux app
+Offline react app
+
+Web Api Questions:
+1) how to pass error details instead off requested data?
+2) how to separate SPA to several pages/islands

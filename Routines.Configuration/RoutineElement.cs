@@ -1,0 +1,142 @@
+﻿using System;
+using System.Configuration;
+
+namespace Vse.Routines.Configuration
+{
+    public class RoutineElement : ConfigurationElement, ICollectionMemberElement
+    {
+        private static readonly ConfigurationProperty NamespaceProperty =
+            new ConfigurationProperty("namespace", typeof(string), "", ConfigurationPropertyOptions.None);
+
+        private static readonly ConfigurationProperty ClassProperty =
+            new ConfigurationProperty("class", typeof(string), "", ConfigurationPropertyOptions.None);
+
+        private static readonly ConfigurationProperty MemberProperty =
+            new ConfigurationProperty("member", typeof(string), "", ConfigurationPropertyOptions.None);
+
+        private static readonly ConfigurationProperty ForProperty =
+            new ConfigurationProperty("for", typeof(string), "", ConfigurationPropertyOptions.None);
+
+        private static readonly ConfigurationProperty ConfigElementCollectionProperty =
+            new ConfigurationProperty("", typeof(ResolvableElementCollection), null, ConfigurationPropertyOptions.IsDefaultCollection);
+
+        private static readonly ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection
+                                     {
+                                         NamespaceProperty,
+                                         ClassProperty,
+                                         MemberProperty,
+                                         ForProperty,
+                                         ConfigElementCollectionProperty
+                                     };
+        #region Overrides
+        protected override ConfigurationPropertyCollection Properties
+        {
+            get
+            {
+                return properties;
+            }
+        }
+        protected override void PostDeserialize()
+        {
+            base.PostDeserialize();
+            Validate();
+        }
+        #endregion
+
+        private void Validate()
+        {
+            if (!string.IsNullOrWhiteSpace(Namespace))
+                if (!char.IsLetter(Namespace[0]))
+                    throw new InvalidOperationException($"Routine's element Namespace property ({Namespace}) should be valid .NET namespace name ");
+
+            if (!string.IsNullOrWhiteSpace(Class))
+                if (Class.Contains(".") || !char.IsLetter(Class[0]))
+                    throw new InvalidOperationException($"Routine's element Class property ({Namespace}) should be valid .NET class name");
+
+            if (!string.IsNullOrWhiteSpace(Member))
+                if (Member.Contains(".") || !char.IsLetter(Member[0]))
+                    throw new InvalidOperationException($"Routine's element Member property ({Namespace}) should be valid .NET member name");
+
+            if (!string.IsNullOrEmpty(Member) && Member.Trim()!= StringExtensions.Asterix)
+                if (string.IsNullOrEmpty(Class) || Class.Trim() == StringExtensions.Asterix)
+                    throw new ApplicationException($"Member '{Member}' can't be configured without Class");
+        }
+        public string Key
+        {
+            get
+            {
+                string @namespace = StringExtensions.ReplaceEmptyWithAsterix(Namespace);
+                string @class = StringExtensions.ReplaceEmptyWithAsterix(Class);
+                string member = StringExtensions.ReplaceEmptyWithAsterix(Member);
+                string @for = StringExtensions.ReplaceEmptyWithAsterix(For);
+                var key = @namespace + "."+@class + "." + member + "." + @for;
+                return key;
+            }
+        }
+        [ConfigurationProperty("namespace")]
+        public string Namespace
+        {
+            get
+            {
+                return this["namespace"] as string;
+            }
+            set
+            {
+                this["namespace"] = value;
+            }
+        }
+        [ConfigurationProperty("class")]
+        public string Class
+        {
+            get
+            {
+                return this["class"] as string;
+            }
+            set
+            {
+                this["class"] = value;
+            }
+        }
+        [ConfigurationProperty("member")]
+        public string Member
+        {
+            get
+            {
+                return this["member"] as string;
+            }
+            set
+            {
+                this["member"] = value;
+            }
+        }
+        [ConfigurationProperty("for")]
+        public string For
+        {
+            get
+            {
+                return this["for"] as string;
+            }
+            set
+            {
+                this["for"] = value;
+            }
+        }
+        [ConfigurationProperty("", IsDefaultCollection = true)]
+        public ResolvableElementCollection Configs
+        {
+            get
+            {
+                return (ResolvableElementCollection)base[""];
+            }
+        }
+
+        #region Debug
+        public static readonly DateTime StaticCreatedAt = DateTime.Now;
+        public readonly DateTime CreatedAt = DateTime.Now;
+        public override string ToString()
+        {
+            return Key+" "+ CreatedAt;
+        }
+        #endregion
+    }
+}

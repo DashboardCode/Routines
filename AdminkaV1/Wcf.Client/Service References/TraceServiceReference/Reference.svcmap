@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="5f9e01e1-4c47-4999-b8e1-b8d1d02f902e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings>
+      <CollectionMapping TypeName="System.Collections.Generic.List`1" Category="List" />
+    </CollectionMappings>
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>false</ReferenceAllAssemblies>
+    <ReferencedAssemblies>
+      <ReferencedAssembly AssemblyName="Vse.AdminkaV1" />
+    </ReferencedAssemblies>
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:64220/TraceService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="TraceService.xsd" MetadataType="Schema" ID="552938c7-080b-4a4c-9d4b-8b15893ea690" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd0" />
+    <MetadataFile FileName="TraceService.disco" MetadataType="Disco" ID="8bae9614-fc8b-40e9-b30e-0bfd416fa411" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?disco" />
+    <MetadataFile FileName="TraceService1.xsd" MetadataType="Schema" ID="6e72a6d1-ba36-44e7-89cd-ef58fc9b0150" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd2" />
+    <MetadataFile FileName="TraceService2.xsd" MetadataType="Schema" ID="6429fa40-761f-4958-bb6d-fa0dcdc7405e" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd1" />
+    <MetadataFile FileName="TraceService.wsdl" MetadataType="Wsdl" ID="93a19172-4b88-4bf6-8834-70d1b5e822cc" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?wsdl" />
+    <MetadataFile FileName="TraceService1.wsdl" MetadataType="Wsdl" ID="7cb13c3a-d9df-4181-add3-51c256758519" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?wsdl=wsdl0" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
