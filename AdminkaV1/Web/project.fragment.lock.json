@@ -117,7 +117,7 @@
         "bin/Debug/Vse.AdminkaV1.Injected.dll": {}
       },
       "runtime": {
-        "../../packages/NLog.4.3.11/lib/net45/NLog.dll": {},
+        "../../packages/NLog.5.0.0-beta03/lib/net45/NLog.dll": {},
         "bin/Debug/Vse.AdminkaV1.Injected.dll": {}
       },
       "contentFiles": {
