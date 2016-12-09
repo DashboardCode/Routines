@@ -58,3 +58,5 @@
 04.12.16 03:28:53; TraceService.GetTrace; Vse.AdminkaV1.Wcf; d7424fc0-bab2-462f-ab7c-1a75f0129aed; FAILURE; 143ms
 07.12.16 20:27:09; TraceService.GetTrace; Vse.AdminkaV1.Wcf; e0fee0d0-de3f-4fb2-9d79-c03d31b81e27; Started
 07.12.16 20:27:09; TraceService.GetTrace; Vse.AdminkaV1.Wcf; e0fee0d0-de3f-4fb2-9d79-c03d31b81e27; FAILURE; 269ms
+09.12.16 18:38:28; TraceService.GetTrace; Vse.AdminkaV1.Wcf; a3a0ef1a-f230-440e-83e4-8ce6b2b2e359; Started
+09.12.16 18:38:28; TraceService.GetTrace; Vse.AdminkaV1.Wcf; a3a0ef1a-f230-440e-83e4-8ce6b2b2e359; FAILURE; 275ms

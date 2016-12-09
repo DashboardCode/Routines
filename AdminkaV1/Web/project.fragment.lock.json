@@ -5,7 +5,7 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.Routines.AspNetCore.dll": {}
+        "bin/Debug/Vse.Routines.AspNetCore.dll": {}
       },
       "runtime": {
         "../packages/Microsoft.AspNetCore.Antiforgery.1.1.0/lib/net451/Microsoft.AspNetCore.Antiforgery.dll": {},
@@ -66,10 +66,10 @@
         "../packages/System.Security.Cryptography.X509Certificates.4.3.0/lib/net461/System.Security.Cryptography.X509Certificates.dll": {},
         "../packages/System.Text.Encodings.Web.4.3.0/lib/netstandard1.0/System.Text.Encodings.Web.dll": {},
         "../packages/System.Xml.ReaderWriter.4.3.0/lib/net46/System.Xml.ReaderWriter.dll": {},
-        "bin/Release/Vse.Routines.AspNetCore.dll": {}
+        "bin/Debug/Vse.Routines.AspNetCore.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.Routines.AspNetCore.pdb": {
+        "bin/Debug/Vse.Routines.AspNetCore.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -80,13 +80,13 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.Routines.dll": {}
+        "bin/Debug/Vse.Routines.dll": {}
       },
       "runtime": {
-        "bin/Release/Vse.Routines.dll": {}
+        "bin/Debug/Vse.Routines.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.Routines.pdb": {
+        "bin/Debug/Vse.Routines.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -97,13 +97,13 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.AdminkaV1.dll": {}
+        "bin/Debug/Vse.AdminkaV1.dll": {}
       },
       "runtime": {
-        "bin/Release/Vse.AdminkaV1.dll": {}
+        "bin/Debug/Vse.AdminkaV1.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.AdminkaV1.pdb": {
+        "bin/Debug/Vse.AdminkaV1.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -114,14 +114,14 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.AdminkaV1.Injected.dll": {}
+        "bin/Debug/Vse.AdminkaV1.Injected.dll": {}
       },
       "runtime": {
         "../../packages/NLog.5.0.0-beta03/lib/net45/NLog.dll": {},
-        "bin/Release/Vse.AdminkaV1.Injected.dll": {}
+        "bin/Debug/Vse.AdminkaV1.Injected.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.AdminkaV1.Injected.pdb": {
+        "bin/Debug/Vse.AdminkaV1.Injected.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -132,7 +132,7 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.AdminkaV1.DataAccessEfCore.dll": {}
+        "bin/Debug/Vse.AdminkaV1.DataAccessEfCore.dll": {}
       },
       "runtime": {
         "../../packages/Microsoft.EntityFrameworkCore.1.1.0/lib/net451/Microsoft.EntityFrameworkCore.dll": {},
@@ -166,10 +166,10 @@
         "../../packages/System.Security.Cryptography.Primitives.4.3.0/lib/net46/System.Security.Cryptography.Primitives.dll": {},
         "../../packages/System.Security.Cryptography.X509Certificates.4.3.0/lib/net461/System.Security.Cryptography.X509Certificates.dll": {},
         "../../packages/System.Xml.ReaderWriter.4.3.0/lib/net46/System.Xml.ReaderWriter.dll": {},
-        "bin/Release/Vse.AdminkaV1.DataAccessEfCore.dll": {}
+        "bin/Debug/Vse.AdminkaV1.DataAccessEfCore.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.AdminkaV1.DataAccessEfCore.pdb": {
+        "bin/Debug/Vse.AdminkaV1.DataAccessEfCore.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -180,7 +180,7 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.AdminkaV1.DataAccessEfCore.SqlServer.dll": {}
+        "bin/Debug/Vse.AdminkaV1.DataAccessEfCore.SqlServer.dll": {}
       },
       "runtime": {
         "../../packages/Microsoft.EntityFrameworkCore.1.1.0/lib/net451/Microsoft.EntityFrameworkCore.dll": {},
@@ -215,10 +215,10 @@
         "../../packages/System.Security.Cryptography.Primitives.4.3.0/lib/net46/System.Security.Cryptography.Primitives.dll": {},
         "../../packages/System.Security.Cryptography.X509Certificates.4.3.0/lib/net461/System.Security.Cryptography.X509Certificates.dll": {},
         "../../packages/System.Xml.ReaderWriter.4.3.0/lib/net46/System.Xml.ReaderWriter.dll": {},
-        "bin/Release/Vse.AdminkaV1.DataAccessEfCore.SqlServer.dll": {}
+        "bin/Debug/Vse.AdminkaV1.DataAccessEfCore.SqlServer.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.AdminkaV1.DataAccessEfCore.SqlServer.pdb": {
+        "bin/Debug/Vse.AdminkaV1.DataAccessEfCore.SqlServer.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -229,13 +229,13 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.Routines.Configuration.dll": {}
+        "bin/Debug/Vse.Routines.Configuration.dll": {}
       },
       "runtime": {
-        "bin/Release/Vse.Routines.Configuration.dll": {}
+        "bin/Debug/Vse.Routines.Configuration.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.Routines.Configuration.pdb": {
+        "bin/Debug/Vse.Routines.Configuration.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -246,7 +246,7 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.Routines.Storage.EfCore.dll": {}
+        "bin/Debug/Vse.Routines.Storage.EfCore.dll": {}
       },
       "runtime": {
         "../packages/Microsoft.EntityFrameworkCore.1.1.0/lib/net451/Microsoft.EntityFrameworkCore.dll": {},
@@ -279,10 +279,10 @@
         "../packages/System.Security.Cryptography.Primitives.4.3.0/lib/net46/System.Security.Cryptography.Primitives.dll": {},
         "../packages/System.Security.Cryptography.X509Certificates.4.3.0/lib/net461/System.Security.Cryptography.X509Certificates.dll": {},
         "../packages/System.Xml.ReaderWriter.4.3.0/lib/net46/System.Xml.ReaderWriter.dll": {},
-        "bin/Release/Vse.Routines.Storage.EfCore.dll": {}
+        "bin/Debug/Vse.Routines.Storage.EfCore.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.Routines.Storage.EfCore.pdb": {
+        "bin/Debug/Vse.Routines.Storage.EfCore.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
@@ -293,13 +293,13 @@
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
-        "bin/Release/Vse.Routines.Storage.SqlServer.dll": {}
+        "bin/Debug/Vse.Routines.Storage.SqlServer.dll": {}
       },
       "runtime": {
-        "bin/Release/Vse.Routines.Storage.SqlServer.dll": {}
+        "bin/Debug/Vse.Routines.Storage.SqlServer.dll": {}
       },
       "contentFiles": {
-        "bin/Release/Vse.Routines.Storage.SqlServer.pdb": {
+        "bin/Debug/Vse.Routines.Storage.SqlServer.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true
