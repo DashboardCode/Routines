@@ -3,18 +3,27 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vse.Routines.Storage;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace Vse.Routines.Test
 {
     [TestClass]
     public class IncludesTest
     {
+        private class TestChild
+        {
+            public List<Unique> Uniques { get; set; }
+        }
         private class TestModel
         {
             public StorageModel StorageModel { get; set; }
             public int[] Test { get; set; }
-            public List<Guid> ListTest { get; set; }
-            public List<CultureInfo> CultureInfos { get; set; }
+            public IEnumerable<Guid> ListTest { get; set; }
+            public IEnumerable<TestChild> TestChilds { get; set; }
+            public ICollection<CultureInfo> CultureInfos { get; set; }
+
+            public string PropertyText { get; set; }
+            public int PropertyInt { get; set; }
         }
         private static TestModel CreateTestModel()
         {
@@ -31,7 +40,10 @@ namespace Vse.Routines.Test
                 Test = new[] { 1, 2, 3 },
                 ListTest = new List<Guid>() { Guid.NewGuid(), Guid.NewGuid() },
                 CultureInfos = new List<CultureInfo>() { CultureInfo.CurrentCulture, CultureInfo.InvariantCulture },
+                PropertyText = "sampleTest",
+                PropertyInt = 1234
             };
+            source.TestChilds = new HashSet<TestChild>() { new TestChild { Uniques = source.StorageModel.Uniques.ToList() } };
             return source;
         }
         private static Include<TestModel> CreateIncludes()
@@ -74,13 +86,98 @@ namespace Vse.Routines.Test
                 throw new ApplicationException("Copy doesn't working properly");
         }
         [TestMethod]
+        public void IncludesClone2Test()
+        {
+            var source = CreateTestModel();
+            Include<TestModel> includes
+                = includable => includable
+                    .IncludeAll(i => i.TestChilds)
+                        .ThenIncludeAll(i => i.Uniques)
+                    .Include(i=>i.ListTest);
+            var destination = MemberExpressionExtensions.Clone(source, includes);
+            var b1 = MemberExpressionExtensions.Equals(source, destination, includes);
+            if (b1 == true)
+                throw new ApplicationException("Eqauls doesn't working properly. Case 0");
+
+            Include<TestModel> includes2
+                = includable => includable
+                    .IncludeAll(i => i.TestChilds)
+                        .ThenIncludeAll(i => i.Uniques)
+                            .ThenInclude(i => i.IndexName) // compare
+                    .Include(i => i.ListTest);
+            var b2 = MemberExpressionExtensions.Equals(source, destination, includes2);
+            if (b2 == false)
+                throw new ApplicationException("Eqauls doesn't working properly. Case 1");
+        }
+
+        [TestMethod]
+        public void IncludesClone5Test()
+        {
+            var source = CreateTestModel();
+            Include<TestModel> includes
+                = includable => includable
+                    .IncludeAll(i => i.TestChilds)
+                        .ThenIncludeAll(i => i.Uniques);
+            var destination = MemberExpressionExtensions.Clone(source, includes);
+            //var b1 = MemberExpressionExtensions.Equals(source, destination, includes);
+            //if (b1 == true)
+            //    throw new ApplicationException("Eqauls doesn't working properly. Case 0");
+
+            //Include<TestModel> includes2
+            //    = includable => includable
+            //        .IncludeAll(i => i.TestChilds)
+            //            .ThenIncludeAll(i => i.Uniques)
+            //                .ThenInclude(i => i.IndexName) // compare
+            //        .Include(i => i.ListTest);
+            //var b2 = MemberExpressionExtensions.Equals(source, destination, includes2);
+            //if (b2 == false)
+            //    throw new ApplicationException("Eqauls doesn't working properly. Case 1");
+        }
+
+        [TestMethod]
+        public void IncludesClone3Test()
+        {
+            var source = CreateTestModel();
+            source.TestChilds = null;
+            Include<TestModel> includes
+                = includable => includable
+                    .IncludeAll(i => i.TestChilds)
+                        .ThenIncludeAll(i => i.Uniques)
+                    .Include(i => i.ListTest);
+            var destination = MemberExpressionExtensions.Clone(source, includes);
+            var b1 = MemberExpressionExtensions.Equals(source, destination, includes);
+            if (b1 == false)
+                throw new ApplicationException("Eqauls doesn't working properly. Case 0");
+        }
+        public void IncludesClone4Test()
+        {
+            var source = CreateTestModel();
+            foreach(var t in source.TestChilds)
+                t.Uniques = null;
+            Include<TestModel> includes
+                = includable => includable
+                    .IncludeAll(i => i.TestChilds)
+                        .ThenIncludeAll(i => i.Uniques)
+                    .Include(i => i.ListTest);
+            var destination = MemberExpressionExtensions.Clone(source, includes);
+            var b1 = MemberExpressionExtensions.Equals(source, destination, includes);
+            if (b1 == false)
+                throw new ApplicationException("Eqauls doesn't working properly. Case 0");
+        }
+
+        [TestMethod]
         public void IncludesCloneTest()
         {
 
             var source = CreateTestModel();
             var includes = CreateIncludes();
 
-            var destination = MemberExpressionExtensions.Clone(source, includes);
+            var destination = MemberExpressionExtensions.Clone(source, includes, MemberExpressionExtensions.SystemTypes);
+
+            if (source.PropertyInt!=destination.PropertyInt 
+                ||
+            source.PropertyText != destination.PropertyText)
+                throw new ApplicationException("Copy doesn't working properly. Case 0");
 
             if (source.StorageModel.Entity.Name != destination.StorageModel.Entity.Name
                 || source.StorageModel.Entity.Namespace != destination.StorageModel.Entity.Namespace || source.StorageModel.Key == null)

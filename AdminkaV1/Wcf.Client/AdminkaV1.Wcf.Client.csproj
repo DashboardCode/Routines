@@ -37,7 +37,6 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
-    <Reference Include="Vse.AdminkaV1, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Service References\TraceServiceReference\Reference.cs">
@@ -73,12 +72,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Abstractions\AdminkaV1.csproj">
-      <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
-      <Name>AdminkaV1</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadataStorage Include="Service References\TraceServiceReference\" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +88,12 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Abstractions\AdminkaV1.csproj">
+      <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
+      <Name>AdminkaV1</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
