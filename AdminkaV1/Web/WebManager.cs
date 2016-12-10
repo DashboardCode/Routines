@@ -47,14 +47,14 @@ namespace Vse.AdminkaV1.Web
             var userJson = httpContext.Session.GetString("User");
             if (userJson != null)
             {
-                var user = IoCManager.DeserializeJson<DomAuthentication.User>(userJson);
+                var user = InjectedManager.DeserializeJson<DomAuthentication.User>(userJson);
                 userContext = new UserContext(user);
             }
             else
             {
                 var authenticationSerivce = new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory);
                 userContext = authenticationSerivce.GetUserContext(routineTag, identity, cultureInfo);
-                userJson = IoCManager.SerializeObject(userContext.User, 1, false);
+                userJson = InjectedManager.SerializeToJson(userContext.User, 1, false);
                 httpContext.Session.SetString("User", userJson);
             }
             return userContext;

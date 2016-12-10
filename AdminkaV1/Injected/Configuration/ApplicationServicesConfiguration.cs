@@ -9,7 +9,7 @@ namespace Vse.AdminkaV1.Injected.Configuration
 
         public void Report(string json)
         {
-            var dictionary = IoCManager.DeserializeJson<Dictionary<string, string>>(json);
+            var dictionary = InjectedManager.DeserializeJson<Dictionary<string, string>>(json);
             InstanceName = dictionary["InstanceName"];
         }
     }

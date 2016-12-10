@@ -9,7 +9,7 @@ namespace Vse.AdminkaV1.Injected.Configuration
 
         public void Report(string json)
         {
-            var dictionary = IoCManager.DeserializeJson<FakeAdConfiguration>(json);
+            var dictionary = InjectedManager.DeserializeJson<FakeAdConfiguration>(json);
             FakeAdUser = dictionary.FakeAdUser;
             FakeAdGroups = dictionary.FakeAdGroups;
         }

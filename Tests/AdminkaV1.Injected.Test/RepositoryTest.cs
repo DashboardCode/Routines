@@ -30,7 +30,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 {
                     var group = repository.GetQueryable(include).First();
                     repository.Detach(group, include);
-                    IoCManager.SerializeObject(group);
+                    InjectedManager.SerializeToJson(group);
                 });
             });
         }

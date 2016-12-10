@@ -11,7 +11,7 @@ namespace Vse.AdminkaV1.Injected.Configuration
         {
             if (json != null)
             {
-                var dictionary = IoCManager.DeserializeJson<Dictionary<string, string>>(json);
+                var dictionary = InjectedManager.DeserializeJson<Dictionary<string, string>>(json);
                 UseBufferForVerbose = bool.Parse(dictionary["UseBufferForVerbose"]);
                 string verboseWithStackTrace;
                 if (dictionary.TryGetValue("VerboseWithStackTrace", out verboseWithStackTrace))

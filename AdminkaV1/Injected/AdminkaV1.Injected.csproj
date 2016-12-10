@@ -67,7 +67,7 @@
     <Compile Include="ServicesContainer.cs" />
     <Compile Include="Configuration\ApplicationServicesConfiguration.cs" />
     <Compile Include="AdminkaRoutine.cs" />
-    <Compile Include="IoCManager.cs" />
+    <Compile Include="InjectedManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataAccessFactory.cs" />
     <Compile Include="Logging\NLogExtensions.cs" />

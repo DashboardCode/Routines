@@ -8,7 +8,7 @@ namespace Vse.AdminkaV1.Web
     {
         public static HtmlString MarkdownException(this IHtmlHelper helper, Exception message)
         {
-            var text = Injected.IoCManager.Markdown(message);
+            var text = Injected.InjectedManager.Markdown(message);
             var markdown = new MarkdownSharp.Markdown();
             var html = markdown.Transform(text);
             return new HtmlString(html);

@@ -18,8 +18,8 @@ namespace Vse.AdminkaV1.Injected
             object input
         ) : this(
             routineTag,
-            IoCManager.NLogConstructor(IoCManager.Markdown,IoCManager.DefaultRoutineTagTransformException),
-            new RepositoryHandlerFactory(IoCManager.GetStorageMetaService()),
+            InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
+            new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
             input)
         {
         }
@@ -30,7 +30,7 @@ namespace Vse.AdminkaV1.Injected
         ) : this(
            new RoutineTag(Guid.NewGuid(), @namespace, controller, action),
            loggingTransientsFactory,
-           new RepositoryHandlerFactory(IoCManager.GetStorageMetaService()),
+           new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
            input)
         {
         }
@@ -59,7 +59,7 @@ namespace Vse.AdminkaV1.Injected
             object input
         ) : this(
            routineTag,
-           IoCManager.GetDefaultIdentity(), 
+           InjectedManager.GetDefaultIdentity(), 
            CultureInfo.CurrentCulture,
            loggingTransientsFactory,
            repositoryHandlerFactory,
@@ -93,8 +93,8 @@ namespace Vse.AdminkaV1.Injected
             ) : this(
                     new RoutineTag(Guid.NewGuid(), @namespace, controller, action), 
                     userContext,
-                    IoCManager.NLogConstructor(IoCManager.Markdown,IoCManager.DefaultRoutineTagTransformException),
-                    new RepositoryHandlerFactory(IoCManager.GetStorageMetaService()),
+                    InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
+                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
                     input)
         {
         }
@@ -106,8 +106,8 @@ namespace Vse.AdminkaV1.Injected
             ) : this(routineTag,
                     userContext,
                     routineTag.GetSpecifiedResolver(userContext),
-                    IoCManager.NLogConstructor(IoCManager.Markdown,IoCManager.DefaultRoutineTagTransformException),
-                    new RepositoryHandlerFactory(IoCManager.GetStorageMetaService()),
+                    InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
+                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
                     input)
         {
         }
@@ -121,7 +121,7 @@ namespace Vse.AdminkaV1.Injected
                     new RoutineTag(Guid.NewGuid(), @namespace, controller, action), 
                     userContext, 
                     loggingTransientsFactory,
-                    new RepositoryHandlerFactory(IoCManager.GetStorageMetaService()),
+                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
                     input)
         {
         }
@@ -135,8 +135,8 @@ namespace Vse.AdminkaV1.Injected
            routineTag,
            userContext,
            routineTag.GetSpecifiedResolver(userContext),
-           IoCManager.NLogConstructor(IoCManager.Markdown,routineTransformException),
-           new RepositoryHandlerFactory(IoCManager.GetStorageMetaService()),
+           InjectedManager.NLogConstructor(InjectedManager.Markdown,routineTransformException),
+           new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
            input)
         {
         }

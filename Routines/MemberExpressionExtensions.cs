@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -25,6 +26,13 @@ namespace Vse.Routines
                 throw new InvalidOperationException($"Unable to get '{propertyInfo.Name}' value");
             var value = propertyInfo.GetValue(entity);
             return value;
+        }
+        private static Type GetMemberType(this MemberExpression memberExpression)
+        {
+            var type = memberExpression.Type;
+            var type3 = memberExpression.Member.DeclaringType;
+            var type2 = memberExpression.Member.ReflectedType;
+            return type;
         }
         private static void SetValue(this MemberExpression memberExpression, object entity, object propertyValue)
         {
@@ -81,10 +89,11 @@ namespace Vse.Routines
         public class PathesIncluding<TRootEntity> : IIncluding<TRootEntity> where TRootEntity : class
         {
             public readonly List<string[]> Pathes = new List<string[]>();
+            private string[] sequence;
             public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
             {
                 var name = GetMemberName(navigationExpression);
-                Add(new[] { name });
+                sequence = Add(new string[] { }, name);
             }
             public void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
             {
@@ -93,18 +102,59 @@ namespace Vse.Routines
             public void ThenInclude<TMidProperty, TEntity>(Expression<Func<TMidProperty, TEntity>> navigationExpression)
             {
                 var name = GetMemberName(navigationExpression);
-                var path = Pathes.Last();
-                var newPath = path.Concat(new[] { name }).ToArray();
-                Add(newPath);
+                sequence = Add(sequence.ToArray(), name);
             }
             public void ThenIncludeAll<TMidProperty, TEntity>(Expression<Func<TMidProperty, IEnumerable<TEntity>>> navigationExpression)
             {
                 ThenInclude(navigationExpression);
             }
-            private void Add(string[] path)
+            private string[] Add(string[] parentPath, string member)
             {
-                if (!Pathes.Any(e => e.SequenceEqual(path)))
-                    Pathes.Add(path);
+                var newPath = parentPath.Concat(new[] { member }).ToArray();
+                //var pathes = Pathes.Where(e => e.SequenceEqual(path)).ToList();
+                //if (path.Count() == 0)
+                //    Pathes.Add(newPath);
+                //else
+                //{
+
+                //}
+
+                var subpahtes = new List<string[]>();
+                //var isExists = false;
+                ////var pathesToRemove
+                foreach (var p in Pathes)
+                {
+                    var isSub = true;
+                    for (int i = 0; i <= parentPath.Length; i++)
+                    {
+                        if (i == parentPath.Length)
+                        {
+                            if (p.Length > i && p[i] == member) // there is full subpath
+                            {
+                                goto end;
+                            }
+                        }
+                        else
+                        {
+                            if (parentPath.Length < i || p[i] != parentPath[i])
+                            {
+                                isSub = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (isSub)
+                        subpahtes.Add(p);
+                }
+                if (subpahtes.Count > 0)
+                {
+                    var root = Pathes.Where(e => e.SequenceEqual(parentPath)).FirstOrDefault();
+                    if (root!=null)
+                        Pathes.Remove(root);
+                }
+                Pathes.Add(newPath);
+            end:
+                    return newPath;
             }
         }
 
@@ -143,7 +193,7 @@ namespace Vse.Routines
                             var value = propertyInfo.GetValue(entity, null);
                             if (value != null)
                             {
-                                var selectedPaths = allowedPaths.Where(e => e[0] == propertyName);
+                                var selectedPaths = allowedPaths.Where(e => e[0] == propertyName).ToList();
                                 if (selectedPaths.Count() > 0)
                                 {
                                     var newPaths = new List<string[]>();
@@ -227,6 +277,26 @@ namespace Vse.Routines
             var destination = new T();
             CopyTo(source, destination, include, systemTypes);
             return destination;
+        }
+        public static IEnumerable<Type> GetTypes<T>(Include<T> include) where T : class
+        {
+            var nodeIncluding = new NodesIncluding<T>();
+            var includable = new Includable<T>(nodeIncluding);
+            include.Invoke(includable);
+            var nodes = nodeIncluding.Root;
+            var types = new List<Type>();
+            FlattenMemberExpressionNode(nodes, types);
+            return types;
+        }
+        private static void FlattenMemberExpressionNode(IEnumerable<MemberExpressionNode> nodes, List<Type> types)
+        {
+            foreach (var node in nodes)
+            {
+                var type = node.MemberExpression.GetMemberType();
+                if (!types.Any(t=>t.AssemblyQualifiedName == type.AssemblyQualifiedName ) )
+                    types.Add(type);
+                FlattenMemberExpressionNode(node.Children, types);
+            }
         }
 
         public static void CopyTo<T>(T source, T destination, Include<T> include, IReadOnlyCollection<Type> systemTypes=null) where T : class

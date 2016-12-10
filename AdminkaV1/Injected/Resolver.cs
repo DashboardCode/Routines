@@ -23,7 +23,7 @@ namespace Vse.AdminkaV1.Injected
             {
                 if (serialized != null)
                 {
-                    t = IoCManager.DeserializeJson<T>(serialized);
+                    t = InjectedManager.DeserializeJson<T>(serialized);
                 }
             }
             return t;

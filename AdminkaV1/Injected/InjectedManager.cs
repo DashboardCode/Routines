@@ -17,10 +17,13 @@ using Vse.Routines;
 using Vse.Routines.Storage;
 using Vse.Routines.Storage.SqlServer;
 using Vse.AdminkaV1.DataAccessEfCore;
+using System.IO;
+using System.Xml;
+using System.Runtime.Serialization;
 
 namespace Vse.AdminkaV1.Injected
 {
-    public static class IoCManager
+    public static class InjectedManager
     {
         public static StorageMetaService GetStorageMetaService()
         {
@@ -86,20 +89,61 @@ namespace Vse.AdminkaV1.Injected
         }
         #endregion
 
-        #region Json
+        #region Serialize
+        public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class
+        {
+            var knownTypes = MemberExpressionExtensions.GetTypes(include);
+            return DeserializeXml<T>(xmlText, knownTypes);
+        }
+        public static T DeserializeXml<T>(string xmlText, IEnumerable<Type> knownTypes = null)
+        {
+            using (var stringReader = new StringReader(xmlText))
+            {
+                using (var xmlTextReader = new XmlTextReader(stringReader))
+                {
+                    var serializer = new DataContractSerializer(typeof(T), knownTypes);
+                    var o = serializer.ReadObject(xmlTextReader);
+                    var t = (T)o;
+                    return t;
+                }
+            }
+        }
+        public static string SerializeToXml<T>(T t, Include<T> include) where T: class
+        {
+            var knownTypes = MemberExpressionExtensions.GetTypes(include);
+            return SerializeToXml(t, typeof(T), knownTypes);
+        }
+        public static string SerializeToXml(object o, IEnumerable<Type> knownTypes=null)
+        {
+            return SerializeToXml(o, o.GetType(), knownTypes);
+        }
+        private static string SerializeToXml(object o, Type rootType, IEnumerable<Type> knownTypes = null)
+        {
+            using (var stringWriter = new StringWriter())
+            {
+                using (var xmlTextWriter = new XmlTextWriter(stringWriter))
+                {
+                    var serializer = new DataContractSerializer(rootType, knownTypes);
+                    serializer.WriteObject(xmlTextWriter, o);
+                    var text = stringWriter.ToString();
+                    return text;
+                }
+            }
+        }
+
         public static T DeserializeJson<T>(string json)
         {
             var serializer = new JavaScriptSerializer();
             var t = serializer.Deserialize<T>(json);
             return t;
         }
-        public static string SerializeObject(object o)
+        public static string SerializeToJson(object o)
         {
             var serializer = new JavaScriptSerializer();
             var json = serializer.Serialize(o);
             return json;
         }
-        public static string SerializeObject(object o, int depth, bool ignoreDuplicates)
+        public static string SerializeToJson(object o, int depth, bool ignoreDuplicates)
         {
             var serializer = new JavaScriptSerializer();
             var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
@@ -178,7 +222,7 @@ namespace Vse.AdminkaV1.Injected
                 var adminkaLogging = new NLogLoggingAdapter(
                     t,
                     markdownException,
-                    SerializeObject,
+                    SerializeToJson,
                     loggingConfiguration,
                     loggingVerboseConfiguration,
                     loggingPerformanceConfiguration
@@ -202,7 +246,7 @@ namespace Vse.AdminkaV1.Injected
                     logger,
                     t,
                     markdownException,
-                    SerializeObject,
+                    SerializeToJson,
                     loggingConfiguration,
                     loggingVerboseConfiguration,
                     loggingPerformanceConfiguration

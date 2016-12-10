@@ -60,7 +60,7 @@ namespace Vse.AdminkaV1.Injected
                             
             var repositoryHandler = new RepositoryHandler<TEntity>(
                 dbContextManager,
-                (ex)=>IoCManager.Analyze(ex,storageModel),
+                (ex)=>InjectedManager.Analyze(ex,storageModel),
                 repositoryNoTracking
                 );
             return repositoryHandler;

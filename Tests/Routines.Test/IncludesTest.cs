@@ -71,6 +71,30 @@ namespace Vse.Routines.Test
                              .ThenIncludeAll(i => i.Fields);
             return includes;
         }
+        [TestMethod]
+        public void IncludesDetach()
+        {
+            var source = CreateTestModel();
+            var includes = CreateIncludes();
+            MemberExpressionExtensions.Detach(source, includes);
+
+            if (source.CultureInfos!=null)
+               throw new ApplicationException("Detach doesn't working properly");
+        }
+
+        [TestMethod]
+        public void IncludesPathes()
+        {
+            var source = CreateTestModel();
+            var includes = CreateIncludes();
+            var including = new MemberExpressionExtensions.PathesIncluding<TestModel>();
+            var includable = new Includable<TestModel>(including);
+            includes.Invoke(includable);
+            var pathes = including.Pathes;
+
+            if (pathes.Count != 8)
+                throw new ApplicationException("PathesIncluding doesn't working properly");
+        }
 
         [TestMethod]
         public void IncludesCopyTest()
@@ -165,6 +189,16 @@ namespace Vse.Routines.Test
                 throw new ApplicationException("Eqauls doesn't working properly. Case 0");
         }
 
+        [TestMethod]
+        public void IncludesGetTypes()
+        {
+            var source = CreateTestModel();
+            var includes = CreateIncludes();
+
+            var b1 = MemberExpressionExtensions.GetTypes(includes);
+            if (b1.Count() != 8)
+                throw new ApplicationException("Eqauls doesn't working properly. Case 1");
+        }
         [TestMethod]
         public void IncludesCloneTest()
         {

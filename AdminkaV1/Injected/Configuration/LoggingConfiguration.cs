@@ -13,7 +13,7 @@ namespace Vse.AdminkaV1.Injected.Configuration
         {
             if (json != null)
             {
-                var dictionary = IoCManager.DeserializeJson<Dictionary<string, string>>(json);
+                var dictionary = InjectedManager.DeserializeJson<Dictionary<string, string>>(json);
                 StartActivity = bool.Parse(dictionary["StartActivity"]);
                 FinishActivity = bool.Parse(dictionary["FinishActivity"]);
                 Input = bool.Parse(dictionary["Input"]);

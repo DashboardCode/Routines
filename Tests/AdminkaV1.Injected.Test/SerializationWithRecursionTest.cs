@@ -111,7 +111,56 @@ namespace Vse.AdminkaV1.Injected.Test
                     return repository.Find(e => e.TestTypeRecordId == "0000", include);
                 });
             });
-            var json = IoCManager.SerializeObject(record,2,true);
+            var json = InjectedManager.SerializeToJson(record,2,true);
+        }
+
+        [TestMethod]
+        public void TestProblematicDetachUsage()
+        {
+            var userContext = new UserContext("UnitTest");
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            Include<TestTypeRecord> include = includable =>
+                       includable.IncludeAll(y => y.TestChildRecords)
+                       .ThenInclude(y => y.TestTypeRecord);
+            var record = routine.Handle((state, dataAccess) =>
+            {
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestTypeRecord>();
+                return repositoryHandler.Handle((repository, storage) =>
+                {
+                    var entity = repository.Find(e => e.TestTypeRecordId == "0000", include);
+                    repository.Detach(entity, include);
+                    return entity;
+                });
+            });
+            if (record.TestChildRecords != null) // from first sight TestChildRecords should be included, but .ThenInclude(y => y.TestTypeRecord) returns the same object there it is pointed that TestChildRecords should be not included
+                throw new ApplicationException("Detach error");
+        }
+
+        [TestMethod]
+        public void TestXmlSerializeAndDesirialize()
+        {
+            var userContext = new UserContext("UnitTest");
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            Include<TestTypeRecord> include = includable =>
+                       includable.IncludeAll(y => y.TestChildRecords)
+                       .ThenInclude(y => y.TestTypeRecord);
+            var record = routine.Handle((state, dataAccess) =>
+            {
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestTypeRecord>();
+                return repositoryHandler.Handle((repository, storage) =>
+                {
+                    var entity = repository.Find(e => e.TestTypeRecordId == "0000", include);
+                    return entity;
+                });
+            });
+            var cloned =  MemberExpressionExtensions.Clone(record, include, MemberExpressionExtensions.SystemTypes);
+            if (cloned.TestChildRecords == null || cloned.TestChildRecords.Count == 0)
+                throw new ApplicationException("Clone error");
+            var xml = InjectedManager.SerializeToXml(cloned, include);
+            var o = InjectedManager.DeserializeXml(xml, include);
+            if (o == null)
+                throw new ApplicationException("Serialize error");
+
         }
     }
 }

@@ -29,9 +29,9 @@ namespace Vse.AdminkaV1.Web
         public MvcRoutine(Controller controller, RoutineTag routineTag, object input) :
             this(controller,
                  routineTag,
-                 IoCManager.NLogConstructor(
-                       IoCManager.Markdown,
-                       IoCManager.DefaultRoutineTagTransformException
+                 InjectedManager.NLogConstructor(
+                       InjectedManager.Markdown,
+                       InjectedManager.DefaultRoutineTagTransformException
                      ),
                  input)
         {
@@ -53,7 +53,7 @@ namespace Vse.AdminkaV1.Web
                 routineTag,
                 controller.User.Identity,
                 loggingContainer,
-                new RepositoryHandlerFactory(IoCManager.GetStorageMetaService()),
+                new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
                 input)
         {
             this.Controller = controller;
