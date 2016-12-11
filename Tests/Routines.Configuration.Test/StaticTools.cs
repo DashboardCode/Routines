@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Web.Script.Serialization;
+﻿using System.Web.Script.Serialization;
 
 namespace Vse.Routines.Configuration.Test
 {

@@ -15,7 +15,7 @@ namespace Vse.Routines.Configuration
             foreach (var pair in rangedRoutines)
             {
                 var routineElement = pair.Value;
-                if (string.IsNullOrWhiteSpace(routineElement.For))
+                if (routineElement.For.IsNullOrWhiteSpaceOrAsterix())
                 {
                     foreach (ResolvableElement c in routineElement.Configs)
                     {
@@ -41,7 +41,7 @@ namespace Vse.Routines.Configuration
             foreach (var pair in rangedRoutines)
             {
                 var routineElement = pair.Value;
-                if (string.IsNullOrWhiteSpace(routineElement.For) || routineElement.For== @for)
+                if (routineElement.For.IsNullOrWhiteSpaceOrAsterix() || routineElement.For== @for)
                 {
                     foreach (ResolvableElement c in routineElement.Configs)
                     {

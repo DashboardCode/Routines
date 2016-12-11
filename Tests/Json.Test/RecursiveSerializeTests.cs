@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web.Script.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Vse.Routines.Configuration.Test
+namespace Vse.Json.Test
 {
     [TestClass]
     public class RecursiveSerializeTests

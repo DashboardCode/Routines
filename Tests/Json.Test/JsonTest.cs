@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using ServiceStack;
 
-namespace Vse.Routines.Configuration.Test
+namespace Vse.Json.Test
 {
     [TestClass]
     public class JsonTest
@@ -15,7 +15,7 @@ namespace Vse.Routines.Configuration.Test
         [TestMethod]
         public void NewtonsoftJsonSerialize()
         {
-            var t = new LoggingConfiguration() { StartActivity=true, FinishActivity = true, Input = true, Output = false, Verbose = true, UseBufferForVerbose = true, VerboseWithStackTrace = true };
+            var t = new TestStructure() { StartActivity=true, FinishActivity = true, Input = true, Output = false, Verbose = true, UseBufferForVerbose = true, VerboseWithStackTrace = true };
             var serialized = JsonConvert.SerializeObject(t);
             if (serialized == null)
                 throw new ApplicationException("Test fails");
@@ -24,9 +24,9 @@ namespace Vse.Routines.Configuration.Test
         [TestMethod]
         public void SystemRuntimeSerializationJsonSerialize()
         {
-            var t = new LoggingConfiguration() { StartActivity = true, FinishActivity = true, Input = true, Output = false, Verbose = true, UseBufferForVerbose = true, VerboseWithStackTrace = true };
+            var t = new TestStructure() { StartActivity = true, FinishActivity = true, Input = true, Output = false, Verbose = true, UseBufferForVerbose = true, VerboseWithStackTrace = true };
             var serialized = default(string);
-            var serializer = new DataContractJsonSerializer(typeof(LoggingConfiguration), new DataContractJsonSerializerSettings(){UseSimpleDictionaryFormat=true});
+            var serializer = new DataContractJsonSerializer(typeof(TestStructure), new DataContractJsonSerializerSettings(){UseSimpleDictionaryFormat=true});
             using (var stream = new MemoryStream())
             {
                 serializer.WriteObject(stream, t);
@@ -38,7 +38,7 @@ namespace Vse.Routines.Configuration.Test
         public void NewtonsoftJsonDeserialize()
         {
             var serialized = "{StartActivity:true, FinishActivity:true, Input:true, Output:false, Verbose:true, UseBufferForVerbose:true, VerboseWithStackTrace:true }";
-            var t = JsonConvert.DeserializeObject<LoggingConfiguration>(serialized);
+            var t = JsonConvert.DeserializeObject<TestStructure>(serialized);
             if (t == null)
                 throw new ApplicationException("Test fails");
         }
@@ -48,13 +48,13 @@ namespace Vse.Routines.Configuration.Test
         public void SystemRuntimeSerializationJsonDeserialize()
         {
             var serialized = "{\"StartActivity\":true, \"FinishActivity\":true, \"Input\":true, \"Output\":false, \"Verbose\":true, \"UseBufferForVerbose\":true, \"VerboseWithStackTrace\":true }";
-            var t = default(LoggingConfiguration);
+            var t = default(TestStructure);
             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(serialized)))
             {
                 var deserializer = new DataContractJsonSerializer(
-                    typeof(LoggingConfiguration),
+                    typeof(TestStructure),
                     new DataContractJsonSerializerSettings() { });
-                t = (LoggingConfiguration)deserializer.ReadObject(ms);
+                t = (TestStructure)deserializer.ReadObject(ms);
             }
         }
 
@@ -62,7 +62,7 @@ namespace Vse.Routines.Configuration.Test
         public void ServiceStackDynamicJsonDeserialize()
         {
             var serialized = "{\"StartActivity\":true, \"FinishActivity\":true, \"Input\":true, \"Output\":false, \"Verbose\":true, \"UseBufferForVerbose\":true, \"VerboseWithStackTrace\":true }";
-            var l = new LoggingConfiguration();
+            var l = new TestStructure();
             dynamic d = DynamicJson.Deserialize(serialized);
             l.StartActivity = bool.Parse(d.StartActivity);
             l.FinishActivity = bool.Parse(d.FinishActivity);
@@ -78,7 +78,7 @@ namespace Vse.Routines.Configuration.Test
         public void ServiceStackJsonDeserialize()
         {
             var serialized = "{\"StartActivity\":true, \"FinishActivity\":true, \"Input\":true, \"Output\":false, \"Verbose\":true, \"UseBufferForVerbose\":true, \"VerboseWithStackTrace\":true }";
-            var t = serialized.FromJson<LoggingConfiguration>();
+            var t = serialized.FromJson<TestStructure>();
         }
 
         [TestMethod]
@@ -87,7 +87,7 @@ namespace Vse.Routines.Configuration.Test
             //var serialized = "[['asd', 'pok'],['asd2', 'pok2']]";
             var serialized = "{StartActivity:true, FinishActivity:true, Input:true, Output:false, Verbose:true, UseBufferForVerbose:true, VerboseWithStackTrace:true }";
             var jss = new JavaScriptSerializer();
-            var t = jss.Deserialize<LoggingConfiguration>(serialized);
+            var t = jss.Deserialize<TestStructure>(serialized);
         }
 
         [TestMethod]

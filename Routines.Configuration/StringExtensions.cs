@@ -12,14 +12,20 @@
         }
         public static string ReplaceEmptyWithAsterix(this string text)
         {
-            var @value = text;
+            string @value = default(string);
             if (string.IsNullOrWhiteSpace(text))
                 @value = Asterix;
+            else
+                @value = text.Trim();
             return @value;
         }
-        public static bool IsAsterix(this string text)
+        //public static bool IsAsterix(this string text)
+        //{
+        //    return !string.IsNullOrEmpty(text) && text.Trim() == Asterix;
+        //}
+        public static bool IsNullOrWhiteSpaceOrAsterix(this string text)
         {
-            return !string.IsNullOrEmpty(text) && text.Trim() == Asterix;
+            return string.IsNullOrWhiteSpace(text) || text.Trim() == Asterix;
         }
     }
 }

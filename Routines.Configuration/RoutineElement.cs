@@ -45,21 +45,21 @@ namespace Vse.Routines.Configuration
 
         private void Validate()
         {
-            if (!string.IsNullOrWhiteSpace(Namespace))
+            if (!Namespace.IsNullOrWhiteSpaceOrAsterix())
                 if (!char.IsLetter(Namespace[0]))
                     throw new InvalidOperationException($"Routine's element Namespace property ({Namespace}) should be valid .NET namespace name ");
 
-            if (!string.IsNullOrWhiteSpace(Class))
+            if (!Class.IsNullOrWhiteSpaceOrAsterix())
                 if (Class.Contains(".") || !char.IsLetter(Class[0]))
-                    throw new InvalidOperationException($"Routine's element Class property ({Namespace}) should be valid .NET class name");
+                    throw new InvalidOperationException($"Routine's element Class property ({Class}) should be valid .NET class name");
 
-            if (!string.IsNullOrWhiteSpace(Member))
+            if (!Member.IsNullOrWhiteSpaceOrAsterix())
                 if (Member.Contains(".") || !char.IsLetter(Member[0]))
-                    throw new InvalidOperationException($"Routine's element Member property ({Namespace}) should be valid .NET member name");
+                    throw new InvalidOperationException($"Routine's element Member property ({Member}) should be valid .NET member name");
 
-            if (!string.IsNullOrEmpty(Member) && Member.Trim()!= StringExtensions.Asterix)
-                if (string.IsNullOrEmpty(Class) || Class.Trim() == StringExtensions.Asterix)
-                    throw new ApplicationException($"Member '{Member}' can't be configured without Class");
+            if (!Member.IsNullOrWhiteSpaceOrAsterix())
+                if (Class.IsNullOrWhiteSpaceOrAsterix())
+                    throw new InvalidOperationException($"Member '{Member}' can't be configured without Class");
         }
         public string Key
         {
