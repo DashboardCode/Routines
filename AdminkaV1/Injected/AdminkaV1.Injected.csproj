@@ -63,7 +63,6 @@
     <Compile Include="Configuration\LoggingVerboseConfiguration.cs" />
     <Compile Include="Configuration\LoggingConfiguration.cs" />
     <Compile Include="Configuration\LoggingPerformanceConfiguration.cs" />
-    <Compile Include="CircularJsonConverter.cs" />
     <Compile Include="ServicesContainer.cs" />
     <Compile Include="Configuration\ApplicationServicesConfiguration.cs" />
     <Compile Include="AdminkaRoutine.cs" />
@@ -88,6 +87,10 @@
     <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj">
       <Project>{49629314-6d2c-4630-a478-09e4338ca8d1}</Project>
       <Name>Routines.Storage.SqlServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Web\Web.csproj">
+      <Project>{29481049-5d8f-4f96-a93b-f818ad37c537}</Project>
+      <Name>Web</Name>
     </ProjectReference>
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj">
       <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>

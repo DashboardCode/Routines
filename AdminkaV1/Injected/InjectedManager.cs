@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Xml;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,18 +11,16 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Principal;
 using System.Web.Script.Serialization;
+using Vse.Web;
 using Vse.Routines.Configuration;
+using Vse.Routines;
+using Vse.Routines.Storage;
+using Vse.Routines.Storage.SqlServer;
 using Vse.AdminkaV1.DomAuthentication;
 using Vse.AdminkaV1.Injected.Configuration;
 using Vse.AdminkaV1.Injected.Logging;
 using Vse.AdminkaV1.DataAccessEfCore.Services;
-using Vse.Routines;
-using Vse.Routines.Storage;
-using Vse.Routines.Storage.SqlServer;
 using Vse.AdminkaV1.DataAccessEfCore;
-using System.IO;
-using System.Xml;
-using System.Runtime.Serialization;
 
 namespace Vse.AdminkaV1.Injected
 {
@@ -147,7 +148,7 @@ namespace Vse.AdminkaV1.Injected
         {
             var serializer = new JavaScriptSerializer();
             var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
-            serializer.RegisterConverters(new[] { new CircularJsonConverter(MemberExpressionExtensions.SystemTypes, types, 30, false) });
+            serializer.RegisterConverters(new[] { new CircularJsonConverter(types, MemberExpressionExtensions.SystemTypes, 30, false) });
             var json = serializer.Serialize(o);
             return json;
         }

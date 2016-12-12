@@ -1,3 +1,5 @@
+0. Separate Circular Depedencies into separate project
+
 FUNCTIONALITY
 ------------------------------------------------------------------------------------
 1. Catch logs to DB.
@@ -17,6 +19,10 @@ SERVER SIDE
 SERVER SIDE (OTHER)
 ------------------------------------------------------------------------------------
 7. how to generate DTO classes.
+   generate typescripts with T4 like https://www.nuget.org/packages/TypeLite do but with includes;
+   that means all helper functions should be placed into Vse.Routines.dll; 
+		since we have "includes" it should be possible (dictionaries? indent algorithm?)
+   
 7b. how to use DTO with automapper, why not to generate dto with mpa function?
 
 	Choose "c# DTO generator" there is number of them

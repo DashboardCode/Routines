@@ -12,8 +12,22 @@ namespace Vse.Json.Test
     [TestClass]
     public class JsonTest
     {
+        /// <summary>
+        /// It is a best deserializer not only because of speed (2nd) but also because of supported fluent
+        /// syntax. It supports also single quotes what is important mixing xml and json, c# and json.
+        /// E.g it is possible to deserialize <code>var serialized = "[['asd', 'pok'],['asd2', 'pok2']]";</code>
+        /// </summary>
         [TestMethod]
-        public void NewtonsoftJsonSerialize()
+        public void Deserialize_SystemWebExtensionJson()
+        {
+            
+            var serialized = "{StartActivity:true, FinishActivity:true, Input:true, Output:false, Verbose:true, UseBufferForVerbose:true, VerboseWithStackTrace:true }";
+            var jss = new JavaScriptSerializer();
+            var t = jss.Deserialize<TestStructure>(serialized);
+        }
+
+        [TestMethod]
+        public void Serialize_NewtonsoftJson()
         {
             var t = new TestStructure() { StartActivity=true, FinishActivity = true, Input = true, Output = false, Verbose = true, UseBufferForVerbose = true, VerboseWithStackTrace = true };
             var serialized = JsonConvert.SerializeObject(t);
@@ -22,7 +36,7 @@ namespace Vse.Json.Test
         }
 
         [TestMethod]
-        public void SystemRuntimeSerializationJsonSerialize()
+        public void Serialize_SystemRuntimeSerializationJson()
         {
             var t = new TestStructure() { StartActivity = true, FinishActivity = true, Input = true, Output = false, Verbose = true, UseBufferForVerbose = true, VerboseWithStackTrace = true };
             var serialized = default(string);
@@ -35,7 +49,7 @@ namespace Vse.Json.Test
         }
 
         [TestMethod]
-        public void NewtonsoftJsonDeserialize()
+        public void Deserialize_NewtonsoftJson()
         {
             var serialized = "{StartActivity:true, FinishActivity:true, Input:true, Output:false, Verbose:true, UseBufferForVerbose:true, VerboseWithStackTrace:true }";
             var t = JsonConvert.DeserializeObject<TestStructure>(serialized);
@@ -45,7 +59,7 @@ namespace Vse.Json.Test
 
 
         [TestMethod]
-        public void SystemRuntimeSerializationJsonDeserialize()
+        public void Deserialize_SystemRuntimeSerializationJson()
         {
             var serialized = "{\"StartActivity\":true, \"FinishActivity\":true, \"Input\":true, \"Output\":false, \"Verbose\":true, \"UseBufferForVerbose\":true, \"VerboseWithStackTrace\":true }";
             var t = default(TestStructure);
@@ -59,7 +73,7 @@ namespace Vse.Json.Test
         }
 
         [TestMethod]
-        public void ServiceStackDynamicJsonDeserialize()
+        public void Deserialize_ServiceStackDynamicJson()
         {
             var serialized = "{\"StartActivity\":true, \"FinishActivity\":true, \"Input\":true, \"Output\":false, \"Verbose\":true, \"UseBufferForVerbose\":true, \"VerboseWithStackTrace\":true }";
             var l = new TestStructure();
@@ -75,23 +89,15 @@ namespace Vse.Json.Test
         }
 
         [TestMethod]
-        public void ServiceStackJsonDeserialize()
+        public void Deserialize_ServiceStackJson()
         {
             var serialized = "{\"StartActivity\":true, \"FinishActivity\":true, \"Input\":true, \"Output\":false, \"Verbose\":true, \"UseBufferForVerbose\":true, \"VerboseWithStackTrace\":true }";
             var t = serialized.FromJson<TestStructure>();
         }
 
-        [TestMethod]
-        public void SystemWebExtensionJsonDeserialize()
-        {
-            //var serialized = "[['asd', 'pok'],['asd2', 'pok2']]";
-            var serialized = "{StartActivity:true, FinishActivity:true, Input:true, Output:false, Verbose:true, UseBufferForVerbose:true, VerboseWithStackTrace:true }";
-            var jss = new JavaScriptSerializer();
-            var t = jss.Deserialize<TestStructure>(serialized);
-        }
 
         [TestMethod]
-        public void SystemWebExtensionJsonSerialize()
+        public void Serialize_SystemWebExtensionJson()
         {
             var jss = new JavaScriptSerializer();
             
