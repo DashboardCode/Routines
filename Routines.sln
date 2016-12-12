@@ -37,7 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		CreateNugetPackage.ps1 = CreateNugetPackage.ps1
 		DeleteCache.ps1 = DeleteCache.ps1
 		OpenCover.bat = OpenCover.bat
-		Routines.nuspec = Routines.nuspec
+		Routines.1.0.9.nuspec = Routines.1.0.9.nuspec
 		Routines.png = Routines.png
 		TODO.txt = TODO.txt
 	EndProjectSection
@@ -60,7 +60,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Json.Test", "Tests\Json
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{29481049-5D8F-4F96-A93B-F818AD37C537}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Web.Test", "Vse.Web.Test\Vse.Web.Test.csproj", "{7F29FCB3-D596-4EDE-8CDF-2AAD42F1C0BB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Web.Test", "Tests\Web.Test\Vse.Web.Test.csproj", "{7F29FCB3-D596-4EDE-8CDF-2AAD42F1C0BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

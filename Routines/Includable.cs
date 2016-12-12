@@ -11,31 +11,31 @@ namespace Vse.Routines
         {
             this.includingProcess = includingProcess;
         }
-        public MidIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+        public ThenIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
         {
             includingProcess.Include(navigationExpression);
-            return new MidIncludable<TRootEntity, TEntity>(includingProcess);
+            return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
         }
-        public MidIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+        public ThenIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
         {
             includingProcess.IncludeAll(navigationExpression);
-            return new MidIncludable<TRootEntity, TEntity>(includingProcess);
+            return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
         }
     }
-    public class MidIncludable<TRootEntity, TMidEntity> : Includable<TRootEntity> where TRootEntity : class
+    public class ThenIncludable<TRootEntity, TThenEntity> : Includable<TRootEntity> where TRootEntity : class
     {
-        public MidIncludable(IIncluding<TRootEntity> includingProcess):base(includingProcess)
+        public ThenIncludable(IIncluding<TRootEntity> includingProcess):base(includingProcess)
         {
         }
-        public MidIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidEntity, TEntity>> navigationExpression)
+        public ThenIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
         {
             includingProcess.ThenInclude(navigationExpression);
-            return new MidIncludable<TRootEntity, TEntity>(includingProcess);
+            return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
         }
-        public MidIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> navigationExpression)
+        public ThenIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
         {
             includingProcess.ThenIncludeAll(navigationExpression);
-            return new MidIncludable<TRootEntity, TEntity>(includingProcess);
+            return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
         }
     }
 }

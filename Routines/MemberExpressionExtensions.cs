@@ -99,12 +99,12 @@ namespace Vse.Routines
             {
                 Include(navigationExpression);
             }
-            public void ThenInclude<TMidProperty, TEntity>(Expression<Func<TMidProperty, TEntity>> navigationExpression)
+            public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
             {
                 var name = GetMemberName(navigationExpression);
                 sequence = Add(sequence.ToArray(), name);
             }
-            public void ThenIncludeAll<TMidProperty, TEntity>(Expression<Func<TMidProperty, IEnumerable<TEntity>>> navigationExpression)
+            public void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 ThenInclude(navigationExpression);
             }
@@ -257,7 +257,7 @@ namespace Vse.Routines
             {
                 Include(navigationExpression);
             }
-            public void ThenInclude<TMidProperty, TEntity>(Expression<Func<TMidProperty, TEntity>> navigationExpression)
+            public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
             {
                 var name = GetMemberName(navigationExpression);
                 var node = CurrentNode.Children.FirstOrDefault(e => e.PropertyName == name);
@@ -266,7 +266,7 @@ namespace Vse.Routines
                 CurrentNode.Children.Add(node);
                 CurrentNode = node;
             }
-            public void ThenIncludeAll<TMidProperty, TEntity>(Expression<Func<TMidProperty, IEnumerable<TEntity>>> navigationExpression)
+            public void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 ThenInclude(navigationExpression);
             }

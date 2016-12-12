@@ -7,8 +7,8 @@ namespace Vse.Web
 {
     public class CircularJsonConverter : JavaScriptConverter
     {
-        #region StandardTypes
-        public static readonly IReadOnlyCollection<Type> StandardTypes = new[]
+        #region StandardSimpleTypes
+        public static readonly IReadOnlyCollection<Type> StandardSimpleTypes = new[]
             {
                 typeof(bool),
                 typeof(bool?),
@@ -56,7 +56,7 @@ namespace Vse.Web
         private readonly IEnumerable<Type> simpleTypes;
         
 
-        public CircularJsonConverter(IEnumerable<Type> supportedTypes, IEnumerable<Type> simpleTypes, int recursionDepth = 1, bool ignoreDuplicates = false):
+        public CircularJsonConverter(IEnumerable<Type> supportedTypes, IEnumerable<Type> simpleTypes=null, int recursionDepth = 1, bool ignoreDuplicates = false):
             this(supportedTypes, simpleTypes, recursionDepth, ignoreDuplicates, 1 , new List<object>())
         {
         }
@@ -66,7 +66,7 @@ namespace Vse.Web
             this.recursionDepth = recursionDepth;
             this.ignoreDuplicates = ignoreDuplicates;
             this.supportedTypes = supportedTypes;
-            this.simpleTypes = simpleTypes;
+            this.simpleTypes = simpleTypes??StandardSimpleTypes;
             this.currentRecursionDepth = currentRecursionDepth;
             this.history = history;
         }
@@ -113,41 +113,6 @@ namespace Vse.Web
                     }
                 }
             }
-
-            //foreach (var propertyInfo in properties)
-            //{
-            //    if (propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0)
-            //    {
-            //        if (supportedTypes.Contains(propertyInfo.PropertyType))
-            //        {
-            //            string propertyName = propertyInfo.Name;
-            //            var value = propertyInfo.GetValue(o, null);
-            //            standardTypesValues.Add(propertyName, value);
-            //        }
-            //        else
-            //        {
-            //            if (currentRecursionDepth <= recursionDepth)
-            //            {
-            //                string propertyName = propertyInfo.Name;
-            //                var value = propertyInfo.GetValue(o, null);
-            //                if (value != null)
-            //                {
-            //                    if (!ignoreDuplicates)
-            //                    {
-            //                        var dictionaryProperties = LayerUp(propertyName, value);
-            //                        standardTypesValues.Add(propertyName, dictionaryProperties);
-            //                    }
-            //                    else if (!history.Contains(value))
-            //                    {
-            //                        var dictionaryProperties = LayerUp(propertyName, value);
-            //                        standardTypesValues.Add(propertyName, dictionaryProperties);
-
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
             return standardTypesValues;
         }
 

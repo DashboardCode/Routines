@@ -21,7 +21,7 @@ namespace Vse.Json.Test
 
             var jss1 = new JavaScriptSerializer();
             //jss.RegisterConverters(new[] { new CircularScriptConverter(new[] { typeof(Item) }, 30, false) });
-            jss1.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardTypes,  50, false) });
+            jss1.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardSimpleTypes,  50, false) });
             // ef types
             //types.AddRange(Assembly.GetAssembly(typeof(DbContext)).GetTypes());
             // model types
@@ -32,7 +32,7 @@ namespace Vse.Json.Test
                 throw new ApplicationException("History doesn't work. Case 0");
 
             var jss2 = new JavaScriptSerializer();
-            jss2.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardTypes, 50, true) });
+            jss2.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardSimpleTypes, 50, true) });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c""}}}")
                 throw new ApplicationException("History doesn't work. Case 1");
@@ -43,7 +43,7 @@ namespace Vse.Json.Test
         {
             var item = Item.CreateSample();
             var jss2 = new JavaScriptSerializer();
-            jss2.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardTypes, 50, true) });
+            jss2.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardSimpleTypes, 50, true) });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c""}}}")
                 throw new ApplicationException("History doesn't work. Case 1");
@@ -103,7 +103,7 @@ namespace Vse.Json.Test
                 {
                     if (propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0)
                     {
-                        if (CircularJsonConverter.StandardTypes.Contains(propertyInfo.PropertyType))
+                        if (CircularJsonConverter.StandardSimpleTypes.Contains(propertyInfo.PropertyType))
                         {
                             string propertyName = propertyInfo.Name;
                             var value = propertyInfo.GetValue(o, null);

@@ -2110,3 +2110,195 @@ UserContextException specific:
     <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
   </log4j:properties>
 </log4j:event>
+<log4j:event logger="" level="ERROR" timestamp="1481548466523" thread="13">
+  <log4j:message>###  Vse.AdminkaV1.UserContextException -    
+UserContextException specific:   
+   **Code**: USER   
+```   
+   at Vse.AdminkaV1.DataAccessEfCore.Services.TraceService.&lt;&gt;c.&lt;GetTrace&gt;b__2_0(AdminkaDbContext dbContext) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\Services\TraceService.cs:line 19  
+   at Vse.AdminkaV1.DataAccessEfCore.AdminkaDbContextHandler.Handle[TOutput](Func`2 func) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\AdminkaDbContextHandler.cs:line 43  
+   at Vse.AdminkaV1.DataAccessEfCore.Services.TraceService.GetTrace(Guid correlationToken) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\Services\TraceService.cs:line 16  
+   at Vse.AdminkaV1.Wcf.TraceService.&lt;&gt;c__DisplayClass0_0.&lt;GetTrace&gt;b__0(RoutineState`1 container, DataAccessFactory dataAccess) in D:\cot\Vse\AdminkaV1\Wcf\TraceService.cs:line 20  
+   at Vse.AdminkaV1.Injected.AdminkaRoutine.&lt;&gt;c__DisplayClass15_0`1.&lt;Handle&gt;b__0(RoutineState`1 state) in D:\cot\Vse\AdminkaV1\Injected\AdminkaRoutine.cs:line 208  
+   at Vse.Routines.Injected.Routine`1.&lt;&gt;c__DisplayClass6_0`1.&lt;Handle&gt;b__0() in D:\cot\Vse\Routines\Injected\Routine.cs:line 41  
+   at Vse.Routines.Injected.ExceptionHandler.Handle(Action action, Action onFailure) in D:\cot\Vse\Routines\Injected\ExceptionHandler.cs:line 24   
+```   
+</log4j:message>
+  <log4j:locationInfo class="Vse.AdminkaV1.Injected.Logging.NLogLoggingAdapter" method="Void LogException(System.DateTime, System.Exception)" />
+  <nlog:eventSequenceNumber>11</nlog:eventSequenceNumber>
+  <nlog:locationInfo assembly="Vse.AdminkaV1.Injected, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <nlog:properties>
+    <nlog:data name="CorrelationToken" value="127f706b-81aa-4504-b665-8ea0e0a6f354" />
+    <nlog:data name="Namespace" value="Vse.AdminkaV1.Wcf" />
+    <nlog:data name="Class" value="TraceService" />
+    <nlog:data name="Member" value="GetTrace" />
+    <nlog:data name="Title" value="TraceService.GetTrace; Vse.AdminkaV1.Wcf; 127f706b-81aa-4504-b665-8ea0e0a6f354" />
+    <nlog:data name="Description" value="Exception" />
+  </nlog:properties>
+  <log4j:properties>
+    <log4j:data name="log4japp" value="false" />
+    <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
+  </log4j:properties>
+</log4j:event>
+<log4j:event logger="" level="INFO" timestamp="1481548466363" thread="13">
+  <log4j:message>{"correlationToken":"5a761e72-fa67-4e78-8d0c-d28f7d6231eb"}</log4j:message>
+  <log4j:locationInfo class="Vse.AdminkaV1.Injected.Logging.NLogLoggingAdapter" method="Void Input(System.DateTime, System.Object)" />
+  <nlog:eventSequenceNumber>12</nlog:eventSequenceNumber>
+  <nlog:locationInfo assembly="Vse.AdminkaV1.Injected, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <nlog:properties>
+    <nlog:data name="CorrelationToken" value="127f706b-81aa-4504-b665-8ea0e0a6f354" />
+    <nlog:data name="Namespace" value="Vse.AdminkaV1.Wcf" />
+    <nlog:data name="Class" value="TraceService" />
+    <nlog:data name="Member" value="GetTrace" />
+    <nlog:data name="Title" value="TraceService.GetTrace; Vse.AdminkaV1.Wcf; 127f706b-81aa-4504-b665-8ea0e0a6f354" />
+    <nlog:data name="Description" value="Input" />
+  </nlog:properties>
+  <log4j:properties>
+    <log4j:data name="log4japp" value="false" />
+    <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
+  </log4j:properties>
+</log4j:event>
+<log4j:event logger="" level="ERROR" timestamp="1481551742551" thread="13">
+  <log4j:message>###  Vse.AdminkaV1.UserContextException -    
+UserContextException specific:   
+   **Code**: USER   
+```   
+   at Vse.AdminkaV1.DataAccessEfCore.Services.TraceService.&lt;&gt;c.&lt;GetTrace&gt;b__2_0(AdminkaDbContext dbContext) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\Services\TraceService.cs:line 19  
+   at Vse.AdminkaV1.DataAccessEfCore.AdminkaDbContextHandler.Handle[TOutput](Func`2 func) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\AdminkaDbContextHandler.cs:line 43  
+   at Vse.AdminkaV1.DataAccessEfCore.Services.TraceService.GetTrace(Guid correlationToken) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\Services\TraceService.cs:line 16  
+   at Vse.AdminkaV1.Wcf.TraceService.&lt;&gt;c__DisplayClass0_0.&lt;GetTrace&gt;b__0(RoutineState`1 container, DataAccessFactory dataAccess) in D:\cot\Vse\AdminkaV1\Wcf\TraceService.cs:line 20  
+   at Vse.AdminkaV1.Injected.AdminkaRoutine.&lt;&gt;c__DisplayClass15_0`1.&lt;Handle&gt;b__0(RoutineState`1 state) in D:\cot\Vse\AdminkaV1\Injected\AdminkaRoutine.cs:line 208  
+   at Vse.Routines.Injected.Routine`1.&lt;&gt;c__DisplayClass6_0`1.&lt;Handle&gt;b__0() in D:\cot\Vse\Routines\Injected\Routine.cs:line 41  
+   at Vse.Routines.Injected.ExceptionHandler.Handle(Action action, Action onFailure) in D:\cot\Vse\Routines\Injected\ExceptionHandler.cs:line 24   
+```   
+</log4j:message>
+  <log4j:locationInfo class="Vse.AdminkaV1.Injected.Logging.NLogLoggingAdapter" method="Void LogException(System.DateTime, System.Exception)" />
+  <nlog:eventSequenceNumber>11</nlog:eventSequenceNumber>
+  <nlog:locationInfo assembly="Vse.AdminkaV1.Injected, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <nlog:properties>
+    <nlog:data name="CorrelationToken" value="08f831b7-0c06-4906-8be2-a8623ac01064" />
+    <nlog:data name="Namespace" value="Vse.AdminkaV1.Wcf" />
+    <nlog:data name="Class" value="TraceService" />
+    <nlog:data name="Member" value="GetTrace" />
+    <nlog:data name="Title" value="TraceService.GetTrace; Vse.AdminkaV1.Wcf; 08f831b7-0c06-4906-8be2-a8623ac01064" />
+    <nlog:data name="Description" value="Exception" />
+  </nlog:properties>
+  <log4j:properties>
+    <log4j:data name="log4japp" value="false" />
+    <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
+  </log4j:properties>
+</log4j:event>
+<log4j:event logger="" level="INFO" timestamp="1481551742462" thread="13">
+  <log4j:message>{"correlationToken":"17e9e06a-3bb6-4d7c-9465-b250b534a18a"}</log4j:message>
+  <log4j:locationInfo class="Vse.AdminkaV1.Injected.Logging.NLogLoggingAdapter" method="Void Input(System.DateTime, System.Object)" />
+  <nlog:eventSequenceNumber>12</nlog:eventSequenceNumber>
+  <nlog:locationInfo assembly="Vse.AdminkaV1.Injected, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <nlog:properties>
+    <nlog:data name="CorrelationToken" value="08f831b7-0c06-4906-8be2-a8623ac01064" />
+    <nlog:data name="Namespace" value="Vse.AdminkaV1.Wcf" />
+    <nlog:data name="Class" value="TraceService" />
+    <nlog:data name="Member" value="GetTrace" />
+    <nlog:data name="Title" value="TraceService.GetTrace; Vse.AdminkaV1.Wcf; 08f831b7-0c06-4906-8be2-a8623ac01064" />
+    <nlog:data name="Description" value="Input" />
+  </nlog:properties>
+  <log4j:properties>
+    <log4j:data name="log4japp" value="false" />
+    <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
+  </log4j:properties>
+</log4j:event>
+<log4j:event logger="" level="ERROR" timestamp="1481552327379" thread="39">
+  <log4j:message>###  Vse.AdminkaV1.UserContextException -    
+UserContextException specific:   
+   **Code**: USER   
+```   
+   at Vse.AdminkaV1.DataAccessEfCore.Services.TraceService.&lt;&gt;c.&lt;GetTrace&gt;b__2_0(AdminkaDbContext dbContext) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\Services\TraceService.cs:line 19  
+   at Vse.AdminkaV1.DataAccessEfCore.AdminkaDbContextHandler.Handle[TOutput](Func`2 func) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\AdminkaDbContextHandler.cs:line 43  
+   at Vse.AdminkaV1.DataAccessEfCore.Services.TraceService.GetTrace(Guid correlationToken) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\Services\TraceService.cs:line 16  
+   at Vse.AdminkaV1.Wcf.TraceService.&lt;&gt;c__DisplayClass0_0.&lt;GetTrace&gt;b__0(RoutineState`1 container, DataAccessFactory dataAccess) in D:\cot\Vse\AdminkaV1\Wcf\TraceService.cs:line 20  
+   at Vse.AdminkaV1.Injected.AdminkaRoutine.&lt;&gt;c__DisplayClass15_0`1.&lt;Handle&gt;b__0(RoutineState`1 state) in D:\cot\Vse\AdminkaV1\Injected\AdminkaRoutine.cs:line 208  
+   at Vse.Routines.Injected.Routine`1.&lt;&gt;c__DisplayClass6_0`1.&lt;Handle&gt;b__0() in D:\cot\Vse\Routines\Injected\Routine.cs:line 41  
+   at Vse.Routines.Injected.ExceptionHandler.Handle(Action action, Action onFailure) in D:\cot\Vse\Routines\Injected\ExceptionHandler.cs:line 24   
+```   
+</log4j:message>
+  <log4j:locationInfo class="Vse.AdminkaV1.Injected.Logging.NLogLoggingAdapter" method="Void LogException(System.DateTime, System.Exception)" />
+  <nlog:eventSequenceNumber>11</nlog:eventSequenceNumber>
+  <nlog:locationInfo assembly="Vse.AdminkaV1.Injected, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <nlog:properties>
+    <nlog:data name="CorrelationToken" value="626fcd95-1cd9-442b-b53b-cc324774342a" />
+    <nlog:data name="Namespace" value="Vse.AdminkaV1.Wcf" />
+    <nlog:data name="Class" value="TraceService" />
+    <nlog:data name="Member" value="GetTrace" />
+    <nlog:data name="Title" value="TraceService.GetTrace; Vse.AdminkaV1.Wcf; 626fcd95-1cd9-442b-b53b-cc324774342a" />
+    <nlog:data name="Description" value="Exception" />
+  </nlog:properties>
+  <log4j:properties>
+    <log4j:data name="log4japp" value="false" />
+    <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
+  </log4j:properties>
+</log4j:event>
+<log4j:event logger="" level="INFO" timestamp="1481552327296" thread="39">
+  <log4j:message>{"correlationToken":"6d1adef8-9880-462c-a3fc-0ac351243c0a"}</log4j:message>
+  <log4j:locationInfo class="Vse.AdminkaV1.Injected.Logging.NLogLoggingAdapter" method="Void Input(System.DateTime, System.Object)" />
+  <nlog:eventSequenceNumber>12</nlog:eventSequenceNumber>
+  <nlog:locationInfo assembly="Vse.AdminkaV1.Injected, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <nlog:properties>
+    <nlog:data name="CorrelationToken" value="626fcd95-1cd9-442b-b53b-cc324774342a" />
+    <nlog:data name="Namespace" value="Vse.AdminkaV1.Wcf" />
+    <nlog:data name="Class" value="TraceService" />
+    <nlog:data name="Member" value="GetTrace" />
+    <nlog:data name="Title" value="TraceService.GetTrace; Vse.AdminkaV1.Wcf; 626fcd95-1cd9-442b-b53b-cc324774342a" />
+    <nlog:data name="Description" value="Input" />
+  </nlog:properties>
+  <log4j:properties>
+    <log4j:data name="log4japp" value="false" />
+    <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
+  </log4j:properties>
+</log4j:event>
+<log4j:event logger="" level="ERROR" timestamp="1481553336422" thread="53">
+  <log4j:message>###  Vse.AdminkaV1.UserContextException -    
+UserContextException specific:   
+   **Code**: USER   
+```   
+   at Vse.AdminkaV1.DataAccessEfCore.Services.TraceService.&lt;&gt;c.&lt;GetTrace&gt;b__2_0(AdminkaDbContext dbContext) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\Services\TraceService.cs:line 19  
+   at Vse.AdminkaV1.DataAccessEfCore.AdminkaDbContextHandler.Handle[TOutput](Func`2 func) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\AdminkaDbContextHandler.cs:line 43  
+   at Vse.AdminkaV1.DataAccessEfCore.Services.TraceService.GetTrace(Guid correlationToken) in D:\cot\Vse\AdminkaV1\DataAccessEfCore\Services\TraceService.cs:line 16  
+   at Vse.AdminkaV1.Wcf.TraceService.&lt;&gt;c__DisplayClass0_0.&lt;GetTrace&gt;b__0(RoutineState`1 container, DataAccessFactory dataAccess) in D:\cot\Vse\AdminkaV1\Wcf\TraceService.cs:line 19  
+   at Vse.AdminkaV1.Injected.AdminkaRoutine.&lt;&gt;c__DisplayClass15_0`1.&lt;Handle&gt;b__0(RoutineState`1 state) in D:\cot\Vse\AdminkaV1\Injected\AdminkaRoutine.cs:line 208  
+   at Vse.Routines.Injected.Routine`1.&lt;&gt;c__DisplayClass6_0`1.&lt;Handle&gt;b__0() in D:\cot\Vse\Routines\Injected\Routine.cs:line 41  
+   at Vse.Routines.Injected.ExceptionHandler.Handle(Action action, Action onFailure) in D:\cot\Vse\Routines\Injected\ExceptionHandler.cs:line 24   
+```   
+</log4j:message>
+  <log4j:locationInfo class="Vse.AdminkaV1.Injected.Logging.NLogLoggingAdapter" method="Void LogException(System.DateTime, System.Exception)" />
+  <nlog:eventSequenceNumber>11</nlog:eventSequenceNumber>
+  <nlog:locationInfo assembly="Vse.AdminkaV1.Injected, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <nlog:properties>
+    <nlog:data name="CorrelationToken" value="e199b8c1-bb87-4c44-b0a2-f8a54afdd732" />
+    <nlog:data name="Namespace" value="Vse.AdminkaV1.Wcf" />
+    <nlog:data name="Class" value="TraceService" />
+    <nlog:data name="Member" value="GetTrace" />
+    <nlog:data name="Title" value="TraceService.GetTrace; Vse.AdminkaV1.Wcf; e199b8c1-bb87-4c44-b0a2-f8a54afdd732" />
+    <nlog:data name="Description" value="Exception" />
+  </nlog:properties>
+  <log4j:properties>
+    <log4j:data name="log4japp" value="false" />
+    <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
+  </log4j:properties>
+</log4j:event>
+<log4j:event logger="" level="INFO" timestamp="1481553336339" thread="53">
+  <log4j:message>{"correlationToken":"f07acd8d-597d-4e5b-a65e-c138b0bca1ce"}</log4j:message>
+  <log4j:locationInfo class="Vse.AdminkaV1.Injected.Logging.NLogLoggingAdapter" method="Void Input(System.DateTime, System.Object)" />
+  <nlog:eventSequenceNumber>12</nlog:eventSequenceNumber>
+  <nlog:locationInfo assembly="Vse.AdminkaV1.Injected, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
+  <nlog:properties>
+    <nlog:data name="CorrelationToken" value="e199b8c1-bb87-4c44-b0a2-f8a54afdd732" />
+    <nlog:data name="Namespace" value="Vse.AdminkaV1.Wcf" />
+    <nlog:data name="Class" value="TraceService" />
+    <nlog:data name="Member" value="GetTrace" />
+    <nlog:data name="Title" value="TraceService.GetTrace; Vse.AdminkaV1.Wcf; e199b8c1-bb87-4c44-b0a2-f8a54afdd732" />
+    <nlog:data name="Description" value="Input" />
+  </nlog:properties>
+  <log4j:properties>
+    <log4j:data name="log4japp" value="false" />
+    <log4j:data name="log4jmachinename" value="DESKTOP-RLA3VAF" />
+  </log4j:properties>
+</log4j:event>

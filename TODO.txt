@@ -1,4 +1,5 @@
-0. Separate Circular Depedencies into separate project
+0. Add Many-to-Many test tables to TestDom and add Storage tests for them (improove coverage)
+0b. Nuget platform.
 
 FUNCTIONALITY
 ------------------------------------------------------------------------------------

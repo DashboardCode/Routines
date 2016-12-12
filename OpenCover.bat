@@ -29,7 +29,7 @@ exit /b %errorlevel%
 "%~dp0packages\Opencover.4.6.519\Tools\OpenCover.Console.exe" ^
 -register:user ^
 -target:"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\mstest.exe" ^
--targetargs:"/testcontainer:\"%~dp0Tests\AdminkaV1.Injected.Test\bin\Debug\Vse.AdminkaV1.Injected.Test.dll\" /testcontainer:\"%~dp0Tests\Routines.Test\bin\Debug\Vse.Routines.Test.dll\" /testcontainer:\"%~dp0Tests\Routines.Configuration.Test\bin\Debug\Vse.Routines.Configuration.Test.dll\" /testcontainer:\"%~dp0Tests\AdminkaV1.Wcf.Client.Test\bin\Debug\Vse.AdminkaV1.Wcf.Client.Test.dll\" /resultsfile:\"%~dp0TestResults\AdminkaV1.Injected.Test.trx\"" ^
+-targetargs:"/testcontainer:\"%~dp0Tests\AdminkaV1.Injected.Test\bin\Debug\Vse.AdminkaV1.Injected.Test.dll\" /testcontainer:\"%~dp0Tests\Routines.Test\bin\Debug\Vse.Routines.Test.dll\" /testcontainer:\"%~dp0Tests\Routines.Configuration.Test\bin\Debug\Vse.Routines.Configuration.Test.dll\" /testcontainer:\"%~dp0Tests\AdminkaV1.Wcf.Client.Test\bin\Debug\Vse.AdminkaV1.Wcf.Client.Test.dll\" /testcontainer:\"%~dp0Tests\Web.Test\bin\Debug\Vse.Web.Test.dll\" /resultsfile:\"%~dp0TestResults\AdminkaV1.Injected.Test.trx\"" ^
 -mergebyhash ^
 -skipautoprops ^
 -output:"%~dp0TestResults\GeneratedReports\AdminkaV1.Injected.Test.xml"

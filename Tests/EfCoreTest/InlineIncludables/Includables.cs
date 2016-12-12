@@ -10,13 +10,13 @@ namespace Vse.Includables2
 {
     public interface IIncludable<TRootEntity> where TRootEntity : class
     {
-        IMidIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression);
-        IMidIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression);
+        IThenIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression);
+        IThenIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression);
     }
-    public interface IMidIncludable<TRootEntity, TMidEntity> : IIncludable<TRootEntity> where TRootEntity : class
+    public interface IThenIncludable<TRootEntity, TThenEntity> : IIncludable<TRootEntity> where TRootEntity : class
     {
-        IMidIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidEntity, TEntity>> navigationExpression);
-        IMidIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> navigationExpression);
+        IThenIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression);
+        IThenIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression);
     }
     public static class EfCoreIncludablesExtensions
     {
@@ -155,109 +155,64 @@ namespace Vse.Includables2
                     Pathes.Add(path);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
             {
                 var name = GetName(navigationExpression);
                 var path = new[] { name };
                 AddPath(path);
-                return new DetachMidIncludable<TRootEntity, TEntity>(path, AddPath);
+                return new DetachThenIncludable<TRootEntity, TEntity>(path, AddPath);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 var name = GetName(navigationExpression);
                 var path = new[] { name };
                 AddPath(path);
-                return new DetachMidIncludable<TRootEntity, TEntity>(path, AddPath);
-                //return new DetachCollectionMidIncludable<TRootEntity, TEntity>(path, AddPath);
+                return new DetachThenIncludable<TRootEntity, TEntity>(path, AddPath);
             }
         }
-        public class DetachMidIncludable<TRootEntity, TMidProperty> : IMidIncludable<TRootEntity, TMidProperty> where TRootEntity : class
+        public class DetachThenIncludable<TRootEntity, TThenEntity> : IThenIncludable<TRootEntity, TThenEntity> where TRootEntity : class
         {
             private Action<string[]> addPath;
             private string[] path;
-            public DetachMidIncludable(string[] path, Action<string[]> addPath)
+            public DetachThenIncludable(string[] path, Action<string[]> addPath)
             {
                 this.path = path;
                 this.addPath = addPath;
             }
 
-            public IMidIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 var name = GetName(navigationExpression);
                 var path = new[] { name };
                 addPath(path);
-                return new DetachMidIncludable<TRootEntity, TEntity>(path, addPath);
-                //return new DetachCollectionMidIncludable<TRootEntity, TEntity>(path, addPath);
+                return new DetachThenIncludable<TRootEntity, TEntity>(path, addPath);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
             {
                 var name = GetName(navigationExpression);
                 var path = new[] { name };
                 addPath(path);
-                return new DetachMidIncludable<TRootEntity, TEntity>(path, addPath);
+                return new DetachThenIncludable<TRootEntity, TEntity>(path, addPath);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TMidProperty, IEnumerable<TEntity>>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 var name = GetName(navigationExpression);
                 var newPath = path.Concat(new[] { name }).ToArray();
                 addPath(newPath);
-                return new DetachMidIncludable<TRootEntity, TEntity>(newPath, addPath);
-                //return new DetachCollectionMidIncludable<TRootEntity, TEntity>(newPath, addPath);
+                return new DetachThenIncludable<TRootEntity, TEntity>(newPath, addPath);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidProperty, TEntity>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
             {
                 var name = GetName(navigationExpression);
                 var newPath = path.Concat(new[] { name }).ToArray();
                 addPath(newPath);
-                return new DetachMidIncludable<TRootEntity, TEntity>(path, addPath);
+                return new DetachThenIncludable<TRootEntity, TEntity>(path, addPath);
             }
         }
-        //public class DetachCollectionMidIncludable<TRootEntity, TMidEntity> : IMidIncludable<TRootEntity, TMidEntity> where TRootEntity : class
-        //{
-        //    Action<string[]> addPath;
-        //    string[] path;
-        //    public DetachCollectionMidIncludable(string[] path, Action<string[]> addPath)
-        //    {
-        //        this.path = path;
-        //        this.addPath = addPath;
-        //    }
-
-        //    public IMidIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
-        //    {
-        //        var name = GetName(navigationExpression);
-        //        var path = new[] { name };
-        //        addPath(path);
-        //        return new DetachCollectionMidIncludable<TRootEntity, TEntity>(path, addPath);
-        //    }
-
-        //    public IMidIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
-        //    {
-        //        var name = GetName(navigationExpression);
-        //        var path = new[] { name };
-        //        addPath(path);
-        //        return new DetachMidIncludable<TRootEntity, TEntity>(path, addPath);
-        //    }
-
-        //    public IMidIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> navigationExpression)
-        //    {
-        //        var name = GetName(navigationExpression);
-        //        var newPath = path.Concat(new[] { name }).ToArray();
-        //        addPath(newPath);
-        //        return new DetachCollectionMidIncludable<TRootEntity, TEntity>(newPath, addPath);
-        //    }
-
-        //    public IMidIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidEntity, TEntity>> navigationExpression)
-        //    {
-        //        var name = GetName(navigationExpression);
-        //        var newPath = path.Concat(new[] { name }).ToArray();
-        //        addPath(newPath);
-        //        return new DetachMidIncludable<TRootEntity, TEntity>(newPath, addPath);
-        //    }
-        //}
         #endregion
 
         #region QueryIncludable<TEntity>
@@ -275,85 +230,85 @@ namespace Vse.Includables2
                 ResultQueryable = query;
             }
 
-            public IMidIncludable<TEntity, TEntityProperty> IncludeAll<TEntityProperty>(Expression<Func<TEntity, IEnumerable<TEntityProperty>>> navigationExpression)
+            public IThenIncludable<TEntity, TEntityProperty> IncludeAll<TEntityProperty>(Expression<Func<TEntity, IEnumerable<TEntityProperty>>> navigationExpression)
             {
                 var furtherQuery = ResultQueryable.Include(navigationExpression);
-                return new QueryCollectionMidIncludable<TEntity, TEntityProperty>(furtherQuery, SetResultQueryable);
+                return new QueryCollectionThenIncludable<TEntity, TEntityProperty>(furtherQuery, SetResultQueryable);
             }
 
-            public IMidIncludable<TEntity, TEntityProperty> Include<TEntityProperty>(Expression<Func<TEntity, TEntityProperty>> navigationExpression)
+            public IThenIncludable<TEntity, TEntityProperty> Include<TEntityProperty>(Expression<Func<TEntity, TEntityProperty>> navigationExpression)
             {
                 var furtherQuery = ResultQueryable.Include(navigationExpression);
-                return new QueryMidIncludable<TEntity, TEntityProperty>(furtherQuery, SetResultQueryable);
+                return new QueryThenIncludable<TEntity, TEntityProperty>(furtherQuery, SetResultQueryable);
             }
 
         }
-        public class QueryMidIncludable<TRootEntity, TMidEntity> : IMidIncludable<TRootEntity, TMidEntity> where TRootEntity : class
+        public class QueryThenIncludable<TRootEntity, TMidEntity> : IThenIncludable<TRootEntity, TMidEntity> where TRootEntity : class
         {
             private IIncludableQueryable<TRootEntity, TMidEntity> query;
             private Action<IQueryable<TRootEntity>> setResult;
-            internal QueryMidIncludable(IIncludableQueryable<TRootEntity, TMidEntity> query, Action<IQueryable<TRootEntity>> setResult)
+            internal QueryThenIncludable(IIncludableQueryable<TRootEntity, TMidEntity> query, Action<IQueryable<TRootEntity>> setResult)
             {
                 this.query = query;
                 this.setResult = setResult;
                 setResult(query);
             }
-            public IMidIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 var furtherQuery = query.Include(navigationExpression);
-                return new QueryCollectionMidIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
+                return new QueryCollectionThenIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
             {
                 var furtherQuery = query.Include(navigationExpression);
-                return new QueryMidIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
+                return new QueryThenIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 var furtherQuery = query.ThenInclude(navigationExpression);
-                return new QueryCollectionMidIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
+                return new QueryCollectionThenIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidEntity, TEntity>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidEntity, TEntity>> navigationExpression)
             {
                 var furtherQuery = query.ThenInclude(navigationExpression);
-                return new QueryMidIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
+                return new QueryThenIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
             }
         }
-        public class QueryCollectionMidIncludable<TRootEntity, TMidEntity> : IMidIncludable<TRootEntity, TMidEntity> where TRootEntity : class
+        public class QueryCollectionThenIncludable<TRootEntity, TMidEntity> : IThenIncludable<TRootEntity, TMidEntity> where TRootEntity : class
         {
             private IIncludableQueryable<TRootEntity, IEnumerable<TMidEntity>> query;
             private Action<IQueryable<TRootEntity>> setResult;
-            internal QueryCollectionMidIncludable(IIncludableQueryable<TRootEntity, IEnumerable<TMidEntity>> query, Action<IQueryable<TRootEntity>> setResult)
+            internal QueryCollectionThenIncludable(IIncludableQueryable<TRootEntity, IEnumerable<TMidEntity>> query, Action<IQueryable<TRootEntity>> setResult)
             {
                 this.query = query;
                 this.setResult = setResult;
                 setResult(query);
             }
-            public IMidIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 var furtherQuery = query.Include(navigationExpression);
-                return new QueryCollectionMidIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
+                return new QueryCollectionThenIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
             {
                 var furtherQuery = query.Include(navigationExpression);
-                return new QueryMidIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
+                return new QueryThenIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> navigationExpression)
             {
                 var furtherQuery = query.ThenInclude(navigationExpression);
-                return new QueryCollectionMidIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
+                return new QueryCollectionThenIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
             }
 
-            public IMidIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidEntity, TEntity>> navigationExpression)
+            public IThenIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TMidEntity, TEntity>> navigationExpression)
             {
                 var furtherQuery = query.ThenInclude(navigationExpression);
-                return new QueryMidIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
+                return new QueryThenIncludable<TRootEntity, TEntity>(furtherQuery, setResult);
             }
         }
         #endregion

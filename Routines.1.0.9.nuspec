@@ -2,17 +2,17 @@
 <package >
   <metadata>
     <id>Vse.Routines</id>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <authors>Roman Pokrovskij</authors>
     <owners>Roman Pokrovskij</owners>
     <licenseUrl>https://raw.githubusercontent.com/rpokrovskij/Vse/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/rpokrovskij/Vse</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/rpokrovskij/Vse/master/Routines.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Forgotten system abstractions: Includes as parameter, IRepository, Routine (smallest code unit reasonalbe to trace)</description>
+    <description>Forgotten system abstractions: Includes as sequence of MemberExpression, IRepository over IQueryable, Routine (smallest code unit reasonalbe to configure and trace dinamically)</description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2016</copyright>
-    <tags>Include Repository UnitOfWork Trace</tags>
+    <tags>Include Repository Trace Configure</tags>
     <dependencies>
     </dependencies>
   </metadata>

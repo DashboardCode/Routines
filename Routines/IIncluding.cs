@@ -8,7 +8,7 @@ namespace Vse.Routines
     {
         void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression);
         void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression);
-        void ThenInclude<TMidProperty, TEntity>(Expression<Func<TMidProperty, TEntity>> navigationExpression);
-        void ThenIncludeAll<TMidProperty, TEntity>(Expression<Func<TMidProperty, IEnumerable<TEntity>>> navigationExpression);
+        void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression);
+        void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression);
     }
 }
