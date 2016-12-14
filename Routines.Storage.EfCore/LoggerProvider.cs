@@ -27,6 +27,7 @@ namespace Vse.Routines.Storage.EfCore
 
     class Logger : ILogger
     {
+        const string sqlGenerationCategory = "Microsoft.EntityFrameworkCore.Storage.IRelationalCommandBuilderFactory";
         readonly string categoryName;
         readonly LoggerProvider provider;
         public Logger(string categoryName, LoggerProvider provider)
@@ -51,7 +52,7 @@ namespace Vse.Routines.Storage.EfCore
             {
                 if (!provider.loggerProviderConfiguration.CommandBuilderOnly
                     ||
-                    (provider.loggerProviderConfiguration.CommandBuilderOnly && categoryName == "Microsoft.EntityFrameworkCore.Storage.IRelationalCommandBuilderFactory"))
+                    (provider.loggerProviderConfiguration.CommandBuilderOnly && categoryName == sqlGenerationCategory))
                 {
                     var text = formatter(state, exception);
                     provider.Verbose(text);

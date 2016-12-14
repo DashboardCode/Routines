@@ -14,7 +14,7 @@ namespace Vse.AdminkaV1.Injected
         }
         public DataAccessFactory CreateDataAccessFactory(RoutineState<UserContext> state)
         {
-            var dataAccessFactory = new DataAccessFactory(state, storageMetaService, true /*"no tracking" option for repository*/);
+            var dataAccessFactory = new DataAccessFactory(state, storageMetaService);
             return dataAccessFactory;
         }
 

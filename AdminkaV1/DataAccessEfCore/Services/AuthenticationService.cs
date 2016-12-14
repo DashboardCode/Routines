@@ -21,19 +21,19 @@ namespace Vse.AdminkaV1.DataAccessEfCore.Services
                 {
                     var needCommit = false;
                     var userEntity = dbContext.Users
-                        .Include(e => e.UsersPrivileges).ThenInclude(e2 => e2.Privilege)
-                        .Include(e => e.UsersRoles)
-                        .Include(e => e.UsersRoles).ThenInclude(e2 => e2.Role)
-                        .Include(e => e.UsersRoles).ThenInclude(e2 => e2.Role.RolesPrivileges)
-                        .Include(e => e.UsersRoles).ThenInclude(e2 => e2.Role.RolesPrivileges).ThenInclude(e3 => e3.Privilege)
-                        .Include(e => e.UsersGroups)
-                        .Include(e => e.UsersGroups).ThenInclude(e2 => e2.Group)
-                        .Include(e => e.UsersGroups).ThenInclude(e2 => e2.Group.GroupsPrivileges)
-                        .Include(e => e.UsersGroups).ThenInclude(e2 => e2.Group.GroupsPrivileges).ThenInclude(e3 => e3.Privilege)
-                        .Include(e => e.UsersGroups).ThenInclude(e2 => e2.Group.GroupsRoles)
-                        .Include(e => e.UsersGroups).ThenInclude(e2 => e2.Group.GroupsRoles).ThenInclude(e3 => e3.Role)
-                        .Include(e => e.UsersGroups).ThenInclude(e2 => e2.Group.GroupsRoles).ThenInclude(e3 => e3.Role.RolesPrivileges)
-                        .Include(e => e.UsersGroups).ThenInclude(e2 => e2.Group.GroupsRoles).ThenInclude(e3 => e3.Role.RolesPrivileges).ThenInclude(e4=> e4.Privilege)
+                        .Include(e => e.UserPrivilegeMap).ThenInclude(e2 => e2.Privilege)
+                        .Include(e => e.UserRoleMap)
+                        .Include(e => e.UserRoleMap).ThenInclude(e2 => e2.Role)
+                        .Include(e => e.UserRoleMap).ThenInclude(e2 => e2.Role.RolePrivilegeMap)
+                        .Include(e => e.UserRoleMap).ThenInclude(e2 => e2.Role.RolePrivilegeMap).ThenInclude(e3 => e3.Privilege)
+                        .Include(e => e.UserGroupMap)
+                        .Include(e => e.UserGroupMap).ThenInclude(e2 => e2.Group)
+                        .Include(e => e.UserGroupMap).ThenInclude(e2 => e2.Group.GroupPrivilegeMap)
+                        .Include(e => e.UserGroupMap).ThenInclude(e2 => e2.Group.GroupPrivilegeMap).ThenInclude(e3 => e3.Privilege)
+                        .Include(e => e.UserGroupMap).ThenInclude(e2 => e2.Group.GroupRoleMap)
+                        .Include(e => e.UserGroupMap).ThenInclude(e2 => e2.Group.GroupRoleMap).ThenInclude(e3 => e3.Role)
+                        .Include(e => e.UserGroupMap).ThenInclude(e2 => e2.Group.GroupRoleMap).ThenInclude(e3 => e3.Role.RolePrivilegeMap)
+                        .Include(e => e.UserGroupMap).ThenInclude(e2 => e2.Group.GroupRoleMap).ThenInclude(e3 => e3.Role.RolePrivilegeMap).ThenInclude(e4=> e4.Privilege)
                         .Where(e => e.LoginName == loginName).SingleOrDefault();
                     if (userEntity != null)
                     {
@@ -44,11 +44,11 @@ namespace Vse.AdminkaV1.DataAccessEfCore.Services
                     {
                         userEntity = new User() { LoginName = loginName, FirstName = firstName, SecondName = secondName };
                         dbContext.Users.Add(userEntity);
-                        if (userEntity.UsersGroups == null)
-                            userEntity.UsersGroups = new List<UsersGroups>();
+                        if (userEntity.UserGroupMap == null)
+                            userEntity.UserGroupMap = new List<UserGroup>();
                         var groups = dbContext.Groups.Where(e => adGroupsNames.Contains(e.GroupAdName)).ToList();
                         foreach (var g in groups)
-                            userEntity.UsersGroups.Add(new UsersGroups() { UserId=userEntity.UserId, GroupId=g.GroupId});
+                            userEntity.UserGroupMap.Add(new UserGroup() { UserId=userEntity.UserId, GroupId=g.GroupId});
                         needCommit = true;
                     }
                     if (needCommit)

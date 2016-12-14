@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Vse.AdminkaV1
 {
-    public abstract class VersionedEntityBase : IVersionedEntity
+    public abstract class VersionedBase : IVersioned
     {
         [MaxLength(LengthConstants.AdName), DisplayName("Modified By")]
         public string RowVersionBy { get; set; }

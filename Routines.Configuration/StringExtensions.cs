@@ -1,6 +1,6 @@
 ﻿namespace Vse.Routines.Configuration
 {
-    static class StringExtensions
+    public static class StringExtensions
     {
         public const string Asterix = "*";
 

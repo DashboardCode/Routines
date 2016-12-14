@@ -1,6 +1,6 @@
 ﻿namespace Vse.AdminkaV1.DomAuthentication
 {
-    public class GroupsRoles
+    public class GroupRole
     {
         public int GroupId { get; set; }
         public Group Group { get; set; }

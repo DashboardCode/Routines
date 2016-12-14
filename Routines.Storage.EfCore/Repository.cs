@@ -10,18 +10,18 @@ namespace Vse.Routines.Storage.EfCore
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly DbContext context;
-        private readonly bool noTracking;
+        private readonly bool asNoTracking;
 
-        public Repository(DbContext context, bool noTracking)
+        public Repository(DbContext context, bool asNoTracking)
         {
             this.context = context;
-            this.noTracking = noTracking;
+            this.asNoTracking = asNoTracking;
         }
         public IQueryable<TEntity> GetQueryable(Include<TEntity> addIncludes)
         {
             var dbSet = context.Set<TEntity>();
             IQueryable<TEntity> query;
-            if (noTracking)
+            if (asNoTracking)
                 query = dbSet.AsNoTracking();
             else
                 query = dbSet.AsQueryable();
@@ -52,12 +52,20 @@ namespace Vse.Routines.Storage.EfCore
 
         public IRepository<TNewBaseEntity> Rebase<TNewBaseEntity>() where TNewBaseEntity : class
         {
-            return new Repository<TNewBaseEntity>(this.context, noTracking);
+            return new Repository<TNewBaseEntity>(this.context, asNoTracking);
         }
 
         public void Detach(TEntity entity, Include<TEntity> include = null)
         {
             context.Detach(entity, include);
+        }
+
+        public void Detach(IEnumerable<TEntity> entities, Include<TEntity> include = null)
+        {
+            foreach (var entity in entities)
+            {
+                context.Detach(entity, include);
+            }
         }
     }
 

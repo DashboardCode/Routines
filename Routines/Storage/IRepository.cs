@@ -17,6 +17,7 @@ namespace Vse.Routines.Storage
         #region Navigations
         IRepository<TNewBaseEntity> Rebase<TNewBaseEntity>() where TNewBaseEntity : class;
         void Detach(TEntity entity, Include<TEntity> include = null);
+        void Detach(IEnumerable<TEntity> entity, Include<TEntity> include = null);
         #endregion
     }
 }

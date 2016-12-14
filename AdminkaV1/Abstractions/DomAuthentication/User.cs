@@ -19,36 +19,36 @@ namespace Vse.AdminkaV1.DomAuthentication
         [MaxLength(LengthConstants.GoodForName), DisplayName("Second Name")]
         public string SecondName { get; set; }
 
-        public ICollection<UsersGroups> UsersGroups { get; set; }
-        public ICollection<UsersRoles> UsersRoles { get; set; }
-        public ICollection<UsersPrivileges> UsersPrivileges { get; set; }
+        public ICollection<UserGroup> UserGroupMap { get; set; }
+        public ICollection<UserRole> UserRoleMap { get; set; }
+        public ICollection<UserPrivilege> UserPrivilegeMap { get; set; }
 
         public bool HasPrivilege(string privilegeId)
         {
-            var @value = UsersPrivileges != null && UsersPrivileges.Any(e => e.PrivilegeId == privilegeId);
+            var @value = UserPrivilegeMap != null && UserPrivilegeMap.Any(e => e.PrivilegeId == privilegeId);
             if (!@value)
-                @value = (UsersRoles != null && UsersRoles.Any(e => e.Role.RolesPrivileges != null && e.Role.RolesPrivileges.Any(e2 => e2.PrivilegeId == privilegeId)));
+                @value = (UserRoleMap != null && UserRoleMap.Any(e => e.Role.RolePrivilegeMap != null && e.Role.RolePrivilegeMap.Any(e2 => e2.PrivilegeId == privilegeId)));
             if (!@value)
-                @value = (UsersGroups != null && UsersGroups.Any(e => e.Group.GroupsPrivileges != null && e.Group.GroupsPrivileges.Any(e2 => e2.PrivilegeId == privilegeId)));
+                @value = (UserGroupMap != null && UserGroupMap.Any(e => e.Group.GroupPrivilegeMap != null && e.Group.GroupPrivilegeMap.Any(e2 => e2.PrivilegeId == privilegeId)));
             if (!@value)
-                @value = (UsersGroups != null && UsersGroups.Any(e => e.Group.GroupsRoles != null && e.Group.GroupsRoles.Any(e2 => e2.Role.RolesPrivileges!=null && e2.Role.RolesPrivileges.Any(e3 => e3.PrivilegeId == privilegeId))));
+                @value = (UserGroupMap != null && UserGroupMap.Any(e => e.Group.GroupRoleMap != null && e.Group.GroupRoleMap.Any(e2 => e2.Role.RolePrivilegeMap!=null && e2.Role.RolePrivilegeMap.Any(e3 => e3.PrivilegeId == privilegeId))));
             return @value;
         }
 
         public bool UpdateGroups(IEnumerable<Group> adGroups)
         {
             var @value = false;
-            var groupsToAdd = adGroups.Where(e => !this.UsersGroups.Any(e2 => e.GroupId == e2.GroupId)).ToList();
+            var groupsToAdd = adGroups.Where(e => !this.UserGroupMap.Any(e2 => e.GroupId == e2.GroupId)).ToList();
             foreach (var g in groupsToAdd)
             {
-                this.UsersGroups.Add(new UsersGroups() { User = this, Group = g });
+                this.UserGroupMap.Add(new UserGroup() { User = this, Group = g });
                 @value = true;
             }
 
-            var groupsToRemove = this.UsersGroups.Where(e => !adGroups.Any(e2 => e.GroupId == e2.GroupId)).ToList();
+            var groupsToRemove = this.UserGroupMap.Where(e => !adGroups.Any(e2 => e.GroupId == e2.GroupId)).ToList();
             foreach (var g in groupsToRemove)
             {
-                this.UsersGroups.Remove(g);
+                this.UserGroupMap.Remove(g);
                 @value = true;
             }
             return @value;
@@ -58,18 +58,18 @@ namespace Vse.AdminkaV1.DomAuthentication
         public IReadOnlyCollection<Role> GetRoles()
         {
             IReadOnlyCollection<Role> @value = null;
-            if (UsersRoles != null)
+            if (UserRoleMap != null)
             {
-                @value = UsersRoles.Select(e => e.Role).ToList();
+                @value = UserRoleMap.Select(e => e.Role).ToList();
             }
             return @value;
         }
         public IReadOnlyCollection<Privilege> GetPrivileges()
         {
             IReadOnlyCollection<Privilege> @value = null;
-            if (UsersPrivileges != null)
+            if (UserPrivilegeMap != null)
             {
-                @value = UsersPrivileges.Select(e => e.Privilege).ToList();
+                @value = UserPrivilegeMap.Select(e => e.Privilege).ToList();
             }
             return @value;
         }
@@ -77,9 +77,9 @@ namespace Vse.AdminkaV1.DomAuthentication
         public IReadOnlyCollection<Group> GetGroups()
         {
             IReadOnlyCollection<Group> @value = null;
-            if (UsersGroups != null)
+            if (UserGroupMap != null)
             {
-                @value = UsersGroups.Select(e => e.Group).ToList();
+                @value = UserGroupMap.Select(e => e.Group).ToList();
             }
             return @value;
         }

@@ -103,11 +103,29 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TestParentRecords",
+                name: "HierarchyRecords",
                 schema: "tst",
                 columns: table => new
                 {
-                    TestParentRecordId = table.Column<int>(nullable: false)
+                    HierarchyRecordId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    HierarchyRecordTitle = table.Column<string>(maxLength: 128, nullable: false),
+                    ParentHierarchyRecordId = table.Column<byte[]>(nullable: true),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionAt = table.Column<DateTime>(nullable: false),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HierarchyRecords", x => x.HierarchyRecordId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ParentRecords",
+                schema: "tst",
+                columns: table => new
+                {
+                    ParentRecordId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     FieldA = table.Column<string>(maxLength: 16, nullable: false),
                     FieldB1 = table.Column<string>(maxLength: 16, nullable: false),
@@ -115,20 +133,20 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                     FieldCA = table.Column<string>(maxLength: 16, nullable: false),
                     FieldCB1 = table.Column<string>(maxLength: 16, nullable: false),
                     FieldCB2 = table.Column<string>(maxLength: 16, nullable: false),
-                    FieldNullable = table.Column<int>(nullable: false),
+                    FieldNotNull = table.Column<int>(nullable: false),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
                     RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TestParentRecords", x => x.TestParentRecordId);
-                    table.UniqueConstraint("AK_TestParentRecords_FieldCA", x => x.FieldCA);
-                    table.UniqueConstraint("AK_TestParentRecords_FieldCB1_FieldCB2", x => new { x.FieldCB1, x.FieldCB2 });
+                    table.PrimaryKey("PK_ParentRecords", x => x.ParentRecordId);
+                    table.UniqueConstraint("AK_ParentRecords_FieldCA", x => x.FieldCA);
+                    table.UniqueConstraint("AK_ParentRecords_FieldCB1_FieldCB2", x => new { x.FieldCB1, x.FieldCB2 });
                 });
 
             migrationBuilder.CreateTable(
-                name: "TestTypeRecords",
+                name: "TypeRecords",
                 schema: "tst",
                 columns: table => new
                 {
@@ -136,15 +154,23 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
                     RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
-                    TestTypeRecordName = table.Column<string>(maxLength: 32, nullable: false)
+                    TypeRecordName = table.Column<string>(maxLength: 32, nullable: false),
+                    TypeRecordTestTypeRecordId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TestTypeRecords", x => x.TestTypeRecordId);
+                    table.PrimaryKey("PK_TypeRecords", x => x.TestTypeRecordId);
+                    table.ForeignKey(
+                        name: "FK_TypeRecords_TypeRecords_TypeRecordTestTypeRecordId",
+                        column: x => x.TypeRecordTestTypeRecordId,
+                        principalSchema: "tst",
+                        principalTable: "TypeRecords",
+                        principalColumn: "TestTypeRecordId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupsPrivileges",
+                name: "GroupPrivilegeMap",
                 columns: table => new
                 {
                     GroupId = table.Column<int>(nullable: false),
@@ -152,15 +178,15 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupsPrivileges", x => new { x.GroupId, x.PrivilegeId });
+                    table.PrimaryKey("PK_GroupPrivilegeMap", x => new { x.GroupId, x.PrivilegeId });
                     table.ForeignKey(
-                        name: "FK_GroupsPrivileges_Groups_GroupId",
+                        name: "FK_GroupPrivilegeMap_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "GroupId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GroupsPrivileges_Privileges_PrivilegeId",
+                        name: "FK_GroupPrivilegeMap_Privileges_PrivilegeId",
                         column: x => x.PrivilegeId,
                         principalTable: "Privileges",
                         principalColumn: "PrivilegeId",
@@ -168,7 +194,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupsRoles",
+                name: "GroupRoleMap",
                 columns: table => new
                 {
                     GroupId = table.Column<int>(nullable: false),
@@ -176,15 +202,15 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupsRoles", x => new { x.GroupId, x.RoleId });
+                    table.PrimaryKey("PK_GroupRoleMap", x => new { x.GroupId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_GroupsRoles_Groups_GroupId",
+                        name: "FK_GroupRoleMap_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "GroupId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GroupsRoles_Roles_RoleId",
+                        name: "FK_GroupRoleMap_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "RoleId",
@@ -192,7 +218,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RolesPrivileges",
+                name: "RolePrivilegeMap",
                 columns: table => new
                 {
                     RoleId = table.Column<int>(nullable: false),
@@ -200,15 +226,15 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RolesPrivileges", x => new { x.RoleId, x.PrivilegeId });
+                    table.PrimaryKey("PK_RolePrivilegeMap", x => new { x.RoleId, x.PrivilegeId });
                     table.ForeignKey(
-                        name: "FK_RolesPrivileges_Privileges_PrivilegeId",
+                        name: "FK_RolePrivilegeMap_Privileges_PrivilegeId",
                         column: x => x.PrivilegeId,
                         principalTable: "Privileges",
                         principalColumn: "PrivilegeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RolesPrivileges_Roles_RoleId",
+                        name: "FK_RolePrivilegeMap_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "RoleId",
@@ -216,7 +242,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersGroups",
+                name: "UserGroupMap",
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false),
@@ -224,15 +250,15 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersGroups", x => new { x.UserId, x.GroupId });
+                    table.PrimaryKey("PK_UserGroupMap", x => new { x.UserId, x.GroupId });
                     table.ForeignKey(
-                        name: "FK_UsersGroups_Groups_GroupId",
+                        name: "FK_UserGroupMap_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "GroupId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UsersGroups_Users_UserId",
+                        name: "FK_UserGroupMap_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -240,7 +266,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersPrivileges",
+                name: "UserPrivilegeMap",
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false),
@@ -248,15 +274,15 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersPrivileges", x => new { x.UserId, x.PrivilegeId });
+                    table.PrimaryKey("PK_UserPrivilegeMap", x => new { x.UserId, x.PrivilegeId });
                     table.ForeignKey(
-                        name: "FK_UsersPrivileges_Privileges_PrivilegeId",
+                        name: "FK_UserPrivilegeMap_Privileges_PrivilegeId",
                         column: x => x.PrivilegeId,
                         principalTable: "Privileges",
                         principalColumn: "PrivilegeId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UsersPrivileges_Users_UserId",
+                        name: "FK_UserPrivilegeMap_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -264,7 +290,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersRoles",
+                name: "UserRoleMap",
                 columns: table => new
                 {
                     UserId = table.Column<int>(nullable: false),
@@ -272,15 +298,15 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_UserRoleMap", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_UsersRoles_Roles_RoleId",
+                        name: "FK_UserRoleMap_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "RoleId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UsersRoles_Users_UserId",
+                        name: "FK_UserRoleMap_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -288,12 +314,42 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TestChildRecords",
+                name: "ParentRecordHierarchyRecordMap",
                 schema: "tst",
                 columns: table => new
                 {
-                    TestParentRecordId = table.Column<int>(maxLength: 4, nullable: false),
-                    TestTypeRecordId = table.Column<string>(maxLength: 4, nullable: false),
+                    ParentRecordId = table.Column<int>(nullable: false),
+                    HierarchyRecordId = table.Column<int>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionAt = table.Column<DateTime>(nullable: false),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ParentRecordHierarchyRecordMap", x => new { x.ParentRecordId, x.HierarchyRecordId });
+                    table.ForeignKey(
+                        name: "FK_ParentRecordHierarchyRecordMap_HierarchyRecords_HierarchyRecordId",
+                        column: x => x.HierarchyRecordId,
+                        principalSchema: "tst",
+                        principalTable: "HierarchyRecords",
+                        principalColumn: "HierarchyRecordId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ParentRecordHierarchyRecordMap_ParentRecords_ParentRecordId",
+                        column: x => x.ParentRecordId,
+                        principalSchema: "tst",
+                        principalTable: "ParentRecords",
+                        principalColumn: "ParentRecordId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ChildRecords",
+                schema: "tst",
+                columns: table => new
+                {
+                    ParentRecordId = table.Column<int>(maxLength: 4, nullable: false),
+                    TypeRecordId = table.Column<string>(maxLength: 4, nullable: false),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
                     RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
@@ -302,79 +358,91 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TestChildRecords", x => new { x.TestParentRecordId, x.TestTypeRecordId });
+                    table.PrimaryKey("PK_ChildRecords", x => new { x.ParentRecordId, x.TypeRecordId });
                     table.ForeignKey(
-                        name: "FK_TestChildRecords_TestParentRecords_TestParentRecordId",
-                        column: x => x.TestParentRecordId,
+                        name: "FK_ChildRecords_ParentRecords_ParentRecordId",
+                        column: x => x.ParentRecordId,
                         principalSchema: "tst",
-                        principalTable: "TestParentRecords",
-                        principalColumn: "TestParentRecordId",
+                        principalTable: "ParentRecords",
+                        principalColumn: "ParentRecordId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TestChildRecords_TestTypeRecords_TestTypeRecordId",
-                        column: x => x.TestTypeRecordId,
+                        name: "FK_ChildRecords_TypeRecords_TypeRecordId",
+                        column: x => x.TypeRecordId,
                         principalSchema: "tst",
-                        principalTable: "TestTypeRecords",
+                        principalTable: "TypeRecords",
                         principalColumn: "TestTypeRecordId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupsPrivileges_PrivilegeId",
-                table: "GroupsPrivileges",
+                name: "IX_GroupPrivilegeMap_PrivilegeId",
+                table: "GroupPrivilegeMap",
                 column: "PrivilegeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupsRoles_RoleId",
-                table: "GroupsRoles",
+                name: "IX_GroupRoleMap_RoleId",
+                table: "GroupRoleMap",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RolesPrivileges_PrivilegeId",
-                table: "RolesPrivileges",
+                name: "IX_RolePrivilegeMap_PrivilegeId",
+                table: "RolePrivilegeMap",
                 column: "PrivilegeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UsersGroups_GroupId",
-                table: "UsersGroups",
+                name: "IX_UserGroupMap_GroupId",
+                table: "UserGroupMap",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UsersPrivileges_PrivilegeId",
-                table: "UsersPrivileges",
+                name: "IX_UserPrivilegeMap_PrivilegeId",
+                table: "UserPrivilegeMap",
                 column: "PrivilegeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UsersRoles_RoleId",
-                table: "UsersRoles",
+                name: "IX_UserRoleMap_RoleId",
+                table: "UserRoleMap",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestChildRecords_TestTypeRecordId",
+                name: "IX_ChildRecords_TypeRecordId",
                 schema: "tst",
-                table: "TestChildRecords",
-                column: "TestTypeRecordId");
+                table: "ChildRecords",
+                column: "TypeRecordId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestParentRecords_FieldA",
+                name: "IX_ParentRecords_FieldA",
                 schema: "tst",
-                table: "TestParentRecords",
+                table: "ParentRecords",
                 column: "FieldA",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestParentRecords_FieldB1_FieldB2",
+                name: "IX_ParentRecords_FieldB1_FieldB2",
                 schema: "tst",
-                table: "TestParentRecords",
+                table: "ParentRecords",
                 columns: new[] { "FieldB1", "FieldB2" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TestTypeRecords_TestTypeRecordName",
+                name: "IX_ParentRecordHierarchyRecordMap_HierarchyRecordId",
                 schema: "tst",
-                table: "TestTypeRecords",
-                column: "TestTypeRecordName",
+                table: "ParentRecordHierarchyRecordMap",
+                column: "HierarchyRecordId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TypeRecords_TypeRecordName",
+                schema: "tst",
+                table: "TypeRecords",
+                column: "TypeRecordName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TypeRecords_TypeRecordTestTypeRecordId",
+                schema: "tst",
+                table: "TypeRecords",
+                column: "TypeRecordTestTypeRecordId");
 
             InitialCustoms.Up(migrationBuilder);
         }
@@ -382,22 +450,22 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "GroupsPrivileges");
+                name: "GroupPrivilegeMap");
 
             migrationBuilder.DropTable(
-                name: "GroupsRoles");
+                name: "GroupRoleMap");
 
             migrationBuilder.DropTable(
-                name: "RolesPrivileges");
+                name: "RolePrivilegeMap");
 
             migrationBuilder.DropTable(
-                name: "UsersGroups");
+                name: "UserGroupMap");
 
             migrationBuilder.DropTable(
-                name: "UsersPrivileges");
+                name: "UserPrivilegeMap");
 
             migrationBuilder.DropTable(
-                name: "UsersRoles");
+                name: "UserRoleMap");
 
             migrationBuilder.DropTable(
                 name: "ActivityRecords");
@@ -406,7 +474,11 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 name: "VerboseRecords");
 
             migrationBuilder.DropTable(
-                name: "TestChildRecords",
+                name: "ChildRecords",
+                schema: "tst");
+
+            migrationBuilder.DropTable(
+                name: "ParentRecordHierarchyRecordMap",
                 schema: "tst");
 
             migrationBuilder.DropTable(
@@ -422,11 +494,15 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "TestParentRecords",
+                name: "TypeRecords",
                 schema: "tst");
 
             migrationBuilder.DropTable(
-                name: "TestTypeRecords",
+                name: "HierarchyRecords",
+                schema: "tst");
+
+            migrationBuilder.DropTable(
+                name: "ParentRecords",
                 schema: "tst");
         }
     }

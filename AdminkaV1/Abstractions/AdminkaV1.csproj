@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Vse.AdminkaV1</RootNamespace>
     <AssemblyName>Vse.AdminkaV1</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -36,22 +36,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DomLogging\ActivityRecord.cs" />
-    <Compile Include="DomAuthentication\GroupsRoles.cs" />
-    <Compile Include="DomAuthentication\UsersGroups.cs" />
-    <Compile Include="DomAuthentication\UsersRoles.cs" />
-    <Compile Include="DomAuthentication\UsersPrivileges.cs" />
-    <Compile Include="DomAuthentication\RolesPrivileges.cs" />
+    <Compile Include="DomAuthentication\GroupRole.cs" />
+    <Compile Include="DomAuthentication\UserGroup.cs" />
+    <Compile Include="DomAuthentication\UserRole.cs" />
+    <Compile Include="DomAuthentication\UserPrivilege.cs" />
+    <Compile Include="DomAuthentication\RolePrivilege.cs" />
     <Compile Include="DomAuthentication\Group.cs" />
-    <Compile Include="DomAuthentication\GroupsPrivileges.cs" />
+    <Compile Include="DomAuthentication\GroupPrivilege.cs" />
     <Compile Include="DomAuthentication\User.cs" />
     <Compile Include="DomAuthentication\Privilege.cs" />
     <Compile Include="DomAuthentication\Role.cs" />
-    <Compile Include="DomTest\TestChildRecord.cs" />
-    <Compile Include="DomTest\TestParentRecord.cs" />
+    <Compile Include="DomTest\ParentRecordHierarchyRecord.cs" />
+    <Compile Include="DomTest\HierarchyRecord.cs" />
+    <Compile Include="DomTest\ChildRecord.cs" />
+    <Compile Include="DomTest\ParentRecord.cs" />
     <Compile Include="LengthConstants.cs" />
-    <Compile Include="IVersionedEntity.cs" />
+    <Compile Include="IVersioned.cs" />
     <Compile Include="UserContext.cs" />
-    <Compile Include="VersionedEntity.cs" />
+    <Compile Include="VersionedBase.cs" />
     <Compile Include="DomLogging\Operation.cs" />
     <Compile Include="DomAuthentication\IAuthenticationService.cs" />
     <Compile Include="DomLogging\ITraceService.cs" />

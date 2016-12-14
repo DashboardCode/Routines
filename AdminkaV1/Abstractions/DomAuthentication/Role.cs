@@ -11,26 +11,26 @@ namespace Vse.AdminkaV1.DomAuthentication
         public int RoleId { get; set; }
         [Required, MaxLength(LengthConstants.GoodForTitle), DisplayName("Name")]
         public string RoleName { get; set; }
-        public ICollection<UsersRoles> UsersRoles { get; set; }
-        public ICollection<GroupsRoles> GroupsRoles { get; set; }
-        public ICollection<RolesPrivileges> RolesPrivileges { get; set; }
+        public ICollection<UserRole> UserRoleMap { get; set; }
+        public ICollection<GroupRole> GroupRoleMap { get; set; }
+        public ICollection<RolePrivilege> RolePrivilegeMap { get; set; }
 
         #region Many to Many
         public IReadOnlyCollection<User> GetUsers()
         {
             IReadOnlyCollection<User> @value = null;
-            if (UsersRoles != null)
+            if (UserRoleMap != null)
             {
-                @value = UsersRoles.Select(e => e.User).ToList();
+                @value = UserRoleMap.Select(e => e.User).ToList();
             }
             return @value;
         }
         public IReadOnlyCollection<Privilege> GetPrivileges()
         {
             IReadOnlyCollection<Privilege> @value = null;
-            if (RolesPrivileges != null)
+            if (RolePrivilegeMap != null)
             {
-                @value = RolesPrivileges.Select(e => e.Privilege).ToList();
+                @value = RolePrivilegeMap.Select(e => e.Privilege).ToList();
             }
             return @value;
         }
@@ -38,9 +38,9 @@ namespace Vse.AdminkaV1.DomAuthentication
         public IReadOnlyCollection<Group> GetGroups()
         {
             IReadOnlyCollection<Group> @value = null;
-            if (GroupsRoles != null)
+            if (GroupRoleMap != null)
             {
-                @value = GroupsRoles.Select(e => e.Group).ToList();
+                @value = GroupRoleMap.Select(e => e.Group).ToList();
             }
             return @value;
         }

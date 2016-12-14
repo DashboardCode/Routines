@@ -3,13 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Vse.AdminkaV1.DomTest
 {
-    public class TestChildRecord : VersionedEntityBase
+    /// <summary>
+    /// Shares ParentRecord's key. Tests inheritance implemented in relational model.
+    /// </summary>
+    public class ChildRecord : VersionedBase
     {
         [MaxLength(LengthConstants.GoodForKey)]
-        public int TestParentRecordId { get; set; }
+        public int ParentRecordId { get; set; }
 
         [MaxLength(LengthConstants.GoodForKey)]
-        public string TestTypeRecordId { get; set; }
+        public string TypeRecordId { get; set; }
 
         [Column(TypeName = "xml")]
         public string XmlField1 { get; set; }
@@ -17,8 +20,8 @@ namespace Vse.AdminkaV1.DomTest
         [Column(TypeName = "xml")]
         public string XmlField2 { get; set; }
 
-        public TestParentRecord TestParentRecord { get; set; }
+        public ParentRecord ParentRecord { get; set; }
 
-        public TestTypeRecord TestTypeRecord { get; set; }
+        public TypeRecord TypeRecord { get; set; }
     }
 }

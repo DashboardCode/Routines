@@ -20,10 +20,8 @@ namespace Vse.Routines
             var type = entity.GetType();
             
             var propertyInfo = type.GetProperty(popertyName);
-            if (propertyInfo == null)
-                throw new InvalidOperationException($"Unable to get property '{popertyName}' of class '{entity.GetType().FullName}' property info ");
-            if (!propertyInfo.CanRead || propertyInfo.GetIndexParameters().Length != 0)
-                throw new InvalidOperationException($"Unable to get '{propertyInfo.Name}' value");
+            Debug.Assert(propertyInfo!=null, "propertyInfo is null");
+            Debug.Assert(propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0, "propertyInfo can't be read");
             var value = propertyInfo.GetValue(entity);
             return value;
         }
@@ -39,10 +37,8 @@ namespace Vse.Routines
             var type = entity.GetType();
             var popertyName = memberExpression.Member.Name;
             var propertyInfo = type.GetProperty(popertyName);
-            if (propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
-                propertyInfo.SetValue(entity, propertyValue);
-            else
-                throw new InvalidOperationException($"Unable to set '{propertyInfo.Name}' value");
+            Debug.Assert(propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0);
+            propertyInfo.SetValue(entity, propertyValue);
         }
 
         private static Tuple<object, object> CopyMemberValue(
@@ -167,6 +163,18 @@ namespace Vse.Routines
             Detach(entity, pathes);
         }
 
+        public static void DetachAll<T>(IEnumerable<T> entities, Include<T> include) where T : class
+        {
+            var including = new PathesIncluding<T>();
+            var includable = new Includable<T>(including);
+            include.Invoke(includable);
+            var pathes = including.Pathes;
+            foreach (var entity in entities) {
+                if (entity!=null)
+                    Detach(entity, pathes);
+            }
+        }
+
         private static void Detach(object entity, List<string[]> allowedPaths)
         {
             var type = entity.GetType();
@@ -275,9 +283,10 @@ namespace Vse.Routines
         public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null) where T : class, new()
         {
             var destination = new T();
-            CopyTo(source, destination, include, systemTypes);
+            Copy(source, destination, include, systemTypes);
             return destination;
         }
+
         public static IEnumerable<Type> GetTypes<T>(Include<T> include) where T : class
         {
             var nodeIncluding = new NodesIncluding<T>();
@@ -299,21 +308,29 @@ namespace Vse.Routines
             }
         }
 
-        public static void CopyTo<T>(T source, T destination, Include<T> include, IReadOnlyCollection<Type> systemTypes=null) where T : class
+        public static void Copy<T>(T source, T destination, Include<T> include=null, IReadOnlyCollection<Type> systemTypes=null) where T : class
         {
-            var nodeIncluding = new NodesIncluding<T>();
-            var includable = new Includable<T>(nodeIncluding);
-            include.Invoke(includable);
-            var nodes = nodeIncluding.Root;
+            var nodes = new List<MemberExpressionNode>();
+            if (include != null)
+            {
+                var nodeIncluding = new NodesIncluding<T>();
+                var includable = new Includable<T>(nodeIncluding);
+                include.Invoke(includable);
+                nodes = nodeIncluding.Root;
+            }
             CopyTo(source, destination, nodes, systemTypes);
         }
 
-        public static bool Equals<T>(T entity1, T entity2, Include<T> include) where T : class, new()
+        public static bool Equals<T>(T entity1, T entity2, Include<T> include) where T : class
         {
-            var nodeIncluding = new NodesIncluding<T>();
-            var includable = new Includable<T>(nodeIncluding);
-            include.Invoke(includable);
-            var nodes = nodeIncluding.Root;
+            var nodes = new List<MemberExpressionNode>();
+            if (include != null)
+            {
+                var nodeIncluding = new NodesIncluding<T>();
+                var includable = new Includable<T>(nodeIncluding);
+                include.Invoke(includable);
+                nodes = nodeIncluding.Root;
+            }
             return Equals(entity1, entity2, nodes);
         }
 

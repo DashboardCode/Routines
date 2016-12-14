@@ -49,6 +49,28 @@ namespace Vse.Json.Test
                 throw new ApplicationException("History doesn't work. Case 1");
         }
 
+        [TestMethod]
+        public void RecursiveJavaScriptSerializerDefault()
+        {
+            var item = Item.CreateSample();
+            var jss2 = new JavaScriptSerializer();
+            jss2.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }) });
+            var json2 = jss2.Serialize(item);
+            if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b""}}")
+                throw new ApplicationException("History doesn't work. Case 1");
+
+            try
+            {
+                var o = jss2.Deserialize<Item>("{Number:9}");
+            }catch(Exception ex)
+            {
+                if (!(ex is NotImplementedException))
+                    throw;
+            }
+            
+
+        }
+
         class Item
         {
             public static Item CreateSample()
@@ -64,6 +86,16 @@ namespace Vse.Json.Test
             public int Number { get; set; }
             public string Name { get; set; }
             public Item Child { get; set; }
+
+            private string Name2 { get; set; } = "default";
+
+            public string this[int index] {
+                get {
+                    return Name2[index].ToString();
+                }
+                set {
+                    throw new NotImplementedException();
+                } }
         }
 
         public class CircularScriptConverter : JavaScriptConverter

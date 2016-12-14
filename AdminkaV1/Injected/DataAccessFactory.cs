@@ -16,19 +16,17 @@ namespace Vse.AdminkaV1.Injected
         readonly bool repositoryNoTracking;
         public DataAccessFactory(
             RoutineState<UserContext> state, 
-            StorageMetaService storageMetaService,
-            bool repositoryNoTracking)
+            StorageMetaService storageMetaService)
         {
             this.state = state;
             this.storageMetaService = storageMetaService;
-            this.repositoryNoTracking = repositoryNoTracking;
         }
 
         private void SetAudit(object o)
         {
-            if (o is IVersionedEntity)
+            if (o is IVersioned)
             {
-                var versionedEntity = (IVersionedEntity)o;
+                var versionedEntity = (IVersioned)o;
                 versionedEntity.RowVersionBy = state.UserContext.AuditStamp;
                 versionedEntity.RowVersionAt = DateTime.Now;
             }
@@ -52,7 +50,7 @@ namespace Vse.AdminkaV1.Injected
             return dbContextManager;
         }
 
-        public IRepositoryHandler<TEntity> CreateRepositoryHandler<TEntity>() where TEntity : class
+        public IRepositoryHandler<TEntity> CreateRepositoryHandler<TEntity>(bool noTracking = true) where TEntity : class
         {
             var dbContextManager = CreateDbContextHandler();
             var storageModels = storageMetaService.GetStorageModels();
@@ -61,7 +59,7 @@ namespace Vse.AdminkaV1.Injected
             var repositoryHandler = new RepositoryHandler<TEntity>(
                 dbContextManager,
                 (ex)=>InjectedManager.Analyze(ex,storageModel),
-                repositoryNoTracking
+                noTracking
                 );
             return repositoryHandler;
         }

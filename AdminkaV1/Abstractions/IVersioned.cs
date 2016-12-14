@@ -2,7 +2,7 @@
 
 namespace Vse.AdminkaV1
 {
-    public interface IVersionedEntity
+    public interface IVersioned
     {
         string RowVersionBy { get; set; }
         DateTime RowVersionAt { get; set; }

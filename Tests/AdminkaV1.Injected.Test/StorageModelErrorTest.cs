@@ -6,39 +6,11 @@ using Vse.Routines.Storage;
 namespace Vse.AdminkaV1.Injected.Test
 {
     [TestClass]
-    public class StorageModelTest
+    public class StorageModelErrorTest
     {
-        public StorageModelTest()
+        public StorageModelErrorTest()
         {
-            var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
-            routine.Handle((state, dataAccess) =>
-            {
-                dataAccess.CreateRepositoryHandler<TestChildRecord>().Handle((repository, storage) =>
-                {
-                    storage.Handle(batch => {
-                        var list = repository.ToList();
-                        foreach (var e in list)
-                            batch.Remove(e);
-                    }).Desert();
-                });
-                dataAccess.CreateRepositoryHandler<TestParentRecord>().Handle((repository, storage) =>
-                {
-                    storage.Handle(batch => {
-                        var list = repository.ToList();
-                        foreach(var e in list)
-                            batch.Remove(e);
-                    }).Desert();
-                });
-                dataAccess.CreateRepositoryHandler<TestTypeRecord>().Handle((repository, storage) =>
-                {
-                    storage.Handle(batch => {
-                        var list = repository.ToList();
-                        foreach (var e in list)
-                            batch.Remove(e);
-                    }).Desert();
-                });
-            });
+            TestIsland.Clear();
         }
         [TestMethod]
         public void TestDatabaseFieldRequiredError() 
@@ -47,10 +19,10 @@ namespace Vse.AdminkaV1.Injected.Test
             var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestParentRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t0 = new TestParentRecord() { };
+                    var t0 = new ParentRecord() { };
                     var storageError = storage.Handle(batch => batch.Add(t0));
                     storageError.Assert(1, "", "ID or alternate id has no value", "Case 1");
                 });
@@ -58,16 +30,16 @@ namespace Vse.AdminkaV1.Injected.Test
 
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestParentRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t0 = new TestParentRecord() { FieldCA="1", FieldCB1 = "2", FieldCB2 = "3" };
+                    var t0 = new ParentRecord() { FieldCA="1", FieldCB1 = "2", FieldCB2 = "3" };
                     var storageError = storage.Handle(batch =>batch.Add(t0));
                     storageError.Assert(1, "FieldA", "Is required!", "Case 2");
                 });
             });
 
-            var parentRecord = new TestParentRecord()
+            var parentRecord = new ParentRecord()
             {
                 FieldA = "A",
                 FieldB1 = "B",
@@ -79,7 +51,7 @@ namespace Vse.AdminkaV1.Injected.Test
 
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestParentRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(parentRecord));
@@ -89,10 +61,10 @@ namespace Vse.AdminkaV1.Injected.Test
 
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestParentRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t2 = new TestParentRecord() { FieldA = "A", FieldB1 = "Ba", FieldB2 = "Ca",
+                    var t2 = new ParentRecord() { FieldA = "A", FieldB1 = "Ba", FieldB2 = "Ca",
                         FieldCA = "1a",
                         FieldCB1 = "2a",
                         FieldCB2 = "3a"
@@ -104,10 +76,10 @@ namespace Vse.AdminkaV1.Injected.Test
 
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestParentRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t2 = new TestParentRecord()
+                    var t2 = new ParentRecord()
                     {
                         FieldA =  "Aa",
                         FieldB1 = "Ba",
@@ -123,10 +95,10 @@ namespace Vse.AdminkaV1.Injected.Test
 
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestParentRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t2 = new TestParentRecord() {
+                    var t2 = new ParentRecord() {
                         FieldA = "Aa",
                         FieldB1 = "B",
                         FieldB2 = "C",
@@ -141,10 +113,10 @@ namespace Vse.AdminkaV1.Injected.Test
 
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestParentRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t2 = new TestParentRecord() {
+                    var t2 = new ParentRecord() {
                         FieldA = "Aa",
                         FieldB1 = "Ba",
                         FieldB2 = "Ca",
@@ -157,32 +129,32 @@ namespace Vse.AdminkaV1.Injected.Test
                 });
             });
 
-            var typeRecord = new TestTypeRecord()
+            var typeRecord = new TypeRecord()
             {
                 TestTypeRecordId="0000",
-                TestTypeRecordName="TestType"
+                TypeRecordName="TestType"
             };
 
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestTypeRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     storage.Handle(batch => batch.Add(typeRecord)).Desert("Can't add TestTypeRecord"); 
                 });
             });
 
-            var childRecord = new TestChildRecord()
+            var childRecord = new ChildRecord()
             {
-                TestParentRecordId = parentRecord.TestParentRecordId,
-                TestTypeRecordId = typeRecord.TestTypeRecordId,
+                ParentRecordId = parentRecord.ParentRecordId,
+                TypeRecordId = typeRecord.TestTypeRecordId,
                 XmlField1 = "notxml",
                 XmlField2 = "notxml"
             }; 
 
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestChildRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<ChildRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     storage.Handle(batch => batch.Add(childRecord)).Desert("Can't add TestChildRecord");
@@ -191,28 +163,28 @@ namespace Vse.AdminkaV1.Injected.Test
 
             routine.Handle((state, dataAccess) =>
             {
-                var t0 = new TestTypeRecord()
+                var t0 = new TypeRecord()
                 {
                     TestTypeRecordId = "0000",
-                    TestTypeRecordName = "TestType2"
+                    TypeRecordName = "TestType2"
                 };
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestTypeRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(t0));
-                    storageError.Assert(1, nameof(TestTypeRecord.TestTypeRecordId), null, "Case 7");
+                    storageError.Assert(1, nameof(TypeRecord.TestTypeRecordId), null, "Case 7");
                 });
             });
 
             // string that exceed its length limit
             routine.Handle((state, dataAccess) =>
             {
-                var t0 = new TestTypeRecord()
+                var t0 = new TypeRecord()
                 {
                     TestTypeRecordId = "0001x",
-                    TestTypeRecordName = "TestType2"
+                    TypeRecordName = "TestType2"
                 };
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestTypeRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(t0));
@@ -223,42 +195,42 @@ namespace Vse.AdminkaV1.Injected.Test
             // check constraint on INSERT
             routine.Handle((state, dataAccess) =>
             {
-                var t0 = new TestTypeRecord()
+                var t0 = new TypeRecord()
                 {
                     TestTypeRecordId = "0001",
-                    TestTypeRecordName = "TestType2,,.."
+                    TypeRecordName = "TestType2,,.."
                 };
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestTypeRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(t0));
-                    storageError.Assert(1, nameof(TestTypeRecord.TestTypeRecordName), null, "Case 9");
+                    storageError.Assert(1, nameof(TypeRecord.TypeRecordName), null, "Case 9");
                 });
             });
 
             // check constraint on UPDATE
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestTypeRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t1 = repository.Find(e => e.TestTypeRecordId == "0000");
-                    t1.TestTypeRecordName = "TestType2,,..";
+                    t1.TypeRecordName = "TestType2,,..";
                     var storageError = storage.Handle(batch => batch.Modify(t1));
-                    storageError.Assert(1, nameof(TestTypeRecord.TestTypeRecordName), null, "Case 10");
+                    storageError.Assert(1, nameof(TypeRecord.TypeRecordName), null, "Case 10");
                 });
             });
 
             // check NULL on UPDATE
             routine.Handle((state, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TestTypeRecord>();
+                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t1 = repository.Find(e => e.TestTypeRecordId == "0000");
-                    t1.TestTypeRecordName = null;
+                    t1.TypeRecordName = null;
                     var storageError = storage.Handle(batch => batch.Modify(t1));
-                    storageError.Assert(1, nameof(TestTypeRecord.TestTypeRecordName), null, "Case 11");
+                    storageError.Assert(1, nameof(TypeRecord.TypeRecordName), null, "Case 11");
                 });
             });
         }

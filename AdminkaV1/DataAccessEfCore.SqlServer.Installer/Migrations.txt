@@ -1,1 +1,6 @@
-﻿
+﻿Do not forget to setup project as start up
+Then: 
+	Add-Migration MigrationName
+	Update-Database
+
+	

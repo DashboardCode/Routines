@@ -5,6 +5,7 @@ using Vse.AdminkaV1.Wcf.Client.TraceServiceReference;
 
 namespace Vse.AdminkaV1.Wcf.Client
 {
+    // TODO: to T4
     public class TraceServiceClient : ITraceService
     {
         public DomLogging.Trace GetTrace(Guid correlationToken)

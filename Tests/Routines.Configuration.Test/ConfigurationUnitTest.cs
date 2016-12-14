@@ -48,5 +48,12 @@ namespace Vse.Routines.Configuration.Test
             if (t2._Value != 100)
                 throw new ApplicationException("Test fails. Case 2");
         }
+
+        [TestMethod]
+        public void TestTools()
+        {
+            if (StringExtensions.IsLetterOrUnderscore('0'))
+                throw new ApplicationException("Test fails. Case 1");
+        }
     }
 }

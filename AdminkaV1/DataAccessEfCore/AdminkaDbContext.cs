@@ -17,7 +17,6 @@ namespace Vse.AdminkaV1.DataAccessEfCore
             };
         }
 
-        public readonly LoggerProvider LoggerProvider;
         public AdminkaDbContext(IAdminkaOptionsFactory optionsFactory)
             : base(optionsFactory.CreateOptions<AdminkaDbContext>())
         {
@@ -29,9 +28,18 @@ namespace Vse.AdminkaV1.DataAccessEfCore
         public DbSet<Group> Groups { get; set; }
         public DbSet<VerboseRecord> VerboseRecords { get; set; }
         public DbSet<ActivityRecord> ActivityRecords { get; set; }
-        public DbSet<TestParentRecord> TestParentRecords { get; set; }
-        public DbSet<TestChildRecord> TestChildRecords { get; set; }
+        public DbSet<ParentRecord> ParentRecords { get; set; }
+        public DbSet<ChildRecord> ChildRecords { get; set; }
+        public DbSet<HierarchyRecord> TestRecords { get; set; }
 
+        private static string GetEntityTableName(string value)
+        {
+            return value + "s";
+        }
+        private static string GetMapTableName(string value)
+        {
+            return value + "Map";
+        }
         #endregion
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -42,40 +50,62 @@ namespace Vse.AdminkaV1.DataAccessEfCore
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            #region Test island
+            #region Test Island
             string testIslandSchema = "tst";
-            modelBuilder.Entity<TestParentRecord>()
-                .ToTable("TestParentRecords", schema: testIslandSchema)
-                .HasKey(e => e.TestParentRecordId);
+            modelBuilder.Entity<ParentRecord>()
+                .ToTable(GetEntityTableName(nameof(ParentRecord)), schema: testIslandSchema)
+                .HasKey(e => e.ParentRecordId);
             // unique indexes
-            modelBuilder.Entity<TestParentRecord>()
+            modelBuilder.Entity<ParentRecord>()
                 .HasIndex(e => e.FieldA).IsUnique();
-            modelBuilder.Entity<TestParentRecord>()
+            modelBuilder.Entity<ParentRecord>()
                 .HasIndex(e => new { e.FieldB1, e.FieldB2 }).IsUnique();
             // unique constraints
-            modelBuilder.Entity<TestParentRecord>()
+            modelBuilder.Entity<ParentRecord>()
                .HasAlternateKey(e => e.FieldCA);
-            modelBuilder.Entity<TestParentRecord>()
+            modelBuilder.Entity<ParentRecord>()
                 .HasAlternateKey(e => new { e.FieldCB1, e.FieldCB2 });
 
-            modelBuilder.Entity<TestChildRecord>()
-                .ToTable("TestChildRecords", schema: testIslandSchema)
-                .HasKey(e => new { e.TestParentRecordId, e.TestTypeRecordId });
+            modelBuilder.Entity<ChildRecord>()
+                .ToTable(GetEntityTableName(nameof(ChildRecord)), schema: testIslandSchema)
+                .HasKey(e => new { e.ParentRecordId, e.TypeRecordId });
 
-            modelBuilder.Entity<TestChildRecord>().HasOne(e => e.TestParentRecord)
-                .WithMany(e => e.TestChildRecords)
-                .HasForeignKey(e => e.TestParentRecordId);
+            modelBuilder.Entity<ChildRecord>().HasOne(e => e.ParentRecord)
+                .WithMany(e => e.ChildRecords)
+                .HasForeignKey(e => e.ParentRecordId);
 
-            modelBuilder.Entity<TestChildRecord>()
-                .HasOne(e => e.TestTypeRecord)
-                .WithMany(e => e.TestChildRecords)
-                .HasForeignKey(e => e.TestTypeRecordId);
+            modelBuilder.Entity<ChildRecord>()
+                .HasOne(e => e.TypeRecord)
+                .WithMany(e => e.ChildRecords)
+                .HasForeignKey(e => e.TypeRecordId);
 
-            modelBuilder.Entity<TestTypeRecord>()
-                .ToTable("TestTypeRecords", schema: testIslandSchema)
+            modelBuilder.Entity<TypeRecord>()
+                .ToTable(GetEntityTableName(nameof(TypeRecord)), schema: testIslandSchema)
                 .HasKey(e => e.TestTypeRecordId);
-            modelBuilder.Entity<TestTypeRecord>()
-                .HasIndex(e => e.TestTypeRecordName).IsUnique();
+            modelBuilder.Entity<TypeRecord>()
+                .HasIndex(e => e.TypeRecordName).IsUnique();
+
+            modelBuilder.Entity<HierarchyRecord>()
+               .ToTable(GetEntityTableName(nameof(HierarchyRecord)), schema: testIslandSchema)
+               .HasKey(e => e.HierarchyRecordId);
+
+            #region ParentRecordHierarchyRecord
+
+
+            modelBuilder.Entity<ParentRecordHierarchyRecord>()
+                .ToTable(GetMapTableName(nameof(ParentRecordHierarchyRecord)), schema: testIslandSchema)
+                .HasKey(e => new { e.ParentRecordId, e.HierarchyRecordId });
+
+            modelBuilder.Entity<ParentRecordHierarchyRecord>()
+                .HasOne(r => r.ParentRecord)
+                .WithMany(pr => pr.ParentRecordHierarchyRecordMap)
+                .HasForeignKey(r => r.ParentRecordId);
+
+            modelBuilder.Entity<ParentRecordHierarchyRecord>()
+                .HasOne(r => r.HierarchyRecord)
+                .WithMany(hr => hr.ParentRecordHierarchyRecordMap)
+                .HasForeignKey(r => r.HierarchyRecordId);
+            #endregion
             #endregion
 
             modelBuilder.Entity<ActivityRecord>();
@@ -87,95 +117,105 @@ namespace Vse.AdminkaV1.DataAccessEfCore
             modelBuilder.Entity<Role>();
 
             #region UsersPrivileges
-            modelBuilder.Entity<UsersPrivileges>()
+            modelBuilder.Entity<UserPrivilege>()
+                .ToTable(GetMapTableName(nameof(UserPrivilege)))
                 .HasKey(e => new { e.UserId, e.PrivilegeId });
 
-            modelBuilder.Entity<UsersPrivileges>()
+            modelBuilder.Entity<UserPrivilege>()
                 .HasOne(up => up.User)
-                .WithMany(u => u.UsersPrivileges)
+                .WithMany(u => u.UserPrivilegeMap)
                 .HasForeignKey(up => up.UserId);
 
-            modelBuilder.Entity<UsersPrivileges>()
+            modelBuilder.Entity<UserPrivilege>()
                 .HasOne(up => up.Privilege)
-                .WithMany(p => p.UsersPrivileges)
+                .WithMany(p => p.UserPrivilegeMap)
                 .HasForeignKey(up => up.PrivilegeId);
             #endregion
 
             #region GroupsPrivileges
-            modelBuilder.Entity<GroupsPrivileges>()
+            modelBuilder.Entity<GroupPrivilege>()
+                .ToTable(GetMapTableName(nameof(GroupPrivilege)))
                 .HasKey(e => new { e.GroupId, e.PrivilegeId });
 
-            modelBuilder.Entity<GroupsPrivileges>()
+            modelBuilder.Entity<GroupPrivilege>()
                 .HasOne(gp => gp.Group)
-                .WithMany(g => g.GroupsPrivileges)
+                .WithMany(g => g.GroupPrivilegeMap)
                 .HasForeignKey(gp => gp.GroupId);
 
-            modelBuilder.Entity<GroupsPrivileges>()
+            modelBuilder.Entity<GroupPrivilege>()
                 .HasOne(gp => gp.Privilege)
-                .WithMany(p => p.GroupsPrivileges)
+                .WithMany(p => p.GroupPrivilegeMap)
                 .HasForeignKey(gp => gp.PrivilegeId);
             #endregion
 
-            #region GroupsPrivileges
-            modelBuilder.Entity<UsersGroups>()
-                            .HasKey(e => new { e.UserId, e.GroupId });
+            #region UsersGroups
+            modelBuilder.Entity<UserGroup>()
+                .ToTable(GetMapTableName(nameof(UserGroup)))
+                .HasKey(e => new { e.UserId, e.GroupId });
 
-            modelBuilder.Entity<UsersGroups>()
+            modelBuilder.Entity<UserGroup>()
                 .HasOne(ug => ug.User)
-                .WithMany(u => u.UsersGroups)
+                .WithMany(u => u.UserGroupMap)
                 .HasForeignKey(ug => ug.UserId);
 
-            modelBuilder.Entity<UsersGroups>()
+            modelBuilder.Entity<UserGroup>()
                 .HasOne(ug => ug.Group)
-                .WithMany(g => g.UsersGroups)
+                .WithMany(g => g.UserGroupMap)
                 .HasForeignKey(ug => ug.GroupId);
             #endregion
 
             #region GroupsRoles
-            modelBuilder.Entity<GroupsRoles>()
+            modelBuilder.Entity<GroupRole>()
+                .ToTable(GetMapTableName(nameof(GroupRole)))
                 .HasKey(gr => new { gr.GroupId, gr.RoleId });
 
-            modelBuilder.Entity<GroupsRoles>()
+            modelBuilder.Entity<GroupRole>()
                 .HasOne(gr => gr.Group)
-                .WithMany(g => g.GroupsRoles)
+                .WithMany(g => g.GroupRoleMap)
                 .HasForeignKey(gr => gr.GroupId);
 
-            modelBuilder.Entity<GroupsRoles>()
+            modelBuilder.Entity<GroupRole>()
                 .HasOne(gr => gr.Role)
-                .WithMany(r => r.GroupsRoles)
+                .WithMany(r => r.GroupRoleMap)
                 .HasForeignKey(gr => gr.RoleId);
             #endregion
 
             #region RolesPrivileges
-            modelBuilder.Entity<RolesPrivileges>()
+            modelBuilder.Entity<RolePrivilege>()
+               .ToTable(GetMapTableName(nameof(RolePrivilege)))
                .HasKey(e => new { e.RoleId, e.PrivilegeId });
 
-            modelBuilder.Entity<RolesPrivileges>()
+            modelBuilder.Entity<RolePrivilege>()
                 .HasOne(up => up.Role)
-                .WithMany(u => u.RolesPrivileges)
+                .WithMany(u => u.RolePrivilegeMap)
                 .HasForeignKey(up => up.RoleId);
 
-            modelBuilder.Entity<RolesPrivileges>()
+            modelBuilder.Entity<RolePrivilege>()
                 .HasOne(up => up.Privilege)
-                .WithMany(p => p.RolesPrivileges)
+                .WithMany(p => p.RolePrivilegeMap)
                 .HasForeignKey(up => up.PrivilegeId);
             #endregion
 
             #region UsersRoles
-            modelBuilder.Entity<UsersRoles>()
-                            .HasKey(e => new { e.UserId, e.RoleId });
+            modelBuilder.Entity<UserRole>()
+                .ToTable(GetMapTableName(nameof(UserRole)))
+                .HasKey(e => new { e.UserId, e.RoleId });
 
-            modelBuilder.Entity<UsersRoles>()
+            modelBuilder.Entity<UserRole>()
                 .HasOne(up => up.User)
-                .WithMany(u => u.UsersRoles)
+                .WithMany(u => u.UserRoleMap)
                 .HasForeignKey(up => up.UserId);
 
-            modelBuilder.Entity<UsersRoles>()
+            modelBuilder.Entity<UserRole>()
                 .HasOne(up => up.Role)
-                .WithMany(p => p.UsersRoles)
+                .WithMany(p => p.UserRoleMap)
                 .HasForeignKey(up => up.RoleId);
             #endregion
         }
 
+        public override void Dispose()
+        {
+            base.Dispose();
+        }
     }
 }

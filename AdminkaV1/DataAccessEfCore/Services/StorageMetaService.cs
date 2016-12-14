@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Vse.AdminkaV1.DomTest;
 using Vse.Routines.Storage;
 
@@ -25,45 +24,52 @@ namespace Vse.AdminkaV1.DataAccessEfCore.Services
             var list = new List<StorageModel> {
                 new StorageModel()
                 {
-                    Entity = new Entity() { Name = typeof(Group).Name, Namespace = typeof(Group).Namespace},
+                    Entity = new Entity() { Name = typeof(DomAuthentication.Group).Name, Namespace = typeof(DomAuthentication.Group).Namespace},
                     TableName = "dbo.Groups",
-                    Key = new Key() { Attributes = new[] { "GroupId" }},
+                    Key = new Key() { Attributes = new[] { nameof(DomAuthentication.Group.GroupId) }},
                     Uniques = new[] {
-                        new Unique { IndexName="IX_Groups_GroupName", Fields = new[] { "GroupName"}},
-                        new Unique { IndexName="IX_Groups_GroupAdName", Fields = new[] { "GroupAdName"} }},
+                        new Unique { IndexName="IX_Groups_GroupName", Fields = new[] {nameof(DomAuthentication.Group.GroupName)}},
+                        new Unique { IndexName="IX_Groups_GroupAdName", Fields = new[] { nameof(DomAuthentication.Group.GroupAdName) } }},
                 },
 
                 new StorageModel()
                 {
-                    Entity = new Entity() { Name = typeof(TestParentRecord).Name, Namespace = typeof(TestParentRecord).Namespace},
-                    TableName = "tst.TestParentRecords",
-                    Key = new Key() { Attributes = new[] { "TestParentRecordId" }},
-                    Requireds = new[] {  nameof(TestParentRecord.FieldA), nameof(TestParentRecord.FieldB1), nameof(TestParentRecord.FieldB2), nameof(TestParentRecord.FieldCA), nameof(TestParentRecord.FieldCB1), nameof(TestParentRecord.FieldCB2) },
+                    Entity = new Entity() { Name = typeof(ParentRecord).Name, Namespace = typeof(ParentRecord).Namespace},
+                    TableName = "tst.ParentRecords",
+                    Key = new Key() { Attributes = new[] { "ParentRecordId" }},
+                    Requireds = new[] {  nameof(ParentRecord.FieldA), nameof(ParentRecord.FieldB1), nameof(ParentRecord.FieldB2), nameof(ParentRecord.FieldCA), nameof(ParentRecord.FieldCB1), nameof(ParentRecord.FieldCB2) },
                     Uniques = new[] {
-                        new Unique { IndexName="IX_TestParentRecords_FieldA", Fields = new[] { nameof(TestParentRecord.FieldA) }  },
-                        new Unique { IndexName="IX_TestParentRecords_FieldB1_FieldB2", Fields = new[] { nameof(TestParentRecord.FieldB1), nameof(TestParentRecord.FieldB2) } } ,
-                        new Unique { IndexName="AK_TestParentRecords_FieldCA", Fields = new[] { nameof(TestParentRecord.FieldCA) } },
-                        new Unique { IndexName="AK_TestParentRecords_FieldCB1_FieldCB2", Fields = new[] { nameof(TestParentRecord.FieldCB1), nameof(TestParentRecord.FieldCB2) } }
+                        new Unique { IndexName="IX_ParentRecords_FieldA", Fields = new[] { nameof(ParentRecord.FieldA) }  },
+                        new Unique { IndexName="IX_ParentRecords_FieldB1_FieldB2", Fields = new[] { nameof(ParentRecord.FieldB1), nameof(ParentRecord.FieldB2) } } ,
+                        new Unique { IndexName="AK_ParentRecords_FieldCA", Fields = new[] { nameof(ParentRecord.FieldCA) } },
+                        new Unique { IndexName="AK_ParentRecords_FieldCB1_FieldCB2", Fields = new[] { nameof(ParentRecord.FieldCB1), nameof(ParentRecord.FieldCB2) } }
                     },
                 },
 
                 new StorageModel()
                 {
-                    Entity = new Entity() { Name = typeof(TestChildRecord).Name, Namespace = typeof(TestChildRecord).Namespace},
-                    TableName = "tst.TestTypeRecords",
-                    Key = new Key() { Attributes = new[] { nameof(TestChildRecord.TestTypeRecordId), nameof(TestChildRecord.TestParentRecordId) }}
+                    Entity = new Entity() { Name = typeof(ChildRecord).Name, Namespace = typeof(ChildRecord).Namespace},
+                    TableName = "tst.TypeRecords",
+                    Key = new Key() { Attributes = new[] { nameof(ChildRecord.TypeRecordId), nameof(ChildRecord.ParentRecordId) }}
                 },
 
                 new StorageModel()
                 {
-                    Entity = new Entity() { Name = typeof(TestTypeRecord).Name, Namespace = typeof(TestTypeRecord).Namespace},
-                    TableName = "tst.TestTypeRecords",
-                    Key = new Key() { Attributes = new[] { nameof(TestTypeRecord.TestTypeRecordId) }},
-                    Requireds = new[] {  nameof(TestTypeRecord.TestTypeRecordName) },
+                    Entity = new Entity() { Name = typeof(HierarchyRecord).Name, Namespace = typeof(HierarchyRecord).Namespace},
+                    TableName = "tst.HierarchyRecordMap",
+                    Key = new Key() { Attributes = new[] { nameof(HierarchyRecord.ParentHierarchyRecordId), nameof(HierarchyRecord.ParentHierarchyRecordId) }}
+                },
+
+                new StorageModel()
+                {
+                    Entity = new Entity() { Name = typeof(TypeRecord).Name, Namespace = typeof(TypeRecord).Namespace},
+                    TableName = "tst.TypeRecords",
+                    Key = new Key() { Attributes = new[] { nameof(TypeRecord.TestTypeRecordId) }},
+                    Requireds = new[] {  nameof(TypeRecord.TypeRecordName) },
                     Constraints = new[] {
-                        new Constraint { Fields = new[] { nameof(TestTypeRecord.TestTypeRecordName) },
+                        new Constraint { Fields = new[] { nameof(TypeRecord.TypeRecordName) },
                                          Message = "Only letters, numbers and space",
-                                         Name = "CK_TestTypeRecords_TestTypeRecordName" } }
+                                         Name = "CK_TypeRecords_TypeRecordName" } }
                 }
             };
             return list;

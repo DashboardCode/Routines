@@ -20,10 +20,8 @@
     <DnxInvisibleContent Include=".bowerrc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Routines.AspNetCore\Routines.AspNetCore.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
-    <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\DotNet.Web\Microsoft.DotNet.Web.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

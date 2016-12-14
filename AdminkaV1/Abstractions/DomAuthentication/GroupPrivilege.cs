@@ -2,7 +2,7 @@
 
 namespace Vse.AdminkaV1.DomAuthentication
 {
-    public class GroupsPrivileges
+    public class GroupPrivilege
     {
         public int GroupId { get; set; }
         public Group Group { get; set; }

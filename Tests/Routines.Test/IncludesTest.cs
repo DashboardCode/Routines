@@ -24,6 +24,20 @@ namespace Vse.Routines.Test
 
             public string PropertyText { get; set; }
             public int PropertyInt { get; set; }
+
+            private string Name2 { get; set; } = "default";
+
+            public string this[int index]
+            {
+                get
+                {
+                    return Name2[index].ToString();
+                }
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
         }
         private static TestModel CreateTestModel()
         {
@@ -103,7 +117,7 @@ namespace Vse.Routines.Test
             var source = CreateTestModel();
             var destination = new TestModel();
             var includes = CreateIncludes();
-            MemberExpressionExtensions.CopyTo(source, destination, includes);
+            MemberExpressionExtensions.Copy(source, destination, includes);
 
             if (source.StorageModel.Entity.Name != destination.StorageModel.Entity.Name
                 || source.StorageModel.Entity.Namespace != destination.StorageModel.Entity.Namespace || source.StorageModel.Key == null)
@@ -251,6 +265,52 @@ namespace Vse.Routines.Test
             var including = new MemberExpressionExtensions.PathesIncluding<TestModel>();
             includes?.Invoke(new Includable<TestModel>(including));
             var ef6Includes = including.Pathes.ConvertAll(e => string.Join(".", e));
+        }
+
+        [TestMethod]
+        public void IncludesEquals()
+        {
+            int[] e1 = new int[0];
+            int[] e2 = new int[1] {7};
+            int[] e3 = new int[1] {7};
+
+            var x1 = MemberExpressionExtensions.Equals(e3, e2, null);
+            var x2 = MemberExpressionExtensions.Equals(e1, e2, null);
+            if (x1 != true || x2 != false)
+                throw new ApplicationException("Test Failed. Case 0");
+
+            var x3 = MemberExpressionExtensions.Equals(e3.ToList(), e2.ToList(), null);
+            var x4 = MemberExpressionExtensions.Equals(e1.ToList(), e2.ToList(), null);
+            if (x3 != true || x4 != false)
+                throw new ApplicationException("Test Failed. Case 1");
+
+            int[] e4 = new int[1];
+            MemberExpressionExtensions.Copy(e2, e4, null);
+            if (e4[0]!=e2[0])
+                throw new ApplicationException("Test Failed. Case 2");
+
+            try
+            {
+                MemberExpressionExtensions.Copy(e2, e1, null);
+            }
+            catch (InvalidOperationException ex)
+            {
+                
+            }
+
+            var items = new List<Item>();
+            items.Add(null);
+            items.Add(null);
+            items.Add(new Item() { F1 = "F1", F2 = "F2", Items = items });
+            MemberExpressionExtensions.DetachAll(items, (i)=>i.Include(e=>e.Items));
+        }
+
+        public class Item
+        {
+            public string F1 { get; set; }
+            public string F2 { get; set; }
+
+            public List<Item> Items {get;set;}
         }
     }
 }
