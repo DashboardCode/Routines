@@ -85,6 +85,45 @@ namespace Vse.Routines.Test
                              .ThenIncludeAll(i => i.Fields);
             return includes;
         }
+
+        [TestMethod]
+        public void IncludesCloneAll()
+        {
+            var list = new List<TestModel>();
+            list.Add(CreateTestModel());
+            list.Add(CreateTestModel());
+            list.Add(CreateTestModel());
+
+            var includes = CreateIncludes();
+
+            var cloned = MemberExpressionExtensions.CloneAll(list, includes);
+            
+
+            // default include contain key function; expected true
+            var equals = MemberExpressionExtensions.EqualsAll(list, cloned, includes);
+            if (!equals)
+                throw new ApplicationException("IncludesCloneAll error 0");
+
+            // no includes = no key function; expected false
+            var equals1 = MemberExpressionExtensions.EqualsAll<List<TestModel>, TestModel>(list, cloned);
+            if (equals1)
+                throw new ApplicationException("IncludesCloneAll error 1");
+
+            cloned[0].StorageModel.Uniques[0].Fields[0] = "changed";
+
+            var equals2 = MemberExpressionExtensions.EqualsAll(list, cloned, includes);
+            if (equals2)
+                throw new ApplicationException("IncludesCloneAll error 2");
+
+            // for coverage
+            var clonedB = MemberExpressionExtensions.CloneAll(list, includes, MemberExpressionExtensions.SystemTypes); 
+            var clonedNull = MemberExpressionExtensions.Clone(null, includes, MemberExpressionExtensions.SystemTypes);
+            var clonedNulls = MemberExpressionExtensions.CloneAll<List<TestModel>,TestModel>(null, includes);
+            var xx = new List<TestModel>();
+            MemberExpressionExtensions.CopyAll<List<TestModel>, TestModel>(list, xx);
+
+        }
+
         [TestMethod]
         public void IncludesDetach()
         {
@@ -124,8 +163,9 @@ namespace Vse.Routines.Test
                 throw new ApplicationException("Copy doesn't working properly");
         }
         [TestMethod]
-        public void IncludesClone2Test()
+        public void IncludesEqualsTest()
         {
+            
             var source = CreateTestModel();
             Include<TestModel> includes
                 = includable => includable
@@ -133,19 +173,50 @@ namespace Vse.Routines.Test
                         .ThenIncludeAll(i => i.Uniques)
                     .Include(i=>i.ListTest);
             var destination = MemberExpressionExtensions.Clone(source, includes);
+
+            //equals by reference will be false
             var b1 = MemberExpressionExtensions.Equals(source, destination, includes);
             if (b1 == true)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 0");
 
-            Include<TestModel> includes2
+            //equals by field value will be true
+            Include<TestModel> equalsIncludes
                 = includable => includable
                     .IncludeAll(i => i.TestChilds)
                         .ThenIncludeAll(i => i.Uniques)
                             .ThenInclude(i => i.IndexName) // compare
                     .Include(i => i.ListTest);
-            var b2 = MemberExpressionExtensions.Equals(source, destination, includes2);
+            var b2 = MemberExpressionExtensions.Equals(source, destination, equalsIncludes);
             if (b2 == false)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 1");
+
+            foreach (var c in destination.TestChilds)
+                c.Uniques[0].IndexName = null;
+
+            if (MemberExpressionExtensions.Equals(source, destination, equalsIncludes))
+                throw new ApplicationException("Eqauls doesn't working properly. Case 2");
+
+            foreach (var c in source.TestChilds)
+                c.Uniques[0].IndexName = null;
+
+            if (!MemberExpressionExtensions.Equals(source, destination, equalsIncludes))
+                throw new ApplicationException("Eqauls doesn't working properly. Case 3");
+
+            foreach (var c in destination.TestChilds)
+                c.Uniques[0].IndexName = "notnull";
+            if (MemberExpressionExtensions.Equals(source, destination, equalsIncludes))
+                throw new ApplicationException("Eqauls doesn't working properly. Case 2b");
+
+            // equalsIncludes correct,  into clone key is not included neither by include, neither by types; expected false
+            var source2 = CreateTestModel();
+            var destination2 = MemberExpressionExtensions.Clone(source2, includes, new List<Type>());
+            if (MemberExpressionExtensions.Equals(source2, destination2, equalsIncludes))
+                throw new ApplicationException("Eqauls doesn't working properly. Case 4");
+
+            // equalsIncludes correct,  into clone key is included by types, but not by clone Include; expected true
+            var cloned3 = MemberExpressionExtensions.Clone(source2, includes);
+            if (!MemberExpressionExtensions.Equals(source2, cloned3, equalsIncludes))
+                throw new ApplicationException("Eqauls doesn't working properly. Case 5");
         }
 
         [TestMethod]
@@ -293,7 +364,7 @@ namespace Vse.Routines.Test
             {
                 MemberExpressionExtensions.Copy(e2, e1, null);
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 
             }

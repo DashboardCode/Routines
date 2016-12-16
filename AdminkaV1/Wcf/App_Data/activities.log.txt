@@ -170,3 +170,49 @@
 14.12.16 15:11:22; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 76709051-1a2b-4e71-a41e-e5739d408f4c; FAILURE; 143ms
 14.12.16 15:11:59; TraceService.GetTrace; Vse.AdminkaV1.Wcf; e2c073f2-28cc-4a89-b0e8-2b7f37a23cfa; Started
 14.12.16 15:11:59; TraceService.GetTrace; Vse.AdminkaV1.Wcf; e2c073f2-28cc-4a89-b0e8-2b7f37a23cfa; FAILURE; 6ms
+16.12.16 11:37:48; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 7b944099-dcb6-4a2a-b3e1-a341d2aa252d; Started
+16.12.16 11:37:48; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 7b944099-dcb6-4a2a-b3e1-a341d2aa252d; FAILURE; 275ms
+16.12.16 11:40:35; TraceService.GetTrace; Vse.AdminkaV1.Wcf; c5146892-fb75-4875-be5a-e7e3609655bd; Started
+16.12.16 11:40:35; TraceService.GetTrace; Vse.AdminkaV1.Wcf; c5146892-fb75-4875-be5a-e7e3609655bd; FAILURE; 6ms
+16.12.16 11:46:42; TraceService.GetTrace; Vse.AdminkaV1.Wcf; d99eb57b-a472-40c4-92d5-7b47b14c0832; Started
+16.12.16 11:46:42; TraceService.GetTrace; Vse.AdminkaV1.Wcf; d99eb57b-a472-40c4-92d5-7b47b14c0832; FAILURE; 138ms
+16.12.16 11:50:47; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 4f247da4-303e-423b-bb74-86c956974b0a; Started
+16.12.16 11:50:47; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 4f247da4-303e-423b-bb74-86c956974b0a; FAILURE; 135ms
+16.12.16 11:54:18; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 199ca451-d366-43cd-98bc-13b76a582108; Started
+16.12.16 11:54:18; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 199ca451-d366-43cd-98bc-13b76a582108; FAILURE; 133ms
+16.12.16 13:09:41; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 84ea7d8c-784e-4d11-9547-0a5d7a075f12; Started
+16.12.16 13:09:41; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 84ea7d8c-784e-4d11-9547-0a5d7a075f12; FAILURE; 146ms
+16.12.16 13:17:52; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 090da240-5ecc-419c-a7cb-ad47fdcb6c63; Started
+16.12.16 13:17:52; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 090da240-5ecc-419c-a7cb-ad47fdcb6c63; FAILURE; 145ms
+16.12.16 15:17:23; TraceService.GetTrace; Vse.AdminkaV1.Wcf; d39d6d71-c080-4b67-bb20-77a8a49feb2c; Started
+16.12.16 15:17:23; TraceService.GetTrace; Vse.AdminkaV1.Wcf; d39d6d71-c080-4b67-bb20-77a8a49feb2c; FAILURE; 155ms
+16.12.16 15:18:05; TraceService.GetTrace; Vse.AdminkaV1.Wcf; fc95e414-7ee6-44c2-ba9b-b947bbc32eea; Started
+16.12.16 15:18:05; TraceService.GetTrace; Vse.AdminkaV1.Wcf; fc95e414-7ee6-44c2-ba9b-b947bbc32eea; FAILURE; 6ms
+16.12.16 15:25:51; TraceService.GetTrace; Vse.AdminkaV1.Wcf; de21995e-4fa4-42f3-9f9f-cdb2608e63d3; Started
+16.12.16 15:25:51; TraceService.GetTrace; Vse.AdminkaV1.Wcf; de21995e-4fa4-42f3-9f9f-cdb2608e63d3; FAILURE; 135ms
+16.12.16 15:26:15; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 9ad9d8d0-5cbb-4fec-91a0-5bfdf78dfab3; Started
+16.12.16 15:26:15; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 9ad9d8d0-5cbb-4fec-91a0-5bfdf78dfab3; FAILURE; 6ms
+16.12.16 15:58:24; TraceService.GetTrace; Vse.AdminkaV1.Wcf; cfd4ffbc-216a-4ec1-a684-b9a8d0472be2; Started
+16.12.16 15:58:24; TraceService.GetTrace; Vse.AdminkaV1.Wcf; cfd4ffbc-216a-4ec1-a684-b9a8d0472be2; FAILURE; 143ms
+16.12.16 17:39:35; TraceService.GetTrace; Vse.AdminkaV1.Wcf; fb3079d6-c611-4bd6-becd-029177c8e4ff; Started
+16.12.16 17:39:35; TraceService.GetTrace; Vse.AdminkaV1.Wcf; fb3079d6-c611-4bd6-becd-029177c8e4ff; FAILURE; 140ms
+16.12.16 18:02:07; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 2004f381-1a10-4094-9e41-a0e9925af83f; Started
+16.12.16 18:02:07; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 2004f381-1a10-4094-9e41-a0e9925af83f; FAILURE; 163ms
+16.12.16 18:03:02; TraceService.GetTrace; Vse.AdminkaV1.Wcf; b105d760-81a3-43dd-b7b0-6ebf7a78026f; Started
+16.12.16 18:03:02; TraceService.GetTrace; Vse.AdminkaV1.Wcf; b105d760-81a3-43dd-b7b0-6ebf7a78026f; FAILURE; 138ms
+16.12.16 18:03:54; TraceService.GetTrace; Vse.AdminkaV1.Wcf; e89b5d5a-13c4-4bf2-aa81-74a387323430; Started
+16.12.16 18:03:54; TraceService.GetTrace; Vse.AdminkaV1.Wcf; e89b5d5a-13c4-4bf2-aa81-74a387323430; FAILURE; 6ms
+16.12.16 18:08:58; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 7f086a59-ff8a-4da9-8ee5-2188af33f86d; Started
+16.12.16 18:08:58; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 7f086a59-ff8a-4da9-8ee5-2188af33f86d; FAILURE; 5ms
+16.12.16 18:09:24; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 49f46dea-e5fd-467a-bd0a-a12dde669645; Started
+16.12.16 18:09:24; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 49f46dea-e5fd-467a-bd0a-a12dde669645; FAILURE; 6ms
+16.12.16 18:32:56; TraceService.GetTrace; Vse.AdminkaV1.Wcf; b1e5f7a0-c5fa-4b13-90c7-2107a3d07001; Started
+16.12.16 18:32:56; TraceService.GetTrace; Vse.AdminkaV1.Wcf; b1e5f7a0-c5fa-4b13-90c7-2107a3d07001; FAILURE; 9ms
+16.12.16 18:33:18; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 27625360-f7b6-4826-bcd2-45fea2535be1; Started
+16.12.16 18:33:18; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 27625360-f7b6-4826-bcd2-45fea2535be1; FAILURE; 5ms
+16.12.16 18:36:11; TraceService.GetTrace; Vse.AdminkaV1.Wcf; eddba96a-9cac-4766-9000-8b5427b92e3c; Started
+16.12.16 18:36:11; TraceService.GetTrace; Vse.AdminkaV1.Wcf; eddba96a-9cac-4766-9000-8b5427b92e3c; FAILURE; 124ms
+16.12.16 18:37:48; TraceService.GetTrace; Vse.AdminkaV1.Wcf; de2acd88-34dd-4d5f-be18-38cc7af1b630; Started
+16.12.16 18:37:48; TraceService.GetTrace; Vse.AdminkaV1.Wcf; de2acd88-34dd-4d5f-be18-38cc7af1b630; FAILURE; 6ms
+16.12.16 18:38:54; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 7005c75b-0618-4bb7-a3e0-2dd9c9db146f; Started
+16.12.16 18:38:54; TraceService.GetTrace; Vse.AdminkaV1.Wcf; 7005c75b-0618-4bb7-a3e0-2dd9c9db146f; FAILURE; 5ms

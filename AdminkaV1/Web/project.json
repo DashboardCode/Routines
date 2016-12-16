@@ -28,9 +28,6 @@
       "dependencies": {
         "AdminkaV1": {
           "target": "project"
-        },
-        "Routines": {
-          "target": "project"
         }
       }
     }

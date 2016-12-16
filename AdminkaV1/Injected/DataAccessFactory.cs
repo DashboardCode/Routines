@@ -13,7 +13,6 @@ namespace Vse.AdminkaV1.Injected
     {
         readonly RoutineState<UserContext> state;
         readonly StorageMetaService storageMetaService;
-        readonly bool repositoryNoTracking;
         public DataAccessFactory(
             RoutineState<UserContext> state, 
             StorageMetaService storageMetaService)

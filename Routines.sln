@@ -36,8 +36,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Conventions.txt = Conventions.txt
 		CreateNugetPackage.ps1 = CreateNugetPackage.ps1
 		DeleteCache.ps1 = DeleteCache.ps1
+		global.json = global.json
 		OpenCover.bat = OpenCover.bat
-		Routines.1.0.9.nuspec = Routines.1.0.9.nuspec
+		Routines.1.0.10.nuspec = Routines.1.0.10.nuspec
 		Routines.png = Routines.png
 		TODO.txt = TODO.txt
 	EndProjectSection

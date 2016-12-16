@@ -25,6 +25,22 @@ namespace Vse.Routines
             var value = propertyInfo.GetValue(entity);
             return value;
         }
+        private static Tuple<object, object> GetMemberValues(
+            this MemberExpression memberExpression,
+            object entity1,
+            object entity2)
+        {
+            var popertyName = memberExpression.Member.Name;
+            var type = entity1.GetType();
+
+            var propertyInfo = type.GetProperty(popertyName);
+            Debug.Assert(propertyInfo != null, "propertyInfo is null");
+            Debug.Assert(propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0, "propertyInfo can't be read");
+            var value1 = propertyInfo.GetValue(entity1);
+            var value2 = propertyInfo.GetValue(entity2);
+            return new Tuple<object, object>(value1, value2);
+        }
+
         private static Type GetMemberType(this MemberExpression memberExpression)
         {
             var type = memberExpression.Type;
@@ -41,6 +57,7 @@ namespace Vse.Routines
             propertyInfo.SetValue(entity, propertyValue);
         }
 
+        
         private static Tuple<object, object> CopyMemberValue(
             this MemberExpression memberExpression,
             object source,
@@ -160,7 +177,7 @@ namespace Vse.Routines
             var includable = new Includable<T>(including);
             include.Invoke(includable);
             var pathes = including.Pathes;
-            Detach(entity, pathes);
+            DetachPaths(entity, pathes);
         }
 
         public static void DetachAll<T>(IEnumerable<T> entities, Include<T> include) where T : class
@@ -171,11 +188,11 @@ namespace Vse.Routines
             var pathes = including.Pathes;
             foreach (var entity in entities) {
                 if (entity!=null)
-                    Detach(entity, pathes);
+                    DetachPaths(entity, pathes);
             }
         }
 
-        private static void Detach(object entity, List<string[]> allowedPaths)
+        private static void DetachPaths(object entity, List<string[]> allowedPaths)
         {
             var type = entity.GetType();
             if (entity is IEnumerable)
@@ -184,7 +201,7 @@ namespace Vse.Routines
                 {
                     if (value != null)
                     {
-                        Detach(value, allowedPaths);
+                        DetachPaths(value, allowedPaths);
                     }
                 }
             }
@@ -218,7 +235,7 @@ namespace Vse.Routines
                                             }
                                         }
                                     }
-                                    Detach(value, newPaths);
+                                    DetachPaths(value, newPaths);
                                 }
                                 else
                                 {
@@ -280,10 +297,29 @@ namespace Vse.Routines
             }
         }
 
-        public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null) where T : class, new()
+        public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null) where T : class
         {
-            var destination = new T();
+            if (source == null)
+                return null;
+            if (systemTypes == null)
+                systemTypes=SystemTypes;
+            var constructor = source.GetType().GetConstructor(Type.EmptyTypes);
+            var destination = (T)constructor.Invoke(null);
             Copy(source, destination, include, systemTypes);
+            return destination;
+        }
+
+        public static TCol CloneAll<TCol, T>(TCol source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null) 
+            where T : class
+            where TCol: class, IEnumerable<T>
+        {
+            if (source == null)
+                return null;
+            if (systemTypes == null)
+                systemTypes = SystemTypes;
+            var constructor = source.GetType().GetConstructor(Type.EmptyTypes);
+            var destination = (TCol)constructor.Invoke(null);
+            CopyAll(source, destination, include, systemTypes);
             return destination;
         }
 
@@ -318,10 +354,12 @@ namespace Vse.Routines
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
             }
-            CopyTo(source, destination, nodes, systemTypes);
+            CopyNodes(source, destination, nodes, systemTypes);
         }
 
-        public static bool Equals<T>(T entity1, T entity2, Include<T> include) where T : class
+        public static void CopyAll<TCol, T>(TCol source, TCol destination, Include<T> include = null, IReadOnlyCollection<Type> systemTypes = null) 
+            where T : class
+            where TCol : class, IEnumerable<T>
         {
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
@@ -331,7 +369,35 @@ namespace Vse.Routines
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
             }
-            return Equals(entity1, entity2, nodes);
+            CopyNodes(source, destination, nodes, systemTypes);
+        }
+
+        public static bool Equals<T>(T entity1, T entity2, Include<T> include=null) where T : class
+        {
+            var nodes = new List<MemberExpressionNode>();
+            if (include != null)
+            {
+                var nodeIncluding = new NodesIncluding<T>();
+                var includable = new Includable<T>(nodeIncluding);
+                include.Invoke(includable);
+                nodes = nodeIncluding.Root;
+            }
+            return EqualsNodes(entity1, entity2, nodes);
+        }
+
+        public static bool EqualsAll<TCol, T>(TCol entity1, TCol entity2, Include<T> include=null) 
+            where T : class
+            where TCol : class, IEnumerable<T>
+        {
+            var nodes = new List<MemberExpressionNode>();
+            if (include != null)
+            {
+                var nodeIncluding = new NodesIncluding<T>();
+                var includable = new Includable<T>(nodeIncluding);
+                include.Invoke(includable);
+                nodes = nodeIncluding.Root;
+            }
+            return EqualsNodes(entity1, entity2, nodes);
         }
 
         #region Collection's itearations
@@ -453,7 +519,7 @@ namespace Vse.Routines
         }
         #endregion
 
-        private static object CopyItem(object sourceItem, List<MemberExpressionNode> nodes, IReadOnlyCollection<Type> systemTypes)
+        private static object CloneItem(object sourceItem, List<MemberExpressionNode> nodes, IReadOnlyCollection<Type> systemTypes)
         {
             if (sourceItem == null || sourceItem is string || !sourceItem.GetType().IsClass)
             {
@@ -463,12 +529,12 @@ namespace Vse.Routines
             {
                 var constructor = sourceItem.GetType().GetConstructor(Type.EmptyTypes);
                 var destinationItem = constructor.Invoke(null);
-                CopyTo(sourceItem, destinationItem, nodes, systemTypes);
+                CopyNodes(sourceItem, destinationItem, nodes, systemTypes);
                 return destinationItem;
             }
         }
-       
-        private static void CopyTo(
+
+        private static void CopyNodes(
             object source,
             object destination,
             List<MemberExpressionNode> nodes,
@@ -476,17 +542,17 @@ namespace Vse.Routines
         {
             if (source is Array)
             {
-                CopyArray((Array)source, (Array)destination,  (sourceItem)=> CopyItem(sourceItem, nodes, systemTypes));
+                CopyArray((Array)source, (Array)destination,  (sourceItem)=> CloneItem(sourceItem, nodes, systemTypes));
             }
             else if (source is IList)
             {
-                CopyList((IEnumerable)source, ((IList)destination), (sourceItem) => CopyItem(sourceItem, nodes, systemTypes));
+                CopyList((IEnumerable)source, ((IList)destination), (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
             }
             else if (source is IEnumerable && source.GetType().GetInterfaces().Any(t =>
                     t.IsGenericType &&
                     t.GetGenericTypeDefinition() == typeof(ISet<>)))
             {
-                CopySet((IEnumerable)source, (object)destination, (sourceItem) => CopyItem(sourceItem, nodes, systemTypes));
+                CopySet((IEnumerable)source, (object)destination, (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
             }
             else
             {
@@ -497,19 +563,25 @@ namespace Vse.Routines
                 {
                     var value = node.MemberExpression.CopyMemberValue(source, destination);
                     if (value.Item1 != null)
-                        CopyTo(value.Item1, value.Item2, node.Children, systemTypes); // recursive
+                        CopyNodes(value.Item1, value.Item2, node.Children, systemTypes); // recursion
                 }
             }
         }
 
         private static bool EqualsItem(object entity1Item, object entity2Item, List<MemberExpressionNode> nodes)
         {
-            if (nodes.Count() == 0)
-                return Equals(entity1Item, entity2Item);
+            if (entity1Item == null && entity2Item == null)
+                return true;
+            else if ((entity1Item != null && entity2Item == null) || (entity1Item == null && entity2Item != null))
+                return false;
+            if (nodes.Count() > 0)
+                return EqualsNodes(entity1Item, entity2Item, nodes);
+            else if (entity1Item is IEnumerable && !(entity1Item is string))
+                return EqualsNodes(entity1Item, entity2Item, nodes);
             else
-                return Equals(entity1Item, entity2Item, nodes);
+                return entity1Item.Equals(entity2Item);
         }
-        private static bool Equals(
+        private static bool EqualsNodes(
             object entity1,
             object entity2,
             List<MemberExpressionNode> nodes)
@@ -534,11 +606,14 @@ namespace Vse.Routines
             {
                 foreach (var node in nodes)
                 {
-                    var copied = node.MemberExpression.CopyMemberValue(entity1, entity2);
-                    if (copied.Item1 != null)
-                        @value = Equals(copied.Item1, copied.Item2, node.Children); // recursive
+                    var copied = node.MemberExpression.GetMemberValues(entity1, entity2);
+                    @value = EqualsItem(copied.Item1, copied.Item2, node.Children);
                     if (@value == false)
                         break;
+                    //if (copied.Item1 != null)
+                    //    @value = EqualsNodes(copied.Item1, copied.Item2, node.Children); // recursive
+                    //if (@value == false)
+                    //    break;
                 }
             }
             return @value;

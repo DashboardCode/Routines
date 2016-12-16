@@ -1,23 +1,6 @@
 {
   "version": 2,
   "exports": {
-    "Routines/1.0.0": {
-      "type": "project",
-      "framework": ".NETFramework,Version=v4.6.2",
-      "compile": {
-        "bin/Debug/Vse.Routines.dll": {}
-      },
-      "runtime": {
-        "bin/Debug/Vse.Routines.dll": {}
-      },
-      "contentFiles": {
-        "bin/Debug/Vse.Routines.pdb": {
-          "buildAction": "None",
-          "codeLanguage": "any",
-          "copyToOutput": true
-        }
-      }
-    },
     "AdminkaV1/1.0.0": {
       "type": "project",
       "framework": ".NETFramework,Version=v4.6.2",
@@ -29,6 +12,23 @@
       },
       "contentFiles": {
         "bin/Debug/Vse.AdminkaV1.pdb": {
+          "buildAction": "None",
+          "codeLanguage": "any",
+          "copyToOutput": true
+        }
+      }
+    },
+    "Routines/1.0.0": {
+      "type": "project",
+      "framework": ".NETFramework,Version=v4.6.2",
+      "compile": {
+        "bin/Debug/Vse.Routines.dll": {}
+      },
+      "runtime": {
+        "bin/Debug/Vse.Routines.dll": {}
+      },
+      "contentFiles": {
+        "bin/Debug/Vse.Routines.pdb": {
           "buildAction": "None",
           "codeLanguage": "any",
           "copyToOutput": true

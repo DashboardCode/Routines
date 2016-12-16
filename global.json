@@ -1,0 +1,6 @@
+﻿{
+  "projects": [".", "AdminkaV1", "AdminkaV1/Abstractions", "../AdminkaV1/", "../AdminkaV1/Abstractions", "Abstractions", "../Abstractions" ],
+  "sdk": {
+    "version": "1.0.0-preview2-003131"
+  }
+}

@@ -3,8 +3,8 @@ using System.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Web.Script.Serialization;
-
-using Vse.Includables2;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Collections.Generic;
 
 namespace EfCoreTest
 {
@@ -15,64 +15,45 @@ namespace EfCoreTest
             var connectionString = ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
             Console.WriteLine("Check connection string:");
             Console.WriteLine(connectionString);
-            CreateDatabase(connectionString);
+            TestIsland.Reset(connectionString);
             using (var dbContext = new MyDbContext(connectionString))
             {
-                Action<IIncludable<Group>> includes = includable =>
-                   includable
-                     .IncludeAll(y => y.UsersGroups)
-                        .ThenInclude(y => y.User)
-                     .IncludeAll(y => y.GroupsRoles)
-                        .ThenInclude(y => y.Role)
-                        .ThenIncludeAll(y => y.RolesPrivileges)
-                            .ThenInclude(y => y.Privilege);
-                     //.Include(y => y.GroupType)
-                     //   .ThenInclude(y => y.GroupTypeChanges);
+                var parentRecord = dbContext.ParentRecords
+                    .Include(e=>e.ParentRecordHierarchyRecordMap)
+                    .ThenInclude(e=>e.HierarchyRecord).First(e => e.FieldA == "1_A");
+                var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count(); // 5
+                var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2).ToList();
+                var count2 = only2.Count(); // 2
+                foreach (var map in only2)
+                {
+                    dbContext.Entry(map).State = EntityState.Detached;
+                }
 
-                var group = dbContext.Groups.Include(includes).First();
+                EntityEntry<ParentRecord> entry = dbContext.Entry(parentRecord);
+                var col = entry.Collection(e => e.ParentRecordHierarchyRecordMap);
+                col.Load();
+                var oldRelations = parentRecord.ParentRecordHierarchyRecordMap;
+                var tmp = new List<ParentRecordHierarchyRecord>();
+                foreach (var e1 in oldRelations)
+                    if (!only2.Any(e2 => e1.HierarchyRecordId == e2.HierarchyRecordId))
+                        tmp.Add(e1);
+                foreach (var e in tmp)
+                    oldRelations.Remove(e);
 
-                // comment this line to get circulare exception during serialization to json
-                dbContext.Detach(group, includes);
-
-                var serializer = new JavaScriptSerializer();
-                var json = serializer.Serialize(group);
-            }
-        }
-
-        static void CreateDatabase(string connectionString)
-        {
-            using (var dbContext = new MyDbContext(connectionString))
-            {
-                dbContext.Database.Migrate();
-                //dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE dbo.UsersGroups");
-                //dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE dbo.GroupsRoles");
-                //dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE dbo.RolesPrivileges");
-
-                //dbContext.Database.ExecuteSqlCommand("DELETE FROM dbo.Groups");
-                //dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE dbo.Roles");
-                //dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE dbo.Users");
-                //dbContext.Database.ExecuteSqlCommand("TRUNCATE TABLE dbo.Privileges");
-                if (dbContext.Groups.Count() == 0)
-                    dbContext.Groups.Add(new Group() { GroupName = "Group1" });
-                if (dbContext.Roles.Count() == 0)
-                    dbContext.Roles.Add(new Role() { RoleName = "Role1" });
-                if (dbContext.Users.Count() == 0)
-                    dbContext.Users.Add(new User() { UserName = "User1" });
-                if (dbContext.Privileges.Count() == 0)
-                    dbContext.Privileges.Add(new Privilege() { PrivilegeName = "Privilege1" });
+                //foreach (var e1 in only2)
+                //    if (!oldRelations.Any(e2 => e1.HierarchyRecordId == e2.HierarchyRecordId))
+                //        oldRelations.Add(e1);
 
                 dbContext.SaveChanges();
 
-                if (dbContext.UsersGroups.Count() == 0)
-                    dbContext.UsersGroups.Add(new UsersGroups() { UserId = 1, GroupId=1 });
+                var parentRecord2 = dbContext.ParentRecords
+                    .Include(e => e.ParentRecordHierarchyRecordMap)
+                    .ThenInclude(e => e.HierarchyRecord).First(e => e.FieldA == "1_A");
 
-                if (dbContext.GroupsRoles.Count() == 0)
-                    dbContext.GroupsRoles.Add(new GroupsRoles() { GroupId = 1, RoleId = 1 });
+                var count3 = parentRecord2.ParentRecordHierarchyRecordMap.Count();
 
-                if (dbContext.RolesPrivileges.Count() == 0)
-                    dbContext.RolesPrivileges.Add(new RolesPrivileges() { RoleId = 1, PrivilegeId = 1 });
-
-                dbContext.SaveChanges();
+                if (count3 != 2)
+                    throw new ApplicationException("Tracking error");
             }
         }
     }
