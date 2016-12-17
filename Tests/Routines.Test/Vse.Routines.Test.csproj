@@ -51,6 +51,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CoverTest.cs" />
     <Compile Include="Includes2\Includables.cs" />
     <Compile Include="IncludesTest.cs" />
     <Compile Include="Injected\LoggingAdapter.cs" />

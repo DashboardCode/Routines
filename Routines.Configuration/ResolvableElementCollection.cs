@@ -2,25 +2,17 @@
 
 namespace Vse.Routines.Configuration
 {
-    [ConfigurationCollection(typeof(ResolvableElement), AddItemName = "resolvable", CollectionType = ConfigurationElementCollectionType.BasicMap)]
+    [ConfigurationCollection(typeof(ResolvableElement), AddItemName = ResolvableElementName, CollectionType = ConfigurationElementCollectionType.BasicMap)]
     public class ResolvableElementCollection : ConfigurationElementCollection
     {
-        private static readonly ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection();
+        public const string ResolvableElementName = "resolvable";
         
         #region Overrides
-        protected override ConfigurationPropertyCollection Properties
-        {
-            get
-            {
-                return properties;
-            }
-        }
-
         protected override string ElementName
         {
             get
             {
-                return "resolvable";
+                return ResolvableElementName;
             }
         }
 
@@ -43,28 +35,14 @@ namespace Vse.Routines.Configuration
         }
         #endregion
 
-        public ResolvableElement this[int index]
+        public override bool IsReadOnly()
         {
-            get
-            {
-                return (ResolvableElement)BaseGet(index);
-            }
-            set
-            {
-                if (BaseGet(index) != null)
-                {
-                    BaseRemoveAt(index);
-                }
-                base.BaseAdd(index, value);
-            }
+            return false;
         }
 
-        public new ResolvableElement this[string name]
+        public void Add(ResolvableElement value)
         {
-            get
-            {
-                return (ResolvableElement)BaseGet(name);
-            }
+            base.BaseAdd(value);
         }
     }
 }

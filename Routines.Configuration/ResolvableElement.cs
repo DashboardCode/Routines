@@ -15,7 +15,10 @@ namespace Vse.Routines.Configuration
             new ConfigurationProperty("value", typeof(string), "", ConfigurationPropertyOptions.IsRequired);
 
         private static readonly ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection { namespaceProperty, typeProperty, valueProperty };
-
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
         #region Overrides
         protected override ConfigurationPropertyCollection Properties
         {
@@ -70,7 +73,7 @@ namespace Vse.Routines.Configuration
             }
         }
         #endregion
-        private void Validate()
+        public void Validate()
         {
             if (Type.Contains(".") || !Type[0].IsLetterOrUnderscore())
                 throw new InvalidOperationException("Config's element Type property should be valid .NET type name");
@@ -81,7 +84,7 @@ namespace Vse.Routines.Configuration
         public readonly DateTime CreatedAt = DateTime.Now;
         public override string ToString()
         {
-            return $"{Namespace}.{Type}={Value} ; {CreatedAt}/{StaticCreatedAt}";
+            return $"{Namespace}.{Type}; {CreatedAt}/{StaticCreatedAt}";
         }
         #endregion
     }

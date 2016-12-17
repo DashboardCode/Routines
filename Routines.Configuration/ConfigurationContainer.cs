@@ -14,10 +14,17 @@ namespace Vse.Routines.Configuration
 
         public string ResolveSerialized<T>()
         {
-            var @value = default(string);
+            
             var type = typeof(T);
             var typeName = type.Name;
             var typeNamespace = type.Namespace;
+            var @value = ResolveSerialized(typeNamespace, typeName);
+            return @value;
+        }
+
+        public string ResolveSerialized(string typeNamespace, string typeName)
+        {
+            var @value = default(string);
             var config = elements.FirstOrDefault(e => (e.Namespace == typeNamespace || string.IsNullOrEmpty(e.Namespace)) && e.Type == typeName);
             if (config != null)
                 @value = config.Value;

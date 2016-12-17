@@ -24,7 +24,7 @@ namespace Vse.Routines.Configuration
                 return (RoutineElementCollection)base[routinesCollectionProperty];
             }
         }
-        public SortedDictionary<int, RoutineElement> RangedRoutines(string @namespace, string @class, string member/*, string @for*/)
+        public SortedDictionary<int, RoutineElement> RangedRoutines(string @namespace, string @class, string member)
          {
                 var rangedRoutines = new Dictionary<int, RoutineElement>();
                 int rA = 0, rB=1000, rC=2000;
@@ -64,6 +64,10 @@ namespace Vse.Routines.Configuration
             return new SortedDictionary<int, RoutineElement>(rangedRoutines);
         }
 
+        public string GetXml(string sectionName)
+        {
+            return this.SerializeSection(null, sectionName, ConfigurationSaveMode.Full);
+        }
         #region Debug
         public static DateTime StaticConstructedAt { get; } = DateTime.Now;
         public DateTime ConstructedAt { get; } = DateTime.Now;
@@ -71,6 +75,10 @@ namespace Vse.Routines.Configuration
         public override string ToString()
         {
             var text = $"{ConstructedAt}/{StaticConstructedAt} " +  base.ToString();
+            foreach (var r in Routines)
+            {
+                text = text + "; " + r.ToString();
+            }
             return text;
         }
         #endregion

@@ -19,13 +19,13 @@
                 @value = text.Trim();
             return @value;
         }
-        //public static bool IsAsterix(this string text)
-        //{
-        //    return !string.IsNullOrEmpty(text) && text.Trim() == Asterix;
-        //}
         public static bool IsNullOrWhiteSpaceOrAsterix(this string text)
         {
             return string.IsNullOrWhiteSpace(text) || text.Trim() == Asterix;
+        }
+        public static bool AsterixEquals(string text1, string text2)
+        {
+            return (text1 == text2 || (IsNullOrWhiteSpaceOrAsterix(text1) && IsNullOrWhiteSpaceOrAsterix(text2)));
         }
     }
 }

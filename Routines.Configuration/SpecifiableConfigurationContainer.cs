@@ -17,10 +17,10 @@ namespace Vse.Routines.Configuration
                 var routineElement = pair.Value;
                 if (routineElement.For.IsNullOrWhiteSpaceOrAsterix())
                 {
-                    foreach (ResolvableElement c in routineElement.Configs)
+                    foreach (ResolvableElement r in routineElement.Resolvables)
                     {
-                        if (!elements.Any(e => e.Type == c.Type && e.Namespace == c.Namespace))
-                            elements.Add(c);
+                        if (!elements.Any(e => e.Type == r.Type && e.Namespace == r.Namespace))
+                            elements.Add(r);
                     }
                 }
             }
@@ -30,6 +30,12 @@ namespace Vse.Routines.Configuration
         {
             return configurationContainer.ResolveSerialized<T>();
         }
+
+        public string ResolveSerialized(string routineNamespace, string routineType)
+        {
+            return configurationContainer.ResolveSerialized(routineNamespace, routineType);
+        }
+
         public T Resolve<T>() where T : IProgress<string>, new()
         {
             return configurationContainer.Resolve<T>();
@@ -43,10 +49,10 @@ namespace Vse.Routines.Configuration
                 var routineElement = pair.Value;
                 if (routineElement.For.IsNullOrWhiteSpaceOrAsterix() || routineElement.For== @for)
                 {
-                    foreach (ResolvableElement c in routineElement.Configs)
+                    foreach (ResolvableElement r in routineElement.Resolvables)
                     {
-                        if (!elements.Any(e => e.Type == c.Type && e.Namespace == c.Namespace))
-                            elements.Add(c);
+                        if (!elements.Any(e => e.Type == r.Type && e.Namespace == r.Namespace))
+                            elements.Add(r);
                     }
                 }
             }

@@ -29,10 +29,20 @@ namespace Vse.Routines.Configuration.Test
             var t1 = basicConfigContainer1.Resolve<LoggingPerformanceConfiguration>();
             if (!(t1.ThresholdSec == 2))
                 throw new ApplicationException("Test fails. Case 1");
+
             var basicConfigContainer2 = RoutinesConfigurationManager.GetConfigurationContainer("wrongNamespace", nameof(ConfigurationUnitTest), nameof(TestConfigruationContainer));
             var t2 = basicConfigContainer2.Resolve<LoggingPerformanceConfiguration>();
             if (!(t2.ThresholdSec == 0)) // default value, it means configuration was not found because of wrong Namespace
                 throw new ApplicationException("Test fails. Case 2");
+
+            var basicConfigContainer3 = RoutinesConfigurationManager.GetConfigurationContainer("theNamespace", nameof(ConfigurationUnitTest), nameof(TestConfigruationContainer));
+            var specified = basicConfigContainer3.Specify("testuser");
+            var t3 = basicConfigContainer3.ResolveSerialized(null, "TestConfigurationX");
+            if (t3!=null)
+                throw new ApplicationException("Test fails. Case 3");
+            var t4 = specified.ResolveSerialized(null, "TestConfigurationX");
+            if (t4==null)
+                throw new ApplicationException("Test fails. Case 4");
         }
 
         [TestMethod]
@@ -54,6 +64,173 @@ namespace Vse.Routines.Configuration.Test
         {
             if (StringExtensions.IsLetterOrUnderscore('0'))
                 throw new ApplicationException("Test fails. Case 1");
+        }
+
+        [TestMethod]
+        public void UpdateConfiguration()
+        {
+            RoutinesConfigurationManager.UpdateConfiguration(
+                routineNamespace:null,
+                routineClass: "ConfigurationUnitTest",
+                routineMember: null,
+                routineFor: null,
+                resolvableNamespace: null,
+                resolvableType: "TestConfiguration",
+                resolvableValue: "{_Value:-100}");
+            RoutinesConfigurationManager.UpdateConfiguration(
+                routineNamespace: null,
+                routineClass: "ConfigurationUnitTest",
+                routineMember: null,
+                routineFor: "alterFor",
+                resolvableNamespace: null,
+                resolvableType: "TestConfiguration2",
+                resolvableValue: "{_Value:-1}");
+            RoutinesConfigurationManager.UpdateConfiguration(
+                routineNamespace: "OtherNamespace",
+                routineClass: "ConfigurationUnitTest",
+                routineMember: null,
+                routineFor: "alterFor",
+                resolvableNamespace: "t1",
+                resolvableType: "TestConfiguration3",
+                resolvableValue: "{_Value:-1}");
+
+            RoutinesConfigurationManager.UpdateConfiguration(
+                routineNamespace: "OtherNamespace",
+                routineClass: "ConfigurationUnitTest",
+                routineMember: null,
+                routineFor: "alterFor",
+                resolvableNamespace: "t2",
+                resolvableType: "TestConfiguration3",
+                resolvableValue: "{_Value:-1}");
+
+            string xml1 = RoutinesConfigurationManager.GetConfigurationXml();
+            string xml2 = RoutinesConfigurationManager.GetConfigurationManualXml();
+
+            RoutinesConfigurationManager.ClearConfigurationFor("alterFor");
+
+            string xml1b = RoutinesConfigurationManager.GetConfigurationXml();
+            string xml2b = RoutinesConfigurationManager.GetConfigurationManualXml();
+
+            string track = RoutinesConfigurationManager.TimeStamps();
+        }
+
+        [TestMethod]
+        public void UpdateNotValidConfiguration()
+        {
+            int i = 0;
+            try
+            {
+                RoutinesConfigurationManager.UpdateConfiguration(
+                   routineNamespace: null,
+                   routineClass: "45ConfigurationUnitTest",
+                   routineMember: null,
+                   routineFor: null,
+                   resolvableNamespace: null,
+                   resolvableType: "TestConfiguration",
+                   resolvableValue: "{_Value:-100}");
+            }catch(InvalidOperationException ex)
+            {
+                i++;
+            }
+
+            try
+            {
+                RoutinesConfigurationManager.UpdateConfiguration(
+                   routineNamespace: null,
+                   routineClass: "Configuration.UnitTest",
+                   routineMember: null,
+                   routineFor: null,
+                   resolvableNamespace: null,
+                   resolvableType: "TestConfiguration",
+                   resolvableValue: "{_Value:-100}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                i++;
+            }
+
+            try
+            {
+                RoutinesConfigurationManager.UpdateConfiguration(
+                   routineNamespace: null,
+                   routineClass: "ConfigurationUnitTest",
+                   routineMember: null,
+                   routineFor: null,
+                   resolvableNamespace: null,
+                   resolvableType: "Test.Configuration",
+                   resolvableValue: "{_Value:-100}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                i++;
+            }
+
+            try
+            {
+                RoutinesConfigurationManager.UpdateConfiguration(
+                   routineNamespace: "154",
+                   routineClass: "ConfigurationUnitTest",
+                   routineMember: null,
+                   routineFor: null,
+                   resolvableNamespace: null,
+                   resolvableType: "TestConfiguration",
+                   resolvableValue: "{_Value:-100}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                i++;
+            }
+
+            try
+            {
+                RoutinesConfigurationManager.UpdateConfiguration(
+                   routineNamespace: null,
+                   routineClass: "ConfigurationUnitTest",
+                   routineMember: "26",
+                   routineFor: null,
+                   resolvableNamespace: null,
+                   resolvableType: "TestConfiguration",
+                   resolvableValue: "{_Value:-100}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                i++;
+            }
+
+            try
+            {
+                RoutinesConfigurationManager.UpdateConfiguration(
+                   routineNamespace: null,
+                   routineClass: "ConfigurationUnitTest",
+                   routineMember: "26",
+                   routineFor: null,
+                   resolvableNamespace: null,
+                   resolvableType: "TestConfiguration",
+                   resolvableValue: "{_Value:-100}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                i++;
+            }
+
+            try
+            {
+                RoutinesConfigurationManager.UpdateConfiguration(
+                   routineNamespace: null,
+                   routineClass: null,
+                   routineMember: "TestMember",
+                   routineFor: null,
+                   resolvableNamespace: null,
+                   resolvableType: "TestConfiguration",
+                   resolvableValue: "{_Value:-100}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                i++;
+            }
+
+            if (i != 7)
+                throw new ApplicationException("validation error");
         }
     }
 }

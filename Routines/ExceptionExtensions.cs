@@ -41,6 +41,8 @@ namespace Vse.Routines
                     sb.AppendArgumentException((ArgumentException)ex);
                 if (ex is System.IO.FileLoadException)
                     sb.AppendFileLoadException((System.IO.FileLoadException)ex);
+                if (ex is System.IO.FileNotFoundException)
+                    sb.AppendFileNotFoundException((System.IO.FileNotFoundException)ex);
                 specificAppender?.Invoke(sb, ex);
                 if (exception.StackTrace != null)
                 {
@@ -61,7 +63,14 @@ namespace Vse.Routines
             return text;
         }
 
-        public static void AppendFileLoadException(this StringBuilder stringBuilder, System.IO.FileLoadException exception)
+        private static void AppendFileLoadException(this StringBuilder stringBuilder, System.IO.FileLoadException exception)
+        {
+            stringBuilder.AppendMarkdownLine("FileLoadException specific:");
+            stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");
+            stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
+        }
+
+        private static void AppendFileNotFoundException(this StringBuilder stringBuilder, System.IO.FileNotFoundException exception)
         {
             stringBuilder.AppendMarkdownLine("FileLoadException specific:");
             stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");

@@ -3,20 +3,12 @@
 
 namespace Vse.Routines.Configuration
 {
-    [ConfigurationCollection(typeof(RoutineElement), AddItemName = "routine", CollectionType = ConfigurationElementCollectionType.BasicMap)]
+    [ConfigurationCollection(typeof(RoutineElement), AddItemName = RoutineElementName, CollectionType = ConfigurationElementCollectionType.BasicMap)]
     public class RoutineElementCollection : ConfigurationElementCollection
     {
-        private static readonly ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection();
+        public const string RoutineElementName = "routine";
 
         #region Overrides
-        protected override ConfigurationPropertyCollection Properties
-        {
-            get
-            {
-                return properties;
-            }
-        }
-
         public override ConfigurationElementCollectionType CollectionType
         {
             get
@@ -29,7 +21,7 @@ namespace Vse.Routines.Configuration
         {
             get
             {
-                return "routine";
+                return RoutineElementName;
             }
         }
 
@@ -42,30 +34,21 @@ namespace Vse.Routines.Configuration
         {
             return ((ICollectionMemberElement)element).Key;
         }
+
+        public override bool IsReadOnly()
+        {
+            return false;
+        }
         #endregion
 
-        public RoutineElement this[int index]
+        public void Add(RoutineElement value)
         {
-            get
-            {
-                return (RoutineElement)BaseGet(index);
-            }
-            set
-            {
-                if (BaseGet(index) != null)
-                {
-                    BaseRemoveAt(index);
-                }
-                base.BaseAdd(index, value);
-            }
+            base.BaseAdd(value);
         }
 
-        public new RoutineElement this[string name]
+        public void Remove(RoutineElement value)
         {
-            get
-            {
-                return (RoutineElement)BaseGet(name);
-            }
+            BaseRemove(value);
         }
     }
 }

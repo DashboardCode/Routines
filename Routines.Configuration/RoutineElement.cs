@@ -43,7 +43,7 @@ namespace Vse.Routines.Configuration
         }
         #endregion
 
-        private void Validate()
+        public void Validate()
         {
             if (!Namespace.IsNullOrWhiteSpaceOrAsterix())
                 if (!char.IsLetter(Namespace[0]))
@@ -122,7 +122,7 @@ namespace Vse.Routines.Configuration
             }
         }
         [ConfigurationProperty("", IsDefaultCollection = true)]
-        public ResolvableElementCollection Configs
+        public ResolvableElementCollection Resolvables
         {
             get
             {
@@ -135,7 +135,12 @@ namespace Vse.Routines.Configuration
         public readonly DateTime CreatedAt = DateTime.Now;
         public override string ToString()
         {
-            return Key+" "+ CreatedAt;
+            var txt = Key+" "+ CreatedAt;
+            foreach (var r in Resolvables)
+            {
+                txt += "  "+ r.ToString();
+            }
+            return txt;
         }
         #endregion
     }
