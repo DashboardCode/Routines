@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public interface IIncluding<TRootEntity> where TRootEntity : class
+    public interface IIncluding<TRootEntity>
     {
         void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression);
         void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression);

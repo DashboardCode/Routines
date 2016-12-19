@@ -73,7 +73,6 @@ namespace Vse.AdminkaV1.DomAuthentication
             }
             return @value;
         }
-
         public IReadOnlyCollection<Group> GetGroups()
         {
             IReadOnlyCollection<Group> @value = null;

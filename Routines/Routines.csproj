@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Include.cs" />
+    <Compile Include="IncludableTypes\ExtendsAttribute.cs" />
     <Compile Include="IResolvable.cs" />
     <Compile Include="RoutineState.cs" />
     <Compile Include="Storage\IRepositoryHandlerFactory.cs" />

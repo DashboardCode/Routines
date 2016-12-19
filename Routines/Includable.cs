@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public class Includable<TRootEntity> where TRootEntity : class
+    public class Includable<TRootEntity> 
     {
         protected readonly IIncluding<TRootEntity> includingProcess;
         public Includable(IIncluding<TRootEntity> includingProcess)
@@ -22,7 +22,7 @@ namespace Vse.Routines
             return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
         }
     }
-    public class ThenIncludable<TRootEntity, TThenEntity> : Includable<TRootEntity> where TRootEntity : class
+    public class ThenIncludable<TRootEntity, TThenEntity> : Includable<TRootEntity> 
     {
         public ThenIncludable(IIncluding<TRootEntity> includingProcess):base(includingProcess)
         {

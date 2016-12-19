@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using System.Web.Script.Serialization;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System.Collections.Generic;
+
 
 namespace EfCoreTest
 {
@@ -16,7 +16,8 @@ namespace EfCoreTest
             Console.WriteLine("Check connection string:");
             Console.WriteLine(connectionString);
             TestIsland.Reset(connectionString);
-            using (var dbContext = new MyDbContext(connectionString))
+            var loggerProvider = new MyLoggerProvider();
+            using (var dbContext = new MyDbContext(connectionString, loggerProvider))
             {
                 var parentRecord = dbContext.ParentRecords
                     .Include(e=>e.ParentRecordHierarchyRecordMap)

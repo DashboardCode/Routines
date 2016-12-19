@@ -25,6 +25,7 @@ namespace Vse.Routines
             var value = propertyInfo.GetValue(entity);
             return value;
         }
+
         private static Tuple<object, object> GetMemberValues(
             this MemberExpression memberExpression,
             object entity1,
@@ -296,6 +297,17 @@ namespace Vse.Routines
                 ThenInclude(navigationExpression);
             }
         }
+
+        public static void Cast<T1, T2>(T1 t1, T2 t2, Include<T1> userDto) //where T1 : class
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void Cast<T1, T2>(T1 t1, T2 t2, Include<T2> userDto) //where T2 : class
+        {
+            throw new NotImplementedException();
+        }
+
 
         public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null) where T : class
         {
@@ -676,4 +688,9 @@ namespace Vse.Routines
                 typeof(TimeSpan?)
             };
     }
+
+    //public static class IncludeExtensions
+    //{
+
+    //}
 }

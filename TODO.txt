@@ -1,49 +1,34 @@
-0. Add Many-to-Many test tables to TestDom and add Storage tests for them (improove coverage)
-0b. Nuget platform.
+1. Nuget platform. 
+   Portable lib? 
+2. T4 to generate DTO C# classes and TypeScript interfaces.
+   Generate Mapper functions.
+   Note: if DTO are incldued to Abstraction assembly it is become very complex to compile the assembly;
+      therefore C# DTO classes should be part of wcf service assembly, the same as TypeScript interfaces should be generated in web api project.
 
 FUNCTIONALITY
 ------------------------------------------------------------------------------------
-1. Catch logs to DB.
-2. Search for correlation token.
-3. IAuthenticationService to wcf. 
+3. Catch logs to DB.
+4. Search for correlation token.
+5. IAuthenticationService to wcf. 
+
+PR
+------------------------------------------------------------------------------------
+6. Inline includables goes to github as separated "one file" project
+7. Circular javascript serializer goes to github as "one file" project
+8. Vse release on github
+9. Publish routines, routines.storage.efcore on NUGET.
+10. Create samples https://dotnetfiddle.net/
+11. Write article about includes.
 
 SERVER SIDE
 ------------------------------------------------------------------------------------
-2. Set Assembly.cs AssemblyCompany property
-3. Inline includables goes to github as separated "one file" project
-3b. Circular javascript serializer goes to github as "one file" project
-4. Vse release on github
-5. Publish routines, routines.storage.efcore on NUGET.
-6. Create samples https://dotnetfiddle.net/
-7. Write article about includes.
+12.  authentication that shares dbcontext 
+13.  complex views: share correlationToken or share routine through TempData. https://docs.microsoft.com/en-us/aspnet/core/mvc/views/partial
+13a. @await Html.PartialAsync("AuthorPartial");  (check async especially with TempData)
+13b. Html.RenderPartial("AuthorPartial");
+14. UserContext caching.
 
-SERVER SIDE (OTHER)
-------------------------------------------------------------------------------------
-7. how to generate DTO classes.
-   generate typescripts with T4 like https://www.nuget.org/packages/TypeLite do but with includes;
-   that means all helper functions should be placed into Vse.Routines.dll; 
-		since we have "includes" it should be possible (dictionaries? indent algorithm?)
-   
-7b. how to use DTO with automapper, why not to generate dto with mpa function?
-
-	Choose "c# DTO generator" there is number of them
-		1b)  it should generates map methods also
-		1b)  or be "integrated" with automapper
-	
-	Why: 
-	    * size (?) - I'm not sure is this possible
-	    * avoid circular references (?) - so the generator should "guarantee" that DTO would not have them
-	
-	Important:
-		* DTO's should be part of Abstraction assembly to be shared between various services 
-
-
-
-8. Complex routine (1) authentication 2) through TempData); check async.
-9. UserContext Caching.
-10. Bufferize NLog Logging (create custom formater that can process array of events).
-
-Follow EFCore development: complextypes (versioned); many-to-many; columns order.
+**. Follow EFCore development: complextypes (versioned); many-to-many; columns order.
 
 CLIENT SIDE
 ------------------------------------------------------------------------------------
@@ -53,5 +38,5 @@ React / redux app
 Offline react app
 
 Web Api Questions:
-1) how to pass error details instead off requested data?
-2) how to separate SPA to several pages/islands
+a) how to pass error details instead off requested data?
+b) how to separate SPA to several pages/islands

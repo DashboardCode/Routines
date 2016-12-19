@@ -7,7 +7,6 @@ namespace EfCoreTest
         public static void Reset(string connectionString)
         {
             Clear(connectionString);
-
             using (var dbContext = new MyDbContext(connectionString))
             {
                 var typeRecord1 = new TypeRecord()

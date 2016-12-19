@@ -24,14 +24,15 @@ namespace EfCoreTest
             var options = optionsBuilder.Options;
             return options;
         }
-        public readonly MyLoggerProvider LoggerProvider;
 
         public MyDbContext(string connectionString)
             : base(CreateOptions(connectionString))
         {
-            LoggerProvider = new MyLoggerProvider();
-            var loggerFactory = this.GetService<ILoggerFactory>();
-            loggerFactory.AddProvider(LoggerProvider);
+        }
+        public MyDbContext(string connectionString, MyLoggerProvider loggerProvider)
+            : base(CreateOptions(connectionString))
+        {
+            this.GetService<ILoggerFactory>().AddProvider(loggerProvider);
         }
         private static string GetEntityTableName(string value)
         {

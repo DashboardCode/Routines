@@ -128,7 +128,7 @@ namespace Vse.Routines.Configuration.Test
                    resolvableNamespace: null,
                    resolvableType: "TestConfiguration",
                    resolvableValue: "{_Value:-100}");
-            }catch(InvalidOperationException ex)
+            }catch(InvalidOperationException)
             {
                 i++;
             }
@@ -144,7 +144,7 @@ namespace Vse.Routines.Configuration.Test
                    resolvableType: "TestConfiguration",
                    resolvableValue: "{_Value:-100}");
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 i++;
             }
@@ -160,7 +160,7 @@ namespace Vse.Routines.Configuration.Test
                    resolvableType: "Test.Configuration",
                    resolvableValue: "{_Value:-100}");
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 i++;
             }
@@ -176,7 +176,7 @@ namespace Vse.Routines.Configuration.Test
                    resolvableType: "TestConfiguration",
                    resolvableValue: "{_Value:-100}");
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 i++;
             }
@@ -192,7 +192,7 @@ namespace Vse.Routines.Configuration.Test
                    resolvableType: "TestConfiguration",
                    resolvableValue: "{_Value:-100}");
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 i++;
             }
@@ -208,7 +208,7 @@ namespace Vse.Routines.Configuration.Test
                    resolvableType: "TestConfiguration",
                    resolvableValue: "{_Value:-100}");
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 i++;
             }
@@ -224,7 +224,7 @@ namespace Vse.Routines.Configuration.Test
                    resolvableType: "TestConfiguration",
                    resolvableValue: "{_Value:-100}");
             }
-            catch (InvalidOperationException ex)
+            catch (InvalidOperationException)
             {
                 i++;
             }
