@@ -5,7 +5,7 @@ using Vse.Routines.IncludableTypes;
 namespace Vse.AdminkaV1.Web.DTO
 {
     [Extends(definitionType: typeof(UserDto), definitionInculde: nameof(Definition))]
-    public partial struct UserDto
+    public partial class UserDto
     {
         public static readonly Include<DomAuthentication.User> Definition
             = (i) => i.Include(e => e.UserId)

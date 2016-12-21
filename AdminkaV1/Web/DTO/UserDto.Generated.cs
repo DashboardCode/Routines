@@ -3,21 +3,21 @@ using Vse.Routines;
 
 namespace Vse.AdminkaV1.Web.DTO
 {
-    partial struct UserDto
+    partial class UserDto
     {
         public int UserId { get; set; }
         public string LoginName { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
 
-        public IReadOnlyCollection<_UserPrivilegeMap> UserPrivilegeMap { get; set; }
+        public IReadOnlyCollection<UserPrivilegeMapStruct> UserPrivilegeMap { get; set; }
 
-        public struct _UserPrivilegeMap
+        public class UserPrivilegeMapStruct
         {
-            public _Privilege Privilege { get; set; }
+            public PrivilegeStruct Privilege { get; set; }
         }
 
-        public struct _Privilege
+        public class PrivilegeStruct
         {
             public int PrivilegeId { get; set; }
             public string PrivilegeName { get; set; }
@@ -39,14 +39,12 @@ namespace Vse.AdminkaV1.Web.DTO
                             .ThenInclude(e => e.PrivilegeName);
         public static DomAuthentication.User Cast(this UserDto userDto)
         {
-            var user = new DomAuthentication.User();
-            MemberExpressionExtensions.Cast(userDto, user, Statement);
+            var user = MemberExpressionExtensions.Cast<UserDto, DomAuthentication.User>(userDto, Statement);
             return user;
         }
         public static UserDto Cast(this DomAuthentication.User user)
         {
-            var userDto = new UserDto();
-            MemberExpressionExtensions.Cast(user, userDto, UserDto.Definition);
+            var userDto = MemberExpressionExtensions.Cast<DomAuthentication.User, UserDto>(user, UserDto.Definition);
             return userDto;
         }
     }

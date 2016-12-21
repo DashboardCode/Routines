@@ -161,7 +161,7 @@ namespace EfCoreTest
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
             var text = formatter(state, exception);
-            provider.Verbose?.Invoke(text + " ; categoryName" + categoryName);
+            provider.Verbose?.Invoke($"MESSAGE; categoryName={categoryName} eventId={eventId} logLevel={logLevel}" + Environment.NewLine+ text);
         }
     }
 }

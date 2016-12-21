@@ -25,7 +25,7 @@ namespace Vse.Routines.Test
             public string PropertyText { get; set; }
             public int PropertyInt { get; set; }
 
-            private string Name2 { get; set; } = "default";
+            private string Name2 { get; set; }
 
             public string this[int index]
             {
@@ -38,8 +38,18 @@ namespace Vse.Routines.Test
                     throw new NotImplementedException();
                 }
             }
+
+            public MessageStruct Message {get;set;}
+            public struct MessageStruct{
+                public string TextMsg { get; set; }
+                public DateTime DateTimeMsg { get; set; }
+                public int? IntNullableMsg { get; set; }
+            }
+
+            public int? IntNullable1 { get; set; }
+            public int? IntNullable2 { get; set; }
         }
-        private static TestModel CreateTestModel()
+        private  TestModel CreateTestModel()
         {
             var source = new TestModel()
             {
@@ -58,6 +68,8 @@ namespace Vse.Routines.Test
                 PropertyInt = 1234
             };
             source.TestChilds = new HashSet<TestChild>() { new TestChild { Uniques = source.StorageModel.Uniques.ToList() } };
+            source.Message = new TestModel.MessageStruct() { TextMsg = "Initial", DateTimeMsg = DateTime.Now, IntNullableMsg = 7 };
+            source.IntNullable2 = 555;
             return source;
         }
         private static Include<TestModel> CreateIncludes()
@@ -82,7 +94,15 @@ namespace Vse.Routines.Test
                              .ThenInclude(i => i.IndexName)
                     .Include(i => i.StorageModel)
                          .ThenIncludeAll(i => i.Uniques)
-                             .ThenIncludeAll(i => i.Fields);
+                             .ThenIncludeAll(i => i.Fields)
+                    .Include(i => i.Message)
+                         .ThenInclude(i => i.TextMsg)
+                    .Include(i => i.Message)
+                         .ThenInclude(i => i.DateTimeMsg)
+                    .Include(i => i.Message)
+                         .ThenInclude(i => i.IntNullableMsg)
+                    .Include(i => i.IntNullable1)
+                    .Include(i => i.IntNullable2);
             return includes;
         }
 
@@ -117,7 +137,7 @@ namespace Vse.Routines.Test
 
             // for coverage
             var clonedB = MemberExpressionExtensions.CloneAll(list, includes, MemberExpressionExtensions.SystemTypes); 
-            var clonedNull = MemberExpressionExtensions.Clone(null, includes, MemberExpressionExtensions.SystemTypes);
+            var clonedNull = MemberExpressionExtensions.Clone(default(TestModel), includes, MemberExpressionExtensions.SystemTypes);
             var clonedNulls = MemberExpressionExtensions.CloneAll<List<TestModel>,TestModel>(null, includes);
             var xx = new List<TestModel>();
             MemberExpressionExtensions.CopyAll<List<TestModel>, TestModel>(list, xx);
@@ -145,7 +165,7 @@ namespace Vse.Routines.Test
             includes.Invoke(includable);
             var pathes = including.Pathes;
 
-            if (pathes.Count != 8)
+            if (pathes.Count != 13)
                 throw new ApplicationException("PathesIncluding doesn't working properly");
         }
 
@@ -281,7 +301,7 @@ namespace Vse.Routines.Test
             var includes = CreateIncludes();
 
             var b1 = MemberExpressionExtensions.GetTypes(includes);
-            if (b1.Count() != 8)
+            if (b1.Count() != 11)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 1");
         }
         [TestMethod]
@@ -373,7 +393,7 @@ namespace Vse.Routines.Test
             items.Add(null);
             items.Add(null);
             items.Add(new Item() { F1 = "F1", F2 = "F2", Items = items });
-            MemberExpressionExtensions.DetachAll(items, (i)=>i.Include(e=>e.Items));
+            MemberExpressionExtensions.DetachAll<List<Item>, Item>(items, (i)=>i.Include(e=>e.Items));
         }
 
         public class Item

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Vse.Routines
 {
@@ -100,7 +101,7 @@ namespace Vse.Routines
             return new Tuple<object, object>(sourceValue, copiedValue);
         }
         #region Path based
-        public class PathesIncluding<TRootEntity> : IIncluding<TRootEntity> where TRootEntity : class
+        public class PathesIncluding<TRootEntity> : IIncluding<TRootEntity> //where TRootEntity : class
         {
             public readonly List<string[]> Pathes = new List<string[]>();
             private string[] sequence;
@@ -181,7 +182,7 @@ namespace Vse.Routines
             DetachPaths(entity, pathes);
         }
 
-        public static void DetachAll<T>(IEnumerable<T> entities, Include<T> include) where T : class
+        public static void DetachAll<TCol, T>(IEnumerable<T> entities, Include<T> include) where TCol : IEnumerable<T>
         {
             var including = new PathesIncluding<T>();
             var includable = new Includable<T>(including);
@@ -251,18 +252,30 @@ namespace Vse.Routines
         #endregion
 
         #region Nodes based
+        public class PropertyInfoNode
+        {
+            public readonly string MemberName;
+            public readonly PropertyInfo PropertyInfo;
+            public readonly List<PropertyInfoNode> Children = new List<PropertyInfoNode>();
+            public PropertyInfoNode(PropertyInfo propertyInfo)
+            {
+                MemberName = propertyInfo.Name;
+                PropertyInfo = propertyInfo;
+            }
+        }
+
         public class MemberExpressionNode
         {
-            public readonly string PropertyName;
+            public readonly string MemberName;
             public readonly MemberExpression MemberExpression;
             public readonly List<MemberExpressionNode> Children = new List<MemberExpressionNode>();
             public MemberExpressionNode(MemberExpression memberExpression)
             {
-                PropertyName = memberExpression.Member.Name;
+                MemberName = memberExpression.Member.Name;
                 MemberExpression = memberExpression;
             }
         }
-        public class NodesIncluding<TRootEntity> : IIncluding<TRootEntity> where TRootEntity : class
+        public class MemberNodesIncluding<TRootEntity> : IIncluding<TRootEntity>
         {
             public readonly List<MemberExpressionNode> Root = new List<MemberExpressionNode>();
             public MemberExpressionNode CurrentNode;
@@ -271,7 +284,7 @@ namespace Vse.Routines
             public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
             {
                 var name = GetMemberName(navigationExpression);
-                var node = Root.FirstOrDefault(e => e.PropertyName == name);
+                var node = Root.FirstOrDefault(e => e.MemberName == name);
                 if (node == null)
                 {
                     node = new MemberExpressionNode((MemberExpression)(navigationExpression.Body));
@@ -286,7 +299,7 @@ namespace Vse.Routines
             public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
             {
                 var name = GetMemberName(navigationExpression);
-                var node = CurrentNode.Children.FirstOrDefault(e => e.PropertyName == name);
+                var node = CurrentNode.Children.FirstOrDefault(e => e.MemberName == name);
                 if (node == null)
                     node = new MemberExpressionNode((MemberExpression)(navigationExpression.Body));
                 CurrentNode.Children.Add(node);
@@ -298,36 +311,104 @@ namespace Vse.Routines
             }
         }
 
-        public static void Cast<T1, T2>(T1 t1, T2 t2, Include<T1> userDto) //where T1 : class
+        public class PropertyInfoIncluding<TRootEntity> : IIncluding<TRootEntity>
+        {
+            public readonly List<PropertyInfoNode> Root = new List<PropertyInfoNode>();
+            public PropertyInfoNode CurrentNode;
+
+            public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+            {
+                var name = GetMemberName(navigationExpression);
+                var node = Root.FirstOrDefault(e => e.MemberName == name);
+                if (node == null)
+                {
+                    var memberExpression = (MemberExpression)(navigationExpression.Body);
+                    var propertyInfo = memberExpression.Member as PropertyInfo;
+                    if (propertyInfo==null)
+                    node = new PropertyInfoNode(propertyInfo);
+                    Root.Add(node);
+                }
+                CurrentNode = node;
+            }
+            public void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+            {
+                Include(navigationExpression);
+            }
+            public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
+            {
+                var name = GetMemberName(navigationExpression);
+                var node = CurrentNode.Children.FirstOrDefault(e => e.MemberName == name);
+                if (node == null)
+                {
+                    var memberExpression = (MemberExpression)(navigationExpression.Body);
+                    var propertyInfo = memberExpression.Member as PropertyInfo;
+                    node = new PropertyInfoNode(propertyInfo);
+                }
+                CurrentNode.Children.Add(node);
+                CurrentNode = node;
+            }
+            public void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
+            {
+                ThenInclude(navigationExpression);
+            }
+        }
+
+        public static T2 Cast<T1, T2>(T1 source, Include<T1> include)
+            where T1 : class 
+            where T2 : class
+        {
+            var constructor = typeof(T2).GetConstructor(Type.EmptyTypes);
+            //var destination = (T)Activator.CreateInstance(typeof(T));
+            var destination = (T2)constructor.Invoke(null);
+            throw new NotImplementedException();
+            return destination;
+        }
+
+        public static T2 Cast<T1, T2>(T1 t1, Include<T2> include)
+            where T1 : class
+            where T2 : class
         {
             throw new NotImplementedException();
         }
 
-        public static void Cast<T1, T2>(T1 t1, T2 t2, Include<T2> userDto) //where T2 : class
+        public static void CastAll<TCol1, T1, TCol2, T2>(T1 t1, Include<T1> include)
+            where T1 : class
+            where TCol1 : IEnumerable<T1>
+            where T2 : class
+            where TCol2 : IEnumerable<T2>
         {
             throw new NotImplementedException();
         }
 
-
-        public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null) where T : class
+        public static void CastAll<TCol1, T1, TCol2, T2>(T1 t1, T2 t2, Include<T2> include)
+            where T1 : class
+            where TCol1 : IEnumerable<T1>
+            where T2 : class
+            where TCol2 : IEnumerable<T2>
         {
-            if (source == null)
-                return null;
-            if (systemTypes == null)
-                systemTypes=SystemTypes;
+            throw new NotImplementedException();
+        }
+
+        public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null)
+            where T : class
+        {
+            if (!(source is T))
+                return default(T);
+            if (systemTypes == default(IReadOnlyCollection<Type>))
+                systemTypes = SystemTypes;
             var constructor = source.GetType().GetConstructor(Type.EmptyTypes);
+            //var destination = (T)Activator.CreateInstance(typeof(T));
             var destination = (T)constructor.Invoke(null);
             Copy(source, destination, include, systemTypes);
             return destination;
         }
 
         public static TCol CloneAll<TCol, T>(TCol source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null) 
-            where T : class
             where TCol: class, IEnumerable<T>
         {
             if (source == null)
                 return null;
-            if (systemTypes == null)
+            if (systemTypes == default(IReadOnlyCollection<Type>))
                 systemTypes = SystemTypes;
             var constructor = source.GetType().GetConstructor(Type.EmptyTypes);
             var destination = (TCol)constructor.Invoke(null);
@@ -335,9 +416,9 @@ namespace Vse.Routines
             return destination;
         }
 
-        public static IEnumerable<Type> GetTypes<T>(Include<T> include) where T : class
+        public static IEnumerable<Type> GetTypes<T>(Include<T> include)
         {
-            var nodeIncluding = new NodesIncluding<T>();
+            var nodeIncluding = new MemberNodesIncluding<T>();
             var includable = new Includable<T>(nodeIncluding);
             include.Invoke(includable);
             var nodes = nodeIncluding.Root;
@@ -356,12 +437,13 @@ namespace Vse.Routines
             }
         }
 
-        public static void Copy<T>(T source, T destination, Include<T> include=null, IReadOnlyCollection<Type> systemTypes=null) where T : class
+        public static void Copy<T>(T source, T destination, Include<T> include=null, IReadOnlyCollection<Type> systemTypes=null)
+        where T : class
         {
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
             {
-                var nodeIncluding = new NodesIncluding<T>();
+                var nodeIncluding = new MemberNodesIncluding<T>();
                 var includable = new Includable<T>(nodeIncluding);
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
@@ -370,13 +452,12 @@ namespace Vse.Routines
         }
 
         public static void CopyAll<TCol, T>(TCol source, TCol destination, Include<T> include = null, IReadOnlyCollection<Type> systemTypes = null) 
-            where T : class
-            where TCol : class, IEnumerable<T>
+            where TCol : IEnumerable<T>
         {
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
             {
-                var nodeIncluding = new NodesIncluding<T>();
+                var nodeIncluding = new MemberNodesIncluding<T>();
                 var includable = new Includable<T>(nodeIncluding);
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
@@ -384,12 +465,12 @@ namespace Vse.Routines
             CopyNodes(source, destination, nodes, systemTypes);
         }
 
-        public static bool Equals<T>(T entity1, T entity2, Include<T> include=null) where T : class
+        public static bool Equals<T>(T entity1, T entity2, Include<T> include=null)
         {
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
             {
-                var nodeIncluding = new NodesIncluding<T>();
+                var nodeIncluding = new MemberNodesIncluding<T>();
                 var includable = new Includable<T>(nodeIncluding);
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
@@ -398,13 +479,13 @@ namespace Vse.Routines
         }
 
         public static bool EqualsAll<TCol, T>(TCol entity1, TCol entity2, Include<T> include=null) 
-            where T : class
-            where TCol : class, IEnumerable<T>
+            //where T : class
+            where TCol : /*class,*/ IEnumerable<T>
         {
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
             {
-                var nodeIncluding = new NodesIncluding<T>();
+                var nodeIncluding = new MemberNodesIncluding<T>();
                 var includable = new Includable<T>(nodeIncluding);
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
@@ -533,16 +614,34 @@ namespace Vse.Routines
 
         private static object CloneItem(object sourceItem, List<MemberExpressionNode> nodes, IReadOnlyCollection<Type> systemTypes)
         {
-            if (sourceItem == null || sourceItem is string || !sourceItem.GetType().IsClass)
+            if (sourceItem == null)
             {
-                return sourceItem;
+                return null;
             }
             else
             {
-                var constructor = sourceItem.GetType().GetConstructor(Type.EmptyTypes);
-                var destinationItem = constructor.Invoke(null);
-                CopyNodes(sourceItem, destinationItem, nodes, systemTypes);
-                return destinationItem;
+                var type = sourceItem.GetType();
+                if (sourceItem is string)
+                {
+                    return string.Copy((string)sourceItem);
+                }
+                else if (type.IsValueType)
+                {
+                    if (nodes.Count > 0)
+                        throw new InvalidOperationException($"It is impossible to clone value type's '{type.FullName}' instance specifing includes '{string.Join(", ", nodes.Select(e=>e.MemberName))}' . Value type's instance can be cloned only entirely!");
+                    return sourceItem;
+                }
+                else if (sourceItem.GetType().IsClass)
+                {
+                    var constructor = sourceItem.GetType().GetConstructor(Type.EmptyTypes);
+                    var destinationItem = constructor.Invoke(null);
+                    CopyNodes(sourceItem, destinationItem, nodes, systemTypes);
+                    return destinationItem;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Clonning of type '{type.FullName}' is not supported");
+                }
             }
         }
 
@@ -574,8 +673,10 @@ namespace Vse.Routines
                 foreach (var node in nodes)
                 {
                     var value = node.MemberExpression.CopyMemberValue(source, destination);
-                    if (value.Item1 != null)
-                        CopyNodes(value.Item1, value.Item2, node.Children, systemTypes); // recursion
+                    var s = value.Item1;
+                    var d = value.Item2;
+                    if (s != null)
+                        CopyNodes(s, d, node.Children, systemTypes); // recursion
                 }
             }
         }
