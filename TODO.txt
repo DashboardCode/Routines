@@ -30,6 +30,8 @@ SERVER SIDE
 
 **. Follow EFCore development: complextypes (versioned); many-to-many; columns order.
 
+15. Check https://reactjs.net/getting-started/tutorial.html
+
 CLIENT SIDE
 ------------------------------------------------------------------------------------
 Plan:
