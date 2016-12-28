@@ -1,0 +1,26 @@
+React daily:
+https://www.fullstackreact.com/signup/thankyou/
+
+Catalogue:
+http://andrewhfarmer.com/starter-project/
+One of the best: https://github.com/erikras/react-redux-universal-hot-example
+
+Asp.Core Samples:
+https://github.com/aspnet/JavaScriptServices
+
+or more preciese folder 
+https://github.com/aspnet/JavaScriptServices/tree/dev/src/Microsoft.AspNetCore.SpaServices#microsoftaspnetcorespaservices
+
+Questions:
+
+1) how to add npm just to empty project
+2) why webpack is global in 
+
+Important: Package Manager Console is normal Powershell console, just control $PWD - current folder or set this:
+function Global:prompt {"PM [$Env:username]$PWD`n>"}
+   or set it in $profile with 
+      notepad $profile
+
+
+React:
+https://habrahabr.ru/post/313038/ (cellx)

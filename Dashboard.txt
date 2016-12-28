@@ -1,0 +1,3 @@
+Graphite server http://graphite.readthedocs.io/en/latest/tools.html
+Get is a virual server from vagrant https://www.vagrantup.com/
+Sample http://thomasardal.com/performance-monitoring-net-web-applications-with-statsd-and-graphite/

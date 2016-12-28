@@ -9,6 +9,10 @@ using ServiceStack;
 
 namespace Vse.Json.Test
 {
+    /// <summary>
+    /// JSON has been described in sever standards and differs from standard to standard (scalars, braces, comments)
+    /// http://seriot.ch/parsing_json.php
+    /// </summary>
     [TestClass]
     public class JsonTest
     {
