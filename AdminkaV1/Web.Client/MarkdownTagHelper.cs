@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Html;
-//using MarkdownSharp;
+//using Vse.AdminkaV1.Injected;
 
 namespace Vse.AdminkaV1.Web
 {
@@ -13,13 +13,12 @@ namespace Vse.AdminkaV1.Web
     [OutputElementHint("p")]
     public class MarkdownTagHelper : TagHelper
     {
-        //public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
-        //{
-        //    var c = (await output.GetChildContentAsync()).GetContent();
-        //    var m = new Markdown();
-        //    var html = m.Transform(c);
-        //    var htmlString = new HtmlString(html);
-        //    output.Content.SetHtmlContent(htmlString);
-        //}
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        {
+            var c = (await output.GetChildContentAsync()).GetContent();
+            //    var html = InjectedManager.Markdown(c);
+            //    var htmlString = new HtmlString(html);
+            //    output.Content.SetHtmlContent(htmlString);
+        }
     }
 }

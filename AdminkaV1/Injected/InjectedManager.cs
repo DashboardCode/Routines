@@ -152,6 +152,13 @@ namespace Vse.AdminkaV1.Injected
             var json = serializer.Serialize(o);
             return json;
         }
+
+        public static string Markdown(string text)
+        {
+            var m = new HeyRed.MarkdownSharp.Markdown();
+            var html = m.Transform(text);
+            return html;
+        }
         #endregion
 
         #region Active directory
