@@ -24,3 +24,28 @@ function Global:prompt {"PM [$Env:username]$PWD`n>"}
 
 React:
 https://habrahabr.ru/post/313038/ (cellx)
+
+
+-------------------------------------------------------------------
+Way to solve:
+https://github.com/dotnet/cli/issues/4996
+
+Docs:
+VS 2017RC Update 3 tooling, https://blogs.msdn.microsoft.com/dotnet/2016/12/12/updating-visual-studio-2017-rc-net-core-tooling-improvements/
+VS 2017RC tooling, https://blogs.msdn.microsoft.com/dotnet/2016/10/19/net-core-tooling-in-visual-studio-15/
+
+-------------------------------------------------------------------
+CSPROJ adoption for Framework target.
+
+<TargetFramework>netcoreapp1.1</TargetFramework>
+
+replaced with:
+
+<TargetFramework>net462</TargetFramework>
+<RuntimeIdentifier>win7-x86</RuntimeIdentifier>
+
+removed:
+
+<PackageReference Include="Microsoft.NETCore.App" Version="1.1.0" />
+
+-------------------------------------------------------------------
