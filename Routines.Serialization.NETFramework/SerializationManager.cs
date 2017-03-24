@@ -12,28 +12,24 @@ namespace Vse.Routines.Serialization.NETFramework
     {
         public static T DeserializeXml<T>(string xmlText, IEnumerable<Type> knownTypes = null)
         {
-            using (var stringReader = new StringReader(xmlText))
+            var stringReader = new StringReader(xmlText);
+            using (var xmlTextReader = new XmlTextReader(stringReader))
             {
-                using (var xmlTextReader = new XmlTextReader(stringReader))
-                {
-                    var serializer = new DataContractSerializer(typeof(T), knownTypes);
-                    var o = serializer.ReadObject(xmlTextReader);
-                    var t = (T)o;
-                    return t;
-                }
+                var serializer = new DataContractSerializer(typeof(T), knownTypes);
+                var o = serializer.ReadObject(xmlTextReader);
+                var t = (T)o;
+                return t;
             }
         }
         public static string SerializeToXml(object o, Type rootType, IEnumerable<Type> knownTypes = null)
         {
-            using (var stringWriter = new StringWriter())
+            var stringWriter = new StringWriter();
+            using (var xmlTextWriter = new XmlTextWriter(stringWriter))
             {
-                using (var xmlTextWriter = new XmlTextWriter(stringWriter))
-                {
-                    var serializer = new DataContractSerializer(rootType, knownTypes);
-                    serializer.WriteObject(xmlTextWriter, o);
-                    var text = stringWriter.ToString();
-                    return text;
-                }
+                var serializer = new DataContractSerializer(rootType, knownTypes);
+                serializer.WriteObject(xmlTextWriter, o);
+                var text = stringWriter.ToString();
+                return text;
             }
         }
 

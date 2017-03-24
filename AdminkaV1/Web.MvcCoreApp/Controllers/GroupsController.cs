@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Vse.AdminkaV1.DomAuthentication; // entity
 using Vse.Routines.AspNetCore;
 using Vse.Routines;
-using Microsoft.Extensions.Configuration;
 
 namespace Vse.AdminkaV1.Web.MvcCoreApp
 {

@@ -6,19 +6,8 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{52BA4719-F064-4388-A426-1E1174D3A0EB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C25AC638-2EBA-4C47-A8EE-E646A8C507B3}"
 	ProjectSection(SolutionItems) = preProject
-		Asp.Core.txt = Asp.Core.txt
-		Conventions.txt = Conventions.txt
-		CreateNugetPackage.ps1 = CreateNugetPackage.ps1
-		Dashboard.txt = Dashboard.txt
-		DeleteCache.ps1 = DeleteCache.ps1
-		global.json = global.json
-		OpenCover.bat = OpenCover.bat
-		Routines.1.0.12.nuspec = Routines.1.0.12.nuspec
-		Routines.png = Routines.png
-		TODO.txt = TODO.txt
+		Tests\OpenCover.bat = Tests\OpenCover.bat
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{68C4C8C2-2A78-4998-9D36-4A3B139B41FE}"
@@ -82,6 +71,18 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore", "Routines.AspNetCore\Routines.AspNetCore.csproj", "{06CEAC59-C96C-4F84-B1D6-14AA5753BB43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Web.MvcCoreApp", "AdminkaV1\Web.MvcCoreApp\AdminkaV1.Web.MvcCoreApp.csproj", "{E306B786-C40E-4FD1-99EF-8AF99C9CBA3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tour", "Tour", "{90E0E81A-4CDA-43B8-A302-8430519EEA90}"
+	ProjectSection(SolutionItems) = preProject
+		Asp.Core.txt = Asp.Core.txt
+		Conventions.txt = Conventions.txt
+		CreateNugetPackage.ps1 = CreateNugetPackage.ps1
+		Dashboard.txt = Dashboard.txt
+		DeleteCache.ps1 = DeleteCache.ps1
+		Routines.1.0.12.nuspec = Routines.1.0.12.nuspec
+		Routines.png = Routines.png
+		TODO.txt = TODO.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
