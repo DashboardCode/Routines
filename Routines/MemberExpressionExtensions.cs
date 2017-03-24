@@ -362,7 +362,7 @@ namespace Vse.Routines
             //var destination = (T)Activator.CreateInstance(typeof(T));
             var destination = (T2)constructor.Invoke(null);
             throw new NotImplementedException();
-            return destination;
+            //return destination;
         }
 
         public static T2 Cast<T1, T2>(T1 t1, Include<T2> include)
