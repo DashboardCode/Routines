@@ -72,14 +72,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Web.MvcCoreApp", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tour", "Tour", "{90E0E81A-4CDA-43B8-A302-8430519EEA90}"
 	ProjectSection(SolutionItems) = preProject
-		Asp.Core.txt = Asp.Core.txt
-		Conventions.txt = Conventions.txt
-		CreateNugetPackage.ps1 = CreateNugetPackage.ps1
-		Dashboard.txt = Dashboard.txt
-		DeleteCache.ps1 = DeleteCache.ps1
-		Routines.1.0.12.nuspec = Routines.1.0.12.nuspec
 		Routines.png = Routines.png
-		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Web.ReactApp", "AdminkaV1\Web.ReactApp\AdminkaV1.Web.ReactApp.csproj", "{8A992BB3-1EC1-41AC-B044-2C7A574E380B}"
@@ -87,6 +80,22 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Web.ReduxApp", "AdminkaV1\Web.ReduxApp\AdminkaV1.Web.ReduxApp.csproj", "{1F6C0F7A-3F7A-4B37-936A-F1B5AD3D3F01}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Web.ApiService", "AdminkaV1\Web.ApiService\AdminkaV1.Web.ApiService.csproj", "{183F2465-F2AE-4548-BAB6-88C8BB4076F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{72DA7AC6-74FB-4BE8-A690-B1A42567F0B6}"
+	ProjectSection(SolutionItems) = preProject
+		Tour\Nuget\CreateNugetPackage.ps1 = Tour\Nuget\CreateNugetPackage.ps1
+		Tour\Nuget\README.md = Tour\Nuget\README.md
+		Tour\Nuget\Routines.1.0.12.nuspec = Tour\Nuget\Routines.1.0.12.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-7576-4179-9A35-823A02D24EFF}"
+	ProjectSection(SolutionItems) = preProject
+		Tour\Doc\Asp.Core.txt = Tour\Doc\Asp.Core.txt
+		Tour\Doc\Conventions.txt = Tour\Doc\Conventions.txt
+		Tour\Doc\Dashboard.txt = Tour\Doc\Dashboard.txt
+		Tour\Doc\DeleteCache.ps1 = Tour\Doc\DeleteCache.ps1
+		Tour\Doc\TODO.txt = Tour\Doc\TODO.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -1132,5 +1141,7 @@ Global
 		{8A992BB3-1EC1-41AC-B044-2C7A574E380B} = {52BA4719-F064-4388-A426-1E1174D3A0EB}
 		{1F6C0F7A-3F7A-4B37-936A-F1B5AD3D3F01} = {52BA4719-F064-4388-A426-1E1174D3A0EB}
 		{183F2465-F2AE-4548-BAB6-88C8BB4076F0} = {52BA4719-F064-4388-A426-1E1174D3A0EB}
+		{72DA7AC6-74FB-4BE8-A690-B1A42567F0B6} = {90E0E81A-4CDA-43B8-A302-8430519EEA90}
+		{FB8DD7DE-7576-4179-9A35-823A02D24EFF} = {90E0E81A-4CDA-43B8-A302-8430519EEA90}
 	EndGlobalSection
 EndGlobal
