@@ -7,6 +7,11 @@ One of the best: https://github.com/erikras/react-redux-universal-hot-example
 
 Asp.Core Samples:
 https://github.com/aspnet/JavaScriptServices
+install guide: http://blog.stevensanderson.com/2016/05/02/angular2-react-knockout-apps-on-aspnet-core/
+for poduction: 
+SET ASPNETCORE_ENVIRONMENT=Production
+webpack --config webpack.config.vendor.js
+webpack
 
 or more preciese folder 
 https://github.com/aspnet/JavaScriptServices/tree/dev/src/Microsoft.AspNetCore.SpaServices#microsoftaspnetcorespaservices

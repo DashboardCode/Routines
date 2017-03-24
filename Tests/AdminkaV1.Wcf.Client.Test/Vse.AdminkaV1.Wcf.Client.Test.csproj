@@ -61,7 +61,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\AdminkaV1\Wcf.Client\AdminkaV1.WcfService.Client.csproj">
       <Project>{5b251776-c32b-4b06-b52d-6a302beac69d}</Project>
-      <Name>AdminkaV1.Wcf.Client</Name>
+      <Name>AdminkaV1.WcfService.Client</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Routines\Routines.csproj">
       <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>
