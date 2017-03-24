@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Threading;
 using Vse.AdminkaV1.DomAuthentication;
 
 namespace Vse.AdminkaV1
@@ -10,14 +9,13 @@ namespace Vse.AdminkaV1
         {
             User = user;
             AuditStamp = user.LoginName;
-            CultureInfo = cultureInfo ?? Thread.CurrentThread.CurrentCulture;
+            CultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
         }
 
         public UserContext(string auditStamp, CultureInfo cultureInfo = null)
         {
             AuditStamp = auditStamp;
-
-            CultureInfo = cultureInfo ?? Thread.CurrentThread.CurrentCulture;
+            CultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
         }
         public string AuditStamp { get; private set; }
 

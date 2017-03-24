@@ -5,6 +5,7 @@ using Vse.AdminkaV1.DomAuthentication;
 using Vse.AdminkaV1.Injected.Configuration;
 using Vse.AdminkaV1.Injected.Logging;
 using Vse.Routines;
+using Vse.Routines.Configuration;
 
 namespace Vse.AdminkaV1.Injected
 {
@@ -13,20 +14,22 @@ namespace Vse.AdminkaV1.Injected
         private readonly Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory;
         private readonly RepositoryHandlerFactory repositoryHandlerFactory;
         private readonly UserContext systemUserContext;
+        private readonly IAppConfiguration appConfiguration;
         public AuthenticationService(
             Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
-            RepositoryHandlerFactory repositoryHandlerFactory)
+            RepositoryHandlerFactory repositoryHandlerFactory,
+            IAppConfiguration appConfiguration)
         {
             this.loggingTransientsFactory = loggingTransientsFactory;
             this.repositoryHandlerFactory = repositoryHandlerFactory;
+            this.appConfiguration = appConfiguration;
             systemUserContext = new UserContext("Authentication");
         }
 
         public UserContext GetUserContext(RoutineTag routineTag, IIdentity identity, CultureInfo cultureInfo)
         {
             var authenticationRoutineTag = new RoutineTag(routineTag.CorrelationToken, this);
-            Func<UserContext, IResolver> specifyResolver;
-            var basicResolver = authenticationRoutineTag.GetResolver(out specifyResolver);
+            var basicResolver = authenticationRoutineTag.GetResolver(appConfiguration, out Func<UserContext, IResolver> specifyResolver);
             var resolver = specifyResolver(systemUserContext);
             var adConfiguration = resolver.Resolve<AdConfiguration>();
             bool useAdAuthorization = adConfiguration.UseAdAuthorization;
@@ -58,8 +61,7 @@ namespace Vse.AdminkaV1.Injected
                     var user = default(User);
                     if (useAdAuthorization)
                     {
-                        string firstName, secondName, loginName;
-                        var groups = identity.GetGroups(out loginName, out firstName, out secondName);
+                        var groups = InjectedManager.GetGroups(identity, out string loginName, out string firstName, out string secondName);
                         user = authenticationService.GetUser(loginName, firstName, secondName, groups);
                     }
                     else

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vse.AdminkaV1.DomAuthentication;
 using Vse.AdminkaV1.DomLogging;
 using Vse.AdminkaV1.DomTest;
@@ -48,13 +49,29 @@ namespace Vse.AdminkaV1.DataAccessEfCore
             relationalOptions.MigrationsHistoryTableName = "Migrations";
             relationalOptions.MigrationsHistoryTableSchema = "ef";
         }
+        private void SetupVersioned<T>(EntityTypeBuilder<T> builder) where T : class, IVersioned
+        {
+            builder.Property(e => e.RowVersionBy).HasMaxLength(LengthConstants.AdName);
+            builder.Property(e => e.RowVersion).HasColumnType("Timestamp");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            SetupVersioned(modelBuilder.Entity<TypeRecord>());
+            SetupVersioned(modelBuilder.Entity<ChildRecord>());
+            SetupVersioned(modelBuilder.Entity<HierarchyRecord>());
+            SetupVersioned(modelBuilder.Entity<ParentRecordHierarchyRecord>());
+            SetupVersioned(modelBuilder.Entity<ParentRecord>());
             #region Test Island
             string testIslandSchema = "tst";
             modelBuilder.Entity<ParentRecord>()
                 .ToTable(GetEntityTableName(nameof(ParentRecord)), schema: testIslandSchema)
                 .HasKey(e => e.ParentRecordId);
+            modelBuilder.Entity<ParentRecord>().Property(e => e.FieldA).IsRequired().HasMaxLength(LengthConstants.GoodForFormLabel);
+            modelBuilder.Entity<ParentRecord>().Property(e => e.FieldB1).IsRequired().HasMaxLength(LengthConstants.GoodForFormLabel);
+            modelBuilder.Entity<ParentRecord>().Property(e => e.FieldB2).IsRequired().HasMaxLength(LengthConstants.GoodForFormLabel);
+            modelBuilder.Entity<ParentRecord>().Property(e => e.FieldCA).IsRequired().HasMaxLength(LengthConstants.GoodForFormLabel);
+            modelBuilder.Entity<ParentRecord>().Property(e => e.FieldCB1).IsRequired().HasMaxLength(LengthConstants.GoodForFormLabel);
+            modelBuilder.Entity<ParentRecord>().Property(e => e.FieldCB2).IsRequired().HasMaxLength(LengthConstants.GoodForFormLabel);
             // unique indexes
             modelBuilder.Entity<ParentRecord>()
                 .HasIndex(e => e.FieldA).IsUnique();
@@ -66,6 +83,10 @@ namespace Vse.AdminkaV1.DataAccessEfCore
             modelBuilder.Entity<ParentRecord>()
                 .HasAlternateKey(e => new { e.FieldCB1, e.FieldCB2 });
 
+            modelBuilder.Entity<ChildRecord>().Property(e => e.ParentRecordId).HasMaxLength(LengthConstants.GoodForKey);
+            modelBuilder.Entity<ChildRecord>().Property(e => e.TypeRecordId).HasMaxLength(LengthConstants.GoodForKey);
+            modelBuilder.Entity<ChildRecord>().Property(e => e.XmlField1).HasColumnType("xml");
+            modelBuilder.Entity<ChildRecord>().Property(e => e.XmlField2).HasColumnType("xml");
             modelBuilder.Entity<ChildRecord>()
                 .ToTable(GetEntityTableName(nameof(ChildRecord)), schema: testIslandSchema)
                 .HasKey(e => new { e.ParentRecordId, e.TypeRecordId });
@@ -73,7 +94,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore
             modelBuilder.Entity<ChildRecord>().HasOne(e => e.ParentRecord)
                 .WithMany(e => e.ChildRecords)
                 .HasForeignKey(e => e.ParentRecordId);
-
+            //HasColumnType("xml");
             modelBuilder.Entity<ChildRecord>()
                 .HasOne(e => e.TypeRecord)
                 .WithMany(e => e.ChildRecords)
@@ -83,8 +104,12 @@ namespace Vse.AdminkaV1.DataAccessEfCore
                 .ToTable(GetEntityTableName(nameof(TypeRecord)), schema: testIslandSchema)
                 .HasKey(e => e.TestTypeRecordId);
             modelBuilder.Entity<TypeRecord>()
+                .Property(e => e.TestTypeRecordId).HasMaxLength(LengthConstants.GoodForKey);
+            modelBuilder.Entity<TypeRecord>().Property(e => e.TypeRecordName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
+            modelBuilder.Entity<TypeRecord>()
                 .HasIndex(e => e.TypeRecordName).IsUnique();
 
+            modelBuilder.Entity<HierarchyRecord>().Property(e => e.HierarchyRecordTitle).IsRequired().HasMaxLength(LengthConstants.GoodForLongTitle);
             modelBuilder.Entity<HierarchyRecord>()
                .ToTable(GetEntityTableName(nameof(HierarchyRecord)), schema: testIslandSchema)
                .HasKey(e => e.HierarchyRecordId);
@@ -108,15 +133,31 @@ namespace Vse.AdminkaV1.DataAccessEfCore
             #endregion
             #endregion
 
-            modelBuilder.Entity<ActivityRecord>();
-            modelBuilder.Entity<VerboseRecord>();
+            modelBuilder.Entity<ActivityRecord>().HasKey(e=> e.ActivityRecordId);
+            modelBuilder.Entity<ActivityRecord>().Property(e => e.CorrelationToken).IsRequired();
+            modelBuilder.Entity<ActivityRecord>().Property(e => e.Application).IsRequired().HasMaxLength(LengthConstants.GoodForKey);
+            modelBuilder.Entity<ActivityRecord>().Property(e => e.FullActionName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
+            modelBuilder.Entity<VerboseRecord>().HasKey(e => e.ActivityRecordId);
+            modelBuilder.Entity<VerboseRecord>().Property(e => e.CorrelationToken).IsRequired();
+            modelBuilder.Entity<VerboseRecord>().Property(e => e.Application).IsRequired().HasMaxLength(LengthConstants.GoodForKey);
+            modelBuilder.Entity<VerboseRecord>().Property(e => e.FullActionName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
+            modelBuilder.Entity<VerboseRecord>().Property(e => e.VerboseRecordTypeId).IsRequired().HasMaxLength(LengthConstants.GoodForKey);
 
-            modelBuilder.Entity<Privilege>();
-            modelBuilder.Entity<User>();
-            modelBuilder.Entity<Group>();
-            modelBuilder.Entity<Role>();
+            modelBuilder.Entity<Privilege>().HasKey(e => e.PrivilegeId);
+            modelBuilder.Entity<Privilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
+            modelBuilder.Entity<Privilege>().Property(e => e.PrivilegeName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
+            modelBuilder.Entity<User>().HasKey(e => e.UserId);
+            modelBuilder.Entity<User>().Property(e => e.LoginName).IsRequired().HasMaxLength(LengthConstants.AdName);
+            modelBuilder.Entity<User>().Property(e => e.FirstName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
+            modelBuilder.Entity<User>().Property(e => e.SecondName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
+            modelBuilder.Entity<Group>().HasKey(e=>e.GroupId);
+            modelBuilder.Entity<Group>().Property(e => e.GroupName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
+            modelBuilder.Entity<Group>().Property(e => e.GroupAdName).IsRequired().HasMaxLength(LengthConstants.AdName);
+            modelBuilder.Entity<Role>().HasKey(e => e.RoleId);
+            modelBuilder.Entity<Role>().Property(e => e.RoleName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
 
             #region UsersPrivileges
+            modelBuilder.Entity<UserPrivilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<UserPrivilege>()
                 .ToTable(GetMapTableName(nameof(UserPrivilege)))
                 .HasKey(e => new { e.UserId, e.PrivilegeId });
@@ -133,6 +174,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore
             #endregion
 
             #region GroupsPrivileges
+            modelBuilder.Entity<GroupPrivilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<GroupPrivilege>()
                 .ToTable(GetMapTableName(nameof(GroupPrivilege)))
                 .HasKey(e => new { e.GroupId, e.PrivilegeId });
@@ -184,7 +226,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore
             modelBuilder.Entity<RolePrivilege>()
                .ToTable(GetMapTableName(nameof(RolePrivilege)))
                .HasKey(e => new { e.RoleId, e.PrivilegeId });
-
+            modelBuilder.Entity<RolePrivilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<RolePrivilege>()
                 .HasOne(up => up.Role)
                 .WithMany(u => u.RolePrivilegeMap)

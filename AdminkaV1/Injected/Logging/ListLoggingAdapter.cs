@@ -54,20 +54,20 @@ namespace Vse.AdminkaV1.Injected.Logging
         public void LogActivityStart(DateTime dateTime)
         {
             var text = "LogActivityStart, " + dateTime +" "+ routineTag.ToString();
-            System.Diagnostics.Trace.WriteLine(text);
+            //System.Diagnostics.Trace.WriteLine(text);
             logger.Add(text);
         }
         public void LogActivityFinish(DateTime dateTime, TimeSpan timeSpan, bool isSuccess)
         {
             var text = "LogActivityFinish, " + dateTime + " " + routineTag.ToString()
                 + " duration:"+((Math.Round(timeSpan.TotalMilliseconds) + "ms")) +(isSuccess ? "" : "; #ERROR");
-            System.Diagnostics.Trace.WriteLine(text);
+            //System.Diagnostics.Trace.WriteLine(text);
             logger.Add(text);
         }
         public void LogVerbose(DateTime dateTime, string message)
         {
             var text = "LogVerbose, " + dateTime + " " + routineTag.ToString() + " message:" + message;
-            System.Diagnostics.Trace.WriteLine(text);
+            //System.Diagnostics.Trace.WriteLine(text);
             logger.Add(text);
         }
         public void LogBufferedVerbose(List<VerboseMessage> verboseMessages)
@@ -80,7 +80,7 @@ namespace Vse.AdminkaV1.Injected.Logging
                 
                 if (verbose.StackTrace!=null)
                     text+=Environment.NewLine+ "StackTrace: " + verbose.StackTrace;
-                System.Diagnostics.Trace.WriteLine(text);
+                //System.Diagnostics.Trace.WriteLine(text);
                 logger.Add(text);
             }
         }
@@ -89,7 +89,7 @@ namespace Vse.AdminkaV1.Injected.Logging
         {
             var message = markdownException(excepion);
             var text = "LogException, " + dateTime + " " + routineTag.ToString() + " message:" + Environment.NewLine + message;
-            System.Diagnostics.Trace.WriteLine(text);
+            //System.Diagnostics.Trace.WriteLine(text);
             logger.Add(text);
         }
 
@@ -99,7 +99,7 @@ namespace Vse.AdminkaV1.Injected.Logging
             {
                 var message = serializeObject(input);
                 var text = "Input, " + dateTime + " " + routineTag.ToString() + " message:" + message;
-                System.Diagnostics.Trace.WriteLine(text);
+                //System.Diagnostics.Trace.WriteLine(text);
                 logger.Add(text);
             }
         }
@@ -110,7 +110,7 @@ namespace Vse.AdminkaV1.Injected.Logging
             {
                 var message = serializeObject(output);
                 var text = "Output, " + dateTime + " " + routineTag.ToString() + " message:" + message;
-                System.Diagnostics.Trace.WriteLine(text);
+                //System.Diagnostics.Trace.WriteLine(text);
                 logger.Add(text);
             }
         }

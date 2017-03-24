@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Vse.AdminkaV1.Wcf.Client.TraceServiceReference {
+namespace Vse.AdminkaV1.WcfService.Client.TraceServiceReference {
     using System.Runtime.Serialization;
     using System;
     
@@ -29,7 +29,7 @@ namespace Vse.AdminkaV1.Wcf.Client.TraceServiceReference {
         private string MessageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private Vse.AdminkaV1.Wcf.Client.TraceServiceReference.RoutineTag RoutineTagField;
+        private Vse.AdminkaV1.WcfService.Client.TraceServiceReference.RoutineTag RoutineTagField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string UserContextExceptionCodeField;
@@ -71,7 +71,7 @@ namespace Vse.AdminkaV1.Wcf.Client.TraceServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public Vse.AdminkaV1.Wcf.Client.TraceServiceReference.RoutineTag RoutineTag {
+        public Vse.AdminkaV1.WcfService.Client.TraceServiceReference.RoutineTag RoutineTag {
             get {
                 return this.RoutineTagField;
             }
@@ -249,9 +249,9 @@ namespace Vse.AdminkaV1.Wcf.Client.TraceServiceReference {
     public interface TraceService {
         
         [System.ServiceModel.OperationContractAttribute(Action="https://github.com/rpokrovskij/Vse/Adminka-v1/TraceService/GetTrace", ReplyAction="https://github.com/rpokrovskij/Vse/Adminka-v1/TraceService/GetTraceResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(Vse.AdminkaV1.Wcf.Client.TraceServiceReference.RoutineError), Action="https://github.com/rpokrovskij/Vse/Adminka-v1/TraceService/GetTraceRoutineErrorFa" +
+        [System.ServiceModel.FaultContractAttribute(typeof(Vse.AdminkaV1.WcfService.Client.TraceServiceReference.RoutineError), Action="https://github.com/rpokrovskij/Vse/Adminka-v1/TraceService/GetTraceRoutineErrorFa" +
             "ult", Name="RoutineError")]
-        [System.ServiceModel.FaultContractAttribute(typeof(Vse.AdminkaV1.Wcf.Client.TraceServiceReference.AuthenticationFault), Action="https://github.com/rpokrovskij/Vse/Adminka-v1/TraceService/GetTraceAuthentication" +
+        [System.ServiceModel.FaultContractAttribute(typeof(Vse.AdminkaV1.WcfService.Client.TraceServiceReference.AuthenticationFault), Action="https://github.com/rpokrovskij/Vse/Adminka-v1/TraceService/GetTraceAuthentication" +
             "FaultFault", Name="AuthenticationFault")]
         Vse.AdminkaV1.DomLogging.Trace GetTrace(System.Guid correlationToken);
         
@@ -260,12 +260,12 @@ namespace Vse.AdminkaV1.Wcf.Client.TraceServiceReference {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface TraceServiceChannel : Vse.AdminkaV1.Wcf.Client.TraceServiceReference.TraceService, System.ServiceModel.IClientChannel {
+    public interface TraceServiceChannel : Vse.AdminkaV1.WcfService.Client.TraceServiceReference.TraceService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class TraceServiceClient : System.ServiceModel.ClientBase<Vse.AdminkaV1.Wcf.Client.TraceServiceReference.TraceService>, Vse.AdminkaV1.Wcf.Client.TraceServiceReference.TraceService {
+    public partial class TraceServiceClient : System.ServiceModel.ClientBase<Vse.AdminkaV1.WcfService.Client.TraceServiceReference.TraceService>, Vse.AdminkaV1.WcfService.Client.TraceServiceReference.TraceService {
         
         public TraceServiceClient() {
         }

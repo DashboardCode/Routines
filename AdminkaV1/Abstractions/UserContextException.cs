@@ -1,9 +1,13 @@
 ﻿using System;
-using System.Runtime.Serialization;
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
+    using System.Runtime.Serialization;
+#endif
 
 namespace Vse.AdminkaV1
 {
+    #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
     [Serializable]
+    #endif
     public class UserContextException : Exception
     {
         public readonly string Code;
@@ -18,10 +22,12 @@ namespace Vse.AdminkaV1
         {
             Code = code;
         }
+        #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
             info.AddValue("Code", Code);
         }
+        #endif
     }
 }

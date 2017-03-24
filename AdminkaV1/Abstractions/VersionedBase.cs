@@ -1,16 +1,14 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Vse.AdminkaV1
 {
     public abstract class VersionedBase : IVersioned
     {
-        [MaxLength(LengthConstants.AdName), DisplayName("Modified By")]
+        //[DisplayName("Modified By")]
         public string RowVersionBy { get; set; }
-        [DisplayName("Modified At")]
+        //[DisplayName("Modified At")]
         public DateTime RowVersionAt { get; set; }
-        [Timestamp, DisplayName("Stamp")]
+        //[DisplayName("Stamp")]
         public byte[] RowVersion { get; set; }
     }
 }

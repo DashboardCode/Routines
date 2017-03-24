@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ServiceModel;
-using Vse.AdminkaV1.Wcf.Contracts;
+using Vse.AdminkaV1.WcfService.Contracts;
 
-namespace Vse.AdminkaV1.Wcf
+namespace Vse.AdminkaV1.WcfService
 {
     [Serializable]
     public class WcfException : FaultException<RoutineError>

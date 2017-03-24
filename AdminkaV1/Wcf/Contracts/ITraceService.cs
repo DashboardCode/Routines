@@ -2,7 +2,7 @@
 using System.ServiceModel;
 using Vse.AdminkaV1.DomLogging;
 
-namespace Vse.AdminkaV1.Wcf.Contracts
+namespace Vse.AdminkaV1.WcfService.Contracts
 {
     public static class TraceServiceContractConstants
     {

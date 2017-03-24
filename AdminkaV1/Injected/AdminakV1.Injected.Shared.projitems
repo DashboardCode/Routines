@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>89394319-e1fb-4e00-8138-1478fed390ee</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>AdminkaV1.Injected.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AdminkaRoutine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AuthenticationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\AdConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\ApplicationServicesConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\FakeAdConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\LoggingConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\LoggingPerformanceConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Configuration\LoggingVerboseConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataAccessFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)InjectedManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\IAuthenticationLogging.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\ListLoggingAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogAuthenticationLogging.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogLoggingAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\RoutineLoggingTransients.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RepositoryHandlerFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ServicesContainer.cs" />
+  </ItemGroup>
+</Project>

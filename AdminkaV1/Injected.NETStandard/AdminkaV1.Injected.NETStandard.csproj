@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
+    <Product>Vse.Routines.Injected</Product>
+    <Copyright>Copyright ©  2016</Copyright>
+    <PackageId>Vse.Routines.Injected</PackageId>
+    <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
+    <AssemblyVersion>1.0.12.0</AssemblyVersion>
+    <FileVersion>1.0.12.0</FileVersion>
+    <Description />
+    <RootNamespace>Vse.Routines.Injected</RootNamespace>
+    <AssemblyName>Vse.Routines.Injected</AssemblyName>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD1_4;</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Markdown" Version="2.2.1" />
+    <PackageReference Include="NLog" Version="5.0.0-beta06" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Routines.Serialization.NETStandard\Routines.Serialization.NETStandard.csproj" />
+    <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
+    <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
+    <ProjectReference Include="..\DataAccessEfCore.SqlServer\AdminkaV1.DataAccessEfCore.SqlServer.csproj" />
+    <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\Injected\AdminakV1.Injected.Shared.projitems" Label="Shared" />
+</Project>

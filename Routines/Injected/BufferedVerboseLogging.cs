@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Vse.Routines.Injected
 {
@@ -32,9 +31,16 @@ namespace Vse.Routines.Injected
         }
         public void LogVerbose(DateTime dateTime, string message)
         {
-            Add(dateTime, ItemType.Verbose, message, null, verboseWithStackTrace ? new StackTrace(1, true) : null);
+            IStackTraceProvider stackTrace = null;
+            if (verboseWithStackTrace)
+#if NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6
+                stackTrace = new StdStackTraceProvider(Environment.StackTrace);
+#else
+                stackTrace = new NfStackTraceProvider(new System.Diagnostics.StackTrace(1, true));
+#endif
+            Add(dateTime, ItemType.Verbose, message, null, stackTrace);
         }
-        private void Add(DateTime dateTime, ItemType itemType, string verboseMessage, object inputOutput, StackTrace stackTrace)
+        private void Add(DateTime dateTime, ItemType itemType, string verboseMessage, object inputOutput, IStackTraceProvider stackTrace)
         {
             lock (lockKey)
             {
@@ -73,8 +79,8 @@ namespace Vse.Routines.Injected
             public readonly string VerboseMessage;
             public readonly object InputOutput;
             public readonly ItemType ItemType;
-            public readonly StackTrace StackTrace;
-            public VerboseBufferItem(DateTime dateTime, ItemType itemType, string verboseMessage, object inputOutput, StackTrace stackTrace)
+            public readonly IStackTraceProvider StackTrace;
+            public VerboseBufferItem(DateTime dateTime, ItemType itemType, string verboseMessage, object inputOutput, IStackTraceProvider stackTrace)
             {
                 DateTime = dateTime;
                 ItemType = itemType;
@@ -85,13 +91,51 @@ namespace Vse.Routines.Injected
         }
     }
 
+    /// <summary>
+    /// Wait for .NET Standard 2.0 there should be 
+    /// </summary>
+    public interface IStackTraceProvider
+    {
+        string GetText();
+    }
+
+#if NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6
+    public class StdStackTraceProvider : IStackTraceProvider
+    {
+        readonly string stackTrace;
+
+        public StdStackTraceProvider(string stackTrace)
+        {
+            this.stackTrace = stackTrace;
+        }
+
+        public string GetText()
+        {
+           return stackTrace;
+        }
+    }
+#else
+    public class NfStackTraceProvider : IStackTraceProvider
+    {
+        readonly System.Diagnostics.StackTrace stackTrace;
+        public NfStackTraceProvider(System.Diagnostics.StackTrace StackTrace)
+        {
+            this.stackTrace = stackTrace;
+        }
+
+        public string GetText()
+        {
+           return stackTrace.ToString();
+        }
+    }
+#endif
     public class VerboseMessage
     {
-        public readonly DateTime DateTime;
-        public readonly string Message;
-        public readonly StackTrace StackTrace;
+        public readonly DateTime   DateTime;
+        public readonly string     Message;
+        public readonly IStackTraceProvider StackTrace;
 
-        public VerboseMessage(DateTime dateTime, string text, StackTrace stackTrace)
+        public VerboseMessage(DateTime dateTime, string text, IStackTraceProvider stackTrace)
         {
             DateTime = dateTime;
             Message = text;

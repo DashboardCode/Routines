@@ -11,7 +11,7 @@ namespace Vse.Routines.Storage
             if (storageError != null && storageError.FieldErrors != null)
             {
                 if (storageError.FieldErrors.Count >= 1)
-                    throw new ApplicationException(exceptionText, storageError.Exception);
+                    throw new StorageErrorException(exceptionText, storageError.Exception);
             }
         }
 
@@ -25,7 +25,7 @@ namespace Vse.Routines.Storage
                     if (messageFragment != null && storageError.ContainsLike(field, messageFragment)) return;
                 }
             }
-            throw new ApplicationException(exceptionText, storageError.Exception);
+            throw new StorageErrorException(exceptionText, storageError.Exception);
         }
 
         public static void Assert(this StorageError storageError, int number, string[] fields, string messageFragment, string exceptionText)
@@ -38,7 +38,7 @@ namespace Vse.Routines.Storage
                     if (messageFragment != null && storageError.ContainsLike(fields, messageFragment)) return;
                 }
             }
-            throw new ApplicationException(exceptionText, storageError.Exception);
+            throw new StorageErrorException(exceptionText, storageError.Exception);
         }
         public static bool Contains(this List<FieldError> fieldErrors, string field)
         {

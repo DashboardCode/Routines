@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Vse.AdminkaV1.DomTest
@@ -11,22 +10,16 @@ namespace Vse.AdminkaV1.DomTest
     {
         public int ParentRecordId { get; set; }
 
-        [Required, MaxLength(LengthConstants.GoodForFormLabel)]
         public string FieldA { get; set; }
 
-        [Required, MaxLength(LengthConstants.GoodForFormLabel)]
         public string FieldB1 { get; set; }
 
-        [Required, MaxLength(LengthConstants.GoodForFormLabel)]
         public string FieldB2 { get; set; }
 
-        [Required, MaxLength(LengthConstants.GoodForFormLabel)]
         public string FieldCA { get; set; }
 
-        [Required, MaxLength(LengthConstants.GoodForFormLabel)]
         public string FieldCB1 { get; set; }
 
-        [Required, MaxLength(LengthConstants.GoodForFormLabel)]
         public string FieldCB2 { get; set; }
 
         public int FieldNotNull { get; set; }

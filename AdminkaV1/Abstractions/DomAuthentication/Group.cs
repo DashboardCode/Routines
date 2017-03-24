@@ -1,17 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace Vse.AdminkaV1.DomAuthentication
 {
     public class Group
     {
-        [Key]
         public int GroupId { get; set; }
-        [Required, MaxLength(LengthConstants.GoodForTitle), DisplayName("Name")]
+        //[DisplayName("Name")]
         public string GroupName { get; set; }
-        [Required, MaxLength(LengthConstants.AdName), DisplayName("AD")]
+        //[DisplayName("AD")]
         public string GroupAdName { get; set; }
         public ICollection<GroupPrivilege> GroupPrivilegeMap { get; set; }
         public ICollection<GroupRole> GroupRoleMap { get; set; }

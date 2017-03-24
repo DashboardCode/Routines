@@ -1,80 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0AFBD8EE-9049-4B87-BD18-5FB925D38352}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
+    <Product>Vse.AdminkaV1</Product>
+    <Copyright>Copyright ©  2016</Copyright>
+    <PackageId>Vse.AdminkaV1</PackageId>
+    <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
+    <AssemblyVersion>1.0.12.0</AssemblyVersion>
+    <FileVersion>1.0.12.0</FileVersion>
+    <Description />
     <RootNamespace>Vse.AdminkaV1</RootNamespace>
     <AssemblyName>Vse.AdminkaV1</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTANDARD1_4</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <ProjectReference Include="..\..\Routines\Routines.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="DomLogging\ActivityRecord.cs" />
-    <Compile Include="DomAuthentication\GroupRole.cs" />
-    <Compile Include="DomAuthentication\UserGroup.cs" />
-    <Compile Include="DomAuthentication\UserRole.cs" />
-    <Compile Include="DomAuthentication\UserPrivilege.cs" />
-    <Compile Include="DomAuthentication\RolePrivilege.cs" />
-    <Compile Include="DomAuthentication\Group.cs" />
-    <Compile Include="DomAuthentication\GroupPrivilege.cs" />
-    <Compile Include="DomAuthentication\User.cs" />
-    <Compile Include="DomAuthentication\Privilege.cs" />
-    <Compile Include="DomAuthentication\Role.cs" />
-    <Compile Include="DomTest\ParentRecordHierarchyRecord.cs" />
-    <Compile Include="DomTest\HierarchyRecord.cs" />
-    <Compile Include="DomTest\ChildRecord.cs" />
-    <Compile Include="DomTest\ParentRecord.cs" />
-    <Compile Include="LengthConstants.cs" />
-    <Compile Include="IVersioned.cs" />
-    <Compile Include="UserContext.cs" />
-    <Compile Include="VersionedBase.cs" />
-    <Compile Include="DomLogging\Operation.cs" />
-    <Compile Include="DomAuthentication\IAuthenticationService.cs" />
-    <Compile Include="DomLogging\ITraceService.cs" />
-    <Compile Include="DomTest\TestTypeRecord.cs" />
-    <Compile Include="DomLogging\Trace.cs" />
-    <Compile Include="DomLogging\VerboseRecord.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserContextException.cs" />
+    <Folder Include="Properties\" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Routines\Routines.csproj">
-      <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>
-      <Name>Routines</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

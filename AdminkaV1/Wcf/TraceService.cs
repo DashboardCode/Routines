@@ -2,10 +2,10 @@
 using Vse.AdminkaV1.DomLogging;
 using Vse.AdminkaV1.Injected;
 using Vse.Routines;
-using DataContactConstants = Vse.AdminkaV1.Wcf.Contracts.RoutineErrorDataContractConstants;
-using IService = Vse.AdminkaV1.Wcf.Contracts.ITraceService;
+using DataContactConstants = Vse.AdminkaV1.WcfService.Contracts.RoutineErrorDataContractConstants;
+using IService = Vse.AdminkaV1.WcfService.Contracts.ITraceService;
 
-namespace Vse.AdminkaV1.Wcf
+namespace Vse.AdminkaV1.WcfService
 {
     public class TraceService : IService
     {

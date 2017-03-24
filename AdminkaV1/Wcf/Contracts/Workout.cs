@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Vse.AdminkaV1.Wcf.Contracts
+namespace Vse.AdminkaV1.WcfService.Contracts
 {
     static class RoutineErrorDataContractConstants
     {

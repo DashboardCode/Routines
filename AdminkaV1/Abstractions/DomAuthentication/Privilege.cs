@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Vse.AdminkaV1.DomAuthentication
@@ -10,10 +8,10 @@ namespace Vse.AdminkaV1.DomAuthentication
         public const string ConfigureSystem = "CFGS";
         public const string VerboseLogging = "VLOG";
 
-        [Key, MaxLength(LengthConstants.GoodForKey), DisplayName("ID")]
+        //[DisplayName("ID")]
         public string PrivilegeId { get; set; }
 
-        [MaxLength(LengthConstants.GoodForTitle), DisplayName("Name")]
+        //[DisplayName("Name")]
         public string PrivilegeName { get; set; }
 
         public ICollection<UserPrivilege> UserPrivilegeMap { get; set; }

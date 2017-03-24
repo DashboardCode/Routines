@@ -15,22 +15,26 @@ namespace Vse.AdminkaV1.Injected
         #region constructors without usercontext
         public AdminkaRoutine(
             RoutineTag routineTag,
+            IAppConfiguration configuration,
             object input
         ) : this(
             routineTag,
             InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
-            new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
+            new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
+            configuration,
             input)
         {
         }
         public AdminkaRoutine(
             string @namespace, string controller, string action,
             Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            IAppConfiguration configuration,
             object input
         ) : this(
            new RoutineTag(Guid.NewGuid(), @namespace, controller, action),
            loggingTransientsFactory,
-           new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
+           new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
+           configuration,
            input)
         {
         }
@@ -40,6 +44,7 @@ namespace Vse.AdminkaV1.Injected
              IIdentity identity,
              Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
              RepositoryHandlerFactory repositoryHandlerFactory,
+             IAppConfiguration configuration,
              object input
         ) : this(
            routineTag,
@@ -47,7 +52,8 @@ namespace Vse.AdminkaV1.Injected
            CultureInfo.CurrentCulture,
            loggingTransientsFactory,
            repositoryHandlerFactory,
-           new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory),
+           new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configuration),
+           configuration,
            input)
         {
         }
@@ -56,6 +62,7 @@ namespace Vse.AdminkaV1.Injected
             RoutineTag routineTag,
             Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
+            IAppConfiguration configuration,
             object input
         ) : this(
            routineTag,
@@ -63,7 +70,8 @@ namespace Vse.AdminkaV1.Injected
            CultureInfo.CurrentCulture,
            loggingTransientsFactory,
            repositoryHandlerFactory,
-           new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory),
+           new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configuration),
+           configuration,
            input)
         {
         }
@@ -74,12 +82,14 @@ namespace Vse.AdminkaV1.Injected
             Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             AuthenticationService authenticationServices,
+            IAppConfiguration configuration,
             object input
             ) : this(
                 routineTag,
                 authenticationServices.GetUserContext(routineTag, identity, cultureInfo),
                 loggingTransientsFactory, 
                 repositoryHandlerFactory,
+                configuration,
                 input)
         {
         }
@@ -89,12 +99,14 @@ namespace Vse.AdminkaV1.Injected
         public AdminkaRoutine(
             string @namespace, string controller, string action,
             UserContext userContext,
+            IAppConfiguration configuration,
             object input
             ) : this(
                     new RoutineTag(Guid.NewGuid(), @namespace, controller, action), 
                     userContext,
                     InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
-                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
+                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
+                    configuration,
                     input)
         {
         }
@@ -102,12 +114,13 @@ namespace Vse.AdminkaV1.Injected
         public AdminkaRoutine(
             RoutineTag routineTag,
             UserContext userContext,
+            IAppConfiguration configuration,
             object input
             ) : this(routineTag,
                     userContext,
-                    routineTag.GetSpecifiedResolver(userContext),
+                    routineTag.GetSpecifiedResolver(userContext, configuration),
                     InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
-                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
+                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
                     input)
         {
         }
@@ -116,12 +129,14 @@ namespace Vse.AdminkaV1.Injected
             string @namespace, string controller, string action,
             UserContext userContext,
             Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            IAppConfiguration configuration,
             object input
             ) : this(
                     new RoutineTag(Guid.NewGuid(), @namespace, controller, action), 
                     userContext, 
                     loggingTransientsFactory,
-                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
+                    new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
+                    configuration,
                     input)
         {
         }
@@ -130,13 +145,14 @@ namespace Vse.AdminkaV1.Injected
             RoutineTag routineTag,
             UserContext userContext,
             Func<Exception, RoutineTag, Func<Exception, string>, Exception> routineTransformException,
+            IAppConfiguration configuration,
             object input
         ) : this(
            routineTag,
            userContext,
-           routineTag.GetSpecifiedResolver(userContext),
+           routineTag.GetSpecifiedResolver(userContext, configuration),
            InjectedManager.NLogConstructor(InjectedManager.Markdown,routineTransformException),
-           new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService()),
+           new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
            input)
         {
         }
@@ -146,11 +162,12 @@ namespace Vse.AdminkaV1.Injected
             UserContext userContext,
             Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
+            IAppConfiguration configuration,
             object input
             ) : this(
                 routineTag,
                 userContext,
-                routineTag.GetSpecifiedResolver(userContext),
+                routineTag.GetSpecifiedResolver(userContext, configuration),
                 loggingTransientsFactory,
                 repositoryHandlerFactory,
                 input)

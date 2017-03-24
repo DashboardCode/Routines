@@ -19,8 +19,8 @@ namespace Vse.Routines
         {
             var popertyName = memberExpression.Member.Name;
             var type = entity.GetType();
-            
-            var propertyInfo = type.GetProperty(popertyName);
+            var typeInfo = type.GetTypeInfo();
+            var propertyInfo = typeInfo.GetDeclaredProperty(popertyName);
             Debug.Assert(propertyInfo!=null, "propertyInfo is null");
             Debug.Assert(propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0, "propertyInfo can't be read");
             var value = propertyInfo.GetValue(entity);
@@ -34,8 +34,8 @@ namespace Vse.Routines
         {
             var popertyName = memberExpression.Member.Name;
             var type = entity1.GetType();
-
-            var propertyInfo = type.GetProperty(popertyName);
+            var typeInfo = type.GetTypeInfo();
+            var propertyInfo = typeInfo.GetDeclaredProperty(popertyName);
             Debug.Assert(propertyInfo != null, "propertyInfo is null");
             Debug.Assert(propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0, "propertyInfo can't be read");
             var value1 = propertyInfo.GetValue(entity1);
@@ -46,15 +46,15 @@ namespace Vse.Routines
         private static Type GetMemberType(this MemberExpression memberExpression)
         {
             var type = memberExpression.Type;
-            var type3 = memberExpression.Member.DeclaringType;
-            var type2 = memberExpression.Member.ReflectedType;
+            //var type3 = memberExpression.Member.DeclaringType;
+            //var type2 = memberExpression.Member.ReflectedType;
             return type;
         }
         private static void SetValue(this MemberExpression memberExpression, object entity, object propertyValue)
         {
             var type = entity.GetType();
             var popertyName = memberExpression.Member.Name;
-            var propertyInfo = type.GetProperty(popertyName);
+            var propertyInfo = type.GetTypeInfo().GetDeclaredProperty(popertyName);
             Debug.Assert(propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0);
             propertyInfo.SetValue(entity, propertyValue);
         }
@@ -70,7 +70,8 @@ namespace Vse.Routines
             if (sourceValue != null)
             {
                 var type = sourceValue.GetType();
-                if (!type.IsClass || sourceValue is string)
+                var typeInfo = type.GetTypeInfo();
+                if (!typeInfo.IsClass || sourceValue is string)
                 {
                     copiedValue = sourceValue;
                     SetValue(memberExpression, destination, copiedValue);
@@ -87,7 +88,7 @@ namespace Vse.Routines
                         }
                         else
                         {
-                            var constructor = type.GetConstructor(Type.EmptyTypes);
+                            var constructor = typeInfo.DeclaredConstructors.First(e=>e.GetParameters().Count()==0);
                             copiedValue = constructor.Invoke(null);
                         }
                     }
@@ -209,7 +210,7 @@ namespace Vse.Routines
             }
             else
             {
-                var properties = type.GetProperties();
+                var properties = type.GetTypeInfo().DeclaredProperties;
                 foreach (var propertyInfo in properties)
                 {
                     if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
@@ -357,7 +358,7 @@ namespace Vse.Routines
             where T1 : class 
             where T2 : class
         {
-            var constructor = typeof(T2).GetConstructor(Type.EmptyTypes);
+            var constructor = typeof(T2).GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
             //var destination = (T)Activator.CreateInstance(typeof(T));
             var destination = (T2)constructor.Invoke(null);
             throw new NotImplementedException();
@@ -396,7 +397,7 @@ namespace Vse.Routines
                 return default(T);
             if (systemTypes == default(IReadOnlyCollection<Type>))
                 systemTypes = SystemTypes;
-            var constructor = source.GetType().GetConstructor(Type.EmptyTypes);
+            var constructor = source.GetType().GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
             //var destination = (T)Activator.CreateInstance(typeof(T));
             var destination = (T)constructor.Invoke(null);
             Copy(source, destination, include, systemTypes);
@@ -410,7 +411,7 @@ namespace Vse.Routines
                 return null;
             if (systemTypes == default(IReadOnlyCollection<Type>))
                 systemTypes = SystemTypes;
-            var constructor = source.GetType().GetConstructor(Type.EmptyTypes);
+            var constructor = source.GetType().GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
             var destination = (TCol)constructor.Invoke(null);
             CopyAll(source, destination, include, systemTypes);
             return destination;
@@ -538,8 +539,9 @@ namespace Vse.Routines
             Func<object, object> copyItem)
         {
 
-            var clear = set.GetType().GetMethod("Clear");
-            var add = set.GetType().GetMethod("Add");
+            var getTypeInfo = set.GetType().GetTypeInfo();
+            var clear = getTypeInfo.GetDeclaredMethod("Clear");
+            var add = getTypeInfo.GetDeclaredMethod("Add");
             clear.Invoke(set, null);
             //set.Clear();
             foreach (var sourceItem in sourceEnumerable)
@@ -556,15 +558,17 @@ namespace Vse.Routines
             Func<object, object, bool> equals)
         {
             var setType = set1.GetType();
-            var countProperty = setType.GetProperty("Count");
+            var setTypeInfo = setType.GetTypeInfo();
+            var countProperty = setTypeInfo.GetDeclaredProperty("Count");
             var count1 = (int)countProperty.GetValue(set1, null);
             var count2 = (int)countProperty.GetValue(set2, null);
 
             var genType = setType.GenericTypeArguments.First();
             var array1 = Array.CreateInstance(genType, count1);
             var array2 = Array.CreateInstance(genType, count2);
-
-            var сopyTo = setType.GetMethod("CopyTo", new[] { array1.GetType() });
+            var methods = setTypeInfo.GetDeclaredMethods("CopyTo");
+            var сopyTo = methods
+                .First(e=>e.GetParameters().Count()==1);
             сopyTo.Invoke(set1, new[] { array1 });
             сopyTo.Invoke(set2, new[] { array2 });
             var @value = EqualsArray(array1, array2, equals);
@@ -621,19 +625,20 @@ namespace Vse.Routines
             else
             {
                 var type = sourceItem.GetType();
+                var typeInfo = type.GetTypeInfo();
                 if (sourceItem is string)
                 {
-                    return string.Copy((string)sourceItem);
+                    return new String(((string)sourceItem).ToCharArray()); // String.Copy((string)sourceItem); absent in standard
                 }
-                else if (type.IsValueType)
+                else if (typeInfo.IsValueType)
                 {
                     if (nodes.Count > 0)
                         throw new InvalidOperationException($"It is impossible to clone value type's '{type.FullName}' instance specifing includes '{string.Join(", ", nodes.Select(e=>e.MemberName))}' . Value type's instance can be cloned only entirely!");
                     return sourceItem;
                 }
-                else if (sourceItem.GetType().IsClass)
+                else if (typeInfo.IsClass)
                 {
-                    var constructor = sourceItem.GetType().GetConstructor(Type.EmptyTypes);
+                    var constructor = typeInfo.DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
                     var destinationItem = constructor.Invoke(null);
                     CopyNodes(sourceItem, destinationItem, nodes, systemTypes);
                     return destinationItem;
@@ -659,8 +664,8 @@ namespace Vse.Routines
             {
                 CopyList((IEnumerable)source, ((IList)destination), (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
             }
-            else if (source is IEnumerable && source.GetType().GetInterfaces().Any(t =>
-                    t.IsGenericType &&
+            else if (source is IEnumerable && source.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
+                    t.GetTypeInfo().IsGenericType &&
                     t.GetGenericTypeDefinition() == typeof(ISet<>)))
             {
                 CopySet((IEnumerable)source, (object)destination, (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
@@ -709,8 +714,8 @@ namespace Vse.Routines
             {
                 @value = EqualsList((IList)entity1, (IList)entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
             }
-            else if (entity1 is IEnumerable && entity1.GetType().GetInterfaces().Any(t =>
-                    t.IsGenericType &&
+            else if (entity1 is IEnumerable && entity1.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
+                    t.GetTypeInfo().IsGenericType &&
                     t.GetGenericTypeDefinition() == typeof(ISet<>)))
             {
                 @value = EqualsSet(entity1, entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
@@ -736,7 +741,7 @@ namespace Vse.Routines
         public static void CopySimpleTypesProperties(object source,
             object destination, IReadOnlyCollection<Type> systemTypes = null)
         {
-            var properties = destination.GetType().GetProperties();
+            var properties = destination.GetType().GetTypeInfo().DeclaredProperties;
             foreach (var propertyInfo in properties)
             {
                 if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)

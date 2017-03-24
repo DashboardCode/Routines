@@ -56,9 +56,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Web\Web.csproj">
+    <ProjectReference Include="..\..\Vse.Web\Vse.Web.csproj">
       <Project>{29481049-5d8f-4f96-a93b-f818ad37c537}</Project>
-      <Name>Web</Name>
+      <Name>Vse.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

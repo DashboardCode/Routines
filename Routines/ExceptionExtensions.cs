@@ -67,14 +67,18 @@ namespace Vse.Routines
         {
             stringBuilder.AppendMarkdownLine("FileLoadException specific:");
             stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");
-            stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
+            #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
+                stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
+            #endif
         }
 
         private static void AppendFileNotFoundException(this StringBuilder stringBuilder, System.IO.FileNotFoundException exception)
         {
             stringBuilder.AppendMarkdownLine("FileLoadException specific:");
             stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");
-            stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
+            #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
+                stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
+            #endif
         }
 
         private static void AppendException(this StringBuilder stringBuilder, Exception exception)

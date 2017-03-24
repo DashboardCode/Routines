@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ServiceModel;
 using Vse.AdminkaV1.DomLogging;
-using Vse.AdminkaV1.Wcf.Client.TraceServiceReference;
+using Vse.AdminkaV1.WcfService.Client.TraceServiceReference;
 
-namespace Vse.AdminkaV1.Wcf.Client
+namespace Vse.AdminkaV1.WcfService.Client
 {
     // TODO: to T4
     public class TraceServiceClient : ITraceService

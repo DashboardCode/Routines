@@ -1,22 +1,19 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Vse.AdminkaV1.DomAuthentication
 {
     public class User
     {
-        [Key]
         public int UserId { get; set; }
 
-        [Required, MaxLength(LengthConstants.AdName), DisplayName("Login")]
+        //[DisplayName("Login")]
         public string LoginName { get; set; }
 
-        [MaxLength(LengthConstants.GoodForTitle), DisplayName("First Name")]
+        //[DisplayName("First Name")]
         public string FirstName { get; set; }
 
-        [MaxLength(LengthConstants.GoodForName), DisplayName("Second Name")]
+        //[DisplayName("Second Name")]
         public string SecondName { get; set; }
 
         public ICollection<UserGroup> UserGroupMap { get; set; }
