@@ -21,13 +21,14 @@ namespace Vse.AdminkaV1.Injected.Test
         public void TestStore()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
             int newGroupId = 0;
             routine.Handle((state, dataAccess) =>
             {
-                var group = new Group();
-                group.GroupName = "TestStore";
-                group.GroupAdName = "TestStore\\TestStore";
+                var group = new Group{
+                    GroupName = "TestStore",
+                    GroupAdName = "TestStore\\TestStore"
+                };
 
                 var repositoryHandler = dataAccess.CreateRepositoryHandler<Group>();
                 // Create
@@ -127,7 +128,7 @@ namespace Vse.AdminkaV1.Injected.Test
         public void TestStoreUpdateRelations()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)

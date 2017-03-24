@@ -354,41 +354,41 @@ namespace Vse.Routines
             }
         }
 
-        public static T2 Cast<T1, T2>(T1 source, Include<T1> include)
-            where T1 : class 
-            where T2 : class
-        {
-            var constructor = typeof(T2).GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
-            //var destination = (T)Activator.CreateInstance(typeof(T));
-            var destination = (T2)constructor.Invoke(null);
-            throw new NotImplementedException();
-            //return destination;
-        }
+        //public static T2 Cast<T1, T2>(T1 source, Include<T1> include)
+        //    where T1 : class 
+        //    where T2 : class
+        //{
+        //    var constructor = typeof(T2).GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
+        //    //var destination = (T)Activator.CreateInstance(typeof(T));
+        //    var destination = (T2)constructor.Invoke(null);
+        //    throw new NotImplementedException();
+        //    //return destination;
+        //}
 
-        public static T2 Cast<T1, T2>(T1 t1, Include<T2> include)
-            where T1 : class
-            where T2 : class
-        {
-            throw new NotImplementedException();
-        }
+        //public static T2 Cast<T1, T2>(T1 t1, Include<T2> include)
+        //    where T1 : class
+        //    where T2 : class
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static void CastAll<TCol1, T1, TCol2, T2>(T1 t1, Include<T1> include)
-            where T1 : class
-            where TCol1 : IEnumerable<T1>
-            where T2 : class
-            where TCol2 : IEnumerable<T2>
-        {
-            throw new NotImplementedException();
-        }
+        //public static void CastAll<TCol1, T1, TCol2, T2>(T1 t1, Include<T1> include)
+        //    where T1 : class
+        //    where TCol1 : IEnumerable<T1>
+        //    where T2 : class
+        //    where TCol2 : IEnumerable<T2>
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public static void CastAll<TCol1, T1, TCol2, T2>(T1 t1, T2 t2, Include<T2> include)
-            where T1 : class
-            where TCol1 : IEnumerable<T1>
-            where T2 : class
-            where TCol2 : IEnumerable<T2>
-        {
-            throw new NotImplementedException();
-        }
+        //public static void CastAll<TCol1, T1, TCol2, T2>(T1 t1, T2 t2, Include<T2> include)
+        //    where T1 : class
+        //    where TCol1 : IEnumerable<T1>
+        //    where T2 : class
+        //    where TCol2 : IEnumerable<T2>
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null)
             where T : class

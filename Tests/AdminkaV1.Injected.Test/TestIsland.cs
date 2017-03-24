@@ -12,7 +12,7 @@ namespace Vse.AdminkaV1.Injected.Test
             Clear();
 
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(Guid.NewGuid(), typeof(TestIsland)), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(Guid.NewGuid(), typeof(TestIsland)), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 var typeRecord1 = new TypeRecord()
@@ -144,7 +144,7 @@ namespace Vse.AdminkaV1.Injected.Test
         public static void Clear()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(Guid.NewGuid(), typeof(TestIsland)), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(Guid.NewGuid(), typeof(TestIsland)), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 dataAccess.CreateRepositoryHandler<ChildRecord>().Handle((repository, storage) =>

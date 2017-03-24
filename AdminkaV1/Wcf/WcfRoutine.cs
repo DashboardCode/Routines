@@ -7,7 +7,7 @@ namespace Vse.AdminkaV1.WcfService
     public class WcfRoutine : AdminkaRoutine
     {
         public WcfRoutine(RoutineTag routineTag, string faultCodeNamespace, object input) 
-            : base(routineTag, GetUserContext(), TransformException(faultCodeNamespace), new WcfConfiguration(), input)
+            : base(routineTag, GetUserContext(), TransformException(faultCodeNamespace), new ConfigurationNETFramework(), input)
         {
         }
         private static UserContext GetUserContext()

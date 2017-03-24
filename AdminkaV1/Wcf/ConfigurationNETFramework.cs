@@ -3,7 +3,7 @@ using Vse.Routines.Configuration.NETFramework;
 
 namespace Vse.AdminkaV1.WcfService
 {
-    public class WcfConfiguration : IAppConfiguration
+    public class ConfigurationNETFramework : IAppConfiguration
     {
         public SpecifiableConfigurationContainer GetConfigurationContainer(string @namespace, string @class, string member)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Vse.AdminkaV1.WcfService.Client;
 
 namespace Vse.AdminkaV1.Wcf.Client.Test
 {

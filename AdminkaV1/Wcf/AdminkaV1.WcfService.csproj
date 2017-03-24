@@ -93,7 +93,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WcfConfiguration.cs" />
+    <Compile Include="ConfigurationNETFramework.cs" />
     <Compile Include="TraceService.cs" />
     <Compile Include="WcfException.cs" />
     <Compile Include="Contracts\ITraceService.cs" />

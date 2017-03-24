@@ -10,7 +10,7 @@ namespace Vse.AdminkaV1.Injected.Test
         [TestMethod]
         public void TestNLogSuccess() // 161 ms
         {
-            var routine = new AdminkaRoutine(new RoutineTag(this), new { input="Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), new ConfigurationNETFramework(), new { input="Input text" });
             var x = routine.Handle(container =>
             {
                 container.Verbose("Test message");
@@ -21,7 +21,7 @@ namespace Vse.AdminkaV1.Injected.Test
         [TestMethod]
         public void TestNLogFailure() // 149 ms
         {
-            var routine = new AdminkaRoutine(new RoutineTag(this), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), new ConfigurationNETFramework(), new { input = "Input text" });
             try
             { 
                 var x = routine.Handle<string>(container =>

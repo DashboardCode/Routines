@@ -18,7 +18,7 @@ namespace Vse.AdminkaV1.Injected.Test
         public void TestDetach()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
 
             Include<ParentRecord> include = includable =>
                        includable
@@ -42,7 +42,7 @@ namespace Vse.AdminkaV1.Injected.Test
         public void TestSerializtionRecursion()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
             var record = routine.Handle((state, dataAccess) =>
             {
                 Include<TypeRecord> include = includable =>
@@ -62,7 +62,7 @@ namespace Vse.AdminkaV1.Injected.Test
         public void TestProblematicDetachUsage()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
@@ -84,7 +84,7 @@ namespace Vse.AdminkaV1.Injected.Test
         public void TestXmlSerializeAndDesirialize()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);

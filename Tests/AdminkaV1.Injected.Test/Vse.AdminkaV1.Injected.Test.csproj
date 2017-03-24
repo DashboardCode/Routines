@@ -51,6 +51,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ConfigurationNETFramework.cs" />
     <Compile Include="RoutineMeasureTest.cs" />
     <Compile Include="EfCoreStrangesTest.cs" />
     <Compile Include="StorageTest.cs" />
@@ -66,9 +67,13 @@
       <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
       <Name>AdminkaV1</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj">
-      <Project>{a186e18c-a446-4218-a2a8-6b126daba983}</Project>
-      <Name>AdminkaV1.Injected</Name>
+    <ProjectReference Include="..\..\AdminkaV1\Injected.NETFramework\AdminkaV1.Injected.NETFramework.csproj">
+      <Project>{02666e1b-53c7-42db-ac39-a16127dd5c81}</Project>
+      <Name>AdminkaV1.Injected.NETFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj">
+      <Project>{5cec7388-fba6-4542-a23a-5c6a5ba607b9}</Project>
+      <Name>Routines.Configuration.NETFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Routines\Routines.csproj">
       <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>

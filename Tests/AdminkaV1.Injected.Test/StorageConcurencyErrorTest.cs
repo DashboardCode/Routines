@@ -18,7 +18,7 @@ namespace Vse.AdminkaV1.Injected.Test
         public void TestConcurencyError()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
             // check constraint on UPDATE
             routine.Handle((state, dataAccess) =>
             {
