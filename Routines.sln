@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}"
 	ProjectSection(SolutionItems) = preProject
-		Tests\OpenCover.bat = Tests\OpenCover.bat
+		OpenCover.bat = OpenCover.bat
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{68C4C8C2-2A78-4998-9D36-4A3B139B41FE}"
@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.DataAccessEfCore.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.AdminkaV1.Wcf.Client.Test", "Tests\AdminkaV1.Wcf.Client.Test\Vse.AdminkaV1.Wcf.Client.Test.csproj", "{E6C95D60-F0FB-4DE7-93DD-25E43F7D42EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCoreTest", "Tests\EfCoreTest\EfCoreTest.csproj", "{C85FC166-E6A4-40C1-BCB8-1FB68042F62F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCoreTestApp", "Tests\EfCoreTest\EfCoreTestApp.csproj", "{C85FC166-E6A4-40C1-BCB8-1FB68042F62F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.EfCore", "Routines.Storage.EfCore\Routines.Storage.EfCore.csproj", "{E0AB2637-9207-4941-9C9D-1FA6FD67FFE6}"
 EndProject
@@ -50,7 +50,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Web", "Vse.Web\Vse.Web.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Web.Test", "Tests\Web.Test\Vse.Web.Test.csproj", "{7F29FCB3-D596-4EDE-8CDF-2AAD42F1C0BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ef6Test", "Tests\Ef6Test\Ef6Test.csproj", "{FAEEA516-2296-4C52-9BE5-525B56F50880}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ef6TestApp", "Tests\Ef6Test\Ef6TestApp.csproj", "{FAEEA516-2296-4C52-9BE5-525B56F50880}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Routines.Configuration.NETStandard.Test", "Tests\Routines.Configuration.NETStandard.Test\Vse.Routines.Configuration.NETStandard.Test.csproj", "{AD9E1549-E53F-4B52-9116-F198A1D7C393}"
 EndProject

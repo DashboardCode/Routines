@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Vse.AdminkaV1.DomAuthentication;
 using Vse.AdminkaV1.DomLogging;
 using Vse.AdminkaV1.DomTest;
-using Vse.Routines.Storage.EfCore;
 
 namespace Vse.AdminkaV1.DataAccessEfCore
 {
@@ -52,7 +51,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore
         private void SetupVersioned<T>(EntityTypeBuilder<T> builder) where T : class, IVersioned
         {
             builder.Property(e => e.RowVersionBy).HasMaxLength(LengthConstants.AdName);
-            builder.Property(e => e.RowVersion).HasColumnType("Timestamp");
+            builder.Property(e => e.RowVersion).IsRowVersion();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
