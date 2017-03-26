@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Vse.Routines.Configuration;
 using Vse.Routines.Configuration.NETStandard;
+using Xunit;
+
+[assembly: CollectionBehavior(MaxParallelThreads = 1, DisableTestParallelization = true)]
 
 namespace Vse.AdminkaV1.Injected.Test
 {

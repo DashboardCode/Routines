@@ -28,9 +28,10 @@ namespace Vse.Routines.Serialization.NETStandard
             {
                 var serializer = new DataContractSerializer(rootType, knownTypes);
                 serializer.WriteObject(xmlTextWriter, o);
-                var text = stringWriter.ToString();
-                return text;
+
             }
+            var text = stringWriter.ToString();
+            return text;
         }
         #endregion
 
