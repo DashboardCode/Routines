@@ -109,10 +109,7 @@ namespace Vse.Routines.Test
         [TestMethod]
         public void IncludesCloneAll()
         {
-            var list = new List<TestModel>();
-            list.Add(CreateTestModel());
-            list.Add(CreateTestModel());
-            list.Add(CreateTestModel());
+            var list = new List<TestModel>() { CreateTestModel() , CreateTestModel(), CreateTestModel() };
 
             var includes = CreateIncludes();
 
@@ -389,9 +386,7 @@ namespace Vse.Routines.Test
                 
             }
 
-            var items = new List<Item>();
-            items.Add(null);
-            items.Add(null);
+            var items = new List<Item>() { null, null};
             items.Add(new Item() { F1 = "F1", F2 = "F2", Items = items });
             MemberExpressionExtensions.DetachAll<List<Item>, Item>(items, (i)=>i.Include(e=>e.Items));
         }

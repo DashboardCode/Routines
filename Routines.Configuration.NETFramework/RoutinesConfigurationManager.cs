@@ -11,7 +11,8 @@ namespace Vse.Routines.Configuration.NETFramework
         const string key = "routinesConfiguration";
         public static SpecifiableConfigurationContainer  GetConfigurationContainer(string @namespace, string @class, string member, string sectionName=key)
         {
-            var routinesConfigurationSection = (RoutinesConfigurationSection)ConfigurationManager.GetSection(sectionName);
+            var section = ConfigurationManager.GetSection(sectionName);
+            var routinesConfigurationSection = (RoutinesConfigurationSection)section;
             var routinesColection = ((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineResolvable>();
             var configurationContainer = RoutinesExtensions.GetConfigurationContainer(routinesColection, @namespace, @class, member);
             return configurationContainer;

@@ -1,4 +1,4 @@
-﻿using Ef6Test;
+﻿using Ef6TestApp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ef6Test
+namespace Ef6TestApp
 {
     public class MyDbContext : DbContext
     {

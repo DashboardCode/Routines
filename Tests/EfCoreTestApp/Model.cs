@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace Ef6Test
+namespace EfCoreTestApp
 {
     /// <summary>
     /// Shares ParentRecord's key. Tests inheritance implemented in relational model.

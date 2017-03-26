@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 
-namespace Ef6Test
+namespace EfCoreTestApp
 {
     public static class TestIsland
     {
         public static void Reset(string connectionString)
         {
             Clear(connectionString);
-            
-            using (var dbContext = new MyDbContext(connectionString, null))
+            using (var dbContext = new MyDbContext(connectionString))
             {
                 var typeRecord1 = new TypeRecord()
                 {
@@ -109,7 +107,7 @@ namespace Ef6Test
                 dbContext.HierarchyRecords.Add(hierarchyRecord3);
                 dbContext.HierarchyRecords.Add(hierarchyRecord4);
                 dbContext.HierarchyRecords.Add(hierarchyRecord5);
-                dbContext.SaveChanges();
+
 
                 var parentRecordHierarchyRecord1 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord1.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
                 var parentRecordHierarchyRecord2 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord2.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
@@ -128,9 +126,9 @@ namespace Ef6Test
         }
         public static void Clear(string connectionString)
         {
-            using (var dbContext = new MyDbContext(connectionString, null))
+            using (var dbContext = new MyDbContext(connectionString))
             {
-                //dbContext.Database.Migrate();
+                dbContext.Database.Migrate();
 
                 dbContext.Database.ExecuteSqlCommand("DELETE FROM tst.ParentRecordHierarchyRecordMap");
                 dbContext.Database.ExecuteSqlCommand("DELETE FROM tst.HierarchyRecords");

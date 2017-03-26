@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace EfCoreTest
+namespace EfCoreTestApp
 {
     public class MyDbContext : DbContext
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Configuration;
 
-namespace EfCoreTest
+namespace EfCoreTestApp
 {
     public class MyDbContextFactory : IDbContextFactory<MyDbContext>
     {

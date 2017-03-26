@@ -1,8 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vse.AdminkaV1.WcfService.Client;
 
-namespace Vse.AdminkaV1.Wcf.Client.Test
+namespace Vse.AdminkaV1.WcfService.Client.Test
 {
     /// <summary>
     /// Start web service Vse.AdminkaV1.Wcf before testing

@@ -1,27 +1,43 @@
-﻿using System;
+﻿#if NETCOREAPP1_1
+    using Xunit;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif 
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vse.AdminkaV1.DomAuthentication;
 using Vse.Routines.Storage;
 using Vse.Routines;
 using Vse.AdminkaV1.DomTest;
+using System;
 
 namespace Vse.AdminkaV1.Injected.Test
 {
+#if !NETCOREAPP1_1
     [TestClass]
+#endif
     public class StorageTest
     {
+#if NETCOREAPP1_1
+        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
+#else
+        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
+#endif
+
         public StorageTest()
         {
             TestIsland.Reset();
         }
 
+#if NETCOREAPP1_1
+        [Fact]
+#else
         [TestMethod]
+#endif
         public void TestStore()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
             int newGroupId = 0;
             routine.Handle((state, dataAccess) =>
             {
@@ -89,7 +105,7 @@ namespace Vse.AdminkaV1.Injected.Test
                                 (e1, e2) => e1.GroupId == e2.GroupId);
                         });
                     if (storageError?.FieldErrors.Count > 0)
-                        throw new ApplicationException("Test failed");
+                        throw new Exception("Test failed");
                 });
             });
             // Remove
@@ -103,7 +119,7 @@ namespace Vse.AdminkaV1.Injected.Test
                         batch.Remove(group)
                     );
                     if (storageError?.FieldErrors.Count > 0)
-                        throw new ApplicationException("Test failed: includes");
+                        throw new Exception("Test failed: includes");
                 });
             });
             // Remove 
@@ -119,16 +135,20 @@ namespace Vse.AdminkaV1.Injected.Test
                             batch.Remove(group);
                     });
                     if (storageError?.FieldErrors.Count > 0)
-                        throw new ApplicationException("Test failed: includes");
+                        throw new Exception("Test failed: includes");
                 });
             });
         }
 
+#if NETCOREAPP1_1
+        [Fact]
+#else
         [TestMethod]
+#endif
         public void TestStoreUpdateRelations()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
@@ -173,10 +193,10 @@ namespace Vse.AdminkaV1.Injected.Test
                                         e => e.ParentRecordHierarchyRecordMap,
                                         only1,
                                         (e1, e2) => e1.HierarchyRecordId == e2.HierarchyRecordId);
-                                    throw new ApplicationException("Break Transaction");
+                                    throw new Exception("Break Transaction");
                                 });
                         }
-                        catch (ApplicationException ex)
+                        catch (Exception ex)
                         {
                             if (ex.Message != "Break Transaction")
                                 throw;
@@ -187,7 +207,7 @@ namespace Vse.AdminkaV1.Injected.Test
                                     var parentRecord3 = repository2.Find(e => e.FieldA == "1_A", includes);
                                     var count2 = parentRecord3.ParentRecordHierarchyRecordMap.Count();
                                     if (count2 != count3)
-                                        throw new ApplicationException("This opperations should not be commited", ex);
+                                        throw new Exception("This opperations should not be commited", ex);
                                 });
                    }
                     }

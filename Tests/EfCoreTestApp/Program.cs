@@ -1,30 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
+using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Ef6Test
+namespace EfCoreTestApp
 {
-    public class Program
+    class Program
     {
         static void Main(string[] args)
         {
-            var logger = new List<string>();
-            Action<string> verbose = (text) =>
-            {
-                logger.Add(text);
+            var connectionString = ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
+            Console.WriteLine("Check connection string:");
+            Console.WriteLine(connectionString);
+            TestIsland.Reset(connectionString);
+            var loggerProvider = new MyLoggerProvider();
+            var messages = new List<string>();
+            loggerProvider.Verbose = (text) => {
+                messages.Add(text);
                 Console.WriteLine(text);
+                Console.WriteLine();
             };
-            var connectionStringName = "Ef6Test";
-            TestIsland.Reset(connectionStringName);
-            using (var dbContext = new MyDbContext(connectionStringName, verbose))
+            using (var dbContext = new MyDbContext(connectionString, loggerProvider))
             {
                 var parentRecord = dbContext.ParentRecords
-                    .Include("ParentRecordHierarchyRecordMap")
-                    .Include("ParentRecordHierarchyRecordMap.HierarchyRecord").First(e => e.FieldA == "1_A");
+                    .Include(e=>e.ParentRecordHierarchyRecordMap)
+                    .ThenInclude(e=>e.HierarchyRecord).First(e => e.FieldA == "1_A");
                 var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count(); // 5
                 var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2).ToList();
                 var count2 = only2.Count(); // 2
@@ -34,7 +36,7 @@ namespace Ef6Test
                     //parentRecord.ParentRecordHierarchyRecordMap.Remove(map);
                 }
 
-                DbEntityEntry<ParentRecord> entry = dbContext.Entry(parentRecord);
+                EntityEntry<ParentRecord> entry = dbContext.Entry(parentRecord);
                 var col = entry.Collection(e => e.ParentRecordHierarchyRecordMap);
                 col.Load();
                 var oldRelations = parentRecord.ParentRecordHierarchyRecordMap;
@@ -46,6 +48,7 @@ namespace Ef6Test
                     oldRelations.Remove(e);
 
                 var count2b = parentRecord.ParentRecordHierarchyRecordMap.Count();
+
                 //foreach (var e1 in only2)
                 //    if (!oldRelations.Any(e2 => e1.HierarchyRecordId == e2.HierarchyRecordId))
                 //        oldRelations.Add(e1);
@@ -53,8 +56,8 @@ namespace Ef6Test
                 dbContext.SaveChanges();
 
                 var parentRecord2 = dbContext.ParentRecords
-                    .Include("ParentRecordHierarchyRecordMap")
-                    .Include("ParentRecordHierarchyRecordMap.HierarchyRecord").First(e => e.FieldA == "1_A");
+                    .Include(e => e.ParentRecordHierarchyRecordMap)
+                    .ThenInclude(e => e.HierarchyRecord).First(e => e.FieldA == "1_A");
 
                 var count3 = parentRecord2.ParentRecordHierarchyRecordMap.Count();
 

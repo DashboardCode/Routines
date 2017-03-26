@@ -1,25 +1,41 @@
-﻿using System;
+﻿#if NETCOREAPP1_1
+    using Xunit;
+#else
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif 
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vse.Routines.Storage;
 using Vse.Routines;
 using Vse.AdminkaV1.DomTest;
+using System;
 
 namespace Vse.AdminkaV1.Injected.Test
 {
+#if !NETCOREAPP1_1
     [TestClass]
+#endif
     public class EfCoreStrangesTest
     {
+#if NETCOREAPP1_1
+        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
+#else
+        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
+#endif
+
         public EfCoreStrangesTest()
         {
             TestIsland.Reset();
         }
 
+#if NETCOREAPP1_1
+        [Fact]
+#else
         [TestMethod]
+#endif
         public void EfCoreTestStoreUpdateRelationsErrorTracking()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
@@ -52,7 +68,7 @@ namespace Vse.AdminkaV1.Injected.Test
                         if (count3!=4)
                         {
                             //it contains 4 elements (2 correct elements but they are included twice)
-                            throw new ApplicationException();
+                            throw new Exception();
                         }
                     }
                );
@@ -63,16 +79,25 @@ namespace Vse.AdminkaV1.Injected.Test
 
     public class EfCoreStrangesTest2
     {
+#if NETCOREAPP1_1
+        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
+#else
+        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
+#endif
         public EfCoreStrangesTest2()
         {
             TestIsland.Reset();
         }
 
+#if NETCOREAPP1_1
+        [Fact]
+#else
         [TestMethod]
+#endif
         public void EfCoreTestStoreUpdateRelationsErrorNoTracking()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
@@ -105,7 +130,7 @@ namespace Vse.AdminkaV1.Injected.Test
                         if (count3 != 4)
                         {
                             //it contains 4 elements (2 correct elements but they are included twice)
-                            throw new ApplicationException();
+                            throw new Exception();
                         }
                     }
                );

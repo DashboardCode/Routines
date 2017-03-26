@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace EfCoreTest.Migrations
+namespace EfCoreTestApp.Migrations
 {
     public partial class Initial : Migration
     {

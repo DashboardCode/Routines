@@ -6,8 +6,8 @@
     <ProjectGuid>{E6C95D60-F0FB-4DE7-93DD-25E43F7D42EA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vse.AdminkaV1.Wcf.Client.Test</RootNamespace>
-    <AssemblyName>Vse.AdminkaV1.Wcf.Client.Test</AssemblyName>
+    <RootNamespace>Vse.AdminkaV1.WcfService.Client.Test</RootNamespace>
+    <AssemblyName>Vse.AdminkaV1.WcfService.Client.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -59,7 +59,7 @@
       <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
       <Name>AdminkaV1</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AdminkaV1\Wcf.Client\AdminkaV1.WcfService.Client.csproj">
+    <ProjectReference Include="..\..\AdminkaV1\WcfService.Client\AdminkaV1.WcfService.Client.csproj">
       <Project>{5b251776-c32b-4b06-b52d-6a302beac69d}</Project>
       <Name>AdminkaV1.WcfService.Client</Name>
     </ProjectReference>

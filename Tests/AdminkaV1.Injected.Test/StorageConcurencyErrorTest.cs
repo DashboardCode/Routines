@@ -1,24 +1,40 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿#if NETCOREAPP1_1
+    using Xunit;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif 
 using Vse.AdminkaV1.DomTest;
 using Vse.Routines;
 using Vse.Routines.Storage;
+using System;
 
 namespace Vse.AdminkaV1.Injected.Test
 {
+#if !NETCOREAPP1_1
     [TestClass]
+#endif
     public class StorageConcurencyErrorTest
     {
+#if NETCOREAPP1_1
+        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
+#else
+        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
+#endif
+
         public StorageConcurencyErrorTest()
         {
             TestIsland.Clear();
         }
 
+#if NETCOREAPP1_1
+        [Fact]
+#else
         [TestMethod]
+#endif
         public void TestConcurencyError()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
             // check constraint on UPDATE
             routine.Handle((state, dataAccess) =>
             {
@@ -48,7 +64,7 @@ namespace Vse.AdminkaV1.Injected.Test
                     var storageError = storage.Handle(batch => batch.Modify(t1));
                     //storageError.Desert();
                     if (storageError.Count() != 1 || !storageError.ContainsLike("", "The record you are attempted to edit is currently being"))
-                        throw new ApplicationException("Test failed: not correct error. Case 1.");
+                        throw new Exception("Test failed: not correct error. Case 1.");
                 });
             });
         }

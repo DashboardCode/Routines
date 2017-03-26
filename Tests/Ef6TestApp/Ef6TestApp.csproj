@@ -7,8 +7,8 @@
     <ProjectGuid>{FAEEA516-2296-4C52-9BE5-525B56F50880}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ef6Test</RootNamespace>
-    <AssemblyName>Ef6Test</AssemblyName>
+    <RootNamespace>Ef6TestApp</RootNamespace>
+    <AssemblyName>Ef6TestApp</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

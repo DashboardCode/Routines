@@ -1,22 +1,38 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿#if NETCOREAPP1_1
+    using Xunit;
+#else
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+#endif 
 using Vse.AdminkaV1.DomTest;
 using Vse.Routines;
 using Vse.Routines.Storage;
 
 namespace Vse.AdminkaV1.Injected.Test
 {
+#if !NETCOREAPP1_1
     [TestClass]
+#endif
     public class StorageModelErrorTest
     {
+#if NETCOREAPP1_1
+        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
+#else
+        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
+#endif
+
         public StorageModelErrorTest()
         {
             TestIsland.Clear();
         }
+#if NETCOREAPP1_1
+        [Fact]
+#else
         [TestMethod]
+#endif
         public void TestDatabaseFieldRequiredError() 
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, new ConfigurationNETFramework(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
