@@ -5,7 +5,7 @@ using System.Web.Script.Serialization;
 
 namespace Vse.Web
 {
-    public class CircularJsonConverter : JavaScriptConverter
+    public class SafeSerializationJsonConverter : JavaScriptConverter
     {
         #region StandardSimpleTypes
         public static readonly IReadOnlyCollection<Type> StandardSimpleTypes = new[]
@@ -54,18 +54,37 @@ namespace Vse.Web
         private readonly List<object> history;
         private readonly IEnumerable<Type> supportedTypes;
         private readonly IEnumerable<Type> simpleTypes;
-        
+        private readonly Dictionary<Type, Func<object, string>> converters;
 
-        public CircularJsonConverter(IEnumerable<Type> supportedTypes, IEnumerable<Type> simpleTypes=null, int recursionDepth = 1, bool ignoreDuplicates = false):
-            this(supportedTypes, simpleTypes, recursionDepth, ignoreDuplicates, 1 , new List<object>())
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="supportedTypes"></param>
+        /// <param name="simpleTypes">Value types that can't be detected in history</param>
+        /// <param name="converters"></param>
+        /// <param name="recursionDepth"></param>
+        /// <param name="ignoreDuplicates"></param>
+        public SafeSerializationJsonConverter(
+            IEnumerable<Type> supportedTypes,
+            IEnumerable<Type> simpleTypes = null,
+            Dictionary<Type, Func<object, string>> converters = null,
+            int recursionDepth = 1, 
+            bool ignoreDuplicates = false):
+            this(supportedTypes, simpleTypes, converters, recursionDepth, ignoreDuplicates, 1 , new List<object>())
         {
         }
 
-        private CircularJsonConverter(IEnumerable<Type> supportedTypes, IEnumerable<Type> simpleTypes, int recursionDepth, bool ignoreDuplicates, int currentRecursionDepth, List<object> history)
+        private SafeSerializationJsonConverter(
+            IEnumerable<Type> supportedTypes, 
+            IEnumerable<Type> simpleTypes,  
+            Dictionary<Type, Func<object, string>> converters,
+            int recursionDepth, 
+            bool ignoreDuplicates, int currentRecursionDepth, List<object> history)
         {
             this.recursionDepth = recursionDepth;
             this.ignoreDuplicates = ignoreDuplicates;
             this.supportedTypes = supportedTypes;
+            this.converters = converters;
             this.simpleTypes = simpleTypes??StandardSimpleTypes;
             this.currentRecursionDepth = currentRecursionDepth;
             this.history = history;
@@ -88,6 +107,16 @@ namespace Vse.Web
                         var value = propertyInfo.GetValue(o, null);
                         standardTypesValues.Add(propertyName, value);
                     }
+                    else if (converters != null &&  converters.TryGetValue(propertyInfo.PropertyType, out Func<object, string> func))
+                    {
+                        if (o != null)
+                        {
+                            string propertyName = propertyInfo.Name;
+                            var value = propertyInfo.GetValue(o, null);
+                            var stringValue = (value==null)?null:func(value);
+                            standardTypesValues.Add(propertyName, stringValue);
+                        }
+                    }
                     else
                     {
                         if (currentRecursionDepth <= recursionDepth)
@@ -107,7 +136,6 @@ namespace Vse.Web
                                     standardTypesValues.Add(propertyName, dictionaryProperties);
 
                                 }
-
                             }
                         }
                     }
@@ -118,9 +146,9 @@ namespace Vse.Web
 
         private IDictionary<string, object> LayerUp(string propertyName, object value)
         {
-            var js = new CircularJsonConverter(supportedTypes, simpleTypes, recursionDepth - currentRecursionDepth, ignoreDuplicates, currentRecursionDepth, history);
+            var js = new SafeSerializationJsonConverter(supportedTypes, simpleTypes, converters, recursionDepth - currentRecursionDepth, ignoreDuplicates, currentRecursionDepth, history);
             var jss = new JavaScriptSerializer();
-            jss.RegisterConverters(new[] { new CircularJsonConverter(supportedTypes, simpleTypes) });
+            jss.RegisterConverters(new[] { new SafeSerializationJsonConverter(supportedTypes, simpleTypes) });
             var dictionary = js.Serialize(value, jss);
             return dictionary;
         }

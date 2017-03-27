@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Script.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vse.Web;
+using System.Globalization;
 
 namespace Vse.Json.Test
 {
@@ -21,7 +22,7 @@ namespace Vse.Json.Test
 
             var jss1 = new JavaScriptSerializer();
             //jss.RegisterConverters(new[] { new CircularScriptConverter(new[] { typeof(Item) }, 30, false) });
-            jss1.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardSimpleTypes,  50, false) });
+            jss1.RegisterConverters(new[] { new SafeSerializationJsonConverter(new[] { typeof(Item) }, SafeSerializationJsonConverter.StandardSimpleTypes, null, 50, false) });
             // ef types
             //types.AddRange(Assembly.GetAssembly(typeof(DbContext)).GetTypes());
             // model types
@@ -32,7 +33,7 @@ namespace Vse.Json.Test
                 throw new ApplicationException("History doesn't work. Case 0");
 
             var jss2 = new JavaScriptSerializer();
-            jss2.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardSimpleTypes, 50, true) });
+            jss2.RegisterConverters(new[] { new SafeSerializationJsonConverter(new[] { typeof(Item) }, SafeSerializationJsonConverter.StandardSimpleTypes, null, 50, true) });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c""}}}")
                 throw new ApplicationException("History doesn't work. Case 1");
@@ -43,9 +44,22 @@ namespace Vse.Json.Test
         {
             var item = Item.CreateSample();
             var jss2 = new JavaScriptSerializer();
-            jss2.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }, CircularJsonConverter.StandardSimpleTypes, 50, true) });
+            jss2.RegisterConverters(new[] { new SafeSerializationJsonConverter(new[] { typeof(Item) }, SafeSerializationJsonConverter.StandardSimpleTypes, null, 50, true) });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c""}}}")
+                throw new ApplicationException("History doesn't work. Case 1");
+        }
+
+        [TestMethod]
+        public void RecursiveJavaScriptSerializerWithHistoryAndCustomConverters()
+        {
+            var item = Item.CreateSampleWithCultureInfo();
+            var jss2 = new JavaScriptSerializer();
+            var converters = new Dictionary<Type, Func<object,string>>();
+            converters.Add(typeof(System.Globalization.CultureInfo), (o)=> ((System.Globalization.CultureInfo)o).ToString() );
+            jss2.RegisterConverters(new[] { new SafeSerializationJsonConverter(new[] { typeof(Item) }, SafeSerializationJsonConverter.StandardSimpleTypes, converters, 50, true) });
+            var json2 = jss2.Serialize(item);
+            if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c"",""CultureInfo"":null},""CultureInfo"":null},""CultureInfo"":""en-US""}")
                 throw new ApplicationException("History doesn't work. Case 1");
         }
 
@@ -54,7 +68,7 @@ namespace Vse.Json.Test
         {
             var item = Item.CreateSample();
             var jss2 = new JavaScriptSerializer();
-            jss2.RegisterConverters(new[] { new CircularJsonConverter(new[] { typeof(Item) }) });
+            jss2.RegisterConverters(new[] { new SafeSerializationJsonConverter(new[] { typeof(Item) }) });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b""}}")
                 throw new ApplicationException("History doesn't work. Case 1");
@@ -83,9 +97,16 @@ namespace Vse.Json.Test
                 item3.Child = item1;
                 return item1;
             }
+            public static Item CreateSampleWithCultureInfo()
+            {
+                var item1 = CreateSample();
+                item1.CultureInfo = CultureInfo.CurrentCulture;
+                return item1;
+            }
             public int Number { get; set; }
             public string Name { get; set; }
             public Item Child { get; set; }
+            public CultureInfo CultureInfo { get; set; }
 
             private string Name2 { get; set; } = "default";
 
@@ -135,7 +156,7 @@ namespace Vse.Json.Test
                 {
                     if (propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0)
                     {
-                        if (CircularJsonConverter.StandardSimpleTypes.Contains(propertyInfo.PropertyType))
+                        if (SafeSerializationJsonConverter.StandardSimpleTypes.Contains(propertyInfo.PropertyType))
                         {
                             string propertyName = propertyInfo.Name;
                             var value = propertyInfo.GetValue(o, null);

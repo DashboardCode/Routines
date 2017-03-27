@@ -53,7 +53,7 @@ namespace Vse.AdminkaV1.Injected.Test
             catch (Exception ex)
             {
                 if (ex.Message != "Test exception")
-                    throw ex;
+                    throw;
             }
         }
     }

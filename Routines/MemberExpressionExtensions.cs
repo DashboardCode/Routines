@@ -46,10 +46,9 @@ namespace Vse.Routines
         private static Type GetMemberType(this MemberExpression memberExpression)
         {
             var type = memberExpression.Type;
-            //var type3 = memberExpression.Member.DeclaringType;
-            //var type2 = memberExpression.Member.ReflectedType;
             return type;
         }
+
         private static void SetValue(this MemberExpression memberExpression, object entity, object propertyValue)
         {
             var type = entity.GetType();
@@ -58,7 +57,6 @@ namespace Vse.Routines
             Debug.Assert(propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0);
             propertyInfo.SetValue(entity, propertyValue);
         }
-
         
         private static Tuple<object, object> CopyMemberValue(
             this MemberExpression memberExpression,
