@@ -5,7 +5,7 @@ using System.Web.Script.Serialization;
 
 namespace Vse.Web
 {
-    public class SafeSerializationJsonConverter : JavaScriptConverter
+    public class ControlledSerializationJsonConverter : JavaScriptConverter
     {
         #region StandardSimpleTypes
         public static readonly IReadOnlyCollection<Type> StandardSimpleTypes = new[]
@@ -59,12 +59,12 @@ namespace Vse.Web
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="supportedTypes"></param>
-        /// <param name="simpleTypes">Value types that can't be detected in history</param>
-        /// <param name="converters"></param>
-        /// <param name="recursionDepth"></param>
+        /// <param name="supportedTypes">Referenced types, types that can be parsed into</param>
+        /// <param name="simpleTypes">Value types that are not tracked in history (for duplicates). Serialized with ToString()</param>
+        /// <param name="converters">Some referenced types on complex types can be configured as simple with custome serializers</param>
+        /// <param name="recursionDepth">Control recursion</param>
         /// <param name="ignoreDuplicates"></param>
-        public SafeSerializationJsonConverter(
+        public ControlledSerializationJsonConverter(
             IEnumerable<Type> supportedTypes,
             IEnumerable<Type> simpleTypes = null,
             Dictionary<Type, Func<object, string>> converters = null,
@@ -74,7 +74,7 @@ namespace Vse.Web
         {
         }
 
-        private SafeSerializationJsonConverter(
+        private ControlledSerializationJsonConverter(
             IEnumerable<Type> supportedTypes, 
             IEnumerable<Type> simpleTypes,  
             Dictionary<Type, Func<object, string>> converters,
@@ -146,9 +146,9 @@ namespace Vse.Web
 
         private IDictionary<string, object> LayerUp(string propertyName, object value)
         {
-            var js = new SafeSerializationJsonConverter(supportedTypes, simpleTypes, converters, recursionDepth - currentRecursionDepth, ignoreDuplicates, currentRecursionDepth, history);
+            var js = new ControlledSerializationJsonConverter(supportedTypes, simpleTypes, converters, recursionDepth - currentRecursionDepth, ignoreDuplicates, currentRecursionDepth, history);
             var jss = new JavaScriptSerializer();
-            jss.RegisterConverters(new[] { new SafeSerializationJsonConverter(supportedTypes, simpleTypes) });
+            jss.RegisterConverters(new[] { new ControlledSerializationJsonConverter(supportedTypes, simpleTypes) });
             var dictionary = js.Serialize(value, jss);
             return dictionary;
         }
