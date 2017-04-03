@@ -4,10 +4,12 @@ $TestDllsPatterns = @(,'*\bin\Debug\Vse.*.Test.dll')
 $TestableCodeNamespacePatterns = @(,'*') 
 
 # STEP 0. Get Solution Folder
-if ($PSScriptRoot -eq ''){
-    throw "Rut it as script from the solution root folder, this will point the solution location."
-}
 $SolutionFolder = $PSScriptRoot #or enter it manually there
+
+if ($SolutionFolder -eq ''){
+    throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
+}
+
 
 # STEP 1. Get OpenCover path
 $openCoverFolder = Get-ChildItem -Path "$SolutionFolder\packages" -Filter 'Opencover*' | Where-Object { $_.Attributes -eq "Directory"}
