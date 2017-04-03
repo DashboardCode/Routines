@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+VisualStudioVersion = 15.0.26228.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{52BA4719-F064-4388-A426-1E1174D3A0EB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}"
 	ProjectSection(SolutionItems) = preProject
-		OpenCover.bat = OpenCover.bat
+		OpenCover.ps1 = OpenCover.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{68C4C8C2-2A78-4998-9D36-4A3B139B41FE}"
@@ -92,6 +92,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-757
 		Tour\Doc\Conventions.txt = Tour\Doc\Conventions.txt
 		Tour\Doc\Dashboard.txt = Tour\Doc\Dashboard.txt
 		Tour\Doc\DeleteCache.ps1 = Tour\Doc\DeleteCache.ps1
+		LICENSE = LICENSE
 		Tour\Doc\TODO.txt = Tour\Doc\TODO.txt
 	EndProjectSection
 EndProject
