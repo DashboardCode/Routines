@@ -102,6 +102,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.AdminkaV1.Injected.NETF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vse.AdminkaV1.Injected.NETStandard.Test", "Tests\AdminkaV1.Injected.NETStandard.Test\Vse.AdminkaV1.Injected.NETStandard.Test.csproj", "{B65FB2B4-4B15-4F3E-88E7-EF46DCFCBCAE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9397E64B-A050-4E1A-80C1-A0A7A18486BF}"
+	ProjectSection(SolutionItems) = preProject
+		TestSettings1.testsettings = TestSettings1.testsettings
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		AdminkaV1\Injected\AdminakV1.Injected.Shared.projitems*{02666e1b-53c7-42db-ac39-a16127dd5c81}*SharedItemsImports = 4

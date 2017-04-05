@@ -76,7 +76,9 @@ namespace Vse.AdminkaV1.Injected.Test
         }
     }
 
-
+#if !NETCOREAPP1_1
+    [TestClass]
+#endif
     public class EfCoreStrangesTest2
     {
 #if NETCOREAPP1_1

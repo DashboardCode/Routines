@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using Vse.Routines.Configuration.NETFramework;
 
 namespace Vse.Routines.Configuration.NETFramework.Test
 {
