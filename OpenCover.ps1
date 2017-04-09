@@ -1,19 +1,20 @@
 # Generate code coverage report using OpenCore and ReportGenerator
 # Put this script to Visual Studio solution folder. 
 
+# You may need to run this from VS "Package Manager Console" on one of your test projects:
 # nuget install OpenCover -OutputDirectory packages
 # nuget install ReportGenerator -OutputDirectory packages
-
-# TODO: integrate with https://www.appveyor.com/
+# nuget install coveralls.net -OutputDirectory packages     # optional
 
 # CONFIGURATION
 $TestProjectsGlobbing = @(,'*.Test.csproj')
 $mstestPath = 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe' 
 $dotnetPath = 'C:\Program Files\dotnet\dotnet.exe'
 $netcoreapp = 'netcoreapp1.1'
-$NamespaceInclusiveFilters = @(,'*') # asterix means inlude all namespaces (which pdb found)
 
+$NamespaceInclusiveFilters = @(,'*') # asterix means inlude all namespaces (which pdb found)
 $BuildNamespaceExclusiveFilters = $true # For core - test project's default namespace; For classic - namespaces where test project's types defined
+
 $testClassicProjects=$true
 $testCoreProjects   =$true
 $debugMode          =$false
@@ -26,9 +27,8 @@ $testsResultsFolder = 'TestsResults'
 
 $excludeGlobbingFromFolders =  @('.git', '.vs', 'docs', $toolsFolder, $testsResultsFolder)
 
-
-#comment this line if you are not using coveralls, set your token if you do
-$env:COVERALLS_REPO_TOKEN = "ZD4n81FTV3l3GG5XTLmJszvEmD5DKyHo8" # coveralls publish report online, integrate it with GitHub. more https://coveralls.io/github/rpokrovskij/Vse
+#left it empty if you are not using coveralls (publish report online, integrate it with GitHub. more https://coveralls.io/)
+$env:COVERALLS_REPO_TOKEN = "ZD4n81FTV3l3GG5XTLmJszvEmD5DKyHo8" 
 
 # STEP 1. Get Solution Folder
 $SolutionFolderPath = $PSScriptRoot #or enter it manually there 
@@ -204,3 +204,4 @@ If (Test-Path "$reportGeneratorOutputFolderPath\index.htm"){
     Invoke-Item "$reportGeneratorOutputFolderPath\index.htm"
 }
 
+# TODO: integrate with https://www.appveyor.com/
