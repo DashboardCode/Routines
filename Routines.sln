@@ -102,10 +102,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.AdminkaV1.Injected.NETF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vse.AdminkaV1.Injected.NETStandard.Test", "Tests\AdminkaV1.Injected.NETStandard.Test\Vse.AdminkaV1.Injected.NETStandard.Test.csproj", "{B65FB2B4-4B15-4F3E-88E7-EF46DCFCBCAE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9397E64B-A050-4E1A-80C1-A0A7A18486BF}"
-	ProjectSection(SolutionItems) = preProject
-		TestSettings1.testsettings = TestSettings1.testsettings
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogTestApp", "Tests\NLogTestApp\NLogTestApp.csproj", "{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -1157,6 +1154,38 @@ Global
 		{B65FB2B4-4B15-4F3E-88E7-EF46DCFCBCAE}.Release|x64.Build.0 = Release|Any CPU
 		{B65FB2B4-4B15-4F3E-88E7-EF46DCFCBCAE}.Release|x86.ActiveCfg = Release|Any CPU
 		{B65FB2B4-4B15-4F3E-88E7-EF46DCFCBCAE}.Release|x86.Build.0 = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Android.Build.0 = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|iOS.Build.0 = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|x64.Build.0 = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Debug|x86.Build.0 = Debug|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Android.ActiveCfg = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Android.Build.0 = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|iOS.ActiveCfg = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|iOS.Build.0 = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|x64.ActiveCfg = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|x64.Build.0 = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|x86.ActiveCfg = Release|Any CPU
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1189,5 +1218,6 @@ Global
 		{B9077909-87F9-494B-9D6B-5E4F18A7325B} = {68C4C8C2-2A78-4998-9D36-4A3B139B41FE}
 		{C48FDD29-C5ED-4A7D-BDF0-E5487CAAAF88} = {68C4C8C2-2A78-4998-9D36-4A3B139B41FE}
 		{B65FB2B4-4B15-4F3E-88E7-EF46DCFCBCAE} = {68C4C8C2-2A78-4998-9D36-4A3B139B41FE}
+		{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C} = {68C4C8C2-2A78-4998-9D36-4A3B139B41FE}
 	EndGlobalSection
 EndGlobal

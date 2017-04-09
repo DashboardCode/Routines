@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vse.Web;
 using System.Globalization;
 
-namespace Vse.Json.Test
+namespace Vse.Web.Test
 {
     [TestClass]
     public class RecursiveSerializeTests
@@ -55,8 +54,10 @@ namespace Vse.Json.Test
         {
             var item = Item.CreateSampleWithCultureInfo();
             var jss2 = new JavaScriptSerializer();
-            var converters = new Dictionary<Type, Func<object,string>>();
-            converters.Add(typeof(System.Globalization.CultureInfo), (o)=> ((System.Globalization.CultureInfo)o).ToString() );
+            var converters = new Dictionary<Type, Func<object, string>>()
+            {
+                { typeof(System.Globalization.CultureInfo), (o)=> ((System.Globalization.CultureInfo)o).ToString() }
+            };
             jss2.RegisterConverters(new[] { new ControlledSerializationJsonConverter(new[] { typeof(Item) }, ControlledSerializationJsonConverter.StandardSimpleTypes, converters, 50, true) });
             var json2 = jss2.Serialize(item);
             if (json2 != @"{""Number"":1,""Name"":""a"",""Child"":{""Number"":2,""Name"":""b"",""Child"":{""Number"":3,""Name"":""c"",""CultureInfo"":null},""CultureInfo"":null},""CultureInfo"":""en-US""}")

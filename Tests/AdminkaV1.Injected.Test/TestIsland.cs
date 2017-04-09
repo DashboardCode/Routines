@@ -3,6 +3,12 @@ using Vse.AdminkaV1.DomTest;
 using Vse.Routines;
 using Vse.Routines.Storage;
 
+#if NETCOREAPP1_1
+    using Vse.AdminkaV1.Injected.NETStandard.Test;
+#else
+    using Vse.AdminkaV1.Injected.NETFramework.Test;
+#endif 
+
 namespace Vse.AdminkaV1.Injected.Test
 {
     public static class TestIsland

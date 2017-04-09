@@ -10,12 +10,14 @@
     <AssemblyVersion>1.0.12.0</AssemblyVersion>
     <FileVersion>1.0.12.0</FileVersion>
     <Description />
-    <RootNamespace>Vse.Routines.Injected</RootNamespace>
-    <AssemblyName>Vse.Routines.Injected</AssemblyName>
+    <RootNamespace>Vse.AdminkaV1.Injected.NETStandard</RootNamespace>
+    <AssemblyName>Vse.AdminkaV1.Injected.NETStandard</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETSTANDARD1_4;</DefineConstants>
+    <DebugType>full</DebugType>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>

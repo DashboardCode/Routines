@@ -1,8 +1,10 @@
 ﻿#if NETCOREAPP1_1
     using Xunit;
+    using Vse.AdminkaV1.Injected.NETStandard.Test;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif 
+using Vse.AdminkaV1.Injected.NETFramework.Test;
+#endif  
 using Vse.AdminkaV1.DomTest;
 using Vse.Routines;
 using Vse.Routines.Storage;

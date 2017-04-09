@@ -5,7 +5,7 @@ using Xunit;
 
 [assembly: CollectionBehavior(MaxParallelThreads = 1, DisableTestParallelization = true)]
 
-namespace Vse.AdminkaV1.Injected.Test
+namespace Vse.AdminkaV1.Injected.NETStandard.Test
 {
     public class ConfigurationNETStandard : IAppConfiguration
     {

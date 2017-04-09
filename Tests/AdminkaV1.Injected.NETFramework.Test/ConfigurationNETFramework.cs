@@ -1,7 +1,7 @@
 ﻿using Vse.Routines.Configuration;
 using Vse.Routines.Configuration.NETFramework;
 
-namespace Vse.AdminkaV1.Injected.Test
+namespace Vse.AdminkaV1.Injected.NETFramework.Test
 {
     public class ConfigurationNETFramework : IAppConfiguration
     {
