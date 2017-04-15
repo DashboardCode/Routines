@@ -72,7 +72,7 @@ namespace Vse.Routines.Test
             source.IntNullable2 = 555;
             return source;
         }
-        private static Include<TestModel> CreateIncludes()
+        private static Include<TestModel> CreateInclude()
         {
             Include<TestModel> includes
                 = includable => includable
@@ -111,7 +111,7 @@ namespace Vse.Routines.Test
         {
             var list = new List<TestModel>() { CreateTestModel() , CreateTestModel(), CreateTestModel() };
 
-            var includes = CreateIncludes();
+            var includes = CreateInclude();
 
             var cloned = MemberExpressionExtensions.CloneAll(list, includes);
             
@@ -145,7 +145,7 @@ namespace Vse.Routines.Test
         public void IncludesDetach()
         {
             var source = CreateTestModel();
-            var includes = CreateIncludes();
+            var includes = CreateInclude();
             MemberExpressionExtensions.Detach(source, includes);
 
             if (source.CultureInfos!=null)
@@ -156,7 +156,7 @@ namespace Vse.Routines.Test
         public void IncludesPathes()
         {
             var source = CreateTestModel();
-            var includes = CreateIncludes();
+            var includes = CreateInclude();
             var including = new MemberExpressionExtensions.PathesIncluding<TestModel>();
             var includable = new Includable<TestModel>(including);
             includes.Invoke(includable);
@@ -167,12 +167,55 @@ namespace Vse.Routines.Test
         }
 
         [TestMethod]
+        public void IncludesContainsTest()
+        {
+
+            var source = CreateTestModel();
+            var destination = new TestModel();
+            var include = CreateInclude();
+            Include<TestModel> include1 
+                = includable => includable
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                            .ThenInclude(i => i.Namespace)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Key)
+                            .ThenInclude(i => i.Attributes)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                            .ThenInclude(i => i.Name);
+
+            var contains1 = include.Contains(include1);
+
+            if (!contains1)
+                throw new ApplicationException("Contains (1)");
+
+            Include<TestModel> include2
+                = includable => includable
+                    .Include(i => i.CultureInfos)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                            .ThenInclude(i => i.Namespace)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Key)
+                            .ThenInclude(i => i.Attributes)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                            .ThenInclude(i => i.Name);
+
+            var contains2 = include.Contains(include2);
+
+            if (contains2)
+                throw new ApplicationException("Contains (2)");
+        }
+
+        [TestMethod]
         public void IncludesCopyTest()
         {
 
             var source = CreateTestModel();
             var destination = new TestModel();
-            var includes = CreateIncludes();
+            var includes = CreateInclude();
             MemberExpressionExtensions.Copy(source, destination, includes);
 
             if (source.StorageModel.Entity.Name != destination.StorageModel.Entity.Name
@@ -295,7 +338,7 @@ namespace Vse.Routines.Test
         public void IncludesGetTypes()
         {
             var source = CreateTestModel();
-            var includes = CreateIncludes();
+            var includes = CreateInclude();
 
             var b1 = MemberExpressionExtensions.GetTypes(includes);
             if (b1.Count() != 11)
@@ -306,7 +349,7 @@ namespace Vse.Routines.Test
         {
 
             var source = CreateTestModel();
-            var includes = CreateIncludes();
+            var includes = CreateInclude();
 
             var destination = MemberExpressionExtensions.Clone(source, includes, MemberExpressionExtensions.SystemTypes);
 
@@ -348,7 +391,7 @@ namespace Vse.Routines.Test
         public void IncludesEF6Style()
         {
             var source = CreateTestModel();
-            var includes = CreateIncludes();
+            var includes = CreateInclude();
 
             var including = new MemberExpressionExtensions.PathesIncluding<TestModel>();
             includes?.Invoke(new Includable<TestModel>(including));

@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
+using Vse.Routines.AspNetCore;
 
 namespace Vse.AdminkaV1.Web.MvcCoreApp
 {
@@ -59,8 +60,18 @@ namespace Vse.AdminkaV1.Web.MvcCoreApp
 
             app.UseSession();
 
+            app.UseMiddleware<DurationMiddleware>("X-AdminkaV1-Duration-MSec");
+
+            // TODO: next is easy way to add the header, unerstand how it works and why middleware is better
+            // Is use depricated ? 
+            // app.Use((context, next) => {
+            //    context.Response.Headers.Add("X-AdminakV1-Duration-MSec", new[] { "value" });
+            //    return next.Invoke();
+            // });
+
             app.UseMvc(routes =>
             {
+
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");

@@ -147,26 +147,6 @@ If ($testClassicProjects){
         $filters = GetFilter -inclusive  $NamespaceInclusiveFilters -exclusive $namespaces
         echo "opencover -register:user -target:$mstestPath -targetargs:$targetargs -filter:$filters -mergebyhash -skipautoprops -output:$openCoverOutputFilePath"
         & $openCoverPath "-register:user" "-target:$mstestPath" "-targetargs:$targetargs" "-filter:$filters" "-mergebyhash"  "-skipautoprops" "-output:$openCoverOutputFilePath"
-		
-		# TODO : Generate .testsettings to support DeploymentItem and TFS integration. Sample
-		# <?xml version="1.0" encoding="UTF-8"?>
-		# <TestSettings name="TestSettings1" id="1feaf251-3827-4529-8111-02e4aab1e4aa" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
-		# <Description>These are default test settings for a local test run.</Description>
-		# <Deployment>
-		#   <DeploymentItem filename="Tests\Routines.Configuration.NETStandard.Test\bin\Debug\appsettings.json" />
-		# </Deployment>
-		# <Execution>
-		# 	<TestTypeSpecific>
-		# 		<UnitTestRunConfig testTypeId="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b">
-        # 			<AssemblyResolution>
-        # 					<TestDirectory useLoadContext="true" />
-        # 			</AssemblyResolution>
-		# 		</UnitTestRunConfig>
-		# 	</TestTypeSpecific>
-		# 	<AgentRule name="LocalMachineDefaultRole"></AgentRule>
-		# </Execution>
-		# <Properties />
-		# </TestSettings>
     }
 }
 
@@ -182,7 +162,6 @@ If ($testCoreProjects){
         $filters = GetFilter -in  $NamespaceInclusiveFilters -out $namespaces
         # TODO: parsing the project file we can get TargetFramework 
         $targetargs = "test --no-build -f $netcoreapp -c Debug --verbosity normal $projFilePath"
-        $filters = "+[*]* -[Vse.AdminkaV1.Injected.NETStandard.Test]*" 
 
         echo "opencover -oldStyle -mergeoutput -register:user -mergebyhash -skipautoprops -target:$dotnetPath -targetargs:$targetargs -filter:$filters -output:$openCoverOutputFilePath"
         & $openCoverPath -oldStyle -mergeoutput -register:user -mergebyhash -skipautoprops "-target:$dotnetPath" "-targetargs:$targetargs" "-filter:$filters" "-output:$openCoverOutputFilePath" 

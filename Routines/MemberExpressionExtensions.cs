@@ -415,6 +415,46 @@ namespace Vse.Routines
             return destination;
         }
 
+        public static bool Contains<T> (this Include<T> include1, Include<T> include2)
+        {
+            var nodeIncluding1 = new PathesIncluding<T>();
+            var includable1 = new Includable<T>(nodeIncluding1);
+            include1.Invoke(includable1);
+            var pathes1 = nodeIncluding1.Pathes;
+
+            var nodeIncluding2 = new PathesIncluding<T>();
+            var includable2 = new Includable<T>(nodeIncluding2);
+            include2.Invoke(includable2);
+            var pathes2 = nodeIncluding2.Pathes;
+
+            var contains = true;
+            foreach(var path2 in pathes2)
+            {
+                var isFound = false;
+                foreach(var path1 in pathes1)
+                {
+                    if (path2.Length > path1.Length)
+                        continue;
+                    for (int i=0;i< path2.Length ; i++ )
+                    {
+                        var member1 = path1[i];
+                        var member2 = path2[i];
+                        if (member1==member2)
+                        {
+                            isFound = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isFound)
+                {
+                    contains = false;
+                    break;
+                }
+            }
+            return contains;
+        }
+
         public static IEnumerable<Type> GetTypes<T>(Include<T> include)
         {
             var nodeIncluding = new MemberNodesIncluding<T>();
@@ -798,3 +838,4 @@ namespace Vse.Routines
 
     //}
 }
+

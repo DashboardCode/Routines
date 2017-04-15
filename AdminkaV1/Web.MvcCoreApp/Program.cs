@@ -26,7 +26,7 @@ namespace Vse.AdminkaV1.Web.MvcCoreApp
             var userContextException = new UserContextException("test");
             var storageErrorException = new Routines.Storage.StorageErrorException("test", null);
             var identity = InjectedManager.GetDefaultIdentity();
-            var html = InjectedManager.Markdown("*** KUKU ***");
+            var html = InjectedManager.Markdown("*** test ***");
         }
     }
 }
