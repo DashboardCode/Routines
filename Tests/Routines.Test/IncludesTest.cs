@@ -210,6 +210,40 @@ namespace Vse.Routines.Test
         }
 
         [TestMethod]
+        public void IncludesUnionTest()
+        {
+            Include<TestModel> include1
+                = includable => includable
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                            .ThenInclude(i => i.Namespace)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Key)
+                            .ThenInclude(i => i.Attributes);
+
+            Include<TestModel> include2
+                = includable => includable
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                            .ThenInclude(i => i.Namespace)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                            .ThenInclude(i => i.Name);
+
+            Include<TestModel> include3
+                = includable => includable
+                    .Include(i => i.CultureInfos);
+
+            var include = include1.Union(include2);
+
+            if (!(include.Contains(include1) && include.Contains(include2)))
+                throw new ApplicationException("IncludesUnionTest 1");
+
+            if (include.Contains(include3))
+                throw new ApplicationException("IncludesUnionTest 2");
+        }
+
+        [TestMethod]
         public void IncludesCopyTest()
         {
 

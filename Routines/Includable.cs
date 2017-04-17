@@ -22,6 +22,7 @@ namespace Vse.Routines
             return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
         }
     }
+
     public class ThenIncludable<TRootEntity, TThenEntity> : Includable<TRootEntity> 
     {
         public ThenIncludable(IIncluding<TRootEntity> includingProcess):base(includingProcess)

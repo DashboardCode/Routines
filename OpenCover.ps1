@@ -1,4 +1,4 @@
-# Generate code coverage report using OpenCore and ReportGenerator
+# Generate code coverage report using OpenCore and ReportGenerator. Home: https://github.com/rpokrovskij/opencover4vs.ps1 
 # Put this script to Visual Studio solution folder. 
 
 # You may need to run this from VS "Package Manager Console" on one of your test projects:

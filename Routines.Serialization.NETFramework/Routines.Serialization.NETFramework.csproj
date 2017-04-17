@@ -34,6 +34,9 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
+    <Reference Include="Vse.Web.Serialization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Vse.Web.Serialization.ControlledSerializationJsonConverter.1.0.0\lib\net45\Vse.Web.Serialization.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="SerializationManager.cs" />
@@ -44,13 +47,12 @@
       <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>
       <Name>Routines</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Vse.Web\Vse.Web.csproj">
-      <Project>{29481049-5d8f-4f96-a93b-f818ad37c537}</Project>
-      <Name>Vse.Web</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

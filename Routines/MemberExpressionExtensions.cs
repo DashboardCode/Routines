@@ -415,17 +415,18 @@ namespace Vse.Routines
             return destination;
         }
 
+        #region Algebra
         public static bool Contains<T> (this Include<T> include1, Include<T> include2)
         {
-            var nodeIncluding1 = new PathesIncluding<T>();
-            var includable1 = new Includable<T>(nodeIncluding1);
+            var pathesIncluding1 = new PathesIncluding<T>();
+            var includable1 = new Includable<T>(pathesIncluding1);
             include1.Invoke(includable1);
-            var pathes1 = nodeIncluding1.Pathes;
+            var pathes1 = pathesIncluding1.Pathes;
 
-            var nodeIncluding2 = new PathesIncluding<T>();
-            var includable2 = new Includable<T>(nodeIncluding2);
+            var pathesIncluding2 = new PathesIncluding<T>();
+            var includable2 = new Includable<T>(pathesIncluding2);
             include2.Invoke(includable2);
-            var pathes2 = nodeIncluding2.Pathes;
+            var pathes2 = pathesIncluding2.Pathes;
 
             var contains = true;
             foreach(var path2 in pathes2)
@@ -454,6 +455,16 @@ namespace Vse.Routines
             }
             return contains;
         }
+
+        public static Include<T> Union<T>(this Include<T> include1, Include<T> include2)
+        {
+            Include<T> include = includable => {
+                include1(includable);
+                include2(includable);
+            };
+            return include;
+        }
+        #endregion
 
         public static IEnumerable<Type> GetTypes<T>(Include<T> include)
         {

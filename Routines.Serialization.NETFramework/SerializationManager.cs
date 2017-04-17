@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using System.Web.Script.Serialization;
 using System.IO;
 using System.Xml;
-using Vse.Web;
+using Vse.Web.Serialization;
 
 namespace Vse.Routines.Serialization.NETFramework
 {
@@ -32,7 +32,6 @@ namespace Vse.Routines.Serialization.NETFramework
                 return text;
             }
         }
-
         public static T DeserializeJson<T>(string json)
         {
             var serializer = new JavaScriptSerializer();
@@ -48,7 +47,7 @@ namespace Vse.Routines.Serialization.NETFramework
         public static string SerializeToJson(object o, int depth, bool ignoreDuplicates, IEnumerable<Type> types)
         {
             var serializer = new JavaScriptSerializer();
-            serializer.RegisterConverters(new[] { new ControlledSerializationJsonConverter(types, MemberExpressionExtensions.SystemTypes, null, 30, false) });
+            serializer.RegisterConverters(new[] { new ControlledSerializationJsonConverter(types, 4, false, false, ControlledSerializationJsonConverter.StandardSimpleTypes, null) });
             var json = serializer.Serialize(o);
             return json;
         }

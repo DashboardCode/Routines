@@ -9,8 +9,8 @@
 [assembly: System.Reflection.AssemblyDescription("")]
 [assembly: System.Reflection.AssemblyConfiguration("")]
 [assembly: System.Reflection.AssemblyCompany("Roman Pokrovskij (Github user rpokrovskij)")]
-[assembly: System.Reflection.AssemblyProduct("Routines.AspNetCore")]
-[assembly: System.Reflection.AssemblyCopyright("Copyright ©  2016")]
+[assembly: System.Reflection.AssemblyProduct("Routines")]
+[assembly: System.Reflection.AssemblyCopyright("Copyright ©  2017")]
 [assembly: System.Reflection.AssemblyVersion("1.0.12.0")]
 [assembly: System.Reflection.AssemblyFileVersion("1.0.12.0")]
 
