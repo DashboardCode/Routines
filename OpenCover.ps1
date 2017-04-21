@@ -23,7 +23,7 @@ $toolsFolder = 'packages'
 $classicProjectOutput = "bin\Debug"
 $coreProjectOutput = "bin\Debug\$netcoreapp"
 
-$testsResultsFolder = 'TestsResults'
+$testsResultsFolder = 'TestResults'
 
 $excludeGlobbingFromFolders =  @('.git', '.vs', 'docs', $toolsFolder, $testsResultsFolder)
 
