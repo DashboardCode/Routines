@@ -15,7 +15,7 @@ namespace Vse.Routines
             var memberExpression = (MemberExpression)expression.Body;
             return memberExpression.Member.Name;
         }
-        private static object GetMemberValue(this MemberExpression memberExpression, object entity)
+        public static object GetMemberValue(this MemberExpression memberExpression, object entity)
         {
             var popertyName = memberExpression.Member.Name;
             var type = entity.GetType();
@@ -25,6 +25,15 @@ namespace Vse.Routines
             Debug.Assert(propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0, "propertyInfo can't be read");
             var value = propertyInfo.GetValue(entity);
             return value;
+        }
+
+        public static object GetMemberValueCompiled(this MemberExpression memberExpression, object entity)
+        {
+            UnaryExpression objectMember = Expression.Convert(memberExpression, typeof(object));
+            //memberExpression,.
+            Expression<Func<object, object>> getterExpression = Expression.Lambda<Func<object,object>>(objectMember);
+            var getter = getterExpression.Compile();
+            return getter(entity);
         }
 
         private static Tuple<object, object> GetMemberValues(
@@ -99,8 +108,9 @@ namespace Vse.Routines
             }
             return new Tuple<object, object>(sourceValue, copiedValue);
         }
+        
         #region Path based
-        public class PathesIncluding<TRootEntity> : IIncluding<TRootEntity> //where TRootEntity : class
+        public class PathesIncluding<TRootEntity> : IIncluding<TRootEntity> 
         {
             public readonly List<string[]> Pathes = new List<string[]>();
             private string[] sequence;
@@ -125,17 +135,7 @@ namespace Vse.Routines
             private string[] Add(string[] parentPath, string member)
             {
                 var newPath = parentPath.Concat(new[] { member }).ToArray();
-                //var pathes = Pathes.Where(e => e.SequenceEqual(path)).ToList();
-                //if (path.Count() == 0)
-                //    Pathes.Add(newPath);
-                //else
-                //{
-
-                //}
-
                 var subpahtes = new List<string[]>();
-                //var isExists = false;
-                ////var pathesToRemove
                 foreach (var p in Pathes)
                 {
                     var isSub = true;
@@ -251,15 +251,105 @@ namespace Vse.Routines
         #endregion
 
         #region Nodes based
-        public class PropertyInfoNode
+        public class SerializerNode
         {
-            public readonly string MemberName;
             public readonly PropertyInfo PropertyInfo;
-            public readonly List<PropertyInfoNode> Children = new List<PropertyInfoNode>();
-            public PropertyInfoNode(PropertyInfo propertyInfo)
+            public readonly string PropertyName;
+            public readonly Func<object, object> func;
+            public readonly bool IsEnumerable;
+            public readonly bool IsPrimitive;
+            public readonly List<SerializerNode> Children = new List<SerializerNode>();
+            public SerializerNode(Func<object, object> func, string name, PropertyInfo propertyInfo, bool isEnumerable = false)
             {
-                MemberName = propertyInfo.Name;
+                this.func = func;
+                PropertyName = name;
                 PropertyInfo = propertyInfo;
+                IsEnumerable = isEnumerable;
+                IsPrimitive = propertyInfo.PropertyType.GetTypeInfo().IsPrimitive;
+            }
+        }
+
+        public class SerializingIncluding<TRootEntity> : IIncluding<TRootEntity>
+        {
+            public readonly List<SerializerNode> Root = new List<SerializerNode>();
+            public SerializerNode CurrentNode;
+
+            public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+            {
+                var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
+
+                var name = propertyInfo.Name;
+                var node = Root.FirstOrDefault(e => e.PropertyName == name);
+                if (node == null)
+                {
+                    //TODO: it is interesing how to convert Func<TRootEntity, TEntity> to Func<object, object> before compile
+                    //Also it is interesting if my prognose about performance true: current straight-forward casting is the best.
+
+                    //var param = Expression.Parameter(typeof(object));
+                    //var casted = Expression.Convert(navigationExpression, typeof(object));
+                    //Expression<Func<object, object>> getterExpression =
+                    //    Expression.Lambda<Func<object, object>>(
+                    //        navigationExpression.Body
+                    //         casted
+                    //         , Expression.Parameter(typeof(object)));
+                    //Func<object, object> generalized = getterExpression.Compile();
+
+                    Func<TRootEntity, TEntity> func = navigationExpression.Compile();
+                    Func<object, object> generalized = (o) => { return func((TRootEntity)o); };
+
+                    node = new SerializerNode(generalized, name, propertyInfo);
+                    Root.Add(node);
+                }
+                CurrentNode = node;
+            }
+
+            public void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+            {
+                var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
+
+                var name = propertyInfo.Name;
+                var node = Root.FirstOrDefault(e => e.PropertyName == name);
+                if (node == null)
+                {
+
+                    Func<TRootEntity, IEnumerable<TEntity>> func = navigationExpression.Compile();
+                    Func<object, object> generalized = (o) => { return func((TRootEntity)o); };
+
+                    node = new SerializerNode(generalized, name, propertyInfo);
+                    Root.Add(node);
+                }
+                CurrentNode = node;
+            }
+
+            public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
+            {
+                var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
+
+                var name = propertyInfo.Name;
+                var node = CurrentNode.Children.FirstOrDefault(e => e.PropertyName == name);
+                if (node == null)
+                {
+                    Func<TThenEntity, TEntity> func = navigationExpression.Compile();
+                    Func<object, object> generalized = (o) => { return func((TThenEntity)o); };
+                    node = new SerializerNode(generalized, name, propertyInfo);
+                }
+                CurrentNode.Children.Add(node);
+                CurrentNode = node;
+            }
+            public void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
+            {
+                var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
+
+                var name = propertyInfo.Name;
+                var node = CurrentNode.Children.FirstOrDefault(e => e.PropertyName == name);
+                if (node == null)
+                {
+                    Func<TThenEntity, IEnumerable<TEntity>> func = navigationExpression.Compile();
+                    Func<object, object> generalized = (o) => { return func((TThenEntity)o); };
+                    node = new SerializerNode(generalized, name, propertyInfo, true);
+                }
+                CurrentNode.Children.Add(node);
+                CurrentNode = node;
             }
         }
 
@@ -278,7 +368,6 @@ namespace Vse.Routines
         {
             public readonly List<MemberExpressionNode> Root = new List<MemberExpressionNode>();
             public MemberExpressionNode CurrentNode;
-
 
             public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
             {
@@ -310,6 +399,17 @@ namespace Vse.Routines
             }
         }
 
+        public class PropertyInfoNode
+        {
+            public readonly string MemberName;
+            public readonly PropertyInfo PropertyInfo;
+            public readonly List<PropertyInfoNode> Children = new List<PropertyInfoNode>();
+            public PropertyInfoNode(PropertyInfo propertyInfo)
+            {
+                MemberName = propertyInfo.Name;
+                PropertyInfo = propertyInfo;
+            }
+        }
         public class PropertyInfoIncluding<TRootEntity> : IIncluding<TRootEntity>
         {
             public readonly List<PropertyInfoNode> Root = new List<PropertyInfoNode>();

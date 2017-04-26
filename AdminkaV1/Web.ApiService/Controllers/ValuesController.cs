@@ -40,5 +40,12 @@ namespace Vse.AdminkaV1.Web.ApiService.Controllers
         public void Delete(int id)
         {
         }
+
+        [HttpGet("/api/data")]
+        public ContentResult GetData()
+        {
+            return Content("{ad:5,md:7}", "application/json");
+            //return Json();
+        }
     }
 }

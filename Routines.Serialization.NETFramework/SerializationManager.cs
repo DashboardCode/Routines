@@ -47,7 +47,7 @@ namespace Vse.Routines.Serialization.NETFramework
         public static string SerializeToJson(object o, int depth, bool ignoreDuplicates, IEnumerable<Type> types)
         {
             var serializer = new JavaScriptSerializer();
-            serializer.RegisterConverters(new[] { new ControlledSerializationJsonConverter(types, 4, false, false, ControlledSerializationJsonConverter.StandardSimpleTypes, null) });
+            serializer.RegisterConverters(new[] { new ControlledSerializationJsonConverter(types, 4, false, false) });
             var json = serializer.Serialize(o);
             return json;
         }
