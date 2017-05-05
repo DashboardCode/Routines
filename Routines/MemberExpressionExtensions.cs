@@ -108,547 +108,200 @@ namespace Vse.Routines
             }
             return new Tuple<object, object>(sourceValue, copiedValue);
         }
-        
-        #region Path based
-        public class PathesIncluding<TRootEntity> : IIncluding<TRootEntity> 
-        {
-            public readonly List<string[]> Pathes = new List<string[]>();
-            private string[] sequence;
-            public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
-            {
-                var name = GetMemberName(navigationExpression);
-                sequence = Add(new string[] { }, name);
-            }
-            public void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
-            {
-                Include(navigationExpression);
-            }
-            public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
-            {
-                var name = GetMemberName(navigationExpression);
-                sequence = Add(sequence.ToArray(), name);
-            }
-            public void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
-            {
-                ThenInclude(navigationExpression);
-            }
-            private string[] Add(string[] parentPath, string member)
-            {
-                var newPath = parentPath.Concat(new[] { member }).ToArray();
-                var subpahtes = new List<string[]>();
-                foreach (var p in Pathes)
-                {
-                    var isSub = true;
-                    for (int i = 0; i <= parentPath.Length; i++)
-                    {
-                        if (i == parentPath.Length)
-                        {
-                            if (p.Length > i && p[i] == member) // there is full subpath
-                            {
-                                goto end;
-                            }
-                        }
-                        else
-                        {
-                            if (parentPath.Length < i || p[i] != parentPath[i])
-                            {
-                                isSub = false;
-                                break;
-                            }
-                        }
-                    }
-                    if (isSub)
-                        subpahtes.Add(p);
-                }
-                if (subpahtes.Count > 0)
-                {
-                    var root = Pathes.Where(e => e.SequenceEqual(parentPath)).FirstOrDefault();
-                    if (root!=null)
-                        Pathes.Remove(root);
-                }
-                Pathes.Add(newPath);
-            end:
-                    return newPath;
-            }
-        }
 
-        public static void Detach<T>(T entity, Include<T> include) where T : class
-        {
-            var including = new PathesIncluding<T>();
-            var includable = new Includable<T>(including);
-            include.Invoke(includable);
-            var pathes = including.Pathes;
-            DetachPaths(entity, pathes);
-        }
-
-        public static void DetachAll<TCol, T>(IEnumerable<T> entities, Include<T> include) where TCol : IEnumerable<T>
-        {
-            var including = new PathesIncluding<T>();
-            var includable = new Includable<T>(including);
-            include.Invoke(includable);
-            var pathes = including.Pathes;
-            foreach (var entity in entities) {
-                if (entity!=null)
-                    DetachPaths(entity, pathes);
-            }
-        }
-
-        private static void DetachPaths(object entity, List<string[]> allowedPaths)
-        {
-            var type = entity.GetType();
-            if (entity is IEnumerable)
-            {
-                foreach (var value in (IEnumerable)entity)
-                {
-                    if (value != null)
-                    {
-                        DetachPaths(value, allowedPaths);
-                    }
-                }
-            }
-            else
-            {
-                var properties = type.GetTypeInfo().DeclaredProperties;
-                foreach (var propertyInfo in properties)
-                {
-                    if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
-                    {
-                        if (!SystemTypes.Contains(propertyInfo.PropertyType))
-                        {
-                            string propertyName = propertyInfo.Name;
-                            var value = propertyInfo.GetValue(entity, null);
-                            if (value != null)
-                            {
-                                var selectedPaths = allowedPaths.Where(e => e[0] == propertyName).ToList();
-                                if (selectedPaths.Count() > 0)
-                                {
-                                    var newPaths = new List<string[]>();
-                                    foreach (var path in allowedPaths)
-                                    {
-                                        var root = path[0];
-                                        if (root == propertyName)
-                                        {
-                                            if (path.Length > 1)
-                                            {
-                                                var newPath = new string[path.Length - 1];
-                                                newPath = path.Skip(1).ToArray();
-                                                newPaths.Add(newPath);
-                                            }
-                                        }
-                                    }
-                                    DetachPaths(value, newPaths);
-                                }
-                                else
-                                {
-                                    propertyInfo.SetValue(entity, null);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        #endregion
-
-        #region Nodes based
-        public class SerializerNode
-        {
-            public readonly PropertyInfo PropertyInfo;
-            public readonly string PropertyName;
-            public readonly Func<object, object> func;
-            public readonly bool IsEnumerable;
-            public readonly bool IsPrimitive;
-            public readonly List<SerializerNode> Children = new List<SerializerNode>();
-            public SerializerNode(Func<object, object> func, string name, PropertyInfo propertyInfo, bool isEnumerable = false)
-            {
-                this.func = func;
-                PropertyName = name;
-                PropertyInfo = propertyInfo;
-                IsEnumerable = isEnumerable;
-                IsPrimitive = propertyInfo.PropertyType.GetTypeInfo().IsPrimitive;
-            }
-        }
-
-        public class SerializingIncluding<TRootEntity> : IIncluding<TRootEntity>
-        {
-            public readonly List<SerializerNode> Root = new List<SerializerNode>();
-            public SerializerNode CurrentNode;
-
-            public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
-            {
-                var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
-
-                var name = propertyInfo.Name;
-                var node = Root.FirstOrDefault(e => e.PropertyName == name);
-                if (node == null)
-                {
-                    //TODO: it is interesing how to convert Func<TRootEntity, TEntity> to Func<object, object> before compile
-                    //Also it is interesting if my prognose about performance true: current straight-forward casting is the best.
-
-                    //var param = Expression.Parameter(typeof(object));
-                    //var casted = Expression.Convert(navigationExpression, typeof(object));
-                    //Expression<Func<object, object>> getterExpression =
-                    //    Expression.Lambda<Func<object, object>>(
-                    //        navigationExpression.Body
-                    //         casted
-                    //         , Expression.Parameter(typeof(object)));
-                    //Func<object, object> generalized = getterExpression.Compile();
-
-                    Func<TRootEntity, TEntity> func = navigationExpression.Compile();
-                    Func<object, object> generalized = (o) => { return func((TRootEntity)o); };
-
-                    node = new SerializerNode(generalized, name, propertyInfo);
-                    Root.Add(node);
-                }
-                CurrentNode = node;
-            }
-
-            public void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
-            {
-                var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
-
-                var name = propertyInfo.Name;
-                var node = Root.FirstOrDefault(e => e.PropertyName == name);
-                if (node == null)
-                {
-
-                    Func<TRootEntity, IEnumerable<TEntity>> func = navigationExpression.Compile();
-                    Func<object, object> generalized = (o) => { return func((TRootEntity)o); };
-
-                    node = new SerializerNode(generalized, name, propertyInfo);
-                    Root.Add(node);
-                }
-                CurrentNode = node;
-            }
-
-            public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
-            {
-                var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
-
-                var name = propertyInfo.Name;
-                var node = CurrentNode.Children.FirstOrDefault(e => e.PropertyName == name);
-                if (node == null)
-                {
-                    Func<TThenEntity, TEntity> func = navigationExpression.Compile();
-                    Func<object, object> generalized = (o) => { return func((TThenEntity)o); };
-                    node = new SerializerNode(generalized, name, propertyInfo);
-                }
-                CurrentNode.Children.Add(node);
-                CurrentNode = node;
-            }
-            public void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
-            {
-                var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
-
-                var name = propertyInfo.Name;
-                var node = CurrentNode.Children.FirstOrDefault(e => e.PropertyName == name);
-                if (node == null)
-                {
-                    Func<TThenEntity, IEnumerable<TEntity>> func = navigationExpression.Compile();
-                    Func<object, object> generalized = (o) => { return func((TThenEntity)o); };
-                    node = new SerializerNode(generalized, name, propertyInfo, true);
-                }
-                CurrentNode.Children.Add(node);
-                CurrentNode = node;
-            }
-        }
-
-        public class MemberExpressionNode
-        {
-            public readonly string MemberName;
-            public readonly MemberExpression MemberExpression;
-            public readonly List<MemberExpressionNode> Children = new List<MemberExpressionNode>();
-            public MemberExpressionNode(MemberExpression memberExpression)
-            {
-                MemberName = memberExpression.Member.Name;
-                MemberExpression = memberExpression;
-            }
-        }
-        public class MemberNodesIncluding<TRootEntity> : IIncluding<TRootEntity>
-        {
-            public readonly List<MemberExpressionNode> Root = new List<MemberExpressionNode>();
-            public MemberExpressionNode CurrentNode;
-
-            public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
-            {
-                var name = GetMemberName(navigationExpression);
-                var node = Root.FirstOrDefault(e => e.MemberName == name);
-                if (node == null)
-                {
-                    node = new MemberExpressionNode((MemberExpression)(navigationExpression.Body));
-                    Root.Add(node);
-                }
-                CurrentNode = node;
-            }
-            public void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
-            {
-                Include(navigationExpression);
-            }
-            public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
-            {
-                var name = GetMemberName(navigationExpression);
-                var node = CurrentNode.Children.FirstOrDefault(e => e.MemberName == name);
-                if (node == null)
-                    node = new MemberExpressionNode((MemberExpression)(navigationExpression.Body));
-                CurrentNode.Children.Add(node);
-                CurrentNode = node;
-            }
-            public void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
-            {
-                ThenInclude(navigationExpression);
-            }
-        }
-
-        public class PropertyInfoNode
-        {
-            public readonly string MemberName;
-            public readonly PropertyInfo PropertyInfo;
-            public readonly List<PropertyInfoNode> Children = new List<PropertyInfoNode>();
-            public PropertyInfoNode(PropertyInfo propertyInfo)
-            {
-                MemberName = propertyInfo.Name;
-                PropertyInfo = propertyInfo;
-            }
-        }
-        public class PropertyInfoIncluding<TRootEntity> : IIncluding<TRootEntity>
-        {
-            public readonly List<PropertyInfoNode> Root = new List<PropertyInfoNode>();
-            public PropertyInfoNode CurrentNode;
-
-            public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
-            {
-                var name = GetMemberName(navigationExpression);
-                var node = Root.FirstOrDefault(e => e.MemberName == name);
-                if (node == null)
-                {
-                    var memberExpression = (MemberExpression)(navigationExpression.Body);
-                    var propertyInfo = memberExpression.Member as PropertyInfo;
-                    if (propertyInfo==null)
-                    node = new PropertyInfoNode(propertyInfo);
-                    Root.Add(node);
-                }
-                CurrentNode = node;
-            }
-            public void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
-            {
-                Include(navigationExpression);
-            }
-            public void ThenInclude<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
-            {
-                var name = GetMemberName(navigationExpression);
-                var node = CurrentNode.Children.FirstOrDefault(e => e.MemberName == name);
-                if (node == null)
-                {
-                    var memberExpression = (MemberExpression)(navigationExpression.Body);
-                    var propertyInfo = memberExpression.Member as PropertyInfo;
-                    node = new PropertyInfoNode(propertyInfo);
-                }
-                CurrentNode.Children.Add(node);
-                CurrentNode = node;
-            }
-            public void ThenIncludeAll<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
-            {
-                ThenInclude(navigationExpression);
-            }
-        }
-
-        //public static T2 Cast<T1, T2>(T1 source, Include<T1> include)
-        //    where T1 : class 
-        //    where T2 : class
-        //{
-        //    var constructor = typeof(T2).GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
-        //    //var destination = (T)Activator.CreateInstance(typeof(T));
-        //    var destination = (T2)constructor.Invoke(null);
-        //    throw new NotImplementedException();
-        //    //return destination;
-        //}
-
-        //public static T2 Cast<T1, T2>(T1 t1, Include<T2> include)
-        //    where T1 : class
-        //    where T2 : class
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public static void CastAll<TCol1, T1, TCol2, T2>(T1 t1, Include<T1> include)
-        //    where T1 : class
-        //    where TCol1 : IEnumerable<T1>
-        //    where T2 : class
-        //    where TCol2 : IEnumerable<T2>
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public static void CastAll<TCol1, T1, TCol2, T2>(T1 t1, T2 t2, Include<T2> include)
-        //    where T1 : class
-        //    where TCol1 : IEnumerable<T1>
-        //    where T2 : class
-        //    where TCol2 : IEnumerable<T2>
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null)
-            where T : class
-        {
-            if (!(source is T))
-                return default(T);
-            if (systemTypes == default(IReadOnlyCollection<Type>))
-                systemTypes = SystemTypes;
-            var constructor = source.GetType().GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
-            //var destination = (T)Activator.CreateInstance(typeof(T));
-            var destination = (T)constructor.Invoke(null);
-            Copy(source, destination, include, systemTypes);
-            return destination;
-        }
-
-        public static TCol CloneAll<TCol, T>(TCol source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null) 
-            where TCol: class, IEnumerable<T>
-        {
-            if (source == null)
-                return null;
-            if (systemTypes == default(IReadOnlyCollection<Type>))
-                systemTypes = SystemTypes;
-            var constructor = source.GetType().GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
-            var destination = (TCol)constructor.Invoke(null);
-            CopyAll(source, destination, include, systemTypes);
-            return destination;
-        }
-
-        #region Algebra
-        public static bool Contains<T> (this Include<T> include1, Include<T> include2)
-        {
-            var pathesIncluding1 = new PathesIncluding<T>();
-            var includable1 = new Includable<T>(pathesIncluding1);
-            include1.Invoke(includable1);
-            var pathes1 = pathesIncluding1.Pathes;
-
-            var pathesIncluding2 = new PathesIncluding<T>();
-            var includable2 = new Includable<T>(pathesIncluding2);
-            include2.Invoke(includable2);
-            var pathes2 = pathesIncluding2.Pathes;
-
-            var contains = true;
-            foreach(var path2 in pathes2)
-            {
-                var isFound = false;
-                foreach(var path1 in pathes1)
-                {
-                    if (path2.Length > path1.Length)
-                        continue;
-                    for (int i=0;i< path2.Length ; i++ )
-                    {
-                        var member1 = path1[i];
-                        var member2 = path2[i];
-                        if (member1==member2)
-                        {
-                            isFound = true;
-                            break;
-                        }
-                    }
-                }
-                if (!isFound)
-                {
-                    contains = false;
-                    break;
-                }
-            }
-            return contains;
-        }
-
-        public static Include<T> Union<T>(this Include<T> include1, Include<T> include2)
-        {
-            Include<T> include = includable => {
-                include1(includable);
-                include2(includable);
-            };
-            return include;
-        }
-        #endregion
-
-        public static IEnumerable<Type> GetTypes<T>(Include<T> include)
-        {
-            var nodeIncluding = new MemberNodesIncluding<T>();
-            var includable = new Includable<T>(nodeIncluding);
-            include.Invoke(includable);
-            var nodes = nodeIncluding.Root;
-            var types = new List<Type>();
-            FlattenMemberExpressionNode(nodes, types);
-            return types;
-        }
-        private static void FlattenMemberExpressionNode(IEnumerable<MemberExpressionNode> nodes, List<Type> types)
+        internal static void FlattenMemberExpressionNode(this IEnumerable<MemberExpressionNode> nodes, List<Type> types)
         {
             foreach (var node in nodes)
             {
                 var type = node.MemberExpression.GetMemberType();
-                if (!types.Any(t=>t.AssemblyQualifiedName == type.AssemblyQualifiedName ) )
+                if (!types.Any(t => t.AssemblyQualifiedName == type.AssemblyQualifiedName))
                     types.Add(type);
                 FlattenMemberExpressionNode(node.Children, types);
             }
         }
 
-        public static void Copy<T>(T source, T destination, Include<T> include=null, IReadOnlyCollection<Type> systemTypes=null)
-        where T : class
+        private static object CloneItem(object sourceItem, List<MemberExpressionNode> nodes, IReadOnlyCollection<Type> systemTypes)
         {
-            var nodes = new List<MemberExpressionNode>();
-            if (include != null)
+            if (sourceItem == null)
             {
-                var nodeIncluding = new MemberNodesIncluding<T>();
-                var includable = new Includable<T>(nodeIncluding);
-                include.Invoke(includable);
-                nodes = nodeIncluding.Root;
+                return null;
             }
-            CopyNodes(source, destination, nodes, systemTypes);
+            else
+            {
+                var type = sourceItem.GetType();
+                var typeInfo = type.GetTypeInfo();
+                if (sourceItem is string)
+                {
+                    return new String(((string)sourceItem).ToCharArray()); // String.Copy((string)sourceItem); absent in standard
+                }
+                else if (typeInfo.IsValueType)
+                {
+                    if (nodes.Count > 0)
+                        throw new InvalidOperationException($"It is impossible to clone value type's '{type.FullName}' instance specifing includes '{string.Join(", ", nodes.Select(e=>e.MemberName))}' . Value type's instance can be cloned only entirely!");
+                    return sourceItem;
+                }
+                else if (typeInfo.IsClass)
+                {
+                    var constructor = typeInfo.DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
+                    var destinationItem = constructor.Invoke(null);
+                    CopyNodes(sourceItem, destinationItem, nodes, systemTypes);
+                    return destinationItem;
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Clonning of type '{type.FullName}' is not supported");
+                }
+            }
+        }
+        
+        public static List<PropertyInfo> GetPrimitiveOrSimpleProperties(
+            Type type, IReadOnlyCollection<Type> simpleTypes)
+        {
+            var properties = type.GetTypeInfo().DeclaredProperties;
+            var list = new List<PropertyInfo>();
+            foreach (var propertyInfo in properties)
+                if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
+                {
+                    var propertyType = propertyInfo.PropertyType;
+                    var typeInfo = propertyType.GetTypeInfo();
+                    if (typeInfo.IsPrimitive 
+                        || propertyType==typeof(string) 
+                        || simpleTypes.Contains(propertyInfo.PropertyType))
+                    {
+                        list.Add(propertyInfo);
+                    }
+                    else
+                    {
+                        var baseNullableType = Nullable.GetUnderlyingType(propertyType);
+                        if (baseNullableType != null && baseNullableType.GetTypeInfo().IsPrimitive)
+                        {
+                            list.Add(propertyInfo);
+                        }
+                    }
+                }
+            return list;
         }
 
-        public static void CopyAll<TCol, T>(TCol source, TCol destination, Include<T> include = null, IReadOnlyCollection<Type> systemTypes = null) 
-            where TCol : IEnumerable<T>
+        public static List<PropertyInfo> GetSimpleProperties(
+            Type type, IReadOnlyCollection<Type> systemTypes)
         {
-            var nodes = new List<MemberExpressionNode>();
-            if (include != null)
-            {
-                var nodeIncluding = new MemberNodesIncluding<T>();
-                var includable = new Includable<T>(nodeIncluding);
-                include.Invoke(includable);
-                nodes = nodeIncluding.Root;
-            }
-            CopyNodes(source, destination, nodes, systemTypes);
+            var properties = type.GetTypeInfo().DeclaredProperties;
+            var list = new List<PropertyInfo>();
+            foreach (var propertyInfo in properties)
+                if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
+                    if (systemTypes.Contains(propertyInfo.PropertyType))
+                        list.Add(propertyInfo);
+            return list;
         }
 
-        public static bool Equals<T>(T entity1, T entity2, Include<T> include=null)
+        public static void CopySimpleTypesProperties(
+            object source,
+            object destination,
+            IReadOnlyCollection<Type> systemTypes = null)
         {
-            var nodes = new List<MemberExpressionNode>();
-            if (include != null)
+            var properties = GetSimpleProperties(destination.GetType(), systemTypes);
+            foreach (var propertyInfo in properties)
             {
-                var nodeIncluding = new MemberNodesIncluding<T>();
-                var includable = new Includable<T>(nodeIncluding);
-                include.Invoke(includable);
-                nodes = nodeIncluding.Root;
+                 var value = propertyInfo.GetValue(source, null);
+                 propertyInfo.SetValue(destination, value);
             }
-            return EqualsNodes(entity1, entity2, nodes);
         }
 
-        public static bool EqualsAll<TCol, T>(TCol entity1, TCol entity2, Include<T> include=null) 
-            //where T : class
-            where TCol : /*class,*/ IEnumerable<T>
+        internal static void CopyNodes(
+            object source,
+            object destination,
+            List<MemberExpressionNode> nodes,
+            IReadOnlyCollection<Type> systemTypes)
         {
-            var nodes = new List<MemberExpressionNode>();
-            if (include != null)
+            if (source is Array)
             {
-                var nodeIncluding = new MemberNodesIncluding<T>();
-                var includable = new Includable<T>(nodeIncluding);
-                include.Invoke(includable);
-                nodes = nodeIncluding.Root;
+                CopyArray((Array)source, (Array)destination,  (sourceItem)=> CloneItem(sourceItem, nodes, systemTypes));
             }
-            return EqualsNodes(entity1, entity2, nodes);
+            else if (source is IList)
+            {
+                CopyList((IEnumerable)source, ((IList)destination), (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
+            }
+            else if (source is IEnumerable && source.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
+                    t.GetTypeInfo().IsGenericType &&
+                    t.GetGenericTypeDefinition() == typeof(ISet<>)))
+            {
+                CopySet((IEnumerable)source, (object)destination, (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
+            }
+            else
+            {
+
+                if (systemTypes != null)
+                    CopySimpleTypesProperties(source, destination, systemTypes);
+                foreach (var node in nodes)
+                {
+                    var value = node.MemberExpression.CopyMemberValue(source, destination);
+                    var s = value.Item1;
+                    var d = value.Item2;
+                    if (s != null)
+                        CopyNodes(s, d, node.Children, systemTypes); // recursion
+                }
+            }
         }
+
+        internal static bool EqualsItem(object entity1Item, object entity2Item, List<MemberExpressionNode> nodes)
+        {
+            if (entity1Item == null && entity2Item == null)
+                return true;
+            else if ((entity1Item != null && entity2Item == null) || (entity1Item == null && entity2Item != null))
+                return false;
+            if (nodes.Count() > 0)
+                return EqualsNodes(entity1Item, entity2Item, nodes);
+            else if (entity1Item is IEnumerable && !(entity1Item is string))
+                return EqualsNodes(entity1Item, entity2Item, nodes);
+            else
+                return entity1Item.Equals(entity2Item);
+        }
+
+        internal static bool EqualsNodes(
+            object entity1,
+            object entity2,
+            List<MemberExpressionNode> nodes)
+        {
+            bool @value = true;
+
+            if (entity1 is Array && entity2 is Array)
+            {
+                @value = EqualsArray((Array)entity1, (Array)entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
+            }
+            else if (entity1 is IList && entity2 is IList)
+            {
+                @value = EqualsList((IList)entity1, (IList)entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
+            }
+            else if (entity1 is IEnumerable && entity1.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
+                    t.GetTypeInfo().IsGenericType &&
+                    t.GetGenericTypeDefinition() == typeof(ISet<>)))
+            {
+                @value = EqualsSet(entity1, entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
+            }
+            else
+            {
+                foreach (var node in nodes)
+                {
+                    var copied = node.MemberExpression.GetMemberValues(entity1, entity2);
+                    @value = EqualsItem(copied.Item1, copied.Item2, node.Children);
+                    if (@value == false)
+                        break;
+                    //if (copied.Item1 != null)
+                    //    @value = EqualsNodes(copied.Item1, copied.Item2, node.Children); // recursive
+                    //if (@value == false)
+                    //    break;
+                }
+            }
+            return @value;
+        }
+
 
         #region Collection's itearations
 
         private static void CopyList(
             IEnumerable sourceEnumerable,
             IList destinationList,
-            Func<object,object> copyItem)
+            Func<object, object> copyItem)
         {
             destinationList.Clear();
             foreach (var sourceItem in sourceEnumerable)
@@ -717,7 +370,7 @@ namespace Vse.Routines
             var array2 = Array.CreateInstance(genType, count2);
             var methods = setTypeInfo.GetDeclaredMethods("CopyTo");
             var сopyTo = methods
-                .First(e=>e.GetParameters().Count()==1);
+                .First(e => e.GetParameters().Count() == 1);
             сopyTo.Invoke(set1, new[] { array1 });
             сopyTo.Invoke(set2, new[] { array2 });
             var @value = EqualsArray(array1, array2, equals);
@@ -727,7 +380,7 @@ namespace Vse.Routines
         private static void CopyArray(
             Array sourceArray,
             Array destinationArray,
-            Func<object,object> copyItem)
+            Func<object, object> copyItem)
         {
             if (destinationArray.Length != sourceArray.Length)
                 throw new InvalidOperationException($"Destination array type of '{destinationArray.GetType().FullName}' is not null and its length differs from source array's length");
@@ -764,184 +417,6 @@ namespace Vse.Routines
             return @value;
         }
         #endregion
-
-        private static object CloneItem(object sourceItem, List<MemberExpressionNode> nodes, IReadOnlyCollection<Type> systemTypes)
-        {
-            if (sourceItem == null)
-            {
-                return null;
-            }
-            else
-            {
-                var type = sourceItem.GetType();
-                var typeInfo = type.GetTypeInfo();
-                if (sourceItem is string)
-                {
-                    return new String(((string)sourceItem).ToCharArray()); // String.Copy((string)sourceItem); absent in standard
-                }
-                else if (typeInfo.IsValueType)
-                {
-                    if (nodes.Count > 0)
-                        throw new InvalidOperationException($"It is impossible to clone value type's '{type.FullName}' instance specifing includes '{string.Join(", ", nodes.Select(e=>e.MemberName))}' . Value type's instance can be cloned only entirely!");
-                    return sourceItem;
-                }
-                else if (typeInfo.IsClass)
-                {
-                    var constructor = typeInfo.DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
-                    var destinationItem = constructor.Invoke(null);
-                    CopyNodes(sourceItem, destinationItem, nodes, systemTypes);
-                    return destinationItem;
-                }
-                else
-                {
-                    throw new InvalidOperationException($"Clonning of type '{type.FullName}' is not supported");
-                }
-            }
-        }
-
-        private static void CopyNodes(
-            object source,
-            object destination,
-            List<MemberExpressionNode> nodes,
-            IReadOnlyCollection<Type> systemTypes)
-        {
-            if (source is Array)
-            {
-                CopyArray((Array)source, (Array)destination,  (sourceItem)=> CloneItem(sourceItem, nodes, systemTypes));
-            }
-            else if (source is IList)
-            {
-                CopyList((IEnumerable)source, ((IList)destination), (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
-            }
-            else if (source is IEnumerable && source.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
-                    t.GetTypeInfo().IsGenericType &&
-                    t.GetGenericTypeDefinition() == typeof(ISet<>)))
-            {
-                CopySet((IEnumerable)source, (object)destination, (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
-            }
-            else
-            {
-
-                if (systemTypes != null)
-                    CopySimpleTypesProperties(source, destination, systemTypes);
-                foreach (var node in nodes)
-                {
-                    var value = node.MemberExpression.CopyMemberValue(source, destination);
-                    var s = value.Item1;
-                    var d = value.Item2;
-                    if (s != null)
-                        CopyNodes(s, d, node.Children, systemTypes); // recursion
-                }
-            }
-        }
-
-        private static bool EqualsItem(object entity1Item, object entity2Item, List<MemberExpressionNode> nodes)
-        {
-            if (entity1Item == null && entity2Item == null)
-                return true;
-            else if ((entity1Item != null && entity2Item == null) || (entity1Item == null && entity2Item != null))
-                return false;
-            if (nodes.Count() > 0)
-                return EqualsNodes(entity1Item, entity2Item, nodes);
-            else if (entity1Item is IEnumerable && !(entity1Item is string))
-                return EqualsNodes(entity1Item, entity2Item, nodes);
-            else
-                return entity1Item.Equals(entity2Item);
-        }
-        private static bool EqualsNodes(
-            object entity1,
-            object entity2,
-            List<MemberExpressionNode> nodes)
-        {
-            bool @value = true;
-
-            if (entity1 is Array && entity2 is Array)
-            {
-                @value = EqualsArray((Array)entity1, (Array)entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
-            }
-            else if (entity1 is IList && entity2 is IList)
-            {
-                @value = EqualsList((IList)entity1, (IList)entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
-            }
-            else if (entity1 is IEnumerable && entity1.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
-                    t.GetTypeInfo().IsGenericType &&
-                    t.GetGenericTypeDefinition() == typeof(ISet<>)))
-            {
-                @value = EqualsSet(entity1, entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
-            }
-            else
-            {
-                foreach (var node in nodes)
-                {
-                    var copied = node.MemberExpression.GetMemberValues(entity1, entity2);
-                    @value = EqualsItem(copied.Item1, copied.Item2, node.Children);
-                    if (@value == false)
-                        break;
-                    //if (copied.Item1 != null)
-                    //    @value = EqualsNodes(copied.Item1, copied.Item2, node.Children); // recursive
-                    //if (@value == false)
-                    //    break;
-                }
-            }
-            return @value;
-        }
-        #endregion
-
-        public static void CopySimpleTypesProperties(object source,
-            object destination, IReadOnlyCollection<Type> systemTypes = null)
-        {
-            var properties = destination.GetType().GetTypeInfo().DeclaredProperties;
-            foreach (var propertyInfo in properties)
-            {
-                if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
-                {
-                    if (systemTypes.Contains(propertyInfo.PropertyType))
-                    {
-                        var value = propertyInfo.GetValue(source, null);
-                        propertyInfo.SetValue(destination, value);
-                    }
-                }
-            }
-        }
-
-        public static readonly IReadOnlyCollection<Type> SystemTypes = new List<Type>
-        {
-                typeof(bool),
-                typeof(bool?),
-                typeof(byte),
-                typeof(byte?),
-                typeof(char),
-                typeof(char?),
-                typeof(decimal),
-                typeof(decimal?),
-                typeof(double),
-                typeof(double?),
-                typeof(float),
-                typeof(float?),
-                typeof(int),
-                typeof(int?),
-                typeof(long),
-                typeof(long?),
-                typeof(sbyte),
-                typeof(sbyte?),
-                typeof(short),
-                typeof(short?),
-                typeof(uint),
-                typeof(uint?),
-                typeof(ulong),
-                typeof(ulong?),
-                typeof(ushort),
-                typeof(ushort?),
-                typeof(string),
-                typeof(DateTime),
-                typeof(DateTime?),
-                typeof(DateTimeOffset),
-                typeof(DateTimeOffset?),
-                typeof(Guid),
-                typeof(Guid?),
-                typeof(TimeSpan),
-                typeof(TimeSpan?)
-            };
     }
 
     //public static class IncludeExtensions

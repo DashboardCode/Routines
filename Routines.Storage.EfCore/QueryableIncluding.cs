@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace Vse.Routines.Storage.EfCore
 {
-    public class QueryableIncluding<TRootEntity> : IIncluding<TRootEntity> where TRootEntity : class
+    public class QueryableIncluding<TRootEntity> : INavigationExpressionParser<TRootEntity> where TRootEntity : class
     {
         public IQueryable<TRootEntity> Queryable { get; private set; }
         public bool isEnumerable;
@@ -18,17 +18,17 @@ namespace Vse.Routines.Storage.EfCore
                 throw new ArgumentNullException(nameof(rootQueryable));
             Queryable = rootQueryable;
         }
-        public void Include<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
+        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
         {
             Queryable = EntityFrameworkQueryableExtensions.Include(Queryable, expression);
             isEnumerable = false;
         }
-        public void IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression)
+        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression)
         {
             Queryable = EntityFrameworkQueryableExtensions.Include(Queryable, enumerableExpression);
             isEnumerable = true;
         }
-        public void ThenInclude<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression)
+        public void Parse<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression)
         {
             if(isEnumerable)
                 Queryable = EntityFrameworkQueryableExtensions.ThenInclude(
@@ -38,7 +38,7 @@ namespace Vse.Routines.Storage.EfCore
                     (IIncludableQueryable<TRootEntity, TMidEntity>)Queryable, expression);
             isEnumerable = false;
         }
-        public void ThenIncludeAll<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression)
+        public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression)
         {
             if (isEnumerable)
                 Queryable = EntityFrameworkQueryableExtensions.ThenInclude(

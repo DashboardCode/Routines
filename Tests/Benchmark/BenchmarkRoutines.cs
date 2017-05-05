@@ -20,7 +20,7 @@ namespace Benchmark
             var source = TestTools.CreateTestModel();
             var destination = new TestModel();
             var includes = TestTools.CreateInclude();
-            MemberExpressionExtensions.Copy(source, destination, includes);
+            NavigationExpressionExtensions.Copy(source, destination, includes);
         }
         [Benchmark]
         public void IncludesEquals()
@@ -32,7 +32,7 @@ namespace Benchmark
                         .ThenIncludeAll(i => i.Uniques)
                             .ThenInclude(i => i.IndexName) // compare
                     .Include(i => i.ListTest);
-            var b2 = MemberExpressionExtensions.Equals(source, source, includes);
+            var b2 = NavigationExpressionExtensions.Equals(source, source, includes);
         }
 
         [Benchmark]
@@ -43,7 +43,7 @@ namespace Benchmark
                 = includable => includable
                     .IncludeAll(i => i.TestChilds)
                         .ThenIncludeAll(i => i.Uniques);
-            var destination = MemberExpressionExtensions.Clone(source, includes);
+            var destination = NavigationExpressionExtensions.Clone(source, includes);
         }
 
         [Benchmark]

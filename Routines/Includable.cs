@@ -6,37 +6,37 @@ namespace Vse.Routines
 {
     public class Includable<TRootEntity> 
     {
-        protected readonly IIncluding<TRootEntity> includingProcess;
-        public Includable(IIncluding<TRootEntity> includingProcess)
+        protected readonly INavigationExpressionParser<TRootEntity> navigationExpressionParser;
+        public Includable(INavigationExpressionParser<TRootEntity> navigationExpressionParser)
         {
-            this.includingProcess = includingProcess;
+            this.navigationExpressionParser = navigationExpressionParser;
         }
         public ThenIncludable<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
         {
-            includingProcess.Include(navigationExpression);
-            return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
+            navigationExpressionParser.ParseRoot(navigationExpression);
+            return new ThenIncludable<TRootEntity, TEntity>(navigationExpressionParser);
         }
         public ThenIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
         {
-            includingProcess.IncludeAll(navigationExpression);
-            return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
+            navigationExpressionParser.ParseRootEnumerable(navigationExpression);
+            return new ThenIncludable<TRootEntity, TEntity>(navigationExpressionParser);
         }
     }
 
     public class ThenIncludable<TRootEntity, TThenEntity> : Includable<TRootEntity> 
     {
-        public ThenIncludable(IIncluding<TRootEntity> includingProcess):base(includingProcess)
+        public ThenIncludable(INavigationExpressionParser<TRootEntity> navigationExpressionParser):base(navigationExpressionParser)
         {
         }
         public ThenIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
         {
-            includingProcess.ThenInclude(navigationExpression);
-            return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
+            navigationExpressionParser.Parse(navigationExpression);
+            return new ThenIncludable<TRootEntity, TEntity>(navigationExpressionParser);
         }
         public ThenIncludable<TRootEntity, TEntity> ThenIncludeAll<TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
         {
-            includingProcess.ThenIncludeAll(navigationExpression);
-            return new ThenIncludable<TRootEntity, TEntity>(includingProcess);
+            navigationExpressionParser.ParseEnumerable(navigationExpression);
+            return new ThenIncludable<TRootEntity, TEntity>(navigationExpressionParser);
         }
     }
 }

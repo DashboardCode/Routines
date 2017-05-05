@@ -90,6 +90,28 @@ namespace Vse.Routines.Test
             return includes;
         }
 
+        public static Include<TestModel> CreateIncludeWithoutLeafs()
+        {
+            Include<TestModel> includes
+                = includable => includable
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Entity)
+                    .Include(i => i.StorageModel)
+                        .ThenInclude(i => i.Key)
+                            .ThenInclude(i => i.Attributes)
+                    .IncludeAll(i => i.Test)
+                    .IncludeAll(i => i.ListTest)
+                    .Include(i => i.StorageModel)
+                         .ThenIncludeAll(i => i.Uniques)
+                    .Include(i => i.StorageModel)
+                         .ThenIncludeAll(i => i.Uniques)
+                             .ThenIncludeAll(i => i.Fields)
+                    .Include(i => i.Message);
+            return includes;
+        }
+
         public static TestModel CreateTestModel()
         {
             var source = new TestModel()
@@ -109,7 +131,7 @@ namespace Vse.Routines.Test
                 PropertyInt = 1234
             };
             source.TestChilds = new HashSet<TestChild>() { new TestChild { Uniques = source.StorageModel.Uniques.ToList() } };
-            source.Message = new TestModel.MessageStruct() { TextMsg = "Initial", DateTimeMsg = DateTime.Now, IntNullableMsg = 7 };
+            source.Message    = new TestModel.MessageStruct() { TextMsg = "Initial", DateTimeMsg = DateTime.Now, IntNullableMsg = 7 };
             source.IntNullable2 = 555;
             return source;
         }
