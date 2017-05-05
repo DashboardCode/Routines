@@ -6,9 +6,15 @@ namespace Vse.Routines
 {
     public static class SystemTypesExtensions
     {
-        public static readonly IReadOnlyCollection<Type> DefaultSimpleTypes = new List<Type>
+        public static readonly IReadOnlyCollection<Type> DefaultSimpleTextTypes = new List<Type>
         {
-             typeof(DateTime), typeof(Guid), typeof(TimeSpan), typeof(DateTime?), typeof(Guid?), typeof(TimeSpan?), typeof(DateTimeOffset), typeof(DateTimeOffset?)
+             typeof(DateTime), typeof(Guid),  typeof(TimeSpan)
+            , typeof(DateTime?), typeof(Guid?),  typeof(TimeSpan?), typeof(DateTimeOffset), typeof(DateTimeOffset?)
+        };
+
+        public static readonly IReadOnlyCollection<Type> DefaultSimpleNumberTypes = new List<Type>
+        {
+             typeof(Decimal), typeof(Decimal?)
         };
 
         public static readonly IReadOnlyCollection<Type> SystemTypes = new List<Type>

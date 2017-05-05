@@ -39,7 +39,7 @@ namespace Benchmark
         static NavigationExpressionJsonSerializer<Row> serializer;
         static BenchmarkJson()
         {
-            for(int i=0;i<6000;i++)
+            for(int i=0;i<6;i++)
             {
                 testData.Add(new Row {
                     At=DateTime.Now,
@@ -72,8 +72,11 @@ namespace Benchmark
         [Benchmark]
         public string JsonNet()
         {
-            string text = JsonConvert.SerializeObject(testData,/* Formatting.Indented,*/ new JsonSerializerSettings
+            string text = JsonConvert.SerializeObject(testData,/* Formatting.Indented,*/ 
+                new JsonSerializerSettings
             {
+                    DateFormatString= "yyyy-MM-ddTHH:mm:ssK",
+                    NullValueHandling= NullValueHandling.Ignore
                 //TypeNameHandling = TypeNameHandling.All
             });
             return text;

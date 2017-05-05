@@ -59,8 +59,10 @@ namespace Vse.Routines.Json
                         WriteDateTime(stringBuilder, (o is DateTime) ? ((DateTime)o) : ((DateTime?)o).Value);
                     else if (node.IsPrimitive)
                         WriteSymbol(stringBuilder, o.ToString());
-                    else if (node.IsSimple)
+                    else if (node.IsSimpleText)
                         WriteText(stringBuilder, o.ToString());
+                    else if (node.IsSimpleNumber)
+                        WriteSymbol(stringBuilder, o.ToString());
                     @value = true;
                 }
                 else
@@ -77,7 +79,7 @@ namespace Vse.Routines.Json
 
         private static void WriteDateTime(StringBuilder stringBuilder, DateTime dateTime)
         {
-            stringBuilder.Append('\"').Append(SerializeDateTimeWithMs(dateTime)).Append('\"');
+            stringBuilder.Append('\"').Append(SerializeDateTimeWithSec(dateTime)).Append('\"');
         }
 
         private static void WriteText(StringBuilder stringBuilder, string text)
@@ -167,7 +169,7 @@ namespace Vse.Routines.Json
         /// <returns></returns>
         private static string SerializeDateTimeWithMs(DateTime dateTime)
         {
-            return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffffffK");
+            return dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffK");
         }
         #endregion
 

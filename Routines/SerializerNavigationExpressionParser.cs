@@ -99,7 +99,8 @@ namespace Vse.Routines
         public readonly bool IsEnumerable;
         public readonly bool IsLeaf;
         public readonly bool IsPrimitive;
-        public readonly bool IsSimple;
+        public readonly bool IsSimpleText;
+        public readonly bool IsSimpleNumber;
         public readonly bool IsString;
         public readonly bool IsBoolean;
         public readonly bool IsDateTime;
@@ -121,8 +122,10 @@ namespace Vse.Routines
                 IsBoolean = true;
             else if (type == typeof(DateTime) || type == typeof(DateTime?))
                 IsDateTime = true;
-            else if (type == typeof(char) || type == typeof(char?) || SystemTypesExtensions.DefaultSimpleTypes.Contains(type))
-                IsSimple = true;
+            else if (type == typeof(char) || type == typeof(char?) || SystemTypesExtensions.DefaultSimpleTextTypes.Contains(type))
+                IsSimpleText = true;
+            else if (SystemTypesExtensions.DefaultSimpleNumberTypes.Contains(type))
+                IsSimpleNumber = true;
             else if (typeInfo.IsPrimitive)
                 IsPrimitive = true;
             else
@@ -131,7 +134,7 @@ namespace Vse.Routines
                 if (baseNullableType != null && baseNullableType.GetTypeInfo().IsPrimitive)
                     IsPrimitive = true;
             }
-            IsLeaf = IsPrimitive || IsSimple || IsString || IsBoolean || IsDateTime;
+            IsLeaf = IsPrimitive || IsSimpleText || IsString || IsBoolean || IsDateTime || IsSimpleNumber;
         }
 
         public SerializerNode(Type type)
@@ -141,14 +144,16 @@ namespace Vse.Routines
 
         public void Append()
         {
-            if (!IsEnumerable)
+            //if (!IsEnumerable)
             {
                 var containsLeafs = Children.Values.Any(c => c.IsLeaf);
                 if (!containsLeafs)
                 {
                     //TODO: compare performance
                     //var childProperties = MemberExpressionExtensions.GetSimpleProperties(propertyType, SystemTypesExtensions.SystemTypes);
-                    var childProperties = MemberExpressionExtensions.GetPrimitiveOrSimpleProperties(Type, SystemTypesExtensions.DefaultSimpleTypes);
+                    var childProperties = MemberExpressionExtensions.GetPrimitiveOrSimpleProperties(Type, 
+                        SystemTypesExtensions.DefaultSimpleTextTypes,
+                        SystemTypesExtensions.DefaultSimpleNumberTypes);
                     foreach (var p in childProperties)
                     {
                         ParameterExpression parameterExpression = Expression.Parameter(typeof(object), "o");

@@ -185,7 +185,7 @@ namespace Benchmark
         }
 
         [Benchmark]
-        public string FormatS_Verify()
+        public string Verify_FormatS()
         {
             var text = string.Concat(dateTime.ToUniversalTime().ToString("s"), "Z");
             return text;
@@ -206,7 +206,7 @@ namespace Benchmark
         }
 
         [Benchmark]
-        public string CustomFormatK_Verify()
+        public string Verify_CustomFormatK()
         {
             var text = dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssK");
             return text;

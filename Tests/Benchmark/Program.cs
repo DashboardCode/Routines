@@ -7,9 +7,9 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            var b = new BenchmarkJson();
-            var t2 = b.Routine();
-            var t1 = b.JsonNet();
+            //var b = new BenchmarkJson();
+            //var t2 = b.Routine();
+            //var t1 = b.JsonNet();
 
             //var t4 = b.CustomDev2WithMS();
             //BenchmarkRunner.Run<BenchmarkRoutines>();

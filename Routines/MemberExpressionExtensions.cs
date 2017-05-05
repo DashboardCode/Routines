@@ -155,7 +155,7 @@ namespace Vse.Routines
         }
         
         public static List<PropertyInfo> GetPrimitiveOrSimpleProperties(
-            Type type, IReadOnlyCollection<Type> simpleTypes)
+            Type type, IReadOnlyCollection<Type> simpleTextTypes, IReadOnlyCollection<Type> simpleNumberTypes)
         {
             var properties = type.GetTypeInfo().DeclaredProperties;
             var list = new List<PropertyInfo>();
@@ -166,7 +166,8 @@ namespace Vse.Routines
                     var typeInfo = propertyType.GetTypeInfo();
                     if (typeInfo.IsPrimitive 
                         || propertyType==typeof(string) 
-                        || simpleTypes.Contains(propertyInfo.PropertyType))
+                        || simpleTextTypes.Contains(propertyInfo.PropertyType)
+                        || simpleNumberTypes.Contains(propertyInfo.PropertyType))
                     {
                         list.Add(propertyInfo);
                     }
