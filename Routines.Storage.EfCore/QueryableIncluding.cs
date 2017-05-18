@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace Vse.Routines.Storage.EfCore
 {
-    public class QueryableIncluding<TRootEntity> : INavigationExpressionParser<TRootEntity> where TRootEntity : class
+    public class QueryableIncluding<TRootEntity> : INExpParser<TRootEntity> where TRootEntity : class
     {
         public IQueryable<TRootEntity> Queryable { get; private set; }
         public bool isEnumerable;

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkCharBuffer</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.5, OS=Windows 10.0.14393
+Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
+Frequency=3233539 Hz, Resolution=309.2587 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Core   : .NET Core 4.6.25009.03, 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>     Method</th><th>Job</th><th>Runtime</th><th>Mean</th><th>Error</th><th>StdDev</th><th> Min</th><th> Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>StringBuilder8000</td><td>Clr</td><td>Clr</td><td>728.634 us</td><td>9.2615 us</td><td>8.6632 us</td><td>715.071 us</td><td>740.372 us</td><td>727.286 us</td><td>5</td><td>110.2865</td><td>369.53 kB</td>
+</tr><tr><td>StringBuilder64</td><td>Clr</td><td>Clr</td><td>5.960 us</td><td>0.0736 us</td><td>0.0689 us</td><td>5.868 us</td><td>6.090 us</td><td>5.972 us</td><td>1</td><td>0.9923</td><td>3.33 kB</td>
+</tr><tr><td>CharBuffer8000</td><td>Clr</td><td>Clr</td><td>788.176 us</td><td>3.5420 us</td><td>3.3132 us</td><td>781.797 us</td><td>793.403 us</td><td>787.568 us</td><td>7</td><td>128.8411</td><td>424.4 kB</td>
+</tr><tr><td>CharBuffer64</td><td>Clr</td><td>Clr</td><td>6.483 us</td><td>0.0563 us</td><td>0.0526 us</td><td>6.428 us</td><td>6.587 us</td><td>6.469 us</td><td>3</td><td>1.0681</td><td>3.59 kB</td>
+</tr><tr><td>StringBuilder8000</td><td>Core</td><td>Core</td><td>686.731 us</td><td>2.5280 us</td><td>2.2410 us</td><td>681.800 us</td><td>690.091 us</td><td>687.160 us</td><td>4</td><td>109.7656</td><td>368.86 kB</td>
+</tr><tr><td>StringBuilder64</td><td>Core</td><td>Core</td><td>5.989 us</td><td>0.0485 us</td><td>0.0430 us</td><td>5.921 us</td><td>6.066 us</td><td>5.989 us</td><td>1</td><td>0.9842</td><td>3.32 kB</td>
+</tr><tr><td>CharBuffer8000</td><td>Core</td><td>Core</td><td>748.585 us</td><td>9.1814 us</td><td>8.1391 us</td><td>737.032 us</td><td>766.557 us</td><td>749.684 us</td><td>6</td><td>128.5807</td><td>423.56 kB</td>
+</tr><tr><td>CharBuffer64</td><td>Core</td><td>Core</td><td>6.117 us</td><td>0.1120 us</td><td>0.1048 us</td><td>5.931 us</td><td>6.372 us</td><td>6.107 us</td><td>2</td><td>1.1004</td><td>3.58 kB</td>
+</tr></tbody></table>
+</body>
+</html>

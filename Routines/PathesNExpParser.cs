@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public class PathesNavigationExpressionParser<TRootEntity> : INavigationExpressionParser<TRootEntity>
+    public class PathesNExpParser<TRootEntity> : INExpParser<TRootEntity>
     {
         public readonly List<string[]> Pathes = new List<string[]>();
         private string[] sequence;

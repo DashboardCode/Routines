@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkListAccess</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.5, OS=Windows 10.0.14393
+Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
+Frequency=3233539 Hz, Resolution=309.2587 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1637.0
+  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1637.0
+  Core   : .NET Core 4.6.25009.03, 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>   Method</th><th>Job</th><th>Runtime</th><th>  Mean</th><th>Error</th><th>StdDev</th><th>   Min</th><th>   Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>Dictionary10</td><td>Clr</td><td>Clr</td><td>25.68 ns</td><td>0.5036 ns</td><td>0.4465 ns</td><td>25.10 ns</td><td>26.67 ns</td><td>25.63 ns</td><td>1</td><td>-</td><td>0 B</td>
+</tr><tr><td>Dictionary100</td><td>Clr</td><td>Clr</td><td>25.41 ns</td><td>0.2891 ns</td><td>0.2705 ns</td><td>25.08 ns</td><td>25.94 ns</td><td>25.34 ns</td><td>1</td><td>-</td><td>0 B</td>
+</tr><tr><td>Dictionary1000</td><td>Clr</td><td>Clr</td><td>26.24 ns</td><td>0.3007 ns</td><td>0.2813 ns</td><td>25.82 ns</td><td>26.82 ns</td><td>26.23 ns</td><td>2</td><td>-</td><td>0 B</td>
+</tr><tr><td>Dictionary10000</td><td>Clr</td><td>Clr</td><td>27.68 ns</td><td>0.5035 ns</td><td>0.4710 ns</td><td>27.02 ns</td><td>28.60 ns</td><td>27.84 ns</td><td>5</td><td>-</td><td>0 B</td>
+</tr><tr><td>   List10</td><td>Clr</td><td>Clr</td><td>52.29 ns</td><td>1.1142 ns</td><td>2.2252 ns</td><td>49.36 ns</td><td>57.83 ns</td><td>51.99 ns</td><td>7</td><td>0.0271</td><td>88 B</td>
+</tr><tr><td>  List100</td><td>Clr</td><td>Clr</td><td>205.05 ns</td><td>3.5276 ns</td><td>3.2997 ns</td><td>202.07 ns</td><td>213.23 ns</td><td>203.69 ns</td><td>9</td><td>0.0245</td><td>88 B</td>
+</tr><tr><td> List1000</td><td>Clr</td><td>Clr</td><td>1,770.84 ns</td><td>23.4166 ns</td><td>21.9039 ns</td><td>1,747.73 ns</td><td>1,818.31 ns</td><td>1,760.28 ns</td><td>11</td><td>0.0028</td><td>88 B</td>
+</tr><tr><td>List10000</td><td>Clr</td><td>Clr</td><td>17,391.58 ns</td><td>199.7064 ns</td><td>186.8054 ns</td><td>17,185.68 ns</td><td>17,747.07 ns</td><td>17,312.10 ns</td><td>13</td><td>-</td><td>88 B</td>
+</tr><tr><td>Dictionary10</td><td>Core</td><td>Core</td><td>25.85 ns</td><td>0.2299 ns</td><td>0.2038 ns</td><td>25.60 ns</td><td>26.29 ns</td><td>25.80 ns</td><td>1</td><td>-</td><td>0 B</td>
+</tr><tr><td>Dictionary100</td><td>Core</td><td>Core</td><td>26.66 ns</td><td>0.4289 ns</td><td>0.4012 ns</td><td>25.67 ns</td><td>27.12 ns</td><td>26.74 ns</td><td>3</td><td>-</td><td>0 B</td>
+</tr><tr><td>Dictionary1000</td><td>Core</td><td>Core</td><td>25.37 ns</td><td>0.1622 ns</td><td>0.1438 ns</td><td>25.19 ns</td><td>25.60 ns</td><td>25.29 ns</td><td>1</td><td>-</td><td>0 B</td>
+</tr><tr><td>Dictionary10000</td><td>Core</td><td>Core</td><td>27.32 ns</td><td>0.4949 ns</td><td>0.4629 ns</td><td>26.64 ns</td><td>28.17 ns</td><td>27.26 ns</td><td>4</td><td>-</td><td>0 B</td>
+</tr><tr><td>   List10</td><td>Core</td><td>Core</td><td>47.67 ns</td><td>0.4176 ns</td><td>0.3906 ns</td><td>46.96 ns</td><td>48.29 ns</td><td>47.56 ns</td><td>6</td><td>0.0271</td><td>88 B</td>
+</tr><tr><td>  List100</td><td>Core</td><td>Core</td><td>193.87 ns</td><td>3.8302 ns</td><td>4.8440 ns</td><td>187.86 ns</td><td>206.24 ns</td><td>192.06 ns</td><td>8</td><td>0.0244</td><td>88 B</td>
+</tr><tr><td> List1000</td><td>Core</td><td>Core</td><td>1,684.57 ns</td><td>20.6439 ns</td><td>19.3103 ns</td><td>1,649.19 ns</td><td>1,709.42 ns</td><td>1,688.06 ns</td><td>10</td><td>0.0043</td><td>88 B</td>
+</tr><tr><td>List10000</td><td>Core</td><td>Core</td><td>16,222.76 ns</td><td>305.7644 ns</td><td>327.1644 ns</td><td>15,790.24 ns</td><td>16,988.02 ns</td><td>16,136.64 ns</td><td>12</td><td>-</td><td>88 B</td>
+</tr></tbody></table>
+</body>
+</html>

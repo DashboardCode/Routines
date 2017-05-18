@@ -6,8 +6,8 @@ namespace Vse.Routines
 {
     public class Includable<TRootEntity> 
     {
-        protected readonly INavigationExpressionParser<TRootEntity> navigationExpressionParser;
-        public Includable(INavigationExpressionParser<TRootEntity> navigationExpressionParser)
+        protected readonly INExpParser<TRootEntity> navigationExpressionParser;
+        public Includable(INExpParser<TRootEntity> navigationExpressionParser)
         {
             this.navigationExpressionParser = navigationExpressionParser;
         }
@@ -25,7 +25,7 @@ namespace Vse.Routines
 
     public class ThenIncludable<TRootEntity, TThenEntity> : Includable<TRootEntity> 
     {
-        public ThenIncludable(INavigationExpressionParser<TRootEntity> navigationExpressionParser):base(navigationExpressionParser)
+        public ThenIncludable(INExpParser<TRootEntity> navigationExpressionParser):base(navigationExpressionParser)
         {
         }
         public ThenIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)

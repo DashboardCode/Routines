@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkNullableCheck</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.5, OS=Windows 10.0.14393
+Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
+Frequency=3233539 Hz, Resolution=309.2587 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Core   : .NET Core 4.6.25009.03, 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>   Method</th><th>Job</th><th>Runtime</th><th>Mean</th><th>Error</th><th>StdDev</th><th> Min</th><th> Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>CheckObject</td><td>Clr</td><td>Clr</td><td>80.1984 ns</td><td>0.9091 ns</td><td>0.8504 ns</td><td>79.1017 ns</td><td>82.0118 ns</td><td>79.8825 ns</td><td>4</td><td>0.0058</td><td>24 B</td>
+</tr><tr><td>CheckNullable</td><td>Clr</td><td>Clr</td><td>0.2982 ns</td><td>0.0354 ns</td><td>0.0331 ns</td><td>0.2543 ns</td><td>0.3570 ns</td><td>0.2920 ns</td><td>2</td><td>-</td><td>0 B</td>
+</tr><tr><td>CheckNullableEq</td><td>Clr</td><td>Clr</td><td>0.2791 ns</td><td>0.0062 ns</td><td>0.0058 ns</td><td>0.2693 ns</td><td>0.2870 ns</td><td>0.2793 ns</td><td>1</td><td>-</td><td>0 B</td>
+</tr><tr><td>CheckObject</td><td>Core</td><td>Core</td><td>80.1019 ns</td><td>0.2832 ns</td><td>0.2649 ns</td><td>79.5440 ns</td><td>80.5013 ns</td><td>80.1312 ns</td><td>4</td><td>0.0060</td><td>24 B</td>
+</tr><tr><td>CheckNullable</td><td>Core</td><td>Core</td><td>2.0300 ns</td><td>0.0166 ns</td><td>0.0156 ns</td><td>2.0093 ns</td><td>2.0521 ns</td><td>2.0268 ns</td><td>3</td><td>-</td><td>0 B</td>
+</tr><tr><td>CheckNullableEq</td><td>Core</td><td>Core</td><td>2.0338 ns</td><td>0.0490 ns</td><td>0.0434 ns</td><td>1.9945 ns</td><td>2.1395 ns</td><td>2.0123 ns</td><td>3</td><td>-</td><td>0 B</td>
+</tr></tbody></table>
+</body>
+</html>

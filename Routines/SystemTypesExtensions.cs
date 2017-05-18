@@ -12,7 +12,7 @@ namespace Vse.Routines
             , typeof(DateTime?), typeof(Guid?),  typeof(TimeSpan?), typeof(DateTimeOffset), typeof(DateTimeOffset?)
         };
 
-        public static readonly IReadOnlyCollection<Type> DefaultSimpleNumberTypes = new List<Type>
+        public static readonly IReadOnlyCollection<Type> DefaultSimpleSymbolTypes = new List<Type>
         {
              typeof(Decimal), typeof(Decimal?)
         };

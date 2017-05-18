@@ -127,7 +127,7 @@ namespace Vse.AdminkaV1.Injected.Test
                     return entity;
                 });
             });
-            var cloned =  NavigationExpressionExtensions.Clone(record, include, SystemTypesExtensions.SystemTypes);
+            var cloned =  NExpExtensions.Clone(record, include, SystemTypesExtensions.SystemTypes);
             if (cloned.ChildRecords == null || cloned.ChildRecords.Count == 0)
                 throw new Exception("Clone error");
             var xml = InjectedManager.SerializeToXml(cloned, include);

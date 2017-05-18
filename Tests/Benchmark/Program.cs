@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using System;
+using Vse.Routines.Json;
 
 namespace Benchmark
 {
@@ -7,14 +8,12 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            //var b = new BenchmarkJson();
-            //var t2 = b.Routine();
-            //var t1 = b.JsonNet();
-
-            //var t4 = b.CustomDev2WithMS();
-            //BenchmarkRunner.Run<BenchmarkRoutines>();
-            //BenchmarkRunner.Run<BenchmarkStringUnion>();
-            BenchmarkRunner.Run<BenchmarkJson>();
+            //var b = new BenchmarkCharBuffer();
+            //var s1 = b.CharBuffer64();
+            //var s2 = b.StringBuilder64();
+            //if (s1 != s2)
+            //    throw new Exception("asdasd");
+            BenchmarkRunner.Run<BenchmarkNullableCheck>();
         }
     }
 }

@@ -5,14 +5,13 @@ using BenchmarkDotNet.Attributes.Jobs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Vse.Routines;
 using Vse.Routines.Json;
 
 namespace Benchmark
 {
     //[Config(typeof(Config))]
-    [MinColumn, MaxColumn, StdDevColumn, MedianColumn/*, RankColumn*/]
+    [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [ClrJob, CoreJob]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser /*, InliningDiagnoser*/]
@@ -36,7 +35,7 @@ namespace Benchmark
         }
 
         static List<Row> testData = new List<Row>();
-        static NavigationExpressionJsonSerializer<Row> serializer;
+        static NExpJsonSerializer<Row> serializer;
         static BenchmarkJson()
         {
             for(int i=0;i<6;i++)
@@ -59,7 +58,7 @@ namespace Benchmark
             }
 
             Include<Row> includes = null;
-            serializer = includes.BuildNavigationExpressionJsonSerializer();
+            serializer = includes.BuildNExpJsonSerializer();
         }
 
         [Benchmark]
@@ -72,13 +71,13 @@ namespace Benchmark
         [Benchmark]
         public string JsonNet()
         {
-            string text = JsonConvert.SerializeObject(testData,/* Formatting.Indented,*/ 
+            string text = JsonConvert.SerializeObject(
+                testData,
                 new JsonSerializerSettings
-            {
-                    DateFormatString= "yyyy-MM-ddTHH:mm:ssK",
-                    NullValueHandling= NullValueHandling.Ignore
-                //TypeNameHandling = TypeNameHandling.All
-            });
+                {
+                     DateFormatString= "yyyy-MM-ddTHH:mm:ssK",
+                     NullValueHandling= NullValueHandling.Ignore
+                });
             return text;
         }
     }

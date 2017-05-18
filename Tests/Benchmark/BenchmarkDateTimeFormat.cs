@@ -24,19 +24,19 @@ namespace Benchmark
             var sb = new StringBuilder(20);
 
             sb.Append(d.Year).Append("-");
-            if (d.Month <= 9)
+            if (d.Month < 10)
                 sb.Append("0");
             sb.Append(d.Month).Append("-");
-            if (d.Day <= 9)
+            if (d.Day < 10)
                 sb.Append("0");
             sb.Append(d.Day).Append("T");
-            if (d.Hour <= 9)
+            if (d.Hour < 10)
                 sb.Append("0");
             sb.Append(d.Hour).Append(":");
-            if (d.Minute <= 9)
+            if (d.Minute < 10)
                 sb.Append("0");
             sb.Append(d.Minute).Append(":");
-            if (d.Second <= 9)
+            if (d.Second < 10)
                 sb.Append("0");
             sb.Append(d.Second).Append("Z");
             var text = sb.ToString();

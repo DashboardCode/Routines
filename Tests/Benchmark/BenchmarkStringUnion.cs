@@ -54,6 +54,18 @@ namespace Benchmark
             return sb.ToString();
         }
         [Benchmark]
+        public string SeparatorStepBack2()
+        {
+            var sb = new StringBuilder();
+            foreach (var item in testData)
+            {
+                sb.Append(item).Append(',');
+            }
+            if (sb[sb.Length-1] == ',')
+                sb.Length--;
+            return sb.ToString();
+        }
+        [Benchmark]
         public string Enumerable()
         {
             var sb = new StringBuilder();

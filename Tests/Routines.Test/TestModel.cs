@@ -100,7 +100,7 @@ namespace Vse.Routines.Test
                         .ThenInclude(i => i.Entity)
                     .Include(i => i.StorageModel)
                         .ThenInclude(i => i.Key)
-                            .ThenInclude(i => i.Attributes)
+                            .ThenIncludeAll(i => i.Attributes)
                     .IncludeAll(i => i.Test)
                     .IncludeAll(i => i.ListTest)
                     .Include(i => i.StorageModel)
@@ -133,6 +133,31 @@ namespace Vse.Routines.Test
             source.TestChilds = new HashSet<TestChild>() { new TestChild { Uniques = source.StorageModel.Uniques.ToList() } };
             source.Message    = new TestModel.MessageStruct() { TextMsg = "Initial", DateTimeMsg = DateTime.Now, IntNullableMsg = 7 };
             source.IntNullable2 = 555;
+            return source;
+        }
+
+        public static TestModel CreateTestModelWithNulls()
+        {
+            var source = new TestModel()
+            {
+                StorageModel= new StorageModel(),
+                //StorageModel = new StorageModel()
+                //{
+                //    TableName = "TableName1",
+                //    Entity = new Entity() { Name = "EntityName1", Namespace = null },
+                //    Key = new Key() { Attributes = new[] { "FieldA1", null, "FieldA2" } },
+                //    Uniques = new[] { new Unique { Fields = new[] { "FieldU1" }, IndexName = "IndexName1" }, new Unique { Fields = new[] { "FieldU2" }, IndexName = "IndexName2" } }
+
+                //},
+                Test = new[] { 1, 2, 3 },
+                ListTest = new List<Guid>() {  Guid.NewGuid(), Guid.NewGuid() },
+                CultureInfos = new List<CultureInfo>() { CultureInfo.CurrentCulture, CultureInfo.InvariantCulture },
+                PropertyText = "sampleTest",
+                PropertyInt = 1234
+            };
+            //source.TestChilds = new HashSet<TestChild>() { new TestChild { Uniques = source.StorageModel.Uniques.ToList() } };
+            source.Message = new TestModel.MessageStruct() { TextMsg = "Initial", DateTimeMsg = DateTime.Now, IntNullableMsg = null };
+            source.IntNullable2 = null;
             return source;
         }
     }

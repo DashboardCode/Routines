@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkStringUnion</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.5, OS=Windows 10.0.14393
+Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
+Frequency=3233539 Hz, Resolution=309.2587 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1637.0
+  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1637.0
+  Core   : .NET Core 4.6.25009.03, 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>         Method</th><th>Job</th><th>Runtime</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>     StringJoin</td><td>Clr</td><td>Clr</td><td>29.48 us</td><td>0.5675 us</td><td>0.6970 us</td><td>28.77 us</td><td>30.91 us</td><td>29.13 us</td><td>7</td><td>4.9133</td><td>16.3 kB</td>
+</tr><tr><td>SeparatorSubstitution</td><td>Clr</td><td>Clr</td><td>18.58 us</td><td>0.3714 us</td><td>0.6791 us</td><td>17.57 us</td><td>20.41 us</td><td>18.48 us</td><td>5</td><td>5.1154</td><td>16.27 kB</td>
+</tr><tr><td>SeparatorStepBack</td><td>Clr</td><td>Clr</td><td>17.75 us</td><td>0.3440 us</td><td>0.5043 us</td><td>17.08 us</td><td>18.96 us</td><td>17.78 us</td><td>3</td><td>4.9780</td><td>16.27 kB</td>
+</tr><tr><td>SeparatorStepBack2</td><td>Clr</td><td>Clr</td><td>17.37 us</td><td>0.2143 us</td><td>0.2005 us</td><td>17.04 us</td><td>17.70 us</td><td>17.37 us</td><td>2</td><td>4.9540</td><td>16.27 kB</td>
+</tr><tr><td>     Enumerable</td><td>Clr</td><td>Clr</td><td>18.50 us</td><td>0.3664 us</td><td>0.5015 us</td><td>17.78 us</td><td>19.47 us</td><td>18.46 us</td><td>5</td><td>4.9995</td><td>16.27 kB</td>
+</tr><tr><td>     StringJoin</td><td>Core</td><td>Core</td><td>27.37 us</td><td>0.3246 us</td><td>0.3037 us</td><td>26.70 us</td><td>27.84 us</td><td>27.32 us</td><td>6</td><td>4.9540</td><td>16.26 kB</td>
+</tr><tr><td>SeparatorSubstitution</td><td>Core</td><td>Core</td><td>17.50 us</td><td>0.2659 us</td><td>0.2487 us</td><td>17.15 us</td><td>17.96 us</td><td>17.46 us</td><td>2</td><td>4.9296</td><td>16.22 kB</td>
+</tr><tr><td>SeparatorStepBack</td><td>Core</td><td>Core</td><td>16.26 us</td><td>0.1946 us</td><td>0.1820 us</td><td>15.94 us</td><td>16.50 us</td><td>16.29 us</td><td>1</td><td>4.9851</td><td>16.22 kB</td>
+</tr><tr><td>SeparatorStepBack2</td><td>Core</td><td>Core</td><td>16.14 us</td><td>0.3154 us</td><td>0.4102 us</td><td>15.65 us</td><td>17.02 us</td><td>16.05 us</td><td>1</td><td>5.1823</td><td>16.22 kB</td>
+</tr><tr><td>     Enumerable</td><td>Core</td><td>Core</td><td>18.16 us</td><td>0.3043 us</td><td>0.2846 us</td><td>17.78 us</td><td>18.67 us</td><td>18.03 us</td><td>4</td><td>4.9377</td><td>16.22 kB</td>
+</tr></tbody></table>
+</body>
+</html>

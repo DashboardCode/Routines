@@ -7,10 +7,10 @@ using Vse.Routines;
 namespace Benchmark
 {
     //[Config(typeof(Config))]
-    [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
+    [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [ClrJob, CoreJob]
     [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser /*, InliningDiagnoser*/]
+    [MemoryDiagnoser]
     public class BenchmarkRoutines
     {
         [Benchmark]
@@ -20,7 +20,7 @@ namespace Benchmark
             var source = TestTools.CreateTestModel();
             var destination = new TestModel();
             var includes = TestTools.CreateInclude();
-            NavigationExpressionExtensions.Copy(source, destination, includes);
+            NExpExtensions.Copy(source, destination, includes);
         }
         [Benchmark]
         public void IncludesEquals()
@@ -32,7 +32,7 @@ namespace Benchmark
                         .ThenIncludeAll(i => i.Uniques)
                             .ThenInclude(i => i.IndexName) // compare
                     .Include(i => i.ListTest);
-            var b2 = NavigationExpressionExtensions.Equals(source, source, includes);
+            var b2 = NExpExtensions.Equals(source, source, includes);
         }
 
         [Benchmark]
@@ -43,7 +43,7 @@ namespace Benchmark
                 = includable => includable
                     .IncludeAll(i => i.TestChilds)
                         .ThenIncludeAll(i => i.Uniques);
-            var destination = NavigationExpressionExtensions.Clone(source, includes);
+            var destination = NExpExtensions.Clone(source, includes);
         }
 
         [Benchmark]
