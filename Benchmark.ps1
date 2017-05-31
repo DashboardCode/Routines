@@ -6,6 +6,7 @@ If ($SolutionFolderPath -eq '') {
     #throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
 }
 
+
 $BenchmarkProjectPath = "$SolutionFolderPath\Tests\Benchmark"
 
 & $dotnetPath build $BenchmarkProjectPath -c Release

@@ -2,12 +2,7 @@
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
-using Newtonsoft.Json;
 using System;
-using System.Text;
-using System.Collections.Generic;
-using Vse.Routines;
-using Vse.Routines.Json;
 
 namespace Benchmark
 {
@@ -20,9 +15,15 @@ namespace Benchmark
     {
         static int? x = (new Random()).Next();
 
+        #region implementation
         public static bool CheckObjectImpl(object o)
         {
             return o != null;
+        }
+
+        public static bool CheckGenericImpl<T> (T t)
+        {
+            return t != null;
         }
 
         public static bool CheckNullableImpl<T>(T? o) where T: struct
@@ -30,11 +31,13 @@ namespace Benchmark
             return o.HasValue;
         }
 
-
         public static bool CheckNullableEqImpl<T>(T? o) where T : struct
         {
-            return o!=null;
+            return o != null;
         }
+        #endregion
+
+
 
         [Benchmark]
         public bool CheckObject()
@@ -46,6 +49,12 @@ namespace Benchmark
         public bool CheckNullable()
         {
             return CheckNullableImpl(x);
+        }
+
+        [Benchmark]
+        public bool CheckGeneric()
+        {
+            return CheckGenericImpl(x);
         }
 
         [Benchmark]

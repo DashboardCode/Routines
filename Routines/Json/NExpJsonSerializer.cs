@@ -93,10 +93,14 @@ namespace Vse.Routines.Json
                             @value = settings.ByteArrayFormatter(stringBuilder, byteArray);
                         }
                     }
-                    else if (node.IsPrimitive)
+                    else if (node.IsPrimitive || node.IsNPrimitive)
                     {
                         WriteSymbol(stringBuilder, o.ToString());
                         @value = true;
+                    }
+                    else if (node.IsDecimal || node.IsNDecimal)
+                    {
+                        @value = WriteSymbol(stringBuilder, o.ToString());
                     }
                     else if (node.IsSimpleText)
                     {
@@ -156,7 +160,11 @@ namespace Vse.Routines.Json
                         if (settings.ByteArrayFormatter != null)
                             @value = settings.ByteArrayFormatter(stringBuilder, (byte[])o);
                     }
-                    else if (node.IsPrimitive)
+                    else if (node.IsDecimal || node.IsNDecimal)
+                    {
+                        @value = WriteSymbol(stringBuilder, o.ToString());
+                    }
+                    else if (node.IsPrimitive || node.IsNPrimitive)
                     {
                         @value = WriteSymbol(stringBuilder, o.ToString());
                     }
@@ -168,6 +176,7 @@ namespace Vse.Routines.Json
                     {
                         @value = WriteSymbol(stringBuilder, o.ToString());
                     }
+                    
                 }
                 else
                     @value = SerializeObject(stringBuilder, node, settings, o);

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkCallSimple</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.5, OS=Windows 10.0.14393
+Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
+Frequency=3233539 Hz, Resolution=309.2587 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Core   : .NET Core 4.6.25211.01, 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>   Method</th><th>Job</th><th>Runtime</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>CallBuildedReal</td><td>Clr</td><td>Clr</td><td>138.5 ns</td><td>2.4653 ns</td><td>2.3060 ns</td><td>134.6 ns</td><td>141.8 ns</td><td>139.0 ns</td><td>5</td><td>0.0577</td><td>192 B</td>
+</tr><tr><td>CallBuilded</td><td>Clr</td><td>Clr</td><td>122.3 ns</td><td>1.7136 ns</td><td>1.6029 ns</td><td>120.1 ns</td><td>124.9 ns</td><td>122.4 ns</td><td>4</td><td>0.0576</td><td>192 B</td>
+</tr><tr><td>CallLambda</td><td>Clr</td><td>Clr</td><td>122.7 ns</td><td>1.5679 ns</td><td>1.4666 ns</td><td>120.5 ns</td><td>125.8 ns</td><td>122.6 ns</td><td>4</td><td>0.0582</td><td>192 B</td>
+</tr><tr><td>CallLambdaConst</td><td>Clr</td><td>Clr</td><td>122.7 ns</td><td>0.7203 ns</td><td>0.6385 ns</td><td>121.6 ns</td><td>123.8 ns</td><td>122.6 ns</td><td>4</td><td>0.0577</td><td>192 B</td>
+</tr><tr><td>CallBuildedReal</td><td>Core</td><td>Core</td><td>121.6 ns</td><td>1.7688 ns</td><td>1.4770 ns</td><td>119.2 ns</td><td>124.0 ns</td><td>121.9 ns</td><td>4</td><td>0.0577</td><td>192 B</td>
+</tr><tr><td>CallBuilded</td><td>Core</td><td>Core</td><td>110.0 ns</td><td>1.0281 ns</td><td>0.8585 ns</td><td>108.9 ns</td><td>111.7 ns</td><td>109.9 ns</td><td>1</td><td>0.0593</td><td>192 B</td>
+</tr><tr><td>CallLambda</td><td>Core</td><td>Core</td><td>112.3 ns</td><td>1.6818 ns</td><td>1.4909 ns</td><td>110.2 ns</td><td>115.1 ns</td><td>112.4 ns</td><td>2</td><td>0.0592</td><td>192 B</td>
+</tr><tr><td>CallLambdaConst</td><td>Core</td><td>Core</td><td>115.9 ns</td><td>2.2959 ns</td><td>2.1475 ns</td><td>112.3 ns</td><td>119.3 ns</td><td>115.0 ns</td><td>3</td><td>0.0594</td><td>192 B</td>
+</tr></tbody></table>
+</body>
+</html>

@@ -21,8 +21,6 @@ namespace Vse.Routines.Json
 
         public static NExpJsonSerializer<T> BuildNExpJsonSerializer<T>(this Include<T> include, NExpJsonSerializerSettings settings = null)
         {
-            if (settings == null)
-                settings = new NExpJsonSerializerSettings();
             var parser = new SerializerNExpParser<T>();
             var includable = new Includable<T>(parser);
             if (include!=null)
@@ -30,6 +28,8 @@ namespace Vse.Routines.Json
             var serializerNode = parser.Root;
             serializerNode.AppendLeafs();
 
+            if (settings == null)
+                settings = new NExpJsonSerializerSettings();
 
             var serializer = new NExpJsonSerializer<T>(serializerNode, settings);
             return serializer;

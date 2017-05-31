@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
-using System;
 
 namespace BenchmarkClassic
 {
@@ -8,8 +7,9 @@ namespace BenchmarkClassic
         static void Main(string[] args)
         {
             var b = new BenchmarkJson();
-            var t2 = b.Routine();
+            
             var t1 = b.JsonNet();
+            var t2 = b.RoutineExpressionCompiled();
             var t3 = b.ServiceStack1();
             BenchmarkRunner.Run<BenchmarkJson>();
         }

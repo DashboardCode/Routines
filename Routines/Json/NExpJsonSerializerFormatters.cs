@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -47,6 +48,17 @@ namespace Vse.Routines.Json
         public static bool SerializeToIso8601WithMs(StringBuilder sb, DateTime dateTime)
         {
             sb.Append('"').Append(dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffK")).Append('"');
+            return true;
+        }
+
+        // <summary>
+        /// ISO 8601 with "second fractions", there with milliseconds
+        /// </summary>
+        /// <param name="dateTime"></param>
+        /// <returns></returns>
+        public static bool SerializeToIso8601WithNs(StringBuilder sb, DateTime dateTime)
+        {
+            sb.Append('"').Append(dateTime.ToString("yyyy-MM-ddTHH:mm:ss.fffffffK")).Append('"');
             return true;
         }
 
@@ -194,5 +206,7 @@ namespace Vse.Routines.Json
             sb.Append(']');
             return true;
         }
+
+        
     }
 }

@@ -23,6 +23,7 @@ namespace Vse.Routines
             SerializerBaseNode parent,
             PropertyInfo propertyInfo,
             Type navigationType,
+            Type navigationEnumerableType,
             bool isEnumerable,
             Func<Func<object, object>> getGeneralized)
         {
@@ -31,7 +32,7 @@ namespace Vse.Routines
             if (!dictionary.TryGetValue(name, out SerializerNode node))
             {
                 var generalized = getGeneralized();
-                node = new SerializerNode(parent, navigationType, isEnumerable, generalized, name);
+                node = new SerializerNode(parent, navigationType, navigationEnumerableType, isEnumerable, generalized, name);
                 dictionary.Add(name, node);
             }
             return node;
@@ -40,7 +41,7 @@ namespace Vse.Routines
         public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
         {
             var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
-            var node = AddIfAbsent(Root, propertyInfo, typeof(TEntity), false, () =>
+            var node = AddIfAbsent(Root, propertyInfo,  typeof(TEntity), null, false, () =>
             {
                 //TODO: it is interesing how to convert Func<TRootEntity, TEntity> to Func<object, object> before compile
                 //Also it is interesting if my prognose about performance true: current straight-forward casting is the best.
@@ -63,7 +64,7 @@ namespace Vse.Routines
         public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
         {
             var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
-            var node = AddIfAbsent(Root, propertyInfo, typeof(TEntity), true, () =>
+            var node = AddIfAbsent(Root, propertyInfo, typeof(TEntity), typeof(IEnumerable<TEntity>), true, () =>
             {
                 Func<TRootEntity, IEnumerable<TEntity>> func = navigationExpression.Compile();
                 Func<object, object> generalized = (o) => { return func((TRootEntity)o); };
@@ -74,7 +75,7 @@ namespace Vse.Routines
         public void Parse<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
         {
             var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
-            var node = AddIfAbsent(CurrentNode, propertyInfo, typeof(TEntity), false, () =>
+            var node = AddIfAbsent(CurrentNode, propertyInfo, typeof(TEntity), null, false, () =>
             {
                 Func<TThenEntity, TEntity> func = navigationExpression.Compile();
                 Func<object, object> generalized = (o) => { return func((TThenEntity)o); };
@@ -85,7 +86,7 @@ namespace Vse.Routines
         public void ParseEnumerable<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
         {
             var propertyInfo = ((MemberExpression)navigationExpression.Body).Member as PropertyInfo;
-            var node = AddIfAbsent(CurrentNode, propertyInfo, typeof(TEntity), true, () =>
+            var node = AddIfAbsent(CurrentNode, propertyInfo, typeof(TEntity), typeof(IEnumerable<TEntity>), true, () =>
             {
                 Func<TThenEntity, IEnumerable<TEntity>> func = navigationExpression.Compile();
                 Func<object, object> generalized = (o) => { return func((TThenEntity)o); };
@@ -95,12 +96,19 @@ namespace Vse.Routines
         }
     }
 
+    public enum SerializerPropertyPipeline { Struct = 0, Object = 1, NullableStruct = 2 }; 
+
     public class SerializerBaseNode
     {
         public readonly Dictionary<string, SerializerNode> Children = new Dictionary<string, SerializerNode>();
+        public readonly SerializerPropertyPipeline SerializerPropertyPipeline;
         public readonly Type Type;
+        public readonly Type TypeUnderlyingNullable;
         public readonly bool IsLeaf;
         public readonly bool IsPrimitive;
+        public readonly bool IsNPrimitive;
+        public readonly bool IsDecimal;
+        public readonly bool IsNDecimal;
         public readonly bool IsSimpleText;
         public readonly bool IsSimpleSymbol;
         public readonly bool IsString;
@@ -110,13 +118,30 @@ namespace Vse.Routines
         public readonly bool IsNDateTime;
         public readonly bool IsNBoolean;
 
+        public readonly bool IsNullable;
+
         public bool IsRoot { get; protected set; } = true;
         public Action<object> Serialize;
         
         public SerializerBaseNode(Type type)
         {
             Type = type;
+            TypeUnderlyingNullable = Nullable.GetUnderlyingType(type);
+            if (TypeUnderlyingNullable!=null)
+                IsNullable = true;
             var typeInfo = type.GetTypeInfo();
+            if (typeInfo.IsClass)
+            {
+                SerializerPropertyPipeline = SerializerPropertyPipeline.Object;
+            }
+            else
+            {
+                if (IsNullable)
+                    SerializerPropertyPipeline = SerializerPropertyPipeline.NullableStruct;
+                else
+                    SerializerPropertyPipeline = SerializerPropertyPipeline.Struct;
+            }
+            
             if (type == typeof(string))
                 IsString = true;
             else if (type == typeof(bool))
@@ -127,21 +152,23 @@ namespace Vse.Routines
                 IsDateTime = true;
             else if (type == typeof(DateTime?))
                 IsNDateTime = true;
-            else if (type == typeof(byte[]))
+            else if (type == typeof(decimal))
+                IsDecimal = true;
+            else if (type == typeof(decimal?))
+                IsNDecimal = true;
+            else if (type == typeof(byte[]) /*typeof(IEnumerable<byte>).GetTypeInfo().IsAssignableFrom(typeInfo)*/)
                 IsByteArray = true;
             else if (type == typeof(char) || type == typeof(char?) || SystemTypesExtensions.DefaultSimpleTextTypes.Contains(type))
+            {
                 IsSimpleText = true;
+            }
             else if (SystemTypesExtensions.DefaultSimpleSymbolTypes.Contains(type))
                 IsSimpleSymbol = true;
             else if (typeInfo.IsPrimitive)
                 IsPrimitive = true;
-            else
-            {
-                var baseNullableType = Nullable.GetUnderlyingType(type);
-                if (baseNullableType != null && baseNullableType.GetTypeInfo().IsPrimitive)
-                    IsPrimitive = true;
-            }
-            IsLeaf = IsPrimitive || IsNBoolean || IsNDateTime || IsSimpleText || IsString || IsBoolean || IsDateTime || IsSimpleSymbol || IsByteArray;
+            else if (IsNullable && TypeUnderlyingNullable.GetTypeInfo().IsPrimitive)
+                IsNPrimitive = true;
+            IsLeaf = IsNPrimitive || IsDecimal || IsNDecimal|| IsPrimitive || IsNBoolean || IsNDateTime || IsSimpleText || IsString || IsBoolean || IsDateTime || IsSimpleSymbol || IsByteArray;
         }
 
         public void AppendLeafs()
@@ -166,6 +193,7 @@ namespace Vse.Routines
                     Children.Add(p.Name, new SerializerNode(
                         this, 
                         p.PropertyType, 
+                        null,
                         false, 
                         func, 
                         p.Name));
@@ -184,9 +212,10 @@ namespace Vse.Routines
         public readonly string PropertyName;
         public readonly Func<object, object> func;
         public readonly bool IsEnumerable;
+        public readonly Type TypeUnderlyingEnumerable;
         public readonly SerializerBaseNode Parent;
 
-        public SerializerNode(SerializerBaseNode parent, Type type, /*Action serialize,*/ bool isEnumerable, Func <object, object> func, string name)
+        public SerializerNode(SerializerBaseNode parent, Type type, Type underlyingEnumerable,  /*Action serialize,*/ bool isEnumerable, Func <object, object> func, string name)
             :base(type/*, serialize*/)
         {
             IsRoot = false;
@@ -194,6 +223,10 @@ namespace Vse.Routines
             this.func = func;
             PropertyName = name;
             IsEnumerable = isEnumerable;
+            if (isEnumerable)
+            {
+                TypeUnderlyingEnumerable = underlyingEnumerable;
+            }
         }
 
         public override string ToString()

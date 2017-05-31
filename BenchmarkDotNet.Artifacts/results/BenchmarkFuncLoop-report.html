@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkFuncLoop</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.5, OS=Windows 10.0.14393
+Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
+Frequency=3233539 Hz, Resolution=309.2587 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Core   : .NET Core 4.6.25009.03, 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>      Method</th><th>Job</th><th>Runtime</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Rank</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td> F16_Foreach</td><td>Clr</td><td>Clr</td><td>26.00 us</td><td>0.2208 us</td><td>0.2065 us</td><td>25.80 us</td><td>26.41 us</td><td>25.90 us</td><td>3</td><td>0 B</td>
+</tr><tr><td>     F16_For</td><td>Clr</td><td>Clr</td><td>25.85 us</td><td>0.0881 us</td><td>0.0781 us</td><td>25.74 us</td><td>26.02 us</td><td>25.85 us</td><td>2</td><td>0 B</td>
+</tr><tr><td>F16_Enumerator</td><td>Clr</td><td>Clr</td><td>228.29 us</td><td>1.1703 us</td><td>1.0375 us</td><td>227.15 us</td><td>230.81 us</td><td>227.99 us</td><td>7</td><td>36 B</td>
+</tr><tr><td>F16_ListEnumerator</td><td>Clr</td><td>Clr</td><td>61.46 us</td><td>0.5350 us</td><td>0.4743 us</td><td>60.98 us</td><td>62.73 us</td><td>61.28 us</td><td>6</td><td>1 B</td>
+</tr><tr><td> F16_Foreach</td><td>Core</td><td>Core</td><td>23.65 us</td><td>0.1203 us</td><td>0.1125 us</td><td>23.47 us</td><td>23.77 us</td><td>23.68 us</td><td>1</td><td>0 B</td>
+</tr><tr><td>     F16_For</td><td>Core</td><td>Core</td><td>28.35 us</td><td>0.2143 us</td><td>0.1900 us</td><td>28.13 us</td><td>28.82 us</td><td>28.32 us</td><td>4</td><td>0 B</td>
+</tr><tr><td>F16_Enumerator</td><td>Core</td><td>Core</td><td>237.46 us</td><td>2.5835 us</td><td>2.4166 us</td><td>233.53 us</td><td>241.73 us</td><td>236.76 us</td><td>8</td><td>36 B</td>
+</tr><tr><td>F16_ListEnumerator</td><td>Core</td><td>Core</td><td>60.55 us</td><td>0.3513 us</td><td>0.2934 us</td><td>60.27 us</td><td>61.36 us</td><td>60.47 us</td><td>5</td><td>0 B</td>
+</tr></tbody></table>
+</body>
+</html>
