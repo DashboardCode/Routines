@@ -4,7 +4,6 @@ using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
 using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
@@ -45,18 +44,16 @@ namespace Benchmark
                         (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
                     );
 
-            serializerFuncCompiled = NExpJsonSerializerTools.ExpressionBuilder<Box2>(
-                    (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
-                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
-                    )
-                );
+            Expression<Func<StringBuilder, Box2, bool>> serializerFuncCompiledExp = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
+                       (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
+                   );
+            serializerFuncCompiled = serializerFuncCompiledExp.Compile();
 
             Include<Box2> includeAlt = (i) => i.Include(e => e.B1);
             serializer3 = includeAlt.BuildNExpJsonSerializer();
             Func<Box2, bool> getterDelegate = o => o.B1;
-            testFuncBuilded2 = NExpJsonSerializerTools.ExpressionBuilder<Box2, bool>(
-                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
-                );
+            Expression<Func<StringBuilder, Box2, bool>> testFuncBuilded2Exp = (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, NExpJsonSerializerStringBuilderExtensions.SerializeBool);
+            testFuncBuilded2 = testFuncBuilded2Exp.Compile();
 
             testFunc = (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, NExpJsonSerializerStringBuilderExtensions.SerializeBool);
 

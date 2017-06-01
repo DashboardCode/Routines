@@ -10,35 +10,27 @@ namespace JsonNet.Test
     [TestClass]
     public class JsonSerializationTest
     {
-        private class NullTestClass
-        {
-            public int? Int1NullableValue { get; set; } = null;
-            public string StringValue { get; set; } = null;
-        }
-
-        [TestMethod]
-        public void AAATest()
-        {
-            var t = new TestClass()
+        private static TestClass CreateTestClass() {
+            var testClass = new TestClass()
             {
                 Ints = new List<int> { 1, 2, 3 },
-                NInts = new List<int?> { null, 1, 2, null, 3,null },
+                NInts = new List<int?> { null, 1, 2, null, 3, null },
                 BoolField = true,
                 NBoolField1 = true,
                 NBoolField2 = null,
                 TextField1 = "TextField1TextField1TextField1",
                 TextField2 = null,
                 Float0 = 0,
-                Float1 = ((float)1)/3,
+                Float1 = ((float)1) / 3,
                 TestClass1 = new TestClass()
                 {
-                    TextField1  = "TextField2TextField2TextField2",
-                    TestClass1  = new TestClass() { TextField1 = "333333333"},
-                    BoolField   = true
+                    TextField1 = "TextField2TextField2TextField2",
+                    TestClass1 = new TestClass() { TextField1 = "333333333" },
+                    BoolField = true
                 },
                 TestStruct = new TestStruct()
                 {
-                    TextField1= "TestStruct.TextField1",
+                    TextField1 = "TestStruct.TextField1",
                     Byte1 = 4,
                     Byte2 = null
                 },
@@ -58,12 +50,15 @@ namespace JsonNet.Test
                     new ListItem {DateTime=DateTime.Now,      RowData=new byte[]{}},
                     new ListItem {DateTime=DateTime.Now,      RowData=null}
                 },
-                RowData = new byte[] { 1,0,2,0,3,4,5 }
+                RowData = new byte[] { 1, 0, 2, 0, 3, 4, 5 },
+                TestRef1 = new TestRef() {Msg="abc"},
+                TestRef2 = null,
             };
-            var stringBuilder = new StringBuilder();
+            return testClass;
+        }
 
-            var parser = new SerializerNExpParser<TestClass>();
-            var includable = new Includable<TestClass>(parser);
+        Include<TestClass> CreateIncludes()
+        {
             Include<TestClass> include = (i) =>
                                        i.Include(e => e.RowData)
                                        .IncludeAll(e => e.Ints)
@@ -94,20 +89,55 @@ namespace JsonNet.Test
                                         .Include(e => e.Float1)
                                         .Include(e => e.TextField1)
                                         .Include(e => e.TextField2)
-                                        ;
-            include.Invoke(includable);
-            var serializerNode = parser.Root;
+                                        .Include(e => e.TestRef1)
+                                            .ThenInclude(e => e.Msg)
+                                        .Include(e => e.TestRef2)
+                                            .ThenInclude(e => e.Msg);
+            return include;
+        }
 
-            Include<TestClass> optionMembers1 = (i) => i.Include(e => e.TextField1);
-            
-            var serializer = NExpJsonSerializerTools.BuildSerializer<TestClass>(serializerNode);
-            
-            //serializerNode.AppendLeafs();
+        [TestMethod]
+        public void JsonBuildSerializer()
+        {
+            var testClass = CreateTestClass();
+            var stringBuilder = new StringBuilder();
+            var include = CreateIncludes();
 
-            //var serializer = NExpJsonSerializerTools.BuildSerializerX(/*sb, t*/);
-            //var serializer = NExpJsonSerializerTools.BuildSerializer3<Vse.Routines.Json.Test>(/*sb, t*/);
-            serializer(stringBuilder, t);
-            var json = stringBuilder.ToString();
+            var formatter = NExpJsonSerializerTools.BuildFormatter(include);
+            var json = formatter(testClass);
+        }
+
+
+        [TestMethod]
+        public void JsonBuildEnumerableSerializer()
+        {
+            List<TestClass> list = new List<TestClass>();
+            var testClass = CreateTestClass();
+            list.Add(testClass);
+            list.Add(testClass);
+            list.Add(testClass);
+            var include = CreateIncludes();
+
+            var formatter = NExpJsonSerializerTools.BuildEnumerableFormatter(include);
+            var json = formatter(list);
+        }
+
+        [TestMethod]
+        public void JsonBuildLeafSerializer()
+        {
+            string testValue = null;
+            var stringBuilder = new StringBuilder();
+            var formatter = NExpJsonSerializerTools.BuildFormatter<string>();
+            var json = formatter(testValue);
+        }
+
+        [TestMethod]
+        public void JsonBuildEnumerableLeafSerializer()
+        {
+            var testValue = new List<DateTime> { DateTime.MinValue, DateTime.Now };
+            var stringBuilder = new StringBuilder();
+            var formatter = NExpJsonSerializerTools.BuildEnumerableFormatter<DateTime>();
+            var json = formatter(testValue);
         }
     }
 }

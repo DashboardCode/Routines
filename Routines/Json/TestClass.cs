@@ -25,6 +25,14 @@ namespace Vse.Routines.Json
         public List<int> Ints { get; set; }
         public List<int?> NInts { get; set; }
         public List<string> Strings { get; set; }
+
+        public TestRef TestRef1 { get; set; }
+        public TestRef TestRef2 { get; set; }
+    }
+
+    public class TestRef
+    {
+        public string Msg { get; set; }
     }
 
     public struct TestStruct

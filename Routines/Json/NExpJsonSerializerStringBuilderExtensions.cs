@@ -49,7 +49,6 @@ namespace Vse.Routines.Json
         #endregion
 
         #region Array Serializers
-                           //SerializeRefArrayNotEmpty
         public static bool SerializeRefArrayNotEmpty<T>(StringBuilder stringBuilder, IEnumerable<T> enumerable, Func<StringBuilder, T, bool> itemSerializer, Func<StringBuilder, bool> nullSerializer) where T: class
         {
             var @value = false;
@@ -187,32 +186,31 @@ namespace Vse.Routines.Json
         }
         #endregion 
 
-        #region Property Serializers
+        #region Serialize Struct Property
         public static bool SerializeStructProperty<T, TProp>(StringBuilder stringBuilder,  T t, string propertyName,
             Func<T, TProp> getter, Func<StringBuilder, TProp, bool> serializer) where TProp : struct
         {
             stringBuilder.Append('"').Append(propertyName).Append('"').Append(':');
             var value = getter(t);
-            /*var notEmpty = */serializer(stringBuilder, value);
-            var notEmpty = true;
-            //if (!notEmpty)
-            //    stringBuilder.Length -= (propertyName.Length + 3);
+            var notEmpty = serializer(stringBuilder, value);
+            if (!notEmpty)
+                stringBuilder.Length -= (propertyName.Length + 3);
             return notEmpty;
         }
 
         public static bool SerializeNStructProperty<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
             Func<T, TProp?> getter, Func<StringBuilder, TProp, bool> serializer, Func<StringBuilder, bool> nullSerializer) where TProp : struct
         {
-            //var notEmpty = false;
+            bool notEmpty;
             var nullableValue = getter(t);
             stringBuilder.Append('"').Append(propertyName).Append('"').Append(':');
             if (nullableValue.HasValue)
-                /*notEmpty = */serializer(stringBuilder, nullableValue.Value);
+                notEmpty = serializer(stringBuilder, nullableValue.Value);
             else
-                /*notEmpty = */nullSerializer(stringBuilder);
-            //if (!notEmpty)
-            //    stringBuilder.Length -= (propertyName.Length + 3);
-            return true; // notEmpty;
+                notEmpty = nullSerializer(stringBuilder);
+            if (!notEmpty)
+                stringBuilder.Length -= (propertyName.Length + 3);
+            return notEmpty;
         }
 
         public static bool SerializeNStructPropertyNotNull<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
@@ -259,6 +257,59 @@ namespace Vse.Routines.Json
                 if (!notEmpty)
                     stringBuilder.Length -= (propertyName.Length + 3);
             }
+            return notEmpty;
+        }
+        #endregion
+
+        #region Serialize Ref Leaf 
+        public static bool SerializeRefLeaf<T>(StringBuilder stringBuilder, 
+            T value, Func<StringBuilder, T, bool> formatter, Func<StringBuilder, bool> nullFormatter) where T : class
+        {
+            var notEmpty = false;
+            if (value == null)
+                notEmpty = nullFormatter(stringBuilder);
+            else
+                notEmpty = formatter(stringBuilder, value);
+            return notEmpty;
+        }
+
+        public static bool SerializeRefLeafNotNull<T>(StringBuilder stringBuilder,
+            T value, Func<StringBuilder, T, bool> formatter) where T : class
+        {
+            var notEmpty = false;
+            if (value != null)
+            {
+                notEmpty = formatter(stringBuilder, value);
+            }
+            return notEmpty;
+        }
+        #endregion
+
+        #region Serialize Struct Leaf
+        public static bool SerializeStructLeaf<T>(StringBuilder stringBuilder, T value,
+            Func<StringBuilder, T, bool> serializer) where T : struct
+        {
+            var notEmpty = serializer(stringBuilder, value);
+            return notEmpty;
+        }
+
+        public static bool SerializeNStructLeaf<T>(StringBuilder stringBuilder, T? nullableValue,
+            Func<StringBuilder, T, bool> serializer, Func<StringBuilder, bool> nullSerializer) where T : struct
+        {
+            bool notEmpty;
+            if (nullableValue.HasValue)
+                notEmpty = serializer(stringBuilder, nullableValue.Value);
+            else
+                notEmpty = nullSerializer(stringBuilder);
+            return notEmpty; 
+        }
+
+        public static bool SerializeNStructLeafNotNull<T>(StringBuilder stringBuilder, T? nullableValue,
+            Func<StringBuilder, T, bool> serializer) where T : struct
+        {
+            var notEmpty = false;
+            if (nullableValue.HasValue)
+                notEmpty = serializer(stringBuilder, nullableValue.Value);
             return notEmpty;
         }
         #endregion

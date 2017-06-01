@@ -2,9 +2,11 @@
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
+using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using Vse.Routines;
 using Vse.Routines.Json;
@@ -15,7 +17,7 @@ namespace BenchmarkClassic
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [ClrJob]
     [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser /*, InliningDiagnoser*/]
+    [MemoryDiagnoser, InliningDiagnoser]
     public class BenchmarkJson
     {
         static Box box;
@@ -55,35 +57,6 @@ namespace BenchmarkClassic
 
             serializer1 = NExpJsonSerializerTools.BuildSerializer<Box>(serializerNode);
 
-            serializer2 = NExpJsonSerializerTools.ExpressionBuilder<Box>(
-                    (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
-                        (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb, t, "Rows",  o => o.Rows,
-                            (sb2, t2) => NExpJsonSerializerStringBuilderExtensions.SerializeRefArray(sb2, t2,
-                                (sb3, t3) =>
-                                    NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sb3, t3,
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "At", o => o.At, NExpJsonSerializerFormatters.SerializeToIso8601WithMs),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "I1", o => o.I1, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty(sb4, t4, "I2", o => o.I2, NExpJsonSerializerStringBuilderExtensions.SerializeStruct, NExpJsonSerializerStringBuilderExtensions.SerializeNull),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty(sb4, t4, "B2", o => o.B2, NExpJsonSerializerStringBuilderExtensions.SerializeBool, NExpJsonSerializerStringBuilderExtensions.SerializeNull),
-
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "D1", o => o.D1, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "D2", o => o.D2, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "D3", o => o.D3, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty(sb4, t4, "D4", o => o.D4, NExpJsonSerializerStringBuilderExtensions.SerializeStruct, NExpJsonSerializerStringBuilderExtensions.SerializeNull),
-
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "F1", o => o.F1, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "F2", o => o.F2, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "F3", o => o.F3, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty(sb4, t4, "F4", o => o.F4, NExpJsonSerializerStringBuilderExtensions.SerializeStruct, NExpJsonSerializerStringBuilderExtensions.SerializeNull)
-                                     ),
-                                NExpJsonSerializerStringBuilderExtensions.SerializeNull
-                              ),
-                            NExpJsonSerializerStringBuilderExtensions.SerializeNull
-                        )
-                    )
-                );
-
             serializer4 = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
                         (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb, t, "Rows", o => o.Rows,
                             (sb2, t2) => NExpJsonSerializerStringBuilderExtensions.SerializeRefArray(sb2, t2,
@@ -109,6 +82,37 @@ namespace BenchmarkClassic
                               ),
                             NExpJsonSerializerStringBuilderExtensions.SerializeNull
                         ));
+
+            Expression<Func<StringBuilder, Box, bool>> serializer2Exp = 
+                    (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
+                        (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb, t, "Rows",  o => o.Rows,
+                            (sb2, t2) => NExpJsonSerializerStringBuilderExtensions.SerializeRefArray(sb2, t2,
+                                (sb3, t3) =>
+                                    NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sb3, t3,
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "At", o => o.At, NExpJsonSerializerFormatters.SerializeToIso8601WithMs),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "I1", o => o.I1, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty(sb4, t4, "I2", o => o.I2, NExpJsonSerializerStringBuilderExtensions.SerializeStruct, NExpJsonSerializerStringBuilderExtensions.SerializeNull),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty(sb4, t4, "B2", o => o.B2, NExpJsonSerializerStringBuilderExtensions.SerializeBool, NExpJsonSerializerStringBuilderExtensions.SerializeNull),
+
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "D1", o => o.D1, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "D2", o => o.D2, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "D3", o => o.D3, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty(sb4, t4, "D4", o => o.D4, NExpJsonSerializerStringBuilderExtensions.SerializeStruct, NExpJsonSerializerStringBuilderExtensions.SerializeNull),
+
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "F1", o => o.F1, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "F2", o => o.F2, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "F3", o => o.F3, NExpJsonSerializerStringBuilderExtensions.SerializeStruct),
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty(sb4, t4, "F4", o => o.F4, NExpJsonSerializerStringBuilderExtensions.SerializeStruct, NExpJsonSerializerStringBuilderExtensions.SerializeNull)
+                                     ),
+                                NExpJsonSerializerStringBuilderExtensions.SerializeNull
+                              ),
+                            NExpJsonSerializerStringBuilderExtensions.SerializeNull
+                        )
+                    );
+            serializer2 = serializer2Exp.Compile();
+
+            
 
             Include < Box> includeAlt = (i) => i.IncludeAll(e => e.Rows);
             serializer3 = includeAlt.BuildNExpJsonSerializer();

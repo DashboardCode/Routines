@@ -19,7 +19,7 @@ cd "$BenchmarkStartPath"
 # & $dotnetPath "$SolutionFolderPath\Tests\Benchmark\bin\Debug\netcoreapp1.1\Benchmark.dll"
 $snap1 = Get-ChildItem *.html -path "$BenchmarkReportPath"
 
-& "$BenchmarkProjectOutputPath\Benchmark.exe"
+& "$BenchmarkProjectOutputPath\BenchmarkClassic.exe"
 
 $snap2 = Get-ChildItem *.html -path "$BenchmarkReportPath"
 if ($snap1 -eq $null -and $snap2 -ne $null){

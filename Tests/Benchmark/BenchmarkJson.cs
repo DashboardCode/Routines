@@ -5,6 +5,7 @@ using BenchmarkDotNet.Attributes.Jobs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 using Vse.Routines;
 using Vse.Routines.Json;
@@ -57,7 +58,7 @@ namespace Benchmark
 
             serializer1 = NExpJsonSerializerTools.BuildSerializer<Box>(serializerNode);
 
-            serializer2 = NExpJsonSerializerTools.ExpressionBuilder<Box>(
+            Expression<Func<StringBuilder, Box, bool>> serializer2Exp = 
                     (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
                         (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb, t, "Rows",  o => o.Rows,
                             (sb2, t2) => NExpJsonSerializerStringBuilderExtensions.SerializeRefArray(sb2, t2,
@@ -83,8 +84,8 @@ namespace Benchmark
                               ),
                             NExpJsonSerializerStringBuilderExtensions.SerializeNull
                         )
-                    )
-                );
+                    );
+            serializer2 = serializer2Exp.Compile();
 
             serializer4 = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
                         (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb, t, "Rows", o => o.Rows,
