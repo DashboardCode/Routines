@@ -2,18 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Vse.Routines
 {
-    public static class NExpExtensions
+    public static class ChainExtensions
     {
         #region Path based
 
         public static void Detach<T>(T entity, Include<T> include) where T : class
         {
-            var including = new PathesNExpParser<T>();
+            var including = new PathesChainParser<T>();
             var includable = new Includable<T>(including);
             include.Invoke(includable);
             var pathes = including.Pathes;
@@ -22,7 +21,7 @@ namespace Vse.Routines
 
         public static void DetachAll<TCol, T>(IEnumerable<T> entities, Include<T> include) where TCol : IEnumerable<T>
         {
-            var including = new PathesNExpParser<T>();
+            var including = new PathesChainParser<T>();
             var includable = new Includable<T>(including);
             include.Invoke(includable);
             var pathes = including.Pathes;
@@ -120,12 +119,12 @@ namespace Vse.Routines
         #region Algebra
         public static bool Contains<T>(this Include<T> include1, Include<T> include2)
         {
-            var pathesIncluding1 = new PathesNExpParser<T>();
+            var pathesIncluding1 = new PathesChainParser<T>();
             var includable1 = new Includable<T>(pathesIncluding1);
             include1.Invoke(includable1);
             var pathes1 = pathesIncluding1.Pathes;
 
-            var pathesIncluding2 = new PathesNExpParser<T>();
+            var pathesIncluding2 = new PathesChainParser<T>();
             var includable2 = new Includable<T>(pathesIncluding2);
             include2.Invoke(includable2);
             var pathes2 = pathesIncluding2.Pathes;
@@ -170,7 +169,7 @@ namespace Vse.Routines
 
         public static IEnumerable<Type> GetTypes<T>(Include<T> include)
         {
-            var nodeIncluding = new MemberExpressionNExpParser<T>();
+            var nodeIncluding = new MemberExpressionChainParser<T>();
             var includable = new Includable<T>(nodeIncluding);
             include.Invoke(includable);
             var nodes = nodeIncluding.Root;
@@ -185,7 +184,7 @@ namespace Vse.Routines
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
             {
-                var nodeIncluding = new MemberExpressionNExpParser<T>();
+                var nodeIncluding = new MemberExpressionChainParser<T>();
                 var includable = new Includable<T>(nodeIncluding);
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
@@ -199,7 +198,7 @@ namespace Vse.Routines
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
             {
-                var nodeIncluding = new MemberExpressionNExpParser<T>();
+                var nodeIncluding = new MemberExpressionChainParser<T>();
                 var includable = new Includable<T>(nodeIncluding);
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
@@ -212,7 +211,7 @@ namespace Vse.Routines
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
             {
-                var nodeIncluding = new MemberExpressionNExpParser<T>();
+                var nodeIncluding = new MemberExpressionChainParser<T>();
                 var includable = new Includable<T>(nodeIncluding);
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;
@@ -227,7 +226,7 @@ namespace Vse.Routines
             var nodes = new List<MemberExpressionNode>();
             if (include != null)
             {
-                var nodeIncluding = new MemberExpressionNExpParser<T>();
+                var nodeIncluding = new MemberExpressionChainParser<T>();
                 var includable = new Includable<T>(nodeIncluding);
                 include.Invoke(includable);
                 nodes = nodeIncluding.Root;

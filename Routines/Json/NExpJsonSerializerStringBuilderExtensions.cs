@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Vse.Routines.Json
@@ -187,6 +188,21 @@ namespace Vse.Routines.Json
         #endregion 
 
         #region Serialize Struct Property
+        /* TODO: change to tree expression
+          
+         string filterString = "ruby";
+
+         var valueParam = Expression.Parameter(typeof(bool), "value");
+         var notEmptyParam = Expression.Parameter(typeof(bool), "notEmpty");
+        
+         var block = Expression.Block(
+            new[] { valueParam, notEmptyParam }, // Add a local variable.
+            Expression.Assign(notEmpty, Expression.Constant(bool, typeof(bool))), // Assign a constant to the local variable: filterStringParam = filterString
+            ...
+        );
+        
+         var @delegate = Expression.Lambda<Func<StringBuilder, T, bool>>(block, stringParam).Compile();
+         */
         public static bool SerializeStructProperty<T, TProp>(StringBuilder stringBuilder,  T t, string propertyName,
             Func<T, TProp> getter, Func<StringBuilder, TProp, bool> serializer) where TProp : struct
         {
@@ -201,13 +217,9 @@ namespace Vse.Routines.Json
         public static bool SerializeNStructProperty<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
             Func<T, TProp?> getter, Func<StringBuilder, TProp, bool> serializer, Func<StringBuilder, bool> nullSerializer) where TProp : struct
         {
-            bool notEmpty;
-            var nullableValue = getter(t);
             stringBuilder.Append('"').Append(propertyName).Append('"').Append(':');
-            if (nullableValue.HasValue)
-                notEmpty = serializer(stringBuilder, nullableValue.Value);
-            else
-                notEmpty = nullSerializer(stringBuilder);
+            var nullableValue = getter(t);
+            var notEmpty = (nullableValue.HasValue) ? serializer(stringBuilder, nullableValue.Value) : nullSerializer(stringBuilder);
             if (!notEmpty)
                 stringBuilder.Length -= (propertyName.Length + 3);
             return notEmpty;
@@ -233,13 +245,9 @@ namespace Vse.Routines.Json
         public static bool SerializeRefProperty<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
             Func<T, TProp> getter, Func<StringBuilder, TProp, bool> formatter, Func<StringBuilder, bool> nullFormatter) where TProp : class
         {
-            var notEmpty = false;
-            var value = getter(t);
             stringBuilder.Append('"').Append(propertyName).Append('"').Append(':');
-            if (value == null)
-                notEmpty = nullFormatter(stringBuilder);
-            else
-                notEmpty = formatter(stringBuilder, value);
+            var value = getter(t);
+            var notEmpty = (value == null)? nullFormatter(stringBuilder): formatter(stringBuilder, value);
             if (!notEmpty)
                 stringBuilder.Length -= (propertyName.Length + 3);
             return notEmpty;
@@ -257,59 +265,6 @@ namespace Vse.Routines.Json
                 if (!notEmpty)
                     stringBuilder.Length -= (propertyName.Length + 3);
             }
-            return notEmpty;
-        }
-        #endregion
-
-        #region Serialize Ref Leaf 
-        public static bool SerializeRefLeaf<T>(StringBuilder stringBuilder, 
-            T value, Func<StringBuilder, T, bool> formatter, Func<StringBuilder, bool> nullFormatter) where T : class
-        {
-            var notEmpty = false;
-            if (value == null)
-                notEmpty = nullFormatter(stringBuilder);
-            else
-                notEmpty = formatter(stringBuilder, value);
-            return notEmpty;
-        }
-
-        public static bool SerializeRefLeafNotNull<T>(StringBuilder stringBuilder,
-            T value, Func<StringBuilder, T, bool> formatter) where T : class
-        {
-            var notEmpty = false;
-            if (value != null)
-            {
-                notEmpty = formatter(stringBuilder, value);
-            }
-            return notEmpty;
-        }
-        #endregion
-
-        #region Serialize Struct Leaf
-        public static bool SerializeStructLeaf<T>(StringBuilder stringBuilder, T value,
-            Func<StringBuilder, T, bool> serializer) where T : struct
-        {
-            var notEmpty = serializer(stringBuilder, value);
-            return notEmpty;
-        }
-
-        public static bool SerializeNStructLeaf<T>(StringBuilder stringBuilder, T? nullableValue,
-            Func<StringBuilder, T, bool> serializer, Func<StringBuilder, bool> nullSerializer) where T : struct
-        {
-            bool notEmpty;
-            if (nullableValue.HasValue)
-                notEmpty = serializer(stringBuilder, nullableValue.Value);
-            else
-                notEmpty = nullSerializer(stringBuilder);
-            return notEmpty; 
-        }
-
-        public static bool SerializeNStructLeafNotNull<T>(StringBuilder stringBuilder, T? nullableValue,
-            Func<StringBuilder, T, bool> serializer) where T : struct
-        {
-            var notEmpty = false;
-            if (nullableValue.HasValue)
-                notEmpty = serializer(stringBuilder, nullableValue.Value);
             return notEmpty;
         }
         #endregion
@@ -335,12 +290,17 @@ namespace Vse.Routines.Json
             stringBuilder.Append(t);
             return true;
         }
+        public static bool SerializePrimitive<T>(StringBuilder stringBuilder, T t) where T : struct
+        {
+            stringBuilder.Append(Convert.ToString(t, CultureInfo.InvariantCulture));
+            return true;
+        }
         public static bool SerializeRefValue<T>(StringBuilder stringBuilder, T t) where T : class
         {
             stringBuilder.Append(t);
             return true;
         }
-        public static bool SerializeEscapeTextStruct<T>(StringBuilder stringBuilder, T t) where T : struct
+        public static bool SerializeEscapeTextVal<T>(StringBuilder stringBuilder, T t) where T : struct
         {
             stringBuilder.Append('"').AppendJsonEscaped(t.ToString()).Append('"');
             return true;

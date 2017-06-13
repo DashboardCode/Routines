@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public class PathesNExpParser<TRootEntity> : INExpParser<TRootEntity>
+    public class PathesChainParser<TRootEntity> : IChainParser<TRootEntity>
     {
         public readonly List<string[]> Pathes = new List<string[]>();
         private string[] sequence;
@@ -65,5 +65,15 @@ namespace Vse.Routines
             end:
             return newPath;
         }
+
+        //public void ParseRootNullable<TEntity>(Expression<Func<TRootEntity, TEntity?>> getterExpression) where TEntity : struct
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public void ParseNullable<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity?>> getterExpression) where TEntity : struct
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

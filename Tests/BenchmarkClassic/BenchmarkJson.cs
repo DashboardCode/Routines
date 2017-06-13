@@ -25,7 +25,7 @@ namespace BenchmarkClassic
         static Func<StringBuilder, Box, bool> serializer1;
         static Func<StringBuilder, Box, bool> serializer2;
         static Func<StringBuilder, Box, bool> serializer4;
-        static NExpJsonSerializer<Box> serializer3;
+        //static NExpJsonSerializer<Box> serializer3;
         static BenchmarkJson()
         {
             for(int i=0;i<600;i++)
@@ -47,7 +47,7 @@ namespace BenchmarkClassic
                 } );
             }
             box = new Box { Rows = testData };
-            var parser = new SerializerNExpParser<Box>();
+            var parser = new SerializerChainParser<Box>();
             var includable = new Includable<Box>(parser);
             Include<Box> include = (i) => i.IncludeAll(e=>e.Rows);
             include.Invoke(includable);
@@ -55,7 +55,7 @@ namespace BenchmarkClassic
             parser.Root.AppendLeafs();
             var serializerNode = parser.Root;
 
-            serializer1 = NExpJsonSerializerTools.BuildSerializer<Box>(serializerNode);
+            serializer1 = ChainJsonTools.BuildSerializer<Box>(serializerNode);
 
             serializer4 = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
                         (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb, t, "Rows", o => o.Rows,
@@ -115,7 +115,7 @@ namespace BenchmarkClassic
             
 
             Include < Box> includeAlt = (i) => i.IncludeAll(e => e.Rows);
-            serializer3 = includeAlt.BuildNExpJsonSerializer();
+            //serializer3 = includeAlt.BuildNExpJsonSerializer();
         }
 
         //[Benchmark]
@@ -129,11 +129,11 @@ namespace BenchmarkClassic
 
 
         //[Benchmark]
-        public string RoutineInterpretated()
-        {
-            var text = serializer3.Serialize(box);
-            return text;
-        }
+        //public string RoutineInterpretated()
+        //{
+        //    var text = serializer3.Serialize(box);
+        //    return text;
+        //}
 
         [Benchmark]
         public string RoutineExpressionCompiled()

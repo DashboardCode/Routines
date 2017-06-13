@@ -6,8 +6,8 @@ namespace Vse.Routines
 {
     public class Includable<TRootEntity> 
     {
-        protected readonly INExpParser<TRootEntity> navigationExpressionParser;
-        public Includable(INExpParser<TRootEntity> navigationExpressionParser)
+        protected readonly IChainParser<TRootEntity> navigationExpressionParser;
+        public Includable(IChainParser<TRootEntity> navigationExpressionParser)
         {
             this.navigationExpressionParser = navigationExpressionParser;
         }
@@ -16,6 +16,13 @@ namespace Vse.Routines
             navigationExpressionParser.ParseRoot(navigationExpression);
             return new ThenIncludable<TRootEntity, TEntity>(navigationExpressionParser);
         }
+
+        //public ThenIncludable<TRootEntity, TEntity> IncludeNullable<TEntity>(Expression<Func<TRootEntity, TEntity?>> navigationExpression) where TEntity:struct
+        //{
+        //    navigationExpressionParser.ParseRootNullable(navigationExpression);
+        //    return new ThenIncludable<TRootEntity, TEntity>(navigationExpressionParser);
+        //}
+
         public ThenIncludable<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
         {
             navigationExpressionParser.ParseRootEnumerable(navigationExpression);
@@ -25,7 +32,7 @@ namespace Vse.Routines
 
     public class ThenIncludable<TRootEntity, TThenEntity> : Includable<TRootEntity> 
     {
-        public ThenIncludable(INExpParser<TRootEntity> navigationExpressionParser):base(navigationExpressionParser)
+        public ThenIncludable(IChainParser<TRootEntity> navigationExpressionParser):base(navigationExpressionParser)
         {
         }
         public ThenIncludable<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)

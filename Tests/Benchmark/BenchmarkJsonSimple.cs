@@ -23,14 +23,14 @@ namespace Benchmark
         static Func<StringBuilder, Box2, bool> serializerBuilded;
         static Func<StringBuilder, Box2, bool> serializerFuncCompiled;
         static Func<StringBuilder, Box2, bool> serializerFunc;
-        static NExpJsonSerializer<Box2> serializer3;
+        //static NExpJsonSerializer<Box2> serializer3;
         static BenchmarkJsonSimple()
         {
             box = new Box2() {
                 B1 = true
             };
 
-            var parser = new SerializerNExpParser<Box2>();
+            var parser = new SerializerChainParser<Box2>();
             var includable = new Includable<Box2>(parser);
             Include<Box2> include = (i) => i.Include(e=>e.B1);
             include.Invoke(includable);
@@ -38,7 +38,7 @@ namespace Benchmark
             parser.Root.AppendLeafs();
             var serializerNode = parser.Root;
 
-            serializerBuilded = NExpJsonSerializerTools.BuildSerializer<Box2>(serializerNode);
+            serializerBuilded = ChainJsonTools.BuildSerializer<Box2>(serializerNode);
 
             serializerFunc = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
                         (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
@@ -50,7 +50,7 @@ namespace Benchmark
             serializerFuncCompiled = serializerFuncCompiledExp.Compile();
 
             Include<Box2> includeAlt = (i) => i.Include(e => e.B1);
-            serializer3 = includeAlt.BuildNExpJsonSerializer();
+            //serializer3 = includeAlt.BuildNExpJsonSerializer();
             Func<Box2, bool> getterDelegate = o => o.B1;
             Expression<Func<StringBuilder, Box2, bool>> testFuncBuilded2Exp = (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, NExpJsonSerializerStringBuilderExtensions.SerializeBool);
             testFuncBuilded2 = testFuncBuilded2Exp.Compile();
@@ -151,11 +151,11 @@ namespace Benchmark
         }
 
         //[Benchmark]
-        public string RoutineInterpretated()
-        {
-            var text = serializer3.Serialize(box);
-            return text;
-        }
+        //public string RoutineInterpretated()
+        //{
+        //    var text = serializer3.Serialize(box);
+        //    return text;
+        //}
 
         //[Benchmark]
         public string JsonNet()

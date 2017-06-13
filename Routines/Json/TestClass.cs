@@ -40,6 +40,8 @@ namespace Vse.Routines.Json
         public string TextField1 { get; set; }
         public byte Byte1 { get; set; }
         public byte? Byte2 { get; set; }
+        public decimal Decimal1 { get; set; }
+        public decimal? Decimal2 { get; set; }
     }
 
     public class ListItem

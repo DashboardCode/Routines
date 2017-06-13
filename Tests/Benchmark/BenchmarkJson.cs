@@ -19,14 +19,12 @@ namespace Benchmark
     [MemoryDiagnoser /*, InliningDiagnoser*/]
     public class BenchmarkJson
     {
-        
-
         static Box box;
         static List<Row> testData = new List<Row>();
         static Func<StringBuilder, Box, bool> serializer1;
         static Func<StringBuilder, Box, bool> serializer2;
         static Func<StringBuilder, Box, bool> serializer4;
-        static NExpJsonSerializer<Box> serializer3;
+        //static NExpJsonSerializer<Box> serializer3;
         static BenchmarkJson()
         {
             for(int i=0;i<600;i++)
@@ -48,7 +46,7 @@ namespace Benchmark
                 } );
             }
             box = new Box { Rows = testData };
-            var parser = new SerializerNExpParser<Box>();
+            var parser = new SerializerChainParser<Box>();
             var includable = new Includable<Box>(parser);
             Include<Box> include = (i) => i.IncludeAll(e=>e.Rows);
             include.Invoke(includable);
@@ -56,7 +54,7 @@ namespace Benchmark
             parser.Root.AppendLeafs();
             var serializerNode = parser.Root;
 
-            serializer1 = NExpJsonSerializerTools.BuildSerializer<Box>(serializerNode);
+            serializer1 = ChainJsonTools.BuildSerializer<Box>(serializerNode);
 
             Expression<Func<StringBuilder, Box, bool>> serializer2Exp = 
                     (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
@@ -114,7 +112,7 @@ namespace Benchmark
                         ));
 
             Include < Box> includeAlt = (i) => i.IncludeAll(e => e.Rows);
-            serializer3 = includeAlt.BuildNExpJsonSerializer();
+            //serializer3 = includeAlt.BuildNExpJsonSerializer();
         }
 
         //[Benchmark]
@@ -128,11 +126,11 @@ namespace Benchmark
 
 
         //[Benchmark]
-        public string RoutineInterpretated()
-        {
-            var text = serializer3.Serialize(box);
-            return text;
-        }
+        //public string RoutineInterpretated()
+        //{
+        //    var text = serializer3.Serialize(box);
+        //    return text;
+        //}
 
         [Benchmark]
         public string RoutineExpressionCompiled()

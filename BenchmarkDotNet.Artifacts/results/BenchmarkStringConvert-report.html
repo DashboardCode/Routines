@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkStringConvert</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.6, OS=Windows 10 Redstone 1 (10.0.14393)
+Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
+Frequency=3233539 Hz, Resolution=309.2587 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+  Core   : .NET Core 4.6.25211.01, 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>                 Method</th><th>Job</th><th>Runtime</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>          StringDecimal</td><td>Clr</td><td>Clr</td><td>235.4 ns</td><td>3.3599 ns</td><td>2.9784 ns</td><td>229.3 ns</td><td>241.5 ns</td><td>235.7 ns</td><td>5</td><td>0.0277</td><td>88 B</td>
+</tr><tr><td>            StringFloat</td><td>Clr</td><td>Clr</td><td>389.3 ns</td><td>3.2346 ns</td><td>2.8674 ns</td><td>386.0 ns</td><td>394.8 ns</td><td>387.9 ns</td><td>7</td><td>0.0148</td><td>48 B</td>
+</tr><tr><td>   StringDecimalConvert</td><td>Clr</td><td>Clr</td><td>237.0 ns</td><td>2.9265 ns</td><td>2.7374 ns</td><td>234.4 ns</td><td>242.1 ns</td><td>236.3 ns</td><td>5</td><td>0.0277</td><td>88 B</td>
+</tr><tr><td>     StringFloatConvert</td><td>Clr</td><td>Clr</td><td>387.1 ns</td><td>5.8869 ns</td><td>5.5066 ns</td><td>380.7 ns</td><td>399.6 ns</td><td>386.3 ns</td><td>7</td><td>0.0148</td><td>48 B</td>
+</tr><tr><td>StringDecimalConvertInvariant</td><td>Clr</td><td>Clr</td><td>216.6 ns</td><td>1.9493 ns</td><td>1.7280 ns</td><td>213.9 ns</td><td>220.6 ns</td><td>216.2 ns</td><td>2</td><td>0.0279</td><td>88 B</td>
+</tr><tr><td>StringFloatConvertInvariant</td><td>Clr</td><td>Clr</td><td>370.3 ns</td><td>4.7017 ns</td><td>4.3980 ns</td><td>365.6 ns</td><td>377.8 ns</td><td>368.4 ns</td><td>6</td><td>0.0148</td><td>48 B</td>
+</tr><tr><td>          StringDecimal</td><td>Core</td><td>Core</td><td>233.5 ns</td><td>0.8542 ns</td><td>0.7990 ns</td><td>231.7 ns</td><td>234.9 ns</td><td>233.5 ns</td><td>4</td><td>0.0279</td><td>88 B</td>
+</tr><tr><td>            StringFloat</td><td>Core</td><td>Core</td><td>455.0 ns</td><td>4.5542 ns</td><td>4.2600 ns</td><td>449.6 ns</td><td>464.3 ns</td><td>455.2 ns</td><td>10</td><td>0.0148</td><td>48 B</td>
+</tr><tr><td>   StringDecimalConvert</td><td>Core</td><td>Core</td><td>228.6 ns</td><td>0.8987 ns</td><td>0.7017 ns</td><td>227.4 ns</td><td>229.8 ns</td><td>228.6 ns</td><td>3</td><td>0.0279</td><td>88 B</td>
+</tr><tr><td>     StringFloatConvert</td><td>Core</td><td>Core</td><td>443.0 ns</td><td>1.7280 ns</td><td>1.6164 ns</td><td>440.6 ns</td><td>446.9 ns</td><td>442.9 ns</td><td>9</td><td>0.0148</td><td>48 B</td>
+</tr><tr><td>StringDecimalConvertInvariant</td><td>Core</td><td>Core</td><td>208.8 ns</td><td>0.9151 ns</td><td>0.8112 ns</td><td>207.9 ns</td><td>210.3 ns</td><td>208.6 ns</td><td>1</td><td>0.0279</td><td>88 B</td>
+</tr><tr><td>StringFloatConvertInvariant</td><td>Core</td><td>Core</td><td>417.7 ns</td><td>1.2913 ns</td><td>1.1447 ns</td><td>415.2 ns</td><td>419.7 ns</td><td>417.6 ns</td><td>8</td><td>0.0148</td><td>48 B</td>
+</tr></tbody></table>
+</body>
+</html>

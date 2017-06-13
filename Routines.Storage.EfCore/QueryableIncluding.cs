@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace Vse.Routines.Storage.EfCore
 {
-    public class QueryableIncluding<TRootEntity> : INExpParser<TRootEntity> where TRootEntity : class
+    public class QueryableIncluding<TRootEntity> : IChainParser<TRootEntity> where TRootEntity : class
     {
         public IQueryable<TRootEntity> Queryable { get; private set; }
         public bool isEnumerable;
@@ -48,5 +48,15 @@ namespace Vse.Routines.Storage.EfCore
                     (IIncludableQueryable<TRootEntity, TMidEntity>)Queryable, enumerableExpression);
             isEnumerable = true;
         }
+
+        //public void ParseRootNullable<TEntity>(Expression<Func<TRootEntity, TEntity?>> getterExpression) where TEntity : struct
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public void ParseNullable<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity?>> getterExpression) where TEntity : struct
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

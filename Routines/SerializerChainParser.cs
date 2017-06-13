@@ -7,9 +7,9 @@ using System.Reflection;
 
 namespace Vse.Routines
 {
-    public class SerializerNExpParser<TRootEntity> : INExpParser<TRootEntity>
+    public class SerializerChainParser<TRootEntity> : IChainParser<TRootEntity>
     {
-        static SerializerNExpParser(){
+        static SerializerChainParser(){
             var isEnumerable = typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(typeof(TRootEntity).GetTypeInfo());
             if (typeof(TRootEntity) != typeof(string) && typeof(TRootEntity) != typeof(byte[]) && isEnumerable)
                 throw new NotSupportedException("Navigation expression root type can't be defined as collection (except two types byte[] and string)");
@@ -17,9 +17,9 @@ namespace Vse.Routines
 
         public readonly SerializerBaseNode Root = new SerializerBaseNode(typeof(TRootEntity));
 
-        private SerializerNode CurrentNode;
+        private SerializerPropertyNode CurrentNode;
 
-        private static SerializerNode AddIfAbsent(
+        private static SerializerPropertyNode AddIfAbsent(
             SerializerBaseNode parent,
             PropertyInfo propertyInfo,
             Type navigationType,
@@ -29,10 +29,17 @@ namespace Vse.Routines
         {
             var dictionary = parent.Children;
             var name = propertyInfo.Name;
-            if (!dictionary.TryGetValue(name, out SerializerNode node))
+            if (!dictionary.TryGetValue(name, out SerializerPropertyNode node))
             {
                 var generalized = getGeneralized();
-                node = new SerializerNode(parent, navigationType, navigationEnumerableType, isEnumerable, generalized, name);
+                if (isEnumerable)
+                {
+                    node = new SerializerEnumerablePropertyNode(parent, navigationType, name, navigationEnumerableType);
+                }
+                else
+                {
+                    node = new SerializerPropertyNode(parent, navigationType, name);
+                }
                 dictionary.Add(name, node);
             }
             return node;
@@ -94,16 +101,27 @@ namespace Vse.Routines
             });
             CurrentNode = node;
         }
+
+        //public void ParseRootNullable<TEntity>(Expression<Func<TRootEntity, TEntity?>> getterExpression) where TEntity : struct
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //public void ParseNullable<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity?>> getterExpression) where TEntity : struct
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 
     public enum SerializerPropertyPipeline { Struct = 0, Object = 1, NullableStruct = 2 }; 
 
     public class SerializerBaseNode
     {
-        public readonly Dictionary<string, SerializerNode> Children = new Dictionary<string, SerializerNode>();
+        public readonly Dictionary<string, SerializerPropertyNode> Children = new Dictionary<string, SerializerPropertyNode>();
         public readonly SerializerPropertyPipeline SerializerPropertyPipeline;
         public readonly Type Type;
         public readonly Type TypeUnderlyingNullable;
+        public readonly Type CanonicType;
         public readonly bool IsLeaf;
         public readonly bool IsPrimitive;
         public readonly bool IsNPrimitive;
@@ -118,6 +136,7 @@ namespace Vse.Routines
         public readonly bool IsNDateTime;
         public readonly bool IsNBoolean;
 
+        public readonly bool IsNullableStruct;
         public readonly bool IsNullable;
 
         public bool IsRoot { get; protected set; } = true;
@@ -126,20 +145,33 @@ namespace Vse.Routines
         public SerializerBaseNode(Type type)
         {
             Type = type;
+            CanonicType = type;
             TypeUnderlyingNullable = Nullable.GetUnderlyingType(type);
-            if (TypeUnderlyingNullable!=null)
-                IsNullable = true;
+            if (TypeUnderlyingNullable != null)
+            {
+                IsNullableStruct = true;
+                CanonicType = TypeUnderlyingNullable;
+            }
+            
+                
             var typeInfo = type.GetTypeInfo();
             if (typeInfo.IsClass)
             {
                 SerializerPropertyPipeline = SerializerPropertyPipeline.Object;
+                IsNullable = true;
             }
             else
             {
-                if (IsNullable)
+                if (IsNullableStruct)
+                {
                     SerializerPropertyPipeline = SerializerPropertyPipeline.NullableStruct;
+                    IsNullable = true;
+                }
                 else
+                {
                     SerializerPropertyPipeline = SerializerPropertyPipeline.Struct;
+                    IsNullable = false;
+                }
             }
             
             if (type == typeof(string))
@@ -166,7 +198,7 @@ namespace Vse.Routines
                 IsSimpleSymbol = true;
             else if (typeInfo.IsPrimitive)
                 IsPrimitive = true;
-            else if (IsNullable && TypeUnderlyingNullable.GetTypeInfo().IsPrimitive)
+            else if (IsNullableStruct && TypeUnderlyingNullable.GetTypeInfo().IsPrimitive)
                 IsNPrimitive = true;
             IsLeaf = IsNPrimitive || IsDecimal || IsNDecimal|| IsPrimitive || IsNBoolean || IsNDateTime || IsSimpleText || IsString || IsBoolean || IsDateTime || IsSimpleSymbol || IsByteArray;
         }
@@ -189,14 +221,7 @@ namespace Vse.Routines
                             Expression.Property(
                                 Expression.Convert(parameterExpression, Type),
                                 p), typeof(object));
-                    Func<object, object> func = Expression.Lambda<Func<object, object>>(unaryExpression, new[] { parameterExpression }).Compile();
-                    Children.Add(p.Name, new SerializerNode(
-                        this, 
-                        p.PropertyType, 
-                        null,
-                        false, 
-                        func, 
-                        p.Name));
+                    Children.Add(p.Name, new SerializerPropertyNode(this, p.PropertyType, p.Name));
                 }
             }
 
@@ -207,26 +232,25 @@ namespace Vse.Routines
         }
     }
 
-    public class SerializerNode: SerializerBaseNode
+    public class SerializerPropertyNode: SerializerBaseNode
     {
         public readonly string PropertyName;
-        public readonly Func<object, object> func;
-        public readonly bool IsEnumerable;
-        public readonly Type TypeUnderlyingEnumerable;
+        //public readonly bool IsEnumerable;
+        //public readonly Type TypeUnderlyingEnumerable;
         public readonly SerializerBaseNode Parent;
 
-        public SerializerNode(SerializerBaseNode parent, Type type, Type underlyingEnumerable,  /*Action serialize,*/ bool isEnumerable, Func <object, object> func, string name)
-            :base(type/*, serialize*/)
+        public SerializerPropertyNode(SerializerBaseNode parent, Type type, /*Type underlyingEnumerable, bool isEnumerable,*/ string name)
+            :base(type)
         {
             IsRoot = false;
             Parent = parent;
-            this.func = func;
+            //this.func = func;
             PropertyName = name;
-            IsEnumerable = isEnumerable;
-            if (isEnumerable)
-            {
-                TypeUnderlyingEnumerable = underlyingEnumerable;
-            }
+            //IsEnumerable = isEnumerable;
+            //if (isEnumerable)
+            //{
+            //    TypeUnderlyingEnumerable = underlyingEnumerable;
+            //}
         }
 
         public override string ToString()
@@ -235,14 +259,25 @@ namespace Vse.Routines
             SerializerBaseNode p = this;
             while (p!=null)
             {
-                if (p is SerializerNode)
+                if (p is SerializerPropertyNode)
                 {
-                    var s = (SerializerNode)p;
+                    var s = (SerializerPropertyNode)p;
                     parents = s.PropertyName + "\\" + parents;
                     p = s.Parent;
                 }
             };
             return parents + " (" + Type.Name + ")";
+        }
+    }
+
+    public class SerializerEnumerablePropertyNode : SerializerPropertyNode
+    {
+        public readonly Type EnumerableType;
+
+        public SerializerEnumerablePropertyNode(SerializerBaseNode parent, Type type, string name, Type underlyingEnumerable)
+            : base(parent, type, name)
+        {
+            EnumerableType = underlyingEnumerable;
         }
     }
 }
