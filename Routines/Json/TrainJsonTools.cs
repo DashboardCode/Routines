@@ -6,25 +6,16 @@ using System.Text;
 
 namespace Vse.Routines.Json
 {
-    //public enum ConfigItem {REGULAR, GENERIC_PRIMITIVE, GENERIC_VAL, GENERIC_REF};
-
     public class JsonSerializerSet
     {
-        public JsonSerializerSet() {
-
-        }
-        public bool HandleEmptyArray                    { get; set; } = true;
-        public bool HandleEmptyPropertiesList           { get; set; } = true;
-        public bool HandleNullProperty                  { get; set; } = true;
-        public bool HandleNullArrayProperty             { get; set; } = true;
-        public MethodInfo SerializerMethodInfo          { get; set; }
-        public MethodInfo NullSerializerMethodInfo      { get; set; }
-        public MethodInfo NullArraySerializerMethodInfo { get; set; }
+        public bool HandleEmptyList    { get; set; } = true;
+        public bool HandleNullProperty { get; set; } = true;
+        public Tuple<MethodInfo, MethodInfo> Serializers { get; set; }
     }
 
     public class Config<T>
     {
-        public List<Tuple<Include<T>, Func<SerializerBaseNode, JsonSerializerSet>>> rules = new List<Tuple<Include<T>, Func<SerializerBaseNode, JsonSerializerSet>>>();
+        public List<Tuple<Include<T>, Func<SerializerNode, JsonSerializerSet>>> rules = new List<Tuple<Include<T>, Func<SerializerNode, JsonSerializerSet>>>();
         private Include<T> include;
         
         public Config(Include<T> include)
@@ -40,6 +31,19 @@ namespace Vse.Routines.Json
 
             //var serializePrimitiveMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializePrimitive));
             //AddPrimitiveGenericRule (serializePrimitiveMethodInfo, nullSerializerMethodInfo);
+        }
+
+        public Config<T> AddNodeRule(Func<SerializerNode, JsonSerializerSet> getSerializerSet)
+        {
+            rules.Add(new Tuple<Include<T>, Func<SerializerNode, JsonSerializerSet>>(include, getSerializerSet));
+            //var serializerMethodInfo = serializer.GetMethodInfo();
+            //var nullSerializerMethodInfo = (nullSerializer == null) ? null : nullSerializer.GetMethodInfo();
+            //rules.Add(new Tuple<Include<T>, MethodInfo, MethodInfo, ConfigItem>(
+            //    include,
+            //    serializer.GetMethodInfo(),
+            //    nullSerializer == null ? null : nullSerializer.GetMethodInfo(),
+            //    ConfigItem.REGULAR));
+            return this;
         }
 
         //public static MethodInfo GetDefaultNullSerializer()
@@ -62,19 +66,6 @@ namespace Vse.Routines.Json
         //    return this;
         //}
 
-        public Config<T> AddNodeRule(
-           Func<SerializerBaseNode, JsonSerializerSet> getSerializerSet)
-        {
-            rules.Add(new Tuple<Include<T>, Func<SerializerBaseNode, JsonSerializerSet>>(include, getSerializerSet));
-            //var serializerMethodInfo = serializer.GetMethodInfo();
-            //var nullSerializerMethodInfo = (nullSerializer == null) ? null : nullSerializer.GetMethodInfo();
-            //rules.Add(new Tuple<Include<T>, MethodInfo, MethodInfo, ConfigItem>(
-            //    include,
-            //    serializer.GetMethodInfo(),
-            //    nullSerializer == null ? null : nullSerializer.GetMethodInfo(),
-            //    ConfigItem.REGULAR));
-            return this;
-        }
 
         //public Config<T> AddRule<TProp>(
         //    Func<StringBuilder, TProp, bool> serializer,
@@ -122,8 +113,6 @@ namespace Vse.Routines.Json
         //}
         #endregion
 
-
-
         public Config<T> ForInclude(Include<T> include)
         {
             this.include = include;
@@ -131,14 +120,14 @@ namespace Vse.Routines.Json
         }
     }
 
-    public static class ChainJsonTools
+    public static class TrainJsonTools
     {
-        public static Func<T, string> BuildFormatter<T>(Include<T> include = null, Action<Config<T>> configurate=null)
+        public static Func<T, string> BuildFormatter<T>(Include<T> include = null, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet = null)
         {
-            var config = new Config<T>(include);
-            configurate?.Invoke(config);
+            //var config = new Config<T>(include);
+            //configurate?.Invoke(config);
 
-            var serializer = BuildSerializer(include, config);
+            var serializer = BuildSerializer(include, getSerializerSet);
             return (t) =>
             {
                 var stringBuilder = new StringBuilder();
@@ -146,18 +135,18 @@ namespace Vse.Routines.Json
                 return stringBuilder.ToString();
             };
         }
-
-        public static Func<StringBuilder, T, bool> BuildSerializer<T>(Include<T> include, Config<T> config)
+                                                                                          
+        public static Func<StringBuilder, T, bool> BuildSerializer<T>(Include<T> include, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet)
         {
             var parser = new SerializerChainParser<T>();
             var includable = new Includable<T>(parser);
             if (include!=null)
                 include.Invoke(includable);
             var serializerNode = parser.Root;
-            return BuildSerializer(serializerNode, config);
+            return BuildSerializer<T>(serializerNode, getSerializerSet);
         }
 
-        public static Func<StringBuilder, IEnumerable<T>, bool> BuildEnumerableSerializer<T>(Include<T> include=null, Config<T> config=null)
+        public static Func<StringBuilder, IEnumerable<T>, bool> BuildEnumerableSerializer<T>(Include<T> include=null, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet = null)
         {
             var parser = new SerializerChainParser<T>();
             var includable = new Includable<T>(parser);
@@ -168,10 +157,10 @@ namespace Vse.Routines.Json
             Func<StringBuilder, IEnumerable<T>, bool> @value = null;
             var enumerableType = typeof(IEnumerable<T>);
 
-            Func<SerializerBaseNode, JsonSerializerSet> getSerializerSet = (n) => GetSerializerSet(config, n);
+            if (getSerializerSet == null)
+                getSerializerSet = (n,b) => GetDefaultSerializerSet(n,b);
 
-
-            var serializerSet = getSerializerSet(serializerNode);
+            var serializerSet = getSerializerSet(serializerNode, true);
             var expressions = ConfigureSerializeNode(serializerNode, serializerNode.Type, getSerializerSet);
 
             var sbExpression = Expression.Parameter(typeof(StringBuilder), "sb");
@@ -180,13 +169,13 @@ namespace Vse.Routines.Json
             MethodCallExpression methodCallExpression = CreateSerializeArrayMethodCall(
                 serializerNode.CanonicType,
                 serializerNode.SerializerPropertyPipeline,
-                serializerSet.HandleEmptyArray,
                 expressions.Item1,
                 expressions.Item2,
                 sbExpression,
-                tExpression);
+                tExpression,
+                serializerSet.HandleEmptyList);
             MethodCallExpression nullCallExpression =
-                Expression.Call(serializerSet.NullArraySerializerMethodInfo, new Expression[] { sbExpression });
+                Expression.Call(serializerSet.Serializers.Item2, new Expression[] { sbExpression });
             Expression serializeConditionalExpression = Expression.Condition(
                 Expression.Equal(tExpression, Expression.Constant(null)),
                 nullCallExpression,
@@ -198,11 +187,15 @@ namespace Vse.Routines.Json
             return @value;
         }
 
-        public static Func<IEnumerable<T>, string> BuildEnumerableFormatter<T>(Include<T> include=null, Action<Config<T>> configurate = null)
+        public static Func<IEnumerable<T>, string> BuildEnumerableFormatter<T>(
+            Include<T> include=null,
+            Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet = null
+            //Action<Config<T>> configurate = null
+            )
         {
-            var config = new Config<T>(include);
-            configurate?.Invoke(config);
-            var serializer = BuildEnumerableSerializer(include, config);
+            //var config = new Config<T>(include);
+            //configurate?.Invoke(config);
+            var serializer = BuildEnumerableSerializer(include, getSerializerSet);
             return (t) =>
             {
                 var stringBuilder = new StringBuilder();
@@ -211,19 +204,21 @@ namespace Vse.Routines.Json
             };
         }
 
-        public static Func<StringBuilder, T, bool> BuildSerializer<T>(SerializerBaseNode node, Config<T> config = null)
+        public static Func<StringBuilder, T, bool> BuildSerializer<T>(SerializerNode node, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet = null)
         {
             Func<StringBuilder, T, bool> @value = null;
-            Func<SerializerBaseNode, JsonSerializerSet> getSerializerSet = (n)=>GetSerializerSet(config, n);
-            if (node.IsLeaf)
+            if (getSerializerSet == null)
+                getSerializerSet = (n, b) => GetDefaultSerializerSet(n, b);
+
+            var serializerSet = getSerializerSet(node,false);
+            if (/*node.IsLeaf*/ node.Children.Count == 0)
             {
-                var serializerSet = getSerializerSet(node);
                 var serializeLeafExpression = CreateSerializeRootLambda(
                     node.Type,
                     node.CanonicType,
                     node.SerializerPropertyPipeline,
-                    serializerSet.SerializerMethodInfo,
-                    serializerSet.NullSerializerMethodInfo);
+                    serializerSet.Serializers.Item1,
+                    serializerSet.Serializers.Item2);
                 @value = (Func<StringBuilder, T, bool>)serializeLeafExpression.Compile();
             }
             else
@@ -234,69 +229,151 @@ namespace Vse.Routines.Json
                     var n = c.Value;
                     ConfigureSerializeProperty(n, node.Type, properies, getSerializerSet);
                 }
-                var objectFormatterLambda = CreateSerializeObjectLambda(typeof(T), properies.ToArray());
+                var objectFormatterLambda = CreateSerializeObjectLambda(typeof(T), serializerSet.HandleEmptyList, properies.ToArray());
                 @value = ((Expression<Func<StringBuilder, T, bool>>)objectFormatterLambda).Compile();
             }
             return @value;
         }
-        
-        public static JsonSerializerSet GetSerializerSet<T>(Config<T> config, SerializerBaseNode node)
+
+        public class TypeRulesDictionary
         {
-            
-            var serializerSet = new JsonSerializerSet();
-            //config.rules
-            // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-            if (node.IsBoolean || node.IsNBoolean)
-                serializerSet.SerializerMethodInfo = GetMethodInfoExpr<bool>    ((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeBool(sb, t));
-            else if (node.IsString)
-                serializerSet.SerializerMethodInfo = GetMethodInfoExpr<string>  ((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeEscapeString(sb, t));
-            else if (node.IsDateTime || node.IsNDateTime)
-                serializerSet.SerializerMethodInfo = GetMethodInfoExpr<DateTime>((sb, t) => NExpJsonSerializerFormatters.SerializeToIso8601WithMs(sb, t));
-            else if (node.IsByteArray)
-                serializerSet.SerializerMethodInfo = GetMethodInfoExpr<byte[]>  ((sb, t) => NExpJsonSerializerFormatters.SerializeBase64(sb, t));
-            else if (node.IsDecimal || node.IsNDecimal)
-                serializerSet.SerializerMethodInfo = GetMethodInfoExpr<decimal> ((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializePrimitive(sb, t));
-            // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-            else
-                serializerSet.SerializerMethodInfo = DefaultSerializer(node.CanonicType, node.SerializerPropertyPipeline, node.IsNPrimitive || node.IsPrimitive);
-            // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-            if (serializerSet.HandleNullProperty && node.IsNullable)
-                serializerSet.NullSerializerMethodInfo = GetNullSerializer();
-            if (serializerSet.HandleNullArrayProperty)
-                serializerSet.NullArraySerializerMethodInfo = GetNullSerializer(); 
+            public static TypeRulesDictionary CreateDefault()
+            {
+                var d = new TypeRulesDictionary();
+                d.AddTypeRule(typeof(bool), GetMethodInfoExpr<bool>((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeBool(sb, t)));
+                d.AddTypeRule(typeof(string), GetMethodInfoExpr<string>((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeEscapeString(sb, t)));
+                d.AddTypeRule(typeof(DateTime), GetMethodInfoExpr<DateTime>((sb, t) => NExpJsonSerializerFormatters.SerializeToIso8601WithMs(sb, t)));
+                d.AddTypeRule(typeof(byte[]), GetMethodInfoExpr<byte[]>((sb, t) => NExpJsonSerializerFormatters.SerializeBase64(sb, t)));
+                d.AddTypeRule(typeof(decimal), GetMethodInfoExpr<decimal>((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializePrimitive(sb, t)));
+                return d;
+            }
+
+            Dictionary<Type, MethodInfo> dictionary = new Dictionary<Type, MethodInfo>();
+            public void AddTypeRule<T>(
+                Func<StringBuilder, T, bool> serializer
+                //Func<StringBuilder, bool> nullSerializer = null
+                )
+            {
+                var serializerMethodInfo = serializer.GetMethodInfo();
+                AddTypeRule(typeof(T), serializerMethodInfo);
+                //var nullSerializerMethodInfo = (nullSerializer == null)?null: nullSerializer.GetMethodInfo();
+                //rules.Add(new Tuple<Include<T>, SerializerSet, ConfigItem>(
+                //    include, 
+                //    serializer.GetMethodInfo(),
+                //    nullSerializer==null? null : nullSerializer.GetMethodInfo(), 
+                //    ConfigItem.REGULAR));
+                //return this;
+            }
+
+            public void AddTypeRule(
+                Type type,
+                MethodInfo methodInfo
+                )
+            {
+                dictionary.Add(type, methodInfo);
+            }
+            public MethodInfo GetRule(Type type)
+            {
+                MethodInfo rule = null;
+                dictionary.TryGetValue(type, out rule);
+                return rule;
+            }
+
+            //public Config<T> AddTypeRule<TProp>(
+            //    Func<StringBuilder, TProp, bool> serializer,
+            //    Func<StringBuilder, bool> nullSerializer = null)
+            //{
+            //    var serializerMethodInfo = serializer.GetMethodInfo();
+            //    var nullSerializerMethodInfo = (nullSerializer == null)?null: nullSerializer.GetMethodInfo();
+            //    rules.Add(new Tuple<Include<T>, SerializerSet, ConfigItem>(
+            //        include, 
+            //        serializer.GetMethodInfo(),
+            //        nullSerializer==null? null : nullSerializer.GetMethodInfo(), 
+            //        ConfigItem.REGULAR));
+            //    return this;
+            //}
+
+
+            //public Config<T> AddRule<TProp>(
+            //    Func<StringBuilder, TProp, bool> serializer,
+            //    Func<StringBuilder, bool> nullSerializer = null)
+            //{
+            //    var serializerMethodInfo = serializer.GetMethodInfo();
+            //    var nullSerializerMethodInfo = (nullSerializer == null) ? null : nullSerializer.GetMethodInfo();
+            //    rules.Add(new Tuple<Include<T>, MethodInfo, MethodInfo, ConfigItem>(
+            //        include,
+            //        serializer.GetMethodInfo(),
+            //        nullSerializer == null ? null : nullSerializer.GetMethodInfo(),
+            //        ConfigItem.REGULAR));
+            //    return this;
+            //}
+        }
+
+        public static JsonSerializerSet GetDefaultSerializerSet(
+            SerializerNode node, 
+            bool isEnumerable,
+            TypeRulesDictionary typeRulesDictionary=null,
+            bool handleNullProperty=true,
+            bool handleNullArrayProperty=true)
+        {
+            if (typeRulesDictionary == null)
+                typeRulesDictionary = TypeRulesDictionary.CreateDefault();
+
+            MethodInfo methodInfo = typeRulesDictionary.GetRule(node.CanonicType);
+
+            if (methodInfo == null)
+                methodInfo = DefaultSerializer(node.CanonicType, node.SerializerPropertyPipeline, node.IsNPrimitive || node.IsPrimitive);
+
+            MethodInfo nullMethodInfo = null;
+            if (isEnumerable)
+            {
+                if (handleNullArrayProperty)
+                    nullMethodInfo = GetNullSerializer();
+            }
+            else if (node.IsNullable)
+            {
+                if (handleNullProperty)
+                    nullMethodInfo = GetNullSerializer();
+            }
+
+            var serializerSet = new JsonSerializerSet()
+            {
+                HandleNullProperty = true,
+                HandleEmptyList = false,
+                Serializers = new Tuple<MethodInfo, MethodInfo>(methodInfo, nullMethodInfo)
+            };
+
             return serializerSet;
         }
 
-        public static Tuple<ConstantExpression, ConstantExpression> ConfigureSerializeNode(SerializerBaseNode node, Type parentType, Func<SerializerBaseNode, JsonSerializerSet> getSerializerSet)
+        public static Tuple<ConstantExpression, ConstantExpression> ConfigureSerializeNode(SerializerNode node, Type parentType, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet)
         {
-            if (node.IsLeaf)
+            var serializerSet = getSerializerSet(node, false);
+            if (node.Children.Count == 0)
             {
-                var serializerSet = getSerializerSet(node);
                 var formatterDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), node.CanonicType, typeof(bool));
-                var genericResolvedDelegate = serializerSet.SerializerMethodInfo.CreateDelegate(formatterDelegateType, null);
+                var genericResolvedDelegate = serializerSet.Serializers.Item1.CreateDelegate(formatterDelegateType, null);
                 var serializerExpression = Expression.Constant(genericResolvedDelegate, genericResolvedDelegate.GetType());
-                var nullSerializerExpression = CreateSerializeNullConstant(serializerSet.NullSerializerMethodInfo);
+                var nullSerializerExpression = CreateSerializeNullConstant(serializerSet.Serializers.Item2);
                 return new Tuple<ConstantExpression, ConstantExpression>(serializerExpression, nullSerializerExpression);
             }
             else // object
             {
-                var serializerSet = getSerializerSet(node);
-
                 var properies = new List<Expression>();
                 foreach (var c in node.Children)
                 {
                     var n = c.Value;
                     ConfigureSerializeProperty(n, node.Type, properies, getSerializerSet);
                 }
-                var objectFormatterLambda = CreateSerializeObjectLambda(node.Type, properies.ToArray());
+                var objectFormatterLambda = CreateSerializeObjectLambda(node.Type, serializerSet.HandleEmptyList, properies.ToArray());
                 var @delegate = objectFormatterLambda.Compile();
                 var delegateConstant = Expression.Constant(@delegate, @delegate.GetType());
-                var nullSerializerExpression = CreateSerializeNullConstant(serializerSet.NullSerializerMethodInfo);
+                var nullSerializerExpression = CreateSerializeNullConstant(serializerSet.Serializers.Item2);
                 return new Tuple<ConstantExpression, ConstantExpression>(delegateConstant, nullSerializerExpression);
             }
         }
 
-        public static void ConfigureSerializeProperty(SerializerPropertyNode node,  Type parentType, List<Expression> propertyExpressions, Func<SerializerBaseNode, JsonSerializerSet> getSerializerSet)
+        public static void ConfigureSerializeProperty(SerializerPropertyNode node,  Type parentType, List<Expression> propertyExpressions, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet)
         {
             bool isEnumerable = node is SerializerEnumerablePropertyNode;
             
@@ -313,22 +390,24 @@ namespace Vse.Routines.Json
             if (isEnumerable)
             {
                 // check that property should be serailizable: SerializeRefProperty
-                var serializerSet = getSerializerSet(node);
-                var itemSerializers = ConfigureSerializeNode(node, parentType, getSerializerSet);
-                var sbExpression = Expression.Parameter(typeof(StringBuilder), "sb");
-                var tExpression = Expression.Parameter(propertyType, "t");
+                var serializerSet      = getSerializerSet(node, true);
+                var itemSerializers    = ConfigureSerializeNode(node, parentType, getSerializerSet);
+                var itemSerializer     = itemSerializers.Item1;
+                var itemNullSerializer = itemSerializers.Item2;
+                var sbParameterExpression = Expression.Parameter(typeof(StringBuilder), "sb");
+                var tParameterExpression  = Expression.Parameter(propertyType, "t");
                 MethodCallExpression methodCallExpression = CreateSerializeArrayMethodCall(
                     node.CanonicType,
                     node.SerializerPropertyPipeline,
-                    serializerSet.HandleEmptyArray,
-                    itemSerializers.Item1,
-                    itemSerializers.Item2,
-                    sbExpression,
-                    tExpression);
-                var serializeArrayLambda = Expression.Lambda(methodCallExpression, new[] { sbExpression, tExpression });
+                    itemSerializer,
+                    itemNullSerializer,
+                    sbParameterExpression,
+                    tParameterExpression,
+                    serializerSet.HandleEmptyList);
+                var serializeArrayLambda = Expression.Lambda(methodCallExpression, new[] { sbParameterExpression, tParameterExpression });
                 var serializeArrayDelegate = serializeArrayLambda.Compile();
                 var serializeArrayExpressionConstant = Expression.Constant(serializeArrayDelegate, serializeArrayDelegate.GetType());
-                var nullSerializerExpressionConstant = CreateSerializeNullConstant(serializerSet.NullArraySerializerMethodInfo);
+                var nullSerializerExpressionConstant = CreateSerializeNullConstant(serializerSet.Serializers.Item2);
                 expressions= new Tuple<ConstantExpression, ConstantExpression>(serializeArrayExpressionConstant, nullSerializerExpressionConstant);
             }
             else
@@ -378,11 +457,15 @@ namespace Vse.Routines.Json
             return getterExpression;
         }
 
-        private static LambdaExpression CreateSerializeObjectLambda(Type objectType, Expression[] serializeProperties)
+        private static LambdaExpression CreateSerializeObjectLambda(Type objectType, bool handleEmptyPropertyList, Expression[] serializeProperties)
         {
             var sb = Expression.Parameter(typeof(StringBuilder), "sb");
             var t  = Expression.Parameter(objectType, "t");
-            var serializeObjectGenericMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty));
+            MethodInfo serializeObjectGenericMethodInfo;
+            if (handleEmptyPropertyList)
+                serializeObjectGenericMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObjectHandleEmpty));
+            else
+                serializeObjectGenericMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObject));
             var serializeObjectResolvedMethodInfo = serializeObjectGenericMethodInfo.MakeGenericMethod(objectType);
             var serializePropertyFuncDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), objectType, typeof(bool));
 
@@ -448,34 +531,34 @@ namespace Vse.Routines.Json
         private static MethodCallExpression CreateSerializeArrayMethodCall(
             Type entityType,
             SerializerPropertyPipeline propertyPipeline,
-            bool handleEmptyList,
             ConstantExpression serializeExpression,
             ConstantExpression serializeNullExpression,
             ParameterExpression sbExpression,
-            ParameterExpression tExpression
+            ParameterExpression tExpression,
+            bool handleEmptyList
             )
         {
-
             MethodInfo serializePropertyMethod;
             switch (propertyPipeline)
             {
+                // REM: my way to avoid (un)boxing ; other could be using something like this __refvalue(__makeref(v), int); 
                 case SerializerPropertyPipeline.Struct:
                     if (handleEmptyList)
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeStructArray));
+                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeStructArrayHandleEmpty));
                     else
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeStructArrayNotEmpty));
+                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeStructArray));
                     break;
                 case SerializerPropertyPipeline.Object:
                     if (handleEmptyList)
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefArray));
+                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefArrayHandleEmpty));
                     else
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefArrayNotEmpty));
+                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefArray));
                     break;
                 case SerializerPropertyPipeline.NullableStruct:
                     if (handleEmptyList)
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructArray));
+                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructArrayHandleEmpty));
                     else
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructArrayNotEmpty));
+                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructArray));
                     break;
                 default:
                     throw new NotImplementedException("Unsupported pipeline");
@@ -500,9 +583,9 @@ namespace Vse.Routines.Json
         {
             MethodInfo serializePropertyMethod;
             if (!handleNullProperty)
-                serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyNotNull));
-            else
                 serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty));
+            else
+                serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyHandleNull));
             return serializePropertyMethod;
         }
 
@@ -512,9 +595,9 @@ namespace Vse.Routines.Json
             if (propertyPipeline == SerializerPropertyPipeline.Object)
             {
                 if (!handleNullProperty)
-                    serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyNotNull));
-                else
                     serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty));
+                else
+                    serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyHandleNull));
             }
             else
             {
@@ -525,9 +608,9 @@ namespace Vse.Routines.Json
                         break;
                     case SerializerPropertyPipeline.NullableStruct:
                         if (!handleNullProperty)
-                            serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructPropertyNotNull));
-                        else
                             serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty));
+                        else
+                            serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructPropertyHandleNull));
                         break;
                     default:
                         throw new NotImplementedException("Unsupported pipeline");
@@ -546,10 +629,9 @@ namespace Vse.Routines.Json
             ConstantExpression serializeNullExpression)
         {
             var sb = Expression.Parameter(typeof(StringBuilder), "sb");
-            var t = Expression.Parameter(entityType, "t");
+            var t  = Expression.Parameter(entityType, "t");
 
-            var serializePropertyGeneric = serializePropertyMethodInfo.MakeGenericMethod(entityType, propertyCanonicType);
-
+            var serializePropertyGeneric  = serializePropertyMethodInfo.MakeGenericMethod(entityType, propertyCanonicType);
             var serializationNameConstant = Expression.Constant(serializationName, typeof(string));
 
             MethodCallExpression methodCallExpression;

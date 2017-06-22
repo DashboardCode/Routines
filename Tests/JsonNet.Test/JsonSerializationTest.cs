@@ -13,7 +13,7 @@ namespace JsonNet.Test
         private static TestClass CreateTestClass() {
             var testClass = new TestClass()
             {
-                Ints = new List<int> { 1, 2, 3 },
+                Ints  = new List<int> { 1, 2, 3 },
                 NInts = new List<int?> { null, 1, 2, null, 3, null },
                 BoolField = true,
                 NBoolField1 = true,
@@ -117,24 +117,10 @@ namespace JsonNet.Test
             var stringBuilder = new StringBuilder();
             var include = CreateIncludes();
 
-            var formatter = ChainJsonTools.BuildFormatter/*<TestClass>*/(
+            var formatter = TrainJsonTools.BuildFormatter/*<TestClass>*/(
                 include,
-                config => config
-                    .AddNodeRule((n) => new JsonSerializerSet()
-                    {
-                        HandleNullProperty = true,
-                        HandleEmptyArray = false,
-                        HandleEmptyPropertiesList = false
-                    }
-            //.AddTypeRule<float>( (sb, t) => {sb.Append((int)t); return true;} )
-            //.AddTypeRule<byte[]>(NExpJsonSerializerFormatters.SerializeBase64)
-            //.ForInclude((i) => i.Include(e => e.TestStruct).ThenInclude(e => e.TextField1))
-            //        .AddTypeRule<string>((sb, t) => { sb.Append(t); return true; })
-            //        .AddTypeRule<string>((sb, t) => { sb.Append(t); return true; })
-            //.ForInclude((i) => i.Include(e => e.TestStruct).ThenInclude(e => e.TextField1))
-            //        .AddTypeRule<string>((sb, t) => { sb.Append(t); return true; })
-            //        .AddTypeRule<string>((sb, t) => { sb.Append(t); return true; })
-            ));
+                (n, b) => TrainJsonTools.GetDefaultSerializerSet(n, b)
+            );
             
             var json = formatter(testClass);
             if (json != "{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null}")
@@ -150,23 +136,9 @@ namespace JsonNet.Test
             list.Add(testClass);
             list.Add(testClass);
             var include = CreateIncludes();
-            var formatter = ChainJsonTools.BuildEnumerableFormatter(include,
-                    config => config
-                        .AddNodeRule((n) => new JsonSerializerSet()
-                        {
-                            HandleNullProperty        =true,
-                            HandleEmptyArray          =false,
-                            HandleEmptyPropertiesList =false
-                        })
-                    //.AddTypeRule<float>((sb, t) => { sb.Append((int)t); return true; })
-                    //.AddTypeRule<byte[]>(NExpJsonSerializerFormatters.SerializeBase64)
-                    //.ForInclude((i) => i.Include(e => e.TestStruct).ThenInclude(e => e.TextField1))
-                    //        .AddTypeRule<string>((sb, t) => { sb.Append(t); return true; })
-                    //        .AddTypeRule<string>((sb, t) => { sb.Append(t); return true; })
-                    //.ForInclude((i) => i.Include(e => e.TestStruct).ThenInclude(e => e.TextField1))
-                    //        .AddTypeRule<string>((sb, t) => { sb.Append(t); return true; })
-                    //        .AddTypeRule<string>((sb, t) => { sb.Append(t); return true; })
-                );
+            var formatter = TrainJsonTools.BuildEnumerableFormatter(include,
+                    (n, b) => TrainJsonTools.GetDefaultSerializerSet(n, b)
+            );
             var json = formatter(list);
             if(json != "[{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null},{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null},{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null}]")
                 throw new AssertFailedException("json not correct");
@@ -177,7 +149,7 @@ namespace JsonNet.Test
         {
             string testValue = null;
             var stringBuilder = new StringBuilder();
-            var formatter = ChainJsonTools.BuildFormatter<string>();
+            var formatter = TrainJsonTools.BuildFormatter<string>();
             var json = formatter(testValue);
             if (json != "null")
                 throw new AssertFailedException("json not null");
@@ -188,7 +160,7 @@ namespace JsonNet.Test
         {
             var testValue = new List<DateTime> { DateTime.MinValue, new DateTime(36323577782833637) };
             var stringBuilder = new StringBuilder();
-            var formatter = ChainJsonTools.BuildEnumerableFormatter<DateTime>();
+            var formatter = TrainJsonTools.BuildEnumerableFormatter<DateTime>();
             var json = formatter(testValue);
             if (json!="[\"0001-01-01T00:00:00.000\",\"0116-02-09T04:16:18.283\"]")
                 throw new AssertFailedException("json not correct");
@@ -200,7 +172,7 @@ namespace JsonNet.Test
         {
             int? x = null;
             var stringBuilder = new StringBuilder();
-            var formatter = ChainJsonTools.BuildFormatter<int?>();
+            var formatter = TrainJsonTools.BuildFormatter<int?>();
             var json = formatter(x);
             if (json != "null")
                 throw new AssertFailedException("json not null");
@@ -211,7 +183,7 @@ namespace JsonNet.Test
         {
             int? x = 10;
             var stringBuilder = new StringBuilder();
-            var formatter = ChainJsonTools.BuildFormatter<int?>();
+            var formatter = TrainJsonTools.BuildFormatter<int?>();
             var json = formatter(x);
             if (json != "10")
                 throw new AssertFailedException("json not 10");
@@ -226,7 +198,7 @@ namespace JsonNet.Test
             list.Add(null);
             list.Add(1);
 
-            var formatter = ChainJsonTools.BuildEnumerableFormatter<int?>();
+            var formatter = TrainJsonTools.BuildEnumerableFormatter<int?>();
             var json = formatter(list);
             if (json!="[0,null,1]")
                 throw new AssertFailedException("json not [0,null,1]");
@@ -235,7 +207,7 @@ namespace JsonNet.Test
         [TestMethod]
         public void JsonBuildNIntNullEnumerableSerializer()
         {
-            var formatter = ChainJsonTools.BuildEnumerableFormatter<int?>();
+            var formatter = TrainJsonTools.BuildEnumerableFormatter<int?>();
             var json = formatter(null);
             if (json != "null")
                 throw new AssertFailedException("json not null");
@@ -246,7 +218,7 @@ namespace JsonNet.Test
         public void JsonBuildEnumerableLeafNullSerializer()
         {
             var stringBuilder = new StringBuilder();
-            var formatter = ChainJsonTools.BuildEnumerableFormatter<DateTime>();
+            var formatter = TrainJsonTools.BuildEnumerableFormatter<DateTime>();
             var json = formatter(null);
             if (json != "null")
                 throw new AssertFailedException("json not null");

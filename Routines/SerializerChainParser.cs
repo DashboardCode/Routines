@@ -15,12 +15,12 @@ namespace Vse.Routines
                 throw new NotSupportedException("Navigation expression root type can't be defined as collection (except two types byte[] and string)");
         }
 
-        public readonly SerializerBaseNode Root = new SerializerBaseNode(typeof(TRootEntity));
+        public readonly SerializerNode Root = new SerializerNode(typeof(TRootEntity));
 
         private SerializerPropertyNode CurrentNode;
 
         private static SerializerPropertyNode AddIfAbsent(
-            SerializerBaseNode parent,
+            SerializerNode parent,
             PropertyInfo propertyInfo,
             Type navigationType,
             Type navigationEnumerableType,
@@ -115,34 +115,28 @@ namespace Vse.Routines
 
     public enum SerializerPropertyPipeline { Struct = 0, Object = 1, NullableStruct = 2 }; 
 
-    public class SerializerBaseNode
+    public class SerializerNode
     {
         public readonly Dictionary<string, SerializerPropertyNode> Children = new Dictionary<string, SerializerPropertyNode>();
         public readonly SerializerPropertyPipeline SerializerPropertyPipeline;
         public readonly Type Type;
         public readonly Type TypeUnderlyingNullable;
         public readonly Type CanonicType;
-        public readonly bool IsLeaf;
+
+        //public readonly bool IsLeaf;
+
         public readonly bool IsPrimitive;
         public readonly bool IsNPrimitive;
-        public readonly bool IsDecimal;
-        public readonly bool IsNDecimal;
+
         public readonly bool IsSimpleText;
         public readonly bool IsSimpleSymbol;
-        public readonly bool IsString;
-        public readonly bool IsBoolean;
-        public readonly bool IsDateTime;
-        public readonly bool IsByteArray;
-        public readonly bool IsNDateTime;
-        public readonly bool IsNBoolean;
-
         public readonly bool IsNullableStruct;
         public readonly bool IsNullable;
 
         public bool IsRoot { get; protected set; } = true;
         public Action<object> Serialize;
         
-        public SerializerBaseNode(Type type)
+        public SerializerNode(Type type)
         {
             Type = type;
             CanonicType = type;
@@ -174,23 +168,24 @@ namespace Vse.Routines
                 }
             }
             
-            if (type == typeof(string))
-                IsString = true;
-            else if (type == typeof(bool))
-                IsBoolean = true;
-            else if (type == typeof(bool?))
-                IsNBoolean = true;
-            else if (type == typeof(DateTime))
-                IsDateTime = true;
-            else if (type == typeof(DateTime?))
-                IsNDateTime = true;
-            else if (type == typeof(decimal))
-                IsDecimal = true;
-            else if (type == typeof(decimal?))
-                IsNDecimal = true;
-            else if (type == typeof(byte[]) /*typeof(IEnumerable<byte>).GetTypeInfo().IsAssignableFrom(typeInfo)*/)
-                IsByteArray = true;
-            else if (type == typeof(char) || type == typeof(char?) || SystemTypesExtensions.DefaultSimpleTextTypes.Contains(type))
+            //if (type == typeof(string))
+            //    IsString = true;
+            //else if (type == typeof(bool))
+            //    IsBoolean = true;
+            //else if (type == typeof(bool?))
+            //    IsNBoolean = true;
+            //else if (type == typeof(DateTime))
+            //    IsDateTime = true;
+            //else if (type == typeof(DateTime?))
+            //    IsNDateTime = true;
+            //else if (type == typeof(decimal))
+            //    IsDecimal = true;
+            //else if (type == typeof(decimal?))
+            //    IsNDecimal = true;
+            //else if (type == typeof(byte[]) /*typeof(IEnumerable<byte>).GetTypeInfo().IsAssignableFrom(typeInfo)*/)
+            //    IsByteArray = true;
+            //else 
+            if (type == typeof(char) || type == typeof(char?) || SystemTypesExtensions.DefaultSimpleTextTypes.Contains(type))
             {
                 IsSimpleText = true;
             }
@@ -200,12 +195,12 @@ namespace Vse.Routines
                 IsPrimitive = true;
             else if (IsNullableStruct && TypeUnderlyingNullable.GetTypeInfo().IsPrimitive)
                 IsNPrimitive = true;
-            IsLeaf = IsNPrimitive || IsDecimal || IsNDecimal|| IsPrimitive || IsNBoolean || IsNDateTime || IsSimpleText || IsString || IsBoolean || IsDateTime || IsSimpleSymbol || IsByteArray;
+            //IsLeaf = IsNPrimitive || /*IsDecimal || IsNDecimal ||*/ IsPrimitive /*|| IsNBoolean *//*|| IsNDateTime*/ || IsSimpleText /*|| IsString *//*|| IsBoolean *//*|| IsDateTime*/ || IsSimpleSymbol /*|| IsByteArray*/;
         }
 
         public void AppendLeafs()
         {
-            var containsLeafs = Children.Values.Any(c => c.IsLeaf);
+            var containsLeafs = Children.Values.Any(c => c.Children.Count==0 );
             if (!containsLeafs)
             {
                 //TODO: compare performance
@@ -232,14 +227,14 @@ namespace Vse.Routines
         }
     }
 
-    public class SerializerPropertyNode: SerializerBaseNode
+    public class SerializerPropertyNode: SerializerNode
     {
         public readonly string PropertyName;
         //public readonly bool IsEnumerable;
         //public readonly Type TypeUnderlyingEnumerable;
-        public readonly SerializerBaseNode Parent;
+        public readonly SerializerNode Parent;
 
-        public SerializerPropertyNode(SerializerBaseNode parent, Type type, /*Type underlyingEnumerable, bool isEnumerable,*/ string name)
+        public SerializerPropertyNode(SerializerNode parent, Type type, /*Type underlyingEnumerable, bool isEnumerable,*/ string name)
             :base(type)
         {
             IsRoot = false;
@@ -256,7 +251,7 @@ namespace Vse.Routines
         public override string ToString()
         {
             string parents = "";
-            SerializerBaseNode p = this;
+            SerializerNode p = this;
             while (p!=null)
             {
                 if (p is SerializerPropertyNode)
@@ -274,7 +269,7 @@ namespace Vse.Routines
     {
         public readonly Type EnumerableType;
 
-        public SerializerEnumerablePropertyNode(SerializerBaseNode parent, Type type, string name, Type underlyingEnumerable)
+        public SerializerEnumerablePropertyNode(SerializerNode parent, Type type, string name, Type underlyingEnumerable)
             : base(parent, type, name)
         {
             EnumerableType = underlyingEnumerable;

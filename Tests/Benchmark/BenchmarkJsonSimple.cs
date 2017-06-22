@@ -38,13 +38,13 @@ namespace Benchmark
             parser.Root.AppendLeafs();
             var serializerNode = parser.Root;
 
-            serializerBuilded = ChainJsonTools.BuildSerializer<Box2>(serializerNode);
+            serializerBuilded = TrainJsonTools.BuildSerializer<Box2>(serializerNode);
 
-            serializerFunc = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
+            serializerFunc = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObject(sbP, tP,
                         (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
                     );
 
-            Expression<Func<StringBuilder, Box2, bool>> serializerFuncCompiledExp = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
+            Expression<Func<StringBuilder, Box2, bool>> serializerFuncCompiledExp = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObject(sbP, tP,
                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
                    );
             serializerFuncCompiled = serializerFuncCompiledExp.Compile();

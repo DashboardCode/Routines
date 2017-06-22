@@ -42,7 +42,7 @@ namespace Vse.Routines.Json
             var sbP = Expression.Parameter(typeof(StringBuilder), "sbP");
             var tP = Expression.Parameter(typeof(TestClass), "tP");
 
-            var objectFormatterMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty));
+            var objectFormatterMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObject));
             var objectFormatterGeneric = objectFormatterMethod.MakeGenericMethod(typeof(TestClass));
 
             MethodCallExpression objectFormatterExpression = Expression.Call(
@@ -97,7 +97,7 @@ namespace Vse.Routines.Json
         {
             var sbP = Expression.Parameter(typeof(StringBuilder), "sbP");
             var tP = Expression.Parameter(typeof(T), "tP");
-            var objectFormatterMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty));
+            var objectFormatterMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObject));
             var objectFormatterGeneric = objectFormatterMethod.MakeGenericMethod(typeof(T));
 
             MethodCallExpression objectFormatterExpression = Expression.Call(
@@ -116,7 +116,7 @@ namespace Vse.Routines.Json
             var sb = Expression.Parameter(typeof(StringBuilder), "sb");
             var t = Expression.Parameter(typeof(T), "t");
 
-            var serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructPropertyNotNull));
+            var serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty));
             var serializePropertyGeneric = serializePropertyMethod.MakeGenericMethod(typeof(T), typeof(TProp));
             var expr = Expression.Constant(serializationName, typeof(string));
 
@@ -175,7 +175,7 @@ namespace Vse.Routines.Json
         public static Func<StringBuilder, TestClass, bool> BuildSerializer()
         {
             var serializer = ExpressionBuilder<TestClass>(
-                    (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sbP, tP,
+                    (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObject(sbP, tP,
                         //(sb, t) => SerializeNStuctProperty(sb,     "NBoolField2", t, o => o.NBoolField2, FormatBool, WriteNull),
                         //(sb, t) => SerializeRefPropertyNotNull(sb, "TextField1",  t, o => o.TextField1,  FormatString),
 
@@ -196,19 +196,19 @@ namespace Vse.Routines.Json
                         //(sb, t) => SerializeStuctProperty(sb, "Number",      t, o => o.Number,      FormatStruct),
                         //(sb, t) => SerializeStuctProperty(sb, "BoolField1",  t, o => o.BoolField,  FormatBool)
 
-                        (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb,  t, "ListItems", o => o.ListItems,
-                            (sb2, t2) => NExpJsonSerializerStringBuilderExtensions.SerializeRefArray(sb2, t2,
+                        (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyHandleNull(sb,  t, "ListItems", o => o.ListItems,
+                            (sb2, t2) => NExpJsonSerializerStringBuilderExtensions.SerializeRefArrayHandleEmpty(sb2, t2,
                                 (sb3, t3) =>
-                                    NExpJsonSerializerStringBuilderExtensions.SerializeObjectNotEmpty(sb3, t3,
+                                    NExpJsonSerializerStringBuilderExtensions.SerializeObject(sb3, t3,
                                         (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4,  t4, "DateTime", o => o.DateTime, NExpJsonSerializerFormatters.SerializeToIso8601WithSecUtc),
-                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb4,  t4, "RowData", o => o.RowData, NExpJsonSerializerFormatters.SerializeBase64, NExpJsonSerializerStringBuilderExtensions.SerializeNull)
+                                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyHandleNull(sb4,  t4, "RowData", o => o.RowData, NExpJsonSerializerFormatters.SerializeBase64, NExpJsonSerializerStringBuilderExtensions.SerializeNull)
                                      ), 
                                 NExpJsonSerializerStringBuilderExtensions.SerializeNull
                               ),
                             NExpJsonSerializerStringBuilderExtensions.SerializeNull
                         ),
-                        (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty(sb, t, "Ints", o => o.Ints,
-                            (sb2, t2) => NExpJsonSerializerStringBuilderExtensions.SerializeStructArray(sb2, t2,
+                        (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyHandleNull(sb, t, "Ints", o => o.Ints,
+                            (sb2, t2) => NExpJsonSerializerStringBuilderExtensions.SerializeStructArrayHandleEmpty(sb2, t2,
                                 (sb3, t3) => NExpJsonSerializerStringBuilderExtensions.SerializeStruct(sb, t3)
                               ),
                             NExpJsonSerializerStringBuilderExtensions.SerializeNull
