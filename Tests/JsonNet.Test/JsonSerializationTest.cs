@@ -117,9 +117,9 @@ namespace JsonNet.Test
             var stringBuilder = new StringBuilder();
             var include = CreateIncludes();
 
-            var formatter = TrainJsonTools.BuildFormatter/*<TestClass>*/(
+            var formatter = NavigationToJsonTools.BuildFormatter/*<TestClass>*/(
                 include,
-                (n, b) => TrainJsonTools.GetDefaultSerializerSet(n, b)
+                (n, b) => NavigationToJsonTools.GetDefaultSerializerSet(n, b)
             );
             
             var json = formatter(testClass);
@@ -136,8 +136,8 @@ namespace JsonNet.Test
             list.Add(testClass);
             list.Add(testClass);
             var include = CreateIncludes();
-            var formatter = TrainJsonTools.BuildEnumerableFormatter(include,
-                    (n, b) => TrainJsonTools.GetDefaultSerializerSet(n, b)
+            var formatter = NavigationToJsonTools.BuildEnumerableFormatter(include,
+                    (n, b) => NavigationToJsonTools.GetDefaultSerializerSet(n, b)
             );
             var json = formatter(list);
             if(json != "[{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null},{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null},{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null}]")
@@ -149,7 +149,7 @@ namespace JsonNet.Test
         {
             string testValue = null;
             var stringBuilder = new StringBuilder();
-            var formatter = TrainJsonTools.BuildFormatter<string>();
+            var formatter = NavigationToJsonTools.BuildFormatter<string>();
             var json = formatter(testValue);
             if (json != "null")
                 throw new AssertFailedException("json not null");
@@ -160,7 +160,7 @@ namespace JsonNet.Test
         {
             var testValue = new List<DateTime> { DateTime.MinValue, new DateTime(36323577782833637) };
             var stringBuilder = new StringBuilder();
-            var formatter = TrainJsonTools.BuildEnumerableFormatter<DateTime>();
+            var formatter = NavigationToJsonTools.BuildEnumerableFormatter<DateTime>();
             var json = formatter(testValue);
             if (json!="[\"0001-01-01T00:00:00.000\",\"0116-02-09T04:16:18.283\"]")
                 throw new AssertFailedException("json not correct");
@@ -172,7 +172,7 @@ namespace JsonNet.Test
         {
             int? x = null;
             var stringBuilder = new StringBuilder();
-            var formatter = TrainJsonTools.BuildFormatter<int?>();
+            var formatter = NavigationToJsonTools.BuildFormatter<int?>();
             var json = formatter(x);
             if (json != "null")
                 throw new AssertFailedException("json not null");
@@ -183,7 +183,7 @@ namespace JsonNet.Test
         {
             int? x = 10;
             var stringBuilder = new StringBuilder();
-            var formatter = TrainJsonTools.BuildFormatter<int?>();
+            var formatter = NavigationToJsonTools.BuildFormatter<int?>();
             var json = formatter(x);
             if (json != "10")
                 throw new AssertFailedException("json not 10");
@@ -198,7 +198,7 @@ namespace JsonNet.Test
             list.Add(null);
             list.Add(1);
 
-            var formatter = TrainJsonTools.BuildEnumerableFormatter<int?>();
+            var formatter = NavigationToJsonTools.BuildEnumerableFormatter<int?>();
             var json = formatter(list);
             if (json!="[0,null,1]")
                 throw new AssertFailedException("json not [0,null,1]");
@@ -207,7 +207,7 @@ namespace JsonNet.Test
         [TestMethod]
         public void JsonBuildNIntNullEnumerableSerializer()
         {
-            var formatter = TrainJsonTools.BuildEnumerableFormatter<int?>();
+            var formatter = NavigationToJsonTools.BuildEnumerableFormatter<int?>();
             var json = formatter(null);
             if (json != "null")
                 throw new AssertFailedException("json not null");
@@ -218,7 +218,7 @@ namespace JsonNet.Test
         public void JsonBuildEnumerableLeafNullSerializer()
         {
             var stringBuilder = new StringBuilder();
-            var formatter = TrainJsonTools.BuildEnumerableFormatter<DateTime>();
+            var formatter = NavigationToJsonTools.BuildEnumerableFormatter<DateTime>();
             var json = formatter(null);
             if (json != "null")
                 throw new AssertFailedException("json not null");

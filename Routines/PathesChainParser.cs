@@ -5,18 +5,18 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public class PathesChainParser<TRootEntity> : IChainParser<TRootEntity>
+    public class ChainingPathesState<TRootEntity> : IChainingState<TRootEntity>
     {
         public readonly List<string[]> Pathes = new List<string[]>();
         private string[] sequence;
-        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+        public void ParseHead<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
         {
             var name = MemberExpressionExtensions.GetMemberName(navigationExpression);
             sequence = Add(new string[] { }, name);
         }
-        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+        public void ParseHeadEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
         {
-            ParseRoot(navigationExpression);
+            ParseHead(navigationExpression);
         }
         public void Parse<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
         {
@@ -65,15 +65,5 @@ namespace Vse.Routines
             end:
             return newPath;
         }
-
-        //public void ParseRootNullable<TEntity>(Expression<Func<TRootEntity, TEntity?>> getterExpression) where TEntity : struct
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void ParseNullable<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity?>> getterExpression) where TEntity : struct
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }

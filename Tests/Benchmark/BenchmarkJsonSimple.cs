@@ -31,14 +31,14 @@ namespace Benchmark
             };
 
             var parser = new SerializerChainParser<Box2>();
-            var includable = new Includable<Box2>(parser);
+            var includable = new Chain<Box2>(parser);
             Include<Box2> include = (i) => i.Include(e=>e.B1);
             include.Invoke(includable);
 
             parser.Root.AppendLeafs();
             var serializerNode = parser.Root;
 
-            serializerBuilded = TrainJsonTools.BuildSerializer<Box2>(serializerNode);
+            serializerBuilded = NavigationToJsonTools.BuildSerializer<Box2>(serializerNode);
 
             serializerFunc = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObject(sbP, tP,
                         (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)

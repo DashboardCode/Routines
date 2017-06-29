@@ -5,12 +5,12 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public class MemberExpressionChainParser<TRootEntity> : IChainParser<TRootEntity>
+    public class MemberExpressionChainParser<TRootEntity> : IChainingState<TRootEntity>
     {
         public readonly List<MemberExpressionNode> Root = new List<MemberExpressionNode>();
         private MemberExpressionNode CurrentNode;
 
-        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
+        public void ParseHead<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
         {
             var name = MemberExpressionExtensions.GetMemberName(expression);
             var node = Root.FirstOrDefault(e => e.MemberName == name);
@@ -21,10 +21,12 @@ namespace Vse.Routines
             }
             CurrentNode = node;
         }
-        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> expression)
+
+        public void ParseHeadEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> expression)
         {
-            ParseRoot(expression);
+            ParseHead(expression);
         }
+
         public void Parse<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> expression)
         {
             var name = MemberExpressionExtensions.GetMemberName(expression);

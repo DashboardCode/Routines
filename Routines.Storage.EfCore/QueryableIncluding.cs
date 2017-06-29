@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace Vse.Routines.Storage.EfCore
 {
-    public class QueryableIncluding<TRootEntity> : IChainParser<TRootEntity> where TRootEntity : class
+    public class QueryableIncluding<TRootEntity> : IChainingState<TRootEntity> where TRootEntity : class
     {
         public IQueryable<TRootEntity> Queryable { get; private set; }
         public bool isEnumerable;
@@ -18,12 +18,12 @@ namespace Vse.Routines.Storage.EfCore
                 throw new ArgumentNullException(nameof(rootQueryable));
             Queryable = rootQueryable;
         }
-        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
+        public void ParseHead<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
         {
             Queryable = EntityFrameworkQueryableExtensions.Include(Queryable, expression);
             isEnumerable = false;
         }
-        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression)
+        public void ParseHeadEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression)
         {
             Queryable = EntityFrameworkQueryableExtensions.Include(Queryable, enumerableExpression);
             isEnumerable = true;

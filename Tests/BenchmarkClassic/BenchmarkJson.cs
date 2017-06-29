@@ -47,15 +47,16 @@ namespace BenchmarkClassic
                 } );
             }
             box = new Box { Rows = testData };
+
+            Include<Box> include = t => t.IncludeAll(e => e.Rows);
+
             var parser = new SerializerChainParser<Box>();
-            var includable = new Includable<Box>(parser);
-            Include<Box> include = (i) => i.IncludeAll(e=>e.Rows);
-            include.Invoke(includable);
-            //parser.Root.I
+            var train = new Chain<Box>(parser);
+            include.Invoke(train);
             parser.Root.AppendLeafs();
             var serializerNode = parser.Root;
 
-            serializer1 = TrainJsonTools.BuildSerializer<Box>(serializerNode);
+            serializer1 = NavigationToJsonTools.BuildSerializer<Box>(serializerNode);
 
             serializer4 = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObject(sbP, tP,
                         (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyHandleNull(sb, t, "Rows", o => o.Rows,

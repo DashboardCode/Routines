@@ -8,7 +8,7 @@ namespace Vse.Routines.Storage.EfCore
         public static IQueryable<T> Include<T>(this IQueryable<T> query, Include<T> include) where T: class
         {
             var iState = new QueryableIncluding<T>(query);
-            var includable = new Includable<T>(iState);
+            var includable = new Chain<T>(iState);
             include?.Invoke(includable);
             return iState.Queryable;
         }
@@ -16,7 +16,7 @@ namespace Vse.Routines.Storage.EfCore
         {
             context.Entry(entity).State = EntityState.Detached;
             var dbSet = context.Set<T>();
-            ChainExtensions.Detach(entity, include);
+            IncludeExtensions.Detach(entity, include);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Vse.Routines.Json
 {
-    public static class NExpJsonSerializerTools2
+    public static class NExpJsonSerializerTools
     {
         public static Func<StringBuilder, TestClass, bool> BuildSerializer2()
         {
@@ -405,7 +405,7 @@ namespace Vse.Routines.Json
             int index38 = 1;
             ParameterExpression parameterExpression34 = parameterExpression2;
             parameterExpressionArray7[index38] = parameterExpression34;
-            return NExpJsonSerializerTools2.ExpressionBuilder<TestClass>(Expression.Lambda<Func<StringBuilder, TestClass, bool>>((Expression)methodCallExpression5, parameterExpressionArray7));
+            return NExpJsonSerializerTools.ExpressionBuilder<TestClass>(Expression.Lambda<Func<StringBuilder, TestClass, bool>>((Expression)methodCallExpression5, parameterExpressionArray7));
         }
     }
 }

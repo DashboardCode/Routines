@@ -15,6 +15,7 @@ namespace Vse.Routines
             var memberExpression = (MemberExpression)expression.Body;
             return memberExpression.Member.Name;
         }
+
         public static object GetMemberValue(this MemberExpression memberExpression, object entity)
         {
             var popertyName = memberExpression.Member.Name;
