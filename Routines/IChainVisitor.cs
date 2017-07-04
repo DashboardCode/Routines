@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public interface IChainingState<TRootEntity>
+    public interface IChainVisitor<TRootEntity>
     {
         void ParseHead<TEntity>(Expression<Func<TRootEntity, TEntity>> getterExpression);
         void ParseHeadEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> getterExpression);

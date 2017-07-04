@@ -49,11 +49,11 @@ namespace BenchmarkClassic
             box = new Box { Rows = testData };
 
             Include<Box> include = t => t.IncludeAll(e => e.Rows);
-
-            var parser = new SerializerChainParser<Box>();
+            var include2 = IncludeExtensions.AppendLeafs(include);
+            var parser = new ChainVisitor<Box>();
             var train = new Chain<Box>(parser);
-            include.Invoke(train);
-            parser.Root.AppendLeafs();
+            include2.Invoke(train);
+            //parser.Root.AppendLeafs();
             var serializerNode = parser.Root;
 
             serializer1 = NavigationToJsonTools.BuildSerializer<Box>(serializerNode);

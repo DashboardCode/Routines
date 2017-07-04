@@ -30,13 +30,13 @@ namespace Benchmark
                 B1 = true
             };
 
-            var parser = new SerializerChainParser<Box2>();
-            var includable = new Chain<Box2>(parser);
-            Include<Box2> include = (i) => i.Include(e=>e.B1);
-            include.Invoke(includable);
+            Include<Box2> include = (i) => i.Include(e => e.B1);
+            var include2 = IncludeExtensions.AppendLeafs(include);
 
-            parser.Root.AppendLeafs();
-            var serializerNode = parser.Root;
+            var process = new ChainVisitor<Box2>();
+            var chain = new Chain<Box2>(process);
+            include2.Invoke(chain);
+            var serializerNode = process.Root;
 
             serializerBuilded = NavigationToJsonTools.BuildSerializer<Box2>(serializerNode);
 

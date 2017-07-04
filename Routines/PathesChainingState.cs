@@ -5,10 +5,11 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public class ChainingPathesState<TRootEntity> : IChainingState<TRootEntity>
+    public class PathesChainingState<TRootEntity> : IChainVisitor<TRootEntity>
     {
         public readonly List<string[]> Pathes = new List<string[]>();
-        private string[] sequence;
+        private string[] sequence = new string[] { };
+
         public void ParseHead<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
         {
             var name = MemberExpressionExtensions.GetMemberName(navigationExpression);
@@ -18,6 +19,7 @@ namespace Vse.Routines
         {
             ParseHead(navigationExpression);
         }
+
         public void Parse<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
         {
             var name = MemberExpressionExtensions.GetMemberName(navigationExpression);

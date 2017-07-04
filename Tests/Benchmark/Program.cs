@@ -6,9 +6,9 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            var b = new BenchmarkGetMethodInfo();
-            var x1 = b.DelegateBuilded();
-            var x2 = b.Expression();
+            var b = new BenchmarkForEach();
+            //var x1 = b.DelegateBuilded();
+            //var x2 = b.Expression();
             //var s1 = b.();
             //var s2 = b.StringFloat();
 
@@ -23,7 +23,7 @@ namespace Benchmark
             //var jO = b.TestFuncDynamicInvoke();
             //var jA = b.TestFunc();
             //var jB = b.TestFuncBuilded();
-            BenchmarkRunner.Run<BenchmarkGetMethodInfo>();
+            BenchmarkRunner.Run<BenchmarkForEach>();
         }
     }
 }

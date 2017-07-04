@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public class MemberExpressionChainParser<TRootEntity> : IChainingState<TRootEntity>
+    public class MemberExpressionChainParser<TRootEntity> : IChainVisitor<TRootEntity>
     {
         public readonly List<MemberExpressionNode> Root = new List<MemberExpressionNode>();
         private MemberExpressionNode CurrentNode;

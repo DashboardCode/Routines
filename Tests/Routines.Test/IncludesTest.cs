@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Vse.Routines.Storage;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 
 namespace Vse.Routines.Test
@@ -11,28 +10,42 @@ namespace Vse.Routines.Test
     public class IncludesTest
     {
         [TestMethod]
-        public void IncludesAppendLeafsTest()
+        public void IncludesCloneIncludeTest()
         {
-            Include<TestModel> include1 = t => t.Include(e => e.StorageModel)
-                                                    .ThenInclude(e=>e.Key).ThenInclude(e => e.Attributes)
-                                                .Include(e => e.PropertyInt)
-                                                .Include(e => e.PropertyText);
+            Include<TestModel> include1 = t => t
+                    .Include(e => e.IntNullable1)
+                    .Include(e => e.IntNullable1)
+                    .IncludeAll(e => e.TestChilds).ThenIncludeAll(e => e.Uniques).ThenInclude(e => e.IndexName)
+                    .IncludeAll(e => e.TestChilds).ThenIncludeAll(e => e.Uniques).ThenInclude(e => e.Fields);
 
-            Include<TestModel> includeX = t => t.Include(e => e.PropertyInt); //.Include(e => e.PropertyText);
-            var include2 = IncludeExtensions.AppendLeafs(include1);
-
-            var x1 = new[] { "a", "b" }.SequenceEqual(new[] { "a", "b" });
-            var x2 = new[] { "a", "b" }.SequenceEqual(new[] { "b", "a" });
+            var include2 = IncludeExtensions.CloneInclude(include1);
 
             var b1 = IncludeExtensions.IncludeEquals(include1, include2);
             if (!b1)
-                throw new ApplicationException("IncludesAppendLeafsTest not equals");
+                throw new ApplicationException("IncludesCloneIncludeTest not equals");
 
+            Include<TestModel> includeX = t => t.Include(e => e.PropertyInt); //.Include(e => e.PropertyText);
             var b2 = IncludeExtensions.IncludeEquals(include1, includeX);
             if (b2)
-                throw new ApplicationException("IncludesAppendLeafsTest false equals");
+                throw new ApplicationException("IncludesCloneIncludeTest false equals");
         }
 
+        [TestMethod]
+        public void IncludesAppendLeafsTest()
+        {
+            Include<TestModel> include1 = t => t
+                    .IncludeAll(e => e.TestChilds).ThenIncludeAll(e => e.Uniques);
+            Include<TestModel> includeX = t => t.Include(e => e.PropertyInt); 
+            var include2 = IncludeExtensions.AppendLeafs(include1);
+
+            var state = new PathesChainingState<TestModel>();
+            var chain1 = new Chain<TestModel>(state);
+            include2.Invoke(chain1);
+            var pathes1 = state.Pathes;
+
+            if (pathes1.Count!=6)
+                throw new ApplicationException("IncludesAppendLeafsTest error");
+        }
 
         [TestMethod]
         public void IncludesCloneAll()
@@ -85,7 +98,7 @@ namespace Vse.Routines.Test
         {
             var source = TestTool.CreateTestModel();
             var includes = TestTool.CreateInclude();
-            var including = new ChainingPathesState<TestModel>();
+            var including = new PathesChainingState<TestModel>();
             var includable = new Chain<TestModel>(including);
             includes.Invoke(includable);
             var pathes = including.Pathes;
@@ -162,7 +175,7 @@ namespace Vse.Routines.Test
                 = includable => includable
                     .Include(i => i.CultureInfos);
 
-            var include = include1.Union(include2);
+            var include = include1.UnionState(include2);
 
             if (!(include.Contains(include1) && include.Contains(include2)))
                 throw new ApplicationException("IncludesUnionTest 1");
@@ -356,7 +369,7 @@ namespace Vse.Routines.Test
             var source = TestTool.CreateTestModel();
             var includes = TestTool.CreateInclude();
 
-            var including = new ChainingPathesState<TestModel>();
+            var including = new PathesChainingState<TestModel>();
             includes?.Invoke(new Chain<TestModel>(including));
             var ef6Includes = including.Pathes.ConvertAll(e => string.Join(".", e));
         }

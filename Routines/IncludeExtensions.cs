@@ -8,121 +8,123 @@ using System.Linq.Expressions;
 
 namespace Vse.Routines
 {
-    public class TestChildlX
-    {
-        public float PropertyFloat { get; set; }
-        public byte[] PropertBytes { get; set; }
-    }
-
-    public class TestModelX
-    {
-        public TestChildlX TestChildlX { get; set; }
-        public int PropertyInt { get; set; }
-        public string PropertyText { get; set; }
-    }
     public static class IncludeExtensions
     {
-        public static void Kuku<T>(Expression<Include<T>> exp)
+        public static Include<T> CloneInclude<T>(Include<T> source) where T : class
         {
-            //__methodref();
-        }
+            var visitor = new ChainVisitor<T>();
+            var chain = new Chain<T>(visitor);
+            source.Invoke(chain);
+            var root = visitor.Root;
 
-        public static void Kuku2()
-        {
-            Kuku<TestModelX>(t => t
-                .Include(e => e.PropertyInt)
-                .Include(e => e.PropertyText)
-                .Include(e => e.TestChildlX).ThenInclude(e => e.PropertyFloat)
-                .Include(e => e.TestChildlX).ThenInclude(e => e.PropertyFloat));
-        }
-
-
-        public static Include<T> AppendLeafs<T>(Include<T> source) where T : class
-        {
-            var parser = new SerializerChainParser<T>();
-            var train = new Chain<T>(parser);
-            source.Invoke(train);
-            var parents = new SerializerNode[1];
-            var node = parser.Root;
-            parents[0]=node;
-            var entityType = node.Type;
-            
-            //LambdaExpression propertyLambda = null;
-
+            var parents = new ChainPropertyNode[0];
+            var entityType = root.Type;
             Type rootChainType = typeof(Chain<>).MakeGenericType(entityType);
-            //MethodInfo includeGenericMethodInfo = rootChainType.GetTypeInfo().GetDeclaredMethod(nameof(Chain<object>.Include));
-            //MethodInfo includeMethodInfo = includeGenericMethodInfo.MakeGenericMethod(rootChainType);
-
             ParameterExpression tParameterExpression = Expression.Parameter(rootChainType, "t");
-
-            int number = AddLevel(parents, 0,  tParameterExpression,  out Expression outMethodCallExpression);
-
-            var lambdaExpression = Expression.Lambda<Include<T>>(outMethodCallExpression, new[] {tParameterExpression });
+            int number = AddLevel(root, parents, 0, tParameterExpression, out Expression outExpression);
+            var lambdaExpression = Expression.Lambda<Include<T>>(outExpression, new[] { tParameterExpression });
             var destination = lambdaExpression.Compile();
-
             return destination;
         }
 
-        private static int AddLevel(SerializerNode[] parents, int number, Expression includeParameterExpression,  out Expression outMethodCallExpression)
+        public static Include<T> CreateInclude<T>(ChainNode root) where T : class
+        {
+            var parents = new ChainPropertyNode[0];
+            var entityType = root.Type;
+            Type rootChainType = typeof(Chain<>).MakeGenericType(entityType);
+            ParameterExpression tParameterExpression = Expression.Parameter(rootChainType, "t");
+            int number = AddLevel(root, parents, 0, tParameterExpression, out Expression outExpression);
+            var lambdaExpression = Expression.Lambda<Include<T>>(outExpression, new[] { tParameterExpression });
+            var destination = lambdaExpression.Compile();
+            return destination;
+        }
+
+        public static Include<T> AppendLeafs<T>(Include<T> source) where T : class
+        {
+            var parser = new ChainVisitor<T>();
+            var train = new Chain<T>(parser);
+            source.Invoke(train);
+            var root = parser.Root;
+
+            void AppendLeafs(ChainNode node)
+            {
+                var containsLeafs = node.Children.Values.Any(c => c.Children.Count == 0);
+                if (!containsLeafs)
+                {
+                    //TODO: compare performance
+                    //var childProperties = MemberExpressionExtensions.GetSimpleProperties(propertyType, SystemTypesExtensions.SystemTypes);
+
+                    var childProperties = MemberExpressionExtensions.GetPrimitiveOrSimpleProperties(
+                        node.Type,
+                        SystemTypesExtensions.DefaultSimpleTextTypes,
+                        SystemTypesExtensions.DefaultSimpleSymbolTypes);
+                    foreach (var propertyInfo in childProperties)
+                    {
+                        var expression = CreatePropertyLambda(propertyInfo.DeclaringType, propertyInfo);
+                        node.Children.Add(propertyInfo.Name, new ChainPropertyNode(propertyInfo.PropertyType, expression, propertyInfo,/* node,*/ propertyInfo.Name, false));
+                    }
+                }
+
+                foreach (var n in node.Children.Values)
+                    AppendLeafs(n);
+            }
+            AppendLeafs(root);
+            var destination = CreateInclude<T>(root);
+            return destination;
+        }
+
+
+        private static int AddLevel(ChainNode root, ChainPropertyNode[] parents, int number, Expression inExpression,  out Expression outExpression)
         {
             var @value = number;
-            var node = parents.Last();
-            outMethodCallExpression = null;
+            var node = parents.Length==0?root:parents.Last();
+            outExpression = null;
             foreach (var childPair in node.Children)
             {
-                //var propertyName = childPair.Key;
                 var propertyNode = childPair.Value;
 
-                var modifiedParents = new SerializerNode[parents.Length + 1];
+                var modifiedParents = new ChainPropertyNode[parents.Length + 1];
                 parents.CopyTo(modifiedParents, 0);
                 modifiedParents[parents.Length] = propertyNode;
 
                 if (propertyNode.Children.Count != 0)
                 {
-                    @value = AddLevel(modifiedParents, @value, includeParameterExpression, out outMethodCallExpression);
-                    includeParameterExpression = outMethodCallExpression;
+                    @value = AddLevel(root, modifiedParents, @value, inExpression, out outExpression);
+                    inExpression = outExpression;
                 }
                 else
                 {
-                    @value = AddProperty(/*propertyNode.Type, propertyName,*/ modifiedParents, @value, includeParameterExpression, out outMethodCallExpression);
-                    includeParameterExpression = outMethodCallExpression;
+                    @value = AddProperty(root, modifiedParents, @value, inExpression, out outExpression);
+                    inExpression = outExpression;
                 }
             }
             return @value;
         }
 
-        private static int AddProperty(/*Type nodeType, string propertyName,*/ SerializerNode[] parents, int number, Expression includeParameterExpression, /* Expression methodCallExpression, */out Expression outMethodCallExpression)
+        private static int AddProperty(ChainNode root, ChainPropertyNode[] parents, int number, Expression inExpression, out Expression outExpression)
         {
             bool isRoot = true;
-            outMethodCallExpression = null;
-            if (parents.Length <= 1)
+            outExpression = null;
+            if (parents.Length == 0)
                 throw new Exception("impossible situation");
-            var head = parents[0];
-            var root = head;
-            var tail = parents.Skip(1).ToArray();
-            foreach (var p in tail)
+            var head = root;
+            foreach (var p in parents)
             {
                 MethodInfo includeMethodInfo=null;
-                var isEnumerable = false;
+                var isEnumerable = p.IsEnumerable;
                 if (isRoot)
                 {
                     if (isEnumerable)
                     {
+                        Type rootChainType = typeof(Chain<>).MakeGenericType(root.Type);
+                        MethodInfo includeGenericMethodInfo = rootChainType.GetTypeInfo().GetDeclaredMethod(nameof(Chain<object>.IncludeAll));
+                        includeMethodInfo = includeGenericMethodInfo.MakeGenericMethod(p.Type);
                     }
                     else
                     {
-                        if (number == 0)
-                        {
-                            Type rootChainType = typeof(Chain<>).MakeGenericType(root.Type);
-                            MethodInfo includeGenericMethodInfo = rootChainType.GetTypeInfo().GetDeclaredMethod(nameof(Chain<object>.Include));
-                            includeMethodInfo = includeGenericMethodInfo.MakeGenericMethod(p.Type);
-                        }
-                        else
-                        {
-                            Type rootChainType = typeof(/*Then*/Chain</*,*/>).MakeGenericType(root.Type/*, head.Type*/);
-                            MethodInfo includeGenericMethodInfo = rootChainType.GetTypeInfo().GetDeclaredMethod(nameof(/*Then*/Chain<object/*,object*/>.Include));
-                            includeMethodInfo = includeGenericMethodInfo.MakeGenericMethod(p.Type);
-                        }
+                        Type rootChainType = typeof(Chain<>).MakeGenericType(root.Type);
+                        MethodInfo includeGenericMethodInfo = rootChainType.GetTypeInfo().GetDeclaredMethod(nameof(Chain<object>.Include));
+                        includeMethodInfo = includeGenericMethodInfo.MakeGenericMethod(p.Type);
                     }
                     isRoot = false;
                 }
@@ -130,6 +132,9 @@ namespace Vse.Routines
                 {
                     if (isEnumerable)
                     {
+                        Type rootChainType = typeof(ThenChain<,>).MakeGenericType(root.Type, head.Type);
+                        MethodInfo includeGenericMethodInfo = rootChainType.GetTypeInfo().GetDeclaredMethod(nameof(ThenChain<object, object>.ThenIncludeAll));
+                        includeMethodInfo = includeGenericMethodInfo.MakeGenericMethod(p.Type);
                     }
                     else
                     {
@@ -138,34 +143,39 @@ namespace Vse.Routines
                         includeMethodInfo = includeGenericMethodInfo.MakeGenericMethod(p.Type);
                     }
                 }
+                var propertyLambda = p.Expression;
 
-                ParameterExpression eParameterExpression = Expression.Parameter(head.Type, "e");
-                PropertyInfo propertyMethodInfo = head.Type.GetTypeInfo().GetDeclaredProperty(((SerializerPropertyNode)p).PropertyName);
-
-                var propertyCallExpression = Expression.Property(
-                    eParameterExpression,
-                    propertyMethodInfo
-                    );
-
-                var propertyLambda = Expression.Lambda(propertyCallExpression, new[] { eParameterExpression });
-                var methodCallExpression = Expression.Call(includeParameterExpression, includeMethodInfo, new[] { propertyLambda });
-                includeParameterExpression = methodCallExpression;
+                var methodCallExpression = Expression.Call(inExpression, includeMethodInfo, new[] { propertyLambda });
+                inExpression = methodCallExpression;
 
                 isRoot = false;
                 head = p;
             }
-            outMethodCallExpression = includeParameterExpression;
+            outExpression = inExpression;
             return number+1;
+        }
+
+
+
+        public static LambdaExpression CreatePropertyLambda(Type declaringType, PropertyInfo propertyInfo)
+        {
+            ParameterExpression eParameterExpression = Expression.Parameter(declaringType, "e");
+            var propertyCallExpression = Expression.Property(
+                eParameterExpression,
+                propertyInfo
+                );
+            var propertyLambda = Expression.Lambda(propertyCallExpression, new[] { eParameterExpression });
+            return propertyLambda;
         }
 
         public static bool IncludeEquals<T>(Include<T> include1, Include<T> include2)
         {
-            var state = new ChainingPathesState<T>();
+            var state = new PathesChainingState<T>();
             var chain1 = new Chain<T>(state);
             include1.Invoke(chain1);
             var pathes1 = state.Pathes;
 
-            var parser2 = new ChainingPathesState<T>();
+            var parser2 = new PathesChainingState<T>();
             var chain2 = new Chain<T>(parser2);
             include2.Invoke(chain2);
             var pathes2 = parser2.Pathes;
@@ -199,12 +209,12 @@ namespace Vse.Routines
             return @value;
         }
 
-        //public 
+
         #region Path based
 
         public static void Detach<T>(T entity, Include<T> include) where T : class
         {
-            var parser = new ChainingPathesState<T>();
+            var parser = new PathesChainingState<T>();
             var chain = new Chain<T>(parser);
             include.Invoke(chain);
             var pathes = parser.Pathes;
@@ -213,7 +223,7 @@ namespace Vse.Routines
 
         public static void DetachAll<TCol, T>(IEnumerable<T> entities, Include<T> include) where TCol : IEnumerable<T>
         {
-            var including = new ChainingPathesState<T>();
+            var including = new PathesChainingState<T>();
             var includable = new Chain<T>(including);
             include.Invoke(includable);
             var pathes = including.Pathes;
@@ -309,14 +319,15 @@ namespace Vse.Routines
         }
 
         #region Algebra
+        
         public static bool Contains<T>(this Include<T> include1, Include<T> include2)
         {
-            var pathesIncluding1 = new ChainingPathesState<T>();
+            var pathesIncluding1 = new PathesChainingState<T>();
             var includable1 = new Chain<T>(pathesIncluding1);
             include1.Invoke(includable1);
             var pathes1 = pathesIncluding1.Pathes;
 
-            var pathesIncluding2 = new ChainingPathesState<T>();
+            var pathesIncluding2 = new PathesChainingState<T>();
             var includable2 = new Chain<T>(pathesIncluding2);
             include2.Invoke(includable2);
             var pathes2 = pathesIncluding2.Pathes;
@@ -349,11 +360,98 @@ namespace Vse.Routines
             return contains;
         }
 
-        public static Include<T> Union<T>(this Include<T> include1, Include<T> include2)
+        #region ChainNode IsSupersetOf, IsSubsetOf
+        private static ChainPropertyNode FindChild(this IEnumerable<ChainPropertyNode> lists, ChainPropertyNode node)
         {
-            Include<T> include = includable => {
-                include1(includable);
-                include2(includable);
+            foreach (var n in lists)
+                if (n.PropertyName == node.PropertyName)
+                    return n;
+            return null;
+        }
+
+
+        private static bool Contains(this ChainNode node1, ChainNode node2)
+        {
+            var found = true;
+            var children1 = node1.Children.Values;
+            var children2 = node2.Children.Values;
+            if (children1.Count == 0 && children2.Count == 0)
+                return found;
+            foreach (var n in children2)
+            {
+                var f = FindChild(node1.Children.Values, n);
+                if (f != null)
+                {
+                    found = Contains(n, f);
+                }
+                else
+                {
+                    found = false;
+                }
+                if (found == false)
+                    break;
+            }
+            return found;
+        }
+
+        public static bool IsSupersetOf(this ChainNode node1, ChainNode node2)
+        {
+            var @value = Contains(node1, node2);
+            return @value;
+        }
+
+        public static bool IsSubsetOf(this ChainNode node1, ChainNode node2)
+        {
+            var @value = IsSupersetOf(node2, node1);
+            return @value;
+        }
+
+        //public static ChainNode Union(ChainNode source, ChainNode target)
+        //{
+        //    foreach (var n in source.Children.Values)
+        //    {
+        //        // see if there is a match in target
+        //        var f = FindChild(source.Children.Values, n); // match paths
+        //        if (f == null)
+        //        { // no match was found so add n to the target
+        //            target.Children.Add(n.PropertyName, n.Clone(target));
+        //        }
+        //        else
+        //        {
+        //            // a match was found so add the children of match 
+        //            Union(n, f);
+        //        }
+        //    }
+        //    return target;
+        //}
+        #endregion
+
+        //public static Include<T> Union<T>(this Include<T> include1, Include<T> include2)
+        //{
+        //    var visitor1 = new ChainVisitor<T>();
+        //    var chain1 = new Chain<T>(visitor1);
+        //    include1.Invoke(chain1);
+        //    var root1 = visitor1.Root;
+
+        //    var visitor2 = new ChainVisitor<T>();
+        //    var chain2 = new Chain<T>(visitor2);
+        //    include2.Invoke(chain2);
+        //    var root2 = visitor1.Root;
+
+        //    foreach (var c in root2.Children)
+        //    {
+        //        if (c.)
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        public static Include<T> UnionState<T>(this Include<T> include1, Include<T> include2)
+        {
+            Include<T> include = chain => {
+                include1(chain);
+                include2(chain);
             };
             return include;
         }
@@ -425,7 +523,6 @@ namespace Vse.Routines
             }
             return MemberExpressionExtensions.EqualsNodes(entity1, entity2, nodes);
         }
-
     }
 }
 

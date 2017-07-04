@@ -15,7 +15,7 @@ namespace Vse.Routines.Json
 
     public class Config<T>
     {
-        public List<Tuple<Include<T>, Func<SerializerNode, JsonSerializerSet>>> rules = new List<Tuple<Include<T>, Func<SerializerNode, JsonSerializerSet>>>();
+        public List<Tuple<Include<T>, Func<ChainNode, JsonSerializerSet>>> rules = new List<Tuple<Include<T>, Func<ChainNode, JsonSerializerSet>>>();
         private Include<T> include;
         
         public Config(Include<T> include)
@@ -33,9 +33,9 @@ namespace Vse.Routines.Json
             //AddPrimitiveGenericRule (serializePrimitiveMethodInfo, nullSerializerMethodInfo);
         }
 
-        public Config<T> AddNodeRule(Func<SerializerNode, JsonSerializerSet> getSerializerSet)
+        public Config<T> AddNodeRule(Func<ChainNode, JsonSerializerSet> getSerializerSet)
         {
-            rules.Add(new Tuple<Include<T>, Func<SerializerNode, JsonSerializerSet>>(include, getSerializerSet));
+            rules.Add(new Tuple<Include<T>, Func<ChainNode, JsonSerializerSet>>(include, getSerializerSet));
             //var serializerMethodInfo = serializer.GetMethodInfo();
             //var nullSerializerMethodInfo = (nullSerializer == null) ? null : nullSerializer.GetMethodInfo();
             //rules.Add(new Tuple<Include<T>, MethodInfo, MethodInfo, ConfigItem>(
@@ -122,11 +122,8 @@ namespace Vse.Routines.Json
 
     public static class NavigationToJsonTools
     {
-        public static Func<T, string> BuildFormatter<T>(Include<T> include = null, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet = null)
+        public static Func<T, string> BuildFormatter<T>(Include<T> include = null, Func<ChainNode, bool, JsonSerializerSet> getSerializerSet = null)
         {
-            //var config = new Config<T>(include);
-            //configurate?.Invoke(config);
-
             var serializer = BuildSerializer(include, getSerializerSet);
             return (t) =>
             {
@@ -136,9 +133,9 @@ namespace Vse.Routines.Json
             };
         }
                                                                                           
-        public static Func<StringBuilder, T, bool> BuildSerializer<T>(Include<T> include, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet)
+        public static Func<StringBuilder, T, bool> BuildSerializer<T>(Include<T> include, Func<ChainNode, bool, JsonSerializerSet> getSerializerSet)
         {
-            var parser = new SerializerChainParser<T>();
+            var parser = new ChainVisitor<T>();
             var includable = new Chain<T>(parser);
             if (include!=null)
                 include.Invoke(includable);
@@ -146,9 +143,9 @@ namespace Vse.Routines.Json
             return BuildSerializer<T>(serializerNode, getSerializerSet);
         }
 
-        public static Func<StringBuilder, IEnumerable<T>, bool> BuildEnumerableSerializer<T>(Include<T> include=null, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet = null)
+        public static Func<StringBuilder, IEnumerable<T>, bool> BuildEnumerableSerializer<T>(Include<T> include=null, Func<ChainNode, bool, JsonSerializerSet> getSerializerSet = null)
         {
-            var parser = new SerializerChainParser<T>();
+            var parser = new ChainVisitor<T>();
             var includable = new Chain<T>(parser);
             if (include!=null)
                 include.Invoke(includable);
@@ -190,8 +187,7 @@ namespace Vse.Routines.Json
 
         public static Func<IEnumerable<T>, string> BuildEnumerableFormatter<T>(
             Include<T> include=null,
-            Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet = null
-            //Action<Config<T>> configurate = null
+            Func<ChainNode, bool, JsonSerializerSet> getSerializerSet = null
             )
         {
             //var config = new Config<T>(include);
@@ -205,7 +201,7 @@ namespace Vse.Routines.Json
             };
         }
 
-        public static Func<StringBuilder, T, bool> BuildSerializer<T>(SerializerNode node, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet = null)
+        public static Func<StringBuilder, T, bool> BuildSerializer<T>(ChainNode node, Func<ChainNode, bool, JsonSerializerSet> getSerializerSet = null)
         {
             Func<StringBuilder, T, bool> @value = null;
             if (getSerializerSet == null)
@@ -313,7 +309,7 @@ namespace Vse.Routines.Json
         }
 
         public static JsonSerializerSet GetDefaultSerializerSet(
-            SerializerNode node, 
+            ChainNode node, 
             bool isEnumerable,
             TypeRulesDictionary typeRulesDictionary    =null,
             bool                handleNullProperty     =true,
@@ -349,7 +345,7 @@ namespace Vse.Routines.Json
             return serializerSet;
         }
 
-        public static Tuple<ConstantExpression, ConstantExpression> ConfigureSerializeNode(SerializerNode node, Type parentType, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet)
+        public static Tuple<ConstantExpression, ConstantExpression> ConfigureSerializeNode(ChainNode node, Type parentType, Func<ChainNode, bool, JsonSerializerSet> getSerializerSet)
         {
             var serializerSet = getSerializerSet(node, false);
             if (node.Children.Count == 0)
@@ -377,9 +373,9 @@ namespace Vse.Routines.Json
             }
         }
 
-        public static void ConfigureSerializeProperty(SerializerPropertyNode node,  Type parentType, List<Expression> propertyExpressions, Func<SerializerNode, bool, JsonSerializerSet> getSerializerSet)
+        public static void ConfigureSerializeProperty(ChainPropertyNode node,  Type parentType, List<Expression> propertyExpressions, Func<ChainNode, bool, JsonSerializerSet> getSerializerSet)
         {
-            bool isEnumerable = node is SerializerEnumerablePropertyNode;
+            
             bool? isNullableStruct = IsNullableStruct(node.Type);
             var propertyName = node.PropertyName;
             var getterLambdaExpression = CreateGetterLambdaExpression(parentType, node.Type, propertyName);
@@ -389,9 +385,10 @@ namespace Vse.Routines.Json
 
             Type propertyType;
             Tuple<ConstantExpression, ConstantExpression> expressions;
-            if (isEnumerable)
+            //bool isEnumerable = node is ChainEnumerablePropertyNode;
+            if (node.IsEnumerable)
             {
-                propertyType = ((SerializerEnumerablePropertyNode)node).EnumerableType;
+                propertyType = typeof(IEnumerable<>).MakeGenericType(node.Type);//  ((ChainEnumerablePropertyNode)node).EnumerableType;
                 // check that property should be serailizable: SerializeRefProperty
                 var serializerSet = getSerializerSet(node, true);
                 var itemSerializers = ConfigureSerializeNode(node, parentType, getSerializerSet);
@@ -422,7 +419,7 @@ namespace Vse.Routines.Json
             var formatterExpression = expressions.Item1;
             var nullFormatterExpression = expressions.Item2;
 
-            MethodInfo propertySerializerMethodInfo = (isEnumerable) ?
+            MethodInfo propertySerializerMethodInfo = (node.IsEnumerable) ?
                 GetEnumerablePropertySerializerMethodInfo(nullFormatterExpression != null) :
                 GetPropertySerializerMethodInfo(isNullableStruct, nullFormatterExpression != null);
 
