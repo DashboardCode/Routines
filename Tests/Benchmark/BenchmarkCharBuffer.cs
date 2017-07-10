@@ -42,7 +42,7 @@ namespace Benchmark
         public string StringBuilder8000()
         {
             var sb = new StringBuilder();
-            NExpJsonSerializerFormatters.SerializeBytesToJsonArray(sb, bytes8000);
+            JsonValueStringBuilderExtensions.SerializeBytesToJsonArray(sb, bytes8000);
             var text = sb.ToString();
             return text;
         }
@@ -51,7 +51,7 @@ namespace Benchmark
         public string StringBuilder64()
         {
             var sb = new StringBuilder();
-            NExpJsonSerializerFormatters.SerializeBytesToJsonArray(sb, bytes64);
+            JsonValueStringBuilderExtensions.SerializeBytesToJsonArray(sb, bytes64);
             var text = sb.ToString();
             return text;
         }

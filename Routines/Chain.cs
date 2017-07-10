@@ -13,13 +13,12 @@ namespace Vse.Routines
         }
         public ThenChain<TRootEntity, TEntity> Include<TEntity>(Expression<Func<TRootEntity, TEntity>> lambdaExpression)
         {
-            chainVisitor.ParseHead(lambdaExpression);
+            chainVisitor.ParseRoot(lambdaExpression);
             return new ThenChain<TRootEntity, TEntity>(chainVisitor);
         }
-
         public ThenChain<TRootEntity, TEntity> IncludeAll<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> lambdaExpression)
         {
-            chainVisitor.ParseHeadEnumerable(lambdaExpression);
+            chainVisitor.ParseRootEnumerable(lambdaExpression);
             return new ThenChain<TRootEntity, TEntity>(chainVisitor);
         }
     }

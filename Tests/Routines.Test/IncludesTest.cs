@@ -18,14 +18,14 @@ namespace Vse.Routines.Test
                     .IncludeAll(e => e.TestChilds).ThenIncludeAll(e => e.Uniques).ThenInclude(e => e.IndexName)
                     .IncludeAll(e => e.TestChilds).ThenIncludeAll(e => e.Uniques).ThenInclude(e => e.Fields);
 
-            var include2 = IncludeExtensions.CloneInclude(include1);
+            var include2 = IncludeExtensions.Clone(include1);
 
-            var b1 = IncludeExtensions.IncludeEquals(include1, include2);
+            var b1 = IncludeExtensions.IsEqualTo(include1, include2);
             if (!b1)
                 throw new ApplicationException("IncludesCloneIncludeTest not equals");
 
             Include<TestModel> includeX = t => t.Include(e => e.PropertyInt); //.Include(e => e.PropertyText);
-            var b2 = IncludeExtensions.IncludeEquals(include1, includeX);
+            var b2 = IncludeExtensions.IsEqualTo(include1, includeX);
             if (b2)
                 throw new ApplicationException("IncludesCloneIncludeTest false equals");
         }
@@ -36,12 +36,9 @@ namespace Vse.Routines.Test
             Include<TestModel> include1 = t => t
                     .IncludeAll(e => e.TestChilds).ThenIncludeAll(e => e.Uniques);
             Include<TestModel> includeX = t => t.Include(e => e.PropertyInt); 
-            var include2 = IncludeExtensions.AppendLeafs(include1);
+            var include2 = include1.AppendLeafs(); 
 
-            var state = new PathesChainingState<TestModel>();
-            var chain1 = new Chain<TestModel>(state);
-            include2.Invoke(chain1);
-            var pathes1 = state.Pathes;
+            var pathes1 = include2.GetPaths();
 
             if (pathes1.Count!=6)
                 throw new ApplicationException("IncludesAppendLeafsTest error");
@@ -54,31 +51,31 @@ namespace Vse.Routines.Test
 
             var includes = TestTool.CreateInclude();
 
-            var cloned = IncludeExtensions.CloneAll(list, includes);
+            var cloned = ObjectExtensions.CloneAll(list, includes);
             
 
             // default include contain key function; expected true
-            var equals = IncludeExtensions.EqualsAll(list, cloned, includes);
+            var equals = ObjectExtensions.EqualsAll(list, cloned, includes);
             if (!equals)
                 throw new ApplicationException("IncludesCloneAll error 0");
 
             // no includes = no key function; expected false
-            var equals1 = IncludeExtensions.EqualsAll<List<TestModel>, TestModel>(list, cloned);
+            var equals1 = ObjectExtensions.EqualsAll<List<TestModel>, TestModel>(list, cloned);
             if (equals1)
                 throw new ApplicationException("IncludesCloneAll error 1");
 
             cloned[0].StorageModel.Uniques[0].Fields[0] = "changed";
 
-            var equals2 = IncludeExtensions.EqualsAll(list, cloned, includes);
+            var equals2 = ObjectExtensions.EqualsAll(list, cloned, includes);
             if (equals2)
                 throw new ApplicationException("IncludesCloneAll error 2");
 
             // for coverage
-            var clonedB = IncludeExtensions.CloneAll(list, includes, SystemTypesExtensions.SystemTypes); 
-            var clonedNull = IncludeExtensions.Clone(default(TestModel), includes, SystemTypesExtensions.SystemTypes);
-            var clonedNulls = IncludeExtensions.CloneAll<List<TestModel>,TestModel>(null, includes);
+            var clonedB = ObjectExtensions.CloneAll(list, includes, SystemTypesExtensions.SystemTypes); 
+            var clonedNull = ObjectExtensions.Clone(default(TestModel), includes, SystemTypesExtensions.SystemTypes);
+            var clonedNulls = ObjectExtensions.CloneAll<List<TestModel>,TestModel>(null, includes);
             var xx = new List<TestModel>();
-            IncludeExtensions.CopyAll<List<TestModel>, TestModel>(list, xx);
+            ObjectExtensions.CopyAll<List<TestModel>, TestModel>(list, xx);
 
         }
 
@@ -86,10 +83,29 @@ namespace Vse.Routines.Test
         public void IncludesDetach()
         {
             var source = TestTool.CreateTestModel();
-            var includes = TestTool.CreateInclude();
-            IncludeExtensions.Detach(source, includes);
 
-            if (source.CultureInfos!=null)
+            var source1 = TestTool.CreateTestModel();
+            var include1 = TestTool.CreateInclude();
+
+            ObjectExtensions.Detach(source1, include1);
+
+            var source2 = TestTool.CreateTestModel();
+            var include2 = TestTool.CreateInclude();
+            var includeWithLeafs = include2.AppendLeafs();
+
+            ObjectExtensions.Detach2(source2, includeWithLeafs);
+
+            var b1 = ObjectExtensions.Equals(source1, source, include1);
+            var b2 = ObjectExtensions.Equals(source2, source, include2);
+
+            var b3 = ObjectExtensions.Equals(source1, source2, include1);
+            var b4 = ObjectExtensions.Equals(source1, source2, include2);
+
+            //Json.NExpJsonSerializerStringBuilderExtensions.
+
+            if (b1==false || b2 == false || b3 == false || b4 == false)
+                throw new ApplicationException("Detach doesn't working properly - wrong equals results");
+            if (source1.CultureInfos!=null)
                throw new ApplicationException("Detach doesn't working properly");
         }
 
@@ -97,12 +113,8 @@ namespace Vse.Routines.Test
         public void IncludesPathes()
         {
             var source = TestTool.CreateTestModel();
-            var includes = TestTool.CreateInclude();
-            var including = new PathesChainingState<TestModel>();
-            var includable = new Chain<TestModel>(including);
-            includes.Invoke(includable);
-            var pathes = including.Pathes;
-
+            var include = TestTool.CreateInclude();
+            var pathes = include.GetPaths();
             if (pathes.Count != 13)
                 throw new ApplicationException("PathesIncluding doesn't working properly");
         }
@@ -126,7 +138,7 @@ namespace Vse.Routines.Test
                         .ThenInclude(i => i.Entity)
                             .ThenInclude(i => i.Name);
 
-            var contains1 = include.Contains(include1);
+            var contains1 = include.IsSupersetOf(include1);
 
             if (!contains1)
                 throw new ApplicationException("Contains (1)");
@@ -144,7 +156,7 @@ namespace Vse.Routines.Test
                         .ThenInclude(i => i.Entity)
                             .ThenInclude(i => i.Name);
 
-            var contains2 = include.Contains(include2);
+            var contains2 = include.IsSupersetOf(include2);
 
             if (contains2)
                 throw new ApplicationException("Contains (2)");
@@ -154,7 +166,7 @@ namespace Vse.Routines.Test
         public void IncludesUnionTest()
         {
             Include<TestModel> include1
-                = includable => includable
+                = chain => chain
                     .Include(i => i.StorageModel)
                         .ThenInclude(i => i.Entity)
                             .ThenInclude(i => i.Namespace)
@@ -163,7 +175,7 @@ namespace Vse.Routines.Test
                             .ThenInclude(i => i.Attributes);
 
             Include<TestModel> include2
-                = includable => includable
+                = chain => chain
                     .Include(i => i.StorageModel)
                         .ThenInclude(i => i.Entity)
                             .ThenInclude(i => i.Namespace)
@@ -175,12 +187,12 @@ namespace Vse.Routines.Test
                 = includable => includable
                     .Include(i => i.CultureInfos);
 
-            var include = include1.UnionState(include2);
+            var include = include1.Union(include2);
 
-            if (!(include.Contains(include1) && include.Contains(include2)))
+            if (!(include.IsSupersetOf(include1) && include.IsSupersetOf(include2)))
                 throw new ApplicationException("IncludesUnionTest 1");
 
-            if (include.Contains(include3))
+            if (include.IsSupersetOf(include3))
                 throw new ApplicationException("IncludesUnionTest 2");
         }
 
@@ -191,7 +203,7 @@ namespace Vse.Routines.Test
             var source = TestTool.CreateTestModel();
             var destination = new TestModel();
             var includes = TestTool.CreateInclude();
-            IncludeExtensions.Copy(source, destination, includes);
+            ObjectExtensions.Copy(source, destination, includes);
 
             if (source.StorageModel.Entity.Name != destination.StorageModel.Entity.Name
                 || source.StorageModel.Entity.Namespace != destination.StorageModel.Entity.Namespace || source.StorageModel.Key == null)
@@ -207,10 +219,10 @@ namespace Vse.Routines.Test
                     .IncludeAll(i => i.TestChilds)
                         .ThenIncludeAll(i => i.Uniques)
                     .Include(i=>i.ListTest);
-            var destination = IncludeExtensions.Clone(source, includes);
+            var destination = ObjectExtensions.Clone(source, includes);
 
             //equals by reference will be false
-            var b1 = IncludeExtensions.Equals(source, destination, includes);
+            var b1 = ObjectExtensions.Equals(source, destination, includes);
             if (b1 == true)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 0");
 
@@ -221,36 +233,36 @@ namespace Vse.Routines.Test
                         .ThenIncludeAll(i => i.Uniques)
                             .ThenInclude(i => i.IndexName) // compare
                     .Include(i => i.ListTest);
-            var b2 = IncludeExtensions.Equals(source, destination, equalsIncludes);
+            var b2 = ObjectExtensions.Equals(source, destination, equalsIncludes);
             if (b2 == false)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 1");
 
             foreach (var c in destination.TestChilds)
                 c.Uniques[0].IndexName = null;
 
-            if (IncludeExtensions.Equals(source, destination, equalsIncludes))
+            if (ObjectExtensions.Equals(source, destination, equalsIncludes))
                 throw new ApplicationException("Eqauls doesn't working properly. Case 2");
 
             foreach (var c in source.TestChilds)
                 c.Uniques[0].IndexName = null;
 
-            if (!IncludeExtensions.Equals(source, destination, equalsIncludes))
+            if (!ObjectExtensions.Equals(source, destination, equalsIncludes))
                 throw new ApplicationException("Eqauls doesn't working properly. Case 3");
 
             foreach (var c in destination.TestChilds)
                 c.Uniques[0].IndexName = "notnull";
-            if (IncludeExtensions.Equals(source, destination, equalsIncludes))
+            if (ObjectExtensions.Equals(source, destination, equalsIncludes))
                 throw new ApplicationException("Eqauls doesn't working properly. Case 2b");
 
             // equalsIncludes correct,  into clone key is not included neither by include, neither by types; expected false
             var source2 = TestTool.CreateTestModel();
-            var destination2 = IncludeExtensions.Clone(source2, includes, new List<Type>());
-            if (IncludeExtensions.Equals(source2, destination2, equalsIncludes))
+            var destination2 = ObjectExtensions.Clone(source2, includes, new List<Type>());
+            if (ObjectExtensions.Equals(source2, destination2, equalsIncludes))
                 throw new ApplicationException("Eqauls doesn't working properly. Case 4");
 
             // equalsIncludes correct,  into clone key is included by types, but not by clone Include; expected true
-            var cloned3 = IncludeExtensions.Clone(source2, includes);
-            if (!IncludeExtensions.Equals(source2, cloned3, equalsIncludes))
+            var cloned3 = ObjectExtensions.Clone(source2, includes);
+            if (!ObjectExtensions.Equals(source2, cloned3, equalsIncludes))
                 throw new ApplicationException("Eqauls doesn't working properly. Case 5");
         }
 
@@ -262,7 +274,7 @@ namespace Vse.Routines.Test
                 = includable => includable
                     .IncludeAll(i => i.TestChilds)
                         .ThenIncludeAll(i => i.Uniques);
-            var destination = IncludeExtensions.Clone(source, includes);
+            var destination = ObjectExtensions.Clone(source, includes);
             //var b1 = MemberExpressionExtensions.Equals(source, destination, includes);
             //if (b1 == true)
             //    throw new ApplicationException("Eqauls doesn't working properly. Case 0");
@@ -288,8 +300,8 @@ namespace Vse.Routines.Test
                     .IncludeAll(i => i.TestChilds)
                         .ThenIncludeAll(i => i.Uniques)
                     .Include(i => i.ListTest);
-            var destination = IncludeExtensions.Clone(source, includes);
-            var b1 = IncludeExtensions.Equals(source, destination, includes);
+            var destination = ObjectExtensions.Clone(source, includes);
+            var b1 = ObjectExtensions.Equals(source, destination, includes);
             if (b1 == false)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 0");
         }
@@ -303,8 +315,8 @@ namespace Vse.Routines.Test
                     .IncludeAll(i => i.TestChilds)
                         .ThenIncludeAll(i => i.Uniques)
                     .Include(i => i.ListTest);
-            var destination = IncludeExtensions.Clone(source, includes);
-            var b1 = IncludeExtensions.Equals(source, destination, includes);
+            var destination = ObjectExtensions.Clone(source, includes);
+            var b1 = ObjectExtensions.Equals(source, destination, includes);
             if (b1 == false)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 0");
         }
@@ -327,7 +339,7 @@ namespace Vse.Routines.Test
             var source = TestTool.CreateTestModel();
             var includes = TestTool.CreateInclude();
 
-            var destination = IncludeExtensions.Clone(source, includes, SystemTypesExtensions.SystemTypes);
+            var destination = ObjectExtensions.Clone(source, includes, SystemTypesExtensions.SystemTypes);
 
             if (source.PropertyInt!=destination.PropertyInt 
                 ||
@@ -338,27 +350,27 @@ namespace Vse.Routines.Test
                 || source.StorageModel.Entity.Namespace != destination.StorageModel.Entity.Namespace || source.StorageModel.Key == null)
                 throw new ApplicationException("Copy doesn't working properly");
 
-            var b1 = IncludeExtensions.Equals(source, destination, includes);
+            var b1 = ObjectExtensions.Equals(source, destination, includes);
             if (b1 == false)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 1");
 
             source.Test[2] = 4;
-            var b2 = IncludeExtensions.Equals(source, destination, includes);
+            var b2 = ObjectExtensions.Equals(source, destination, includes);
             if (b2 == true)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 2");
 
             destination.Test[2] = 4;
-            var b3 = IncludeExtensions.Equals(source, destination, includes);
+            var b3 = ObjectExtensions.Equals(source, destination, includes);
             if (b3 == false)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 3");
 
             source.StorageModel.Key.Attributes[1] = "Field3";
-            var b4 = IncludeExtensions.Equals(source, destination, includes);
+            var b4 = ObjectExtensions.Equals(source, destination, includes);
             if (b4 == true)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 4");
 
             destination.StorageModel.Key.Attributes[1] = "Field3";
-            var b5 = IncludeExtensions.Equals(source, destination, includes);
+            var b5 = ObjectExtensions.Equals(source, destination, includes);
             if (b5 == false)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 5");
 
@@ -368,10 +380,8 @@ namespace Vse.Routines.Test
         {
             var source = TestTool.CreateTestModel();
             var includes = TestTool.CreateInclude();
-
-            var including = new PathesChainingState<TestModel>();
-            includes?.Invoke(new Chain<TestModel>(including));
-            var ef6Includes = including.Pathes.ConvertAll(e => string.Join(".", e));
+            var paths = includes.GetPaths();
+            var ef6Includes = paths.ConvertAll(e => string.Join(".", e));
         }
 
         [TestMethod]
@@ -381,24 +391,24 @@ namespace Vse.Routines.Test
             int[] e2 = new int[1] {7};
             int[] e3 = new int[1] {7};
 
-            var x1 = IncludeExtensions.Equals(e3, e2, null);
-            var x2 = IncludeExtensions.Equals(e1, e2, null);
+            var x1 = ObjectExtensions.Equals(e3, e2, null);
+            var x2 = ObjectExtensions.Equals(e1, e2, null);
             if (x1 != true || x2 != false)
                 throw new ApplicationException("Test Failed. Case 0");
 
-            var x3 = IncludeExtensions.Equals(e3.ToList(), e2.ToList(), null);
-            var x4 = IncludeExtensions.Equals(e1.ToList(), e2.ToList(), null);
+            var x3 = ObjectExtensions.Equals(e3.ToList(), e2.ToList(), null);
+            var x4 = ObjectExtensions.Equals(e1.ToList(), e2.ToList(), null);
             if (x3 != true || x4 != false)
                 throw new ApplicationException("Test Failed. Case 1");
 
             int[] e4 = new int[1];
-            IncludeExtensions.Copy(e2, e4, null);
+            ObjectExtensions.Copy(e2, e4, null);
             if (e4[0]!=e2[0])
                 throw new ApplicationException("Test Failed. Case 2");
 
             try
             {
-                IncludeExtensions.Copy(e2, e1, null);
+                ObjectExtensions.Copy(e2, e1, null);
             }
             catch (InvalidOperationException)
             {
@@ -407,7 +417,7 @@ namespace Vse.Routines.Test
 
             var items = new List<Item>() { null, null};
             items.Add(new Item() { F1 = "F1", F2 = "F2", Items = items });
-            IncludeExtensions.DetachAll<List<Item>, Item>(items, (i)=>i.Include(e=>e.Items));
+            ObjectExtensions.DetachAll<List<Item>, Item>(items, (i)=>i.Include(e=>e.Items));
         }
     }
 }

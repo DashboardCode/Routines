@@ -120,7 +120,7 @@ namespace Vse.Routines.Json
         }
     }
 
-    public static class NavigationToJsonTools
+    public static class JsonChainNodeTools
     {
         public static Func<T, string> BuildFormatter<T>(Include<T> include = null, Func<ChainNode, bool, JsonSerializerSet> getSerializerSet = null)
         {
@@ -237,11 +237,11 @@ namespace Vse.Routines.Json
             public static TypeRulesDictionary CreateDefault()
             {
                 var d = new TypeRulesDictionary();
-                d.AddTypeRule(typeof(bool),     GetMethodInfoExpr<bool>((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeBool(sb, t)));
-                d.AddTypeRule(typeof(string),   GetMethodInfoExpr<string>((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeEscapeString(sb, t)));
-                d.AddTypeRule(typeof(DateTime), GetMethodInfoExpr<DateTime>((sb, t) => NExpJsonSerializerFormatters.SerializeToIso8601WithMs(sb, t)));
-                d.AddTypeRule(typeof(byte[]),   GetMethodInfoExpr<byte[]>((sb, t) => NExpJsonSerializerFormatters.SerializeBase64(sb, t)));
-                d.AddTypeRule(typeof(decimal),  GetMethodInfoExpr<decimal>((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializePrimitive(sb, t)));
+                d.AddTypeRule(typeof(bool),     GetMethodInfoExpr<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t)));
+                d.AddTypeRule(typeof(string),   GetMethodInfoExpr<string>((sb, t) => JsonValueStringBuilderExtensions.SerializeEscapeString(sb, t)));
+                d.AddTypeRule(typeof(DateTime), GetMethodInfoExpr<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeToIso8601WithMs(sb, t)));
+                d.AddTypeRule(typeof(byte[]),   GetMethodInfoExpr<byte[]>((sb, t) => JsonValueStringBuilderExtensions.SerializeBase64(sb, t)));
+                d.AddTypeRule(typeof(decimal),  GetMethodInfoExpr<decimal>((sb, t) => JsonValueStringBuilderExtensions.SerializePrimitive(sb, t)));
                 return d;
             }
 
@@ -465,9 +465,9 @@ namespace Vse.Routines.Json
             var t  = Expression.Parameter(objectType, "t");
             MethodInfo serializeObjectGenericMethodInfo;
             if (handleEmptyPropertyList)
-                serializeObjectGenericMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObjectHandleEmpty));
+                serializeObjectGenericMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeObjectHandleEmpty));
             else
-                serializeObjectGenericMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeObject));
+                serializeObjectGenericMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeObject));
             var serializeObjectResolvedMethodInfo = serializeObjectGenericMethodInfo.MakeGenericMethod(objectType);
             var serializePropertyFuncDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), objectType, typeof(bool));
 
@@ -556,26 +556,26 @@ namespace Vse.Routines.Json
             if (isNullableStruct == null)
             {
                 if (handleEmptyList)
-                    serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefArrayHandleEmpty));
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefArrayHandleEmpty));
                 else
-                    serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefArray));
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefArray));
             }
             else
             {
                 if (isNullableStruct.Value)
                 {
                     if (handleEmptyList)
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructArrayHandleEmpty));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNStructArrayHandleEmpty));
                     else
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructArray));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNStructArray));
 
                 }
                 else
                 {
                     if (handleEmptyList)
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeStructArrayHandleEmpty));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeStructArrayHandleEmpty));
                     else
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeStructArray));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeStructArray));
                 }
             }
 
@@ -598,9 +598,9 @@ namespace Vse.Routines.Json
         {
             MethodInfo serializePropertyMethod;
             if (!handleNullProperty)
-                serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty));
+                serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefProperty));
             else
-                serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyHandleNull));
+                serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull));
             return serializePropertyMethod;
         }
 
@@ -610,22 +610,22 @@ namespace Vse.Routines.Json
             if (isNullableStruct == null)
             {
                 if (!handleNullProperty)
-                    serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefProperty));
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefProperty));
                 else
-                    serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeRefPropertyHandleNull));
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull));
             }
             else
             {
                 if (isNullableStruct.Value)
                 {
                     if (!handleNullProperty)
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructProperty));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNStructProperty));
                     else
-                        serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNStructPropertyHandleNull));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNStructPropertyHandleNull));
                 }
                 else
                 {
-                    serializePropertyMethod = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty));
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeStructProperty));
                 }
             }
             return serializePropertyMethod;
@@ -693,16 +693,16 @@ namespace Vse.Routines.Json
             var methodInfo = default(MethodInfo);
             if (isPrimitive)
             {
-                var genericMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializePrimitive));
+                var genericMethodInfo = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializePrimitive));
                 methodInfo = genericMethodInfo.MakeGenericMethod(type);
             }
             else
             {
                 MethodInfo genericMethodInfo = null;
                 if ( type.GetTypeInfo().IsClass)
-                    genericMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeEscapingTextRef));
+                    genericMethodInfo = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializeEscapingTextRef));
                 else
-                    genericMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeEscapeTextVal));
+                    genericMethodInfo = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializeEscapeTextVal));
                 methodInfo = genericMethodInfo.MakeGenericMethod(type);
             }
             return methodInfo;
@@ -710,7 +710,7 @@ namespace Vse.Routines.Json
 
         public static MethodInfo GetNullSerializer()
         {
-            var nullMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeNull));
+            var nullMethodInfo = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializeNull));
             return nullMethodInfo;
         }
     }

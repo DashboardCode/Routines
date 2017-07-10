@@ -32,18 +32,18 @@ namespace Vse.Routines
             var name = propertyInfo.Name;
             if (!dictionary.TryGetValue(name, out ChainPropertyNode node))
             {
-                node = new ChainPropertyNode(navigationType, expression, propertyInfo,/* parent,*/  name, isEnumerable);
+                node = new ChainPropertyNode(navigationType, expression, propertyInfo, name, isEnumerable, parent);
                 dictionary.Add(name, node);
             }
             return node;
         }
 
-        public void ParseHead<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
         {
             var node = AddIfAbsent(Root, navigationExpression,  typeof(TEntity), null, false);
             CurrentNode = node;
         }
-        public void ParseHeadEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
         {
             var node = AddIfAbsent(Root, navigationExpression,  typeof(TEntity), typeof(IEnumerable<TEntity>), true);
             CurrentNode = node;

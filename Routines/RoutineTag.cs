@@ -31,21 +31,20 @@ namespace Vse.Routines
             Class = @class;
             Member = member;
         }
-        public Guid CorrelationToken { get; private set; }
-        public string Namespace { get; private set; }
-        public string Class { get; private set; }
-        public string Member { get; private set; }
+        public Guid   CorrelationToken { get; private set; }
+        public string Namespace        { get; private set; }
+        public string Class            { get; private set; }
+        public string Member           { get; private set; }
 
         public string GetCategory()
         {
-            var value = (Namespace != null ? Namespace + "." : "")
-                + Class + "." + Member;
+            var value = (Namespace != null ? Namespace + "." : "") + Class + "." + Member;
             return value;
         }
 
         public override string ToString()
         {
-            return CorrelationToken+" "+GetCategory();
+            return CorrelationToken + " " + GetCategory();
         }
     }
 }

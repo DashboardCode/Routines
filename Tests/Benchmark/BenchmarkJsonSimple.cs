@@ -31,31 +31,31 @@ namespace Benchmark
             };
 
             Include<Box2> include = (i) => i.Include(e => e.B1);
-            var include2 = IncludeExtensions.AppendLeafs(include);
+            var include2 = include.AppendLeafs(); 
 
             var process = new ChainVisitor<Box2>();
             var chain = new Chain<Box2>(process);
             include2.Invoke(chain);
             var serializerNode = process.Root;
 
-            serializerBuilded = NavigationToJsonTools.BuildSerializer<Box2>(serializerNode);
+            serializerBuilded = JsonChainNodeTools.BuildSerializer<Box2>(serializerNode);
 
-            serializerFunc = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObject(sbP, tP,
-                        (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
+            serializerFunc = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeObject(sbP, tP,
+                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool)
                     );
 
-            Expression<Func<StringBuilder, Box2, bool>> serializerFuncCompiledExp = (sbP, tP) => NExpJsonSerializerStringBuilderExtensions.SerializeObject(sbP, tP,
-                       (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, NExpJsonSerializerStringBuilderExtensions.SerializeBool)
+            Expression<Func<StringBuilder, Box2, bool>> serializerFuncCompiledExp = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeObject(sbP, tP,
+                       (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool)
                    );
             serializerFuncCompiled = serializerFuncCompiledExp.Compile();
 
             Include<Box2> includeAlt = (i) => i.Include(e => e.B1);
             //serializer3 = includeAlt.BuildNExpJsonSerializer();
             Func<Box2, bool> getterDelegate = o => o.B1;
-            Expression<Func<StringBuilder, Box2, bool>> testFuncBuilded2Exp = (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, NExpJsonSerializerStringBuilderExtensions.SerializeBool);
+            Expression<Func<StringBuilder, Box2, bool>> testFuncBuilded2Exp = (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, JsonValueStringBuilderExtensions.SerializeBool);
             testFuncBuilded2 = testFuncBuilded2Exp.Compile();
 
-            testFunc = (sb4, t4) => NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, NExpJsonSerializerStringBuilderExtensions.SerializeBool);
+            testFunc = (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, JsonValueStringBuilderExtensions.SerializeBool);
 
             #region Test
             var getterDelegateType = typeof(Func<,>).MakeGenericType(typeof(Box2), typeof(bool));
@@ -66,12 +66,12 @@ namespace Benchmark
             //var getterDelegate = getterExpression.Compile(); // Func<T, TProp> getter
             //var getterConstantExpression = Expression.Constant(getterDelegate);
 
-            var formatterMethodInfo   = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeBool));
+            var formatterMethodInfo   = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializeBool));
             var formatterDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), typeof(bool), typeof(bool));
             var formatterDelegate     = formatterMethodInfo.CreateDelegate(formatterDelegateType);
             var formatterConstantExpression = Expression.Constant(formatterDelegate, formatterDelegateType);
 
-            var serializePropertyMethodInfo = typeof(NExpJsonSerializerStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(NExpJsonSerializerStringBuilderExtensions.SerializeStructProperty));
+            var serializePropertyMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeStructProperty));
             var serializePropertyGenericMethodInfo = serializePropertyMethodInfo.MakeGenericMethod(typeof(Box2), typeof(bool));
 
             var serializePropertyDelegateType = typeof(Func<,,,,,>).MakeGenericType(typeof(StringBuilder), typeof(string), typeof(Box2), typeof(Func<Box2, bool>), typeof(Func<StringBuilder, bool, bool>), typeof(bool));
@@ -162,7 +162,7 @@ namespace Benchmark
         {
             string text = JsonConvert.SerializeObject(
                 box,
-                new JsonSerializerSettings
+                new Newtonsoft.Json.JsonSerializerSettings
                 {
                      //DateFormatString= "yyyy-MM-ddTHH:mm:ss.fffK" //"yyyy-MM-ddTHH:mm:ssK", 
                      //NullValueHandling= NullValueHandling.Ignore

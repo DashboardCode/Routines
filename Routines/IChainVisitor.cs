@@ -6,8 +6,8 @@ namespace Vse.Routines
 {
     public interface IChainVisitor<TRootEntity>
     {
-        void ParseHead<TEntity>(Expression<Func<TRootEntity, TEntity>> getterExpression);
-        void ParseHeadEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> getterExpression);
+        void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> getterExpression);
+        void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> getterExpression);
         void Parse<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> getterExpression);
         void ParseEnumerable<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> getterExpression);
 

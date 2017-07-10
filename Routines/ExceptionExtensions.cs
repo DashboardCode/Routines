@@ -3,18 +3,6 @@ using System.Text;
 
 namespace Vse.Routines
 {
-    public static class StringBuilderException
-    {
-        public static StringBuilder AppendMarkdownLine(this StringBuilder stringBuilder, string text)
-        {
-            return stringBuilder.Append(text).Append("   ").Append(Environment.NewLine);
-        }
-
-        public static StringBuilder AppendMarkdownProperty(this StringBuilder stringBuilder, string name, string value)
-        {
-            return stringBuilder.Append("**"+ name+"**: "+value).Append("   ").Append(Environment.NewLine);
-        }
-    }
     public static class ExceptionExtensions
     {
         public static string Markdown(this Exception exception, Action<StringBuilder, Exception> specificAppender = null)
@@ -23,7 +11,7 @@ namespace Vse.Routines
             if (exception.InnerException != null)
             {
                 var iter = exception;
-                stringBuilder.AppendMarkdownLine("### SUMMARY");
+                stringBuilder.AppendMarkdownHeaderLine("SUMMARY");
                 stringBuilder.Append(" - ").AppendMarkdownLine(iter.Message);
                 while (iter.InnerException != null)
                 {
@@ -45,11 +33,7 @@ namespace Vse.Routines
                     sb.AppendFileNotFoundException((System.IO.FileNotFoundException)ex);
                 specificAppender?.Invoke(sb, ex);
                 if (exception.StackTrace != null)
-                {
-                    sb.AppendMarkdownLine("```");
-                    sb.AppendMarkdownLine(exception.StackTrace.Replace(Environment.NewLine, "  " + Environment.NewLine));
-                    sb.AppendMarkdownLine("```");
-                }
+                    sb.AppendMarkdownStackTrace(exception.StackTrace.Replace(Environment.NewLine, "  " + Environment.NewLine));
             };
 
             append(exception, "### ", stringBuilder);
@@ -105,6 +89,7 @@ namespace Vse.Routines
 
             }
         }
+
         private static void AppendArgumentException(this StringBuilder stringBuilder, ArgumentException exception)
         {
             stringBuilder.AppendMarkdownLine("ArgumentException specific:");

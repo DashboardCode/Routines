@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
 namespace Vse.Routines.Json
 {
-    public static class NExpJsonSerializerFormatters
+    public static class JsonValueStringBuilderExtensions
     {
         /// <summary>
         /// ISO 8601 without "second fractions"
@@ -207,6 +206,102 @@ namespace Vse.Routines.Json
             return true;
         }
 
-        
+
+
+
+
+        #region Formatters: String, Bool, Struct, Ref, Text
+        public static bool SerializeStringValue(StringBuilder stringBuilder, string text)
+        {
+            stringBuilder.Append('\"').Append(text).Append('\"');
+            return true;
+        }
+        public static bool SerializeEscapeString(StringBuilder stringBuilder, string text)
+        {
+            stringBuilder.Append('\"').AppendJsonEscaped(text).Append('\"');
+            return true;
+        }
+        public static bool SerializeBool(StringBuilder stringBuilder, bool b)
+        {
+            stringBuilder.Append(b ? "true" : "false");
+            return true;
+        }
+        public static bool SerializeStruct<T>(StringBuilder stringBuilder, T t) where T : struct
+        {
+            stringBuilder.Append(t);
+            return true;
+        }
+        public static bool SerializePrimitive<T>(StringBuilder stringBuilder, T t) where T : struct
+        {
+            stringBuilder.Append(Convert.ToString(t, CultureInfo.InvariantCulture));
+            return true;
+        }
+        public static bool SerializeRefValue<T>(StringBuilder stringBuilder, T t) where T : class
+        {
+            stringBuilder.Append(t);
+            return true;
+        }
+        public static bool SerializeEscapeTextVal<T>(StringBuilder stringBuilder, T t) where T : struct
+        {
+            stringBuilder.Append('"').AppendJsonEscaped(t.ToString()).Append('"');
+            return true;
+        }
+        public static bool SerializeEscapingTextRef<T>(StringBuilder stringBuilder, T t) where T : class
+        {
+            stringBuilder.Append('"').AppendJsonEscaped(t.ToString()).Append('"');
+            return true;
+        }
+        public static bool SerializeTextStructValue<T>(StringBuilder stringBuilder, T t) where T : struct
+        {
+            stringBuilder.Append('"').Append(t).Append('"');
+            return true;
+        }
+        public static bool SerializeTextRefValue<T>(StringBuilder stringBuilder, T t) where T : class
+        {
+            stringBuilder.Append('"').Append(t).Append('"');
+            return true;
+        }
+        #endregion
+
+        public static bool SerializeNull(StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("null");
+            return true;
+        }
+
+        private static StringBuilder AppendJsonEscaped(this StringBuilder stringBuilder, string text)
+        {
+            foreach (char c in text)
+            {
+                switch (c)
+                {
+                    case '\\':
+                        stringBuilder.Append("\\\\");
+                        break;
+                    case '\"':
+                        stringBuilder.Append("\\\"");
+                        break;
+                    case '\n':
+                        stringBuilder.Append("\\n");
+                        break;
+                    case '\r':
+                        stringBuilder.Append("\\r");
+                        break;
+                    case '\t':
+                        stringBuilder.Append("\\t");
+                        break;
+                    case '\b':
+                        stringBuilder.Append("\\b");
+                        break;
+                    case '\f':
+                        stringBuilder.Append("\\f");
+                        break;
+                    default:
+                        stringBuilder.Append(c);
+                        break;
+                }
+            }
+            return stringBuilder;
+        }
     }
 }

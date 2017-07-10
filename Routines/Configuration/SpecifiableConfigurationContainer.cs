@@ -26,6 +26,7 @@ namespace Vse.Routines.Configuration
             }
             configurationContainer = new ConfigurationContainer(elements);
         }
+
         public string ResolveSerialized<T>()
         {
             return configurationContainer.ResolveSerialized<T>();

@@ -4,44 +4,47 @@ using System.Collections.Generic;
 
 namespace Vse.Routines.Test
 {
-    public class SNodeBase
+    public class XNodePrimal
     {
-        public Dictionary<string, SNode> Children = new Dictionary<string, SNode>();
+        public Dictionary<string, XNode> Children = new Dictionary<string, XNode>();
         public string tag;
-        public SNodeBase(string tag)
+        public XNodePrimal(string tag)
         {
             this.tag = tag;
         }
 
-        public SNode AddChild(string key, string tag, int val1)
+        public XNode AddChild(string key, string tag, int val1)
         {
-            var s = new SNode(key, tag, val1);
+            var s = new XNode(key, tag, val1);
             Children.Add(key, s);
             return s;
         }
     }
 
-    public class SNode : SNodeBase
+    public class XNode : XNodePrimal
     {
         public string key;
         public int val1;
-        public SNode(string key, string tag, int val1) : base(tag)
+        public XNode(string key, string tag, int val1) : base(tag)
         {
             this.key = key;
             this.val1 = val1;
         }
     }
 
-    public class TestTree: STree<SNodeBase, SNode, string>{
-        public TestTree(): base(
-                (t) => t.Children.Values, 
-                (t) => new SNodeBase(t.tag),
-                (t, p) => { var t2 = new SNode(t.key, t.tag, t.val1); p.Children.Add(t.key, t2); return t2; }, 
+    public class XTree: Tree<XNodePrimal, XNode, string>{
+
+        public static readonly XTree Instance = new XTree();
+
+        private XTree(): base(
+                (t) => t.Children.Values,
                 (t) => t.key,
-                (t,n) => {
-                    SNode c = null;
+                (t, n) => {
+                    XNode c = null;
                     t.Children.TryGetValue(n, out c); return c;
-                }
+                },
+                (t) => new XNodePrimal(t.tag),
+                (t, p) => { var t2 = new XNode(t.key, t.tag, t.val1); p.Children.Add(t.key, t2); return t2; }
             )
         {
 
@@ -49,15 +52,15 @@ namespace Vse.Routines.Test
     }
 
     [TestClass]
-    public class SNodeTest
+    public class TreeTest
     {
-        SNodeBase x1;
-        SNodeBase x2;
-        SNodeBase x3;
-        TestTree testTree = new TestTree();
-        public SNodeTest()
+        XNodePrimal x1;
+        XNodePrimal x2;
+        XNodePrimal x3;
+        
+        public TreeTest()
         {
-            x1 = new SNodeBase("head");
+            x1 = new XNodePrimal("head");
             {
                 var a1 = x1.AddChild("a1", "child", 1);
                 var b1 = a1.AddChild("b1", "child", 1);
@@ -69,7 +72,7 @@ namespace Vse.Routines.Test
                 //var a3 = x1.AddChild("a3", "child", 3);
             }
 
-            x2 = new SNodeBase("head");
+            x2 = new XNodePrimal("head");
             {
                 var a1 = x2.AddChild("a1", "child", 1);
                 var b1 = a1.AddChild("b1", "child", 1);
@@ -81,7 +84,7 @@ namespace Vse.Routines.Test
                 //var a3 = x2.AddChild("a3", "child", 3);
             }
 
-            x3 = new SNodeBase("head");
+            x3 = new XNodePrimal("head");
             {
                 var a1 = x3.AddChild("a1", "child", 1);
                 var b1 = a1.AddChild("b1", "child", 1);
@@ -97,11 +100,11 @@ namespace Vse.Routines.Test
         [TestMethod]
         public void SNodeCloneTest()
         {
-            var x1cloned = testTree.Clone(x1);
-            var b1 = testTree.IsSubsetOf(x1, x1cloned);
-            var b2 = testTree.IsSupersetOf(x1, x1cloned);
-            var b3 = testTree.IsEquals(x1, x1cloned);
-            var b4 = testTree.IsEquals(x1cloned, x1);
+            var x1cloned = XTree.Instance.Clone(x1);
+            var b1 = XTree.Instance.IsSubsetOf(x1, x1cloned);
+            var b2 = XTree.Instance.IsSupersetOf(x1, x1cloned);
+            var b3 = XTree.Instance.IsEqualTo(x1, x1cloned);
+            var b4 = XTree.Instance.IsEqualTo(x1cloned, x1);
             if (b1 == false || b2 == false || b3 == false || b4 == false)
                 throw new Exception("cloned logical operation fails");
         }
@@ -109,32 +112,32 @@ namespace Vse.Routines.Test
         [TestMethod]
         public void SNodeLogicalTest()
         {
-            var b1 = testTree.IsSupersetOf(x1, x2);
-            var b2 = testTree.IsSubsetOf(x2, x1);
+            var b1 = XTree.Instance.IsSupersetOf(x1, x2);
+            var b2 = XTree.Instance.IsSubsetOf(x2, x1);
 
-            var b3 = testTree.IsSubsetOf(x1, x2);
-            var b4 = testTree.IsSupersetOf(x2, x1);
+            var b3 = XTree.Instance.IsSubsetOf(x1, x2);
+            var b4 = XTree.Instance.IsSupersetOf(x2, x1);
 
-            var b5 = testTree.IsEquals(x1, x2);
-            var b6 = testTree.IsEquals(x2, x1);
+            var b5 = XTree.Instance.IsEqualTo(x1, x2);
+            var b6 = XTree.Instance.IsEqualTo(x2, x1);
 
             if (b1 == false || b2 == false || b3 == true || b4 == true || b5 == true || b6 == true)
                 throw new Exception("logical operation fails A");
 
-            var b1b = testTree.IsSupersetOf(x1, x3);
-            var b2b = testTree.IsSubsetOf(x3, x1);
+            var b1b = XTree.Instance.IsSupersetOf(x1, x3);
+            var b2b = XTree.Instance.IsSubsetOf(x3, x1);
 
-            var b3b = testTree.IsSubsetOf(x1, x3);
-            var b4b = testTree.IsSupersetOf(x3, x1);
+            var b3b = XTree.Instance.IsSubsetOf(x1, x3);
+            var b4b = XTree.Instance.IsSupersetOf(x3, x1);
 
             if (b1b == true || b2b == true || b3b == true || b4b == true)
                 throw new Exception("logical operation fails B");
 
-            var b1c = testTree.IsSupersetOf(x3, x2);
-            var b2c = testTree.IsSubsetOf(x2, x3);
+            var b1c = XTree.Instance.IsSupersetOf(x3, x2);
+            var b2c = XTree.Instance.IsSubsetOf(x2, x3);
 
-            var b3c = testTree.IsSubsetOf(x3, x2);
-            var b4c = testTree.IsSupersetOf(x2, x3);
+            var b3c = XTree.Instance.IsSubsetOf(x3, x2);
+            var b4c = XTree.Instance.IsSupersetOf(x2, x3);
 
             if (b1c == false || b2c == false || b3c == true || b4c == true)
                 throw new Exception("logical operation fails C");
@@ -144,20 +147,20 @@ namespace Vse.Routines.Test
         [TestMethod]
         public void SNodeUnionTest()
         {
-            var z1 = testTree.Union(x1, x2);
-            var z2 = testTree.Union(x2, x1);
-            var z3 = testTree.Union(z1, x3);
+            var z1 = XTree.Instance.Union(x1, x2);
+            var z2 = XTree.Instance.Union(x2, x1);
+            var z3 = XTree.Instance.Union(z1, x3);
 
-            var b1 = testTree.IsEquals(z1, z2);
-            var b2 = testTree.IsEquals(z2, z1);
+            var b1 = XTree.Instance.IsEqualTo(z1, z2);
+            var b2 = XTree.Instance.IsEqualTo(z2, z1);
             if (b1 == false || b2 == false)
                 throw new Exception("union equals fails");
 
-            var b3 = testTree.IsEquals(z1, x1);
+            var b3 = XTree.Instance.IsEqualTo(z1, x1);
 
-            var q1 = testTree.IsSupersetOf(z3, x1);
-            var q2 = testTree.IsSupersetOf(z3, x2);
-            var q3 = testTree.IsSupersetOf(z3,x3);
+            var q1 = XTree.Instance.IsSupersetOf(z3, x1);
+            var q2 = XTree.Instance.IsSupersetOf(z3, x2);
+            var q3 = XTree.Instance.IsSupersetOf(z3,x3);
             if (q1 == false || q2 == false || q3 == false)
                 throw new Exception("union superset fails");
         }
@@ -165,9 +168,9 @@ namespace Vse.Routines.Test
         [TestMethod]
         public void SNodeChainLists()
         {
-            var nodes1 = testTree.ToChainPathes(x1);
-            var nodes2 = testTree.ToChainPathes(x2);
-            var nodes3 = testTree.ToChainPathes(x3);
+            var nodes1 = XTree.Instance.GetTreeAsListOfPaths(x1);
+            var nodes2 = XTree.Instance.GetTreeAsListOfPaths(x2);
+            var nodes3 = XTree.Instance.GetTreeAsListOfPaths(x3);
             if (nodes1.Count != 5 || nodes2.Count != 4 || nodes3.Count != 5)
                 throw new Exception("ToAncestorsAndSelfChains fails");
         }

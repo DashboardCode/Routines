@@ -21,14 +21,14 @@ namespace Benchmark
 
         public BenchmarkGetMethodInfo()
         {
-            var methodInfo2 = NavigationToJsonTools.GetMethodInfoExpr<bool>((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeBool(sb, t));
+            var methodInfo2 = JsonChainNodeTools.GetMethodInfoExpr<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
             var del2 = methodInfo2.CreateDelegate(typeof(Func<StringBuilder, bool, bool>));
             func2 = (Func<StringBuilder, bool, bool>)del2;
 
 
             //Func<StringBuilder, bool, bool> f = (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeBool(sb, t);
             //var methodInfo1 = f.GetMethodInfo();
-            var methodInfo1 = NavigationToJsonTools.GetMethodInfo<bool>((sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeBool(sb, t));
+            var methodInfo1 = JsonChainNodeTools.GetMethodInfo<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
             var del1 = methodInfo1.CreateDelegate(typeof(Func<StringBuilder, bool, bool>),null);
             func1 = (Func<StringBuilder, bool, bool>)del1;
 

@@ -42,7 +42,7 @@ namespace Benchmark
         public string Custom8000()
         {
             var sb = new StringBuilder();
-            NExpJsonSerializerFormatters.SerializeBase64Custom(sb, bytes8000);
+            JsonValueStringBuilderExtensions.SerializeBase64Custom(sb, bytes8000);
             var text = sb.ToString();
             return text;
         }
@@ -51,7 +51,7 @@ namespace Benchmark
         public string Custom64()
         {
             var sb = new StringBuilder();
-            NExpJsonSerializerFormatters.SerializeBase64Custom(sb, bytes64);
+            JsonValueStringBuilderExtensions.SerializeBase64Custom(sb, bytes64);
             var text = sb.ToString();
             return text;
         }
@@ -60,7 +60,7 @@ namespace Benchmark
         public string Convert8000()
         {
             var sb = new StringBuilder();
-            NExpJsonSerializerFormatters.SerializeBase64(sb, bytes8000);
+            JsonValueStringBuilderExtensions.SerializeBase64(sb, bytes8000);
             var text = sb.ToString();
             return text;
         }
@@ -69,7 +69,7 @@ namespace Benchmark
         public string Convert64()
         {
             var sb = new StringBuilder();
-            NExpJsonSerializerFormatters.SerializeBase64(sb, bytes64);
+            JsonValueStringBuilderExtensions.SerializeBase64(sb, bytes64);
             var text = sb.ToString();
             return text;
         }

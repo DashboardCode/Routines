@@ -16,7 +16,7 @@ namespace Vse.Routines.Storage.EfCore
         {
             context.Entry(entity).State = EntityState.Detached;
             var dbSet = context.Set<T>();
-            IncludeExtensions.Detach(entity, include);
+            ObjectExtensions.Detach(entity, include);
         }
     }
 }

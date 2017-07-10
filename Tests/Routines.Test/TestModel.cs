@@ -125,13 +125,13 @@ namespace Vse.Routines.Test
 
                 },
                 Test = new[] { 1, 2, 3 },
-                ListTest = new List<Guid>() { Guid.NewGuid(), Guid.NewGuid() },
+                ListTest = new List<Guid>() { Guid.Parse("360bc50a-4d9f-4703-bbea-58f67a6ff475"), Guid.Parse("f2ecf4d8-f4a6-446c-a363-cc79b02decdd") },
                 CultureInfos = new List<CultureInfo>() { CultureInfo.CurrentCulture, CultureInfo.InvariantCulture },
                 PropertyText = "sampleTest",
                 PropertyInt = 1234
             };
             source.TestChilds = new HashSet<TestChild>() { new TestChild { Uniques = source.StorageModel.Uniques.ToList() } };
-            source.Message    = new TestModel.MessageStruct() { TextMsg = "Initial", DateTimeMsg = DateTime.Now, IntNullableMsg = 7 };
+            source.Message    = new TestModel.MessageStruct() { TextMsg = "Initial", DateTimeMsg = DateTime.MaxValue, IntNullableMsg = 7 };
             source.IntNullable2 = 555;
             return source;
         }

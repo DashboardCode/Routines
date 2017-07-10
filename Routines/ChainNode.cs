@@ -14,16 +14,6 @@ namespace Vse.Routines
         {
             Type = type;
         }
-
-        //public ChainNode Clone()
-        //{
-        //    var @value = new ChainNode(Type);
-        //    foreach(var c in Children)
-        //    {
-        //        @value.Children.Add(c.Key, c.Value.Clone(@value));
-        //    }
-        //    return @value;
-        //}
     }
 
     public class ChainPropertyNode : ChainNode
@@ -32,71 +22,35 @@ namespace Vse.Routines
         public readonly PropertyInfo PropertyInfo;
         public readonly string PropertyName;
         public readonly bool IsEnumerable;
+        public readonly ChainNode Parent;
 
-        //public readonly ChainNode Parent;
-
-
-        public ChainPropertyNode(Type type, LambdaExpression expression, PropertyInfo propertyInfo, /*ChainNode parent, */string propertyName, bool isEnumerable)
+        public ChainPropertyNode(Type type, LambdaExpression expression, PropertyInfo propertyInfo, string propertyName, bool isEnumerable, ChainNode parent)
             : base(type)
         {
-            //Parent = parent;
-            PropertyName = propertyName;
             Expression = expression;
             PropertyInfo = propertyInfo;
+            PropertyName = propertyName;
             IsEnumerable = isEnumerable;
+            Parent = parent;
         }
+    }
 
-        //public override string ToString()
-        //{
-        //    string @value = "";
-        //    ChainNode chainNode = this;
-        //    do
-        //    {
-        //        if (chainNode is ChainPropertyNode)
-        //        {
-        //            var propertyNode = (ChainPropertyNode)chainNode;
-        //            @value = $"{propertyNode.PropertyName}\\{@value}";
-        //            chainNode = propertyNode.Parent;
-        //        }
-        //        else
-        //        {
-        //            chainNode = null;
-        //        }
-        //    } while (chainNode != null);
-        //    return @value;
-        //}
+    public class ChainNodeTree : Tree<ChainNode, ChainPropertyNode, string>
+    {
+        public static readonly ChainNodeTree Instance = new ChainNodeTree();
 
-        //internal ChainPropertyNode Clone(ChainNode parent)
-        //{
-        //    ChainPropertyNode @value = new ChainPropertyNode(Type, Expression, PropertyInfo, parent, PropertyName, IsEnumerable);
-            
-        //    foreach (var c in Children)
-        //    {
-        //        @value.Children.Add(c.Key, c.Value.Clone(@value));
-        //    }
-        //    return @value;
-        //}
-
-        //public ChainNode CreateAncestorsAndSelfChain()
-        //{
-        //    var ancestorsAndSelf = new List<ChainPropertyNode>();
-        //    ancestorsAndSelf.Add(this);
-        //    ChainNode root = this.Parent;
-        //    while(root is ChainPropertyNode)
-        //    {
-        //        ancestorsAndSelf.Add(this);
-        //        root = ((ChainPropertyNode)root).Parent;
-        //    }
-        //    ancestorsAndSelf.Reverse();
-        //    var @value = new ChainNode(Type);
-        //    var p = @value;
-        //    foreach(var a in ancestorsAndSelf)
-        //    {
-        //        var c = new ChainPropertyNode(a.Type, a.Expression, a.PropertyInfo, p, a.PropertyName, a.IsEnumerable);
-        //        p.Children.Add(a.PropertyName, c);
-        //        p = c;
-        //    }
-        //    return @value;
-        //}
+        private ChainNodeTree() : base(
+            n => n.Children.Values, 
+            n => n.PropertyName, 
+            (n,k)   => { var child = default(ChainPropertyNode); n.Children.TryGetValue(k, out child); return child; }, 
+            (n)     => new ChainNode(n.Type), 
+            (n,p)   => {
+                var child = new ChainPropertyNode(n.Type, n.Expression, n.PropertyInfo, n.PropertyName, n.IsEnumerable, p);
+                p.Children.Add(n.PropertyName, child);
+                return child;
+                }, 
+            (n1,n2) => n1.Type==n2.Type)
+        {
+        }
     }
 }
