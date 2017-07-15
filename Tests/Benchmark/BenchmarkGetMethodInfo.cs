@@ -28,11 +28,18 @@ namespace Benchmark
 
             //Func<StringBuilder, bool, bool> f = (sb, t) => NExpJsonSerializerStringBuilderExtensions.SerializeBool(sb, t);
             //var methodInfo1 = f.GetMethodInfo();
-            var methodInfo1 = JsonChainNodeTools.GetMethodInfo<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
+            var methodInfo1 = GetMethodInfo<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
             var del1 = methodInfo1.CreateDelegate(typeof(Func<StringBuilder, bool, bool>),null);
             func1 = (Func<StringBuilder, bool, bool>)del1;
 
         }
+
+        public static MethodInfo GetMethodInfo<T>(Func<StringBuilder, T, bool> func)
+        {
+            var methodInfo = func.GetMethodInfo();
+            return methodInfo;
+        }
+
         [Benchmark]
         public bool DelegateBuilded()
         {

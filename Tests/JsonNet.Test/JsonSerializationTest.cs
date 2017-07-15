@@ -119,7 +119,7 @@ namespace JsonNet.Test
 
             var formatter = JsonChainNodeTools.BuildFormatter/*<TestClass>*/(
                 include,
-                (n, b) => JsonChainNodeTools.GetDefaultSerializerSet(n, b)
+                (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n)
             );
             
             var json = formatter(testClass);
@@ -137,7 +137,7 @@ namespace JsonNet.Test
             list.Add(testClass);
             var include = CreateIncludes();
             var formatter = JsonChainNodeTools.BuildEnumerableFormatter(include,
-                    (n, b) => JsonChainNodeTools.GetDefaultSerializerSet(n, b)
+                    (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n)
             );
             var json = formatter(list);
             if(json != "[{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null},{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null},{\"RowData\":\"AQACAAMEBQ==\",\"Ints\":[1,2,3],\"NInts\":[null,1,2,null,3,null],\"ListItems\":[{\"RowData\":\"AAE=\",\"DateTime\":\"0116-02-09T04:16:18.283\"},{\"RowData\":\"AgM=\",\"DateTime\":\"0001-01-01T00:00:00.000\"},{\"RowData\":\"\",\"DateTime\":\"2017-06-06T14:56:18.283\"},{\"RowData\":null,\"DateTime\":\"0021-01-14T22:56:18.283\"}],\"TestStruct\":{\"TextField1\":\"TestStruct.TextField1\",\"Decimal1\":100,\"Decimal2\":null,\"Byte1\":4,\"Byte2\":null},\"TestClass2\":null,\"TestClass1\":{\"TextField1\":\"TextField2TextField2TextField2\",\"BoolField\":true},\"BoolField\":true,\"NBoolField1\":true,\"NBoolField2\":null,\"Number\":8,\"NNumber1\":-10,\"NNumber2\":null,\"Float0\":0,\"Float1\":0.3333333,\"TextField1\":\"TextField1TextField1TextField1\",\"TextField2\":null,\"TestRef1\":{\"Msg\":\"abc\"},\"TestRef2\":null}]")

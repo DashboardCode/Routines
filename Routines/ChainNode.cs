@@ -14,6 +14,7 @@ namespace Vse.Routines
         {
             Type = type;
         }
+
     }
 
     public class ChainPropertyNode : ChainNode

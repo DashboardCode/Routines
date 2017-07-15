@@ -97,6 +97,30 @@ namespace Vse.Routines
                 p = cloneChild(a, p);
             return @value;
         }
+
+        public string GetXPathOfNode(TNode node, Func<TNode, TNodePrimal> GetParent)
+        {
+            var ancestorsAndSelf = new List<string>();
+            var nodeKey = getKey(node).ToString();
+            var l = nodeKey.Length+1;
+            ancestorsAndSelf.Add(nodeKey);
+            var root = GetParent(node);
+            while (root is TNode)
+            {
+                var n = (TNode)root;
+                nodeKey = getKey(n).ToString();
+                l += l + nodeKey.Length + 1;
+                ancestorsAndSelf.Add(nodeKey);
+                root = GetParent(n);
+            }
+            ancestorsAndSelf.Reverse();
+
+            var stringBuilder = new StringBuilder(l);
+            foreach (var a in ancestorsAndSelf)
+                stringBuilder.Append("/").Append(a);
+            var text = stringBuilder.ToString();
+            return text;
+        }
         #endregion
 
         #region Logical: IsEqualTo, IsSubsetOf, IsSupersetOf

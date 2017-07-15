@@ -100,6 +100,12 @@ namespace Vse.Routines.Json
             return notEmpty;
         }
 
+        public static bool SerializeDateTimeDotNet(StringBuilder sb, DateTime dateTime, string format)
+        {
+            sb.Append("\"").Append(dateTime.ToString(format)).Append("\"");
+            return true;
+        }
+
         public static bool SerializeBytesToJsonArray(StringBuilder sb, byte[] bytes)
         {
             sb.Append('[');
@@ -241,7 +247,7 @@ namespace Vse.Routines.Json
             stringBuilder.Append(t);
             return true;
         }
-        public static bool SerializeEscapeTextVal<T>(StringBuilder stringBuilder, T t) where T : struct
+        public static bool SerializeEscapingTextVal<T>(StringBuilder stringBuilder, T t) where T : struct
         {
             stringBuilder.Append('"').AppendJsonEscaped(t.ToString()).Append('"');
             return true;

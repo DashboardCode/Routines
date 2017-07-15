@@ -374,5 +374,15 @@ namespace Vse.Routines
             return @value;
         }
         #endregion
+
+        public static string GetXPathOfNode(this ChainNode node)
+        {
+            var @value = default(string);
+            if (node is ChainPropertyNode)
+                @value = ChainNodeTree.Instance.GetXPathOfNode((ChainPropertyNode)node, n => n.Parent);
+            else
+                @value = "/";
+            return @value;
+        }
     }
 }

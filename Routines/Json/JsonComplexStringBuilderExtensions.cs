@@ -41,7 +41,7 @@ namespace Vse.Routines.Json
                     stringBuilder.Append(',');
                 }
             };
-            if (!@value)
+            if (@value)
                 stringBuilder.Length--;
             stringBuilder.Append('}');
             return @value;
