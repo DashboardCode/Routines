@@ -223,8 +223,95 @@ namespace Vse.Routines.Test
                     )
                 );
             var json = formatter(data);
-            if (json != "{\"Message\":{\"DateTimeMsg\":\"9999-12-31T23:59:59.999\"}}")
+            if (json != "{\"Message\":{\"DateTimeMsg\":\"9999-12-31\"}}")
                 throw new Exception(nameof(JsonSerializeDateTimeField));
+        }
+
+        [TestMethod]
+        public void JsonSerializeFloatingPointCustomFormatField()
+        {
+            {
+                var formatter1 = JsonChainNodeTools.BuildFormatter<float>();
+                var json1 = formatter1((float)1 / 3);
+                if (json1 != "0.3333333")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "1");
+
+                var formatter1e = JsonChainNodeTools.BuildEnumerableFormatter<float>();
+                var json1e = formatter1e(new float[] { (float)1 / 3, (float)Math.Sqrt(7) });
+                if (json1e != "[0.3333333,2.645751]")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "1e");
+
+                var formatter2 = JsonChainNodeTools.BuildFormatter<float>(
+                    n => JsonChainNodeTools.GetDefaultLeafSerializerSet(n,
+                        rulesDictionary:
+                            RulesDictionary.CreateDefault(floatingPointFormat: "N4")
+                        )
+                    );
+                var json2 = formatter2((float)1 / 3);
+                if (json2 != "0.3333")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "2");
+
+                var formatter2e = JsonChainNodeTools.BuildEnumerableFormatter<float>(
+                    n => JsonChainNodeTools.GetDefaultLeafSerializerSet(n,
+                        rulesDictionary:
+                            RulesDictionary.CreateDefault(floatingPointFormat: "N4")
+                        )
+                    );
+                var json2e = formatter2e(new float[] { (float)1 / 3, (float)Math.Sqrt(7) });
+                if (json2e != "[0.3333,2.6458]")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "3");
+            }
+
+            {
+                var formatter1 = JsonChainNodeTools.BuildFormatter<double>();
+                var json1 = formatter1((double)1 / 3);
+                if (json1 != "0.333333333333333")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "1D");
+
+                var formatter1e = JsonChainNodeTools.BuildEnumerableFormatter<double>();
+                var json1e = formatter1e(new double[] { (double)1 / 3, Math.Sqrt(7) });
+                if (json1e != "[0.333333333333333,2.64575131106459]")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "1De");
+
+                var formatter2 = JsonChainNodeTools.BuildFormatter<double>(
+                    n => JsonChainNodeTools.GetDefaultLeafSerializerSet(n,
+                        rulesDictionary:
+                            RulesDictionary.CreateDefault(floatingPointFormat: "N4")
+                        )
+                    );
+                var json2 = formatter2((double)1 / 3);
+                if (json2 != "0.3333")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "2D");
+
+                var formatter2e = JsonChainNodeTools.BuildEnumerableFormatter<double>(
+                    n => JsonChainNodeTools.GetDefaultLeafSerializerSet(n,
+                        rulesDictionary:
+                            RulesDictionary.CreateDefault(floatingPointFormat: "N4")
+                        )
+                    );
+                var json2e = formatter2e(new double[] { (double)1 / 3, Math.Sqrt(7) });
+                if (json2e != "[0.3333,2.6458]")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "3D");
+            }
+            {
+                var formatter1 = JsonChainNodeTools.BuildFormatter<float?>();
+                var json1 = formatter1((float)1 / 3);
+                if (json1 != "0.3333333")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "1N");
+
+                var json2 = formatter1(null);
+                if (json2 != "null")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "2N");
+
+                var formatter2e = JsonChainNodeTools.BuildEnumerableFormatter<float?>();
+                var json2e = formatter2e(new float?[] { (float)1 / 3, null });
+                if (json2e != "[0.3333333,null]")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "3Ne");
+
+                var json3e = formatter2e(null);
+                if (json3e != "null")
+                    throw new Exception(nameof(JsonSerializeDateTimeField) + "4Ne");
+            }
         }
     }
 }

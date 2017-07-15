@@ -9,8 +9,8 @@ namespace Vse.Routines.Json
     public class JsonLeafSerializerSet
     {
         public bool HandleNullProperty { get; set; } = true;
-        public MethodInfo SerializerMethodInfo { get; set; }
-        public MethodInfo NullSerializerMethodInfo { get; set; }
+        public Delegate SerializerDelegate { get; set; }
+        public Func<StringBuilder, bool> NullSerializerDelegate { get; set; }
     }
 
     public class JsonInternalSerializerSet
@@ -19,7 +19,7 @@ namespace Vse.Routines.Json
         public bool HandleEmptyArrayLiteral { get; set; } = true;
         public bool HandleNullProperty { get; set; } = true;
         public bool HandleNullArrayProperty { get; set; } = true;
-        public MethodInfo NullSerializer { get; set; }
+        public Func<StringBuilder, bool> NullSerializerDelegate { get; set; }
     }
 
     public class Config<T>
@@ -132,12 +132,26 @@ namespace Vse.Routines.Json
     public static class JsonChainNodeTools
     {
         public static Func<T, string> BuildFormatter<T>(
-            Include<T> include = null
+             Func<ChainNode, JsonLeafSerializerSet> getLeafSerializerSet = null
+            , bool rootHandleNull = true
+            , Func<StringBuilder, bool> rootNullSerializer = null)
+        {
+            var serializer = BuildSerializer<T>( null, getLeafSerializerSet, null, rootHandleNull, rootHandleEmptyObjectLiteral : true, rootNullSerializer : rootNullSerializer);
+            return (t) =>
+            {
+                var stringBuilder = new StringBuilder();
+                serializer(stringBuilder, t);
+                return stringBuilder.ToString();
+            };
+        }
+
+        public static Func<T, string> BuildFormatter<T>(
+            Include<T> include
             , Func<ChainNode, JsonLeafSerializerSet> getLeafSerializerSet = null
             , Func<ChainNode, bool, JsonInternalSerializerSet> getInternalSerializerSet = null
             , bool rootHandleNull = true
             , bool rootHandleEmptyObjectLiteral = true
-            , MethodInfo rootNullSerializeMethodInfo = null)
+            , Func<StringBuilder, bool> rootNullSerializeMethodInfo = null)
         {
             var serializer = BuildSerializer(include, getLeafSerializerSet, getInternalSerializerSet, rootHandleNull, rootHandleEmptyObjectLiteral, rootNullSerializeMethodInfo);
             return (t) =>
@@ -154,23 +168,41 @@ namespace Vse.Routines.Json
             , Func<ChainNode, bool, JsonInternalSerializerSet> getInternalSerializerSet = null
             , bool rootHandleNull = true
             , bool rootHandleEmptyObjectLiteral = true
-            , MethodInfo rootNullSerializeMethodInfo = null)
+            , Func<StringBuilder, bool> rootNullSerializer = null)
         {
             var parser = new ChainVisitor<T>();
             var includable = new Chain<T>(parser);
             if (include!=null)
                 include.Invoke(includable);
             var serializerNode = parser.Root;
-            return BuildSerializer<T>(serializerNode, getLeafSerializerSet, getInternalSerializerSet, rootHandleNull, rootHandleEmptyObjectLiteral, rootNullSerializeMethodInfo);
+            return BuildSerializer<T>(serializerNode, getLeafSerializerSet, getInternalSerializerSet, rootHandleNull, rootHandleEmptyObjectLiteral, rootNullSerializer);
         }
 
         public static Func<IEnumerable<T>, string> BuildEnumerableFormatter<T>(
-            Include<T> include = null
+            Func<ChainNode, JsonLeafSerializerSet> getLeafSerializerSet = null
+            , bool rootHandleNullArray = true
+            , bool rootHandleEmptyArrayLiteral = true
+            , Func<StringBuilder, bool> nullSerializer = null
+        )
+        {
+            //var config = new Config<T>(include);
+            //configurate?.Invoke(config);
+            var serializer = BuildEnumerableSerializer<T>(include: null, getLeafSerializerSet: getLeafSerializerSet, getInternalSerializerSet: null, rootHandleNullArray: rootHandleNullArray, rootHandleEmptyArrayLiteral: rootHandleEmptyArrayLiteral, nullSerializer: nullSerializer);
+            return (t) =>
+            {
+                var stringBuilder = new StringBuilder();
+                serializer(stringBuilder, t);
+                return stringBuilder.ToString();
+            };
+        }
+
+        public static Func<IEnumerable<T>, string> BuildEnumerableFormatter<T>(
+            Include<T> include
             , Func<ChainNode, JsonLeafSerializerSet> getLeafSerializerSet = null
             , Func<ChainNode, bool, JsonInternalSerializerSet> getInternalSerializerSet = null
             , bool rootHandleNullArray = true
             , bool rootHandleEmptyArrayLiteral = true
-            , MethodInfo nullSerializer = null
+            , Func<StringBuilder, bool> nullSerializer = null
         )
         {
             //var config = new Config<T>(include);
@@ -188,8 +220,8 @@ namespace Vse.Routines.Json
             , Func<ChainNode, JsonLeafSerializerSet> getLeafSerializerSet = null
             , Func<ChainNode, bool, JsonInternalSerializerSet> getInternalSerializerSet = null
             , bool rootHandleNullArray = true
-            , bool rootHandleEmptyArray = true
-            , MethodInfo rootNullMethodInfo = null)
+            , bool rootHandleEmptyArrayLiteral = true
+            , Func<StringBuilder, bool> nullSerializer = null)
         {
             var parser = new ChainVisitor<T>();
             var includable = new Chain<T>(parser);
@@ -205,8 +237,8 @@ namespace Vse.Routines.Json
                 getLeafSerializerSet = (n) => GetDefaultLeafSerializerSet(n);
             if (getInternalSerializerSet == null)
                 getInternalSerializerSet = (n, b) => GetDefaultInternalSerializerSet(n, b);
-            if (rootNullMethodInfo == null)
-                rootNullMethodInfo = defaultNullMethodInfo;
+            if (nullSerializer == null)
+                nullSerializer = JsonValueStringBuilderExtensions.SerializeNull;
 
             var expressions = ConfigureSerializeNode(node, node.Type, getLeafSerializerSet, getInternalSerializerSet);
 
@@ -230,12 +262,13 @@ namespace Vse.Routines.Json
                 nullSerializerExpression,
                 sbExpression,
                 tExpression,
-                rootHandleEmptyArray);
+                rootHandleEmptyArrayLiteral);
 
 
             Expression serializeConditionalExpression;
             if (rootHandleNullArray)
             {
+                var rootNullMethodInfo = nullSerializer.GetMethodInfo();
                 MethodCallExpression nullCallExpression = Expression.Call(rootNullMethodInfo, new Expression[] { sbExpression });
                 serializeConditionalExpression = Expression.Condition(
                     Expression.Equal(tExpression, Expression.Constant(null)),
@@ -262,7 +295,7 @@ namespace Vse.Routines.Json
             , Func<ChainNode, bool, JsonInternalSerializerSet> getInternalSerializerSet = null
             , bool rootHandleNull = true
             , bool rootHandleEmptyObjectLiteral = true
-            , MethodInfo rootNullSerializeMethodInfo = null
+            , Func<StringBuilder, bool> rootNullSerializeDelegate = null
             )
         {
             Func<StringBuilder, T, bool> @value = null;
@@ -270,8 +303,8 @@ namespace Vse.Routines.Json
                 getLeafSerializerSet = (n) => GetDefaultLeafSerializerSet(n);
             if (getInternalSerializerSet == null)
                 getInternalSerializerSet = (n, b) => GetDefaultInternalSerializerSet(n, b);
-            if (rootNullSerializeMethodInfo == null)
-                rootNullSerializeMethodInfo = defaultNullMethodInfo;
+            if (rootNullSerializeDelegate == null)
+                rootNullSerializeDelegate = JsonValueStringBuilderExtensions.SerializeNull;
 
             Expression serializeExpression;
 
@@ -285,21 +318,20 @@ namespace Vse.Routines.Json
                 var isNullableStruct = IsNullableStruct(node.Type);
                 if (!IsNullable(node.Type, rootHandleNull))
                 {
-                    var methodCallExpression = Expression.Call(serializerSet.SerializerMethodInfo, new Expression[] { sbParameterExpression, tParameterExpression });
-                    serializeExpression = Expression.Condition(
-                        Expression.Equal(tParameterExpression, Expression.Constant(null)),
-                        Expression.Constant(false),
-                        methodCallExpression
-                    );
+                    var delegateMethodInfo = serializerSet.SerializerDelegate.GetMethodInfo();
+                    var target = serializerSet.SerializerDelegate.Target;
+                    serializeExpression = Expression.Call(target!=null?Expression.Constant(target):null, delegateMethodInfo, new Expression[] { sbParameterExpression, tParameterExpression });
                 }
                 else
                 {
-                    if (rootNullSerializeMethodInfo == null)
+                    if (rootNullSerializeDelegate == null)
                         throw new NotSupportedException($"Null serializer is not setuped for root node");
+                    var rootNullSerializeMethodInfo = rootNullSerializeDelegate.GetMethodInfo();
                     var nullCallExpression = Expression.Call(rootNullSerializeMethodInfo, new Expression[] { sbParameterExpression });
                     if (isNullableStruct == null) // class
                     {
-                        var methodCallExpression = Expression.Call(serializerSet.SerializerMethodInfo, new Expression[] { sbParameterExpression, tParameterExpression });
+                        var @delegate = serializerSet.SerializerDelegate.GetMethodInfo();
+                        var methodCallExpression = Expression.Call(@delegate, new Expression[] { sbParameterExpression, tParameterExpression });
                         serializeExpression = Expression.Condition(
                             Expression.Equal(tParameterExpression, Expression.Constant(null)),
                             nullCallExpression,
@@ -308,9 +340,10 @@ namespace Vse.Routines.Json
                     }
                     else if (isNullableStruct.Value)
                     {
+                        var @delegate = serializerSet.SerializerDelegate.GetMethodInfo();
                         var hasValueExpression = Expression.Property(tParameterExpression, "HasValue");
                         var valueExpression = Expression.Property(tParameterExpression, "Value");
-                        var methodCallExpression = Expression.Call(serializerSet.SerializerMethodInfo, new Expression[] { sbParameterExpression, valueExpression });
+                        var methodCallExpression = Expression.Call(@delegate, new Expression[] { sbParameterExpression, valueExpression });
                         serializeExpression = Expression.Condition(
                             hasValueExpression,
                             methodCallExpression,
@@ -335,8 +368,9 @@ namespace Vse.Routines.Json
                 
                 if (IsNullable(node.Type, rootHandleNull))
                 {
-                    if (rootNullSerializeMethodInfo == null)
+                    if (rootNullSerializeDelegate == null)
                         throw new NotSupportedException($"Null serializer is not setuped for internal node '{node.GetXPathOfNode()}' ");
+                    var rootNullSerializeMethodInfo = rootNullSerializeDelegate.GetMethodInfo();
                     MethodCallExpression nullCallExpression = Expression.Call(rootNullSerializeMethodInfo, new Expression[] { sbParameterExpression });
 
                     serializeExpression = Expression.Condition(
@@ -368,15 +402,17 @@ namespace Vse.Routines.Json
             if (rulesDictionary == null)
                 rulesDictionary = RulesDictionary.CreateDefault();
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
-            var methodInfo = rulesDictionary.GetRule(serializationType);
+            var methodInfoDelegate = rulesDictionary.GetRule(serializationType);
 
-            if (methodInfo == null)
+            if (methodInfoDelegate == null)
             {
                 bool isPrimitive = serializationType.GetTypeInfo().IsPrimitive;
                 if (isPrimitive)
                 {
                     var genericMethodInfo = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializePrimitive));
-                    methodInfo = genericMethodInfo.MakeGenericMethod(serializationType);
+                    var methodInfo = genericMethodInfo.MakeGenericMethod(serializationType);
+                    var formatterDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), serializationType, typeof(bool));
+                    methodInfoDelegate = methodInfo.CreateDelegate(formatterDelegateType);
                 }
                 else
                 {
@@ -387,7 +423,9 @@ namespace Vse.Routines.Json
                             genericMethodInfo = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializeEscapingTextVal));
                         else
                             genericMethodInfo = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializeEscapingTextRef));
-                        methodInfo = genericMethodInfo.MakeGenericMethod(serializationType);
+                        var methodInfo = genericMethodInfo.MakeGenericMethod(serializationType);
+                        var formatterDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), serializationType, typeof(bool));
+                        methodInfoDelegate = methodInfo.CreateDelegate(formatterDelegateType);
                     }
                     else
                     {
@@ -407,8 +445,8 @@ namespace Vse.Routines.Json
             return new JsonLeafSerializerSet()
             {
                 HandleNullProperty = handleNullProperty, 
-                SerializerMethodInfo = methodInfo,
-                NullSerializerMethodInfo = defaultNullMethodInfo
+                SerializerDelegate = methodInfoDelegate,
+                NullSerializerDelegate = JsonValueStringBuilderExtensions.SerializeNull
             };
         }
 
@@ -426,7 +464,7 @@ namespace Vse.Routines.Json
                 HandleNullArrayProperty = handleNullArrayProperty,
                 HandleEmptyObjectLiteral = handleEmptyObjectLiteral,
                 HandleEmptyArrayLiteral = handleEmptyArrayLiteral,
-                NullSerializer = defaultNullMethodInfo
+                NullSerializerDelegate = JsonValueStringBuilderExtensions.SerializeNull
             };
         }
 
@@ -447,10 +485,10 @@ namespace Vse.Routines.Json
         public class SerializersPair
         {
             public ConstantExpression Serializer { get; set; }
-            public MethodInfo NullSerializer { get; set; }
+            public Func<StringBuilder, bool> NullSerializer { get; set; }
             public bool HandleNullProperty { get; set; }
 
-            public SerializersPair(ConstantExpression Serializer, MethodInfo NullSerializer, bool HandleNullProperty)
+            public SerializersPair(ConstantExpression Serializer, Func<StringBuilder, bool> NullSerializer, bool HandleNullProperty)
             {
                 this.Serializer = Serializer;
                 this.NullSerializer = NullSerializer;
@@ -466,10 +504,10 @@ namespace Vse.Routines.Json
                 var leafSerializerSet = getLeafSerializerSet(node);
                 var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
                 var formatterDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), serializationType, typeof(bool));
-                var serializerMethodInfo = leafSerializerSet.SerializerMethodInfo;
-                var genericResolvedDelegate = serializerMethodInfo.CreateDelegate(formatterDelegateType, null);
+                var serializerMethodInfo = leafSerializerSet.SerializerDelegate;
+                var genericResolvedDelegate = serializerMethodInfo; // serializerMethodInfo.CreateDelegate(formatterDelegateType, null);
                 var serializerExpression = Expression.Constant(genericResolvedDelegate, genericResolvedDelegate.GetType());
-                return new SerializersPair(serializerExpression, leafSerializerSet.NullSerializerMethodInfo, leafSerializerSet.HandleNullProperty);
+                return new SerializersPair(serializerExpression, leafSerializerSet.NullSerializerDelegate, leafSerializerSet.HandleNullProperty);
             }
             else // internal node
             {
@@ -484,7 +522,7 @@ namespace Vse.Routines.Json
                 var @delegate = objectFormatterLambda.Compile();
                 
                 var delegateConstant = Expression.Constant(@delegate, @delegate.GetType());
-                return new SerializersPair(delegateConstant, internalSerializerSet.NullSerializer, internalSerializerSet.HandleNullProperty);
+                return new SerializersPair(delegateConstant, internalSerializerSet.NullSerializerDelegate, internalSerializerSet.HandleNullProperty);
             }
         }
 
@@ -542,7 +580,7 @@ namespace Vse.Routines.Json
 
                 formatterExpression = Expression.Constant(serializeArrayDelegate, serializeArrayDelegate.GetType());
                 if (serializerInternalSet.HandleNullArrayProperty)
-                    nullFormatterExpression = CreateSerializeNullConstant(serializerInternalSet.NullSerializer);
+                    nullFormatterExpression = CreateSerializeNullConstant(serializerInternalSet.NullSerializerDelegate);
             }
             else
             {
@@ -579,11 +617,9 @@ namespace Vse.Routines.Json
         }
         
         #region ConstantExpressions
-        private static ConstantExpression CreateSerializeNullConstant(MethodInfo methodInfo)
+        private static ConstantExpression CreateSerializeNullConstant(Func<StringBuilder, bool> nullSerializer)
         {
-            var formatterDelegateType = typeof(Func<,>).MakeGenericType(typeof(StringBuilder), typeof(bool));
-            var @delegate = methodInfo.CreateDelegate(formatterDelegateType,null);
-            var constantExpression = Expression.Constant(@delegate, formatterDelegateType);
+            var constantExpression = Expression.Constant(nullSerializer, typeof(Func<StringBuilder,bool>));
             return constantExpression;
         }
         #endregion
@@ -777,7 +813,5 @@ namespace Vse.Routines.Json
             }
             return methodInfo;
         }
-
-        static readonly MethodInfo defaultNullMethodInfo = typeof(JsonValueStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonValueStringBuilderExtensions.SerializeNull));
     }
 }

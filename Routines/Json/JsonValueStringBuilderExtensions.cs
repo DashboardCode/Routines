@@ -106,6 +106,17 @@ namespace Vse.Routines.Json
             return true;
         }
 
+        public static bool SerializeFloatDotNet(StringBuilder sb, float number, string format)
+        {
+            sb.Append(number.ToString(format));
+            return true;
+        }
+        public static bool SerializeDoubleDotNet(StringBuilder sb, double number, string format)
+        {
+            sb.Append(number.ToString(format));
+            return true;
+        }
+
         public static bool SerializeBytesToJsonArray(StringBuilder sb, byte[] bytes)
         {
             sb.Append('[');
@@ -237,11 +248,13 @@ namespace Vse.Routines.Json
             stringBuilder.Append(t);
             return true;
         }
+
         public static bool SerializePrimitive<T>(StringBuilder stringBuilder, T t) where T : struct
         {
             stringBuilder.Append(Convert.ToString(t, CultureInfo.InvariantCulture));
             return true;
         }
+        
         public static bool SerializeRefValue<T>(StringBuilder stringBuilder, T t) where T : class
         {
             stringBuilder.Append(t);
