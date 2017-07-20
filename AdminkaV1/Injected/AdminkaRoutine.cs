@@ -19,7 +19,7 @@ namespace Vse.AdminkaV1.Injected
             object input
         ) : this(
             routineTag,
-            InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
+            InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
             new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
             configuration,
             input)
@@ -104,7 +104,7 @@ namespace Vse.AdminkaV1.Injected
             ) : this(
                     new RoutineTag(Guid.NewGuid(), @namespace, controller, action), 
                     userContext,
-                    InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
+                    InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
                     new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
                     configuration,
                     input)
@@ -119,7 +119,7 @@ namespace Vse.AdminkaV1.Injected
             ) : this(routineTag,
                     userContext,
                     routineTag.GetSpecifiedResolver(userContext, configuration),
-                    InjectedManager.NLogConstructor(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
+                    InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
                     new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
                     input)
         {
@@ -151,7 +151,7 @@ namespace Vse.AdminkaV1.Injected
            routineTag,
            userContext,
            routineTag.GetSpecifiedResolver(userContext, configuration),
-           InjectedManager.NLogConstructor(InjectedManager.Markdown,routineTransformException),
+           InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,routineTransformException),
            new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
            input)
         {

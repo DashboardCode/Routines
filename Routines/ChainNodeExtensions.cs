@@ -9,7 +9,7 @@ namespace Vse.Routines
 {
     public static class ChainNodeExtensions
     {
-        public static Include<T> CreateInclude<T>(this ChainNode root) //where T : class
+        public static Include<T> ComposeInclude<T>(this ChainNode root) //where T : class
         {
             var parents = new ChainPropertyNode[0];
             var entityType = root.Type;

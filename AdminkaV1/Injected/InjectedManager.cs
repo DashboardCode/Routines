@@ -171,7 +171,7 @@ namespace Vse.AdminkaV1.Injected
         {
             return new NLogAuthenticationLogging();
         }
-        public static Func<RoutineTag, IResolver, RoutineLoggingTransients> NLogConstructor(
+        public static Func<RoutineTag, IResolver, RoutineLoggingTransients> ComposeNLogTransients(
                 Func<Exception, string> markdownException,
                 Func<Exception, RoutineTag, Func<Exception, string>, Exception> routineTransformException
             )
@@ -192,7 +192,7 @@ namespace Vse.AdminkaV1.Injected
                 return new RoutineLoggingTransients(adminkaLogging, authenticationLogging, (ex) => routineTransformException(ex, t, markdownException));
             };
         }
-        public static Func<RoutineTag, IResolver, RoutineLoggingTransients> ListConstructor(
+        public static Func<RoutineTag, IResolver, RoutineLoggingTransients> ComposeListLoggingTransients(
             List<string> logger,
             LoggingConfiguration loggingConfiguration,
             LoggingVerboseConfiguration loggingVerboseConfiguration,

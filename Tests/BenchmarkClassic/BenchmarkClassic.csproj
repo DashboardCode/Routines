@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BenchmarkCallSimple.cs" />
+    <Compile Include="BenchmarkConverAll.cs" />
     <Compile Include="BenchmarkJson.cs" />
     <Compile Include="BenchmarkJson2.cs" />
     <Compile Include="Program.cs" />

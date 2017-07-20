@@ -282,7 +282,7 @@ namespace Vse.Routines.Json
         }
         #endregion
 
-        public static bool SerializeNull(StringBuilder stringBuilder)
+        public static bool NullSerializer(StringBuilder stringBuilder)
         {
             stringBuilder.Append("null");
             return true;

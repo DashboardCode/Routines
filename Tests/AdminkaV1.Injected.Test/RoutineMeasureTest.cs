@@ -39,7 +39,7 @@ namespace Vse.AdminkaV1.Injected.Test
             var loggingConfiguration = new LoggingConfiguration();
             var loggingVerboseConfiguration = new LoggingVerboseConfiguration();
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
-            var loggingTransientsFactory = InjectedManager.ListConstructor(logger, loggingConfiguration,
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
             var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutine), loggingTransientsFactory, Configuration, new { });
             routine.Handle(container =>
@@ -59,7 +59,7 @@ namespace Vse.AdminkaV1.Injected.Test
             var loggingConfiguration = new LoggingConfiguration();
             var loggingVerboseConfiguration = new LoggingVerboseConfiguration();
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
-            var loggingTuple = InjectedManager.ListConstructor(logger, loggingConfiguration,
+            var loggingTuple = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineNoAuthorization), userContext, loggingTuple, Configuration, new { });
@@ -82,7 +82,7 @@ namespace Vse.AdminkaV1.Injected.Test
             var loggingConfiguration = new LoggingConfiguration();
             var loggingVerboseConfiguration = new LoggingVerboseConfiguration();
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
-            var loggingTransientsFactory = InjectedManager.ListConstructor(logger, loggingConfiguration,
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
             var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, Configuration,  new { });
             routine.HandleRepository<ParentRecord>(repository =>
@@ -105,7 +105,7 @@ namespace Vse.AdminkaV1.Injected.Test
             var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
             var loggingVerboseConfiguration = new LoggingVerboseConfiguration();
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
-            var loggingTransientsFactory = InjectedManager.ListConstructor(logger, loggingConfiguration,
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
             var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, Configuration,  new { });
             try

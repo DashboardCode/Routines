@@ -2,17 +2,14 @@
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Benchmark
 {
-    //[Config(typeof(Config))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [ClrJob, CoreJob]
     [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser /*, InliningDiagnoser*/]
+    [MemoryDiagnoser]
     public class BenchmarkForEach
     {
         List<string> testData = new List<string>();
@@ -25,6 +22,7 @@ namespace Benchmark
             }
             testArray = testData.ToArray();
         }
+
         [Benchmark]
         public int TestList()
         {
@@ -35,6 +33,7 @@ namespace Benchmark
             }
             return x;
         }
+
         [Benchmark]
         public int TestArray()
         {
@@ -45,6 +44,5 @@ namespace Benchmark
             }
             return x;
         }
-        
     }
 }

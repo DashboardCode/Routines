@@ -12,16 +12,14 @@ namespace Vse.Routines.Test
         [TestMethod]
         public void JsonSerializeTestException()
         {
-            var source1 = TestTool.CreateTestModel();
+            var source1  = TestTool.CreateTestModel();
             var include1 = TestTool.CreateInclude();
             try
             {
-                var formatter = JsonChainNodeTools.BuildFormatter(include1,
-                    (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n, useToString: false)
-                );
+                var formatter = JsonChainManager.ComposeFormatter(include1, useToString: false);
                 var json = formatter(source1);
             }
-            catch (NotSupportedException ex)
+            catch (NotConfiguredException ex)
             {
                 if (!ex.Message.Contains(@"/StorageModel/Key/Attributes"))
                 {
@@ -32,40 +30,96 @@ namespace Vse.Routines.Test
 
         private static bool GetStringArrayFormatter(StringBuilder sb, string[] t)
         {
-            sb.Append("["); foreach (var i in t) sb.Append("\"").Append(i).Append("\"").Append(","); sb.Append("]"); return true;
+            sb.Append("["); foreach (var i in t) sb.Append("\"").Append(i).Append("\"").Append(",");
+            if (t.Length > 0) sb.Length--;
+            sb.Append("]");
+            return true;
         }
 
         private static bool GetStringIntFormatter(StringBuilder sb, int[] t)
         {
-            sb.Append("["); foreach (var i in t) sb.Append(i).Append(","); sb.Append("]"); return true;
+            sb.Append("["); foreach (var i in t) sb.Append(i).Append(",");
+            if (t.Length > 0) sb.Length--;
+            sb.Append("]"); return true;
+        }
+
+        private static bool GetSumFormatter(StringBuilder sb, int[] t)
+        {
+            var sum = 0;
+            foreach(var i in t) sum = sum+i;
+            sb.Append(sum); return true;
         }
 
         private static bool GetStringGuidFormatter(StringBuilder sb, IEnumerable<Guid> t)
         {
-            sb.Append("["); foreach (var i in t) sb.Append("\"").Append(i).Append("\"").Append(","); sb.Append("]"); return true;
+            sb.Append("[");
+            var e = t.GetEnumerator();
+            bool moveNext = e.MoveNext();
+            while (moveNext)
+            {
+                sb.Append("\"").Append(e.Current).Append("\"");
+                moveNext = e.MoveNext();
+                if (moveNext)
+                    sb.Append(",");
+            }
+            sb.Append("]"); return true;
+        }
+
+        [TestMethod]
+        public void JsonSerializeRootEmptyArrayLiteralOnTest()
+        {
+            Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
+            var source = new TestModel[0];
+            var formatter = JsonChainManager.ComposeEnumerableFormatter(include, rootHandleEmptyArrayLiteral: true);
+            var json = formatter(source);
+            if (json != "[]")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        [TestMethod]
+        public void JsonSerializeTestAddedFormatterAndCustomInclude()
+        {
+            var source  = TestTool.CreateTestModel();
+            var include = TestTool.CreateInclude();
+
+            var formatter = JsonChainManager.ComposeFormatter(
+                include,
+                rules => rules
+                        .AddTypeRule<string[]>(GetStringArrayFormatter)
+                        .AddTypeRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
+                        .AddTypeRule<IEnumerable<Guid>>(GetStringGuidFormatter)
+                        .SubInclude(chain => chain.Include(e => e.StorageModel).ThenInclude(e=>e.Entity) ,
+                              rules2 => rules2.AddTypeRule<int[]>((sb, l) => GetSumFormatter(sb, l))
+                        ),
+                useToString: false,
+                dateTimeFormat: null, 
+                floatingPointFormat: null);
+
+            var json = formatter(source);
+            if (json != "{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":[\"FieldA1\",\"FieldA2\"]},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":[1,2,3],\"ListTest\":[\"360bc50a-4d9f-4703-bbea-58f67a6ff475\",\"f2ecf4d8-f4a6-446c-a363-cc79b02decdd\"],\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}")
+                throw new Exception(nameof(JsonSerializeTestAddedFormatter));
         }
 
         [TestMethod]
         public void JsonSerializeTestAddedFormatter()
         {
-            var source1  = TestTool.CreateTestModel();
-            var include1 = TestTool.CreateInclude();
+            var source = TestTool.CreateTestModel();
+            var include = TestTool.CreateInclude();
 
-            var formatter = JsonChainNodeTools.BuildFormatter(include1,
-                n => JsonChainNodeTools.GetDefaultLeafSerializerSet(
-                     n,
-                     rulesDictionary: RulesDictionary
-                        .CreateDefault()
-                        .AddLeafTypeRule<string[]>(GetStringArrayFormatter)
-                        .AddLeafTypeRule<int[]>(GetStringIntFormatter)
-                        .AddLeafTypeRule<IEnumerable<Guid>>(GetStringGuidFormatter),
-                     useToString: false),
-                getInternalSerializerSet:null
+            var formatter = JsonChainManager.ComposeFormatter(
+                include,
+                rules => rules
+                        .AddTypeRule<string[]>(GetStringArrayFormatter)
+                        .AddTypeRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
+                        .AddTypeRule<IEnumerable<Guid>>(GetStringGuidFormatter),
+                        useToString: false
+                );
 
-            //f => 
-            );
-            var json = formatter(source1);
+            var json = formatter(source);
+            if (json != "{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":[\"FieldA1\",\"FieldA2\"]},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":[1,2,3],\"ListTest\":[\"360bc50a-4d9f-4703-bbea-58f67a6ff475\",\"f2ecf4d8-f4a6-446c-a363-cc79b02decdd\"],\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}")
+                throw new Exception(nameof(JsonSerializeTestAddedFormatter));
         }
+
 
         [TestMethod]
         public void JsonSerializeTest()
@@ -74,9 +128,7 @@ namespace Vse.Routines.Test
             var include = TestTool.CreateInclude();
 
             // TODO: 1) add nice error message "Node "" included as leaf but formatter of its type... is not setuped" 2) add string[] formatter
-            var formatter = JsonChainNodeTools.BuildFormatter(include,
-                    (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n)
-            );
+            var formatter = JsonChainManager.ComposeFormatter(include, useToString: true);
             var json = formatter(source);
             if (json!= "{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":\"System.String[]\"},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":\"System.Int32[]\",\"ListTest\":\"System.Collections.Generic.List`1[System.Guid]\",\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}")
                 throw new Exception(nameof(JsonSerializeTest));
@@ -87,9 +139,8 @@ namespace Vse.Routines.Test
         {
             var include = TestTool.CreateInclude();
 
-            var formatter = JsonChainNodeTools.BuildFormatter(include
-                    , (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n)
-                    , rootHandleNull: false
+            var formatter = JsonChainManager.ComposeFormatter(include
+                , rootHandleNull: false, useToString: true
             );
             var json = formatter(null);
             if (json != "")
@@ -101,8 +152,9 @@ namespace Vse.Routines.Test
         {
             Include<TestModel> include = (chain) => chain.Include(e=>e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel();
-            var formatter = JsonChainNodeTools.BuildFormatter(include
-                    , (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n, handleNullProperty:false)
+            var formatter = JsonChainManager.ComposeFormatter(
+                    include
+                    , handleNullProperty: false
                     , rootHandleEmptyObjectLiteral: true
             );
             var json = formatter(source);
@@ -115,8 +167,8 @@ namespace Vse.Routines.Test
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel();
-            var formatter = JsonChainNodeTools.BuildFormatter(include
-                    , (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n, handleNullProperty: false)
+            var formatter = JsonChainManager.ComposeFormatter(include
+                    , handleNullProperty: false
                     , rootHandleEmptyObjectLiteral: false
             );
             var json = formatter(source);
@@ -125,26 +177,11 @@ namespace Vse.Routines.Test
         }
 
         [TestMethod]
-        public void JsonSerializeRootEmptyArrayLiteralOnTest()
-        {
-            Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
-            var source = new TestModel[0];
-            var formatter = JsonChainNodeTools.BuildEnumerableFormatter(include
-                    , rootHandleEmptyArrayLiteral: true
-            );
-            var json = formatter(source);
-            if (json != "[]")
-                throw new Exception(nameof(JsonSerializeTest));
-        }
-
-        [TestMethod]
         public void JsonSerializeRootEmptyArrayLiteralOffTest()
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel[0];
-            var formatter = JsonChainNodeTools.BuildEnumerableFormatter(include
-                    , rootHandleEmptyArrayLiteral: false
-            );
+            var formatter = JsonChainManager.ComposeEnumerableFormatter(include, rootHandleEmptyArrayLiteral: false);
             var json = formatter(source);
             if (json != "")
                 throw new Exception(nameof(JsonSerializeTest));
@@ -153,44 +190,44 @@ namespace Vse.Routines.Test
         [TestMethod]
         public void JsonSerializeStringNullTest()
         {
-            var formatter = JsonChainNodeTools.BuildFormatter<string>(
-                    include: null
-                    , getLeafSerializerSet: (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n)
-                    , rootHandleNull: false
-            );
-            var json = formatter(null);
-            if (json != "")
+            var formatter1 = JsonChainManager.ComposeFormatter<string>(rootHandleNull: true);
+            var json1 = formatter1(null);
+            if (json1 != "null")
+                throw new Exception(nameof(JsonSerializeTest));
+            var formatter2 = JsonChainManager.ComposeFormatter<string>(rootHandleNull: false);
+            var json2 = formatter2(null);
+            if (json2 != "")
                 throw new Exception(nameof(JsonSerializeTest));
         }
 
         [TestMethod]
         public void JsonEnumerableSerializeTest()
         {
-            var source1 = TestTool.CreateTestModel();
-            var source2 = TestTool.CreateTestModel();
-            var source = new[] { source1, source2 };
-            var include1 = TestTool.CreateInclude();
+            var source = new[] { TestTool.CreateTestModel(), TestTool.CreateTestModel() };
+            var include = TestTool.CreateInclude();
 
             // TODO: 1) add nice error message "Node "" included as leaf but formatter of its type... is not setuped" 2) add string[] formatter
-            var formatter = JsonChainNodeTools.BuildEnumerableFormatter(include1,
-                    (n)   => JsonChainNodeTools.GetDefaultLeafSerializerSet(n),
-                    (n,b) => JsonChainNodeTools.GetDefaultInternalSerializerSet(n,b, handleNullProperty:false, handleNullArrayProperty:false),
-                    rootHandleNullArray:false
+            var formatter = JsonChainManager.ComposeEnumerableFormatter(include
+                    , handleNullProperty: false
+                    , handleNullArrayProperty: false
+                    , rootHandleNullArray:false
+                    , useToString: true
             );
             var json = formatter(source);
-            if (json != "[{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":\"System.String[]\"},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":\"System.Int32[]\",\"ListTest\":\"System.Collections.Generic.List`1[System.Guid]\",\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555},{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":\"System.String[]\"},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":\"System.Int32[]\",\"ListTest\":\"System.Collections.Generic.List`1[System.Guid]\",\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}]")
+            if (json != "[{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":\"System.String[]\"},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":\"System.Int32[]\",\"ListTest\":\"System.Collections.Generic.List`1[System.Guid]\",\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable2\":555},{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":\"System.String[]\"},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":\"System.Int32[]\",\"ListTest\":\"System.Collections.Generic.List`1[System.Guid]\",\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable2\":555}]")
                 throw new Exception(nameof(JsonEnumerableSerializeTest));
         }
 
         [TestMethod]
         public void JsonEnumerableSerializeNullTest()
         {
-            var include1 = TestTool.CreateInclude();
+            var include = TestTool.CreateInclude();
 
-            var formatter = JsonChainNodeTools.BuildEnumerableFormatter(include1,
-                    (n) => JsonChainNodeTools.GetDefaultLeafSerializerSet(n),
-                    (n, b) => JsonChainNodeTools.GetDefaultInternalSerializerSet(n, b, handleNullProperty: false, handleNullArrayProperty: false),
-                    rootHandleNullArray: false
+            var formatter = JsonChainManager.ComposeEnumerableFormatter(include
+                    , rootHandleNullArray: false
+                    , handleNullProperty: false
+                    , handleNullArrayProperty: false
+                    , useToString: true
             );
             var json = formatter(null);
             if (json != "")
@@ -203,7 +240,7 @@ namespace Vse.Routines.Test
             var data = TestTool.CreateTestModel();
             Include<TestModel> include = chain => chain.Include(i => i.Message).ThenInclude(i => i.DateTimeMsg);
 
-            var formatter = JsonChainNodeTools.BuildFormatter(include);
+            var formatter = JsonChainManager.ComposeFormatter(include);
             var json = formatter(data);
             if (json != "{\"Message\":{\"DateTimeMsg\":\"9999-12-31T23:59:59.999\"}}")
                 throw new Exception(nameof(JsonSerializeDateTimeField));
@@ -212,16 +249,10 @@ namespace Vse.Routines.Test
         [TestMethod]
         public void JsonSerializeDateTimeCustomFormatField()
         {
-
             var data = TestTool.CreateTestModel();
             Include<TestModel> include = chain => chain.Include(i => i.Message).ThenInclude(i => i.DateTimeMsg);
 
-            var formatter = JsonChainNodeTools.BuildFormatter(include, 
-                n=> JsonChainNodeTools.GetDefaultLeafSerializerSet(n, 
-                    rulesDictionary: 
-                        RulesDictionary.CreateDefault(dateTimeFormat: "yyyy-MM-dd")
-                    )
-                );
+            var formatter = JsonChainManager.ComposeFormatter(include, dateTimeFormat: "yyyy-MM-dd");
             var json = formatter(data);
             if (json != "{\"Message\":{\"DateTimeMsg\":\"9999-12-31\"}}")
                 throw new Exception(nameof(JsonSerializeDateTimeField));
@@ -231,70 +262,50 @@ namespace Vse.Routines.Test
         public void JsonSerializeFloatingPointCustomFormatField()
         {
             {
-                var formatter1 = JsonChainNodeTools.BuildFormatter<float>();
+                var formatter1 = JsonChainManager.ComposeFormatter<float>();
                 var json1 = formatter1((float)1 / 3);
                 if (json1 != "0.3333333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1");
 
-                var formatter1e = JsonChainNodeTools.BuildEnumerableFormatter<float>();
+                var formatter1e = JsonChainManager.ComposeEnumerableFormatter<float>();
                 var json1e = formatter1e(new float[] { (float)1 / 3, (float)Math.Sqrt(7) });
                 if (json1e != "[0.3333333,2.645751]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1e");
 
-                var formatter2 = JsonChainNodeTools.BuildFormatter<float>(
-                    n => JsonChainNodeTools.GetDefaultLeafSerializerSet(n,
-                        rulesDictionary:
-                            RulesDictionary.CreateDefault(floatingPointFormat: "N4")
-                        )
-                    );
+                var formatter2 = JsonChainManager.ComposeFormatter<float>(floatingPointFormat: "N4");
                 var json2 = formatter2((float)1 / 3);
                 if (json2 != "0.3333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "2");
 
-                var formatter2e = JsonChainNodeTools.BuildEnumerableFormatter<float>(
-                    n => JsonChainNodeTools.GetDefaultLeafSerializerSet(n,
-                        rulesDictionary:
-                            RulesDictionary.CreateDefault(floatingPointFormat: "N4")
-                        )
-                    );
+                var formatter2e = JsonChainManager.ComposeEnumerableFormatter<float>(floatingPointFormat: "N4");
                 var json2e = formatter2e(new float[] { (float)1 / 3, (float)Math.Sqrt(7) });
                 if (json2e != "[0.3333,2.6458]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "3");
             }
 
             {
-                var formatter1 = JsonChainNodeTools.BuildFormatter<double>();
+                var formatter1 = JsonChainManager.ComposeFormatter<double>();
                 var json1 = formatter1((double)1 / 3);
                 if (json1 != "0.333333333333333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1D");
 
-                var formatter1e = JsonChainNodeTools.BuildEnumerableFormatter<double>();
+                var formatter1e = JsonChainManager.ComposeEnumerableFormatter<double>();
                 var json1e = formatter1e(new double[] { (double)1 / 3, Math.Sqrt(7) });
                 if (json1e != "[0.333333333333333,2.64575131106459]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1De");
 
-                var formatter2 = JsonChainNodeTools.BuildFormatter<double>(
-                    n => JsonChainNodeTools.GetDefaultLeafSerializerSet(n,
-                        rulesDictionary:
-                            RulesDictionary.CreateDefault(floatingPointFormat: "N4")
-                        )
-                    );
+                var formatter2 = JsonChainManager.ComposeFormatter<double>(floatingPointFormat: "N4");
                 var json2 = formatter2((double)1 / 3);
                 if (json2 != "0.3333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "2D");
 
-                var formatter2e = JsonChainNodeTools.BuildEnumerableFormatter<double>(
-                    n => JsonChainNodeTools.GetDefaultLeafSerializerSet(n,
-                        rulesDictionary:
-                            RulesDictionary.CreateDefault(floatingPointFormat: "N4")
-                        )
-                    );
+                var formatter2e = JsonChainManager.ComposeEnumerableFormatter<double>(floatingPointFormat: "N4");
                 var json2e = formatter2e(new double[] { (double)1 / 3, Math.Sqrt(7) });
                 if (json2e != "[0.3333,2.6458]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "3D");
             }
             {
-                var formatter1 = JsonChainNodeTools.BuildFormatter<float?>();
+                var formatter1 = JsonChainManager.ComposeFormatter<float?>();
                 var json1 = formatter1((float)1 / 3);
                 if (json1 != "0.3333333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1N");
@@ -303,7 +314,7 @@ namespace Vse.Routines.Test
                 if (json2 != "null")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "2N");
 
-                var formatter2e = JsonChainNodeTools.BuildEnumerableFormatter<float?>();
+                var formatter2e = JsonChainManager.ComposeEnumerableFormatter<float?>();
                 var json2e = formatter2e(new float?[] { (float)1 / 3, null });
                 if (json2e != "[0.3333333,null]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "3Ne");
@@ -312,6 +323,21 @@ namespace Vse.Routines.Test
                 if (json3e != "null")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "4Ne");
             }
+        }
+
+        [TestMethod]
+        public void JsonSerializeNodeSpecailFormat()
+        {
+
+            var data = TestTool.CreateTestModel();
+            Include<TestModel> include = chain => chain.Include(i => i.Message).ThenInclude(i => i.DateTimeMsg);
+
+            var formatter = JsonChainManager.ComposeFormatter(include,
+                dateTimeFormat: "yyyy-MM-dd"
+                );
+            var json = formatter(data);
+            if (json != "{\"Message\":{\"DateTimeMsg\":\"9999-12-31\"}}")
+                throw new Exception(nameof(JsonSerializeDateTimeField));
         }
     }
 }

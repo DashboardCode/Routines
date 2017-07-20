@@ -22,6 +22,10 @@ Facade     - class that gets several interfaces, functors in constructor, each F
 			 combines calls to them
 Handler    - classes which provides try{..}catch{} or using(..){..} funcitonal way (Hanlde methods)
 
+Suffixes in method names
+----------------------------------------------------------------------------------------------------------
+Compose    - creates delegate instance
+Create     - creates class instance
 
 Static classes
 ----------------------------------------------------------------------------------------------------------

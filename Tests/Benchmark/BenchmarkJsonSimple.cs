@@ -20,7 +20,7 @@ namespace Benchmark
     public class BenchmarkJsonSimple
     {
         static Box2 box;
-        static Func<StringBuilder, Box2, bool> serializerBuilded;
+        static Func<Box2, string> formatter;
         static Func<StringBuilder, Box2, bool> serializerFuncCompiled;
         static Func<StringBuilder, Box2, bool> serializerFunc;
         //static NExpJsonSerializer<Box2> serializer3;
@@ -38,7 +38,7 @@ namespace Benchmark
             include2.Invoke(chain);
             var serializerNode = process.Root;
 
-            serializerBuilded = JsonChainNodeTools.BuildSerializer<Box2>(serializerNode);
+            formatter = JsonChainManager.ComposeFormatter<Box2>(serializerNode.ComposeInclude<Box2>(), stringBuilderCapacity: 4000);
 
             serializerFunc = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeObject(sbP, tP,
                         (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool)
@@ -126,9 +126,7 @@ namespace Benchmark
         ////[Benchmark]
         public string RoutineSerializerBuilded()
         {
-            var sb = new StringBuilder(4000);
-            serializerBuilded(sb, box);
-            var json = sb.ToString();
+            var json = formatter(box);
             return json;
         }
 

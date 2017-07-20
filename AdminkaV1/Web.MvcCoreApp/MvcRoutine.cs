@@ -27,7 +27,7 @@ namespace Vse.AdminkaV1.Web.MvcCoreApp
         public MvcRoutine(RoutineController controller, RoutineTag routineTag, object input) :
             this(controller,
                  routineTag,
-                 InjectedManager.NLogConstructor(
+                 InjectedManager.ComposeNLogTransients(
                        InjectedManager.Markdown,
                        InjectedManager.DefaultRoutineTagTransformException
                      ),

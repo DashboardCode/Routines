@@ -58,7 +58,7 @@ namespace Vse.Routines
                     AppendLeafs(n);
             }
             AppendLeafs(root);
-            var destination = root.CreateInclude<T>();
+            var destination = root.ComposeInclude<T>();
             return destination;
         }
 
@@ -70,17 +70,34 @@ namespace Vse.Routines
             return types;
         }
 
-        public static List<string[]> GetPaths<T>(this Include<T> include)
+        public static IReadOnlyCollection<string[]> GetPaths<T>(this Include<T> include)
         {
             var rootNode = include.GetChainNode();
             var paths = ChainNodeTree.Instance.GetTreeAsListKeysArray(rootNode);
             return paths;
         }
 
+        public static IReadOnlyCollection<ChainNode> GetAllTypePaths<T>(this Include<T> include, Type type)
+        {
+            var rootNode = include.GetChainNode();
+            var paths = ChainNodeTree.Instance.GetTreeAsListOfPaths(rootNode);
+
+            return paths;
+        }
+
+        public static IEnumerable<string> GetXPaths<T>(this Include<T> include)
+        {
+            if (include == null)
+                return new List<string> { "/" };
+            var rootNode = include.GetChainNode();
+            var paths = ChainNodeTree.Instance.GetTreeAsListOfXPaths(rootNode);
+            return paths;
+        }
+
         public static Include<T> Clone<T>(Include<T> include) where T : class
         {
             var rootNode = include.GetChainNode();
-            var cloned = rootNode.CreateInclude<T>();
+            var cloned = rootNode.ComposeInclude<T>();
             return cloned;
         }
 
@@ -117,7 +134,7 @@ namespace Vse.Routines
             var rootNode2 = include2.GetChainNode();
 
             var union = ChainNodeTree.Instance.Union(rootNode1, rootNode2);
-            var @value = union.CreateInclude<T>();
+            var @value = union.ComposeInclude<T>();
             return @value;
         }
     }

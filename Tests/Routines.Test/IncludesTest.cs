@@ -381,7 +381,7 @@ namespace Vse.Routines.Test
             var source = TestTool.CreateTestModel();
             var includes = TestTool.CreateInclude();
             var paths = includes.GetPaths();
-            var ef6Includes = paths.ConvertAll(e => string.Join(".", e));
+            var ef6Includes = paths.Select(e => string.Join(".", e));
         }
 
         [TestMethod]
