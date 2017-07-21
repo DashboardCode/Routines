@@ -79,41 +79,68 @@ namespace Vse.Routines
             }
         }
 
-        public TNodePrimal PathOfNode(TNode node, Func<TNode, TNodePrimal> GetParent)
+        public TNodePrimal GetPathOfNode(TNode node, Func<TNode, TNodePrimal> GetParent)
         {
-            var ancestorsAndSelf = new List<TNode>();
-            ancestorsAndSelf.Add(node);
-            var root = GetParent(node);
-            while (root is TNode)
+            var ancestorsAndSelf = new List<TNodePrimal>();
+            TNodePrimal parent = node;
+            while (parent !=null)
             {
-                ancestorsAndSelf.Add(node);
-                root = GetParent((TNode)root);
+                ancestorsAndSelf.Add(parent);
+                if (parent is TNode)
+                    parent = GetParent((TNode)parent);
+                else
+                {
+                    parent = default(TNodePrimal);
+                    break;
+                }
             }
-            ancestorsAndSelf.Reverse();
 
-            var @value = cloneRootPrimal(node);
+            ancestorsAndSelf.Reverse();
+            var root = ancestorsAndSelf.First();
+            ancestorsAndSelf.RemoveAt(0);
+            var @value = cloneRootPrimal(root);
             var p = @value;
             foreach (var a in ancestorsAndSelf)
-                p = cloneChild(a, p);
+            {
+                p = cloneChild((TNode)a, p);
+            }
             return @value;
         }
 
         public string GetXPathOfNode(TNode node, Func<TNode, TNodePrimal> GetParent)
         {
+            TNodePrimal parent = node;
             var ancestorsAndSelf = new List<string>();
-            var nodeKey = getKey(node).ToString();
-            var l = nodeKey.Length+1;
-            ancestorsAndSelf.Add(nodeKey);
-            var root = GetParent(node);
-            while (root is TNode)
+            var l = 0;  
+            while (true)
             {
-                var n = (TNode)root;
-                nodeKey = getKey(n).ToString();
-                l += l + nodeKey.Length + 1;
-                ancestorsAndSelf.Add(nodeKey);
-                root = GetParent(n);
+                if (parent is TNode)
+                {
+                    var child = (TNode)parent;
+                    parent = GetParent(child);
+                    if (parent == null)
+                    {
+                        break; // it is root
+                    }
+                    else
+                    {
+                        var nodeKey = getKey(child);
+                        var keyText = nodeKey.ToString();
+                        ancestorsAndSelf.Add(keyText);
+                        l += keyText.Length + 1;
+                    }
+                    
+                }
+                else
+                {
+                    break;
+                }
             }
+            if (l == 0)
+                return "/";
             ancestorsAndSelf.Reverse();
+            //var root = ancestorsAndSelf.First();
+            //ancestorsAndSelf.RemoveAt(0);
 
             var stringBuilder = new StringBuilder(l);
             foreach (var a in ancestorsAndSelf)
@@ -192,20 +219,20 @@ namespace Vse.Routines
 
         #region GetTreeAs
 
-        public List<TNodePrimal> GetTreeAsListOfPaths(TNodePrimal root)
+        public List<TNodePrimal> GetTreeAsListOfPaths(TNodePrimal root, Func<TNodePrimal, bool> condition = null)
         {
-            var pathes = new List<TNodePrimal>();
+            var @value = new List<TNodePrimal>();
             var children = getChildren(root);
             var basePath = new  List < Func<TNodePrimal, TNode> >();
             foreach (var c in children)
             {
                 basePath.Add((p) => cloneChild(c, p));
-                GetTreeAsListOfPathsRecursive(c, root, basePath, pathes);
+                GetTreeAsListOfPathsRecursive(c, root, basePath, @value, condition);
             }
-            return pathes;
+            return @value;
         }
 
-        private void GetTreeAsListOfPathsRecursive(TNodePrimal node, TNodePrimal nodeRoot, List<Func<TNodePrimal, TNode>> basePath, List<TNodePrimal> lists)
+        private void GetTreeAsListOfPathsRecursive(TNodePrimal node, TNodePrimal nodeRoot, List<Func<TNodePrimal, TNode>> basePath, List<TNodePrimal> lists, Func<TNodePrimal, bool> condition)
         {
             var children = getChildren(node);
             if (children.Count() == 0)
@@ -216,13 +243,14 @@ namespace Vse.Routines
                 {
                     newNode = f(newNode);
                 }
-                lists.Add(newNode);
+                if (condition==null || condition(newNode))
+                    lists.Add(newNode);
             }
             else
                 foreach (var c in children)
                 {
                     basePath.Add((p) => cloneChild(c, p));
-                    GetTreeAsListOfPathsRecursive(c, nodeRoot, basePath, lists);
+                    GetTreeAsListOfPathsRecursive(c, nodeRoot, basePath, lists, condition);
                 }
         }
 
@@ -284,7 +312,8 @@ namespace Vse.Routines
                 if (moveNext)
                     sb.Append(" | ");
             }
-            string @value = sb.ToString();
+
+            var @value = (sb.Length == 0)? "/": sb.ToString();
             return @value;
         }
         #endregion

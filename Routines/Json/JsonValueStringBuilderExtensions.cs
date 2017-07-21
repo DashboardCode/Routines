@@ -238,6 +238,16 @@ namespace Vse.Routines.Json
             stringBuilder.Append('\"').AppendJsonEscaped(text).Append('\"');
             return true;
         }
+        public static bool SerializeString(StringBuilder stringBuilder, string text)
+        {
+            stringBuilder.Append('\"').Append(text).Append('\"');
+            return true;
+        }
+        public static bool SerializeStringAsJsonLiteral(StringBuilder stringBuilder, string text)
+        {
+            stringBuilder.Append(text);
+            return true;
+        }
         public static bool SerializeBool(StringBuilder stringBuilder, bool b)
         {
             stringBuilder.Append(b ? "true" : "false");

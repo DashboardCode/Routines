@@ -7,7 +7,7 @@ using Vse.Routines.Json;
 namespace Vse.Routines.Test
 {
     [TestClass]
-    public class UnitTest
+    public class JsonTest
     {
         [TestMethod]
         public void JsonSerializeTestException()
@@ -82,21 +82,24 @@ namespace Vse.Routines.Test
             var source  = TestTool.CreateTestModel();
             var include = TestTool.CreateInclude();
 
+            //Include<TestModel, int[]> pathInclude = (path) => path.ThenInclude(e=>e.)
+
             var formatter = JsonChainManager.ComposeFormatter(
                 include,
                 rules => rules
-                        .AddTypeRule<string[]>(GetStringArrayFormatter)
-                        .AddTypeRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
-                        .AddTypeRule<IEnumerable<Guid>>(GetStringGuidFormatter)
-                        .SubInclude(chain => chain.Include(e => e.StorageModel).ThenInclude(e=>e.Entity) ,
-                              rules2 => rules2.AddTypeRule<int[]>((sb, l) => GetSumFormatter(sb, l))
+                        .AddRule<string[]>(GetStringArrayFormatter)
+                        .AddRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
+                        .AddRule<IEnumerable<Guid>>(GetStringGuidFormatter)
+                        .Subset(
+                              chain  => chain.Include(e => e.Test),
+                              subRules => subRules.AddRule<int[]>(GetSumFormatter)
                         ),
                 useToString: false,
                 dateTimeFormat: null, 
                 floatingPointFormat: null);
 
             var json = formatter(source);
-            if (json != "{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":[\"FieldA1\",\"FieldA2\"]},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":[1,2,3],\"ListTest\":[\"360bc50a-4d9f-4703-bbea-58f67a6ff475\",\"f2ecf4d8-f4a6-446c-a363-cc79b02decdd\"],\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}")
+            if (json != "{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":[\"FieldA1\",\"FieldA2\"]},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":6,\"ListTest\":[\"360bc50a-4d9f-4703-bbea-58f67a6ff475\",\"f2ecf4d8-f4a6-446c-a363-cc79b02decdd\"],\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}")
                 throw new Exception(nameof(JsonSerializeTestAddedFormatter));
         }
 
@@ -109,9 +112,9 @@ namespace Vse.Routines.Test
             var formatter = JsonChainManager.ComposeFormatter(
                 include,
                 rules => rules
-                        .AddTypeRule<string[]>(GetStringArrayFormatter)
-                        .AddTypeRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
-                        .AddTypeRule<IEnumerable<Guid>>(GetStringGuidFormatter),
+                        .AddRule<string[]>(GetStringArrayFormatter)
+                        .AddRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
+                        .AddRule<IEnumerable<Guid>>(GetStringGuidFormatter),
                         useToString: false
                 );
 

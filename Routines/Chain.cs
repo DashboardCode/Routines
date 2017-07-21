@@ -25,7 +25,7 @@ namespace Vse.Routines
 
     public class ThenChain<TRootEntity, TThenEntity> : Chain<TRootEntity> 
     {
-        public ThenChain(IChainVisitor<TRootEntity> chainingState):base(chainingState)
+        public ThenChain(IChainVisitor<TRootEntity> chainVisitor):base(chainVisitor)
         {
         }
         public ThenChain<TRootEntity, TEntity> ThenInclude<TEntity>(Expression<Func<TThenEntity, TEntity>> lambdaExpression)

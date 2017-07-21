@@ -15,7 +15,7 @@ namespace Vse.Routines.Json
             , string dateTimeFormat      = null
             , string floatingPointFormat = null
             , bool handleEmptyObjectLiteral = true
-            , bool handleEmptyArrayLiteral = true
+            , bool handleEmptyArrayLiteral  = true
             , Func<StringBuilder, bool> nullSerializer = null
             , bool handleNullProperty = true
             , Func<StringBuilder, bool> nullArraySerializer = null
@@ -24,16 +24,18 @@ namespace Vse.Routines.Json
             , bool rootHandleEmptyObjectLiteral = true
             , int stringBuilderCapacity = 32)
         {
-            var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat, 
+            var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
+                /*stringAsJsonLiteral*/ false,
+                /*stringJsonEscape*/    true,
                 nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer, 
                 handleNullProperty,
                     new InternalNodeOptions() {
                         HandleEmptyObjectLiteral = handleEmptyObjectLiteral,
-                        HandleEmptyArrayLiteral = handleEmptyArrayLiteral,
-                        NullSerializer = nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
-                        HandleNullProperty = handleNullProperty,
-                        NullArraySerializer = nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
-                        HandleNullArrayProperty = handleNullArrayProperty,
+                        HandleEmptyArrayLiteral  = handleEmptyArrayLiteral,
+                        NullSerializer           = nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                        HandleNullProperty       = handleNullProperty,
+                        NullArraySerializer      = nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                        HandleNullArrayProperty  = handleNullArrayProperty,
                     }
                 );
             configure?.Invoke(rulesDictionary);
@@ -178,7 +180,10 @@ namespace Vse.Routines.Json
             , int stringBuilderCapacity = 32)
         {
 
-            var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat, nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer, handleNullProperty,
+            var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
+                /*stringAsJsonLiteral*/ false,
+                /*stringJsonEscape*/    true, 
+                nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer, handleNullProperty,
                     new InternalNodeOptions()
                     {
                         HandleNullProperty = handleNullProperty,

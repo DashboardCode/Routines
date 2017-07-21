@@ -51,6 +51,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="JsonSubsetTest.cs" />
     <Compile Include="TreeTest.cs" />
     <Compile Include="JsonTest.cs" />
     <Compile Include="CoverTest.cs" />

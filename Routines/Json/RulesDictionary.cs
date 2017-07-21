@@ -6,49 +6,46 @@ using System.Text;
 
 namespace Vse.Routines.Json
 {
-    public class RulesDictionary<TEntity>
+    public class RulesDictionaryBase<TEntity>
     {
-        public readonly bool useToString ;
-        public readonly Dictionary<string, Dictionary<Type, SerializerOptions>> dictionary = new Dictionary<string, Dictionary<Type, SerializerOptions>>();
-        Include<TEntity> currentInclude = null;
+        internal readonly bool useToString;
+        protected readonly Func<StringBuilder, bool> nullSerializer;
+        protected readonly bool handleNullProperty;
+        protected readonly InternalNodeOptions internalNodeOptions;
+        internal readonly Dictionary<Type, SerializerOptions> dictionary = new Dictionary<Type, SerializerOptions>();
+        protected readonly string dateTimeFormat;
+        protected readonly string floatingPointFormat;
 
-        public readonly Func<StringBuilder, bool> nullSerializer;
-        public readonly bool handleNullProperty;
-        public readonly InternalNodeOptions internalNodeOptions;
-        public RulesDictionary(bool useToString, string dateTimeFormat, string floatingPointFormat, Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions)
+        public RulesDictionaryBase(
+            bool useToString,
+            string dateTimeFormat,
+            string floatingPointFormat,
+            bool stringAsJsonLiteral,
+            bool stringJsonEscape,
+            Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions
+        )
         {
             this.useToString = useToString;
             this.nullSerializer = nullSerializer;
             this.handleNullProperty = handleNullProperty;
             this.internalNodeOptions = internalNodeOptions;
-
-            AddTypeRuleOptimized<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
-            AddTypeRuleOptimized<string>((sb, t) => JsonValueStringBuilderExtensions.SerializeEscapeString(sb, t));
-            if (dateTimeFormat == null)
-                AddTypeRuleOptimized<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeToIso8601WithMs(sb, t));
-            else
-                AddTypeRule<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeDateTimeDotNet(sb, t, dateTimeFormat));
-            if (floatingPointFormat != null)
-            {
-                AddTypeRule<double>((sb, t) => JsonValueStringBuilderExtensions.SerializeDoubleDotNet(sb, t, floatingPointFormat));
-                AddTypeRule<float>((sb, t) => JsonValueStringBuilderExtensions.SerializeFloatDotNet(sb, t, floatingPointFormat));
-            }
-            AddTypeRuleOptimized<byte[]>((sb, t) => JsonValueStringBuilderExtensions.SerializeBase64(sb, t));
-            AddTypeRuleOptimized<decimal>((sb, t) => JsonValueStringBuilderExtensions.SerializePrimitive(sb, t));
+            this.dateTimeFormat = dateTimeFormat;
+            this.floatingPointFormat = floatingPointFormat;
         }
 
-        public RulesDictionary<TEntity> SubInclude(
-            Include<TEntity> include,
-            Action<RulesDictionary<TEntity>> config
-        ){
-            
-            config(this);
-            return this;
+        protected void AddTypeRuleForCurrentInclude<T>(
+            Delegate @delegate,
+            Func<StringBuilder, bool> nullSerializer,
+            bool handleNullProperty,
+            InternalNodeOptions internalNodeOptions
+        )
+        {
+            AddSerailizer(typeof(T), new SerializerOptions(@delegate, nullSerializer, handleNullProperty, internalNodeOptions));
         }
 
-        private RulesDictionary<TEntity> AddTypeRuleOptimized<T>(
-            Expression<Func<StringBuilder, T, bool>> funcExpression
-            )
+        protected void AddTypeRuleOptimized<T>(
+              Expression<Func<StringBuilder, T, bool>> funcExpression
+        )
         {
             var methodInfo = JsonChainTools.GetMethodInfoExpr(funcExpression);
             var type = typeof(T);
@@ -56,82 +53,203 @@ namespace Vse.Routines.Json
             var formatterDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), type, typeof(bool));
             var @delegate = methodInfo.CreateDelegate(formatterDelegateType);
             AddTypeRuleForCurrentInclude<T>(@delegate, nullSerializer, handleNullProperty, internalNodeOptions);
-            return this;
         }
 
-        public RulesDictionary<TEntity> AddTypeRule<T>(
-            Func<StringBuilder, T, bool> func =null,
-            Func<StringBuilder, bool> nullSerializer = null,
-            bool? handleNullProperty = true,
-            InternalNodeOptions internalNodeOptions = null
-        ) //where T : class
+        protected void AddSerailizer(Type type, SerializerOptions serializer)
         {
-            AddTypeRuleForCurrentInclude<T>(func, nullSerializer??this.nullSerializer, handleNullProperty ?? this.handleNullProperty, internalNodeOptions ?? this.internalNodeOptions);
-            return this;
+            dictionary[type] = serializer;
         }
 
-        //public RulesDictionary<TEntity> AddTypeRuleRef<T>(
-        //    Func<StringBuilder, T, bool> func,
-        //    InternalNodeOptions internalNodeOptions = null
-        //) where T : struct
-        //{
-        //    AddTypeRuleForCurrentInclude<T>(func, nullSerializer, handleNullProperty, internalNodeOptions);
-        //    return this;
-        //}
+        protected void AddRule<T>(
+            Func<StringBuilder, T, bool> func = null,
+            Func<StringBuilder, bool> nullSerializer = null,
+            bool? handleNullProperty = null,
+            InternalNodeOptions internalNodeOptions = null
+        ) 
+        {
+            AddTypeRuleForCurrentInclude<T>(func, nullSerializer ?? this.nullSerializer, handleNullProperty ?? this.handleNullProperty, internalNodeOptions ?? this.internalNodeOptions);
+        }
+    }
 
-        private void AddTypeRuleForCurrentInclude<T>(
-            Delegate @delegate,
-            Func<StringBuilder, bool> nullSerializer,
-            bool handleNullProperty,
-            InternalNodeOptions internalNodeOptions
+
+
+    public class RulesSubDictionary<TEntity>: RulesDictionaryBase<TEntity>
+    {
+        internal readonly ChainNode root;
+
+        public RulesSubDictionary(
+                ChainNode root,
+                bool useToString,
+                string dateTimeFormat,
+                string floatingPointFormat,
+                bool stringAsJsonLiteral,
+                bool stringJsonEscape,
+                Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions
+            ):base(useToString, dateTimeFormat, floatingPointFormat, stringAsJsonLiteral, stringJsonEscape, nullSerializer, handleNullProperty, internalNodeOptions)
+        {
+            this.root = root;
+
+            AddTypeRuleOptimized<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
+            if (stringAsJsonLiteral)
+                AddTypeRuleOptimized<string>((sb, t) => JsonValueStringBuilderExtensions.SerializeStringAsJsonLiteral(sb, t));
+            else if (!stringJsonEscape)
+                AddTypeRuleOptimized<string>((sb, t) => JsonValueStringBuilderExtensions.SerializeString(sb, t));
+            else
+                AddTypeRuleOptimized<string>((sb, t) => JsonValueStringBuilderExtensions.SerializeEscapeString(sb, t));
+            if (dateTimeFormat == null)
+                AddTypeRuleOptimized<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeToIso8601WithMs(sb, t));
+            else
+                AddRule<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeDateTimeDotNet(sb, t, dateTimeFormat));
+            if (floatingPointFormat != null)
+            {
+                AddRule<double>((sb, t) => JsonValueStringBuilderExtensions.SerializeDoubleDotNet(sb, t, floatingPointFormat));
+                AddRule<float>((sb, t) => JsonValueStringBuilderExtensions.SerializeFloatDotNet(sb, t, floatingPointFormat));
+            }
+            AddTypeRuleOptimized<byte[]>((sb, t) => JsonValueStringBuilderExtensions.SerializeBase64(sb, t));
+            AddTypeRuleOptimized<decimal>((sb, t) => JsonValueStringBuilderExtensions.SerializePrimitive(sb, t));
+        }
+
+        public new RulesSubDictionary<TEntity> AddRule<T>(
+            Func<StringBuilder, T, bool> func = null,
+            Func<StringBuilder, bool> nullSerializer = null,
+            bool? handleNullProperty = null,
+            InternalNodeOptions internalNodeOptions = null
         )
         {
-            var paths = currentInclude.GetXPaths();
-            foreach (var p in paths)
-                AddSerailizer(p, typeof(T), new SerializerOptions(@delegate, nullSerializer, handleNullProperty,internalNodeOptions));
+            base.AddRule(func, nullSerializer, handleNullProperty, internalNodeOptions);
+            return this;
+        }
+    }
+
+    public class RulesDictionary<TEntity>: RulesDictionaryBase<TEntity>
+    {
+        List<RulesSubDictionary<TEntity>> subsets = new List<RulesSubDictionary<TEntity>>();
+
+        public RulesDictionary(
+            bool useToString, 
+            string dateTimeFormat, 
+            string floatingPointFormat, 
+            bool stringAsJsonLiteral,
+            bool stringJsonEscape,
+            Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions)
+            : base(useToString, dateTimeFormat, floatingPointFormat, stringAsJsonLiteral, stringJsonEscape, nullSerializer, handleNullProperty, internalNodeOptions)
+        {
+
+            AddTypeRuleOptimized<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
+            if (stringAsJsonLiteral)
+                AddTypeRuleOptimized<string>((sb, t) => JsonValueStringBuilderExtensions.SerializeStringAsJsonLiteral(sb, t));
+            else if (!stringJsonEscape)
+                AddTypeRuleOptimized<string>((sb, t) => JsonValueStringBuilderExtensions.SerializeString(sb, t));
+            else
+                AddTypeRuleOptimized<string>((sb, t) => JsonValueStringBuilderExtensions.SerializeEscapeString(sb, t));
+            if (dateTimeFormat == null)
+                AddTypeRuleOptimized<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeToIso8601WithMs(sb, t));
+            else
+                AddRule<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeDateTimeDotNet(sb, t, dateTimeFormat));
+            if (floatingPointFormat != null)
+            {
+                AddRule<double>((sb, t) => JsonValueStringBuilderExtensions.SerializeDoubleDotNet(sb, t, floatingPointFormat));
+                AddRule<float>((sb, t) => JsonValueStringBuilderExtensions.SerializeFloatDotNet(sb, t, floatingPointFormat));
+            }
+            AddTypeRuleOptimized<byte[]>((sb, t) => JsonValueStringBuilderExtensions.SerializeBase64(sb, t));
+            AddTypeRuleOptimized<decimal>((sb, t) => JsonValueStringBuilderExtensions.SerializePrimitive(sb, t));
         }
 
-        public SerializerOptions GetLeafSerializerOptions(ChainNode node)
+        public new RulesDictionary<TEntity> AddRule<T>(
+            Func<StringBuilder, T, bool> func = null,
+            Func<StringBuilder, bool> nullSerializer = null,
+            bool? handleNullProperty = null,
+            InternalNodeOptions internalNodeOptions = null
+        )
         {
-            var path = "/";
+            base.AddRule(func, nullSerializer, handleNullProperty, internalNodeOptions);
+            return this;
+        }
+
+        public RulesDictionary<TEntity> Subset(
+            Include<TEntity> include,
+            Action<RulesSubDictionary<TEntity>> config=null,
+            bool? useToString = null,
+            string dateTimeFormat = null,
+            string floatingPointFormat = null,
+            bool? stringAsJsonLiteral = null,
+            bool? stringJsonEscape = null,
+            Func<StringBuilder, bool> nullSerializer = null,
+            bool? handleNullProperty = null,
+            InternalNodeOptions internalNodeOptions = null
+        )
+        {
+            if (include == null)
+                throw new ArgumentNullException(nameof(include), "Serialization for subset can't be configured if subset is defined for the root only include (include is null)");
+
+            var subDictionary = new RulesSubDictionary<TEntity>(
+                include.GetChainNode(),
+                useToString         ?? this.useToString,
+                dateTimeFormat      ?? this.dateTimeFormat, 
+                floatingPointFormat ?? this.floatingPointFormat,
+                stringAsJsonLiteral ?? false, 
+                stringJsonEscape    ?? true, 
+                nullSerializer      ?? this.nullSerializer, 
+                handleNullProperty  ?? this.handleNullProperty, 
+                internalNodeOptions ?? this.internalNodeOptions);
+            config?.Invoke(subDictionary);
+
+            subsets.Add(subDictionary);
+
+            return this;
+        }
+
+        #region AddSerailizer, GetLeafSerializerOptions, GeInternalNodeOptions
+        private Dictionary<Type, SerializerOptions> GetDictionary(ChainNode node)
+        {
+            var theDictionary = default(Dictionary<Type, SerializerOptions>);
+            if (node is ChainPropertyNode)
+            {
+                var path = ChainNodeTree.Instance.PathOfNode((ChainPropertyNode)node);
+                for (int i = subsets.Count - 1; i >= 0; i--)
+                {
+                    var subset = subsets[i];
+                    if (ChainNodeTree.Instance.IsSubsetOf(path, subset.root))
+                    {
+                        theDictionary = subset.dictionary;
+                        break;
+                    }
+                }
+            }
+            if (theDictionary == default(Dictionary<Type, SerializerOptions>))
+                theDictionary = dictionary;
+            return theDictionary;
+        }
+
+        internal SerializerOptions GetLeafSerializerOptions(ChainNode node)
+        {
+            var theDictionary = GetDictionary(node);
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
             var rule = default(SerializerOptions);
-            if (dictionary.TryGetValue(path, out Dictionary<Type, SerializerOptions> typeDictionary))
-                if (!typeDictionary.TryGetValue(serializationType, out rule))
-                {
-                    var @delegate = CreateGeneralSerializer(serializationType, useToString);
-                    rule = new SerializerOptions(@delegate, nullSerializer, handleNullProperty, internalNodeOptions);
-                }
+            if (!theDictionary.TryGetValue(serializationType, out rule))
+            {
+                var @delegate = CreateGeneralSerializer(serializationType, useToString);
+                rule = new SerializerOptions(@delegate, nullSerializer, handleNullProperty, internalNodeOptions);
+            }
 
             if (rule?.Serializer == null)
                 throw new NotConfiguredException($"Node '{node.GetXPathOfNode()}' included as leaf but serializer for its type '{serializationType.FullName}' is not configured");
             return rule;
         }
 
-        public InternalNodeOptions GeInternalNodeOptions(ChainNode node, bool isEnumerable)
+        internal InternalNodeOptions GeInternalNodeOptions(ChainNode node, bool isEnumerable)
         {
-            var path = "/";
+            var theDictionary = GetDictionary(node);
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
             var rule = default(SerializerOptions);
             var options = default(InternalNodeOptions);
-            if (dictionary.TryGetValue(path, out Dictionary<Type, SerializerOptions> typeDictionary))
-                if (typeDictionary.TryGetValue(serializationType, out rule))
-                    options = rule.InternalNodeOptions;
+            if (theDictionary.TryGetValue(serializationType, out rule))
+                options = rule.InternalNodeOptions;
             return options??internalNodeOptions;
         }
+        #endregion
 
-        public void AddSerailizer(string path, Type type, SerializerOptions serializer)
-        {
-            var typeDictionary= default(Dictionary<Type, SerializerOptions>);
-            if (!dictionary.TryGetValue(path, out typeDictionary))
-            {
-                typeDictionary = new Dictionary<Type, SerializerOptions>();
-                dictionary.Add(path, typeDictionary);
-            }
-            typeDictionary[type] = serializer;
-        }
-        
-        public static Delegate CreateGeneralSerializer(Type serializationType, bool useToString)
+        internal static Delegate CreateGeneralSerializer(Type serializationType, bool useToString)
         {
             Delegate @delegate;
             bool isPrimitive = serializationType.GetTypeInfo().IsPrimitive;
