@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vse.Routines.Json
+namespace DashboardCode.Routines.Json
 {
     public class TestClass
     {

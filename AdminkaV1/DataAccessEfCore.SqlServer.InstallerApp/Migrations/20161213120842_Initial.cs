@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
 {
     public partial class Initial : Migration
     {

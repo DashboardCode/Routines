@@ -1,6 +1,6 @@
 ﻿using System.Web.Script.Serialization;
 
-namespace Vse.Routines.Configuration.NETFramework.Test
+namespace DashboardCode.Routines.Configuration.NETFramework.Test
 {
     
     public static class StaticTools

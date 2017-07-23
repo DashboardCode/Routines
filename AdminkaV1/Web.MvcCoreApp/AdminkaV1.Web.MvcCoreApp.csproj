@@ -6,6 +6,8 @@
 
   <PropertyGroup>
     <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
+    <AssemblyName>DashboardCode.AdminkaV1.Web.MvcCoreApp</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Web.MvcCoreApp</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

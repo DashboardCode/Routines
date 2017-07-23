@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Vse.Routines.Configuration.NETFramework.Test
+namespace DashboardCode.Routines.Configuration.NETFramework.Test
 {
     [TestClass]
     public class ConfigurationUnitTest

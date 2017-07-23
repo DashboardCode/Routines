@@ -34,7 +34,7 @@
             @{  var roles = Model.GetRoles();
                 foreach (var r in roles)
                 {
-                    <span class="vse-adminka-item">@Html.ActionLink(r.RoleName, "Details", "Roles", new { id = r.RoleId }, null)</span>
+                    <span class="dashboardcode-adminka-item">@Html.ActionLink(r.RoleName, "Details", "Roles", new { id = r.RoleId }, null)</span>
                 }
             }
         </dd>
@@ -47,7 +47,7 @@
             @{  var privileges = Model.GetPrivileges();
                 foreach (var p in privileges)
                 {
-                    <span class="vse-adminka-item">@Html.ActionLink(p.PrivilegeName, "Details", "Privileges", new { id = p.PrivilegeId }, null)</span>
+                    <span class="dashboardcode-adminka-item">@Html.ActionLink(p.PrivilegeName, "Details", "Privileges", new { id = p.PrivilegeId }, null)</span>
                 }
             }
         </dd>
@@ -60,7 +60,7 @@
             @{  var groups = Model.GetGroups();
                 foreach (var r in groups)
                 {
-                    <span class="vse-adminka-item">@Html.ActionLink(r.GroupName, "Details", "Groups", new { id = r.GroupId }, null)</span>
+                    <span class="dashboardcode-adminka-item">@Html.ActionLink(r.GroupName, "Details", "Groups", new { id = r.GroupId }, null)</span>
                 }
             }
         </dd>

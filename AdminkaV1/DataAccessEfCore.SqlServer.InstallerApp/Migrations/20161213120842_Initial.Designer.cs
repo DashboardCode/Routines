@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Vse.AdminkaV1.DataAccessEfCore;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
 {
     [DbContext(typeof(AdminkaDbContext))]
     [Migration("20161213120842_Initial")]
@@ -17,7 +17,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.Group", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.Group", b =>
                 {
                     b.Property<int>("GroupId")
                         .ValueGeneratedOnAdd();
@@ -35,7 +35,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.GroupPrivilege", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.GroupPrivilege", b =>
                 {
                     b.Property<int>("GroupId");
 
@@ -49,7 +49,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("GroupPrivilegeMap");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.GroupRole", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.GroupRole", b =>
                 {
                     b.Property<int>("GroupId");
 
@@ -62,7 +62,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("GroupRoleMap");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.Privilege", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.Privilege", b =>
                 {
                     b.Property<string>("PrivilegeId")
                         .ValueGeneratedOnAdd()
@@ -76,7 +76,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("Privileges");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.Role", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.Role", b =>
                 {
                     b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd();
@@ -90,7 +90,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.RolePrivilege", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.RolePrivilege", b =>
                 {
                     b.Property<int>("RoleId");
 
@@ -104,7 +104,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("RolePrivilegeMap");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.User", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd();
@@ -124,7 +124,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.UserGroup", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.UserGroup", b =>
                 {
                     b.Property<int>("UserId");
 
@@ -137,7 +137,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("UserGroupMap");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.UserPrivilege", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.UserPrivilege", b =>
                 {
                     b.Property<int>("UserId");
 
@@ -151,7 +151,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("UserPrivilegeMap");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.UserRole", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.UserRole", b =>
                 {
                     b.Property<int>("UserId");
 
@@ -164,7 +164,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("UserRoleMap");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomLogging.ActivityRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomLogging.ActivityRecord", b =>
                 {
                     b.Property<int>("ActivityRecordId")
                         .ValueGeneratedOnAdd();
@@ -190,7 +190,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("ActivityRecords");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomLogging.VerboseRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomLogging.VerboseRecord", b =>
                 {
                     b.Property<int>("ActivityRecordId")
                         .ValueGeneratedOnAdd();
@@ -219,7 +219,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("VerboseRecords");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomTest.ChildRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomTest.ChildRecord", b =>
                 {
                     b.Property<int>("ParentRecordId")
                         .HasMaxLength(4);
@@ -249,7 +249,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("ChildRecords","tst");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomTest.HierarchyRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomTest.HierarchyRecord", b =>
                 {
                     b.Property<int>("HierarchyRecordId")
                         .ValueGeneratedOnAdd();
@@ -274,7 +274,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("HierarchyRecords","tst");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomTest.ParentRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomTest.ParentRecord", b =>
                 {
                     b.Property<int>("ParentRecordId")
                         .ValueGeneratedOnAdd();
@@ -330,7 +330,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("ParentRecords","tst");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomTest.ParentRecordHierarchyRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomTest.ParentRecordHierarchyRecord", b =>
                 {
                     b.Property<int>("ParentRecordId");
 
@@ -352,7 +352,7 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("ParentRecordHierarchyRecordMap","tst");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomTest.TypeRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomTest.TypeRecord", b =>
                 {
                     b.Property<string>("TestTypeRecordId")
                         .ValueGeneratedOnAdd()
@@ -383,113 +383,113 @@ namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
                     b.ToTable("TypeRecords","tst");
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.GroupPrivilege", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.GroupPrivilege", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Group", "Group")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Group", "Group")
                         .WithMany("GroupPrivilegeMap")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Privilege", "Privilege")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Privilege", "Privilege")
                         .WithMany("GroupPrivilegeMap")
                         .HasForeignKey("PrivilegeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.GroupRole", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.GroupRole", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Group", "Group")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Group", "Group")
                         .WithMany("GroupRoleMap")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Role", "Role")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Role", "Role")
                         .WithMany("GroupRoleMap")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.RolePrivilege", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.RolePrivilege", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Privilege", "Privilege")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Privilege", "Privilege")
                         .WithMany("RolePrivilegeMap")
                         .HasForeignKey("PrivilegeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Role", "Role")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Role", "Role")
                         .WithMany("RolePrivilegeMap")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.UserGroup", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.UserGroup", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Group", "Group")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Group", "Group")
                         .WithMany("UserGroupMap")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.User", "User")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.User", "User")
                         .WithMany("UserGroupMap")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.UserPrivilege", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.UserPrivilege", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Privilege", "Privilege")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Privilege", "Privilege")
                         .WithMany("UserPrivilegeMap")
                         .HasForeignKey("PrivilegeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.User", "User")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.User", "User")
                         .WithMany("UserPrivilegeMap")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomAuthentication.UserRole", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomAuthentication.UserRole", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.Role", "Role")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.Role", "Role")
                         .WithMany("UserRoleMap")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vse.AdminkaV1.DomAuthentication.User", "User")
+                    b.HasOne("DashboardCode.AdminkaV1.DomAuthentication.User", "User")
                         .WithMany("UserRoleMap")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomTest.ChildRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomTest.ChildRecord", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomTest.ParentRecord", "ParentRecord")
+                    b.HasOne("DashboardCode.AdminkaV1.DomTest.ParentRecord", "ParentRecord")
                         .WithMany("ChildRecords")
                         .HasForeignKey("ParentRecordId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vse.AdminkaV1.DomTest.TypeRecord", "TypeRecord")
+                    b.HasOne("DashboardCode.AdminkaV1.DomTest.TypeRecord", "TypeRecord")
                         .WithMany("ChildRecords")
                         .HasForeignKey("TypeRecordId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomTest.ParentRecordHierarchyRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomTest.ParentRecordHierarchyRecord", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomTest.HierarchyRecord", "HierarchyRecord")
+                    b.HasOne("DashboardCode.AdminkaV1.DomTest.HierarchyRecord", "HierarchyRecord")
                         .WithMany("ParentRecordHierarchyRecordMap")
                         .HasForeignKey("HierarchyRecordId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Vse.AdminkaV1.DomTest.ParentRecord", "ParentRecord")
+                    b.HasOne("DashboardCode.AdminkaV1.DomTest.ParentRecord", "ParentRecord")
                         .WithMany("ParentRecordHierarchyRecordMap")
                         .HasForeignKey("ParentRecordId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Vse.AdminkaV1.DomTest.TypeRecord", b =>
+            modelBuilder.Entity("DashboardCode.AdminkaV1.DomTest.TypeRecord", b =>
                 {
-                    b.HasOne("Vse.AdminkaV1.DomTest.TypeRecord")
+                    b.HasOne("DashboardCode.AdminkaV1.DomTest.TypeRecord")
                         .WithMany("TypeRecords")
                         .HasForeignKey("TypeRecordTestTypeRecordId");
                 });

@@ -3,7 +3,7 @@
     using System.Runtime.Serialization;
 #endif
 
-namespace Vse.AdminkaV1
+namespace DashboardCode.AdminkaV1
 {
     #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
     [Serializable]

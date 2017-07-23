@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
-[assembly: AssemblyTitle("Vse.Routines.Storage.EfCore")]
+[assembly: AssemblyTitle("DashboardCode.Routines.Storage.EfCore")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Roman Pokrovskij (Github user rpokrovskij)")]
-[assembly: AssemblyProduct("Vse.Routines.Storage.EfCore")]
+[assembly: AssemblyProduct("DashboardCode.Routines.Storage.EfCore")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -1,4 +1,4 @@
-﻿namespace Vse.Routines
+﻿namespace DashboardCode.Routines
 {
     public interface IResolver
     {

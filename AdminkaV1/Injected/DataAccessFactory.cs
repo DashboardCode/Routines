@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using Vse.AdminkaV1.DataAccessEfCore;
-using Vse.AdminkaV1.DataAccessEfCore.Services;
-using Vse.AdminkaV1.DataAccessEfCore.SqlServer;
-using Vse.Routines;
-using Vse.Routines.Storage;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+using DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Storage;
 
 
-namespace Vse.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected
 {
     public class DataAccessFactory
     {
@@ -34,7 +34,7 @@ namespace Vse.AdminkaV1.Injected
         public AdminkaDbContext CreateAdminkaDbContext()
         {
             var connectionString = storageMetaService.GetConnectionString();
-            var migrationAssembly = "Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer";
+            var migrationAssembly = "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.Installer";
             var optionsFactory = new SqlServerAdminkaOptionsFactory(connectionString, migrationAssembly);
             var factory = new DbContextFactory(optionsFactory, state);
             var dbContext = factory.CreateDbContext();
@@ -43,7 +43,7 @@ namespace Vse.AdminkaV1.Injected
         public AdminkaDbContextHandler CreateDbContextHandler()
         {
             var connectionString = storageMetaService.GetConnectionString();
-            var migrationAssembly = "Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer";
+            var migrationAssembly = "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.Installer";
             var optionsFactory = new SqlServerAdminkaOptionsFactory(connectionString, migrationAssembly);
             var dbContextManager = new AdminkaDbContextHandler(state, SetAudit, optionsFactory);
             return dbContextManager;

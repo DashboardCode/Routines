@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using Vse.Routines.Json;
+using DashboardCode.Routines.Json;
 
-namespace Vse.Routines.Test
+namespace DashboardCode.Routines.Test
 {
     class MyClass
     {

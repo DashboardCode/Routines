@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Vse.Routines.Storage;
+using DashboardCode.Routines.Storage;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vse.Routines.Test
+namespace DashboardCode.Routines.Test
 {
     [TestClass]
     public class IncludesTest

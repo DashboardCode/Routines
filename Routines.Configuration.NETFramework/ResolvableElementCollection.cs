@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Vse.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.NETFramework
 {
     [ConfigurationCollection(typeof(ResolvableElement), AddItemName = ResolvableElementName, CollectionType = ConfigurationElementCollectionType.BasicMap)]
     public class ResolvableElementCollection : ConfigurationElementCollection

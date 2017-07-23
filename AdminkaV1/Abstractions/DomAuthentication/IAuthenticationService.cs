@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Vse.AdminkaV1.DomAuthentication
+namespace DashboardCode.AdminkaV1.DomAuthentication
 {
     public interface IAuthenticationService
     {

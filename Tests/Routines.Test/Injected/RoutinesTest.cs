@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Globalization;
-using Vse.Routines.Storage;
+using DashboardCode.Routines.Storage;
 
-namespace Vse.Routines.Injected.Test
+namespace DashboardCode.Routines.Injected.Test
 {
     [TestClass]
     public class RoutinesTest

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Vse.Routines
+namespace DashboardCode.Routines
 {
     public class RoutineTag
     {

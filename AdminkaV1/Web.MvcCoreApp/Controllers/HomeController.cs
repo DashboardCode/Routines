@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Vse.AdminkaV1.Web.MvcCoreApp.Controllers
+namespace DashboardCode.AdminkaV1.Web.MvcCoreApp.Controllers
 {
     public class HomeController : Controller
     {

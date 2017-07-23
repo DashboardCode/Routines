@@ -1,8 +1,8 @@
 ﻿using System;
-using Vse.AdminkaV1.Injected;
-using Vse.Routines;
+using DashboardCode.AdminkaV1.Injected;
+using DashboardCode.Routines;
 
-namespace Vse.AdminkaV1.WcfService
+namespace DashboardCode.AdminkaV1.WcfService
 {
     public class WcfRoutine : AdminkaRoutine
     {

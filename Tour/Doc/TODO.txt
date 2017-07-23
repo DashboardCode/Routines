@@ -1,6 +1,6 @@
 Routines
 1) icon as bulb {}
-2) vse -> dashboardcode
+2) githubg vse -> DashboardCode 
 3) review prefixes (compose, get)?
 4) ComposeClone, ComposeCopy, ComposeEquals, ComposeDiff
 5) Meta add leafs options
@@ -30,7 +30,7 @@ PR
 ------------------------------------------------------------------------------------
 6. Inline includables goes to github as separated "one file" project
 7. Circular javascript serializer goes to github as "one file" project
-8. Vse release on github
+8. DashboardCode release on github
 9. Publish routines, routines.storage.efcore on NUGET.
 10. Create samples https://dotnetfiddle.net/
 11. Write article about includes.

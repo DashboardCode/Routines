@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vse.Routines.Injected.Test
+namespace DashboardCode.Routines.Injected.Test
 {
     public class StateService
     {

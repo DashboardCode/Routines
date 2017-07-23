@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Vse.AdminkaV1.WcfService.Client.Test
+namespace DashboardCode.AdminkaV1.WcfService.Client.Test
 {
     /// <summary>
-    /// Start web service Vse.AdminkaV1.Wcf before testing
+    /// Start web service DashboardCode.AdminkaV1.Wcf before testing
     /// </summary>
     [TestClass]
     public class TraceServiceTest 

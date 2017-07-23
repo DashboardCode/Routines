@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
-using Vse.Routines;
-using Vse.Routines.Storage.EfCore;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Storage.EfCore;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.Services
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class DbContextFactory
     {

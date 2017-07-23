@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 
-namespace Vse.Routines.Configuration.NETStandard
+namespace DashboardCode.Routines.Configuration.NETStandard
 {
     public class RoutinesConfigurationManager
     {

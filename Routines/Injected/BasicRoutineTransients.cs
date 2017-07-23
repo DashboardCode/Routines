@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vse.Routines.Injected
+namespace DashboardCode.Routines.Injected
 {
     public class BasicRoutineTransients<TStateService> : IRoutineTransients<TStateService>
     {

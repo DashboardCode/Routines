@@ -2,11 +2,11 @@
 using System.Globalization;
 using System.Security.Principal;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Vse.AdminkaV1.DomAuthentication;
-using Vse.AdminkaV1.Injected;
-using Vse.AdminkaV1.Injected.Configuration;
+using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.Injected;
+using DashboardCode.AdminkaV1.Injected.Configuration;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
 {
     public static class InitialCustoms
     {

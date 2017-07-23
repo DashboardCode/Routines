@@ -1,8 +1,8 @@
 ﻿using NLog;
 using System;
-using Vse.Routines;
+using DashboardCode.Routines;
 
-namespace Vse.AdminkaV1.Injected.Logging
+namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public class NLogAuthenticationLogging : IAuthenticationLogging
     {

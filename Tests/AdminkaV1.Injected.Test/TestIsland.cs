@@ -1,15 +1,15 @@
 ﻿using System;
-using Vse.AdminkaV1.DomTest;
-using Vse.Routines;
-using Vse.Routines.Storage;
+using DashboardCode.AdminkaV1.DomTest;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Storage;
 
 #if NETCOREAPP1_1
-    using Vse.AdminkaV1.Injected.NETStandard.Test;
+    using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
 #else
-    using Vse.AdminkaV1.Injected.NETFramework.Test;
+    using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
 #endif 
 
-namespace Vse.AdminkaV1.Injected.Test
+namespace DashboardCode.AdminkaV1.Injected.Test
 {
     public static class TestIsland
     {
@@ -173,7 +173,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 {
                     storage.Handle(batch =>
                     {
-                        var list = repository.ToList();
+                        var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
                     }).Desert();
@@ -182,7 +182,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 {
                     storage.Handle(batch =>
                     {
-                        var list = repository.ToList();
+                        var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
                     }).Desert();
@@ -191,7 +191,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 {
                     storage.Handle(batch =>
                     {
-                        var list = repository.ToList();
+                        var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
                     }).Desert();
@@ -200,7 +200,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 {
                     storage.Handle(batch =>
                     {
-                        var list = repository.ToList();
+                        var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
                     }).Desert();
@@ -209,7 +209,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 {
                     storage.Handle(batch =>
                     {
-                        var list = repository.ToList();
+                        var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
                     }).Desert();

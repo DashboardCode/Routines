@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vse.Routines
+namespace DashboardCode.Routines
 {
     public class NotConfiguredException : Exception
     {

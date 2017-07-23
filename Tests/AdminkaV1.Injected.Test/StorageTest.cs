@@ -1,19 +1,19 @@
 ﻿#if NETCOREAPP1_1
     using Xunit;
-    using Vse.AdminkaV1.Injected.NETStandard.Test;
+    using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
 #else
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Vse.AdminkaV1.Injected.NETFramework.Test;
+    using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
 #endif 
 using System.Collections.Generic;
 using System.Linq;
-using Vse.AdminkaV1.DomAuthentication;
-using Vse.Routines.Storage;
-using Vse.Routines;
-using Vse.AdminkaV1.DomTest;
+using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.Routines.Storage;
+using DashboardCode.Routines;
+using DashboardCode.AdminkaV1.DomTest;
 using System;
 
-namespace Vse.AdminkaV1.Injected.Test
+namespace DashboardCode.AdminkaV1.Injected.Test
 {
 #if !NETCOREAPP1_1
     [TestClass]
@@ -52,7 +52,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 // Create
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var privilegesList = repository.Rebase<Privilege>().ToList();
+                    var privilegesList = repository.Sprout<Privilege>().List();
                     var selectedPrivileges = new List<GroupPrivilege>();
                     var privilegesIdsText = "CFGS,VLOG";
                     if (!string.IsNullOrEmpty(privilegesIdsText))
@@ -85,7 +85,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 var entity = new Group() { GroupId = newGroupId, GroupName = "TestStore2", GroupAdName = "TestStore\\TestStore2" };
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var privilegesList = repository.Rebase<Privilege>().ToList();
+                    var privilegesList = repository.Sprout<Privilege>().List();
                     var selectedPrivileges = new List<GroupPrivilege>();
                     var privilegesIdsText = "CFGS";
                     if (!string.IsNullOrEmpty(privilegesIdsText))
@@ -130,7 +130,7 @@ namespace Vse.AdminkaV1.Injected.Test
                 var repositoryHandler = dataAccess.CreateRepositoryHandler<Group>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var groups = repository.ToList(e => e.GroupName == "TestStore");
+                    var groups = repository.List(e => e.GroupName == "TestStore");
                     var storageError = storage.Handle(batch =>
                     {
                         foreach (var group in groups)
@@ -165,7 +165,7 @@ namespace Vse.AdminkaV1.Injected.Test
                         var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count();
                         var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2);
                         var count2 = only2.Count();
-                        repository.Rebase<ParentRecordHierarchyRecord>().Detach(only2, (i) => i.Include(e => e.RowVersion));
+                        repository.Sprout<ParentRecordHierarchyRecord>().Detach(only2, (i) => i.Include(e => e.RowVersion));
 
                         batch.Handle(
                             (storage) =>
@@ -183,7 +183,7 @@ namespace Vse.AdminkaV1.Injected.Test
                         var parentRecord2 = repository.Find(e => e.FieldA == "1_A", includes);
                         var count3 = parentRecord2.ParentRecordHierarchyRecordMap.Count();
                         var only1 = parentRecord2.ParentRecordHierarchyRecordMap.Take(1);
-                        repository.Rebase<ParentRecordHierarchyRecord>().Detach(only1, (i) => i.Include(e => e.RowVersion));
+                        repository.Sprout<ParentRecordHierarchyRecord>().Detach(only1, (i) => i.Include(e => e.RowVersion));
 
                         try
                         {

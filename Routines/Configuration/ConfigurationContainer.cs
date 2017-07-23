@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vse.Routines.Configuration
+namespace DashboardCode.Routines.Configuration
 {
     public class ConfigurationContainer : IConfigurationContainer
     {

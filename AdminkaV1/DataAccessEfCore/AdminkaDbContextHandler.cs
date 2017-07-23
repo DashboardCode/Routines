@@ -1,8 +1,8 @@
 ﻿using System;
-using Vse.AdminkaV1.DataAccessEfCore.Services;
-using Vse.Routines;
+using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+using DashboardCode.Routines;
 
-namespace Vse.AdminkaV1.DataAccessEfCore
+namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
     public class AdminkaDbContextHandler
     {

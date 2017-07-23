@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
 {
     public class SqlServerAdminkaOptionsFactory: IAdminkaOptionsFactory
     {

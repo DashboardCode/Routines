@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Vse.Routines.Injected
+namespace DashboardCode.Routines.Injected
 {
     public class Routine<TRoutineState>
     {

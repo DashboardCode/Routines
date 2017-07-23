@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Vse.Routines
+namespace DashboardCode.Routines
 {
     public class ChainVisitor<TRootEntity> : IChainVisitor<TRootEntity>
     {

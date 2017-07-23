@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Vse.Routines.AspNetCore;
+using DashboardCode.Routines.AspNetCore;
 
-namespace Vse.AdminkaV1.Web.MvcCoreApp
+namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public class Startup
     {

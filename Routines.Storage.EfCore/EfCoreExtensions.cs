@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
-namespace Vse.Routines.Storage.EfCore
+namespace DashboardCode.Routines.Storage.EfCore
 {
     public static class EfCoreExtensions
     {

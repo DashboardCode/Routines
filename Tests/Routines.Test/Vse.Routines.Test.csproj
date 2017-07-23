@@ -6,8 +6,8 @@
     <ProjectGuid>{2B5CADED-2F8B-4809-ABA8-7B679D31E162}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vse.Routines.Test</RootNamespace>
-    <AssemblyName>Vse.Routines.Test</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.Test</RootNamespace>
+    <AssemblyName>DashboardCode.Routines.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

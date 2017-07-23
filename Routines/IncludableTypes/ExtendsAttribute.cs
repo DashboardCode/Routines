@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vse.Routines.IncludableTypes
+namespace DashboardCode.Routines.IncludableTypes
 {
     public class ExtendsAttribute : Attribute
     {

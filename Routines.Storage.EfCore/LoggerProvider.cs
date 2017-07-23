@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
 
-namespace Vse.Routines.Storage.EfCore
+namespace DashboardCode.Routines.Storage.EfCore
 {
     
     public sealed class LoggerProvider : ILoggerProvider

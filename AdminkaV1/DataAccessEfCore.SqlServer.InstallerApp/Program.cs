@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using Microsoft.EntityFrameworkCore;
-using Vse.AdminkaV1.Injected;
+using DashboardCode.AdminkaV1.Injected;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
     public class Program
     {

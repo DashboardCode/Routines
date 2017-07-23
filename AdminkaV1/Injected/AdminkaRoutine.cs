@@ -2,11 +2,11 @@
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Globalization;
-using Vse.Routines;
-using Vse.Routines.Injected;
-using Vse.AdminkaV1.Injected.Logging;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Injected;
+using DashboardCode.AdminkaV1.Injected.Logging;
 
-namespace Vse.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected
 {
     public class AdminkaRoutine : UserRoutine<UserContext>
     {

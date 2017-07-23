@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Vse.AdminkaV1.DomTest
+namespace DashboardCode.AdminkaV1.DomTest
 {
     public class TypeRecord : VersionedBase
     {

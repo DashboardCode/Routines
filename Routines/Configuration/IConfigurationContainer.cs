@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vse.Routines.Configuration
+namespace DashboardCode.Routines.Configuration
 {
     public interface IConfigurationContainer
     {

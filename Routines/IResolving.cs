@@ -1,4 +1,4 @@
-﻿namespace Vse.Routines
+﻿namespace DashboardCode.Routines
 {
     /// <summary>
     /// Now IProgress used instead of this.

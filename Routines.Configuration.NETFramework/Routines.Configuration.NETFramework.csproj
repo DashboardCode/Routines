@@ -7,8 +7,8 @@
     <ProjectGuid>{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vse.Routines.Configuration.NETFramework</RootNamespace>
-    <AssemblyName>Vse.Routines.Configuration.NETFramework</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.Configuration.NETFramework</RootNamespace>
+    <AssemblyName>DashboardCode.Routines.Configuration.NETFramework</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

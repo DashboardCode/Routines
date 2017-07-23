@@ -1,7 +1,7 @@
-﻿using Vse.Routines.Configuration;
-using Vse.Routines.Configuration.NETFramework;
+﻿using DashboardCode.Routines.Configuration;
+using DashboardCode.Routines.Configuration.NETFramework;
 
-namespace Vse.AdminkaV1.WcfService
+namespace DashboardCode.AdminkaV1.WcfService
 {
     public class ConfigurationNETFramework : IAppConfiguration
     {

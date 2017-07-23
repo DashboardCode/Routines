@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Vse.AdminkaV1.Web.ApiService": {
+    "DashboardCode.AdminkaV1.Web.ApiService": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/values",

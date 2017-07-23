@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Vse.AdminkaV1.Injected.Test")]
+[assembly: AssemblyTitle("DashboardCode.AdminkaV1.Injected.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Roman Pokrovskij (Github user rpokrovskij)")]
-[assembly: AssemblyProduct("Vse.AdminkaV1.Injected.Test")]
+[assembly: AssemblyProduct("DashboardCode.AdminkaV1.Injected.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

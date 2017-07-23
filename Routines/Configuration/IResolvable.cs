@@ -1,4 +1,4 @@
-﻿namespace Vse.Routines.Configuration
+﻿namespace DashboardCode.Routines.Configuration
 {
     public interface IResolvable
     {

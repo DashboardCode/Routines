@@ -1,7 +1,7 @@
 ﻿using System;
-using Vse.Routines.Injected;
+using DashboardCode.Routines.Injected;
 
-namespace Vse.AdminkaV1.Injected.Logging
+namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public class RoutineLoggingTransients
     {

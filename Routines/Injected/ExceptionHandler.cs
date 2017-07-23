@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Vse.Routines.Injected
+namespace DashboardCode.Routines.Injected
 {
     public class ExceptionHandler : IExceptionHandler
     {

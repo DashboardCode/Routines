@@ -1,4 +1,4 @@
-﻿namespace Vse.Routines.Storage.EfCore
+﻿namespace DashboardCode.Routines.Storage.EfCore
 {
     public class LoggerProviderConfiguration
     {

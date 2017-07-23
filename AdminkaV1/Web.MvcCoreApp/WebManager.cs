@@ -3,11 +3,11 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Security.Principal;
-using Vse.AdminkaV1.Injected;
-using Vse.AdminkaV1.Injected.Logging;
-using Vse.Routines;
+using DashboardCode.AdminkaV1.Injected;
+using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.Routines;
 
-namespace Vse.AdminkaV1.Web.MvcCoreApp
+namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public static class WebManager
     {

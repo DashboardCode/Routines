@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Http;
 
-namespace Vse.Routines.AspNetCore
+namespace DashboardCode.Routines.AspNetCore
 {
     /// <summary>
     /// More about middleware:

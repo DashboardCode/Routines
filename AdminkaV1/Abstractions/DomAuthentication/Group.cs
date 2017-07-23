@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Vse.AdminkaV1.DomAuthentication
+namespace DashboardCode.AdminkaV1.DomAuthentication
 {
     public class Group
     {

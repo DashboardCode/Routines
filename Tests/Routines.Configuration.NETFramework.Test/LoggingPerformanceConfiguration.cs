@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vse.Routines.Configuration.NETFramework.Test
+namespace DashboardCode.Routines.Configuration.NETFramework.Test
 {
     public class LoggingPerformanceConfiguration : IProgress<string>
     {

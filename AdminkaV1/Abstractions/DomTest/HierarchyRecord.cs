@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Vse.AdminkaV1.DomTest
+namespace DashboardCode.AdminkaV1.DomTest
 {
     public class HierarchyRecord : VersionedBase
     {

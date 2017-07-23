@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Vse.Routines.Configuration;
-using Vse.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration;
+using DashboardCode.Routines.Configuration.NETStandard;
 
-namespace Vse.AdminkaV1.Web.MvcCoreApp
+namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public class MvcAppConfiguration : IAppConfiguration
     {

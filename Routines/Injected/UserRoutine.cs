@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Vse.Routines.Storage;
+using DashboardCode.Routines.Storage;
 
-namespace Vse.Routines.Injected
+namespace DashboardCode.Routines.Injected
 {
     public class UserRoutine<TUserContext> : Routine<RoutineState<TUserContext>>
     {

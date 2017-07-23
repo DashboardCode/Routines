@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace Vse.Routines.Json
+namespace DashboardCode.Routines.Json
 {
     public class SerializerOptions
     {

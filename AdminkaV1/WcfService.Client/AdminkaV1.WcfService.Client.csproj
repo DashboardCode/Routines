@@ -7,8 +7,8 @@
     <ProjectGuid>{5B251776-C32B-4B06-B52D-6A302BEAC69D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vse.AdminkaV1.Wcf.Client</RootNamespace>
-    <AssemblyName>Vse.AdminkaV1.Wcf.Client</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.WcfService.Client</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.WcfService.Client</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DashboardCode.AdminkaV1, Version=1.0.12.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,12 +55,12 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\DataSources\Vse.AdminkaV1.Abstract.DomLogging.Trace.datasource" />
-    <None Include="Properties\DataSources\Vse.AdminkaV1.Abstract.DomLogging.Trace1.datasource" />
-    <None Include="Properties\DataSources\Vse.AdminkaV1.Abstract.Trace.datasource" />
-    <None Include="Properties\DataSources\Vse.AdminkaV1.Abstraction.DomLogging.Trace.datasource" />
-    <None Include="Properties\DataSources\Vse.AdminkaV1.DomLogging.Trace.datasource" />
-    <None Include="Properties\DataSources\Vse.AdminkaV1.DomLogging.Trace1.datasource" />
+    <None Include="Properties\DataSources\DashboardCode.AdminkaV1.Abstract.DomLogging.Trace.datasource" />
+    <None Include="Properties\DataSources\DashboardCode.AdminkaV1.Abstract.DomLogging.Trace1.datasource" />
+    <None Include="Properties\DataSources\DashboardCode.AdminkaV1.Abstract.Trace.datasource" />
+    <None Include="Properties\DataSources\DashboardCode.AdminkaV1.Abstraction.DomLogging.Trace.datasource" />
+    <None Include="Properties\DataSources\DashboardCode.AdminkaV1.DomLogging.Trace.datasource" />
+    <None Include="Properties\DataSources\DashboardCode.AdminkaV1.DomLogging.Trace1.datasource" />
     <None Include="Service References\TraceServiceReference\TraceService.wsdl" />
     <None Include="Service References\TraceServiceReference\TraceService.xsd">
       <SubType>Designer</SubType>
@@ -69,6 +70,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\TraceServiceReference\TraceService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\TraceServiceReference\TraceService3.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.NETStandard.Test</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.NETStandard.Test</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

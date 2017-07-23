@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Reflection;
 
-namespace Vse.Routines.Configuration.NETStandard.Test
+namespace DashboardCode.Routines.Configuration.NETStandard.Test
 {
     [TestClass]
     public class StandardConfigurationUnitTest

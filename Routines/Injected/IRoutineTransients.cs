@@ -1,4 +1,4 @@
-﻿namespace Vse.Routines.Injected
+﻿namespace DashboardCode.Routines.Injected
 {
     public interface IRoutineTransients
     {

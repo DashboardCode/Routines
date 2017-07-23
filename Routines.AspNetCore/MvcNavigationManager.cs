@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Vse.Routines.AspNetCore
+namespace DashboardCode.Routines.AspNetCore
 {
     public class MvcNavigationManager<TP, TF, TMM, TfID> where TP : class where TF : class
     {

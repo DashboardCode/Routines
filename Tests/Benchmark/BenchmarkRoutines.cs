@@ -2,7 +2,7 @@
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
-using Vse.Routines;
+using DashboardCode.Routines;
 
 namespace Benchmark
 {

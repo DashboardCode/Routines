@@ -58,7 +58,7 @@
                     @{  var privileges = item.GetPrivileges();
                         foreach (var p in privileges)
                         {
-                            <div><a class="vse-adminka-item" href="@Url.Action("Details", "Privileges", new { id = p.PrivilegeId })">@p.PrivilegeName</a></div>
+                            <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Privileges", new { id = p.PrivilegeId })">@p.PrivilegeName</a></div>
                         }
                     }
                 </td>
@@ -66,7 +66,7 @@
                     @{  var roles = item.GetRoles();
                         foreach (var r in roles)
                         {
-                        <div><a class="vse-adminka-item" href="@Url.Action("Details", "Roles", new { id = r.RoleId })">@r.RoleName</a></div>
+                        <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Roles", new { id = r.RoleId })">@r.RoleName</a></div>
                         }
                      }
                 </td>
@@ -74,7 +74,7 @@
                     @{  var users = item.GetUsers();
                         @foreach (var u in users)
                         {
-                            <div><a class="vse-adminka-item" href="@Url.Action("Details", "Users", new { id = u.UserId })">@u.LoginName</a></div>
+                            <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Users", new { id = u.UserId })">@u.LoginName</a></div>
                         }
                     }
                 </td>

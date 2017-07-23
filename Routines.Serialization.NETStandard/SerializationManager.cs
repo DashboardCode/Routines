@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
 
-namespace Vse.Routines.Serialization.NETStandard
+namespace DashboardCode.Routines.Serialization.NETStandard
 {
     public static class SerializationManager
     {

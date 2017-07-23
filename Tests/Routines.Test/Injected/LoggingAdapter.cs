@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vse.Routines.Injected.Test
+namespace DashboardCode.Routines.Injected.Test
 {
     public class LoggingAdapter : IBasicLogging
     {

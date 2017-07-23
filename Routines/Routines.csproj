@@ -10,8 +10,8 @@
     <AssemblyVersion>1.0.12.0</AssemblyVersion>
     <FileVersion>1.0.12.0</FileVersion>
     <Description />
-    <RootNamespace>Vse.Routines</RootNamespace>
-    <AssemblyName>Vse.Routines</AssemblyName>
+    <RootNamespace>DashboardCode.Routines</RootNamespace>
+    <AssemblyName>DashboardCode.Routines</AssemblyName>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

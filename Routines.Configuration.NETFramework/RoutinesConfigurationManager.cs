@@ -4,7 +4,7 @@ using System.Text;
 using System.Linq;
 using System.Collections;
 
-namespace Vse.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.NETFramework
 {
     public static class RoutinesConfigurationManager
     {

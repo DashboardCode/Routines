@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Vse.Routines.Storage
+namespace DashboardCode.Routines.Storage
 {
     /// <summary>
     /// This interface allows do not reference huge EFCore's packages batch 

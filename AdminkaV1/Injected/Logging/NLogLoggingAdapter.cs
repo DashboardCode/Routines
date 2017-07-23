@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using Vse.Routines;
-using Vse.AdminkaV1.Injected.Configuration;
-using Vse.Routines.Storage;
-using Vse.Routines.Injected;
+using DashboardCode.Routines;
+using DashboardCode.AdminkaV1.Injected.Configuration;
+using DashboardCode.Routines.Storage;
+using DashboardCode.Routines.Injected;
 using NLog.Common;
 using System.Threading;
 
-namespace Vse.AdminkaV1.Injected.Logging
+namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     class NLogLoggingAdapter : IBasicLogging
     {

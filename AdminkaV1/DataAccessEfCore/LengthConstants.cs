@@ -1,4 +1,4 @@
-﻿namespace Vse.AdminkaV1.DataAccessEfCore
+﻿namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
     public static class LengthConstants
     {

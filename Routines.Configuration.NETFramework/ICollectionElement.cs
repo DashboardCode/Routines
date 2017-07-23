@@ -1,4 +1,4 @@
-﻿namespace Vse.Routines.Configuration.NETFramework
+﻿namespace DashboardCode.Routines.Configuration.NETFramework
 {
     interface ICollectionMemberElement
     {

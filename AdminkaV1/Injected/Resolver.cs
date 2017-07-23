@@ -1,8 +1,8 @@
 ﻿using System;
-using Vse.Routines;
-using Vse.Routines.Configuration;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Configuration;
 
-namespace Vse.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected
 {
     public class Resolver : IResolver
     {

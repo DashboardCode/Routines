@@ -1,14 +1,14 @@
 ﻿using System;
-using Vse.Routines;
+using DashboardCode.Routines;
 #if NETCOREAPP1_1
     using Xunit;
-    using Vse.AdminkaV1.Injected.NETStandard.Test;
+    using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
 #else
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Vse.AdminkaV1.Injected.NETFramework.Test;
+    using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
 #endif 
 
-namespace Vse.AdminkaV1.Injected.Test
+namespace DashboardCode.AdminkaV1.Injected.Test
 {
 #if !NETCOREAPP1_1
     [TestClass]

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System;
 
-namespace Vse.Routines
+namespace DashboardCode.Routines
 {
     public class Tree<TNodePrimal, TNode, TKey> where TNode : TNodePrimal
     {

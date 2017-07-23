@@ -2,10 +2,10 @@ Namespaces
 ----------------------------------------------------------------------------------------------------------
 V1           - is added because of when you are versioning project's names/namespaces it is become possible
                to develop two versions from in one solution (and it is important for "one developer army"). 
-Abstractions - root assembly Vse.AdminkaV1 phisiclly located in the folder named 'Abstractions' just to avoid 
+Abstractions - root assembly DashboardCode.AdminkaV1 phisiclly located in the folder named 'Abstractions' just to avoid 
                "AdminkaV1\Adminka" tautology (also name Abstractions put folder to the first place in folders list).
-DomXxx - Folders/Subnamespace in the root assembly Vse.AdminkaV1 allways starts with 'Dom' prefix to indicate
-		 that this folder/subnamespace is located exactly in root assembly. e.g.  Vse.AdminkaV1.DomAuthentication
+DomXxx - Folders/Subnamespace in the root assembly DashboardCode.AdminkaV1 allways starts with 'Dom' prefix to indicate
+		 that this folder/subnamespace is located exactly in root assembly. e.g.  DashboardCode.AdminkaV1.DomAuthentication
 XxxService   - wcf or rest service
 XxxService.Client - Wcf service reference wrapped into class
 XxxApp       - StartUp projects (command line or web)

@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace Vse.Routines.Test
+namespace DashboardCode.Routines.Test
 {
     [TestClass]
     public class CoverTest

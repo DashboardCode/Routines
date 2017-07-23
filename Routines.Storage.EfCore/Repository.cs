@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Vse.Routines.Storage.EfCore
+namespace DashboardCode.Routines.Storage.EfCore
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
@@ -29,14 +29,14 @@ namespace Vse.Routines.Storage.EfCore
             return query;
         }
 
-        public IReadOnlyCollection<TEntity> ToList(Include<TEntity> include = null)
+        public IReadOnlyCollection<TEntity> List(Include<TEntity> include = null)
         {
             var queryable = GetQueryable(include);
             var list = queryable.ToList();
             return list;
         }
 
-        public IReadOnlyCollection<TEntity> ToList(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
+        public IReadOnlyCollection<TEntity> List(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
         {
             var queryable = GetQueryable(include);
             var list = queryable.Where(predicate).ToList();
@@ -50,7 +50,7 @@ namespace Vse.Routines.Storage.EfCore
             return list;
         }
 
-        public IRepository<TNewBaseEntity> Rebase<TNewBaseEntity>() where TNewBaseEntity : class
+        public IRepository<TNewBaseEntity> Sprout<TNewBaseEntity>() where TNewBaseEntity : class
         {
             return new Repository<TNewBaseEntity>(this.context, asNoTracking);
         }

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 
-namespace Vse.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.NETFramework
 {
     public class RoutineElement :  ConfigurationElement, IRoutineResolvable, ICollectionMemberElement
     {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Vse.Routines.Storage;
+using DashboardCode.Routines.Storage;
 
-namespace Vse.Routines.Test
+namespace DashboardCode.Routines.Test
 {
     public class TestChild
     {

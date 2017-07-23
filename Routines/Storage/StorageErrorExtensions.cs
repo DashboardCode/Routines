@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Vse.Routines.Storage
+namespace DashboardCode.Routines.Storage
 {
     public static class StorageErrorExtensions
     {

@@ -1,7 +1,7 @@
-﻿using Vse.Routines.Configuration;
-using Vse.Routines.Configuration.NETFramework;
+﻿using DashboardCode.Routines.Configuration;
+using DashboardCode.Routines.Configuration.NETFramework;
 
-namespace Vse.AdminkaV1.Injected.NETFramework.Test
+namespace DashboardCode.AdminkaV1.Injected.NETFramework.Test
 {
     public class ConfigurationNETFramework : IAppConfiguration
     {

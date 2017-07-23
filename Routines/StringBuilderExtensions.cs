@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Vse.Routines
+namespace DashboardCode.Routines
 {
     public static class StringBuilderExtensions
     {

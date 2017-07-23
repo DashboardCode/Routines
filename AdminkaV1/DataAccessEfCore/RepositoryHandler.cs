@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Vse.Routines.Storage;
-using Vse.Routines.Storage.EfCore;
+using DashboardCode.Routines.Storage;
+using DashboardCode.Routines.Storage.EfCore;
 
-namespace Vse.AdminkaV1.DataAccessEfCore
+namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
     public class RepositoryHandler<TEntity> : IRepositoryHandler<TEntity> 
         where TEntity : class

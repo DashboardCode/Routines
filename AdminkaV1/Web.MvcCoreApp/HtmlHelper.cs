@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Vse.AdminkaV1.Injected;
+using DashboardCode.AdminkaV1.Injected;
 
-namespace Vse.AdminkaV1.Web.MvcCoreApp
+namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public static class HtmlHelperExtensions
     {

@@ -1,6 +1,6 @@
-﻿using Vse.Routines.Configuration;
+﻿using DashboardCode.Routines.Configuration;
 
-namespace Vse.AdminkaV1
+namespace DashboardCode.AdminkaV1
 {
     public interface IAppConfiguration
     {

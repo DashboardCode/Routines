@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{52BA4719-F064-4388-A426-1E1174D3A0EB}"
 EndProject
@@ -14,13 +14,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FFB752D8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{68C4C8C2-2A78-4998-9D36-4A3B139B41FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines", "Routines\Routines.csproj", "{7F19BF12-3F67-4185-A8F1-48BDC6129915}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines", "Routines\Routines.csproj", "{7F19BF12-3F67-4185-A8F1-48BDC6129915}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Injected.NETStandard", "AdminkaV1\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj", "{A186E18C-A446-4218-A2A8-6B126DABA983}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.NETStandard", "AdminkaV1\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj", "{A186E18C-A446-4218-A2A8-6B126DABA983}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1", "AdminkaV1\Abstractions\AdminkaV1.csproj", "{0AFBD8EE-9049-4B87-BD18-5FB925D38352}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1", "AdminkaV1\Abstractions\AdminkaV1.csproj", "{0AFBD8EE-9049-4B87-BD18-5FB925D38352}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.DataAccessEfCore", "AdminkaV1\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj", "{BF9FB9B0-BAEE-457A-8C8E-D82DC68E0710}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore", "AdminkaV1\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj", "{BF9FB9B0-BAEE-457A-8C8E-D82DC68E0710}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.WcfService", "AdminkaV1\WcfService\AdminkaV1.WcfService.csproj", "{38A0A937-1800-4703-B207-BA3BBBF95D8D}"
 EndProject
@@ -32,17 +32,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Routines.Configuration.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Routines.Test", "Tests\Routines.Test\Vse.Routines.Test.csproj", "{2B5CADED-2F8B-4809-ABA8-7B679D31E162}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp", "AdminkaV1\DataAccessEfCore.SqlServer.InstallerApp\AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp", "AdminkaV1\DataAccessEfCore.SqlServer.InstallerApp\AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.AdminkaV1.WcfService.Client.Test", "Tests\AdminkaV1.WcfService.Client.Test\Vse.AdminkaV1.WcfService.Client.Test.csproj", "{E6C95D60-F0FB-4DE7-93DD-25E43F7D42EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.WcfService.Client.Test", "Tests\AdminkaV1.WcfService.Client.Test\AdminkaV1.WcfService.Client.Test.csproj", "{E6C95D60-F0FB-4DE7-93DD-25E43F7D42EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCoreTestApp", "Tests\EfCoreTestApp\EfCoreTestApp.csproj", "{C85FC166-E6A4-40C1-BCB8-1FB68042F62F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.EfCore", "Routines.Storage.EfCore\Routines.Storage.EfCore.csproj", "{E0AB2637-9207-4941-9C9D-1FA6FD67FFE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore", "Routines.Storage.EfCore\Routines.Storage.EfCore.csproj", "{E0AB2637-9207-4941-9C9D-1FA6FD67FFE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.SqlServer", "Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj", "{49629314-6D2C-4630-A478-09E4338CA8D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.SqlServer", "Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj", "{49629314-6D2C-4630-A478-09E4338CA8D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.DataAccessEfCore.SqlServer", "AdminkaV1\DataAccessEfCore.SqlServer\AdminkaV1.DataAccessEfCore.SqlServer.csproj", "{215CD0DE-09D8-46F4-A9CF-5C4EAE8217F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore.SqlServer", "AdminkaV1\DataAccessEfCore.SqlServer\AdminkaV1.DataAccessEfCore.SqlServer.csproj", "{215CD0DE-09D8-46F4-A9CF-5C4EAE8217F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ef6TestApp", "Tests\Ef6TestApp\Ef6TestApp.csproj", "{FAEEA516-2296-4C52-9BE5-525B56F50880}"
 EndProject
@@ -50,11 +50,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Routines.Configuration.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.ActiveDirectory.NETFramework", "Routines.ActiveDirectory.NETFramework\Routines.ActiveDirectory.NETFramework.csproj", "{1C1AE759-8C0E-40B3-8936-94EC077AAAF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Configuration.NETStandard", "Routines.Configuration.NETStandard\Routines.Configuration.NETStandard.csproj", "{521C6B0D-926F-4301-9441-4DCFDCDD0A59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Configuration.NETStandard", "Routines.Configuration.NETStandard\Routines.Configuration.NETStandard.csproj", "{521C6B0D-926F-4301-9441-4DCFDCDD0A59}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Serialization.NETFramework", "Routines.Serialization.NETFramework\Routines.Serialization.NETFramework.csproj", "{44A20BD4-D2D8-43C4-8DB7-FA1129C3F0E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Serialization.NETStandard", "Routines.Serialization.NETStandard\Routines.Serialization.NETStandard.csproj", "{883C640B-0BF7-4003-97AA-05C87776F58A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Serialization.NETStandard", "Routines.Serialization.NETStandard\Routines.Serialization.NETStandard.csproj", "{883C640B-0BF7-4003-97AA-05C87776F58A}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AdminkaV1.Injected", "AdminkaV1\Injected\AdminkaV1.Injected.shproj", "{89394319-E1FB-4E00-8138-1478FED390EE}"
 EndProject
@@ -73,7 +73,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Web.ReactApp", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Web.ReduxApp", "AdminkaV1\Web.ReduxApp\AdminkaV1.Web.ReduxApp.csproj", "{1F6C0F7A-3F7A-4B37-936A-F1B5AD3D3F01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Web.ApiService", "AdminkaV1\Web.ApiService\AdminkaV1.Web.ApiService.csproj", "{183F2465-F2AE-4548-BAB6-88C8BB4076F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Web.ApiService", "AdminkaV1\Web.ApiService\AdminkaV1.Web.ApiService.csproj", "{183F2465-F2AE-4548-BAB6-88C8BB4076F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{72DA7AC6-74FB-4BE8-A690-B1A42567F0B6}"
 	ProjectSection(SolutionItems) = preProject
@@ -93,17 +93,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-757
 		Tour\Doc\TODO.txt = Tour\Doc\TODO.txt
 	EndProjectSection
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Vse.AdminkaV1.Injected.Test", "Tests\AdminkaV1.Injected.Test\Vse.AdminkaV1.Injected.Test.shproj", "{B9077909-87F9-494B-9D6B-5E4F18A7325B}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AdminkaV1.Injected.Test", "Tests\AdminkaV1.Injected.Test\AdminkaV1.Injected.Test.shproj", "{B9077909-87F9-494B-9D6B-5E4F18A7325B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.AdminkaV1.Injected.NETFramework.Test", "Tests\AdminkaV1.Injected.NETFramework.Test\Vse.AdminkaV1.Injected.NETFramework.Test.csproj", "{C48FDD29-C5ED-4A7D-BDF0-E5487CAAAF88}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Injected.NETFramework.Test", "Tests\AdminkaV1.Injected.NETFramework.Test\AdminkaV1.Injected.NETFramework.Test.csproj", "{C48FDD29-C5ED-4A7D-BDF0-E5487CAAAF88}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Vse.AdminkaV1.Injected.NETStandard.Test", "Tests\AdminkaV1.Injected.NETStandard.Test\Vse.AdminkaV1.Injected.NETStandard.Test.csproj", "{B65FB2B4-4B15-4F3E-88E7-EF46DCFCBCAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.NETStandard.Test", "Tests\AdminkaV1.Injected.NETStandard.Test\AdminkaV1.Injected.NETStandard.Test.csproj", "{B65FB2B4-4B15-4F3E-88E7-EF46DCFCBCAE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogTestApp", "Tests\NLogTestApp\NLogTestApp.csproj", "{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Tests\Benchmark\Benchmark.csproj", "{C30762B6-E02B-4FA8-9A51-3B4FAFD86B0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Tests\Benchmark\Benchmark.csproj", "{C30762B6-E02B-4FA8-9A51-3B4FAFD86B0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonNet.Test", "Tests\JsonNet.Test\JsonNet.Test.csproj", "{C6E950B6-5342-4B51-A313-566FFB905B78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonNet.Test", "Tests\JsonNet.Test\JsonNet.Test.csproj", "{C6E950B6-5342-4B51-A313-566FFB905B78}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkClassic", "Tests\BenchmarkClassic\BenchmarkClassic.csproj", "{C2C1EFFA-18F0-4ADB-B740-7CF17949672F}"
 EndProject

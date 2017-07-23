@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Vse.Routines
+namespace DashboardCode.Routines
 {
     public static class ObjectExtensions
     {

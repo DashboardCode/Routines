@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using Vse.Routines.Configuration;
-using Vse.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration;
+using DashboardCode.Routines.Configuration.NETStandard;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
     public class InstallerConfiguration : IAppConfiguration
     {

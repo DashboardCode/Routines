@@ -3,8 +3,8 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <IsPackable>false</IsPackable>
-    <AssemblyName>Vse.AdminkaV1.Web.ReduxApp</AssemblyName>
-    <RootNamespace>Vse.AdminkaV1.Web.ReduxApp</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.Web.ReduxApp</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Web.ReduxApp</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>

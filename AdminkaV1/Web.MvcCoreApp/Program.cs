@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
-using Vse.AdminkaV1.Injected;
+using DashboardCode.AdminkaV1.Injected;
 
-namespace Vse.AdminkaV1.Web.MvcCoreApp
+namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public class Program
     {

@@ -1,4 +1,4 @@
-﻿namespace Vse.Routines.Configuration.NETStandard
+﻿namespace DashboardCode.Routines.Configuration.NETStandard
 {
     public class Resolvable : IResolvable
     {

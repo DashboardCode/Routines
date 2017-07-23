@@ -1,4 +1,4 @@
-﻿namespace Vse.AdminkaV1.DomTest
+﻿namespace DashboardCode.AdminkaV1.DomTest
 {
     /// <summary>
     /// Shares ParentRecord's key. Tests inheritance implemented in relational model.

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Vse.AdminkaV1.Web.ApiService
+namespace DashboardCode.AdminkaV1.Web.ApiService
 {
     public class Program
     {

@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
-using Vse.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.DomAuthentication;
 
-namespace Vse.AdminkaV1
+namespace DashboardCode.AdminkaV1
 {
     public class UserContext 
     {

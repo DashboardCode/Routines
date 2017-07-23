@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Vse.AdminkaV1.DomAuthentication;
-using Vse.AdminkaV1.DomLogging;
-using Vse.AdminkaV1.DomTest;
+using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.DomLogging;
+using DashboardCode.AdminkaV1.DomTest;
 
-namespace Vse.AdminkaV1.DataAccessEfCore
+namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
     public class AdminkaDbContext : DbContext
     {

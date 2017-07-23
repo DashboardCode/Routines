@@ -1,5 +1,5 @@
 ﻿
-namespace Vse.Routines.Configuration.NETFramework.Test
+namespace DashboardCode.Routines.Configuration.NETFramework.Test
 {
     public class TestConfiguration
     {

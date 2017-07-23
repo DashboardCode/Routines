@@ -2,11 +2,11 @@
 using System.Runtime.InteropServices;
 
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
-[assembly: AssemblyTitle("Vse.AdminkaV1.DataAccessEfCore.SqlServer")]
+[assembly: AssemblyTitle("DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Roman Pokrovskij (Github user rpokrovskij)")]
-[assembly: AssemblyProduct("Vse.AdminkaV1.DataAccessEfCore.SqlServer")]
+[assembly: AssemblyProduct("DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

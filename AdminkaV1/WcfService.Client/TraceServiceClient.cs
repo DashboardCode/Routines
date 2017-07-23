@@ -1,11 +1,11 @@
 ﻿using System;
 using System.ServiceModel;
-using Vse.AdminkaV1.DomLogging;
-using Vse.AdminkaV1.WcfService.Client.TraceServiceReference;
+using DashboardCode.AdminkaV1.DomLogging;
+using DashboardCode.AdminkaV1.WcfService.Client.TraceServiceReference;
 
-namespace Vse.AdminkaV1.WcfService.Client
+namespace DashboardCode.AdminkaV1.WcfService.Client
 {
-    // TODO: to T4
+    // TODO: this code can be generated with T4
     public class TraceServiceClient : ITraceService
     {
         public DomLogging.Trace GetTrace(Guid correlationToken)

@@ -2,11 +2,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Vse.Routines.ConfigurationEx.Test")]
+[assembly: AssemblyTitle("DashboardCode.Routines.ConfigurationEx.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Vse.Routines.ConfigurationEx.Test")]
+[assembly: AssemblyProduct("DashboardCode.Routines.ConfigurationEx.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

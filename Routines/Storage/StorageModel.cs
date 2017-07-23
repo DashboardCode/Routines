@@ -1,4 +1,4 @@
-﻿namespace Vse.Routines.Storage
+﻿namespace DashboardCode.Routines.Storage
 {
     public class StorageModel
     {

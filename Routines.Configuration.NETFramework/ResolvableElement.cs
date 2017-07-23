@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 
-namespace Vse.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.NETFramework
 {
     public class ResolvableElement : ConfigurationElement, IResolvable, ICollectionMemberElement
     {

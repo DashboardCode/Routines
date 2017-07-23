@@ -1,7 +1,7 @@
-﻿using Vse.Routines;
-using Vse.Routines.IncludableTypes;
+﻿using DashboardCode.Routines;
+using DashboardCode.Routines.IncludableTypes;
 
-namespace Vse.AdminkaV1.DomAuthentication.Includes
+namespace DashboardCode.AdminkaV1.DomAuthentication.Includes
 {
     [Extends(definitionType: typeof(UserInclude), definitionInculde: nameof(DtoDefinition))]
     public partial class UserInclude

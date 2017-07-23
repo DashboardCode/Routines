@@ -1,9 +1,9 @@
 ﻿using System;
-using Vse.AdminkaV1.DataAccessEfCore.Services;
-using Vse.Routines;
-using Vse.Routines.Storage;
+using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Storage;
 
-namespace Vse.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected
 {
     public class RepositoryHandlerFactory : IRepositoryHandlerFactory<UserContext>
     {

@@ -6,5 +6,5 @@
     cause the file to be unrecognizable by the program.
 -->
 <GenericObjectDataSource DisplayName="Trace" Version="1.0" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
-   <TypeInfo>Vse.AdminkaV1.Abstraction.Trace, Vse.AdminkaV1.Abstraction, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
+   <TypeInfo>DashboardCode.AdminkaV1.Abstraction.DomLogging.Trace, DashboardCode.AdminkaV1.Abstraction, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</TypeInfo>
 </GenericObjectDataSource>

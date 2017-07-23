@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using System.Text;
 
-namespace Vse.Routines.Storage.EfCore
+namespace DashboardCode.Routines.Storage.EfCore
 {
     public static class EfCoreManager
     {

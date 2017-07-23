@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Vse.AdminkaV1.DomAuthentication;
-using Vse.Routines.Storage.EfCore;
+using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.Routines.Storage.EfCore;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.Services
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class AuthenticationService : IAuthenticationService
     {

@@ -2,25 +2,25 @@
 using System.Reflection;
 using System.Text;
 using System.Collections.Generic;
-using Vse.Routines;
-using Vse.Routines.Storage;
-using Vse.Routines.Storage.SqlServer;
-using Vse.AdminkaV1.DomAuthentication;
-using Vse.AdminkaV1.DataAccessEfCore.Services;
-using Vse.AdminkaV1.DataAccessEfCore;
-using Vse.AdminkaV1.Injected.Configuration;
-using Vse.AdminkaV1.Injected.Logging;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Storage;
+using DashboardCode.Routines.Storage.SqlServer;
+using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.AdminkaV1.Injected.Configuration;
+using DashboardCode.AdminkaV1.Injected.Logging;
 
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
     using System.Security.Principal;
-    using Vse.Routines.Serialization.NETFramework;
-    using Vse.Routines.ActiveDirectory.NETFramework;
+    using DashboardCode.Routines.Serialization.NETFramework;
+    using DashboardCode.Routines.ActiveDirectory.NETFramework;
 #else
     using System.Security.Principal;
-    using Vse.Routines.Serialization.NETStandard;
+    using DashboardCode.Routines.Serialization.NETStandard;
 #endif
 
-namespace Vse.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected
 {
     public static class InjectedManager
     {

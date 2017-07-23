@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Vse.AdminkaV1.DomLogging
+namespace DashboardCode.AdminkaV1.DomLogging
 {
     public class VerboseRecord
     {

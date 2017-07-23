@@ -1,7 +1,7 @@
 ﻿using System;
-using Vse.AdminkaV1.DomLogging;
+using DashboardCode.AdminkaV1.DomLogging;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.Services
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class TraceService : ITraceService
     {

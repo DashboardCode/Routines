@@ -6,7 +6,7 @@ using System.IO;
 using System.Xml;
 using Vse.Web.Serialization;
 
-namespace Vse.Routines.Serialization.NETFramework
+namespace DashboardCode.Routines.Serialization.NETFramework
 {
     public static class SerializationManager
     {

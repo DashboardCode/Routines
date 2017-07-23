@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Vse.Routines.Configuration;
-using Vse.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration;
+using DashboardCode.Routines.Configuration.NETStandard;
 using Xunit;
 
 [assembly: CollectionBehavior(MaxParallelThreads = 1, DisableTestParallelization = true)]
 
-namespace Vse.AdminkaV1.Injected.NETStandard.Test
+namespace DashboardCode.AdminkaV1.Injected.NETStandard.Test
 {
     public class ConfigurationNETStandard : IAppConfiguration
     {

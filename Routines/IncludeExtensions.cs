@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Vse.Routines
+namespace DashboardCode.Routines
 {
     public static class IncludeExtensions
     {

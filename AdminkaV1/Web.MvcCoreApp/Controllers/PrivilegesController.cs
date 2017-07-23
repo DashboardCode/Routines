@@ -2,11 +2,11 @@
 using System.Threading.Tasks; // assync actions
 using Microsoft.AspNetCore.Mvc; // controler
 using Microsoft.Extensions.Configuration;
-using Vse.AdminkaV1.DomAuthentication; // entity
-using Vse.Routines.AspNetCore;
-using Vse.Routines;
+using DashboardCode.AdminkaV1.DomAuthentication; // entity
+using DashboardCode.Routines.AspNetCore;
+using DashboardCode.Routines;
 
-namespace Vse.AdminkaV1.Web.MvcCoreApp
+namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public class PrivilegesController : RoutineController
     {
@@ -33,7 +33,7 @@ namespace Vse.AdminkaV1.Web.MvcCoreApp
             return await routine.HandleStorageAsync<IActionResult, Privilege>(
                 (repository) =>
                 {
-                    var entities = repository.ToList(indexIncludes);
+                    var entities = repository.List(indexIncludes);
                     return View(entities);
                 });
         }
@@ -58,15 +58,15 @@ namespace Vse.AdminkaV1.Web.MvcCoreApp
             {
                 var rolesNavigation = new MvcNavigationManager<Privilege, Role, RolePrivilege, int>(
                     this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                    repository.Rebase<Role>().ToList()
+                    repository.Sprout<Role>().List()
                     );
                 var groupsNavigation = new MvcNavigationManager<Privilege, Group, GroupRole, int>(
                     this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                    repository.Rebase<Group>().ToList()
+                    repository.Sprout<Group>().List()
                 );
                 var usersNavigation = new MvcNavigationManager<Privilege, User, UserRole, int>(
                    this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
-                   repository.Rebase<User>().ToList()
+                   repository.Sprout<User>().List()
                 );
 
                 var mvcTube = new MvcTube(this);
@@ -94,7 +94,7 @@ namespace Vse.AdminkaV1.Web.MvcCoreApp
 
                 var rolesNavigation = new MvcNavigationManager<Privilege, Role, RolePrivilege, int>(
                     this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                    repository.Rebase<Role>().ToList()
+                    repository.Sprout<Role>().List()
                 );
                 rolesNavigation.Parse(
                     e => new RolePrivilege() { PrivilegeId = entity.PrivilegeId, RoleId = e.RoleId },
@@ -102,7 +102,7 @@ namespace Vse.AdminkaV1.Web.MvcCoreApp
 
                 var groupsNavigation = new MvcNavigationManager<Privilege, Group, GroupPrivilege, int>(
                      this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                     repository.Rebase<Group>().ToList()
+                     repository.Sprout<Group>().List()
                  );
                 groupsNavigation.Parse(
                                     e => new GroupPrivilege() { PrivilegeId = entity.PrivilegeId, GroupId = e.GroupId },
@@ -110,7 +110,7 @@ namespace Vse.AdminkaV1.Web.MvcCoreApp
 
                 var usersNavigation = new MvcNavigationManager<Privilege, User, UserPrivilege, int>(
                     this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
-                    repository.Rebase<User>().ToList()
+                    repository.Sprout<User>().List()
                  );
 
                 usersNavigation.Parse(

@@ -1,7 +1,7 @@
 ﻿using System;
-using Vse.Routines.Configuration.NETFramework;
+using DashboardCode.Routines.Configuration.NETFramework;
 
-namespace Vse.Routines.Configuration.NETFramework.Test
+namespace DashboardCode.Routines.Configuration.NETFramework.Test
 {
     public class State
     {

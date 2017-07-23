@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Vse.AdminkaV1.Web.MvcCoreApp.DTO
+namespace DashboardCode.AdminkaV1.Web.MvcCoreApp.DTO
 {
     public class UserDto
     {

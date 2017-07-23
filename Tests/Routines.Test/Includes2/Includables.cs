@@ -6,7 +6,7 @@
 //using Microsoft.EntityFrameworkCore;
 //using Microsoft.EntityFrameworkCore.Query;
 
-//namespace Vse.Includables2
+//namespace DashboardCode.Includables2
 //{
 //    public interface IIncludable<TRootEntity> where TRootEntity : class
 //    {

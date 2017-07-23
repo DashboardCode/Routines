@@ -2,7 +2,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Vse.Routines.AspNetCore
+namespace DashboardCode.Routines.AspNetCore
 {
     public class MvcTube
     {

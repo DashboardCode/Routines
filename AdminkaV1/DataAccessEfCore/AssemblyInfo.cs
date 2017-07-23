@@ -7,11 +7,11 @@ using System.Runtime.InteropServices;
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
 
 
-[assembly: AssemblyTitle("Vse.AdminkaV1.DataAccessEfCore")]
+[assembly: AssemblyTitle("DashboardCode.AdminkaV1.DataAccessEfCore")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Roman Pokrovskij (Github user rpokrovskij)")]
-[assembly: AssemblyProduct("Vse.AdminkaV1.DataAccessEfCore")]
+[assembly: AssemblyProduct("DashboardCode.AdminkaV1.DataAccessEfCore")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

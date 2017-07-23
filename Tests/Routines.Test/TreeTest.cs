@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Vse.Routines.Test
+namespace DashboardCode.Routines.Test
 {
     public class XNode
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Vse.Routines.Json
+namespace DashboardCode.Routines.Json
 {
     public delegate bool TypeHandler<T>(StringBuilder s, T t);
     public class JsonSerializerSettings

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Globalization;
 using System.Security.Principal;
-using Vse.AdminkaV1.DomAuthentication;
-using Vse.AdminkaV1.Injected.Configuration;
-using Vse.AdminkaV1.Injected.Logging;
-using Vse.Routines;
-using Vse.Routines.Configuration;
+using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.Injected.Configuration;
+using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Configuration;
 
-namespace Vse.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected
 {
     public class AuthenticationService
     {

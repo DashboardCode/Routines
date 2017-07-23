@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
-    <AssemblyName>Vse.Routines.AspNetCore</AssemblyName>
-    <RootNamespace>Vse.Routines.AspNetCore</RootNamespace>
+    <AssemblyName>DashboardCode.Routines.AspNetCore</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.AspNetCore</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

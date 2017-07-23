@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Vse.AdminkaV1.Web.MvcCoreClient": {
+    "DashboardCode.AdminkaV1.Web.MvcCoreClient": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Vse.AdminkaV1.Injected;
-using Vse.Routines;
-using Vse.Routines.Configuration;
+using DashboardCode.AdminkaV1.Injected;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Configuration;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
     public class AdminkaDbContextFactory : IDbContextFactory<AdminkaDbContext>
     {

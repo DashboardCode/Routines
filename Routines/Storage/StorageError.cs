@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vse.Routines.Storage
+namespace DashboardCode.Routines.Storage
 {
     public class StorageError
     {

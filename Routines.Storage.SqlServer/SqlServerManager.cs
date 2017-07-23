@@ -4,9 +4,9 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Vse.Routines.Storage;
+using DashboardCode.Routines.Storage;
 
-namespace Vse.Routines.Storage.SqlServer
+namespace DashboardCode.Routines.Storage.SqlServer
 {
     public static class SqlServerManager
     {

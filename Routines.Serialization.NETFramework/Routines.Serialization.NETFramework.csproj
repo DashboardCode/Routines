@@ -7,8 +7,8 @@
     <ProjectGuid>{44A20BD4-D2D8-43C4-8DB7-FA1129C3F0E1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vse.Routines.Serialization.NETFramework</RootNamespace>
-    <AssemblyName>Vse.Routines.Serialization.NETFramework</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.Serialization.NETFramework</RootNamespace>
+    <AssemblyName>DashboardCode.Routines.Serialization.NETFramework</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

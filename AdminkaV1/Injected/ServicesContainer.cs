@@ -1,9 +1,9 @@
-﻿using Vse.AdminkaV1.DomLogging;
-using Vse.AdminkaV1.DomAuthentication;
-using Vse.AdminkaV1.DataAccessEfCore;
-using Vse.AdminkaV1.DataAccessEfCore.Services;
+﻿using DashboardCode.AdminkaV1.DomLogging;
+using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 
-namespace Vse.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected
 {
     public class ServicesContainer
     {

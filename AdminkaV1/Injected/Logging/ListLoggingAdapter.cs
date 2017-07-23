@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vse.AdminkaV1.Injected.Configuration;
-using Vse.Routines.Storage;
-using Vse.Routines;
-using Vse.Routines.Injected;
+using DashboardCode.AdminkaV1.Injected.Configuration;
+using DashboardCode.Routines.Storage;
+using DashboardCode.Routines;
+using DashboardCode.Routines.Injected;
 
-namespace Vse.AdminkaV1.Injected.Logging
+namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public class ListLoggingAdapter : IBasicLogging, IAuthenticationLogging
     {

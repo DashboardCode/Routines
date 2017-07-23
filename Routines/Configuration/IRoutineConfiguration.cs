@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Vse.Routines.Configuration
+namespace DashboardCode.Routines.Configuration
 {
     public interface IRoutineResolvable
     {

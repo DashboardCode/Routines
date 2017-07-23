@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 
-namespace Vse.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.NETFramework
 {
     public class RoutinesConfigurationSection : ConfigurationSection
     {

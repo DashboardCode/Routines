@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vse.Routines.Injected
+namespace DashboardCode.Routines.Injected
 {
     public class BufferedVerboseLogging : IVerboseLogging
     {

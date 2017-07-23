@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace Vse.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.NETFramework
 {
     [ConfigurationCollection(typeof(RoutineElement), AddItemName = RoutineElementName, CollectionType = ConfigurationElementCollectionType.BasicMap)]
     public class RoutineElementCollection : ConfigurationElementCollection

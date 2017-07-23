@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
-[assembly: AssemblyTitle("Vse.Routines.Storage.SqlServer")]
+[assembly: AssemblyTitle("DashboardCode.Routines.Storage.SqlServer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Roman Pokrovskij (Github user rpokrovskij)")]
-[assembly: AssemblyProduct("Vse.Routines.Storage.SqlServer")]
+[assembly: AssemblyProduct("DashboardCode.Routines.Storage.SqlServer")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

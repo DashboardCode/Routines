@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Vse.AdminkaV1.DomTest;
-using Vse.Routines.Storage;
+using DashboardCode.AdminkaV1.DomTest;
+using DashboardCode.Routines.Storage;
 
-namespace Vse.AdminkaV1.DataAccessEfCore.Services
+namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class StorageMetaService
     {

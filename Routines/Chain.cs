@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Vse.Routines
+namespace DashboardCode.Routines
 {
     public class Chain<TRootEntity> 
     {

@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Vse.Routines.Json;
+using DashboardCode.Routines.Json;
 
-namespace Vse.Routines.Test
+namespace DashboardCode.Routines.Test
 {
     [TestClass]
     public class JsonValidationTest

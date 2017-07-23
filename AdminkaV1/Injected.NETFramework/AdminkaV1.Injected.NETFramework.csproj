@@ -7,8 +7,8 @@
     <ProjectGuid>{02666E1B-53C7-42DB-AC39-A16127DD5C81}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vse.AdminkaV1.Injected.NETFramework</RootNamespace>
-    <AssemblyName>Vse.AdminkaV1.Injected.NETFramework</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.NETFramework</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.NETFramework</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

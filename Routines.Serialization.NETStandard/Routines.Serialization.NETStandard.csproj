@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.4</TargetFramework>
-    <AssemblyName>Vse.Routines.Serialization.NETStandard</AssemblyName>
-    <RootNamespace>Vse.Routines.Serialization.NETStandard</RootNamespace>
+    <AssemblyName>DashboardCode.Routines.Serialization.NETStandard</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.Serialization.NETStandard</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

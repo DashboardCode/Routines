@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
+    <AssemblyName>DashboardCode.AdminkaV1.Web.ApiService</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Web.ApiService</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

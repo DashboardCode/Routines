@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace Vse.Routines.Storage.EfCore
+namespace DashboardCode.Routines.Storage.EfCore
 {
     public class QueryableIncluding<TRootEntity> : IChainVisitor<TRootEntity> where TRootEntity : class
     {

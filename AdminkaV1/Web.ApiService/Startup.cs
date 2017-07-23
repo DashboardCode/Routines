@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Vse.AdminkaV1.Web.ApiService
+namespace DashboardCode.AdminkaV1.Web.ApiService
 {
     public class Startup
     {

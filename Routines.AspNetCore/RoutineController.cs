@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-namespace Vse.Routines.AspNetCore
+namespace DashboardCode.Routines.AspNetCore
 {
     public class RoutineController : Controller
     {

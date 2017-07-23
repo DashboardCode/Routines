@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Vse.AdminkaV1.DomLogging
+namespace DashboardCode.AdminkaV1.DomLogging
 {
     public class Trace
     {

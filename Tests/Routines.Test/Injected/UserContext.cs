@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Vse.Routines.Injected.Test
+namespace DashboardCode.Routines.Injected.Test
 {
     public class UserContext
     {

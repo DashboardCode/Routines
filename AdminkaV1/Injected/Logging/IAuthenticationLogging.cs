@@ -1,6 +1,6 @@
-﻿using Vse.Routines;
+﻿using DashboardCode.Routines;
 
-namespace Vse.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected
 {
     public interface IAuthenticationLogging 
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Vse.Routines.Json
+namespace DashboardCode.Routines.Json
 {
     public static class JsonComplexStringBuilderExtensions
     {
