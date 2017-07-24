@@ -12,8 +12,8 @@ namespace DashboardCode.Routines.Storage.SqlServer
     {
         public static void Append(StringBuilder stringBuilder, Exception exception)
         {
-            if (exception is SqlException)
-                 AppendSqlException(stringBuilder, (SqlException)exception);
+            if (exception is SqlException sqlException)
+                 AppendSqlException(stringBuilder, sqlException);
         }
 
         public static void AppendSqlException(this StringBuilder stringBuilder, SqlException exception)
@@ -39,10 +39,8 @@ namespace DashboardCode.Routines.Storage.SqlServer
         public static void Analyze(Exception exception, List<FieldError> list, StorageModel storageModel)
         {
             if (storageModel != null)
-            {
-                if (exception is SqlException)
-                    AnalyzeSqlException((SqlException)exception, storageModel, list);
-            }
+                if (exception is SqlException sqlException)
+                    AnalyzeSqlException(sqlException, storageModel, list);
         }
 
         const string genericErrorField = "";

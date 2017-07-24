@@ -362,9 +362,8 @@ namespace DashboardCode.Routines.Json
         public static MethodInfo GetMethodInfoExpr<T>(Expression<Func<StringBuilder, T, bool>> expression)
         {
             MethodInfo methodInfo = default(MethodInfo);
-            if (expression.Body is MethodCallExpression)
+            if (expression.Body is MethodCallExpression callExpression)
             {
-                var callExpression = (MethodCallExpression)expression.Body;
                 var p0 = expression.Parameters[0];
                 var p1 = expression.Parameters[1];
                 var a0 = callExpression.Arguments[0];

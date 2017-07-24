@@ -86,8 +86,8 @@ namespace DashboardCode.Routines
             while (parent !=null)
             {
                 ancestorsAndSelf.Add(parent);
-                if (parent is TNode)
-                    parent = GetParent((TNode)parent);
+                if (parent is TNode alsoParent)
+                    parent = GetParent(alsoParent);
                 else
                 {
                     parent = default(TNodePrimal);
@@ -114,9 +114,8 @@ namespace DashboardCode.Routines
             var l = 0;  
             while (true)
             {
-                if (parent is TNode)
+                if (parent is TNode child)
                 {
-                    var child = (TNode)parent;
                     parent = GetParent(child);
                     if (parent == null)
                     {

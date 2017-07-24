@@ -61,9 +61,9 @@ namespace DashboardCode.Routines
             }
 
             var type = entity.GetType();
-            if (entity is IEnumerable)
+            if (entity is IEnumerable enumerableEntity)
             {
-                foreach (var value in (IEnumerable)entity)
+                foreach (var value in enumerableEntity)
                 {
                     if (value != null)
                     {
@@ -123,9 +123,9 @@ namespace DashboardCode.Routines
             }
 
             var type = entity.GetType();
-            if (entity is IEnumerable)
+            if (entity is IEnumerable enumerableEntity)
             {
-                foreach (var value in (IEnumerable)entity)
+                foreach (var value in enumerableEntity)
                 {
                     if (value != null)
                     {

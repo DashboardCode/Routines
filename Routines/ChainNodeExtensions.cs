@@ -123,9 +123,9 @@ namespace DashboardCode.Routines
             {
                 var type = sourceItem.GetType();
                 var typeInfo = type.GetTypeInfo();
-                if (sourceItem is string)
+                if (sourceItem is string sourceString)
                 {
-                    return new String(((string)sourceItem).ToCharArray()); // String.Copy((string)sourceItem) absent in standard
+                    return new String(sourceString.ToCharArray()); // String.Copy((string)sourceItem) absent in standard
                 }
                 else if (typeInfo.IsValueType)
                 {
@@ -153,19 +153,19 @@ namespace DashboardCode.Routines
             IEnumerable<ChainPropertyNode> nodes,
             IReadOnlyCollection<Type> systemTypes)
         {
-            if (source is Array)
+            if (source is Array sourceArray)
             {
-                CopyArray((Array)source, (Array)destination, (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
+                CopyArray(sourceArray, (Array)destination, sourceItem => CloneItem(sourceItem, nodes, systemTypes));
             }
-            else if (source is IList)
+            else if (source is IList sourceList)
             {
-                CopyList((IEnumerable)source, ((IList)destination), (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
+                CopyList(sourceList, (IList)destination, sourceItem => CloneItem(sourceItem, nodes, systemTypes));
             }
-            else if (source is IEnumerable && source.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
+            else if (source is IEnumerable sourceEnumerable && source.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
                     t.GetTypeInfo().IsGenericType &&
                     t.GetGenericTypeDefinition() == typeof(ISet<>)))
             {
-                CopySet((IEnumerable)source, destination, (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
+                CopySet(sourceEnumerable, destination, (sourceItem) => CloneItem(sourceItem, nodes, systemTypes));
             }
             else
             {
@@ -274,13 +274,13 @@ namespace DashboardCode.Routines
         {
             bool @value = true;
 
-            if (entity1 is Array && entity2 is Array)
+            if (entity1 is Array entityArray1 && entity2 is Array entityArray2)
             {
-                @value = EqualsArray((Array)entity1, (Array)entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
+                @value = EqualsArray(entityArray1, entityArray2, (e1, e2) => EqualsItem(e1, e2, nodes));
             }
-            else if (entity1 is IList && entity2 is IList)
+            else if (entity1 is IList entityList1 && entity2 is IList entityList2 )
             {
-                @value = EqualsList((IList)entity1, (IList)entity2, (e1, e2) => EqualsItem(e1, e2, nodes));
+                @value = EqualsList(entityList1, entityList2, (e1, e2) => EqualsItem(e1, e2, nodes));
             }
             else if (entity1 is IEnumerable && entity1.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
                     t.GetTypeInfo().IsGenericType &&
@@ -378,8 +378,8 @@ namespace DashboardCode.Routines
         public static string GetXPathOfNode(this ChainNode node)
         {
             var @value = default(string);
-            if (node is ChainPropertyNode)
-                @value = ChainNodeTree.Instance.GetXPathOfNode((ChainPropertyNode)node, n => n.Parent);
+            if (node is ChainPropertyNode chainPropertyNode)
+                @value = ChainNodeTree.Instance.GetXPathOfNode(chainPropertyNode, n => n.Parent);
             else
                 @value = "/";
             return @value;

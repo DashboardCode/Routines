@@ -25,12 +25,12 @@ namespace DashboardCode.Routines
                   .Append(exception.GetType().FullName)
                   .Append(" - ").AppendMarkdownLine(exception.Message)
                   .AppendException(ex);
-                if (ex is ArgumentException)
-                    sb.AppendArgumentException((ArgumentException)ex);
-                if (ex is System.IO.FileLoadException)
-                    sb.AppendFileLoadException((System.IO.FileLoadException)ex);
-                if (ex is System.IO.FileNotFoundException)
-                    sb.AppendFileNotFoundException((System.IO.FileNotFoundException)ex);
+                if (ex is ArgumentException argumentException)
+                    sb.AppendArgumentException(argumentException);
+                if (ex is System.IO.FileLoadException fileLoadException)
+                    sb.AppendFileLoadException(fileLoadException);
+                if (ex is System.IO.FileNotFoundException fileNotFoundException)
+                    sb.AppendFileNotFoundException(fileNotFoundException);
                 specificAppender?.Invoke(sb, ex);
                 if (exception.StackTrace != null)
                     sb.AppendMarkdownStackTrace(exception.StackTrace.Replace(Environment.NewLine, "  " + Environment.NewLine));

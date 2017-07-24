@@ -203,9 +203,9 @@ namespace DashboardCode.Routines.Json
         private Dictionary<Type, SerializerOptions> GetDictionary(ChainNode node)
         {
             var theDictionary = default(Dictionary<Type, SerializerOptions>);
-            if (node is ChainPropertyNode)
+            if (node is ChainPropertyNode chainPropertyNode)
             {
-                var path = ChainNodeTree.Instance.PathOfNode((ChainPropertyNode)node);
+                var path = ChainNodeTree.Instance.PathOfNode(chainPropertyNode);
                 for (int i = subsets.Count - 1; i >= 0; i--)
                 {
                     var subset = subsets[i];

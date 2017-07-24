@@ -29,8 +29,8 @@ namespace DashboardCode.Routines.ActiveDirectory.NETFramework
 
         public static void Append(StringBuilder stringBuilder, Exception exception)
         {
-            if (exception is LdapException)
-                AppendLdapException(stringBuilder, (LdapException)exception);
+            if (exception is LdapException ldapException)
+                AppendLdapException(stringBuilder, ldapException);
         }
 
         private static void AppendLdapException(this StringBuilder stringBuilder, LdapException exception)

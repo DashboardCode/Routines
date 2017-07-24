@@ -10,13 +10,13 @@ namespace DashboardCode.Routines.Storage.EfCore
     {
         public static void Analyze(Exception exception, List<FieldError> fieldsErrors, StorageModel storageModel)
         {
-            if (exception is DbUpdateConcurrencyException)
+            if (exception is DbUpdateConcurrencyException dbUpdateConcurrencyException)
             {
-                AnalyzeDbUpdateConcurrencyException((DbUpdateConcurrencyException)exception, fieldsErrors);
+                AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, fieldsErrors);
             }
-            if (exception is InvalidOperationException)
+            if (exception is InvalidOperationException invalidOperationException)
             {
-                AnalyzeInvalidOperationException((InvalidOperationException)exception, fieldsErrors, storageModel);
+                AnalyzeInvalidOperationException(invalidOperationException, fieldsErrors, storageModel);
             }
         }
 
@@ -37,17 +37,14 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, List<FieldError> fieldsErrors)
         {
-            if (exception is DbUpdateConcurrencyException)
-            {
-                fieldsErrors.Add(StorageModel.GenericErrorField, "The record you are attempted to edit is currently being modified by another user. The save operation was canceled! Refresh page and reload form before continue.");
-            }
+            fieldsErrors.Add(StorageModel.GenericErrorField, "The record you are attempted to edit is currently being modified by another user. The save operation was canceled! Refresh page and reload form before continue.");
         }
 
         public static void Append(StringBuilder sb, Exception ex)
         {
-            if (ex is DbUpdateConcurrencyException)
+            if (ex is DbUpdateConcurrencyException dbUpdateConcurrencyException)
             {
-                AppendDbUpdateConcurrencyException(sb, (DbUpdateConcurrencyException)ex);
+                AppendDbUpdateConcurrencyException(sb, dbUpdateConcurrencyException);
             }
         }
 
