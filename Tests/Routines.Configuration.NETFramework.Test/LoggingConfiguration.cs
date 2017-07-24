@@ -8,7 +8,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework.Test
         public bool Input { get; set; }
         public bool Output { get; set; }
         public bool Verbose { get; set; }
-        public bool UseBufferForVerbose { get; set; }
-        public bool VerboseWithStackTrace { get; set; }
+        public bool ShouldBufferVerbose { get; set; }
+        public bool ShouldVerboseWithStackTrace { get; set; }
     }
 }

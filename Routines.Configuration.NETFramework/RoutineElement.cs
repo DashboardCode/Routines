@@ -6,13 +6,13 @@ using System.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
-    public class RoutineElement :  ConfigurationElement, IRoutineResolvable, ICollectionMemberElement
+    public class RoutineElement :  ConfigurationElement, ICollectionMemberElement, IRoutineResolvable //, IRoutineResolvableRecord
     {
         private static readonly ConfigurationProperty NamespaceProperty =
             new ConfigurationProperty("namespace", typeof(string), "", ConfigurationPropertyOptions.None);
 
-        private static readonly ConfigurationProperty ClassProperty =
-            new ConfigurationProperty("class", typeof(string), "", ConfigurationPropertyOptions.None);
+        private static readonly ConfigurationProperty TypeProperty =
+            new ConfigurationProperty("type", typeof(string), "", ConfigurationPropertyOptions.None);
 
         private static readonly ConfigurationProperty MemberProperty =
             new ConfigurationProperty("member", typeof(string), "", ConfigurationPropertyOptions.None);
@@ -26,7 +26,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         private static readonly ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection
                                      {
                                          NamespaceProperty,
-                                         ClassProperty,
+                                         TypeProperty,
                                          MemberProperty,
                                          ForProperty,
                                          ConfigElementCollectionProperty
@@ -50,32 +50,36 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         {
             if (!Namespace.IsNullOrWhiteSpaceOrAsterix())
                 if (!char.IsLetter(Namespace[0]))
-                    throw new InvalidOperationException($"Routine's element Namespace property ({Namespace}) should be valid .NET namespace name ");
+                    throw new InvalidOperationException($"Routine's element Namespace property '{Namespace}' should be valid .NET namespace name ");
 
-            if (!Class.IsNullOrWhiteSpaceOrAsterix())
-                if (Class.Contains(".") || !char.IsLetter(Class[0]))
-                    throw new InvalidOperationException($"Routine's element Class property ({Class}) should be valid .NET class name");
+            if (!Type.IsNullOrWhiteSpaceOrAsterix())
+                if (Type.Contains(".") || !char.IsLetter(Type[0]))
+                    throw new InvalidOperationException($"Routine's element Type property '{Type}' should be valid .NET class name");
 
             if (!Member.IsNullOrWhiteSpaceOrAsterix())
                 if (Member.Contains(".") || !char.IsLetter(Member[0]))
-                    throw new InvalidOperationException($"Routine's element Member property ({Member}) should be valid .NET member name");
+                    throw new InvalidOperationException($"Routine's element Member property '{Member}' should be valid .NET member name");
 
             if (!Member.IsNullOrWhiteSpaceOrAsterix())
-                if (Class.IsNullOrWhiteSpaceOrAsterix())
-                    throw new InvalidOperationException($"Member '{Member}' can't be configured without Class");
+                if (Type.IsNullOrWhiteSpaceOrAsterix())
+                    throw new InvalidOperationException($"Member '{Member}' can't be configured without Type");
         }
         public string Key
         {
             get
             {
                 string @namespace = StringExtensions.ReplaceEmptyWithAsterix(Namespace);
-                string @class = StringExtensions.ReplaceEmptyWithAsterix(Class);
+                string type = StringExtensions.ReplaceEmptyWithAsterix(Type);
                 string member = StringExtensions.ReplaceEmptyWithAsterix(Member);
                 string @for = StringExtensions.ReplaceEmptyWithAsterix(For);
-                var key = @namespace + "."+@class + "." + member + "." + @for;
+                var key = @namespace + "."+type + "." + member + "." + @for;
                 return key;
             }
         }
+
+        //public RoutineResolvableRecord GetRoutineResolvableRecord() =>
+        //    new RoutineResolvableRecord() { Namespace = this.Namespace, Type = this.Type, Member = this.Member, For=this.For, Resolvables= ((IEnumerable)base[""]).Cast<IResolvable>().ToArray() };
+
         [ConfigurationProperty("namespace")]
         public string Namespace
         {
@@ -88,16 +92,16 @@ namespace DashboardCode.Routines.Configuration.NETFramework
                 this["namespace"] = value;
             }
         }
-        [ConfigurationProperty("class")]
-        public string Class
+        [ConfigurationProperty("type")]
+        public string Type
         {
             get
             {
-                return this["class"] as string;
+                return this["type"] as string;
             }
             set
             {
-                this["class"] = value;
+                this["type"] = value;
             }
         }
         [ConfigurationProperty("member")]

@@ -28,9 +28,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.WcfService.Client
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Configuration.NETFramework", "Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj", "{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Routines.Configuration.NETFramework.Test", "Tests\Routines.Configuration.NETFramework.Test\Vse.Routines.Configuration.NETFramework.Test.csproj", "{EB32496F-B021-4179-A593-BA8EB7631BC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashboardCode.Routines.Configuration.NETFramework.Test", "Tests\Routines.Configuration.NETFramework.Test\DashboardCode.Routines.Configuration.NETFramework.Test.csproj", "{EB32496F-B021-4179-A593-BA8EB7631BC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Routines.Test", "Tests\Routines.Test\Vse.Routines.Test.csproj", "{2B5CADED-2F8B-4809-ABA8-7B679D31E162}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashboardCode.Routines.Test", "Tests\Routines.Test\DashboardCode.Routines.Test.csproj", "{2B5CADED-2F8B-4809-ABA8-7B679D31E162}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp", "AdminkaV1\DataAccessEfCore.SqlServer.InstallerApp\AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
 EndProject
@@ -46,7 +46,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ef6TestApp", "Tests\Ef6TestApp\Ef6TestApp.csproj", "{FAEEA516-2296-4C52-9BE5-525B56F50880}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vse.Routines.Configuration.NETStandard.Test", "Tests\Routines.Configuration.NETStandard.Test\Vse.Routines.Configuration.NETStandard.Test.csproj", "{AD9E1549-E53F-4B52-9116-F198A1D7C393}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DashboardCode.Routines.Configuration.NETStandard.Test", "Tests\Routines.Configuration.NETStandard.Test\DashboardCode.Routines.Configuration.NETStandard.Test.csproj", "{AD9E1549-E53F-4B52-9116-F198A1D7C393}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.ActiveDirectory.NETFramework", "Routines.ActiveDirectory.NETFramework\Routines.ActiveDirectory.NETFramework.csproj", "{1C1AE759-8C0E-40B3-8936-94EC077AAAF2}"
 EndProject

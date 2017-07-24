@@ -7,10 +7,8 @@ namespace DashboardCode.Routines.Configuration
     public class ConfigurationContainer : IConfigurationContainer
     {
         private readonly List<IResolvable> elements;
-        public ConfigurationContainer(List<IResolvable> elements)
-        {
-            this.elements = elements;
-        }
+        public ConfigurationContainer(List<IResolvable> elements) => this.elements = elements;
+
         public string ResolveSerialized<T>()
         {
             var type = typeof(T);
@@ -19,6 +17,7 @@ namespace DashboardCode.Routines.Configuration
             var @value = ResolveSerialized(typeNamespace, typeName);
             return @value;
         }
+
         public string ResolveSerialized(string typeNamespace, string typeName)
         {
             var @value = default(string);
@@ -27,6 +26,7 @@ namespace DashboardCode.Routines.Configuration
                 @value = config.Value;
             return @value;
         }
+
         public T Resolve<T>() where T : IProgress<string>, new()
         {
             var @value = new T();

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETFramework

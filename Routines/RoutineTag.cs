@@ -18,27 +18,27 @@ namespace DashboardCode.Routines
             this(correlationToken, type.Namespace, type.Name, member)
         {
         }
-        public RoutineTag(Guid correlationToken, string @namespace, string @class, string member)
+        public RoutineTag(Guid correlationToken, string @namespace, string type, string member)
         {
             CorrelationToken = correlationToken;
             Namespace = @namespace;
-            Class = @class;
+            Type = type;
             Member = member;
         }
-        public RoutineTag(Guid correlationToken, string @class, string member)
+        public RoutineTag(Guid correlationToken, string type, string member)
         {
             CorrelationToken = correlationToken;
-            Class = @class;
+            Type = type;
             Member = member;
         }
         public Guid   CorrelationToken { get; private set; }
         public string Namespace        { get; private set; }
-        public string Class            { get; private set; }
+        public string Type            { get; private set; }
         public string Member           { get; private set; }
 
         public string GetCategory()
         {
-            var value = (Namespace != null ? Namespace + "." : "") + Class + "." + Member;
+            var value = (Namespace != null ? Namespace + "." : "") + Type + "." + Member;
             return value;
         }
 

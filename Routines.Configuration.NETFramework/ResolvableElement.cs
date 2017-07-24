@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
-    public class ResolvableElement : ConfigurationElement, IResolvable, ICollectionMemberElement
+    public class ResolvableElement : ConfigurationElement, ICollectionMemberElement, IResolvable //, IResolvableRecord
     {
         private static readonly ConfigurationProperty namespaceProperty =
             new ConfigurationProperty("namespace", typeof(string), "", ConfigurationPropertyOptions.None);
@@ -73,6 +73,10 @@ namespace DashboardCode.Routines.Configuration.NETFramework
             }
         }
         #endregion
+
+        //public ResolvableRecord GetResolvableRecord() =>
+        //    new ResolvableRecord { Namespace = this.Namespace, Type = this.Type, Value = this.Value };
+
         public void Validate()
         {
             if (Type.Contains(".") || !Type[0].IsLetterOrUnderscore())

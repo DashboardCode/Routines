@@ -44,14 +44,14 @@ namespace DashboardCode.Routines.Injected.Test
         {
             logger.Add($"{routineTag.GetCategory()} output " + output?.ToString());
         }
-        public bool UseBufferForVerbose
+        public bool ShouldBufferVerbose
         {
             get
             {
                 return true;
             }
         }
-        public bool VerboseWithStackTrace
+        public bool ShouldVerboseWithStackTrace
         {
             get
             {

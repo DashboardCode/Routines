@@ -52,18 +52,6 @@ namespace DashboardCode.Routines.Json
 
     public static class JsonChainTools
     {
-        //public static SerializerOptions ComposeLeafSerializerSet<TEntity>(
-        //    ChainNode node, 
-        //    RulesDictionary<TEntity> rulesDictionary)
-        //{
-        //    var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
-        //    var serializerOptions = rulesDictionary.GetRule("/", serializationType);
-
-        //    if (serializerOptions == null)
-        //        throw new NotConfiguredException($"Node '{node.GetXPathOfNode()}' included as leaf but formatter for its type '{serializationType.FullName}' is not configured");
-        //    return serializerOptions;
-        //}
-
         internal static bool IsNullable(Type type)
         {
             var @value = !type.GetTypeInfo().IsValueType || Nullable.GetUnderlyingType(type) != null;

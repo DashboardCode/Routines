@@ -37,7 +37,7 @@ namespace DashboardCode.AdminkaV1.WcfService
                 {
                     CorrelationToken = routineTag.CorrelationToken,
                     Namespace = routineTag.Namespace,
-                    Class = routineTag.Class,
+                    Type = routineTag.Type,
                     Member = routineTag.Member
                 },
                 Message = message,

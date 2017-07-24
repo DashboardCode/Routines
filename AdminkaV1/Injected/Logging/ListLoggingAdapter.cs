@@ -16,8 +16,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
         readonly Func<Exception, string> markdownException;
         readonly Func<object, string> serializeObject;
-        public bool UseBufferForVerbose { get; private set; }
-        public bool VerboseWithStackTrace { get; private set; }
+        public bool ShouldBufferVerbose { get; private set; }
+        public bool ShouldVerboseWithStackTrace { get; private set; }
 
         public ListLoggingAdapter(
             List<string> logger,
@@ -46,8 +46,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             };
             this.loggingConfiguration = loggingConfiguration;
             this.loggingPerformanceConfiguration = loggingPerformanceConfiguration;
-            this.UseBufferForVerbose = loggingVerboseConfiguration.UseBufferForVerbose;
-            this.VerboseWithStackTrace = loggingVerboseConfiguration.VerboseWithStackTrace;
+            this.ShouldBufferVerbose = loggingVerboseConfiguration.ShouldBufferVerbose;
+            this.ShouldVerboseWithStackTrace = loggingVerboseConfiguration.ShouldVerboseWithStackTrace;
         }
 
 

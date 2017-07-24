@@ -11,7 +11,7 @@ namespace DashboardCode.Routines.Configuration
             return configurationContainer;
         }
 
-        public static SortedDictionary<int, IRoutineResolvable> RangedRoutines(this IEnumerable<IRoutineResolvable> routines, string @namespace, string @class, string member)
+        public static SortedDictionary<int, IRoutineResolvable> RangedRoutines(this IEnumerable<IRoutineResolvable> routines, string @namespace, string type, string member)
         {
             var rangedRoutines = new Dictionary<int, IRoutineResolvable>();
             int rA = 0, rB = 1000, rC = 2000;
@@ -19,7 +19,7 @@ namespace DashboardCode.Routines.Configuration
             {
                 if (
                     (routine.Namespace == @namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
-                    && routine.Class == @class
+                    && routine.Type == type
                     && routine.Member == member)
                 {
                     if (!routine.For.IsNullOrWhiteSpaceOrAsterix())
@@ -29,7 +29,7 @@ namespace DashboardCode.Routines.Configuration
                 }
                 else if (
                     (routine.Namespace == @namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
-                    && routine.Class == @class
+                    && routine.Type == type
                     && routine.Member.IsNullOrWhiteSpaceOrAsterix())
                 {
                     if (!routine.For.IsNullOrWhiteSpaceOrAsterix())
@@ -39,7 +39,7 @@ namespace DashboardCode.Routines.Configuration
                 }
                 else if (
                     (routine.Namespace == @namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
-                    && routine.Class.IsNullOrWhiteSpaceOrAsterix()
+                    && routine.Type.IsNullOrWhiteSpaceOrAsterix()
                     && routine.Member.IsNullOrWhiteSpaceOrAsterix())
                 {
                     if (!routine.For.IsNullOrWhiteSpaceOrAsterix())

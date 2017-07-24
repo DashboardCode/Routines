@@ -21,14 +21,13 @@ namespace DashboardCode.Routines.Injected
             this.logBufferedVerbose = logBufferedVerbose;
             this.verboseWithStackTrace = verboseWithStackTrace;
         }
-        public void Input(DateTime dateTime, object o)
-        {
+
+        public void Input(DateTime dateTime, object o) =>
             Add(dateTime, ItemType.Input, null, o, null);
-        }
-        public void Output(DateTime dateTime, object o)
-        {
+
+        public void Output(DateTime dateTime, object o) =>
             Add(dateTime, ItemType.Output, null, o, null);
-        }
+
         public void LogVerbose(DateTime dateTime, string message)
         {
             IStackTraceProvider stackTrace = null;
@@ -40,6 +39,7 @@ namespace DashboardCode.Routines.Injected
 #endif
             Add(dateTime, ItemType.Verbose, message, null, stackTrace);
         }
+
         private void Add(DateTime dateTime, ItemType itemType, string verboseMessage, object inputOutput, IStackTraceProvider stackTrace)
         {
             lock (lockKey)
@@ -47,6 +47,7 @@ namespace DashboardCode.Routines.Injected
                 buffer.Add(new VerboseBufferItem(dateTime, itemType, verboseMessage, inputOutput, stackTrace));
             }
         }
+
         public void Flash()
         {
             var list = new List<VerboseMessage>();
@@ -104,29 +105,21 @@ namespace DashboardCode.Routines.Injected
     {
         readonly string stackTrace;
 
-        public StdStackTraceProvider(string stackTrace)
-        {
+        public StdStackTraceProvider(string stackTrace) =>
             this.stackTrace = stackTrace;
-        }
 
-        public string GetText()
-        {
-           return stackTrace;
-        }
+        public string GetText() =>
+           stackTrace;
     }
 #else
     public class NfStackTraceProvider : IStackTraceProvider
     {
         readonly System.Diagnostics.StackTrace stackTrace;
-        public NfStackTraceProvider(System.Diagnostics.StackTrace StackTrace)
-        {
+        public NfStackTraceProvider(System.Diagnostics.StackTrace StackTrace) =>
             this.stackTrace = stackTrace;
-        }
 
-        public string GetText()
-        {
-           return stackTrace.ToString();
-        }
+        public string GetText() =>
+           stackTrace.ToString();
     }
 #endif
     public class VerboseMessage

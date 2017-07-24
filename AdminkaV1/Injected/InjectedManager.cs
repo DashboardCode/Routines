@@ -42,7 +42,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         internal static IResolver GetResolver(this RoutineTag routineTag, IAppConfiguration configuration, out Func<UserContext, IResolver> specifyResolver)
         {
-            var specifieableConfigurationContainer = configuration.GetConfigurationContainer(routineTag.Namespace, routineTag.Class, routineTag.Member);
+            var specifieableConfigurationContainer = configuration.GetConfigurationContainer(routineTag.Namespace, routineTag.Type, routineTag.Member);
             specifyResolver = (userContext) => {
                 var @for = (userContext?.User?.HasPrivilege(Privilege.VerboseLogging) ?? false) ? Privilege.VerboseLogging : null;
                 var configurationContainer = specifieableConfigurationContainer.Specify(@for);
@@ -163,7 +163,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             exception.Data[nameof(RoutineTag.CorrelationToken)] = routineTag.CorrelationToken;
             exception.Data[nameof(RoutineTag.Namespace)]        = routineTag.Namespace;
-            exception.Data[nameof(RoutineTag.Class)]            = routineTag.Class;
+            exception.Data[nameof(RoutineTag.Type)]            = routineTag.Type;
             exception.Data[nameof(RoutineTag.Member)]           = routineTag.Member;
             return exception;
         }

@@ -5,18 +5,18 @@ namespace DashboardCode.AdminkaV1.Injected.Configuration
 {
     public class LoggingVerboseConfiguration :IProgress<string>
     {
-        public bool UseBufferForVerbose { get; private set; } = true;
-        public bool VerboseWithStackTrace { get; private set; } = false;
+        public bool ShouldBufferVerbose { get; private set; } = true;
+        public bool ShouldVerboseWithStackTrace { get; private set; } = false;
         public void Report(string json)
         {
             if (json != null)
             {
                 var dictionary = InjectedManager.DeserializeJson<Dictionary<string, string>>(json);
-                UseBufferForVerbose = bool.Parse(dictionary["UseBufferForVerbose"]);
+                ShouldBufferVerbose = bool.Parse(dictionary["ShouldBufferVerbose"]);
                 string verboseWithStackTrace;
-                if (dictionary.TryGetValue("VerboseWithStackTrace", out verboseWithStackTrace))
+                if (dictionary.TryGetValue("ShouldVerboseWithStackTrace", out verboseWithStackTrace))
                 {
-                    VerboseWithStackTrace = bool.Parse(verboseWithStackTrace);
+                    ShouldVerboseWithStackTrace = bool.Parse(verboseWithStackTrace);
                 }
             }
         }

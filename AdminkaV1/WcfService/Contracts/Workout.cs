@@ -5,10 +5,10 @@ namespace DashboardCode.AdminkaV1.WcfService.Contracts
 {
     static class RoutineErrorDataContractConstants
     {
-        public const string Routine = "https://dashboardcode.com/Adminka-V1";
-        public const string RoutineError = "https://dashboardcode.com/Adminka-V1";
+        public const string Routine             = "https://dashboardcode.com/Adminka-V1";
+        public const string RoutineError        = "https://dashboardcode.com/Adminka-V1";
         public const string AuthenticationFault = "https://dashboardcode.com/Adminka-V1";
-        public const string FaultCode = "https://dashboardcode.com/Adminka-V1";
+        public const string FaultCode           = "https://dashboardcode.com/Adminka-V1";
     }
 
     [DataContract(Namespace = RoutineErrorDataContractConstants.RoutineError)]
@@ -39,7 +39,7 @@ namespace DashboardCode.AdminkaV1.WcfService.Contracts
         [DataMember]
         public string Namespace { get; set; }
         [DataMember]
-        public string Class { get; set; }
+        public string Type { get; set; }
         [DataMember]
         public string Member { get; set; }
     }

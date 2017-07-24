@@ -20,8 +20,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         readonly Func<object, string> serializeObject;
         readonly Logger logger;
 
-        public bool UseBufferForVerbose { get; private set; }
-        public bool VerboseWithStackTrace { get; private set; }
+        public bool ShouldBufferVerbose { get; private set; }
+        public bool ShouldVerboseWithStackTrace { get; private set; }
         public NLogLoggingAdapter(
             RoutineTag routineTag,
             Func<Exception, string> markdownException,
@@ -46,8 +46,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             };
             this.loggingConfiguration = loggingConfiguration;
             this.loggingPerformanceConfiguration = loggingPerformanceConfiguration;
-            UseBufferForVerbose = loggingVerboseConfiguration.UseBufferForVerbose;
-            VerboseWithStackTrace = loggingVerboseConfiguration.VerboseWithStackTrace;
+            ShouldBufferVerbose = loggingVerboseConfiguration.ShouldBufferVerbose;
+            ShouldVerboseWithStackTrace = loggingVerboseConfiguration.ShouldVerboseWithStackTrace;
             var loggerName = "Routine:"+ routineTag.GetCategory();
             logger = LogManager.GetLogger(loggerName); // ~0.5 ms
         }

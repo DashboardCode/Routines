@@ -34,6 +34,9 @@ Manager    - singleton services, only one in project and handle very different f
 Extensions - pure extensions method (no state), many task oriented files 
 Constants  - static class with only const definitions 
 
+Type members
+------------------------------------------------------------------------------------------------------------
+is, has, can, should - prefixes for bool configuration-like fields
 
 Complex Routine and Share Resources Thoughts
 ----------------------------------------------------------------------------------------------------------

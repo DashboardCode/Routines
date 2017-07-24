@@ -13,11 +13,11 @@
 </head>
 <body>
 <pre><code>
-BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 1 (10.0.14393)
+BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 2 (10.0.15063)
 Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
-Frequency=3233538 Hz, Resolution=309.2588 ns, Timer=TSC
-  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
-  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.6.1648.0
+Frequency=3233542 Hz, Resolution=309.2584 ns, Timer=TSC
+  [Host] : Clr 4.0.30319.42000, 64bit RyuJIT-v4.7.2101.1
+  Clr    : Clr 4.0.30319.42000, 64bit RyuJIT-v4.7.2101.1
   Core   : .NET Core 4.6.25211.01, 64bit RyuJIT
 </code></pre>
 <pre><code></code></pre>
@@ -25,10 +25,10 @@ Frequency=3233538 Hz, Resolution=309.2588 ns, Timer=TSC
 <table>
 <thead><tr><th>Method</th><th>Job</th><th>Runtime</th><th>Mean</th><th>Error</th><th>StdDev</th><th> Min</th><th> Max</th><th>Median</th><th>Rank</th><th>Allocated</th>
 </tr>
-</thead><tbody><tr><td>TestList</td><td>Clr</td><td>Clr</td><td>5,153.3 ns</td><td>34.002 ns</td><td>31.806 ns</td><td>5,119.2 ns</td><td>5,213.4 ns</td><td>5,135.9 ns</td><td>3</td><td>0 B</td>
-</tr><tr><td>TestArray</td><td>Clr</td><td>Clr</td><td>730.1 ns</td><td>6.962 ns</td><td>6.512 ns</td><td>722.4 ns</td><td>743.9 ns</td><td>729.5 ns</td><td>2</td><td>0 B</td>
-</tr><tr><td>TestList</td><td>Core</td><td>Core</td><td>5,188.4 ns</td><td>102.816 ns</td><td>96.174 ns</td><td>5,070.3 ns</td><td>5,342.6 ns</td><td>5,185.6 ns</td><td>3</td><td>0 B</td>
-</tr><tr><td>TestArray</td><td>Core</td><td>Core</td><td>709.0 ns</td><td>6.126 ns</td><td>5.730 ns</td><td>700.8 ns</td><td>718.6 ns</td><td>708.1 ns</td><td>1</td><td>0 B</td>
+</thead><tbody><tr><td>TestList</td><td>Clr</td><td>Clr</td><td>5,168.4 ns</td><td>106.799 ns</td><td>104.891 ns</td><td>5,048.1 ns</td><td>5,441.1 ns</td><td>5,139.6 ns</td><td>3</td><td>0 B</td>
+</tr><tr><td>TestArray</td><td>Clr</td><td>Clr</td><td>704.7 ns</td><td>6.389 ns</td><td>5.977 ns</td><td>694.7 ns</td><td>713.1 ns</td><td>704.7 ns</td><td>1</td><td>0 B</td>
+</tr><tr><td>TestList</td><td>Core</td><td>Core</td><td>5,249.7 ns</td><td>83.718 ns</td><td>78.310 ns</td><td>5,106.1 ns</td><td>5,359.1 ns</td><td>5,264.5 ns</td><td>4</td><td>0 B</td>
+</tr><tr><td>TestArray</td><td>Core</td><td>Core</td><td>714.9 ns</td><td>13.612 ns</td><td>13.368 ns</td><td>686.4 ns</td><td>737.6 ns</td><td>717.8 ns</td><td>2</td><td>0 B</td>
 </tr></tbody></table>
 </body>
 </html>

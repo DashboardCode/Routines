@@ -9,12 +9,12 @@ namespace DashboardCode.Routines.Configuration.NETFramework
     public static class RoutinesConfigurationManager
     {
         const string key = "routinesConfiguration";
-        public static SpecifiableConfigurationContainer  GetConfigurationContainer(string @namespace, string @class, string member, string sectionName=key)
+        public static SpecifiableConfigurationContainer  GetConfigurationContainer(string @namespace, string type, string member, string sectionName=key)
         {
             var section = ConfigurationManager.GetSection(sectionName);
             var routinesConfigurationSection = (RoutinesConfigurationSection)section;
             var routinesColection = ((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineResolvable>();
-            var configurationContainer = RoutinesExtensions.GetConfigurationContainer(routinesColection, @namespace, @class, member);
+            var configurationContainer = RoutinesExtensions.GetConfigurationContainer(routinesColection, @namespace, type, member);
             return configurationContainer;
         }
 
@@ -59,7 +59,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework
             foreach (RoutineElement routineElement in routinesConfigurationSection.Routines)
             {
                 if (StringExtensions.AsterixEquals(routineNamespace, routineElement.Namespace))
-                    if (StringExtensions.AsterixEquals(routineClass, routineElement.Class))
+                    if (StringExtensions.AsterixEquals(routineClass, routineElement.Type))
                         if (StringExtensions.AsterixEquals(routineMember, routineElement.Member))
                             if (StringExtensions.AsterixEquals(routineFor, routineElement.For))
                             {
@@ -78,7 +78,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework
             }
             if (ourRoutineElement == null)
             {
-                ourRoutineElement = new RoutineElement() { Namespace = routineNamespace, Class = routineClass, Member = routineMember, For = routineFor};
+                ourRoutineElement = new RoutineElement() { Namespace = routineNamespace, Type = routineClass, Member = routineMember, For = routineFor};
                 ourRoutineElement.Validate();
                 routinesConfigurationSection.Routines.Add(ourRoutineElement);
             }
@@ -127,7 +127,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework
             foreach (RoutineElement routineElement in routinesConfigurationSection.Routines)
             {
                 var namespaceAttr = (string.IsNullOrWhiteSpace(routineElement.Namespace)) ? "" : $"namespace=\"{routineElement.Namespace}\"";
-                var classAttr = (string.IsNullOrWhiteSpace(routineElement.Class)) ? "" : $"class=\"{routineElement.Class}\"";
+                var classAttr = (string.IsNullOrWhiteSpace(routineElement.Type)) ? "" : $"type=\"{routineElement.Type}\"";
                 var memberAttr = (string.IsNullOrWhiteSpace(routineElement.Member)) ? "" : $"member=\"{routineElement.Member}\"";
                 var forAttr = (string.IsNullOrWhiteSpace(routineElement.For)) ? "" : $"for=\"{routineElement.For}\"";
                 stringBuilder.AppendLine($"<{RoutineElementCollection.RoutineElementName} {namespaceAttr} {classAttr} {memberAttr} {forAttr} >");

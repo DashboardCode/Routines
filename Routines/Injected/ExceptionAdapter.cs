@@ -11,13 +11,10 @@ namespace DashboardCode.Routines.Injected
             this.logException = logException;
             this.transformException = transformException;
         }
-        public void LogException(DateTime dateTime, Exception exception)
-        {
+        public void LogException(DateTime dateTime, Exception exception) =>
             logException(dateTime, exception);
-        }
-        public Exception TransformException(Exception exception)
-        {
-            return transformException(exception);
-        }
+
+        public Exception TransformException(Exception exception) =>
+            transformException(exception);
     }
 }

@@ -27,20 +27,16 @@ namespace DashboardCode.Routines.Configuration
             configurationContainer = new ConfigurationContainer(elements);
         }
 
-        public string ResolveSerialized<T>()
-        {
-            return configurationContainer.ResolveSerialized<T>();
-        }
+        public string ResolveSerialized<T>() =>
+             configurationContainer.ResolveSerialized<T>();
+        
 
-        public string ResolveSerialized(string routineNamespace, string routineType)
-        {
-            return configurationContainer.ResolveSerialized(routineNamespace, routineType);
-        }
+        public string ResolveSerialized(string routineNamespace, string routineType) =>
+             configurationContainer.ResolveSerialized(routineNamespace, routineType);
+        
 
-        public T Resolve<T>() where T : IProgress<string>, new()
-        {
-            return configurationContainer.Resolve<T>();
-        }
+        public T Resolve<T>() where T : IProgress<string>, new() =>
+            configurationContainer.Resolve<T>();
 
         public IConfigurationContainer Specify(string @for)
         {

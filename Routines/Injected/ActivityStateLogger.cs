@@ -7,10 +7,8 @@ namespace DashboardCode.Routines.Injected
         private readonly IActivityLogging activityLoggingAdapter;
         private DateTime startDateTime;
 
-        public ActivityStateLogger(IActivityLogging activityLoggingAdapter)
-        {
+        public ActivityStateLogger(IActivityLogging activityLoggingAdapter) =>
             this.activityLoggingAdapter = activityLoggingAdapter;
-        }
         
         public void LogStart()
         {

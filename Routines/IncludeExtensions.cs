@@ -81,7 +81,6 @@ namespace DashboardCode.Routines
         {
             var rootNode = include.GetChainNode();
             var paths = ChainNodeTree.Instance.GetTreeAsListOfPaths(rootNode);
-
             return paths;
         }
 

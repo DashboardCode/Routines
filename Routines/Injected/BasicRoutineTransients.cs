@@ -29,12 +29,12 @@ namespace DashboardCode.Routines.Injected
                 );
 
             exceptionHandler = new ExceptionHandler(defaultExceptionAdapter, monitorRoutineDurationTicks);
-            if (basicRoutineLoggingAdapter.UseBufferForVerbose)
+            if (basicRoutineLoggingAdapter.ShouldBufferVerbose)
             {
                 var bufferedVerboseLoggingAdapter = new BufferedVerboseLogging(
                     basicRoutineLoggingAdapter,
                     basicRoutineLoggingAdapter.LogBufferedVerbose,
-                    basicRoutineLoggingAdapter.VerboseWithStackTrace
+                    basicRoutineLoggingAdapter.ShouldVerboseWithStackTrace
                     );
                 routineLogging = new BufferedRoutineLogging(
                     activityLoggingAdapter, 
@@ -52,19 +52,13 @@ namespace DashboardCode.Routines.Injected
             }
         }
 
-        public TStateService ResolveStateService()
-        {
-            return stateService;
-        }
+        public TStateService ResolveStateService() => 
+            stateService;
 
-        public IExceptionHandler ResolveExceptionHandler()
-        {
-            return exceptionHandler;
-        }
+        public IExceptionHandler ResolveExceptionHandler() =>
+            exceptionHandler;
 
-        public IRoutineLogging ResolveRoutineLogging()
-        {
-            return routineLogging;
-        }
+        public IRoutineLogging ResolveRoutineLogging() =>
+            routineLogging;
     }
 }

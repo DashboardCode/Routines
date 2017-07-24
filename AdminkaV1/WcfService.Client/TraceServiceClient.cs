@@ -23,7 +23,7 @@ namespace DashboardCode.AdminkaV1.WcfService.Client
                 baseException.Data["RemoteUserContextExceptionCode"] = ex.Detail.UserContextExceptionCode;
                 baseException.Data["RemoteCorrelationToken"] = ex.Detail.RoutineTag.CorrelationToken;
                 baseException.Data["RemoteNamespace"] = ex.Detail.RoutineTag.Namespace;
-                baseException.Data["RemoteClass"] = ex.Detail.RoutineTag.Class;
+                baseException.Data["RemoteType"] = ex.Detail.RoutineTag.Type;
                 baseException.Data["RemoteMember"] = ex.Detail.RoutineTag.Member;
                 baseException.Data["RemoteDetails"] = ex.Detail.Details;
                 if (baseException != ex)

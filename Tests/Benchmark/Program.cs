@@ -6,7 +6,7 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            var b = new BenchmarkForEach();
+            var b = new BenchmarkRef();
             //var x1 = b.DelegateBuilded();
             //var x2 = b.Expression();
             //var s1 = b.();
@@ -23,7 +23,7 @@ namespace Benchmark
             //var jO = b.TestFuncDynamicInvoke();
             //var jA = b.TestFunc();
             //var jB = b.TestFuncBuilded();
-            BenchmarkRunner.Run<BenchmarkForEach>();
+            BenchmarkRunner.Run<BenchmarkRef>();
         }
     }
 }

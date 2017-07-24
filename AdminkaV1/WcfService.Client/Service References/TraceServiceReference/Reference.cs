@@ -116,7 +116,7 @@ namespace DashboardCode.AdminkaV1.WcfService.Client.TraceServiceReference {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string ClassField;
+        private string TypeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid CorrelationTokenField;
@@ -138,14 +138,14 @@ namespace DashboardCode.AdminkaV1.WcfService.Client.TraceServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Class {
+        public string Type {
             get {
-                return this.ClassField;
+                return this.TypeField;
             }
             set {
-                if ((object.ReferenceEquals(this.ClassField, value) != true)) {
-                    this.ClassField = value;
-                    this.RaisePropertyChanged("Class");
+                if ((object.ReferenceEquals(this.TypeField, value) != true)) {
+                    this.TypeField = value;
+                    this.RaisePropertyChanged("Type");
                 }
             }
         }

@@ -40,7 +40,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             {
                 headers.Add("X-RoutineTag-CorrelationToken", routineTag.CorrelationToken.ToString());
                 headers.Add("X-RoutineTag-Namespace", routineTag.Namespace);
-                headers.Add("X-RoutineTag-Class", routineTag.Class);
+                headers.Add("X-RoutineTag-Type", routineTag.Type);
                 headers.Add("X-RoutineTag-Member", routineTag.Member);
             }
         }

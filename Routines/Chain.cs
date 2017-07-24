@@ -2,8 +2,27 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
+using static System.Console;
 namespace DashboardCode.Routines
 {
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //Example 1   
+            //var myData = "Custom Data";
+            //var myData2 = myData is string ? "String" : "Not a string";
+            //var myData3 = myData is string a ? a : "Not a String";
+            //WriteLine(myData2);
+            //WriteLine(myData3);
+            ////Example 2   
+            //var x = 10;
+            dynamic y = 0b1001;
+            var sum = y is ValueType? $"Struct" : "Invalid data";
+            //WriteLine(sum);
+        }
+    }
+
     public class Chain<TRootEntity> 
     {
         protected readonly IChainVisitor<TRootEntity> chainVisitor;
