@@ -9,7 +9,10 @@
     <projectUrl>https://DashboardCode.com</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/rpokrovskij/Vse/master/Routines.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Functional framework to compose functions parametrized by object navigation (clone, compare, serialize etc.) and specialized IoC containers.</description>
+    <description>
+      Functional framework to compose functions parametrized by object navigation expression (such functions as "clone", "compare", "serialize" etc.) and
+      provide some popular but missed in standard framework abstractions.
+    </description>
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>Include Repository Trace Configure</tags>
