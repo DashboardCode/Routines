@@ -8,7 +8,7 @@ namespace DashboardCode.Routines.AspNetCore
         public IConfigurationRoot ConfigurationRoot { get; private set;}
         public RoutineController(IConfigurationRoot configurationRoot): base()
         {
-            this.ConfigurationRoot = configurationRoot;
+            ConfigurationRoot = configurationRoot;
         }
     }
 }

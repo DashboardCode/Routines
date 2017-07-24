@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.AspNetCore
@@ -27,9 +27,7 @@ namespace DashboardCode.Routines.AspNetCore
                 {
                     var dictionary = storageError.FieldErrors.ToDictionary((v1, v2) => v1 + ";" + Environment.NewLine + v2);
                     foreach (var i in dictionary)
-                    {
                         controller.ModelState.AddModelError(i.Key, i.Value);
-                    }
                     controller.ViewBag.Exception = storageError.Exception;
                     return error();
                 }
