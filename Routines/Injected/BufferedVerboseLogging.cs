@@ -32,7 +32,7 @@ namespace DashboardCode.Routines.Injected
         {
             IStackTraceProvider stackTrace = null;
             if (verboseWithStackTrace)
-#if NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6
+#if NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7
                 stackTrace = new StdStackTraceProvider(Environment.StackTrace);
 #else
                 stackTrace = new NfStackTraceProvider(new System.Diagnostics.StackTrace(1, true));
@@ -100,7 +100,7 @@ namespace DashboardCode.Routines.Injected
         string GetText();
     }
 
-#if NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6
+#if NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7
     public class StdStackTraceProvider : IStackTraceProvider
     {
         readonly string stackTrace;

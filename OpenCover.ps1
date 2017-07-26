@@ -34,7 +34,7 @@ $env:COVERALLS_REPO_TOKEN = "ZD4n81FTV3l3GG5XTLmJszvEmD5DKyHo8"
 $SolutionFolderPath = $PSScriptRoot #or enter it manually there 
 
 If ($SolutionFolderPath -eq '') {
-    $SolutionFolderPath = 'D:\cot\Vse'
+    $SolutionFolderPath = 'D:\cot\DashboardCode'
     #throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
 }
 

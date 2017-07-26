@@ -11,8 +11,8 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
 
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
-    using System.Security.Principal;
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
+using System.Security.Principal;
     using DashboardCode.Routines.Serialization.NETFramework;
     using DashboardCode.Routines.ActiveDirectory.NETFramework;
 #else
@@ -78,8 +78,8 @@ namespace DashboardCode.AdminkaV1.Injected
                         sb.AppendUserContextException((UserContextException)ex);
                     DataAccessEfCoreManager.Append(sb, ex);
                     SqlServerManager.Append(sb, ex);
-                    #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
-                        ActiveDirectoryManager.Append(sb, ex);
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
+                    ActiveDirectoryManager.Append(sb, ex);
                     #endif
                     appender?.Invoke(sb, ex);
                 }
@@ -130,8 +130,8 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public static string SerializeToJson(object o, int depth, bool ignoreDuplicates)
         {
-            #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
-                var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
+            var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
                 return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
             #else
                 var types = typeof(UserContext).GetTypeInfo().Assembly.GetTypes();
@@ -149,8 +149,8 @@ namespace DashboardCode.AdminkaV1.Injected
 #region Active directory
         public static IEnumerable<string> GetGroups(this IIdentity identity, out string identityName, out string givenName, out string surname)
         {
-            #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
-                var groups = ActiveDirectoryManager.GetGroups(identity, out identityName, out givenName, out surname);
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
+            var groups = ActiveDirectoryManager.GetGroups(identity, out identityName, out givenName, out surname);
                 return groups;
             #else
                 throw new NotImplementedException("LDAP is not supported for NETStandard");

@@ -5,9 +5,9 @@
     <version>1.1.0</version>
     <authors>Roman Pokrovskij</authors>
     <owners>Roman Pokrovskij</owners>
-    <licenseUrl>https://raw.githubusercontent.com/rpokrovskij/Vse/master/LICENSE</licenseUrl>
-    <projectUrl>https://DashboardCode.com</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/rpokrovskij/Vse/master/Routines.png</iconUrl>
+    <licenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/DashboardCode/Routines</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
       Functional framework to compose functions parametrized by object navigation expression (such functions as "clone", "compare", "serialize" etc.) and

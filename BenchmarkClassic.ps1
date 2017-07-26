@@ -2,7 +2,7 @@ $dotnetPath = 'C:\Program Files\dotnet\dotnet.exe'
 
 $SolutionFolderPath = $PSScriptRoot #or enter it manually there 
 If ($SolutionFolderPath -eq '') {
-    $SolutionFolderPath = 'D:\cot\Vse'
+    $SolutionFolderPath = 'D:\cot\DashboardCode'
     #throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
 }
 

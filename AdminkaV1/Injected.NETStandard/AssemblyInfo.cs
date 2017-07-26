@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6|| NETSTANDARD1_7)
 [assembly: AssemblyTitle("DashboardCode.AdminkaV1.Injected")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]

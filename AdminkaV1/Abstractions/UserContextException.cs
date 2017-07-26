@@ -1,13 +1,13 @@
 ﻿using System;
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
     using System.Runtime.Serialization;
 #endif
 
 namespace DashboardCode.AdminkaV1
 {
-    #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
     [Serializable]
-    #endif
+#endif
     public class UserContextException : Exception
     {
         public readonly string Code;
@@ -22,12 +22,12 @@ namespace DashboardCode.AdminkaV1
         {
             Code = code;
         }
-        #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6)
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
             info.AddValue("Code", Code);
         }
-        #endif
+#endif
     }
 }

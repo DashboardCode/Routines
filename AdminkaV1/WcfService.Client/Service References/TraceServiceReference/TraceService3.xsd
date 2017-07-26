@@ -12,10 +12,10 @@
   <xs:element name="RoutineError" nillable="true" type="tns:RoutineError" />
   <xs:complexType name="RoutineTag">
     <xs:sequence>
-      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CorrelationToken" type="ser:guid" />
       <xs:element minOccurs="0" name="Member" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Namespace" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
   <xs:element name="RoutineTag" nillable="true" type="tns:RoutineTag" />

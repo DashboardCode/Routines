@@ -116,9 +116,6 @@ namespace DashboardCode.AdminkaV1.WcfService.Client.TraceServiceReference {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string TypeField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid CorrelationTokenField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -127,6 +124,9 @@ namespace DashboardCode.AdminkaV1.WcfService.Client.TraceServiceReference {
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NamespaceField;
         
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TypeField;
+        
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -134,19 +134,6 @@ namespace DashboardCode.AdminkaV1.WcfService.Client.TraceServiceReference {
             }
             set {
                 this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string Type {
-            get {
-                return this.TypeField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.TypeField, value) != true)) {
-                    this.TypeField = value;
-                    this.RaisePropertyChanged("Type");
-                }
             }
         }
         
@@ -185,6 +172,19 @@ namespace DashboardCode.AdminkaV1.WcfService.Client.TraceServiceReference {
                 if ((object.ReferenceEquals(this.NamespaceField, value) != true)) {
                     this.NamespaceField = value;
                     this.RaisePropertyChanged("Namespace");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Type {
+            get {
+                return this.TypeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TypeField, value) != true)) {
+                    this.TypeField = value;
+                    this.RaisePropertyChanged("Type");
                 }
             }
         }

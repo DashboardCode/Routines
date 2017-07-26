@@ -2,7 +2,7 @@
 .\nuget.exe pack Routines.1.0.12.nuspec
 
 # delete all except App_Data folder and its content
-# D:\cot\Vse\AdminkaV1\Web\bin\Debug\net461\win7-x64
+# D:\cot\DashboardCode\AdminkaV1\Web\bin\Debug\net461\win7-x64
 
 # TOREAD: http://docs.nuget.org/ndocs/tools/nuget.exe-cli-reference#pack
 #         http://docs.nuget.org/ndocs/create-packages/symbol-packages nuget package symbols    

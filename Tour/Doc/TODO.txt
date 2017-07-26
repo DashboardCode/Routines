@@ -1,12 +1,10 @@
 Routines
 1) icon as bulb {}
-2) githubg vse -> DashboardCode 
+2) DashboardCode https://coveralls.io 
 3) review prefixes (compose, get)?
 4) ComposeClone, ComposeCopy, ComposeEquals, ComposeDiff
 5) Meta add leafs options
 6) Meta add leafs from EF Core model
-
-
 
 
 0. Migrate OpenCoverage
