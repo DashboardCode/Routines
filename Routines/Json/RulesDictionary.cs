@@ -205,11 +205,11 @@ namespace DashboardCode.Routines.Json
             var theDictionary = default(Dictionary<Type, SerializerOptions>);
             if (node is ChainPropertyNode chainPropertyNode)
             {
-                var path = ChainNodeTree.Instance.PathOfNode(chainPropertyNode);
+                var path = ChainNodeTree.FindLinkedRootPath(chainPropertyNode);
                 for (int i = subsets.Count - 1; i >= 0; i--)
                 {
                     var subset = subsets[i];
-                    if (ChainNodeTree.Instance.IsSubsetOf(path, subset.root))
+                    if (ChainNodeTree.chainNodeTreeMeta.IsSubsetOf(path, subset.root))
                     {
                         theDictionary = subset.dictionary;
                         break;

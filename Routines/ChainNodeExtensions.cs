@@ -379,7 +379,7 @@ namespace DashboardCode.Routines
         {
             var @value = default(string);
             if (node is ChainPropertyNode chainPropertyNode)
-                @value = ChainNodeTree.Instance.GetXPathOfNode(chainPropertyNode, n => n.Parent);
+                @value = ChainNodeTree.FindLinkedRootXPath(chainPropertyNode);
             else
                 @value = "/";
             return @value;

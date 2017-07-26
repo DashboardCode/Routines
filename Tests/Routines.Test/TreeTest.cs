@@ -56,38 +56,43 @@ namespace DashboardCode.Routines.Test
         }
     }
 
-    public class STree: Tree<SNodePrimal, SNode, string>{
+    public class STree : LinkedTree<SNodePrimal, SNode, string>
+    {
 
         public static readonly STree Instance = new STree();
 
-        private STree(): base(
+        private STree() : base(
                 (t) => t.Children.Values,
                 (t) => t.key,
-                (t, n) => {
+                (t, n) =>
+                {
                     SNode c = null;
                     t.Children.TryGetValue(n, out c); return c;
                 },
                 (t) => new SNodePrimal(t.tag),
-                (t, p) => { var t2 = new SNode(t.key, t.tag, t.val1); p.Children.Add(t.key, t2); return t2; }
+                (t, p) => { var t2 = new SNode(t.key, t.tag, t.val1); p.Children.Add(t.key, t2); return t2; },
+                (n) => n.Parent
             )
         {
 
         }
     }
 
-    public class XTree : Tree<XNode, XNode, string>
+    public class XTree : LinkedTree<XNode, XNode, string>
     {
         public static readonly XTree Instance = new XTree();
 
         private XTree() : base(
                 (t) => t.Children.Values,
                 (t) => t.key,
-                (t, n) => {
+                (t, n) =>
+                {
                     XNode c = null;
                     t.Children.TryGetValue(n, out c); return c;
                 },
                 (t) => new XNode(null),
-                (t, p) => { var t2 = new XNode(t.key); p.Children.Add(t.key, t2); return t2; }
+                (t, p) => { var t2 = new XNode(t.key); p.Children.Add(t.key, t2); return t2; },
+                (n) => n.Parent
             )
         {
 
@@ -103,8 +108,8 @@ namespace DashboardCode.Routines.Test
 
         XNode x1;
 
-        public TreeTest()
-        {
+                public TreeTest()
+                {
             x1 = new XNode(null);
             {
                 var a1 = x1.AddChild("a1");
@@ -203,9 +208,9 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void SNodeUnionTest()
         {
-            var z1 = STree.Instance.Union(s1, s2);
-            var z2 = STree.Instance.Union(s2, s1);
-            var z3 = STree.Instance.Union(z1, s3);
+            var z1 = STree.Instance.Merge(s1, s2);
+            var z2 = STree.Instance.Merge(s2, s1);
+            var z3 = STree.Instance.Merge(z1, s3);
 
             var b1 = STree.Instance.IsEqualTo(z1, z2);
             var b2 = STree.Instance.IsEqualTo(z2, z1);
@@ -216,7 +221,7 @@ namespace DashboardCode.Routines.Test
 
             var q1 = STree.Instance.IsSupersetOf(z3, s1);
             var q2 = STree.Instance.IsSupersetOf(z3, s2);
-            var q3 = STree.Instance.IsSupersetOf(z3,s3);
+            var q3 = STree.Instance.IsSupersetOf(z3, s3);
             if (q1 == false || q2 == false || q3 == false)
                 throw new Exception("union superset fails");
         }
@@ -224,9 +229,9 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void SNodeChainLists()
         {
-            var nodes1 = STree.Instance.GetTreeAsListOfPaths(s1);
-            var nodes2 = STree.Instance.GetTreeAsListOfPaths(s2);
-            var nodes3 = STree.Instance.GetTreeAsListOfPaths(s3);
+            var nodes1 = STree.Instance.ListLeafPaths(s1);
+            var nodes2 = STree.Instance.ListLeafPaths(s2);
+            var nodes3 = STree.Instance.ListLeafPaths(s3);
             if (nodes1.Count != 5 || nodes2.Count != 4 || nodes3.Count != 5)
                 throw new Exception("ToAncestorsAndSelfChains fails");
         }
@@ -238,13 +243,13 @@ namespace DashboardCode.Routines.Test
                       .Children.Values.First()
                       .Children.Values.First();
 
-            var p1 = STree.Instance.GetXPathOfNode(n, i=>i.Parent);
+            var p1 = STree.Instance.FindLinkedRootXPath(n);
 
             if (p1 != "/a1/b1/c1")
                 throw new Exception("SNodeChainPaths 1");
 
-            var p2 = STree.Instance.GetPathOfNode(n, i => i.Parent);
-            var p3 = STree.Instance.GetTreeAsXPathUnion(p2);
+            var p2 = STree.Instance.FindLinkedRootPath(n);
+            var p3 = STree.Instance.CollectLeafsToXPathUnion(p2);
 
             if (p3 != "/a1/b1/c1")
                 throw new Exception("SNodeChainPaths 2");
@@ -257,24 +262,24 @@ namespace DashboardCode.Routines.Test
                       .Children.Values.First()
                       .Children.Values.First();
 
-            var p1 = XTree.Instance.GetXPathOfNode(n, i => i.Parent);
+            var p1 = XTree.Instance.FindLinkedRootXPath(n);
 
             if (p1 != "/a1/b1/c1")
                 throw new Exception("SNodeChainPaths 1");
 
-            var p2 = XTree.Instance.GetPathOfNode(n, i => i.Parent);
-            var p3 = XTree.Instance.GetTreeAsXPathUnion(p2);
+            var p2 = XTree.Instance.FindLinkedRootPath(n);
+            var p3 = XTree.Instance.CollectLeafsToXPathUnion(p2);
 
             if (p3 != "/a1/b1/c1")
                 throw new Exception("SNodeChainPaths 2");
 
-            var p4 = XTree.Instance.GetXPathOfNode(x1, i => i.Parent);
+            var p4 = XTree.Instance.FindLinkedRootXPath(x1);
             if (p4 != "/")
                 throw new Exception("SNodeChainPaths 3");
 
-            var p5 = XTree.Instance.GetPathOfNode(x1, i => i.Parent);
+            var p5 = XTree.Instance.FindLinkedRootPath(x1);
 
-            var p6 = XTree.Instance.GetTreeAsXPathUnion(p5);
+            var p6 = XTree.Instance.CollectLeafsToXPathUnion(p5);
             if (p4 != "/")
                 throw new Exception("SNodeChainPaths 4");
         }

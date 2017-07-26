@@ -73,14 +73,14 @@ namespace DashboardCode.Routines
         public static IReadOnlyCollection<string[]> GetPaths<T>(this Include<T> include)
         {
             var rootNode = include.GetChainNode();
-            var paths = ChainNodeTree.Instance.GetTreeAsListKeysArray(rootNode);
+            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafKeyPaths(rootNode);
             return paths;
         }
 
         public static IReadOnlyCollection<ChainNode> GetAllTypePaths<T>(this Include<T> include, Type type)
         {
             var rootNode = include.GetChainNode();
-            var paths = ChainNodeTree.Instance.GetTreeAsListOfPaths(rootNode);
+            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafPaths(rootNode);
             return paths;
         }
 
@@ -89,7 +89,7 @@ namespace DashboardCode.Routines
             if (include == null)
                 return new List<string> { "/" };
             var rootNode = include.GetChainNode();
-            var paths = ChainNodeTree.Instance.GetTreeAsListOfXPaths(rootNode);
+            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafXPaths(rootNode);
             return paths;
         }
 
@@ -105,7 +105,7 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.GetChainNode();
             var rootNode2 = include2.GetChainNode();
 
-            bool @value = ChainNodeTree.Instance.IsEqualTo(rootNode1, rootNode2);
+            bool @value = ChainNodeTree.chainNodeTreeMeta.IsEqualTo(rootNode1, rootNode2);
             return @value;
         }
 
@@ -114,7 +114,7 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.GetChainNode();
             var rootNode2 = include2.GetChainNode();
 
-            bool @value = ChainNodeTree.Instance.IsSupersetOf(rootNode1, rootNode2);
+            bool @value = ChainNodeTree.chainNodeTreeMeta.IsSupersetOf(rootNode1, rootNode2);
             return @value;
         }
 
@@ -123,7 +123,7 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.GetChainNode();
             var rootNode2 = include2.GetChainNode();
 
-            bool @value = ChainNodeTree.Instance.IsSubsetOf(rootNode1, rootNode2);
+            bool @value = ChainNodeTree.chainNodeTreeMeta.IsSubsetOf(rootNode1, rootNode2);
             return @value;
         }
 
@@ -132,7 +132,7 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.GetChainNode();
             var rootNode2 = include2.GetChainNode();
 
-            var union = ChainNodeTree.Instance.Union(rootNode1, rootNode2);
+            var union = ChainNodeTree.chainNodeTreeMeta.Merge(rootNode1, rootNode2);
             var @value = union.ComposeInclude<T>();
             return @value;
         }

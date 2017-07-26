@@ -36,12 +36,9 @@ namespace DashboardCode.Routines
         }
     }
 
-    public class ChainNodeTree : Tree<ChainNode, ChainPropertyNode, string>
+    public static class ChainNodeTree
     {
-        public static readonly ChainNodeTree Instance = new ChainNodeTree((n)=>n.Parent);
-
-        private readonly Func<ChainPropertyNode, ChainNode> GetParent;
-        private ChainNodeTree(Func<ChainPropertyNode, ChainNode> GetParent) : base(
+        public static readonly LinkedTree<ChainNode, ChainPropertyNode, string> chainNodeTreeMeta = new LinkedTree<ChainNode, ChainPropertyNode, string>(
             n => n.Children.Values, 
             n => n.PropertyName, 
             (n,k)   => { var child = default(ChainPropertyNode); n.Children.TryGetValue(k, out child); return child; }, 
@@ -50,15 +47,18 @@ namespace DashboardCode.Routines
                 var child = new ChainPropertyNode(n.Type, n.Expression, n.PropertyInfo, n.PropertyName, n.IsEnumerable, p);
                 p.Children.Add(n.PropertyName, child);
                 return child;
-                }, 
-            (n1,n2) => n1.Type==n2.Type)
-        {
-            this.GetParent = GetParent;
-        }
+                },
+            (n)     => n.Parent,
+            (n1,n2) => n1.Type==n2.Type
+        );
 
-        public ChainNode PathOfNode(ChainPropertyNode node)
-        {
-            return this.GetPathOfNode(node, GetParent);
-        }
+        public static List<string[]> ListLeafKeyPaths (ChainNode node) =>
+             TreeExtensions.ListLeafKeyPaths(chainNodeTreeMeta, node);
+
+        public static string FindLinkedRootXPath(ChainPropertyNode node) =>
+             TreeExtensions.FindLinkedRootXPath(chainNodeTreeMeta, node);
+
+        public static ChainNode FindLinkedRootPath(ChainPropertyNode node) =>
+             TreeExtensions.FindLinkedRootPath(chainNodeTreeMeta, node);
     }
 }

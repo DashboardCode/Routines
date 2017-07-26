@@ -17,14 +17,14 @@ namespace DashboardCode.Routines
         public static void Detach<T>(T entity, Include<T> include) where T : class
         {
             var chainNode = include.GetChainNode();
-            var paths = ChainNodeTree.Instance.GetTreeAsListKeysArray(chainNode);
+            var paths = ChainNodeTree.ListLeafKeyPaths(chainNode);
             DetachRecursive(entity, paths);
         }
 
         public static void DetachAll<TCol, T>(IEnumerable<T> entities, Include<T> include) where TCol : IEnumerable<T>
         {
             var chainNode = include.GetChainNode();
-            var paths = ChainNodeTree.Instance.GetTreeAsListKeysArray(chainNode);
+            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafKeyPaths(chainNode);
             foreach (var entity in entities)
             {
                 if (entity != null)
@@ -35,7 +35,7 @@ namespace DashboardCode.Routines
         public static void Detach2<T>(T entity, Include<T> include) where T : class
         {
             var chainNode = include.GetChainNode();
-            var paths = ChainNodeTree.Instance.GetTreeAsListKeysArray(chainNode);
+            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafKeyPaths(chainNode);
             DetachRecursive2(entity, paths);
         }
 
