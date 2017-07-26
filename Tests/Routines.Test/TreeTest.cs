@@ -17,8 +17,10 @@ namespace DashboardCode.Routines.Test
 
         public XNode AddChild(string key)
         {
-            var n = new XNode(key);
-            n.Parent = this;
+            var n = new XNode(key)
+            {
+                Parent = this
+            };
             Children.Add(key, n);
             return n;
         }
@@ -35,8 +37,10 @@ namespace DashboardCode.Routines.Test
 
         public SNode AddChild(string key, string tag, int val1)
         {
-            var s = new SNode(key, tag, val1);
-            s.Parent = this;
+            var s = new SNode(key, tag, val1)
+            {
+                Parent = this
+            };
             Children.Add(key, s);
             return s;
         }
@@ -64,11 +68,7 @@ namespace DashboardCode.Routines.Test
         private STree() : base(
                 (t) => t.Children.Values,
                 (t) => t.key,
-                (t, n) =>
-                {
-                    SNode c = null;
-                    t.Children.TryGetValue(n, out c); return c;
-                },
+                (t, n) => t.Children.GetValueOrDefault(n),
                 (t) => new SNodePrimal(t.tag),
                 (t, p) => { var t2 = new SNode(t.key, t.tag, t.val1); p.Children.Add(t.key, t2); return t2; },
                 (n) => n.Parent
@@ -85,11 +85,7 @@ namespace DashboardCode.Routines.Test
         private XTree() : base(
                 (t) => t.Children.Values,
                 (t) => t.key,
-                (t, n) =>
-                {
-                    XNode c = null;
-                    t.Children.TryGetValue(n, out c); return c;
-                },
+                (t, n) => t.Children.GetValueOrDefault(n),
                 (t) => new XNode(null),
                 (t, p) => { var t2 = new XNode(t.key); p.Children.Add(t.key, t2); return t2; },
                 (n) => n.Parent

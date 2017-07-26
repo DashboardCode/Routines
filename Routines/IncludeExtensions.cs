@@ -62,42 +62,41 @@ namespace DashboardCode.Routines
             return destination;
         }
 
-        public static IEnumerable<Type> GetTypes<T>(this Include<T> include)
+        public static IReadOnlyCollection<Type> ListLeafTypes<T>(this Include<T> include)
         {
-            var nodes = include.GetChainNode();
-            var types = new List<Type>();
-            ChainNodeExtensions.FlattenMemberExpressionNode(nodes.Children.Values, types);
-            return types;
+            var node = include.GetChainNode();
+            var @types = node.ListLeafTypes();
+            return @types;
         }
 
-        public static IReadOnlyCollection<string[]> GetPaths<T>(this Include<T> include)
-        {
-            var rootNode = include.GetChainNode();
-            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafKeyPaths(rootNode);
-            return paths;
-        }
-
-        public static IReadOnlyCollection<ChainNode> GetAllTypePaths<T>(this Include<T> include, Type type)
+        public static IReadOnlyCollection<string[]> ListLeafKeyPaths<T>(this Include<T> include)
         {
             var rootNode = include.GetChainNode();
-            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafPaths(rootNode);
-            return paths;
+            var @paths = ChainNodeTree.ListLeafKeyPaths(rootNode);
+            return @paths;
         }
 
-        public static IEnumerable<string> GetXPaths<T>(this Include<T> include)
+        public static IReadOnlyCollection<ChainNode> ListLeafPaths<T>(this Include<T> include, Type type)
+        {
+            var rootNode = include.GetChainNode();
+            var @paths = ChainNodeTree.ListLeafPaths(rootNode);
+            return @paths;
+        }
+
+        public static IReadOnlyCollection<string> ListLeafXPaths<T>(this Include<T> include)
         {
             if (include == null)
                 return new List<string> { "/" };
             var rootNode = include.GetChainNode();
-            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafXPaths(rootNode);
-            return paths;
+            var @paths = ChainNodeTree.ListLeafXPaths(rootNode);
+            return @paths;
         }
 
         public static Include<T> Clone<T>(Include<T> include) where T : class
         {
             var rootNode = include.GetChainNode();
-            var cloned = rootNode.ComposeInclude<T>();
-            return cloned;
+            var @cloned = rootNode.ComposeInclude<T>();
+            return @cloned;
         }
 
         public static bool IsEqualTo<T>(this Include<T> include1, Include<T> include2)
@@ -105,7 +104,7 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.GetChainNode();
             var rootNode2 = include2.GetChainNode();
 
-            bool @value = ChainNodeTree.chainNodeTreeMeta.IsEqualTo(rootNode1, rootNode2);
+            bool @value = ChainNodeTree.IsEqualTo(rootNode1, rootNode2);
             return @value;
         }
 
@@ -114,7 +113,7 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.GetChainNode();
             var rootNode2 = include2.GetChainNode();
 
-            bool @value = ChainNodeTree.chainNodeTreeMeta.IsSupersetOf(rootNode1, rootNode2);
+            bool @value = ChainNodeTree.IsSupersetOf(rootNode1, rootNode2);
             return @value;
         }
 
@@ -123,16 +122,16 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.GetChainNode();
             var rootNode2 = include2.GetChainNode();
 
-            bool @value = ChainNodeTree.chainNodeTreeMeta.IsSubsetOf(rootNode1, rootNode2);
+            bool @value = ChainNodeTree.IsSubsetOf(rootNode1, rootNode2);
             return @value;
         }
 
-        public static Include<T> Union<T>(this Include<T> include1, Include<T> include2)
+        public static Include<T> Merge<T>(this Include<T> include1, Include<T> include2)
         {
             var rootNode1 = include1.GetChainNode();
             var rootNode2 = include2.GetChainNode();
 
-            var union = ChainNodeTree.chainNodeTreeMeta.Merge(rootNode1, rootNode2);
+            var union = ChainNodeTree.Merge(rootNode1, rootNode2);
             var @value = union.ComposeInclude<T>();
             return @value;
         }

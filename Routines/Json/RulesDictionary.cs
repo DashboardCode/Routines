@@ -209,7 +209,7 @@ namespace DashboardCode.Routines.Json
                 for (int i = subsets.Count - 1; i >= 0; i--)
                 {
                     var subset = subsets[i];
-                    if (ChainNodeTree.chainNodeTreeMeta.IsSubsetOf(path, subset.root))
+                    if (ChainNodeTree.IsSubsetOf(path, subset.root))
                     {
                         theDictionary = subset.dictionary;
                         break;
@@ -225,15 +225,14 @@ namespace DashboardCode.Routines.Json
         {
             var theDictionary = GetDictionary(node);
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
-            var rule = default(SerializerOptions);
-            if (!theDictionary.TryGetValue(serializationType, out rule))
+            if (!theDictionary.TryGetValue(serializationType, out SerializerOptions rule))
             {
                 var @delegate = CreateGeneralSerializer(serializationType, useToString);
                 rule = new SerializerOptions(@delegate, nullSerializer, handleNullProperty, internalNodeOptions);
             }
 
             if (rule?.Serializer == null)
-                throw new NotConfiguredException($"Node '{node.GetXPathOfNode()}' included as leaf but serializer for its type '{serializationType.FullName}' is not configured");
+                throw new NotConfiguredException($"Node '{node.FindLinkedRootXPath()}' included as leaf but serializer for its type '{serializationType.FullName}' is not configured");
             return rule;
         }
 
@@ -241,9 +240,8 @@ namespace DashboardCode.Routines.Json
         {
             var theDictionary = GetDictionary(node);
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
-            var rule = default(SerializerOptions);
             var options = default(InternalNodeOptions);
-            if (theDictionary.TryGetValue(serializationType, out rule))
+            if (theDictionary.TryGetValue(serializationType, out SerializerOptions rule))
                 options = rule.InternalNodeOptions;
             return options??internalNodeOptions;
         }

@@ -9,7 +9,7 @@ namespace DashboardCode.Routines
 {
     public static class ChainNodeExtensions
     {
-        public static Include<T> ComposeInclude<T>(this ChainNode root) //where T : class
+        public static Include<T> ComposeInclude<T>(this ChainNode root)
         {
             var parents = new ChainPropertyNode[0];
             var entityType = root.Type;
@@ -102,14 +102,22 @@ namespace DashboardCode.Routines
             return number + 1;
         }
 
-        internal static void FlattenMemberExpressionNode(this IEnumerable<ChainPropertyNode> nodes, List<Type> types)
+        public static List<Type> ListLeafTypes(this ChainNode node)
+        {
+            var nodes = node.Children.Values;
+            var types = new List<Type>();
+            ListLeafTypesRecursive(nodes, types);
+            return types;
+        }
+
+        private static void ListLeafTypesRecursive(this IEnumerable<ChainPropertyNode> nodes, List<Type> types)
         {
             foreach (var node in nodes)
             {
                 var type = MemberExpressionExtensions.GetMemberType(((MemberExpression)node.Expression.Body));
                 if (!types.Any(t => t.AssemblyQualifiedName == type.AssemblyQualifiedName))
                     types.Add(type);
-                FlattenMemberExpressionNode(node.Children.Values, types);
+                ListLeafTypesRecursive(node.Children.Values, types);
             }
         }
 
@@ -253,7 +261,7 @@ namespace DashboardCode.Routines
             }
         }
 
-        internal static bool EqualsItem(object entity1Item, object entity2Item, IEnumerable<ChainPropertyNode> nodes)
+        private static bool EqualsItem(object entity1Item, object entity2Item, IEnumerable<ChainPropertyNode> nodes)
         {
             if (entity1Item == null && entity2Item == null)
                 return true;
@@ -375,7 +383,7 @@ namespace DashboardCode.Routines
         }
         #endregion
 
-        public static string GetXPathOfNode(this ChainNode node)
+        public static string FindLinkedRootXPath(this ChainNode node)
         {
             var @value = default(string);
             if (node is ChainPropertyNode chainPropertyNode)

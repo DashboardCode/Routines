@@ -139,7 +139,7 @@ namespace DashboardCode.Routines.Json
                 if (JsonChainTools.IsNullable(node.Type, rootHandleNull))
                 {
                     if (serializerSet.NullSerializer == null)
-                        throw new NotSupportedException($"Null serializer is not setuped for internal node '{node.GetXPathOfNode()}' ");
+                        throw new NotSupportedException($"Null serializer is not setuped for internal node '{node.FindLinkedRootXPath()}' ");
                     var rootNullSerializeMethodInfo = serializerSet.NullSerializer.GetMethodInfo();
                     MethodCallExpression nullCallExpression = Expression.Call(rootNullSerializeMethodInfo, new Expression[] { sbParameterExpression });
 

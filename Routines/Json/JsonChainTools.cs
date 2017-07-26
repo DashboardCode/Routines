@@ -135,7 +135,7 @@ namespace DashboardCode.Routines.Json
                 if (IsNullable(node.Type))
                 {
                     if (itemSerializers.NullSerializer == null)
-                        throw new NotSupportedException($"Null serializer is not setuped for leaf node '{node.GetXPathOfNode()}' ");
+                        throw new NotSupportedException($"Null serializer is not setuped for leaf node '{node.FindLinkedRootXPath()}' ");
                     nullItemSerializerExpression = CreateSerializeNullConstant(itemSerializers.NullSerializer);
                 }
 
@@ -164,7 +164,7 @@ namespace DashboardCode.Routines.Json
                 if (IsNullable(node.Type, serializersPair.HandleNullProperty))
                 {
                     if (serializersPair.NullSerializer == null)
-                        throw new NotSupportedException($"Null serializer is not setuped for internal node '{node.GetXPathOfNode()}' ");
+                        throw new NotSupportedException($"Null serializer is not setuped for internal node '{node.FindLinkedRootXPath()}' ");
                     nullFormatterExpression = CreateSerializeNullConstant(serializersPair.NullSerializer);
                 }
                 //nullFormatterExpression = expressions.NullSerializer;

@@ -9,11 +9,11 @@ namespace DashboardCode.Routines
         where TNode : TNodePrimal
     {
         public readonly Func<TNodePrimal, IEnumerable<TNode>> GetChildren;
-        public readonly Func<TNodePrimal, TNodePrimal> CloneRootPrimal;
-        public readonly Func<TNode, TNodePrimal, TNode> CloneChild;
+        public readonly Func<TNodePrimal, TNodePrimal> DuplicateRoot;
+        public readonly Func<TNode, TNodePrimal, TNode> DuplicateChild;
         public readonly Func<TNode, TKey> GetKey;
         public readonly Func<TNodePrimal, TKey, TNode> GetChild;
-        public readonly Func<TNodePrimal, TNodePrimal, bool> RootPrimalEquals;
+        public readonly Func<TNodePrimal, TNodePrimal, bool> RootEquals;
 
         /// <summary>
         /// 
@@ -21,23 +21,23 @@ namespace DashboardCode.Routines
         /// <param name="getChildren"></param>
         /// <param name="getKey">get not root node's Key</param>
         /// <param name="getChild">get child by key</param>
-        /// <param name="cloneRootPrimal">param: node for clone; should return cloned node (with empty child list)</param>
-        /// <param name="cloneChild">1st param: node for clone; 2nd param: new parent; should return cloned node (with empty child list)</param>
-        /// <param name="rootPrimalEquals"></param>
+        /// <param name="duplicateRoot">param: node for clone; should return cloned node (with empty child list)</param>
+        /// <param name="duplicateChild">1st param: node for clone; 2nd param: new parent; should return cloned node (with empty child list)</param>
+        /// <param name="rootEquals"></param>
         public Tree(
             Func<TNodePrimal, IEnumerable<TNode>> getChildren,
             Func<TNode, TKey> getKey,
             Func<TNodePrimal, TKey, TNode> getChild,
-            Func<TNodePrimal, TNodePrimal> cloneRootPrimal,
-            Func<TNode, TNodePrimal, TNode> cloneChild,
-            Func<TNodePrimal, TNodePrimal, bool> rootPrimalEquals = null)
+            Func<TNodePrimal, TNodePrimal> duplicateRoot,
+            Func<TNode, TNodePrimal, TNode> duplicateChild,
+            Func<TNodePrimal, TNodePrimal, bool> rootEquals = null)
         {
             this.GetChildren = getChildren;
-            this.CloneRootPrimal = cloneRootPrimal;
-            this.CloneChild = cloneChild;
+            this.DuplicateRoot = duplicateRoot;
+            this.DuplicateChild = duplicateChild;
             this.GetKey = getKey;
             this.GetChild = getChild;
-            this.RootPrimalEquals = rootPrimalEquals ?? ((n1, n2) => true);
+            this.RootEquals = rootEquals ?? ((n1, n2) => true);
         }
     }
 
@@ -77,34 +77,34 @@ namespace DashboardCode.Routines
         public static TNodePrimal Clone<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey>  tree, TNodePrimal nodeHead)
             where TNode : TNodePrimal
         {
-            var cloned = tree.CloneRootPrimal(nodeHead); 
+            var cloned = tree.DuplicateRoot(nodeHead); 
             var children = tree.GetChildren(nodeHead);
 
             foreach (var c in children)
-                tree.cloneRecursive(c, cloned);
+                tree.CloneRecursive(c, cloned);
             return cloned;
         }
 
-        private static void cloneRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode n, TNodePrimal parent)
+        private static void CloneRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode n, TNodePrimal parent)
             where TNode : TNodePrimal
         {
-            var cloned = tree.CloneChild(n, parent);
+            var cloned = tree.DuplicateChild(n, parent);
             var children = tree.GetChildren(n);
             foreach (var c in children)
-                tree.cloneRecursive(c, cloned);
+                tree.CloneRecursive(c, cloned);
         }
 
         public static TNodePrimal Merge<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
             where TNode : TNodePrimal
         {
-            if (!tree.RootPrimalEquals(node1, node2))
-                throw new ArgumentException("Tree's root nodes are not equal. You can do union only trees when " +nameof(Tree<TNodePrimal,TNode,TKey>.RootPrimalEquals) + "tree's argument return true");
+            if (!tree.RootEquals(node1, node2))
+                throw new ArgumentException("Tree's root nodes are not equal. You can do union only trees when " +nameof(Tree<TNodePrimal,TNode,TKey>.RootEquals) + "tree's argument return true");
             var cloned = tree.Clone(node2);
-            tree.mergeRecursive(node1, cloned);
+            tree.MergeRecursive(node1, cloned);
             return cloned;
         }
 
-        private static void mergeRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal source, TNodePrimal cloned)
+        private static void MergeRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal source, TNodePrimal cloned)
             where TNode : TNodePrimal
         {
             var sourceChildren = tree.GetChildren(source);
@@ -113,9 +113,9 @@ namespace DashboardCode.Routines
                 var key = tree.GetKey(sourceChild);
                 var clonedChild = tree.GetChild(cloned, key);
                 if (clonedChild == null)
-                    tree.cloneRecursive(sourceChild, cloned);
+                    tree.CloneRecursive(sourceChild, cloned);
                 else
-                    tree.mergeRecursive(sourceChild, clonedChild);
+                    tree.MergeRecursive(sourceChild, clonedChild);
             }
         }
 
@@ -139,11 +139,11 @@ namespace DashboardCode.Routines
             ancestorsAndSelf.Reverse();
             var root = ancestorsAndSelf.First();
             ancestorsAndSelf.RemoveAt(0);
-            var @value = tree.CloneRootPrimal(root);
+            var @value = tree.DuplicateRoot(root);
             var p = @value;
             foreach (var a in ancestorsAndSelf)
             {
-                p = tree.CloneChild((TNode)a, p);
+                p = tree.DuplicateChild((TNode)a, p);
             }
             return @value;
         }
@@ -196,13 +196,13 @@ namespace DashboardCode.Routines
         public static bool IsEqualTo<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
             where TNode : TNodePrimal
         {
-            if (!tree.RootPrimalEquals(node1, node2))
+            if (!tree.RootEquals(node1, node2))
                 return false;
-            var @value = tree.isEqualToRecursive(node1, node2);
+            var @value = tree.IsEqualToRecursive(node1, node2);
             return @value;
         }
 
-        private static bool isEqualToRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
+        private static bool IsEqualToRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
             where TNode : TNodePrimal
         {
             var children1 = tree.GetChildren(node1); 
@@ -217,7 +217,7 @@ namespace DashboardCode.Routines
                 var key = tree.GetKey(n2);
                 var f = tree.GetChild(node1, key);
                 if (f != null)
-                    found = tree.isEqualToRecursive(n2, f);
+                    found = tree.IsEqualToRecursive(n2, f);
                 else
                     found = false;
                 if (found == false)
@@ -229,13 +229,13 @@ namespace DashboardCode.Routines
         public static bool IsSubsetOf<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
             where TNode : TNodePrimal
         {
-            if (!tree.RootPrimalEquals(node1, node2))
+            if (!tree.RootEquals(node1, node2))
                 return false;
-            var @value = tree.isSubsetRecursive(node1, node2);
+            var @value = tree.IsSubsetRecursive(node1, node2);
             return @value;
         }
 
-        private static bool isSubsetRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
+        private static bool IsSubsetRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
             where TNode : TNodePrimal
         {
             var children1 = tree.GetChildren(node1); 
@@ -248,7 +248,7 @@ namespace DashboardCode.Routines
                 var key = tree.GetKey(n);
                 var f = tree.GetChild(node2, key);
                 if (f != null)
-                    found = tree.isSubsetRecursive(n, f);
+                    found = tree.IsSubsetRecursive(n, f);
                 else
                     found = false;
                 if (found == false)
@@ -260,7 +260,7 @@ namespace DashboardCode.Routines
         public static bool IsSupersetOf<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
             where TNode : TNodePrimal
         {
-            var @value = tree.isSubsetRecursive(node2, node1);
+            var @value = tree.IsSubsetRecursive(node2, node1);
             return @value;
         }
         #endregion
@@ -275,19 +275,19 @@ namespace DashboardCode.Routines
             var basePath = new  List < Func<TNodePrimal, TNode> >();
             foreach (var c in children)
             {
-                basePath.Add((p) => tree.CloneChild(c, p));
-                tree.listLeafPathsRecursive(c, root, basePath, @value, condition);
+                basePath.Add((p) => tree.DuplicateChild(c, p));
+                tree.ListLeafPathsRecursive(c, root, basePath, @value, condition);
             }
             return @value;
         }
 
-        private static void listLeafPathsRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node, TNodePrimal nodeRoot, List<Func<TNodePrimal, TNode>> basePath, List<TNodePrimal> lists, Func<TNodePrimal, bool> condition)
+        private static void ListLeafPathsRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node, TNodePrimal nodeRoot, List<Func<TNodePrimal, TNode>> basePath, List<TNodePrimal> lists, Func<TNodePrimal, bool> condition)
             where TNode : TNodePrimal
         {
             var children = tree.GetChildren(node);
             if (children.Count() == 0)
             {
-                TNodePrimal newRoot = tree.CloneRootPrimal(nodeRoot);
+                TNodePrimal newRoot = tree.DuplicateRoot(nodeRoot);
                 TNodePrimal newNode = newRoot;
                 foreach (var f in basePath)
                 {
@@ -299,8 +299,8 @@ namespace DashboardCode.Routines
             else
                 foreach (var c in children)
                 {
-                    basePath.Add((p) => tree.CloneChild(c, p));
-                    tree.listLeafPathsRecursive(c, nodeRoot, basePath, lists, condition);
+                    basePath.Add((p) => tree.DuplicateChild(c, p));
+                    tree.ListLeafPathsRecursive(c, nodeRoot, basePath, lists, condition);
                 }
         }
 
@@ -310,11 +310,11 @@ namespace DashboardCode.Routines
             var pathes = new List<TKey[]>();
             var children = tree.GetChildren(node);
             foreach (var c in children)
-                tree.listLeafKeyPathsRecursive(c, new TKey[0], pathes);
+                tree.ListLeafKeyPathsRecursive(c, new TKey[0], pathes);
             return pathes;
         }
 
-        private static void listLeafKeyPathsRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode node, TKey[] basePath, List<TKey[]> pathes)
+        private static void ListLeafKeyPathsRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode node, TKey[] basePath, List<TKey[]> pathes)
             where TNode : TNodePrimal
         {
             var children = tree.GetChildren(node);
@@ -326,7 +326,7 @@ namespace DashboardCode.Routines
                 pathes.Add(path);
             else
                 foreach (var c in children)
-                    tree.listLeafKeyPathsRecursive(c, path, pathes);
+                    tree.ListLeafKeyPathsRecursive(c, path, pathes);
         }
 
         public static List<string> ListLeafXPaths<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node)
@@ -335,11 +335,11 @@ namespace DashboardCode.Routines
             var pathes = new List<string>();
             var children = tree.GetChildren(node);
             foreach (var c in children)
-                tree.listLeafXPaths(c, "", pathes);
+                tree.ListLeafXPaths(c, "", pathes);
             return pathes;
         }
 
-        private static void listLeafXPaths<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode node, string basePath, List<string> pathes)
+        private static void ListLeafXPaths<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode node, string basePath, List<string> pathes)
             where TNode : TNodePrimal
         {
             var children = tree.GetChildren(node);
@@ -349,7 +349,7 @@ namespace DashboardCode.Routines
                 pathes.Add(path);
             else
                 foreach (var c in children)
-                    tree.listLeafXPaths(c, path, pathes);
+                    tree.ListLeafXPaths(c, path, pathes);
         }
 
         public static string CollectLeafsToXPathUnion<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node)

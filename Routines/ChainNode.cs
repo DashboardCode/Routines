@@ -10,11 +10,8 @@ namespace DashboardCode.Routines
         public readonly Dictionary<string, ChainPropertyNode> Children = new Dictionary<string, ChainPropertyNode>();
         public readonly Type Type;
 
-        public ChainNode(Type type)
-        {
-            Type = type;
-        }
-
+        public ChainNode(Type type) => Type = type;
+        
     }
 
     public class ChainPropertyNode : ChainNode
@@ -38,10 +35,10 @@ namespace DashboardCode.Routines
 
     public static class ChainNodeTree
     {
-        public static readonly LinkedTree<ChainNode, ChainPropertyNode, string> chainNodeTreeMeta = new LinkedTree<ChainNode, ChainPropertyNode, string>(
+        private static readonly LinkedTree<ChainNode, ChainPropertyNode, string> meta = new LinkedTree<ChainNode, ChainPropertyNode, string>(
             n => n.Children.Values, 
             n => n.PropertyName, 
-            (n,k)   => { var child = default(ChainPropertyNode); n.Children.TryGetValue(k, out child); return child; }, 
+            (n,k)   => n.Children.GetValueOrDefault(k),
             (n)     => new ChainNode(n.Type), 
             (n,p)   => {
                 var child = new ChainPropertyNode(n.Type, n.Expression, n.PropertyInfo, n.PropertyName, n.IsEnumerable, p);
@@ -52,13 +49,31 @@ namespace DashboardCode.Routines
             (n1,n2) => n1.Type==n2.Type
         );
 
-        public static List<string[]> ListLeafKeyPaths (ChainNode node) =>
-             TreeExtensions.ListLeafKeyPaths(chainNodeTreeMeta, node);
-
         public static string FindLinkedRootXPath(ChainPropertyNode node) =>
-             TreeExtensions.FindLinkedRootXPath(chainNodeTreeMeta, node);
+             TreeExtensions.FindLinkedRootXPath(meta, node);
 
         public static ChainNode FindLinkedRootPath(ChainPropertyNode node) =>
-             TreeExtensions.FindLinkedRootPath(chainNodeTreeMeta, node);
+             TreeExtensions.FindLinkedRootPath(meta, node);
+
+        public static bool IsEqualTo(ChainNode node1, ChainNode node2) =>
+            TreeExtensions.IsEqualTo(meta, node1, node2);
+
+        public static bool IsSupersetOf(ChainNode node1, ChainNode node2) =>
+             TreeExtensions.IsSupersetOf(meta, node1, node2);
+
+        public static bool IsSubsetOf(ChainNode node1, ChainNode node2) =>
+            TreeExtensions.IsSubsetOf(meta, node1, node2);
+
+        public static ChainNode Merge(ChainNode node1, ChainNode node2) =>
+            TreeExtensions.Merge(meta, node1, node2);
+
+        public static IReadOnlyCollection<string[]> ListLeafKeyPaths(ChainNode node) =>
+             TreeExtensions.ListLeafKeyPaths(meta, node);
+
+        public static IReadOnlyCollection<ChainNode> ListLeafPaths(ChainNode node) =>
+              TreeExtensions.ListLeafPaths(meta, node);
+
+        public static IReadOnlyCollection<string> ListLeafXPaths(ChainNode node) =>
+              TreeExtensions.ListLeafXPaths(meta, node);
     }
 }

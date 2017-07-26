@@ -18,5 +18,16 @@ namespace DashboardCode.Routines.Storage.EfCore
             var dbSet = context.Set<T>();
             ObjectExtensions.Detach(entity, include);
         }
+
+        public static void AppendKeyLeafs<T>(this Include<T> include, DbContext context) where T : class
+        {
+            foreach (var entityType in context.Model.GetEntityTypes())
+            {
+                var properties = entityType.GetProperties().ToList();
+                entityType.FindKey(properties);
+                //entityType.FindAnnotation(properties);
+                
+            }
+        }
     }
 }

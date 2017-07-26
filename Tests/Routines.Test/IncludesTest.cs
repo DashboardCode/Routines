@@ -38,7 +38,7 @@ namespace DashboardCode.Routines.Test
             Include<TestModel> includeX = t => t.Include(e => e.PropertyInt); 
             var include2 = include1.AppendLeafs(); 
 
-            var pathes1 = include2.GetPaths();
+            var pathes1 = include2.ListLeafKeyPaths();
 
             if (pathes1.Count!=6)
                 throw new ApplicationException("IncludesAppendLeafsTest error");
@@ -114,7 +114,7 @@ namespace DashboardCode.Routines.Test
         {
             var source = TestTool.CreateTestModel();
             var include = TestTool.CreateInclude();
-            var pathes = include.GetPaths();
+            var pathes = include.ListLeafKeyPaths();
             if (pathes.Count != 13)
                 throw new ApplicationException("PathesIncluding doesn't working properly");
         }
@@ -187,7 +187,7 @@ namespace DashboardCode.Routines.Test
                 = includable => includable
                     .Include(i => i.CultureInfos);
 
-            var include = include1.Union(include2);
+            var include = include1.Merge(include2);
 
             if (!(include.IsSupersetOf(include1) && include.IsSupersetOf(include2)))
                 throw new ApplicationException("IncludesUnionTest 1");
@@ -327,7 +327,7 @@ namespace DashboardCode.Routines.Test
             var source = TestTool.CreateTestModel();
             var includes = TestTool.CreateInclude();
 
-            var b1 = IncludeExtensions.GetTypes(includes);
+            var b1 = IncludeExtensions.ListLeafTypes(includes);
             if (b1.Count() != 11)
                 throw new ApplicationException("Eqauls doesn't working properly. Case 1");
         }
@@ -380,7 +380,7 @@ namespace DashboardCode.Routines.Test
         {
             var source = TestTool.CreateTestModel();
             var includes = TestTool.CreateInclude();
-            var paths = includes.GetPaths();
+            var paths = includes.ListLeafKeyPaths();
             var ef6Includes = paths.Select(e => string.Join(".", e));
         }
 

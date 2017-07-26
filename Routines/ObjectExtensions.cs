@@ -24,7 +24,7 @@ namespace DashboardCode.Routines
         public static void DetachAll<TCol, T>(IEnumerable<T> entities, Include<T> include) where TCol : IEnumerable<T>
         {
             var chainNode = include.GetChainNode();
-            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafKeyPaths(chainNode);
+            var paths = ChainNodeTree.ListLeafKeyPaths(chainNode);
             foreach (var entity in entities)
             {
                 if (entity != null)
@@ -35,13 +35,13 @@ namespace DashboardCode.Routines
         public static void Detach2<T>(T entity, Include<T> include) where T : class
         {
             var chainNode = include.GetChainNode();
-            var paths = ChainNodeTree.chainNodeTreeMeta.ListLeafKeyPaths(chainNode);
+            var paths = ChainNodeTree.ListLeafKeyPaths(chainNode);
             DetachRecursive2(entity, paths);
         }
 
-        private static void DetachRecursive(object entity, List<string[]> allowedPaths)
+        private static void DetachRecursive(object entity, IReadOnlyCollection<string[]> allowedPaths)
         {
-            List<string[]> ModifyPaths(string propertyName, List<string[]> source)
+            IReadOnlyCollection<string[]> ModifyPaths(string propertyName, IReadOnlyCollection<string[]> source)
             {
                 var destination = new List<string[]>();
                 foreach (var path in allowedPaths)
@@ -101,9 +101,9 @@ namespace DashboardCode.Routines
             }
         }
 
-        private static void DetachRecursive2(object entity, List<string[]> allowedPaths)
+        private static void DetachRecursive2(object entity, IReadOnlyCollection<string[]> allowedPaths)
         {
-            List<string[]> ModifyPaths(string propertyName, List<string[]> source)
+            List<string[]> ModifyPaths(string propertyName, IReadOnlyCollection<string[]> source)
             {
                 var destination = new List<string[]>();
                 foreach (var path in allowedPaths)

@@ -100,12 +100,12 @@ namespace DashboardCode.AdminkaV1.Injected
 #region Serialize
         public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class
         {
-            var knownTypes = include.GetTypes();
+            var knownTypes = include.ListLeafTypes();
             return DeserializeXml<T>(xmlText, knownTypes);
         }
         public static string SerializeToXml<T>(T t, Include<T> include) where T: class
         {
-            var knownTypes = include.GetTypes();
+            var knownTypes = include.ListLeafTypes();
             return SerializeToXml(t, typeof(T), knownTypes);
         }
         public static string SerializeToXml(object o, IEnumerable<Type> knownTypes=null)
