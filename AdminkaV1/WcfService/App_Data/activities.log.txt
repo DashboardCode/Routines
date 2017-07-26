@@ -1,6 +1,0 @@
-23.07.17 16:48:10; TraceService.GetTrace; DashboardCode.AdminkaV1.WcfService; f36d3b11-6ed9-44b8-b1a9-b0a0d356722a; Started
-23.07.17 16:48:10; TraceService.GetTrace; DashboardCode.AdminkaV1.WcfService; f36d3b11-6ed9-44b8-b1a9-b0a0d356722a; FAILURE; 409ms
-24.07.17 13:49:34; TraceService.GetTrace; DashboardCode.AdminkaV1.WcfService; 9cf0c0ee-91b2-46dd-86a3-915b30970b1d; Started
-24.07.17 13:49:34; TraceService.GetTrace; DashboardCode.AdminkaV1.WcfService; 9cf0c0ee-91b2-46dd-86a3-915b30970b1d; FAILURE; 362ms
-26.07.17 18:43:35; TraceService.GetTrace; DashboardCode.AdminkaV1.WcfService; a7b41598-13e7-4779-a989-052f9a139fd0; Started
-26.07.17 18:43:35; TraceService.GetTrace; DashboardCode.AdminkaV1.WcfService; a7b41598-13e7-4779-a989-052f9a139fd0; FAILURE; 359ms
