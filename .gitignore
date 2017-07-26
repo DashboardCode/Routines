@@ -13,6 +13,7 @@
 #Logs
 AppData/*.log.xml
 AppData/*.log.txt
+AppData/*.zip
 
 #Test results
 TestsResults/
