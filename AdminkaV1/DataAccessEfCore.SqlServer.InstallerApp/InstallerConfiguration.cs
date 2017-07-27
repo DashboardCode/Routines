@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETStandard;
+using System;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
@@ -16,12 +16,22 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
         }
         public SpecifiableConfigurationContainer GetConfigurationContainer(string @namespace, string @class, string member)
         {
-            return RoutinesConfigurationManager.GetConfigurationContainer(ConfigurationRoot, @namespace, @class, member);
+            return RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, @namespace, @class, member);
         }
 
         public string GetConnectionString()
         {
             return RoutinesConfigurationManager.GetConnectionString(ConfigurationRoot, "adminka");
+        }
+
+        public string GetMigrationAssembly()
+        {
+            return "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp";
+        }
+
+        public StorageType GetStorageType()
+        {
+            return StorageType.SQLSERVER;
         }
     }
 }

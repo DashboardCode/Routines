@@ -1,8 +1,7 @@
-﻿#if NETCOREAPP1_1
-    using Xunit;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+#if NETCOREAPP1_1
     using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
 #else
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
 #endif 
 using System;
@@ -12,27 +11,21 @@ using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.Test
 {
-#if !NETCOREAPP1_1
     [TestClass]
-#endif
     public class SerializationWithRecursionTest
     {
 #if NETCOREAPP1_1
         ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
 #else
         ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
-        #endif
+#endif
 
         public SerializationWithRecursionTest()
         {
             TestIsland.Reset();
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public virtual void TestDetach()
         {
             var userContext = new UserContext("UnitTest");
@@ -56,11 +49,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             });
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public virtual void TestSerializtionRecursion()
         {
             var userContext = new UserContext("UnitTest");
@@ -80,11 +69,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             var json = InjectedManager.SerializeToJson(record,2,true);
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public virtual void TestProblematicDetachUsage()
         {
             var userContext = new UserContext("UnitTest");
@@ -106,11 +91,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
                 throw new Exception("Detach error");
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public virtual void TestXmlSerializeAndDesirialize()
         {
             var userContext = new UserContext("UnitTest");

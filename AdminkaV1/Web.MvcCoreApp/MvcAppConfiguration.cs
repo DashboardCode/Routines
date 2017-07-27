@@ -6,19 +6,20 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public class MvcAppConfiguration : IAppConfiguration
     {
-        public IConfigurationRoot ConfigurationRoot { get; private set; }
-        public MvcAppConfiguration(IConfigurationRoot configurationRoot){
-            this.ConfigurationRoot=configurationRoot;
-        }
+        public readonly IConfigurationRoot ConfigurationRoot;
+        public MvcAppConfiguration(IConfigurationRoot configurationRoot) =>
+            ConfigurationRoot=configurationRoot;
 
-        public SpecifiableConfigurationContainer GetConfigurationContainer(string @namespace, string @class, string member)
-        {
-            return RoutinesConfigurationManager.GetConfigurationContainer(ConfigurationRoot, @namespace, @class, member);
-        }
+        public SpecifiableConfigurationContainer GetConfigurationContainer(string @namespace, string @class, string member) =>
+            RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, @namespace, @class, member);
 
-        public string GetConnectionString()
-        {
-            return RoutinesConfigurationManager.GetConnectionString(ConfigurationRoot, "adminka");
-        }
+        public string GetConnectionString() =>
+            RoutinesConfigurationManager.GetConnectionString(ConfigurationRoot, "adminka");
+
+        public string GetMigrationAssembly() =>
+            null;
+
+        public StorageType GetStorageType() =>
+            StorageType.SQLSERVER;
     }
 }

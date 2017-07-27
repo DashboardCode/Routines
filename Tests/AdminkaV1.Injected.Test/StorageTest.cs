@@ -1,8 +1,7 @@
-﻿#if NETCOREAPP1_1
-    using Xunit;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+#if NETCOREAPP1_1
     using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
 #else
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
 #endif 
 using System.Collections.Generic;
@@ -15,9 +14,7 @@ using System;
 
 namespace DashboardCode.AdminkaV1.Injected.Test
 {
-#if !NETCOREAPP1_1
     [TestClass]
-#endif
     public class StorageTest
     {
 #if NETCOREAPP1_1
@@ -31,11 +28,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             TestIsland.Reset();
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public void TestStore()
         {
             var userContext = new UserContext("UnitTest");
@@ -142,11 +135,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             });
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public void TestStoreUpdateRelations()
         {
             var userContext = new UserContext("UnitTest");

@@ -37,6 +37,8 @@ Constants  - static class with only const definitions
 Type members
 ------------------------------------------------------------------------------------------------------------
 is, has, can, should - prefixes for bool configuration-like fields
+Get vs Resolve vs Create - when Create build new in method, Resolve build new but somewhere in internals, 
+		Get - something else, and never interface method
 
 Complex Routine and Share Resources Thoughts
 ----------------------------------------------------------------------------------------------------------

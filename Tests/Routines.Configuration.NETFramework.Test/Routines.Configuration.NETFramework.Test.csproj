@@ -31,7 +31,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -58,13 +58,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="TestConfiguration.cs" />
+    <Compile Include="ConfigurationNETFramework.cs" />
     <Compile Include="ConfigurationUnitTest.cs" />
-    <Compile Include="State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LoggingPerformanceConfiguration.cs" />
-    <Compile Include="LoggingConfiguration.cs" />
-    <Compile Include="StaticTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj">
@@ -102,6 +98,7 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems" Label="Shared" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

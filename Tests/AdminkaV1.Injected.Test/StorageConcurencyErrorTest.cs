@@ -1,10 +1,9 @@
 ﻿#if NETCOREAPP1_1
-    using Xunit;
     using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
 #else
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
+    using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
 #endif  
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.AdminkaV1.DomTest;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
@@ -12,9 +11,7 @@ using System;
 
 namespace DashboardCode.AdminkaV1.Injected.Test
 {
-#if !NETCOREAPP1_1
     [TestClass]
-#endif
     public class StorageConcurencyErrorTest
     {
 #if NETCOREAPP1_1
@@ -28,11 +25,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             TestIsland.Clear();
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public void TestConcurencyError()
         {
             var userContext = new UserContext("UnitTest");

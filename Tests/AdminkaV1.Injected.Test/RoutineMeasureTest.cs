@@ -1,8 +1,7 @@
-﻿#if NETCOREAPP1_1
-    using Xunit;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+#if NETCOREAPP1_1
     using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
 #else
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
 #endif
 using System.Collections.Generic;
@@ -12,9 +11,7 @@ using System;
 
 namespace DashboardCode.AdminkaV1.Injected.Test
 {
-#if !NETCOREAPP1_1
     [TestClass]
-#endif
     public class RoutineMeasureTest
     {
 #if NETCOREAPP1_1
@@ -28,11 +25,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             TestIsland.Clear(); // main reason is to cache ef core db context
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public void MeasureRoutine()
         {
             var logger = new List<string>();
@@ -48,11 +41,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             });
         }
 
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public void MeasureRoutineNoAuthorization()
         {
             var logger = new List<string>();
@@ -71,11 +60,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         /// <summary>
         /// Measure speed of empty routine
         /// </summary>
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public void MeasureRoutineRepository()
         {
             var logger = new List<string>();
@@ -94,11 +79,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         /// <summary>
         /// Measure speed of empty routine and exception handler
         /// </summary>
-#if NETCOREAPP1_1
-        [Fact]
-#else
         [TestMethod]
-#endif
         public void MeasureRoutineRepositoryException()
         {
             var logger = new List<string>();

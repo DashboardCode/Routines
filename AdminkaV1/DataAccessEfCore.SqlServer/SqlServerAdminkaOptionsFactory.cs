@@ -17,12 +17,10 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
             var optionsBuilder = new DbContextOptionsBuilder<TContext>();
             // TODO: support sql express
             // optionsBuilder.UseSqlite("Filename=./blog.db");
-            // TODO: move out migration assembly name
-            optionsBuilder.UseSqlServer(
-                connectionString,
-                sqlServerDbContextOptionsBuilder => 
-                    sqlServerDbContextOptionsBuilder.MigrationsAssembly(migrationAssembly)
-                );
+            if (migrationAssembly != null)
+                optionsBuilder.UseSqlServer(connectionString, sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly(migrationAssembly));
+            else
+                optionsBuilder.UseSqlServer(connectionString);
             var options = optionsBuilder.Options;
             return options;
         }

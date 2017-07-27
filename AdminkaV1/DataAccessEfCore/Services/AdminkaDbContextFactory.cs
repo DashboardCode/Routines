@@ -5,25 +5,21 @@ using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
-    public class DbContextFactory
+    public class AdminkaDbContextFactory
     {
         readonly IAdminkaOptionsFactory optionsFactory;
         readonly LoggerProvider loggerProvider;
-        public DbContextFactory(IAdminkaOptionsFactory optionsFactory, RoutineState<UserContext> state)
+        public AdminkaDbContextFactory(IAdminkaOptionsFactory optionsFactory, RoutineState<UserContext> state)
         {
             this.optionsFactory = optionsFactory;
             var loggerProviderConfiguration = state.Resolve<LoggerProviderConfiguration>();
             if (loggerProviderConfiguration.Enabled)
-            {
-                var loggerProvider = new LoggerProvider(loggerProviderConfiguration);
-                loggerProvider.Verbose = state.Verbose;
-                this.loggerProvider = loggerProvider;
-            }
+                loggerProvider = new LoggerProvider(loggerProviderConfiguration) { Verbose = state.Verbose };
         }
-        public AdminkaDbContext CreateDbContext()
+        public AdminkaDbContext CreateAdminkaDbContext()
         {
             var dbContext = new AdminkaDbContext(optionsFactory);
-            if (this.loggerProvider != null)
+            if (loggerProvider != null)
             {
                 var loggerFactory = dbContext.GetService<ILoggerFactory>();
                 loggerFactory.AddProvider(loggerProvider);

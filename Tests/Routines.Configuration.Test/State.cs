@@ -1,14 +1,18 @@
 ﻿using System;
-using DashboardCode.Routines.Configuration.NETFramework;
 
-namespace DashboardCode.Routines.Configuration.NETFramework.Test
+namespace DashboardCode.Routines.Configuration.Test
 {
     public class State
     {
         IConfigurationContainer configContainer;
         public State(string controller, string action, string @for=null)
         {
-            var basicConfigContainer = RoutinesConfigurationManager.GetConfigurationContainer(null, controller, action);
+#if NETCOREAPP1_1
+            var Configuration = new DashboardCode.Routines.Configuration.NETStandard.Test.ConfigurationNETStandard();
+#else
+            var Configuration = new DashboardCode.Routines.Configuration.NETFramework.Test.ConfigurationNETFramework();
+#endif
+            var basicConfigContainer = Configuration.GetSpecifiableConfigurationContainer(null, controller, action);
             if (string.IsNullOrWhiteSpace(@for))
             {
                 configContainer = basicConfigContainer;

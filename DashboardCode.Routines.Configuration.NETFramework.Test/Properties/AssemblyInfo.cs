@@ -2,18 +2,18 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("DashboardCode.Routines.ConfigurationEx.Test")]
+[assembly: AssemblyTitle("DashboardCode.Routines.Configuration.NETFramework.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DashboardCode.Routines.ConfigurationEx.Test")]
+[assembly: AssemblyProduct("DashboardCode.Routines.Configuration.NETFramework.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: ComVisible(false)]
 
-[assembly: Guid("ad9e1549-e53f-4b52-9116-f198a1d7c393")]
+[assembly: Guid("75faa35c-a90e-4a98-a71e-d1b6a8537a59")]
 
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]

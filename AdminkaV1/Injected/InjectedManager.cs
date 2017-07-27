@@ -32,7 +32,8 @@ namespace DashboardCode.AdminkaV1.Injected
         public static StorageMetaService GetStorageMetaService(IAppConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString();
-            return new StorageMetaService(connectionString);
+            var migrationAssembly = configuration.GetMigrationAssembly();
+            return new StorageMetaService(connectionString, migrationAssembly, StorageType.SQLSERVER);
         }
         internal static IResolver GetSpecifiedResolver(this RoutineTag routineTag, UserContext userContext, IAppConfiguration configuration)
         {

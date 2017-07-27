@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using DashboardCode.Routines.Configuration.Test;
 
 namespace DashboardCode.Routines.Configuration.NETFramework.Test
 {
@@ -49,12 +50,12 @@ namespace DashboardCode.Routines.Configuration.NETFramework.Test
         public void TestAsterix()
         {
             var state1 = new State(nameof(ConfigurationUnitTest), nameof(TestAsterix));
-            var t1 = state1.Resolve<TestConfiguration>();
+            var t1 = state1.Resolve<MyTestConfiguration>();
             if (t1._Value!=10)
                 throw new ApplicationException("Test fails. Case 1");
 
             var state2 = new State(nameof(ConfigurationUnitTest), nameof(TestAsterix), "superuser");
-            var t2 = state2.Resolve<TestConfiguration>();
+            var t2 = state2.Resolve<MyTestConfiguration>();
             if (t2._Value != 100)
                 throw new ApplicationException("Test fails. Case 2");
         }
