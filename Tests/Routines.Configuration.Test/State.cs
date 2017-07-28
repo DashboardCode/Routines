@@ -7,12 +7,7 @@ namespace DashboardCode.Routines.Configuration.Test
         IConfigurationContainer configContainer;
         public State(string controller, string action, string @for=null)
         {
-#if NETCOREAPP1_1
-            var Configuration = new DashboardCode.Routines.Configuration.NETStandard.Test.ConfigurationNETStandard();
-#else
-            var Configuration = new DashboardCode.Routines.Configuration.NETFramework.Test.ConfigurationNETFramework();
-#endif
-            var basicConfigContainer = Configuration.GetSpecifiableConfigurationContainer(null, controller, action);
+            var basicConfigContainer = ZoneManager.GetConfiguration().GetSpecifiableConfigurationContainer(null, controller, action);
             if (string.IsNullOrWhiteSpace(@for))
             {
                 configContainer = basicConfigContainer;

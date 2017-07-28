@@ -4,10 +4,9 @@ namespace EfCoreTestApp
 {
     public static class TestIsland
     {
-        public static void Reset(string connectionString)
+        public static void Reset(string connectionString, bool inMemory)
         {
-            Clear(connectionString);
-            using (var dbContext = new MyDbContext(connectionString))
+            using (var dbContext = new MyDbContext(connectionString, inMemory))
             {
                 var typeRecord1 = new TypeRecord()
                 {

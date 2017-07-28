@@ -11,10 +11,13 @@ namespace EfCoreTestApp
     {
         static void Main(string[] args)
         {
+            bool inMemory = true;
             var connectionString = ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
             Console.WriteLine("Check connection string:");
             Console.WriteLine(connectionString);
-            TestIsland.Reset(connectionString);
+            if (!inMemory)
+                TestIsland.Clear(connectionString);
+            TestIsland.Reset(connectionString, inMemory);
             var loggerProvider = new MyLoggerProvider();
             var messages = new List<string>();
             loggerProvider.Verbose = (text) => {
@@ -22,11 +25,16 @@ namespace EfCoreTestApp
                 Console.WriteLine(text);
                 Console.WriteLine();
             };
+            TestHierarchy(connectionString, loggerProvider);
+        }
+
+        private static void TestHierarchy(string connectionString, MyLoggerProvider loggerProvider)
+        {
             using (var dbContext = new MyDbContext(connectionString, loggerProvider))
             {
                 var parentRecord = dbContext.ParentRecords
-                    .Include(e=>e.ParentRecordHierarchyRecordMap)
-                    .ThenInclude(e=>e.HierarchyRecord).First(e => e.FieldA == "1_A");
+                    .Include(e => e.ParentRecordHierarchyRecordMap)
+                    .ThenInclude(e => e.HierarchyRecord).First(e => e.FieldA == "1_A");
                 var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count(); // 5
                 var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2).ToList();
                 var count2 = only2.Count(); // 2

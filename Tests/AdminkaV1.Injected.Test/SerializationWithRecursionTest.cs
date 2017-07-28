@@ -1,9 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-#if NETCOREAPP1_1
-    using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
-#else
-    using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
-#endif 
 using System;
 using System.Linq;
 using DashboardCode.AdminkaV1.DomTest;
@@ -14,12 +9,6 @@ namespace DashboardCode.AdminkaV1.Injected.Test
     [TestClass]
     public class SerializationWithRecursionTest
     {
-#if NETCOREAPP1_1
-        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
-#else
-        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
-#endif
-
         public SerializationWithRecursionTest()
         {
             TestIsland.Reset();
@@ -29,7 +18,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public virtual void TestDetach()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
 
             Include<ParentRecord> include = includable =>
                        includable
@@ -53,7 +42,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public virtual void TestSerializtionRecursion()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             var record = routine.Handle((state, dataAccess) =>
             {
                 Include<TypeRecord> include = includable =>
@@ -73,7 +62,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public virtual void TestProblematicDetachUsage()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
@@ -95,7 +84,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public virtual void TestXmlSerializeAndDesirialize()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);

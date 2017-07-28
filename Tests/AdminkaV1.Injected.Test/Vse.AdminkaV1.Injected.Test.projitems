@@ -6,7 +6,7 @@
     <SharedGUID>b9077909-87f9-494b-9d6b-5e4f18a7325b</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>Vse.AdminkaV1.Injected.Test</Import_RootNamespace>
+    <Import_RootNamespace>DashboardCode.AdminkaV1.Injected.Test</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)EfCoreStrangesTest.cs" />
@@ -17,5 +17,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)StorageModelErrorTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StorageTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestIsland.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ZoneManager.cs" />
   </ItemGroup>
 </Project>

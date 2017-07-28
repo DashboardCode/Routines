@@ -12,25 +12,29 @@ namespace EfCoreTestApp
             var loadit = new[] { typeof(Remotion.Linq.DefaultQueryProvider),
                 typeof(System.Collections.Generic.AsyncEnumerator)};
         }
-        private static DbContextOptions<MyDbContext> CreateOptions(string connectionString)
+        private static DbContextOptions<MyDbContext> CreateOptions(string connectionString, bool inMemory=false)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
-            // TODO: support sql express
-            // optionsBuilder.UseSqlite("Filename=./blog.db");
-            optionsBuilder.UseSqlServer(
-                connectionString,
-                sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly("EfCoreTest")
+            if (inMemory)
+                optionsBuilder.UseInMemoryDatabase(
+                  "EfCoreTest_InMemory"
                 );
+            else
+                optionsBuilder.UseSqlServer(
+                        connectionString,
+                        sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly("EfCoreTestApp")
+                        );
+
             var options = optionsBuilder.Options;
             return options;
         }
 
-        public MyDbContext(string connectionString)
-            : base(CreateOptions(connectionString))
+        public MyDbContext(string connectionString, bool inMemory=false)
+            : base(CreateOptions(connectionString, inMemory))
         {
         }
-        public MyDbContext(string connectionString, MyLoggerProvider loggerProvider)
-            : base(CreateOptions(connectionString))
+        public MyDbContext(string connectionString, MyLoggerProvider loggerProvider, bool inMemory = false)
+            : base(CreateOptions(connectionString, inMemory))
         {
             this.GetService<ILoggerFactory>().AddProvider(loggerProvider);
         }
@@ -54,9 +58,10 @@ namespace EfCoreTestApp
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            var relationalOptions = RelationalOptionsExtension.Extract(optionsBuilder.Options);
-            relationalOptions.MigrationsHistoryTableName = "Migrations";
-            relationalOptions.MigrationsHistoryTableSchema = "ef";
+            
+            //var relationalOptions = RelationalOptionsExtension.Extract(optionsBuilder.Options);
+            //relationalOptions.MigrationsHistoryTableName = "Migrations";
+            //relationalOptions.MigrationsHistoryTableSchema = "ef";
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

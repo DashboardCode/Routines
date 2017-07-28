@@ -1,9 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-#if NETCOREAPP1_1
-    using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
-#else
-    using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
-#endif 
+
 using System.Linq;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines;
@@ -16,11 +12,6 @@ namespace DashboardCode.AdminkaV1.Injected.Test
     [TestClass]
     public class EfCoreStrangesTest
     {
-#if NETCOREAPP1_1
-        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
-#else
-        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
-#endif
 
         public EfCoreStrangesTest()
         {
@@ -31,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public void EfCoreTestStoreUpdateRelationsErrorTracking()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
@@ -75,11 +66,6 @@ namespace DashboardCode.AdminkaV1.Injected.Test
     [TestClass]
     public class EfCoreStrangesTest2
     {
-#if NETCOREAPP1_1
-        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
-#else
-        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
-#endif
         public EfCoreStrangesTest2()
         {
             TestIsland.Reset();
@@ -89,7 +75,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public void EfCoreTestStoreUpdateRelationsErrorNoTracking()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, Configuration, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)

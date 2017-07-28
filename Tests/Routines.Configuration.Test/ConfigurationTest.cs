@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-#if NETCOREAPP1_1
+﻿#if NETCOREAPP1_1
     using Xunit;
-    using DashboardCode.Routines.Configuration.NETStandard;
-    using DashboardCode.Routines.Configuration.NETStandard.Test;
 #else
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using DashboardCode.Routines.Configuration.NETFramework;
-    using DashboardCode.Routines.Configuration.NETFramework.Test;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif 
 
 
@@ -20,11 +12,6 @@ namespace DashboardCode.Routines.Configuration.Test
 #endif
     public class ConfigurationTest
     {
-#if NETCOREAPP1_1
-        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
-#else
-        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
-#endif
 
 #if NETCOREAPP1_1
         [Fact]
@@ -35,7 +22,7 @@ namespace DashboardCode.Routines.Configuration.Test
 #endif
         public void ReadConfigurationTest()
         {
-           var configurationRoot = Configuration.GetSpecifiableConfigurationContainer("Namespace1", "Class1", "Member1"); 
+           var configurationRoot = ZoneManager.GetConfiguration().GetSpecifiableConfigurationContainer("Namespace1", "Class1", "Member1"); 
         }
     }
 }

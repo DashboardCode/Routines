@@ -3,32 +3,18 @@ using DashboardCode.AdminkaV1.DomTest;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 
-#if NETCOREAPP1_1
-    using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
-#else
-    using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
-#endif 
-
 namespace DashboardCode.AdminkaV1.Injected.Test
 {
     public static class TestIsland
     {
-
         public static void Reset()
         {
-#if NETCOREAPP1_1
-           var configuration = new ConfigurationNETStandard();
-#else
-           var configuration = new ConfigurationNETFramework();
-#endif
-
             Clear();
 
             var userContext = new UserContext("UnitTest");
 
 
-
-            var routine = new AdminkaRoutine(new RoutineTag(Guid.NewGuid(), typeof(TestIsland)), userContext, configuration, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(Guid.NewGuid(), typeof(TestIsland)), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 var typeRecord1 = new TypeRecord()
@@ -159,14 +145,9 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         }
         public static void Clear()
         {
-#if NETCOREAPP1_1
-            var configuration = new ConfigurationNETStandard();
-#else
-           var configuration = new ConfigurationNETFramework();
-#endif
             var userContext = new UserContext("UnitTest");
 
-            var routine = new AdminkaRoutine(new RoutineTag(Guid.NewGuid(), typeof(TestIsland)), userContext, configuration, new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineTag(Guid.NewGuid(), typeof(TestIsland)), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 dataAccess.CreateRepositoryHandler<ChildRecord>().Handle((repository, storage) =>

@@ -1,9 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-#if NETCOREAPP1_1
-    using DashboardCode.AdminkaV1.Injected.NETStandard.Test;
-#else
-    using DashboardCode.AdminkaV1.Injected.NETFramework.Test;
-#endif
 using System.Collections.Generic;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.DomTest;
@@ -14,11 +9,6 @@ namespace DashboardCode.AdminkaV1.Injected.Test
     [TestClass]
     public class RoutineMeasureTest
     {
-#if NETCOREAPP1_1
-        ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
-#else
-        ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
-#endif
 
         public RoutineMeasureTest()
         {
@@ -34,7 +24,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
-            var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutine), loggingTransientsFactory, Configuration, new { });
+            var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutine), loggingTransientsFactory, ZoneManager.GetConfiguration(), new { });
             routine.Handle(container =>
             {
 
@@ -51,7 +41,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             var loggingTuple = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineNoAuthorization), userContext, loggingTuple, Configuration, new { });
+            var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineNoAuthorization), userContext, loggingTuple, ZoneManager.GetConfiguration(), new { });
             routine.Handle(container =>
             {
 
@@ -69,7 +59,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
-            var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, Configuration,  new { });
+            var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, ZoneManager.GetConfiguration(),  new { });
             routine.HandleRepository<ParentRecord>(repository =>
             {
 
@@ -88,7 +78,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
-            var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, Configuration,  new { });
+            var routine = new AdminkaRoutine(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, ZoneManager.GetConfiguration(),  new { });
             try
             {
                 routine.HandleRepository<ParentRecord>(repository =>
