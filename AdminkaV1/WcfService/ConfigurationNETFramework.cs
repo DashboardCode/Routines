@@ -1,8 +1,7 @@
-﻿using System;
-using DashboardCode.Routines.Configuration;
+﻿using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETFramework;
 
-namespace DashboardCode.AdminkaV1.WcfService
+namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
     public class ConfigurationNETFramework : IAppConfiguration
     {

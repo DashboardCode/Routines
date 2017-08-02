@@ -4,17 +4,17 @@ using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class UserRoutine<TUserContext> : Routine<RoutineState<TUserContext>>
+    public class UserRoutine<TUserContext> : RoutineHandler<Routine<TUserContext>>
     {
         readonly IRepositoryHandlerFactory<TUserContext> repositoryHandlerFactory;
         public UserRoutine(
             IBasicLogging basicLogging,
             Func<Exception, Exception> transformException,
-            Func<Action<DateTime, string>, RoutineState<TUserContext>> createRoutineState,
+            Func<Action<DateTime, string>, Routine<TUserContext>> createRoutineState,
             IRepositoryHandlerFactory<TUserContext> repositoryHandlerFactory,
             object input
             ):base(
-                new BasicRoutineTransients<RoutineState<TUserContext>>(
+                new BasicRoutineTransients<Routine<TUserContext>>(
                     basicLogging,
                     transformException,
                     (verbose) => createRoutineState(verbose)
@@ -78,7 +78,7 @@ namespace DashboardCode.Routines.Injected
             });
         }
         public void HandleRepository<TEntity>(
-            Action<IRepository<TEntity>, RoutineState<TUserContext>> action
+            Action<IRepository<TEntity>, Routine<TUserContext>> action
         ) where TEntity : class
         {
             Handle(state =>
@@ -92,7 +92,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public TOutput HandleRepository<TOutput, TEntity>(
-            Func<IRepository<TEntity>, RoutineState<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, Routine<TUserContext>, TOutput> func
             ) where TEntity : class
         {
             return Handle(state =>
@@ -106,7 +106,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public async Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, RoutineState<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, Routine<TUserContext>, TOutput> func
             ) where TEntity : class
         {
             return await HandleAsync(state =>
@@ -163,7 +163,7 @@ namespace DashboardCode.Routines.Injected
             });
         }
         public void HandleStorage<TEntity>(
-            Action<IRepository<TEntity>, IStorage<TEntity>, RoutineState<TUserContext>> action
+            Action<IRepository<TEntity>, IStorage<TEntity>, Routine<TUserContext>> action
         ) where TEntity : class
         {
             Handle(state =>
@@ -177,7 +177,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public TOutput HandleStorage<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IStorage<TEntity>, RoutineState<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, IStorage<TEntity>, Routine<TUserContext>, TOutput> func
             ) where TEntity : class
         {
             return Handle(state =>
@@ -191,7 +191,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public async Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IStorage<TEntity>, RoutineState<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, IStorage<TEntity>, Routine<TUserContext>, TOutput> func
             ) where TEntity : class
         {
             return await HandleAsync(state =>

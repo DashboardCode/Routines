@@ -2,13 +2,14 @@
 using System.ServiceModel;
 using DashboardCode.AdminkaV1.DomLogging;
 
-namespace DashboardCode.AdminkaV1.WcfService.Contracts
+namespace DashboardCode.AdminkaV1.Wcf.Messaging.Contracts
 {
     public static class TraceServiceContractConstants
     {
         public const string PortName = nameof(TraceService);
-        public const string ServiceContract = "https://DashboardCode.com/Adminka-V1";
+        public const string ServiceContract = "https://adminka-v1.dashboardcode.com";
     }
+
     [ServiceContract(Namespace = TraceServiceContractConstants.ServiceContract, Name = TraceServiceContractConstants.PortName)]
     interface ITraceService
     {

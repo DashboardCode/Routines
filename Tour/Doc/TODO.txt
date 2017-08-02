@@ -1,11 +1,12 @@
 Routines
 1) icon as bulb {}
-2) DashboardCode https://coveralls.io 
-3) review prefixes (compose, get)?
+2) DashboardCode at https://coveralls.io 
+3) review method prefixes (compose, get, construct, compose, build)?
 4) ComposeClone, ComposeCopy, ComposeEquals, ComposeDiff
 5) Meta add leafs options
 6) Meta add leafs from EF Core model
 
+7) OdataToEntity
 
 0. Migrate OpenCoverage
 https://github.com/OpenCover/opencover/issues/601

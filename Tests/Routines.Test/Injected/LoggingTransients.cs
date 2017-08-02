@@ -8,7 +8,7 @@ namespace DashboardCode.Routines.Injected.Test
         public IBasicLogging BasicRoutineLoggingAdapter { get; private set; }
         public Func<Exception, Exception> TransformException { get; private set; }
 
-        public LoggingTransients(RoutineTag routineTag, List<string> log)
+        public LoggingTransients(MemberGuid routineTag, List<string> log)
         {
             var loggingConfiguration = new LoggingConfiguration();
             BasicRoutineLoggingAdapter = new LoggingAdapter(routineTag, log);

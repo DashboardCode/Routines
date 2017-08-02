@@ -18,7 +18,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public virtual void TestDetach()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new MemberGuid(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
 
             Include<ParentRecord> include = includable =>
                        includable
@@ -31,7 +31,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
                 var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var parent = repository.GetQueryable(include).First(e=>e.FieldA== "1_A");
+                    var parent = repository.MakeQueryable(include).First(e=>e.FieldA== "1_A");
                     repository.Detach(parent, include);
                     InjectedManager.SerializeToJson(parent);
                 });
@@ -42,7 +42,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public virtual void TestSerializtionRecursion()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new MemberGuid(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             var record = routine.Handle((state, dataAccess) =>
             {
                 Include<TypeRecord> include = includable =>
@@ -62,7 +62,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public virtual void TestProblematicDetachUsage()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new MemberGuid(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
@@ -84,7 +84,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public virtual void TestXmlSerializeAndDesirialize()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new MemberGuid(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);

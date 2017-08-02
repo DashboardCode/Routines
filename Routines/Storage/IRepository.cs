@@ -11,7 +11,7 @@ namespace DashboardCode.Routines.Storage
         IReadOnlyCollection<TEntity> List(Include<TEntity> include = null);
         IReadOnlyCollection<TEntity> List(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
         TEntity Find(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
-        IQueryable<TEntity> GetQueryable(Include<TEntity> include = null);
+        IQueryable<TEntity> MakeQueryable(Include<TEntity> include = null);
         #endregion
 
         #region Navigations

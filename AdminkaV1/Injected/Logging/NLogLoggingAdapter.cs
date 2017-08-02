@@ -13,7 +13,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     class NLogLoggingAdapter : IBasicLogging
     {
-        readonly RoutineTag routineTag;
+        readonly MemberGuid routineTag;
         readonly LoggingConfiguration loggingConfiguration;
         readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
         readonly Func<Exception, string> markdownException;
@@ -23,7 +23,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         public bool ShouldBufferVerbose { get; private set; }
         public bool ShouldVerboseWithStackTrace { get; private set; }
         public NLogLoggingAdapter(
-            RoutineTag routineTag,
+            MemberGuid routineTag,
             Func<Exception, string> markdownException,
             Func<object, int, bool, string> serializeObject,
             LoggingConfiguration loggingConfiguration,

@@ -2,17 +2,17 @@
 using DashboardCode.AdminkaV1.DomLogging;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.Routines;
-using DataContactConstants = DashboardCode.AdminkaV1.WcfService.Contracts.RoutineErrorDataContractConstants;
-using IService = DashboardCode.AdminkaV1.WcfService.Contracts.ITraceService;
+using DataContactConstants = DashboardCode.AdminkaV1.Wcf.Messaging.Contracts.RoutineErrorDataContractConstants;
+using IService = DashboardCode.AdminkaV1.Wcf.Messaging.Contracts.ITraceService;
 
-namespace DashboardCode.AdminkaV1.WcfService
+namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
     public class TraceService : IService
     {
         public Trace GetTrace(Guid correlationToken)
         {
             var input = new { correlationToken = correlationToken };
-            var routine = new WcfRoutine(new RoutineTag(this), DataContactConstants.FaultCode, input);
+            var routine = new WcfRoutine(new MemberGuid(this), DataContactConstants.FaultCode, input);
             return routine.Handle((container, dataAccess) =>
             {
                 var servicesContainer = new ServicesContainer(dataAccess);

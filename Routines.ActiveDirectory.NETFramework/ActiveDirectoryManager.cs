@@ -10,7 +10,7 @@ namespace DashboardCode.Routines.ActiveDirectory.NETFramework
 {
     public static class ActiveDirectoryManager
     {
-        public static IEnumerable<string> GetGroups(this IIdentity identity, out string identityName, out string givenName, out string surname)
+        public static IReadOnlyList<string> ListGroups(this IIdentity identity, out string identityName, out string givenName, out string surname)
         {
             var groups = new List<string>();
             identityName = identity.Name;

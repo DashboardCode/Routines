@@ -7,22 +7,22 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     public class AdminkaDbContextHandler
     {
         readonly AdminkaDbContextFactory dbContextFactory;
-        readonly RoutineState<UserContext> state;
+        readonly Routine<UserContext> state;
         readonly Action<object> setAudit;
-        public AdminkaDbContextHandler(RoutineState<UserContext> state, Action<object> setAudit, IAdminkaOptionsFactory optionsFactory)
+        public AdminkaDbContextHandler(Routine<UserContext> state, Action<object> setAudit, IAdminkaOptionsFactory optionsFactory)
         {
             this.state = state;
             this.setAudit = setAudit;
             dbContextFactory = new AdminkaDbContextFactory(optionsFactory, state);
         }
-        public TOutput Handle<TOutput>(Func<AdminkaDbContext, RoutineState<UserContext>, Action<object>, TOutput> func)
+        public TOutput Handle<TOutput>(Func<AdminkaDbContext, Routine<UserContext>, Action<object>, TOutput> func)
         {
             using (var context = dbContextFactory.CreateAdminkaDbContext())
             {
                 return func(context, state, setAudit);
             }
         }
-        public void Handle(Action<AdminkaDbContext, RoutineState<UserContext>, Action<object>> func)
+        public void Handle(Action<AdminkaDbContext, Routine<UserContext>, Action<object>> func)
         {
             using (var context = dbContextFactory.CreateAdminkaDbContext())
             {

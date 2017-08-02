@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ServiceModel;
 using DashboardCode.AdminkaV1.DomLogging;
-using DashboardCode.AdminkaV1.WcfService.Client.TraceServiceReference;
+using DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference;
 
-namespace DashboardCode.AdminkaV1.WcfService.Client
+namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client
 {
     // TODO: this code can be generated with T4
     public class TraceServiceClient : ITraceService

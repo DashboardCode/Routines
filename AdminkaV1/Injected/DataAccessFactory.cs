@@ -11,10 +11,10 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public class DataAccessFactory
     {
-        readonly RoutineState<UserContext> state;
+        readonly Routine<UserContext> state;
         readonly StorageMetaService storageMetaService;
         public DataAccessFactory(
-            RoutineState<UserContext> state, 
+            Routine<UserContext> state, 
             StorageMetaService storageMetaService)
         {
             this.state = state;

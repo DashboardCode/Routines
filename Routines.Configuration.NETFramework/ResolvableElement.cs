@@ -19,6 +19,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         {
             return false;
         }
+
         #region Overrides
         protected override ConfigurationPropertyCollection Properties
         {
@@ -30,7 +31,6 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         protected override void PostDeserialize()
         {
             base.PostDeserialize();
-
             Validate();
         }
         #endregion

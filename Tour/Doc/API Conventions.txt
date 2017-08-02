@@ -1,18 +1,21 @@
-Namespaces
-----------------------------------------------------------------------------------------------------------
-V1           - is added because of when you are versioning project's names/namespaces it is become possible
-               to develop two versions from in one solution (and it is important for "one developer army"). 
-Abstractions - root assembly DashboardCode.AdminkaV1 phisiclly located in the folder named 'Abstractions' just to avoid 
-               "AdminkaV1\Adminka" tautology (also name Abstractions put folder to the first place in folders list).
+Namespaces and folders
+----------------------------------------------------------------------------------------------------------------
+V1           - was added because become possible to develop several versions in one solution (and it is important 
+			   for "one developer army"). 
+Abstractions - assembly DashboardCode.AdminkaV1 phisically located in the folder named 'DashboardCode\AdminkaV1\Abstractions' 
+		       to avoid "AdminkaV1\Adminka" tautology and because Abstractions put folder to the first place in folders list.
 DomXxx - Folders/Subnamespace in the root assembly DashboardCode.AdminkaV1 allways starts with 'Dom' prefix to indicate
 		 that this folder/subnamespace is located exactly in root assembly. e.g.  DashboardCode.AdminkaV1.DomAuthentication
-XxxService   - wcf or rest service
-XxxService.Client - Wcf service reference wrapped into class
+		 opposite to names like 'DashboardCode.AdminkaV1.DataAccessEfCore' that has its own assembly
+
+Wcf.Service        - wcf or rest service
+Wcf.ODataService   - wcf or rest service
+WcfService.Client - Wcf service reference wrapped into class
 XxxApp       - StartUp projects (command line or web)
 
 
 Suffixes used in class names
-----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
 Factory    - class contains only Create* methods;  all returns instances instantioned calling the methods
 Transients - class contains only primitive properties; all returns instances instantioned in class cunstructor
 Container  - class contains only Resolve* methods (instationing should be hidden, usually because it 
@@ -23,10 +26,20 @@ Facade     - class that gets several interfaces, functors in constructor, each F
 Handler    - classes which provides try{..}catch{} or using(..){..} funcitonal way (Hanlde methods)
 
 Suffixes in method names
-----------------------------------------------------------------------------------------------------------
-Compose    - creates delegate instance
-Create     - creates class instance
+----------------------------------------------------------------------------------------------------------------
+Compose    - creates delegate instance, not virtual (create interface if need virtual method to return delegate and use Make)
+Create     - creates instance and return it, not virtual
+Make       - creates instance and return it, virtual
+Build      - return void (or bool or other type with the same meaning), virtual
+(verb)     - not virtual, tools method
 
+Find       - return single istance, there is indexed search inside
+Grab       - return single istance, there foreach loop inside
+Get        - return single istance, there is member operations inside
+List       - return IReadOnlyList
+Handle     - try .. catch or smth like it inside, parameters are delegates
+Resolve    - "container" type objects method, both virtual and not virtual
+ 
 Static classes
 ----------------------------------------------------------------------------------------------------------
 Manager    - singleton services, only one in project and handle very different functionalities, usually have a state, 

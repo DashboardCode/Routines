@@ -7,10 +7,8 @@ namespace DashboardCode.Routines.AspNetCore
     public class MvcTube
     {
         readonly Controller controller;
-        public MvcTube(Controller controller)
-        {
+        public MvcTube(Controller controller) =>
             this.controller = controller;
-        }
 
         public IActionResult Handle<TEntity>(Func<bool> isValidInput, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
         {

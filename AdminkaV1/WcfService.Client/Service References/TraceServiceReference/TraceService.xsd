@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:tns="https://DashboardCode.com/Adminka-V1" elementFormDefault="qualified" targetNamespace="https://DashboardCode.com/Adminka-V1" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:ser="http://schemas.microsoft.com/2003/10/Serialization/" elementFormDefault="qualified" targetNamespace="https://adminka-v1.dashboardcode.com" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:import schemaLocation="http://localhost:64220/TraceService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
   <xs:import schemaLocation="http://localhost:64220/TraceService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.DomLogging" />
   <xs:element name="GetTrace">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q1="http://schemas.microsoft.com/2003/10/Serialization/" minOccurs="0" name="correlationToken" type="q1:guid" />
+        <xs:element minOccurs="0" name="correlationToken" type="ser:guid" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
   <xs:element name="GetTraceResponse">
     <xs:complexType>
       <xs:sequence>
-        <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.DomLogging" minOccurs="0" name="GetTraceResult" nillable="true" type="q2:Trace" />
+        <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.DomLogging" minOccurs="0" name="GetTraceResult" nillable="true" type="q1:Trace" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  <xs:complexType name="RoutineError">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Details" nillable="true" type="xs:string" />
+      <xs:element xmlns:q2="https://adminka-v1.dashboardcode.com" minOccurs="0" name="MemberTag" nillable="true" type="q2:MemberTag" />
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="UserContextExceptionCode" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q3="https://adminka-v1.dashboardcode.com" name="RoutineError" nillable="true" type="q3:RoutineError" />
+  <xs:complexType name="MemberTag">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CorrelationToken" type="ser:guid" />
+      <xs:element minOccurs="0" name="Member" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Namespace" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Type" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q4="https://adminka-v1.dashboardcode.com" name="MemberTag" nillable="true" type="q4:MemberTag" />
+  <xs:complexType name="AuthenticationFault">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Message" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element xmlns:q5="https://adminka-v1.dashboardcode.com" name="AuthenticationFault" nillable="true" type="q5:AuthenticationFault" />
 </xs:schema>

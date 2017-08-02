@@ -20,11 +20,11 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
         }
         private MvcRoutine(RoutineController controller, Guid correlationToken, object input, string action) :
             this(controller,
-                new RoutineTag(correlationToken, controller.GetType().Namespace, controller.GetType().Name, action),
+                new MemberGuid(correlationToken, controller.GetType().Namespace, controller.GetType().Name, action),
                 input)
         {
         }
-        public MvcRoutine(RoutineController controller, RoutineTag routineTag, object input) :
+        public MvcRoutine(RoutineController controller, MemberGuid routineTag, object input) :
             this(controller,
                  routineTag,
                  InjectedManager.ComposeNLogTransients(
@@ -44,8 +44,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                 headers.Add("X-RoutineTag-Member", routineTag.Member);
             }
         }
-        private MvcRoutine(RoutineController controller, RoutineTag routineTag,
-            Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingContainer,
+        private MvcRoutine(RoutineController controller, MemberGuid routineTag,
+            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingContainer,
             MvcAppConfiguration appConfiguration,
             object input) :
             base(

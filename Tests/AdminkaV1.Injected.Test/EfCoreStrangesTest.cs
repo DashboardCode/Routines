@@ -22,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public void EfCoreTestStoreUpdateRelationsErrorTracking()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new MemberGuid(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
@@ -75,7 +75,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         public void EfCoreTestStoreUpdateRelationsErrorNoTracking()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new RoutineTag(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new MemberGuid(this), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)

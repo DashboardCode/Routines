@@ -12,12 +12,9 @@ namespace DashboardCode.Routines.Storage.EfCore
         public IQueryable<TRootEntity> Queryable { get; private set; }
         public bool isEnumerable;
 
-        public QueryableIncluding(IQueryable<TRootEntity> rootQueryable)
-        {
-            if (rootQueryable == null)
-                throw new ArgumentNullException(nameof(rootQueryable));
-            Queryable = rootQueryable;
-        }
+        public QueryableIncluding(IQueryable<TRootEntity> rootQueryable) =>
+            Queryable = rootQueryable ?? throw new ArgumentNullException(nameof(rootQueryable));
+
         public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
         {
             Queryable = EntityFrameworkQueryableExtensions.Include(Queryable, expression);

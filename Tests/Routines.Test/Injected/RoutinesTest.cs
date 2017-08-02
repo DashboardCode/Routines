@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Globalization;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.Injected.Test
@@ -12,7 +12,7 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedHandle()
         {
-            var routineTag = new RoutineTag(this);
+            var routineTag = new MemberGuid(this);
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(routineTag, log);
 
@@ -23,7 +23,7 @@ namespace DashboardCode.Routines.Injected.Test
                 );
 
             string result = null;
-            var routine = new Routine<StateService>(routineContainer, new { });
+            var routine = new RoutineHandler<StateService>(routineContainer, new { });
             routine.Handle((c) =>
                 {
                     result = "success";
@@ -35,7 +35,7 @@ namespace DashboardCode.Routines.Injected.Test
                 throw new ApplicationException("handle logging not working properly");
         }
         public class TestRepositoryHandlerFactory : IRepositoryHandlerFactory<UserContext>{
-            public IRepositoryHandler<TEntity> CreateRepositoryHandler<TEntity>(RoutineState<UserContext> state) where TEntity : class
+            public IRepositoryHandler<TEntity> CreateRepositoryHandler<TEntity>(Routine<UserContext> state) where TEntity : class
             {
                 throw new NotImplementedException();
             }
@@ -46,7 +46,7 @@ namespace DashboardCode.Routines.Injected.Test
         {
             var correlationToken = Guid.NewGuid();
             var log = new List<string>();
-            var routineTag = new RoutineTag(correlationToken, "RoutinesTest", "RoutinesInjectedHandle2");
+            var routineTag = new MemberGuid(correlationToken, "RoutinesTest", "RoutinesInjectedHandle2");
             var loggingTransients = new LoggingTransients(routineTag, log);
 
             var routineTransients = new BasicRoutineTransients<StateService>(
@@ -56,8 +56,8 @@ namespace DashboardCode.Routines.Injected.Test
                 );
             var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory();
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
-            Func<Action<DateTime, string>, RoutineState<UserContext>> createRoutineState =
-                (verbose)=>new RoutineState<UserContext>(userContext, routineTag, verbose, null);
+            Func<Action<DateTime, string>, Routine<UserContext>> createRoutineState =
+                (verbose)=>new Routine<UserContext>(userContext, routineTag, verbose, null);
             string result = null;
             
             var routine = new UserRoutine<UserContext>(
@@ -84,7 +84,7 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedExceptionHandle()
         {
-            var routineTag = new RoutineTag(this);
+            var routineTag = new MemberGuid(this);
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(routineTag, log);
             var routineContainer = new BasicRoutineTransients<StateService>(
@@ -94,7 +94,7 @@ namespace DashboardCode.Routines.Injected.Test
                 );
             try
             {
-                var routine = new Routine<StateService>(routineContainer, new { });
+                var routine = new RoutineHandler<StateService>(routineContainer, new { });
 
                 routine.Handle((c) =>
                 {
@@ -115,14 +115,14 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedExceptionHandle2()
         {
-            var tag = new RoutineTag(Guid.NewGuid(), "RoutinesTest", "RoutinesInjectedExceptionHandle2");
+            var tag = new MemberGuid(Guid.NewGuid(), "RoutinesTest", "RoutinesInjectedExceptionHandle2");
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
 
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(tag, log);
             var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory(); // stub
-            Func<Action<DateTime, string>, RoutineState<UserContext>> createRoutineState =
-                (verbose) => new RoutineState<UserContext>(userContext, tag, null/*no verbose logging for this routineTag */, null); 
+            Func<Action<DateTime, string>, Routine<UserContext>> createRoutineState =
+                (verbose) => new Routine<UserContext>(userContext, tag, null/*no verbose logging for this routineTag */, null); 
             try
             {
                 var routine = new UserRoutine<UserContext>(

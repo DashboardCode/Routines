@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ServiceModel;
-using DashboardCode.AdminkaV1.WcfService.Contracts;
+using DashboardCode.AdminkaV1.Wcf.Messaging.Contracts;
 
-namespace DashboardCode.AdminkaV1.WcfService
+namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
     [Serializable]
     public class WcfException : FaultException<RoutineError>
@@ -15,7 +15,7 @@ namespace DashboardCode.AdminkaV1.WcfService
         {
         }
 
-        public static Exception TransformException(Exception exception, Routines.RoutineTag routineTag, string faultCodeNamespace, Func<Exception, string> markdownException)
+        public static Exception TransformException(Exception exception, Routines.MemberGuid routineTag, string faultCodeNamespace, Func<Exception, string> markdownException)
         {
             var message = default(string);
             var code = default(string);
@@ -33,7 +33,7 @@ namespace DashboardCode.AdminkaV1.WcfService
 
             var routineError = new RoutineError()
             {
-                RoutineTag = new Contracts.RoutineTag()
+                MemberTag = new Contracts.MemberTag()
                 {
                     CorrelationToken = routineTag.CorrelationToken,
                     Namespace = routineTag.Namespace,

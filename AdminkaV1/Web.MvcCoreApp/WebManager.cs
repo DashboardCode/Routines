@@ -32,12 +32,12 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
         // in db and reset sessions if there are changes
         public static UserContext GetUserContext(
             HttpContext httpContext,
-            RoutineTag routineTag,
+            MemberGuid routineTag,
             IIdentity identity,
             CultureInfo cultureInfo,
             string connectionString,
             RepositoryHandlerFactory repositoryHandlerFactory,
-            Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             IAppConfiguration configuration
             )
         {

@@ -11,12 +11,12 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public class AuthenticationService
     {
-        private readonly Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory;
+        private readonly Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory;
         private readonly RepositoryHandlerFactory repositoryHandlerFactory;
         private readonly UserContext systemUserContext;
         private readonly IAppConfiguration appConfiguration;
         public AuthenticationService(
-            Func<RoutineTag, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             IAppConfiguration appConfiguration)
         {
@@ -26,9 +26,9 @@ namespace DashboardCode.AdminkaV1.Injected
             systemUserContext = new UserContext("Authentication");
         }
 
-        public UserContext GetUserContext(RoutineTag routineTag, IIdentity identity, CultureInfo cultureInfo)
+        public UserContext GetUserContext(MemberGuid routineTag, IIdentity identity, CultureInfo cultureInfo)
         {
-            var authenticationRoutineTag = new RoutineTag(routineTag.CorrelationToken, this);
+            var authenticationRoutineTag = new MemberGuid(routineTag.CorrelationToken, this);
             var basicResolver = authenticationRoutineTag.GetResolver(appConfiguration, out Func<UserContext, IResolver> specifyResolver);
             var resolver = specifyResolver(systemUserContext);
             var adConfiguration = resolver.Resolve<AdConfiguration>();

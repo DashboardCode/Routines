@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace DashboardCode.AdminkaV1.WcfService.Contracts
+namespace DashboardCode.AdminkaV1.Wcf.Messaging.Contracts
 {
     static class RoutineErrorDataContractConstants
     {
-        public const string Routine             = "https://dashboardcode.com/Adminka-V1";
-        public const string RoutineError        = "https://dashboardcode.com/Adminka-V1";
-        public const string AuthenticationFault = "https://dashboardcode.com/Adminka-V1";
-        public const string FaultCode           = "https://dashboardcode.com/Adminka-V1";
+        public const string Routine             = "https://adminka-v1.dashboardcode.com";
+        public const string RoutineError        = "https://adminka-v1.dashboardcode.com";
+        public const string AuthenticationFault = "https://adminka-v1.dashboardcode.com";
+        public const string FaultCode           = "https://adminka-v1.dashboardcode.com";
     }
 
     [DataContract(Namespace = RoutineErrorDataContractConstants.RoutineError)]
     public class RoutineError
     {
         [DataMember]
-        public RoutineTag RoutineTag { get; set; }
+        public MemberTag MemberTag { get; set; }
         [DataMember]
         public string Message { get; set; }
         [DataMember]
@@ -32,7 +32,7 @@ namespace DashboardCode.AdminkaV1.WcfService.Contracts
     }
 
     [DataContract(Namespace = RoutineErrorDataContractConstants.Routine)]
-    public class RoutineTag
+    public class MemberTag
     {
         [DataMember]
         public Guid CorrelationToken { get; set; }

@@ -12,13 +12,13 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             this.storageMetaService = storageMetaService;
         }
-        public DataAccessFactory CreateDataAccessFactory(RoutineState<UserContext> state)
+        public DataAccessFactory CreateDataAccessFactory(Routine<UserContext> state)
         {
             var dataAccessFactory = new DataAccessFactory(state, storageMetaService);
             return dataAccessFactory;
         }
 
-        public IRepositoryHandler<TEntity> CreateRepositoryHandler<TEntity>(RoutineState<UserContext> state) where TEntity : class
+        public IRepositoryHandler<TEntity> CreateRepositoryHandler<TEntity>(Routine<UserContext> state) where TEntity : class
         {
             var dataAccessFactory = CreateDataAccessFactory(state);
             var repositoryHandler = dataAccessFactory.CreateRepositoryHandler<TEntity>();

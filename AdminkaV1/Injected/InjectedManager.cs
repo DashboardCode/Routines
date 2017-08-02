@@ -35,13 +35,13 @@ namespace DashboardCode.AdminkaV1.Injected
             var migrationAssembly = configuration.GetMigrationAssembly();
             return new StorageMetaService(connectionString, migrationAssembly, StorageType.SQLSERVER);
         }
-        internal static IResolver GetSpecifiedResolver(this RoutineTag routineTag, UserContext userContext, IAppConfiguration configuration)
+        internal static IResolver GetSpecifiedResolver(this MemberGuid routineTag, UserContext userContext, IAppConfiguration configuration)
         {
             GetResolver(routineTag, configuration, out Func<UserContext, IResolver> specifyResolver);
             var @value = specifyResolver(userContext);
             return @value;
         }
-        internal static IResolver GetResolver(this RoutineTag routineTag, IAppConfiguration configuration, out Func<UserContext, IResolver> specifyResolver)
+        internal static IResolver GetResolver(this MemberGuid routineTag, IAppConfiguration configuration, out Func<UserContext, IResolver> specifyResolver)
         {
             var specifieableConfigurationContainer = configuration.GetConfigurationContainer(routineTag.Namespace, routineTag.Type, routineTag.Member);
             specifyResolver = (userContext) => {
@@ -151,7 +151,7 @@ namespace DashboardCode.AdminkaV1.Injected
         public static IEnumerable<string> GetGroups(this IIdentity identity, out string identityName, out string givenName, out string surname)
         {
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
-            var groups = ActiveDirectoryManager.GetGroups(identity, out identityName, out givenName, out surname);
+            var groups = ActiveDirectoryManager.ListGroups(identity, out identityName, out givenName, out surname);
                 return groups;
             #else
                 throw new NotImplementedException("LDAP is not supported for NETStandard");
@@ -160,21 +160,21 @@ namespace DashboardCode.AdminkaV1.Injected
 #endregion
 
 #region Logging
-        public static Exception DefaultRoutineTagTransformException(Exception exception, RoutineTag routineTag, Func<Exception, string> markdownException)
+        public static Exception DefaultRoutineTagTransformException(Exception exception, MemberGuid routineTag, Func<Exception, string> markdownException)
         {
-            exception.Data[nameof(RoutineTag.CorrelationToken)] = routineTag.CorrelationToken;
-            exception.Data[nameof(RoutineTag.Namespace)]        = routineTag.Namespace;
-            exception.Data[nameof(RoutineTag.Type)]            = routineTag.Type;
-            exception.Data[nameof(RoutineTag.Member)]           = routineTag.Member;
+            exception.Data[nameof(MemberGuid.CorrelationToken)] = routineTag.CorrelationToken;
+            exception.Data[nameof(MemberGuid.Namespace)]        = routineTag.Namespace;
+            exception.Data[nameof(MemberGuid.Type)]            = routineTag.Type;
+            exception.Data[nameof(MemberGuid.Member)]           = routineTag.Member;
             return exception;
         }
         internal static NLogAuthenticationLogging GetNLogAuthenticationLogging()
         {
             return new NLogAuthenticationLogging();
         }
-        public static Func<RoutineTag, IResolver, RoutineLoggingTransients> ComposeNLogTransients(
+        public static Func<MemberGuid, IResolver, RoutineLoggingTransients> ComposeNLogTransients(
                 Func<Exception, string> markdownException,
-                Func<Exception, RoutineTag, Func<Exception, string>, Exception> routineTransformException
+                Func<Exception, MemberGuid, Func<Exception, string>, Exception> routineTransformException
             )
         {
             return (t, r) => {
@@ -193,7 +193,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 return new RoutineLoggingTransients(adminkaLogging, authenticationLogging, (ex) => routineTransformException(ex, t, markdownException));
             };
         }
-        public static Func<RoutineTag, IResolver, RoutineLoggingTransients> ComposeListLoggingTransients(
+        public static Func<MemberGuid, IResolver, RoutineLoggingTransients> ComposeListLoggingTransients(
             List<string> logger,
             LoggingConfiguration loggingConfiguration,
             LoggingVerboseConfiguration loggingVerboseConfiguration,

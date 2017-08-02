@@ -22,9 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1", "AdminkaV1\Abst
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore", "AdminkaV1\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj", "{BF9FB9B0-BAEE-457A-8C8E-D82DC68E0710}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.WcfService", "AdminkaV1\WcfService\AdminkaV1.WcfService.csproj", "{38A0A937-1800-4703-B207-BA3BBBF95D8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Wcf.Messaging", "AdminkaV1\WcfService\AdminkaV1.Wcf.Messaging.csproj", "{38A0A937-1800-4703-B207-BA3BBBF95D8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.WcfService.Client", "AdminkaV1\WcfService.Client\AdminkaV1.WcfService.Client.csproj", "{5B251776-C32B-4B06-B52D-6A302BEAC69D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Wcf.Messaging.Client", "AdminkaV1\WcfService.Client\AdminkaV1.Wcf.Messaging.Client.csproj", "{5B251776-C32B-4B06-B52D-6A302BEAC69D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Configuration.NETFramework", "Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj", "{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}"
 EndProject
@@ -82,8 +82,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{72DA7AC6
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-7576-4179-9A35-823A02D24EFF}"
 	ProjectSection(SolutionItems) = preProject
+		Tour\Doc\API Conventions.txt = Tour\Doc\API Conventions.txt
 		Tour\Doc\Asp.Core.txt = Tour\Doc\Asp.Core.txt
-		Tour\Doc\Conventions.txt = Tour\Doc\Conventions.txt
 		Tour\Doc\Dashboard.txt = Tour\Doc\Dashboard.txt
 		Tour\Doc\DeleteCache.ps1 = Tour\Doc\DeleteCache.ps1
 		LICENSE = LICENSE

@@ -9,7 +9,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
     {
         readonly IAdminkaOptionsFactory optionsFactory;
         readonly LoggerProvider loggerProvider;
-        public AdminkaDbContextFactory(IAdminkaOptionsFactory optionsFactory, RoutineState<UserContext> state)
+        public AdminkaDbContextFactory(IAdminkaOptionsFactory optionsFactory, Routine<UserContext> state)
         {
             this.optionsFactory = optionsFactory;
             var loggerProviderConfiguration = state.Resolve<LoggerProviderConfiguration>();

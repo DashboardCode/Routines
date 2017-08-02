@@ -3,21 +3,21 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class Routine<TRoutineState>
+    public class RoutineHandler<TRoutine>
     {
-        private readonly IRoutineTransients<TRoutineState> routineTransients;
+        private readonly IRoutineTransients<TRoutine> routineTransients;
         private readonly IExceptionHandler exceptionHandler;
         private readonly IRoutineLogging routineLoggingFacade;
         private readonly object input;
 
-        public Routine(IRoutineTransients<TRoutineState> routineTransients, object input)
+        public RoutineHandler(IRoutineTransients<TRoutine> routineTransients, object input)
         {
             this.routineTransients = routineTransients;
             this.input = input;
             routineLoggingFacade = routineTransients.ResolveRoutineLogging();
             exceptionHandler = routineTransients.ResolveExceptionHandler();
         }
-        public void Handle(Action<TRoutineState> action)
+        public void Handle(Action<TRoutine> action)
         {
             exceptionHandler.Handle(
                 () =>
@@ -30,7 +30,7 @@ namespace DashboardCode.Routines.Injected
                 () => routineLoggingFacade.LogFinish(false, null)
             );
         }
-        public TOutput Handle<TOutput>(Func<TRoutineState, TOutput> func)
+        public TOutput Handle<TOutput>(Func<TRoutine, TOutput> func)
         {
             var @value = default(TOutput);
             exceptionHandler.Handle(
@@ -45,7 +45,7 @@ namespace DashboardCode.Routines.Injected
             );
             return @value;
         }
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TRoutineState, TOutput> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TRoutine, TOutput> func)
         {
             var @value = Task.Run(() =>
             {
