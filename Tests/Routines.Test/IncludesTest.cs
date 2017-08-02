@@ -209,6 +209,7 @@ namespace DashboardCode.Routines.Test
                 || source.StorageModel.Entity.Namespace != destination.StorageModel.Entity.Namespace || source.StorageModel.Key == null)
                 throw new ApplicationException("Copy doesn't working properly");
         }
+
         [TestMethod]
         public void IncludesEqualsTest()
         {

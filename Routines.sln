@@ -111,6 +111,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Routines.Configuration.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Configuration.NETStandard.Test", "Tests\Routines.Configuration.NETStandardX.Test\Routines.Configuration.NETStandard.Test.csproj", "{CBDD98C8-D927-4AA9-B01A-DDA710C0EA56}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.DataAccessEfCore.OdataToEntity", "AdminkaV1\DataAccessEfCore.OdataToEntity\AdminkaV1.DataAccessEfCore.OdataToEntity.csproj", "{79DCE699-E25F-4B43-90B1-012CC2D5F059}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		AdminkaV1\Injected\AdminakV1.Injected.Shared.projitems*{02666e1b-53c7-42db-ac39-a16127dd5c81}*SharedItemsImports = 4
@@ -1227,6 +1229,38 @@ Global
 		{CBDD98C8-D927-4AA9-B01A-DDA710C0EA56}.Release|x64.Build.0 = Release|Any CPU
 		{CBDD98C8-D927-4AA9-B01A-DDA710C0EA56}.Release|x86.ActiveCfg = Release|Any CPU
 		{CBDD98C8-D927-4AA9-B01A-DDA710C0EA56}.Release|x86.Build.0 = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Android.Build.0 = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|iOS.Build.0 = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|x64.Build.0 = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Debug|x86.Build.0 = Debug|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Android.ActiveCfg = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Android.Build.0 = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|iOS.ActiveCfg = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|iOS.Build.0 = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|x64.ActiveCfg = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|x64.Build.0 = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|x86.ActiveCfg = Release|Any CPU
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1263,5 +1297,6 @@ Global
 		{9D51F259-288C-4560-B404-87DEC5A3B6C1} = {68C4C8C2-2A78-4998-9D36-4A3B139B41FE}
 		{0FF86A9D-F8DE-4029-843F-5029519E0B92} = {FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}
 		{CBDD98C8-D927-4AA9-B01A-DDA710C0EA56} = {FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}
+		{79DCE699-E25F-4B43-90B1-012CC2D5F059} = {52BA4719-F064-4388-A426-1E1174D3A0EB}
 	EndGlobalSection
 EndGlobal

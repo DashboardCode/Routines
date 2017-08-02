@@ -11,7 +11,9 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     {
         static AdminkaDbContext()
         {
-            var loadit = new[] { typeof(Remotion.Linq.DefaultQueryProvider),
+            var loadit = new[] 
+            {
+                typeof(Remotion.Linq.DefaultQueryProvider),
                 typeof(System.Collections.Generic.AsyncEnumerator),
                 typeof(Remotion.Linq.DefaultQueryProvider)
             };
@@ -21,6 +23,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             : base(optionsFactory.CreateOptions<AdminkaDbContext>())
         {
         }
+
         #region DbSets
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<User> Users { get; set; }
@@ -41,6 +44,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             return value + "Map";
         }
         #endregion
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
