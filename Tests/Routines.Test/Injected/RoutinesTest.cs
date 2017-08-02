@@ -12,7 +12,7 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedHandle()
         {
-            var routineTag = new MemberGuid(this);
+            var routineTag = new RoutineGuid(this);
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(routineTag, log);
 
@@ -46,7 +46,7 @@ namespace DashboardCode.Routines.Injected.Test
         {
             var correlationToken = Guid.NewGuid();
             var log = new List<string>();
-            var routineTag = new MemberGuid(correlationToken, "RoutinesTest", "RoutinesInjectedHandle2");
+            var routineTag = new RoutineGuid(correlationToken, "RoutinesTest", "RoutinesInjectedHandle2");
             var loggingTransients = new LoggingTransients(routineTag, log);
 
             var routineTransients = new BasicRoutineTransients<StateService>(
@@ -84,7 +84,7 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedExceptionHandle()
         {
-            var routineTag = new MemberGuid(this);
+            var routineTag = new RoutineGuid(this);
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(routineTag, log);
             var routineContainer = new BasicRoutineTransients<StateService>(
@@ -115,7 +115,7 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedExceptionHandle2()
         {
-            var tag = new MemberGuid(Guid.NewGuid(), "RoutinesTest", "RoutinesInjectedExceptionHandle2");
+            var tag = new RoutineGuid(Guid.NewGuid(), "RoutinesTest", "RoutinesInjectedExceptionHandle2");
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
 
             var log = new List<string>();

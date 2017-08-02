@@ -30,6 +30,7 @@
     <MetadataFile FileName="TraceService.disco" MetadataType="Disco" ID="8bae9614-fc8b-40e9-b30e-0bfd416fa411" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?disco" />
     <MetadataFile FileName="TraceService1.xsd" MetadataType="Schema" ID="6e72a6d1-ba36-44e7-89cd-ef58fc9b0150" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd2" />
     <MetadataFile FileName="TraceService2.xsd" MetadataType="Schema" ID="6429fa40-761f-4958-bb6d-fa0dcdc7405e" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd1" />
+    <MetadataFile FileName="TraceService3.xsd" MetadataType="Schema" ID="6e61e825-1a15-4d8d-b3c8-67b89e2435f7" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd3" />
     <MetadataFile FileName="TraceService.wsdl" MetadataType="Wsdl" ID="93a19172-4b88-4bf6-8834-70d1b5e822cc" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?wsdl" />
     <MetadataFile FileName="TraceService1.wsdl" MetadataType="Wsdl" ID="7cb13c3a-d9df-4181-add3-51c256758519" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?wsdl=wsdl0" />
   </Metadata>

@@ -35,13 +35,13 @@ namespace DashboardCode.AdminkaV1.Injected
             var migrationAssembly = configuration.GetMigrationAssembly();
             return new StorageMetaService(connectionString, migrationAssembly, StorageType.SQLSERVER);
         }
-        internal static IResolver GetSpecifiedResolver(this MemberGuid routineTag, UserContext userContext, IAppConfiguration configuration)
+        internal static IResolver GetSpecifiedResolver(this RoutineGuid routineTag, UserContext userContext, IAppConfiguration configuration)
         {
             GetResolver(routineTag, configuration, out Func<UserContext, IResolver> specifyResolver);
             var @value = specifyResolver(userContext);
             return @value;
         }
-        internal static IResolver GetResolver(this MemberGuid routineTag, IAppConfiguration configuration, out Func<UserContext, IResolver> specifyResolver)
+        internal static IResolver GetResolver(this RoutineGuid routineTag, IAppConfiguration configuration, out Func<UserContext, IResolver> specifyResolver)
         {
             var specifieableConfigurationContainer = configuration.GetConfigurationContainer(routineTag.Namespace, routineTag.Type, routineTag.Member);
             specifyResolver = (userContext) => {
@@ -160,21 +160,21 @@ namespace DashboardCode.AdminkaV1.Injected
 #endregion
 
 #region Logging
-        public static Exception DefaultRoutineTagTransformException(Exception exception, MemberGuid routineTag, Func<Exception, string> markdownException)
+        public static Exception DefaultRoutineTagTransformException(Exception exception, RoutineGuid routineTag, Func<Exception, string> markdownException)
         {
-            exception.Data[nameof(MemberGuid.CorrelationToken)] = routineTag.CorrelationToken;
-            exception.Data[nameof(MemberGuid.Namespace)]        = routineTag.Namespace;
-            exception.Data[nameof(MemberGuid.Type)]            = routineTag.Type;
-            exception.Data[nameof(MemberGuid.Member)]           = routineTag.Member;
+            exception.Data[nameof(RoutineGuid.CorrelationToken)] = routineTag.CorrelationToken;
+            exception.Data[nameof(RoutineGuid.Namespace)]        = routineTag.Namespace;
+            exception.Data[nameof(RoutineGuid.Type)]            = routineTag.Type;
+            exception.Data[nameof(RoutineGuid.Member)]           = routineTag.Member;
             return exception;
         }
         internal static NLogAuthenticationLogging GetNLogAuthenticationLogging()
         {
             return new NLogAuthenticationLogging();
         }
-        public static Func<MemberGuid, IResolver, RoutineLoggingTransients> ComposeNLogTransients(
+        public static Func<RoutineGuid, IResolver, RoutineLoggingTransients> ComposeNLogTransients(
                 Func<Exception, string> markdownException,
-                Func<Exception, MemberGuid, Func<Exception, string>, Exception> routineTransformException
+                Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException
             )
         {
             return (t, r) => {
@@ -193,7 +193,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 return new RoutineLoggingTransients(adminkaLogging, authenticationLogging, (ex) => routineTransformException(ex, t, markdownException));
             };
         }
-        public static Func<MemberGuid, IResolver, RoutineLoggingTransients> ComposeListLoggingTransients(
+        public static Func<RoutineGuid, IResolver, RoutineLoggingTransients> ComposeListLoggingTransients(
             List<string> logger,
             LoggingConfiguration loggingConfiguration,
             LoggingVerboseConfiguration loggingVerboseConfiguration,

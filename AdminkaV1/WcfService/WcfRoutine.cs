@@ -6,14 +6,14 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
     public class WcfRoutine : AdminkaRoutine
     {
-        public WcfRoutine(MemberGuid routineTag, string faultCodeNamespace, object input) 
+        public WcfRoutine(RoutineGuid routineTag, string faultCodeNamespace, object input) 
             : base(routineTag, GetUserContext(), TransformException(faultCodeNamespace), new ConfigurationNETFramework(), input)
         {
         }
         private static UserContext GetUserContext() =>
             new UserContext("Anonymous");
 
-        public static Func<Exception, MemberGuid, Func<Exception, string>, Exception> TransformException(string faultCodeNamespace) =>
+        public static Func<Exception, RoutineGuid, Func<Exception, string>, Exception> TransformException(string faultCodeNamespace) =>
             (ex,w,s)=>WcfException.TransformException(ex, w, faultCodeNamespace, s);
     }
 }

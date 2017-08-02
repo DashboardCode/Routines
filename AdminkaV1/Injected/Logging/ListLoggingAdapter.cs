@@ -11,7 +11,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
     public class ListLoggingAdapter : IBasicLogging, IAuthenticationLogging
     {
         readonly List<string> logger = new List<string>();
-        readonly MemberGuid routineTag;
+        readonly RoutineGuid routineTag;
         readonly LoggingConfiguration loggingConfiguration;
         readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
         readonly Func<Exception, string> markdownException;
@@ -21,7 +21,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 
         public ListLoggingAdapter(
             List<string> logger,
-            MemberGuid routineTag,
+            RoutineGuid routineTag,
             Func<Exception, string> markdownException,
             Func<object, int, bool, string> serializeObject,
             LoggingConfiguration loggingConfiguration,
@@ -115,7 +115,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             }
         }
 
-        public void TraceAuthentication(MemberGuid routineTag, string message)
+        public void TraceAuthentication(RoutineGuid routineTag, string message)
         {
             
         }

@@ -72,6 +72,9 @@
     <None Include="Service References\TraceServiceReference\TraceService2.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\TraceServiceReference\TraceService3.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\TraceServiceReference\" />

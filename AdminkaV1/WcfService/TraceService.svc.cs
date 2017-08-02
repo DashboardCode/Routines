@@ -12,7 +12,7 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging
         public Trace GetTrace(Guid correlationToken)
         {
             var input = new { correlationToken = correlationToken };
-            var routine = new WcfRoutine(new MemberGuid(this), DataContactConstants.FaultCode, input);
+            var routine = new WcfRoutine(new RoutineGuid(this), DataContactConstants.FaultCode, input);
             return routine.Handle((container, dataAccess) =>
             {
                 var servicesContainer = new ServicesContainer(dataAccess);

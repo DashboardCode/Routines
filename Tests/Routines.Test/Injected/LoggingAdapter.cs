@@ -6,9 +6,9 @@ namespace DashboardCode.Routines.Injected.Test
     public class LoggingAdapter : IBasicLogging
     {
         readonly List<string> logger;
-        readonly MemberGuid routineTag;
+        readonly RoutineGuid routineTag;
 
-        public LoggingAdapter(MemberGuid routineTag, List<string> logger)
+        public LoggingAdapter(RoutineGuid routineTag, List<string> logger)
         {
             this.logger = logger;
             this.routineTag = routineTag;

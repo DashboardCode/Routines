@@ -8,7 +8,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
     {
         private readonly Logger authenticationLogger = LogManager.GetLogger("Authentication");
         
-        public void TraceAuthentication(MemberGuid routineTag, string message)
+        public void TraceAuthentication(RoutineGuid routineTag, string message)
         {
             var logEventInfo = new LogEventInfo()
             {

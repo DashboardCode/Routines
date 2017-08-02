@@ -3,29 +3,29 @@ using System.Runtime.CompilerServices;
 
 namespace DashboardCode.Routines
 {
-    public class MemberGuid
+    public class RoutineGuid
     {
-        public MemberGuid(Guid correlationToken, object o, [CallerMemberName] string member = null) :
+        public RoutineGuid(Guid correlationToken, object o, [CallerMemberName] string member = null) :
            this(correlationToken, o.GetType(), member)
         {
         }
-        public MemberGuid(object o, [CallerMemberName] string member = null) :
+        public RoutineGuid(object o, [CallerMemberName] string member = null) :
             this(Guid.NewGuid(), o.GetType(), member)
         {
         }
 
-        public MemberGuid(Guid correlationToken, Type type, [CallerMemberName] string member = null) :
+        public RoutineGuid(Guid correlationToken, Type type, [CallerMemberName] string member = null) :
             this(correlationToken, type.Namespace, type.Name, member)
         {
         }
-        public MemberGuid(Guid correlationToken, string @namespace, string type, string member)
+        public RoutineGuid(Guid correlationToken, string @namespace, string type, string member)
         {
             CorrelationToken = correlationToken;
             Namespace = @namespace;
             Type = type;
             Member = member;
         }
-        public MemberGuid(Guid correlationToken, string type, string member)
+        public RoutineGuid(Guid correlationToken, string type, string member)
         {
             CorrelationToken = correlationToken;
             Type = type;

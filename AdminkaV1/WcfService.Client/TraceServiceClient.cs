@@ -21,10 +21,10 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client
                 if (ex.Detail.UserContextExceptionCode != null)
                     baseException = new UserContextException(ex.Message, ex, ex.Detail.UserContextExceptionCode);
                 baseException.Data["RemoteUserContextExceptionCode"] = ex.Detail.UserContextExceptionCode;
-                baseException.Data["RemoteCorrelationToken"] = ex.Detail.RoutineTag.CorrelationToken;
-                baseException.Data["RemoteNamespace"] = ex.Detail.RoutineTag.Namespace;
-                baseException.Data["RemoteType"] = ex.Detail.RoutineTag.Type;
-                baseException.Data["RemoteMember"] = ex.Detail.RoutineTag.Member;
+                baseException.Data["RemoteCorrelationToken"] = ex.Detail.RoutineGuid.CorrelationToken;
+                baseException.Data["RemoteNamespace"] = ex.Detail.RoutineGuid.Namespace;
+                baseException.Data["RemoteType"] = ex.Detail.RoutineGuid.Type;
+                baseException.Data["RemoteMember"] = ex.Detail.RoutineGuid.Member;
                 baseException.Data["RemoteDetails"] = ex.Detail.Details;
                 if (baseException != ex)
                     throw baseException;

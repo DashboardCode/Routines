@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
             var userContext = new UserContext("UnitTest");
 
 
-            var routine = new AdminkaRoutine(new MemberGuid(Guid.NewGuid(), typeof(TestIsland)), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineGuid(Guid.NewGuid(), typeof(TestIsland)), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 var typeRecord1 = new TypeRecord()
@@ -147,7 +147,7 @@ namespace DashboardCode.AdminkaV1.Injected.Test
         {
             var userContext = new UserContext("UnitTest");
 
-            var routine = new AdminkaRoutine(new MemberGuid(Guid.NewGuid(), typeof(TestIsland)), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutine(new RoutineGuid(Guid.NewGuid(), typeof(TestIsland)), userContext, ZoneManager.GetConfiguration(), new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 dataAccess.CreateRepositoryHandler<ChildRecord>().Handle((repository, storage) =>

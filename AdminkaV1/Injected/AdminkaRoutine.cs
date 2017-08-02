@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected
         protected readonly UserContext userContext;
         #region constructors without usercontext
         public AdminkaRoutine(
-            MemberGuid routineTag,
+            RoutineGuid routineTag,
             IAppConfiguration configuration,
             object input
         ) : this(
@@ -27,11 +27,11 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public AdminkaRoutine(
             string @namespace, string controller, string action,
-            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             IAppConfiguration configuration,
             object input
         ) : this(
-           new MemberGuid(Guid.NewGuid(), @namespace, controller, action),
+           new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
            loggingTransientsFactory,
            new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
            configuration,
@@ -40,9 +40,9 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         protected AdminkaRoutine(
-             MemberGuid routineTag,
+             RoutineGuid routineTag,
              IIdentity identity,
-             Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+             Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
              RepositoryHandlerFactory repositoryHandlerFactory,
              IAppConfiguration configuration,
              object input
@@ -59,8 +59,8 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         private AdminkaRoutine(
-            MemberGuid routineTag,
-            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            RoutineGuid routineTag,
+            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             IAppConfiguration configuration,
             object input
@@ -76,10 +76,10 @@ namespace DashboardCode.AdminkaV1.Injected
         {
         }
         private AdminkaRoutine(
-            MemberGuid routineTag,
+            RoutineGuid routineTag,
             IIdentity identity,
             CultureInfo cultureInfo,
-            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             AuthenticationService authenticationServices,
             IAppConfiguration configuration,
@@ -102,7 +102,7 @@ namespace DashboardCode.AdminkaV1.Injected
             IAppConfiguration configuration,
             object input
             ) : this(
-                    new MemberGuid(Guid.NewGuid(), @namespace, controller, action), 
+                    new RoutineGuid(Guid.NewGuid(), @namespace, controller, action), 
                     userContext,
                     InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
                     new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
@@ -112,7 +112,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         public AdminkaRoutine(
-            MemberGuid routineTag,
+            RoutineGuid routineTag,
             UserContext userContext,
             IAppConfiguration configuration,
             object input
@@ -128,11 +128,11 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaRoutine(
             string @namespace, string controller, string action,
             UserContext userContext,
-            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             IAppConfiguration configuration,
             object input
             ) : this(
-                    new MemberGuid(Guid.NewGuid(), @namespace, controller, action), 
+                    new RoutineGuid(Guid.NewGuid(), @namespace, controller, action), 
                     userContext, 
                     loggingTransientsFactory,
                     new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
@@ -142,9 +142,9 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         protected AdminkaRoutine(
-            MemberGuid routineTag,
+            RoutineGuid routineTag,
             UserContext userContext,
-            Func<Exception, MemberGuid, Func<Exception, string>, Exception> routineTransformException,
+            Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException,
             IAppConfiguration configuration,
             object input
         ) : this(
@@ -158,9 +158,9 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         protected AdminkaRoutine(
-            MemberGuid routineTag,
+            RoutineGuid routineTag,
             UserContext userContext,
-            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             IAppConfiguration configuration,
             object input
@@ -176,10 +176,10 @@ namespace DashboardCode.AdminkaV1.Injected
         #endregion
 
         internal AdminkaRoutine(
-            MemberGuid routineTag,
+            RoutineGuid routineTag,
             UserContext userContext,
             IResolver reslover,
-            Func<MemberGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             object input
             ) : this(
@@ -192,7 +192,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
         }
         internal AdminkaRoutine(
-            MemberGuid routineTag,
+            RoutineGuid routineTag,
             UserContext userContext,
             IResolver resolver,
             RoutineLoggingTransients routineLoggingTransients,

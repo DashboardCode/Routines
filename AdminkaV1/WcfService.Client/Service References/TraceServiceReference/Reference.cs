@@ -26,10 +26,10 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
         private string DetailsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.MemberTag MemberTagField;
+        private string MessageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string MessageField;
+        private DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.RoutineGuid RoutineGuidField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string UserContextExceptionCodeField;
@@ -58,19 +58,6 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.MemberTag MemberTag {
-            get {
-                return this.MemberTagField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.MemberTagField, value) != true)) {
-                    this.MemberTagField = value;
-                    this.RaisePropertyChanged("MemberTag");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Message {
             get {
                 return this.MessageField;
@@ -79,6 +66,19 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
                 if ((object.ReferenceEquals(this.MessageField, value) != true)) {
                     this.MessageField = value;
                     this.RaisePropertyChanged("Message");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.RoutineGuid RoutineGuid {
+            get {
+                return this.RoutineGuidField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.RoutineGuidField, value) != true)) {
+                    this.RoutineGuidField = value;
+                    this.RaisePropertyChanged("RoutineGuid");
                 }
             }
         }
@@ -108,9 +108,9 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="MemberTag", Namespace="https://adminka-v1.dashboardcode.com")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="RoutineGuid", Namespace="https://adminka-v1.dashboardcode.com")]
     [System.SerializableAttribute()]
-    public partial class MemberTag : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+    public partial class RoutineGuid : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
         [System.NonSerializedAttribute()]
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
@@ -245,16 +245,17 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(Namespace="https://adminka-v1.dashboardcode.com", ConfigurationName="TraceServiceReference.TraceService")]
+    [System.ServiceModel.ServiceContractAttribute(Namespace="https://adminka-v1.dashboardcode.com/TraceService", ConfigurationName="TraceServiceReference.TraceService")]
     public interface TraceService {
         
-        [System.ServiceModel.OperationContractAttribute(Action="https://adminka-v1.dashboardcode.com/TraceService/GetTrace", ReplyAction="https://adminka-v1.dashboardcode.com/TraceService/GetTraceResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.RoutineError), Action="https://adminka-v1.dashboardcode.com/TraceService/GetTraceRoutineErrorFault", Name="RoutineError")]
-        [System.ServiceModel.FaultContractAttribute(typeof(DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.AuthenticationFault), Action="https://adminka-v1.dashboardcode.com/TraceService/GetTraceAuthenticationFaultFaul" +
-            "t", Name="AuthenticationFault")]
+        [System.ServiceModel.OperationContractAttribute(Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTrace", ReplyAction="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceResponse")]
+        [System.ServiceModel.FaultContractAttribute(typeof(DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.RoutineError), Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceRoutineErr" +
+            "orFault", Name="RoutineError", Namespace="https://adminka-v1.dashboardcode.com")]
+        [System.ServiceModel.FaultContractAttribute(typeof(DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.AuthenticationFault), Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceAuthentica" +
+            "tionFaultFault", Name="AuthenticationFault", Namespace="https://adminka-v1.dashboardcode.com")]
         DashboardCode.AdminkaV1.DomLogging.Trace GetTrace(System.Guid correlationToken);
         
-        [System.ServiceModel.OperationContractAttribute(Action="https://adminka-v1.dashboardcode.com/TraceService/GetTrace", ReplyAction="https://adminka-v1.dashboardcode.com/TraceService/GetTraceResponse")]
+        [System.ServiceModel.OperationContractAttribute(Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTrace", ReplyAction="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceResponse")]
         System.Threading.Tasks.Task<DashboardCode.AdminkaV1.DomLogging.Trace> GetTraceAsync(System.Guid correlationToken);
     }
     
