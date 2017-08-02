@@ -17,11 +17,11 @@
 //        readonly OeParser parser;
 //        public AdminkaODataContext(string baseUri, IAdminkaOptionsFactory optionsFactory)
 //        {
-//             var dataAdapter = new AdminkaOeEfCoreDataAdapter(optionsFactory);
-//             //Build OData Edm Model
-//             EdmModel edmModel = dataAdapter.BuildEdmModel();
-//             //Create query parser
-//             this.parser = new OeParser(new Uri(baseUri /*"http://dummy"*/), dataAdapter, dataAdapter.BuildEdmModel());
+//            var dataAdapter = new AdminkaOeEfCoreDataAdapter(optionsFactory);
+//            //Build OData Edm Model
+//            EdmModel edmModel = dataAdapter.BuildEdmModel();
+//            //Create query parser
+//            this.parser = new OeParser(new Uri(baseUri /*"http://dummy"*/), dataAdapter, dataAdapter.BuildEdmModel());
 //        }
 
 //        public async void AppendStream(Stream responceStream, Uri query)
