@@ -9,6 +9,6 @@ namespace DashboardCode.AdminkaV1
         string ResolveConnectionString();
         string ResolveMigrationAssembly();
         StorageType ResolveStorageType();
-        SpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag);
+        ISpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag);
     }
 }

@@ -29,7 +29,7 @@ namespace DashboardCode.Routines.Configuration.NETCore.Test
             configurationRoot = configurationBuilder.Build();
         }
 
-        public SpecifiableConfigurationContainer GetSpecifiableConfigurationContainer(MemberTag memberTag) =>
+        public ISpecifiableConfigurationContainer GetSpecifiableConfigurationContainer(MemberTag memberTag) =>
             RoutinesConfigurationManager.CreateConfigurationContainer(configurationRoot, memberTag);
     }
 }

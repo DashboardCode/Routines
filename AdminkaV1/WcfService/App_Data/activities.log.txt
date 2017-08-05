@@ -6,3 +6,5 @@
 05.08.17 00:46:51; TraceService.GetTrace; DashboardCode.AdminkaV1.Wcf.Messaging; 94bb0db7-dce2-4c9e-a897-03e2d4ac32ff; FAILURE; 83ms
 05.08.17 12:02:57; TraceService.GetTrace; DashboardCode.AdminkaV1.Wcf.Messaging; 3a828461-4442-4196-a51e-d0d0e514bea7; Started
 05.08.17 12:02:58; TraceService.GetTrace; DashboardCode.AdminkaV1.Wcf.Messaging; 3a828461-4442-4196-a51e-d0d0e514bea7; FAILURE; 116ms
+05.08.17 13:43:45; TraceService.GetTrace; DashboardCode.AdminkaV1.Wcf.Messaging; 46afd080-6ba5-4207-84b6-2c6098a2fae5; Started
+05.08.17 13:43:45; TraceService.GetTrace; DashboardCode.AdminkaV1.Wcf.Messaging; 46afd080-6ba5-4207-84b6-2c6098a2fae5; FAILURE; 144ms

@@ -6,7 +6,7 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
     public class ConfigurationNETFramework : IAppConfiguration
     {
-        public SpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag)=>
+        public ISpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag)=>
             RoutinesConfigurationManager.GetConfigurationContainer(memberTag);
 
         public string ResolveConnectionString() =>

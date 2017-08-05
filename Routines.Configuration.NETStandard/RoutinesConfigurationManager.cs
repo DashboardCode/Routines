@@ -7,7 +7,7 @@ namespace DashboardCode.Routines.Configuration.NETStandard
     {
         const string defaultFileName    = "appsettings.json";
         const string defaultSectionName = "Routines";
-        public static SpecifiableConfigurationContainer CreateConfigurationContainer(
+        public static ISpecifiableConfigurationContainer CreateConfigurationContainer(
             this IConfigurationRoot configurationRoot,
             MemberTag memberTag, string fileName = defaultFileName,  string sectionName = defaultSectionName)
         {

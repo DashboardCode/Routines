@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Configuration
 {
-    public class SpecifiableConfigurationContainer : IConfigurationContainer
+    public class SpecifiableConfigurationContainer : ISpecifiableConfigurationContainer
     {
         private readonly SortedDictionary<int, IRoutineResolvable> rangedRoutines;
         private readonly ConfigurationContainer configurationContainer;

@@ -11,7 +11,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
         public MvcAppConfiguration(IConfigurationRoot configurationRoot) =>
             ConfigurationRoot=configurationRoot;
 
-        public SpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag) =>
+        public ISpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag) =>
             RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, memberTag);
 
         public string ResolveConnectionString() =>

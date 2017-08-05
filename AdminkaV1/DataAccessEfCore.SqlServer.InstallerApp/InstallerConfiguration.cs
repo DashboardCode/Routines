@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
             configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
             this.ConfigurationRoot = configurationBuilder.Build();
         }
-        public SpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag)
+        public ISpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag)
         {
             return RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, memberTag);
         }
