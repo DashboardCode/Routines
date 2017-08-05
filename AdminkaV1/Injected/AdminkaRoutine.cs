@@ -14,15 +14,25 @@ namespace DashboardCode.AdminkaV1.Injected
         protected readonly UserContext userContext;
         #region constructors without usercontext
         public AdminkaRoutine(
-            RoutineGuid routineTag,
+            MemberTag memberTag,
             IAppConfiguration configuration,
             object input
         ) : this(
-            routineTag,
-            InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
-            new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
-            configuration,
-            input)
+              new RoutineGuid(Guid.NewGuid(), memberTag),
+              configuration,
+              input)
+        {
+        }
+        public AdminkaRoutine(
+            RoutineGuid routineGuid,
+            IAppConfiguration configuration,
+            object input
+        ) : this(
+              routineGuid,
+              InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
+              new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
+              configuration,
+              input)
         {
         }
         public AdminkaRoutine(
@@ -31,52 +41,50 @@ namespace DashboardCode.AdminkaV1.Injected
             IAppConfiguration configuration,
             object input
         ) : this(
-           new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
-           loggingTransientsFactory,
-           new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
-           configuration,
-           input)
+              new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
+              loggingTransientsFactory,
+              new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
+              configuration,
+              input)
         {
         }
-
         protected AdminkaRoutine(
-             RoutineGuid routineTag,
+             RoutineGuid routineGuid,
              IIdentity identity,
              Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
              RepositoryHandlerFactory repositoryHandlerFactory,
              IAppConfiguration configuration,
              object input
         ) : this(
-           routineTag,
-           identity,
-           CultureInfo.CurrentCulture,
-           loggingTransientsFactory,
-           repositoryHandlerFactory,
-           new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configuration),
-           configuration,
-           input)
+              routineGuid,
+              identity,
+              CultureInfo.CurrentCulture,
+              loggingTransientsFactory,
+              repositoryHandlerFactory,
+              new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configuration),
+              configuration,
+              input)
         {
         }
-
         private AdminkaRoutine(
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             IAppConfiguration configuration,
             object input
         ) : this(
-           routineTag,
-           InjectedManager.GetDefaultIdentity(), 
-           CultureInfo.CurrentCulture,
-           loggingTransientsFactory,
-           repositoryHandlerFactory,
-           new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configuration),
-           configuration,
-           input)
+              routineGuid,
+              InjectedManager.GetDefaultIdentity(), 
+              CultureInfo.CurrentCulture,
+              loggingTransientsFactory,
+              repositoryHandlerFactory,
+              new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configuration),
+              configuration,
+              input)
         {
         }
         private AdminkaRoutine(
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             IIdentity identity,
             CultureInfo cultureInfo,
             Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
@@ -85,12 +93,12 @@ namespace DashboardCode.AdminkaV1.Injected
             IAppConfiguration configuration,
             object input
             ) : this(
-                routineTag,
-                authenticationServices.GetUserContext(routineTag, identity, cultureInfo),
-                loggingTransientsFactory, 
-                repositoryHandlerFactory,
-                configuration,
-                input)
+                  routineGuid,
+                  authenticationServices.GetUserContext(routineGuid, identity, cultureInfo),
+                  loggingTransientsFactory, 
+                  repositoryHandlerFactory,
+                  configuration,
+                  input)
         {
         }
         #endregion
@@ -110,21 +118,30 @@ namespace DashboardCode.AdminkaV1.Injected
                     input)
         {
         }
-
         public AdminkaRoutine(
-            RoutineGuid routineTag,
+            MemberTag memberTag,
             UserContext userContext,
             IAppConfiguration configuration,
             object input
-            ) : this(routineTag,
+            ) : this(new RoutineGuid(Guid.NewGuid(), memberTag),
                     userContext,
-                    routineTag.GetSpecifiedResolver(userContext, configuration),
+                    configuration,
+                    input)
+        {
+        }
+        public AdminkaRoutine(
+            RoutineGuid routineGuid,
+            UserContext userContext,
+            IAppConfiguration configuration,
+            object input
+            ) : this(routineGuid,
+                    userContext,
+                    routineGuid.GetSpecifiedResolver(userContext, configuration),
                     InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,InjectedManager.DefaultRoutineTagTransformException),
                     new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
                     input)
         {
         }
-
         public AdminkaRoutine(
             string @namespace, string controller, string action,
             UserContext userContext,
@@ -140,34 +157,32 @@ namespace DashboardCode.AdminkaV1.Injected
                     input)
         {
         }
-
         protected AdminkaRoutine(
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             UserContext userContext,
             Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException,
             IAppConfiguration configuration,
             object input
         ) : this(
-           routineTag,
+           routineGuid,
            userContext,
-           routineTag.GetSpecifiedResolver(userContext, configuration),
+           routineGuid.GetSpecifiedResolver(userContext, configuration),
            InjectedManager.ComposeNLogTransients(InjectedManager.Markdown,routineTransformException),
            new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(configuration)),
            input)
         {
         }
-
         protected AdminkaRoutine(
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             UserContext userContext,
             Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             IAppConfiguration configuration,
             object input
             ) : this(
-                routineTag,
+                routineGuid,
                 userContext,
-                routineTag.GetSpecifiedResolver(userContext, configuration),
+                routineGuid.GetSpecifiedResolver(userContext, configuration),
                 loggingTransientsFactory,
                 repositoryHandlerFactory,
                 input)
@@ -176,23 +191,23 @@ namespace DashboardCode.AdminkaV1.Injected
         #endregion
 
         internal AdminkaRoutine(
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             UserContext userContext,
             IResolver reslover,
             Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             object input
             ) : this(
-                routineTag, 
+                routineGuid, 
                 userContext, 
                 reslover,
-                loggingTransientsFactory(routineTag, reslover),
+                loggingTransientsFactory(routineGuid, reslover),
                 repositoryHandlerFactory, 
                 input)
         {
         }
         internal AdminkaRoutine(
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             UserContext userContext,
             IResolver resolver,
             RoutineLoggingTransients routineLoggingTransients,
@@ -201,7 +216,7 @@ namespace DashboardCode.AdminkaV1.Injected
             ) : base(
                 routineLoggingTransients.BasicRoutineLoggingAdapter,
                 routineLoggingTransients.TransformException,
-                (verbose) => new Routine<UserContext>(userContext, routineTag, verbose, resolver),
+                verbose => new Routine<UserContext>(userContext, routineGuid, verbose, resolver),
                 repositoryHandlerFactory,
                 input
                 )
@@ -211,27 +226,14 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         #region Handle with data access
-        public void Handle(Action<Routine<UserContext>, DataAccessFactory> action)
-        {
-            Handle(state =>
-            {
-                action(state, repositoryHandlerFactory.CreateDataAccessFactory(state));
-            });
-        }
-        public TOutput Handle<TOutput>(Func<Routine<UserContext>, DataAccessFactory, TOutput> func)
-        {
-            return Handle(state =>
-            {
-                return func(state, repositoryHandlerFactory.CreateDataAccessFactory(state));
-            });
-        }
-        public async Task<TOutput> HandleAsync<TOutput>(Func<Routine<UserContext>, DataAccessFactory, TOutput> func)
-        {
-            return await HandleAsync(state =>
-            {
-                return func(state, repositoryHandlerFactory.CreateDataAccessFactory(state));
-            });
-        }
+        public void Handle(Action<Routine<UserContext>, DataAccessFactory> action) =>
+            Handle(state => action(state, repositoryHandlerFactory.CreateDataAccessFactory(state)));
+
+        public TOutput Handle<TOutput>(Func<Routine<UserContext>, DataAccessFactory, TOutput> func) =>
+            Handle(state =>func(state, repositoryHandlerFactory.CreateDataAccessFactory(state)));
+        
+        public async Task<TOutput> HandleAsync<TOutput>(Func<Routine<UserContext>, DataAccessFactory, TOutput> func) =>
+            await HandleAsync(state => func(state, repositoryHandlerFactory.CreateDataAccessFactory(state)));
         #endregion
     }
 }

@@ -1,20 +1,21 @@
-﻿using DashboardCode.Routines.Configuration;
+﻿using DashboardCode.Routines;
+using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETFramework;
 
 namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
     public class ConfigurationNETFramework : IAppConfiguration
     {
-        public SpecifiableConfigurationContainer GetConfigurationContainer(string @namespace, string @class, string member)=>
-            RoutinesConfigurationManager.GetConfigurationContainer(@namespace, @class, member);
+        public SpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag)=>
+            RoutinesConfigurationManager.GetConfigurationContainer(memberTag);
 
-        public string GetConnectionString() =>
+        public string ResolveConnectionString() =>
             RoutinesConfigurationManager.GetConnectionString("adminka");
 
-        public string GetMigrationAssembly()
+        public string ResolveMigrationAssembly()
             => null;
 
-        public StorageType GetStorageType() =>
+        public StorageType ResolveStorageType() =>
             StorageType.INMEMORY;
     }
 }

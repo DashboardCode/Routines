@@ -2,9 +2,9 @@
 {
     public class ConfigurationNETFramework
     {
-        public SpecifiableConfigurationContainer GetSpecifiableConfigurationContainer(string @namespace, string type, string member)
+        public SpecifiableConfigurationContainer GetSpecifiableConfigurationContainer(MemberTag memberTag)
         {
-            return RoutinesConfigurationManager.GetConfigurationContainer(@namespace, type, member);
+            return RoutinesConfigurationManager.GetConfigurationContainer(memberTag);
         }
     }
 }

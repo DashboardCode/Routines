@@ -9,15 +9,15 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
     public class TraceService : IService
     {
-        public Trace GetTrace(Guid correlationToken)
+        public Trace GetTrace(Guid searchForCorrelationToken)
         {
-            var input = new { correlationToken = correlationToken };
-            var routine = new WcfRoutine(new RoutineGuid(this), DataContactConstants.FaultCode, input);
+            var input = new { searchForCorrelationToken = searchForCorrelationToken };
+            var routine = new WcfRoutine(new MemberTag(this), DataContactConstants.FaultCode, input);
             return routine.Handle((container, dataAccess) =>
             {
                 var servicesContainer = new ServicesContainer(dataAccess);
                 var service = servicesContainer.ResolveTraceService();
-                return service.GetTrace(correlationToken);
+                return service.GetTrace(searchForCorrelationToken);
             });
         }
     }

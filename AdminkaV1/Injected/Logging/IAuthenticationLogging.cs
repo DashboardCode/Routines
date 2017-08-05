@@ -4,6 +4,6 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public interface IAuthenticationLogging 
     {
-        void TraceAuthentication(RoutineGuid routineTag, string message);
+        void TraceAuthentication(RoutineGuid routineGuid, string message);
     }
 }

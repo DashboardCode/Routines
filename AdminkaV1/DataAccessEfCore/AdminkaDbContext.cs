@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using DashboardCode.AdminkaV1.DomAuthentication;
 using DashboardCode.AdminkaV1.DomLogging;
@@ -45,13 +44,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         }
         #endregion
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            var relationalOptions = RelationalOptionsExtension.Extract(optionsBuilder.Options);
-            relationalOptions.MigrationsHistoryTableName = "Migrations";
-            relationalOptions.MigrationsHistoryTableSchema = "ef";
-        }
         private void SetupVersioned<T>(EntityTypeBuilder<T> builder) where T : class, IVersioned
         {
             builder.Property(e => e.RowVersionBy).HasMaxLength(LengthConstants.AdName);

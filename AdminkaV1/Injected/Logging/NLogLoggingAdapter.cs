@@ -13,7 +13,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     class NLogLoggingAdapter : IBasicLogging
     {
-        readonly RoutineGuid routineTag;
+        readonly RoutineGuid routineGuid;
         readonly LoggingConfiguration loggingConfiguration;
         readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
         readonly Func<Exception, string> markdownException;
@@ -23,7 +23,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         public bool ShouldBufferVerbose { get; private set; }
         public bool ShouldVerboseWithStackTrace { get; private set; }
         public NLogLoggingAdapter(
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             Func<Exception, string> markdownException,
             Func<object, int, bool, string> serializeObject,
             LoggingConfiguration loggingConfiguration,
@@ -31,7 +31,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             LoggingPerformanceConfiguration loggingPerformanceConfiguration
             )
         {
-            this.routineTag = routineTag;
+            this.routineGuid = routineGuid;
             this.markdownException = markdownException;
             this.serializeObject = (o)=> {
                 try
@@ -48,7 +48,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             this.loggingPerformanceConfiguration = loggingPerformanceConfiguration;
             ShouldBufferVerbose = loggingVerboseConfiguration.ShouldBufferVerbose;
             ShouldVerboseWithStackTrace = loggingVerboseConfiguration.ShouldVerboseWithStackTrace;
-            var loggerName = "Routine:"+ routineTag.GetCategory();
+            var loggerName = "Routine:"+ routineGuid.GetCategory();
             logger = LogManager.GetLogger(loggerName); // ~0.5 ms
         }
 
@@ -60,7 +60,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = "Started"
             };
-            logEventInfo.AppendRoutineTag(routineTag);
+            logEventInfo.AppendRoutineTag(routineGuid);
             logEventInfo.Properties["Description"] = $"Start;";
             logger.Log(logEventInfo);
         }
@@ -75,7 +75,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = message
             };
-            logEventInfo.AppendRoutineTag(routineTag);
+            logEventInfo.AppendRoutineTag(routineGuid);
             logEventInfo.Properties["Description"] = $"Finish";
             logger.Log(logEventInfo);
         }
@@ -87,7 +87,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = message
             };
-            logEventInfo.AppendRoutineTag(routineTag);
+            logEventInfo.AppendRoutineTag(routineGuid);
             logEventInfo.Properties["Description"] = $"Verbose";
             logger.Log(logEventInfo);
         }
@@ -105,7 +105,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = verbose.DateTime,
                     Message = verbose.Message,
                 };
-                logEventInfo.AppendRoutineTag(routineTag);
+                logEventInfo.AppendRoutineTag(routineGuid);
                 logEventInfo.Properties["Description"] = $"BufferedVerbose";
                 logEventInfo.Properties["Buffered"] = $"{i++}/{count}";
                 if (verbose.StackTrace!=null)
@@ -123,7 +123,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = message
             };
-            logEventInfo.AppendRoutineTag(routineTag);
+            logEventInfo.AppendRoutineTag(routineGuid);
             logEventInfo.Properties["Description"] = $"Exception";
             logger.Log(logEventInfo);
         }
@@ -139,7 +139,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = dateTime,
                     Message = message
                 };
-                logEventInfo.AppendRoutineTag(routineTag);
+                logEventInfo.AppendRoutineTag(routineGuid);
                 logEventInfo.Properties["Description"] = $"Input";
                 logger.Log(logEventInfo);
             }
@@ -156,7 +156,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = dateTime,
                     Message = message
                 };
-                logEventInfo.AppendRoutineTag(routineTag);
+                logEventInfo.AppendRoutineTag(routineGuid);
                 logEventInfo.Properties["Description"] = $"Output";
                 logger.Log(logEventInfo);
             }

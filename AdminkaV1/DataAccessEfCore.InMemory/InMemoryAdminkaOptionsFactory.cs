@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.InMemory
 {
@@ -12,6 +13,8 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.InMemory
         {
             var optionsBuilder = new DbContextOptionsBuilder<TContext>();
             optionsBuilder.UseInMemoryDatabase(databaseName);
+            optionsBuilder.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
+            //optionsBuilder.ConfigureWarnings(x => x.Ignore(InMemoryEventId.));
             var options = optionsBuilder.Options;
             return options;
         }

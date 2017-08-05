@@ -5,13 +5,13 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     static class NLogExtensions
     {
-        public static void AppendRoutineTag(this LogEventInfo logEventInfo, RoutineGuid routineTag)
+        public static void AppendRoutineTag(this LogEventInfo logEventInfo, RoutineGuid routineGuid)
         {
-            logEventInfo.Properties[nameof(RoutineGuid.CorrelationToken)] = routineTag.CorrelationToken;
-            logEventInfo.Properties[nameof(RoutineGuid.Namespace)] = routineTag.Namespace;
-            logEventInfo.Properties[nameof(RoutineGuid.Type)] = routineTag.Type;
-            logEventInfo.Properties[nameof(RoutineGuid.Member)] = routineTag.Member;
-            logEventInfo.Properties["Title"] = $"{routineTag.Type}.{routineTag.Member}; {routineTag.Namespace}; {routineTag.CorrelationToken}";
+            logEventInfo.Properties[nameof(RoutineGuid.CorrelationToken)] = routineGuid.CorrelationToken;
+            logEventInfo.Properties[nameof(MemberTag.Namespace)] = routineGuid.MemberTag.Namespace;
+            logEventInfo.Properties[nameof(MemberTag.Type)] = routineGuid.MemberTag.Type;
+            logEventInfo.Properties[nameof(MemberTag.Member)] = routineGuid.MemberTag.Member;
+            logEventInfo.Properties["Title"] = $"{routineGuid.MemberTag.Type}.{routineGuid.MemberTag.Member}; {routineGuid.MemberTag.Namespace}; {routineGuid.CorrelationToken}";
         }
     }
 }

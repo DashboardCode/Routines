@@ -15,7 +15,7 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging
         {
         }
 
-        public static Exception TransformException(Exception exception, Routines.RoutineGuid routineTag, string faultCodeNamespace, Func<Exception, string> markdownException)
+        public static Exception TransformException(Exception exception, Routines.RoutineGuid routineGuid, string faultCodeNamespace, Func<Exception, string> markdownException)
         {
             var message = default(string);
             var code = default(string);
@@ -35,10 +35,10 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging
             {
                 RoutineGuid = new Contracts.RoutineGuid()
                 {
-                    CorrelationToken = routineTag.CorrelationToken,
-                    Namespace = routineTag.Namespace,
-                    Type = routineTag.Type,
-                    Member = routineTag.Member
+                    CorrelationToken = routineGuid.CorrelationToken,
+                    Namespace = routineGuid.MemberTag.Namespace,
+                    Type = routineGuid.MemberTag.Type,
+                    Member = routineGuid.MemberTag.Member
                 },
                 Message = message,
                 UserContextExceptionCode = code,

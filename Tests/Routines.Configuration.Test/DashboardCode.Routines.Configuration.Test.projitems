@@ -15,6 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)State.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestConfiguration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ZoneManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ZoningSharedSourceManager.cs" />
   </ItemGroup>
 </Project>

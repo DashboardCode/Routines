@@ -6,7 +6,7 @@ namespace DashboardCode.Routines.Storage
 {
     public static class StorageErrorExtensions
     {
-        public static void Desert(this StorageError storageError, string exceptionText = "StorageError contains exception")
+        public static void ThrowIfNotNull(this StorageError storageError, string exceptionText = "StorageError contains exception")
         {
             if (storageError != null && storageError.FieldErrors != null)
             {

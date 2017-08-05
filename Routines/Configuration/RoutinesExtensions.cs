@@ -4,23 +4,23 @@ namespace DashboardCode.Routines.Configuration
 {
     public static class RoutinesExtensions
     {
-        public static SpecifiableConfigurationContainer GetConfigurationContainer(this IEnumerable<IRoutineResolvable> routines, string @namespace, string @class, string member)
+        public static SpecifiableConfigurationContainer GetConfigurationContainer(this IEnumerable<IRoutineResolvable> routines, MemberTag memberTag)
         {
-            var rangedRoutines = routines.RangedRoutines(@namespace, @class, member);
+            var rangedRoutines = routines.RangedRoutines(memberTag);
             var configurationContainer = new SpecifiableConfigurationContainer(rangedRoutines);
             return configurationContainer;
         }
 
-        public static SortedDictionary<int, IRoutineResolvable> RangedRoutines(this IEnumerable<IRoutineResolvable> routines, string @namespace, string type, string member)
+        public static SortedDictionary<int, IRoutineResolvable> RangedRoutines(this IEnumerable<IRoutineResolvable> routines, MemberTag memberTag)
         {
             var rangedRoutines = new Dictionary<int, IRoutineResolvable>();
             int rA = 0, rB = 1000, rC = 2000;
             foreach (IRoutineResolvable routine in routines)
             {
                 if (
-                    (routine.Namespace == @namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
-                    && routine.Type == type
-                    && routine.Member == member)
+                    (routine.Namespace == memberTag.Namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
+                    && routine.Type == memberTag.Type
+                    && routine.Member == memberTag.Member)
                 {
                     if (!routine.For.IsNullOrWhiteSpaceOrAsterix())
                         rangedRoutines.Add(rA++, routine);
@@ -28,8 +28,8 @@ namespace DashboardCode.Routines.Configuration
                         rangedRoutines.Add(999, routine);
                 }
                 else if (
-                    (routine.Namespace == @namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
-                    && routine.Type == type
+                    (routine.Namespace == memberTag.Namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
+                    && routine.Type == memberTag.Type
                     && routine.Member.IsNullOrWhiteSpaceOrAsterix())
                 {
                     if (!routine.For.IsNullOrWhiteSpaceOrAsterix())
@@ -38,7 +38,7 @@ namespace DashboardCode.Routines.Configuration
                         rangedRoutines.Add(1999, routine);
                 }
                 else if (
-                    (routine.Namespace == @namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
+                    (routine.Namespace == memberTag.Namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
                     && routine.Type.IsNullOrWhiteSpaceOrAsterix()
                     && routine.Member.IsNullOrWhiteSpaceOrAsterix())
                 {

@@ -26,9 +26,9 @@ namespace DashboardCode.AdminkaV1.Injected
             systemUserContext = new UserContext("Authentication");
         }
 
-        public UserContext GetUserContext(RoutineGuid routineTag, IIdentity identity, CultureInfo cultureInfo)
+        public UserContext GetUserContext(RoutineGuid routineGuid, IIdentity identity, CultureInfo cultureInfo)
         {
-            var authenticationRoutineTag = new RoutineGuid(routineTag.CorrelationToken, this);
+            var authenticationRoutineTag = new RoutineGuid(routineGuid.CorrelationToken, new MemberTag(this));
             var basicResolver = authenticationRoutineTag.GetResolver(appConfiguration, out Func<UserContext, IResolver> specifyResolver);
             var resolver = specifyResolver(systemUserContext);
             var adConfiguration = resolver.Resolve<AdConfiguration>();
@@ -69,8 +69,8 @@ namespace DashboardCode.AdminkaV1.Injected
                         var fakeAdConfiguration = resolver.Resolve<FakeAdConfiguration>();
                         user = authenticationService.GetUser(fakeAdConfiguration.FakeAdUser, null, null, fakeAdConfiguration.FakeAdGroups);
                     }
-                    var loggingTransients = loggingTransientsFactory(routineTag, resolver);
-                    loggingTransients.AuthenticationLoggingAdapter.TraceAuthentication(routineTag, user.LoginName);
+                    var loggingTransients = loggingTransientsFactory(routineGuid, resolver);
+                    loggingTransients.AuthenticationLoggingAdapter.TraceAuthentication(routineGuid, user.LoginName);
                     return new UserContext(user, cultureInfo);
                 }
                 catch (Exception ex)

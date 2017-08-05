@@ -12,14 +12,14 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedHandle()
         {
-            var routineTag = new RoutineGuid(this);
+            var routineGuid = new RoutineGuid(Guid.NewGuid(), new MemberTag(this));
             var log = new List<string>();
-            var loggingTransients = new LoggingTransients(routineTag, log);
+            var loggingTransients = new LoggingTransients(routineGuid, log);
 
             var routineContainer = new BasicRoutineTransients<StateService>(
                 loggingTransients.BasicRoutineLoggingAdapter,
                 loggingTransients.TransformException,
-                (verbose) => new StateService(routineTag.CorrelationToken, verbose)
+                (verbose) => new StateService(routineGuid.CorrelationToken, verbose)
                 );
 
             string result = null;
@@ -46,8 +46,8 @@ namespace DashboardCode.Routines.Injected.Test
         {
             var correlationToken = Guid.NewGuid();
             var log = new List<string>();
-            var routineTag = new RoutineGuid(correlationToken, "RoutinesTest", "RoutinesInjectedHandle2");
-            var loggingTransients = new LoggingTransients(routineTag, log);
+            var routineGuid = new RoutineGuid(correlationToken, "RoutinesTest", "RoutinesInjectedHandle2");
+            var loggingTransients = new LoggingTransients(routineGuid, log);
 
             var routineTransients = new BasicRoutineTransients<StateService>(
                 loggingTransients.BasicRoutineLoggingAdapter,
@@ -57,7 +57,7 @@ namespace DashboardCode.Routines.Injected.Test
             var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory();
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
             Func<Action<DateTime, string>, Routine<UserContext>> createRoutineState =
-                (verbose)=>new Routine<UserContext>(userContext, routineTag, verbose, null);
+                (verbose)=>new Routine<UserContext>(userContext, routineGuid, verbose, null);
             string result = null;
             
             var routine = new UserRoutine<UserContext>(
@@ -84,13 +84,13 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedExceptionHandle()
         {
-            var routineTag = new RoutineGuid(this);
+            var routineGuid = new RoutineGuid(Guid.NewGuid(), new MemberTag(this));
             var log = new List<string>();
-            var loggingTransients = new LoggingTransients(routineTag, log);
+            var loggingTransients = new LoggingTransients(routineGuid, log);
             var routineContainer = new BasicRoutineTransients<StateService>(
                 loggingTransients.BasicRoutineLoggingAdapter,
                 loggingTransients.TransformException,
-                (verbose)=>new StateService(routineTag.CorrelationToken, verbose)
+                (verbose)=>new StateService(routineGuid.CorrelationToken, verbose)
                 );
             try
             {
@@ -122,7 +122,7 @@ namespace DashboardCode.Routines.Injected.Test
             var loggingTransients = new LoggingTransients(tag, log);
             var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory(); // stub
             Func<Action<DateTime, string>, Routine<UserContext>> createRoutineState =
-                (verbose) => new Routine<UserContext>(userContext, tag, null/*no verbose logging for this routineTag */, null); 
+                (verbose) => new Routine<UserContext>(userContext, tag, null/*no verbose logging for this routineGuid */, null); 
             try
             {
                 var routine = new UserRoutine<UserContext>(

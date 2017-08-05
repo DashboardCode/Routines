@@ -22,7 +22,10 @@ namespace DashboardCode.Routines.Configuration.Test
 #endif
         public void ReadConfigurationTest()
         {
-           var configurationRoot = ZoneManager.GetConfiguration().GetSpecifiableConfigurationContainer("Namespace1", "Class1", "Member1"); 
+           var configurationRoot = ZoningSharedSourceManager.GetConfiguration()
+                .GetSpecifiableConfigurationContainer(
+                    new MemberTag("Namespace1", "Class1", "Member1")
+            ); 
         }
     }
 }

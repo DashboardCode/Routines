@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Linq;
 using System.Security.Principal;
+using Microsoft.AspNetCore.Http;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.Routines;
@@ -32,7 +32,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
         // in db and reset sessions if there are changes
         public static UserContext GetUserContext(
             HttpContext httpContext,
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             IIdentity identity,
             CultureInfo cultureInfo,
             string connectionString,
@@ -54,7 +54,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             else
             {
                 var authenticationSerivce = new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configuration);
-                userContext = authenticationSerivce.GetUserContext(routineTag, identity, cultureInfo);
+                userContext = authenticationSerivce.GetUserContext(routineGuid, identity, cultureInfo);
                 userJson = InjectedManager.SerializeToJson(userContext.User, 1, false);
                 httpContext.Session.SetString("User", userJson);
             }

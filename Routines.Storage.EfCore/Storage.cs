@@ -36,9 +36,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             {
                 var list = analyzeException(exception);
                 if (list.Count > 0)
-                {
                     return new StorageError(exception, list);
-                }
                 throw;
             }
             return null;

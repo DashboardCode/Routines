@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>ba5a3565-25cc-4e51-b32e-714e71c9f37e</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>AdminkaV1.Injected.InMemory.Test</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AdminkaInMemoryTestRoutine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StorageJsonTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestIsland.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ZoningSharedSourceManager.cs" />
+  </ItemGroup>
+</Project>

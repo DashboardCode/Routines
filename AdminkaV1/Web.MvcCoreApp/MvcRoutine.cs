@@ -12,8 +12,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public class MvcRoutine : AdminkaRoutine
     {
-        public SessionState SessionState { get; private set; }
-        public RoutineController Controller { get; private set; }
+        public readonly SessionState SessionState;
+        public readonly RoutineController Controller;
         public MvcRoutine(RoutineController controller, object input, [CallerMemberName] string action = "") :
             this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), input, action)
         {
@@ -24,9 +24,9 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                 input)
         {
         }
-        public MvcRoutine(RoutineController controller, RoutineGuid routineTag, object input) :
+        public MvcRoutine(RoutineController controller, RoutineGuid routineGuid, object input) :
             this(controller,
-                 routineTag,
+                 routineGuid,
                  InjectedManager.ComposeNLogTransients(
                        InjectedManager.Markdown,
                        InjectedManager.DefaultRoutineTagTransformException
@@ -34,22 +34,22 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                  new MvcAppConfiguration(controller.ConfigurationRoot),
                  input)
         {
-            controller.HttpContext.Items["routineTag"] = routineTag;
+            controller.HttpContext.Items["routineGuid"] = routineGuid;
             var headers = controller.HttpContext.Response.Headers;
-            if (headers["X-RoutineTag-CorrelationToken"].Count() == 0)
+            if (headers["X-RoutineGuid-CorrelationToken"].Count() == 0)
             {
-                headers.Add("X-RoutineTag-CorrelationToken", routineTag.CorrelationToken.ToString());
-                headers.Add("X-RoutineTag-Namespace", routineTag.Namespace);
-                headers.Add("X-RoutineTag-Type", routineTag.Type);
-                headers.Add("X-RoutineTag-Member", routineTag.Member);
+                headers.Add("X-RoutineGuid-CorrelationToken",    routineGuid.CorrelationToken.ToString());
+                headers.Add("X-RoutineGuid-MemberTag-Namespace", routineGuid.MemberTag.Namespace);
+                headers.Add("X-RoutineGuid-MemberTag-Type",      routineGuid.MemberTag.Type);
+                headers.Add("X-RoutineGuid-MemberTag-Member",    routineGuid.MemberTag.Member);
             }
         }
-        private MvcRoutine(RoutineController controller, RoutineGuid routineTag,
+        private MvcRoutine(RoutineController controller, RoutineGuid routineGuid,
             Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingContainer,
             MvcAppConfiguration appConfiguration,
             object input) :
             base(
-                routineTag,
+                routineGuid,
                 controller.User.Identity,
                 loggingContainer,
                 new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(appConfiguration)),

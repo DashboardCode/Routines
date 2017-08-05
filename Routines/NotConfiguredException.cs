@@ -6,7 +6,6 @@ namespace DashboardCode.Routines
     {
         public NotConfiguredException(string message) : base(message)
         {
-
         }
     }
 }

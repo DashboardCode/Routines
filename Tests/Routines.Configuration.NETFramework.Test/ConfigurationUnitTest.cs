@@ -26,22 +26,22 @@ namespace DashboardCode.Routines.Configuration.NETFramework.Test
         [TestMethod]
         public void TestConfigruationContainer()
         {
-            var basicConfigContainer1 = RoutinesConfigurationManager.GetConfigurationContainer("theNamespace", nameof(ConfigurationUnitTest), nameof(TestConfigruationContainer));
+            var basicConfigContainer1 = RoutinesConfigurationManager.GetConfigurationContainer(new MemberTag(  "theNamespace", nameof(ConfigurationUnitTest),  nameof(TestConfigruationContainer) ));
             var t1 = basicConfigContainer1.Resolve<LoggingPerformanceConfiguration>();
             if (!(t1.ThresholdSec == 2))
                 throw new ApplicationException("Test fails. Case 1");
 
-            var basicConfigContainer2 = RoutinesConfigurationManager.GetConfigurationContainer("wrongNamespace", nameof(ConfigurationUnitTest), nameof(TestConfigruationContainer));
+            var basicConfigContainer2 = RoutinesConfigurationManager.GetConfigurationContainer(new MemberTag (  "wrongNamespace",  nameof(ConfigurationUnitTest),  nameof(TestConfigruationContainer)));
             var t2 = basicConfigContainer2.Resolve<LoggingPerformanceConfiguration>();
             if (!(t2.ThresholdSec == 0)) // default value, it means configuration was not found because of wrong Namespace
                 throw new ApplicationException("Test fails. Case 2");
 
-            var basicConfigContainer3 = RoutinesConfigurationManager.GetConfigurationContainer("theNamespace", nameof(ConfigurationUnitTest), nameof(TestConfigruationContainer));
+            var basicConfigContainer3 = RoutinesConfigurationManager.GetConfigurationContainer(new MemberTag("theNamespace",  nameof(ConfigurationUnitTest), nameof(TestConfigruationContainer)));
             var specified = basicConfigContainer3.Specify("testuser");
-            var t3 = basicConfigContainer3.ResolveSerialized(null, "TestConfigurationX");
+            var t3 = basicConfigContainer3.ResolveSerialized(null, "MyTestConfigurationZZZ");
             if (t3!=null)
                 throw new ApplicationException("Test fails. Case 3");
-            var t4 = specified.ResolveSerialized(null, "TestConfigurationX");
+            var t4 = specified.ResolveSerialized(null, "MyTestConfigurationZZZ");
             if (t4==null)
                 throw new ApplicationException("Test fails. Case 4");
         }

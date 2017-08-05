@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.Routines;
-using DashboardCode.Routines.Configuration;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
@@ -12,7 +11,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
             var installerConfiguration = new InstallerConfiguration();
-            var routine = new AdminkaRoutine(new RoutineGuid(this), userContext, installerConfiguration, new { });
+            var routine = new AdminkaRoutine(new MemberTag(this), userContext, installerConfiguration, new { });
             return routine.Handle(
                 (container, dataAccessServcies) => {
                     var dbContext = dataAccessServcies.CreateAdminkaDbContext();

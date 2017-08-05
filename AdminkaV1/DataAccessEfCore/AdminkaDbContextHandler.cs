@@ -36,7 +36,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 return func(context, setAudit);
             }
         }
-        public TOutput Handle<TOutput>(Func<AdminkaDbContext,  TOutput> func)
+        public TOutput Handle<TOutput>(Func<AdminkaDbContext,  TOutput> func) 
         {
             using (var context = dbContextFactory.CreateAdminkaDbContext())
             {

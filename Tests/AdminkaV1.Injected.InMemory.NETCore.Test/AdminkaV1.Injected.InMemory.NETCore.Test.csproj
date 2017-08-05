@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>    
+    <TargetFramework>netcoreapp1.1</TargetFramework>    
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.InMemory.NETCore.Test</AssemblyName>    
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.InMemory.NETCore.Test</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj" />
+    <ProjectReference Include="..\..\Routines.Configuration.NETStandard\Routines.Configuration.NETStandard.csproj" />
+    <ProjectReference Include="..\..\Routines\Routines.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+  <Import Project="..\AdminkaV1.Injected.InMemory.Test\AdminkaV1.Injected.InMemory.Test.projitems" Label="Shared" />
+
+</Project>

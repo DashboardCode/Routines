@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETStandard;
-using System;
+using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
@@ -14,22 +14,22 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
             configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
             this.ConfigurationRoot = configurationBuilder.Build();
         }
-        public SpecifiableConfigurationContainer GetConfigurationContainer(string @namespace, string @class, string member)
+        public SpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag)
         {
-            return RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, @namespace, @class, member);
+            return RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, memberTag);
         }
 
-        public string GetConnectionString()
+        public string ResolveConnectionString()
         {
-            return RoutinesConfigurationManager.GetConnectionString(ConfigurationRoot, "adminka");
+            return RoutinesConfigurationManager.MakeConnectionString(ConfigurationRoot, "adminka");
         }
 
-        public string GetMigrationAssembly()
+        public string ResolveMigrationAssembly()
         {
             return "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp";
         }
 
-        public StorageType GetStorageType()
+        public StorageType ResolveStorageType()
         {
             return StorageType.SQLSERVER;
         }

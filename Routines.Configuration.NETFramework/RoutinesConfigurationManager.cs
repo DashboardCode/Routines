@@ -9,12 +9,12 @@ namespace DashboardCode.Routines.Configuration.NETFramework
     public static class RoutinesConfigurationManager
     {
         const string key = "routinesConfiguration";
-        public static SpecifiableConfigurationContainer  GetConfigurationContainer(string @namespace, string type, string member, string sectionName=key)
+        public static SpecifiableConfigurationContainer  GetConfigurationContainer(MemberTag memberTag, string sectionName=key)
         {
             var section = ConfigurationManager.GetSection(sectionName);
             var routinesConfigurationSection = (RoutinesConfigurationSection)section;
             var routinesColection = ((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineResolvable>();
-            var configurationContainer = RoutinesExtensions.GetConfigurationContainer(routinesColection, @namespace, type, member);
+            var configurationContainer = RoutinesExtensions.GetConfigurationContainer(routinesColection, memberTag);
             return configurationContainer;
         }
 

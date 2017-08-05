@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
@@ -10,16 +11,16 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
         public MvcAppConfiguration(IConfigurationRoot configurationRoot) =>
             ConfigurationRoot=configurationRoot;
 
-        public SpecifiableConfigurationContainer GetConfigurationContainer(string @namespace, string @class, string member) =>
-            RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, @namespace, @class, member);
+        public SpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag) =>
+            RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, memberTag);
 
-        public string GetConnectionString() =>
-            RoutinesConfigurationManager.GetConnectionString(ConfigurationRoot, "adminka");
+        public string ResolveConnectionString() =>
+            RoutinesConfigurationManager.MakeConnectionString(ConfigurationRoot, "adminka");
 
-        public string GetMigrationAssembly() =>
+        public string ResolveMigrationAssembly() =>
             null;
 
-        public StorageType GetStorageType() =>
+        public StorageType ResolveStorageType() =>
             StorageType.SQLSERVER;
     }
 }

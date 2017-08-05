@@ -5,9 +5,9 @@ namespace DashboardCode.Routines.Configuration.Test
     public class State
     {
         IConfigurationContainer configContainer;
-        public State(string controller, string action, string @for=null)
+        public State(string type, string member, string @for=null)
         {
-            var basicConfigContainer = ZoneManager.GetConfiguration().GetSpecifiableConfigurationContainer(null, controller, action);
+            var basicConfigContainer = ZoningSharedSourceManager.GetConfiguration().GetSpecifiableConfigurationContainer(new MemberTag(type, member));
             if (string.IsNullOrWhiteSpace(@for))
             {
                 configContainer = basicConfigContainer;

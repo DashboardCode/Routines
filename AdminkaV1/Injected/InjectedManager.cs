@@ -31,19 +31,20 @@ namespace DashboardCode.AdminkaV1.Injected
         #region Depends on configuration
         public static StorageMetaService GetStorageMetaService(IAppConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString();
-            var migrationAssembly = configuration.GetMigrationAssembly();
-            return new StorageMetaService(connectionString, migrationAssembly, StorageType.SQLSERVER);
+            var connectionString = configuration.ResolveConnectionString();
+            var migrationAssembly = configuration.ResolveMigrationAssembly();
+            var storageType = configuration.ResolveStorageType();
+            return new StorageMetaService(connectionString, migrationAssembly, storageType);
         }
-        internal static IResolver GetSpecifiedResolver(this RoutineGuid routineTag, UserContext userContext, IAppConfiguration configuration)
+        internal static IResolver GetSpecifiedResolver(this RoutineGuid routineGuid, UserContext userContext, IAppConfiguration configuration)
         {
-            GetResolver(routineTag, configuration, out Func<UserContext, IResolver> specifyResolver);
+            GetResolver(routineGuid, configuration, out Func<UserContext, IResolver> specifyResolver);
             var @value = specifyResolver(userContext);
             return @value;
         }
-        internal static IResolver GetResolver(this RoutineGuid routineTag, IAppConfiguration configuration, out Func<UserContext, IResolver> specifyResolver)
+        internal static IResolver GetResolver(this RoutineGuid routineGuid, IAppConfiguration configuration, out Func<UserContext, IResolver> specifyResolver)
         {
-            var specifieableConfigurationContainer = configuration.GetConfigurationContainer(routineTag.Namespace, routineTag.Type, routineTag.Member);
+            var specifieableConfigurationContainer = configuration.ResolveConfigurationContainer(routineGuid.MemberTag);
             specifyResolver = (userContext) => {
                 var @for = (userContext?.User?.HasPrivilege(Privilege.VerboseLogging) ?? false) ? Privilege.VerboseLogging : null;
                 var configurationContainer = specifieableConfigurationContainer.Specify(@for);
@@ -160,12 +161,12 @@ namespace DashboardCode.AdminkaV1.Injected
 #endregion
 
 #region Logging
-        public static Exception DefaultRoutineTagTransformException(Exception exception, RoutineGuid routineTag, Func<Exception, string> markdownException)
+        public static Exception DefaultRoutineTagTransformException(Exception exception, RoutineGuid routineGuid, Func<Exception, string> markdownException)
         {
-            exception.Data[nameof(RoutineGuid.CorrelationToken)] = routineTag.CorrelationToken;
-            exception.Data[nameof(RoutineGuid.Namespace)]        = routineTag.Namespace;
-            exception.Data[nameof(RoutineGuid.Type)]            = routineTag.Type;
-            exception.Data[nameof(RoutineGuid.Member)]           = routineTag.Member;
+            exception.Data[nameof(RoutineGuid.CorrelationToken)]  = routineGuid.CorrelationToken;
+            exception.Data[nameof(MemberTag.Namespace)]           = routineGuid.MemberTag.Namespace;
+            exception.Data[nameof(MemberTag.Type)]                = routineGuid.MemberTag.Type;
+            exception.Data[nameof(MemberTag.Member)]              = routineGuid.MemberTag.Member;
             return exception;
         }
         internal static NLogAuthenticationLogging GetNLogAuthenticationLogging()
