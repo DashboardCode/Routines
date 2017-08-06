@@ -6,24 +6,26 @@ using System.Collections;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
-    public static class RoutinesConfigurationManager
+    public class ConfigurationManagerLoader : IConfigurationManagerLoader
     {
         const string key = "routinesConfiguration";
-        public static SpecifiableConfigurationContainer  GetConfigurationContainer(MemberTag memberTag, string sectionName=key)
+        public IEnumerable<IRoutineConfigurationRecord> RoutineResolvables { get; private set;}
+        
+        public ConfigurationManagerLoader(string sectionName = key)
         {
             var section = ConfigurationManager.GetSection(sectionName);
             var routinesConfigurationSection = (RoutinesConfigurationSection)section;
-            var routinesColection = ((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineResolvable>();
-            var configurationContainer = RoutinesExtensions.GetConfigurationContainer(routinesColection, memberTag);
-            return configurationContainer;
+            RoutineResolvables = ((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineConfigurationRecord>();
         }
 
-        public static string GetConnectionString(string name)
+        public string GetConnectionString(string name)
         {
             var connectionString = ConfigurationManager.ConnectionStrings[name].ConnectionString;
             return connectionString;
         }
 
+        #region Experimental
+        [System.Obsolete]
         public static void ClearConfigurationFor(
             string routineFor,
             string sectionName = key)
@@ -32,17 +34,17 @@ namespace DashboardCode.Routines.Configuration.NETFramework
             var elements = new List<RoutineElement>();
             foreach (RoutineElement routineElement in routinesConfigurationSection.Routines)
             {
-                 if (StringExtensions.AsterixEquals(routineFor, routineElement.For))
-                 {
-                     elements.Add(routineElement);
-                 }
+                if (StringExtensions.AsterixEquals(routineFor, routineElement.For))
+                {
+                    elements.Add(routineElement);
+                }
             }
             foreach (var e in elements)
             {
                 routinesConfigurationSection.Routines.Remove(e);
             }
         }
-
+        [System.Obsolete]
         public static void UpdateConfiguration(
             string routineNamespace,
             string routineClass,
@@ -54,7 +56,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework
             string sectionName = key)
         {
             var routinesConfigurationSection = (RoutinesConfigurationSection)ConfigurationManager.GetSection(sectionName);
-            RoutineElement ourRoutineElement=null;
+            RoutineElement ourRoutineElement = null;
             ResolvableElement ourResolvableElement = null;
             foreach (RoutineElement routineElement in routinesConfigurationSection.Routines)
             {
@@ -68,23 +70,23 @@ namespace DashboardCode.Routines.Configuration.NETFramework
                                 {
                                     if (StringExtensions.AsterixEquals(resolvableNamespace, resolvableElement.Namespace))
                                         if (StringExtensions.AsterixEquals(resolvableType, resolvableElement.Type))
-                                            {
-                                                ourResolvableElement = resolvableElement;
-                                                break;
-                                            }
+                                        {
+                                            ourResolvableElement = resolvableElement;
+                                            break;
+                                        }
                                 }
                                 break;
                             }
             }
             if (ourRoutineElement == null)
             {
-                ourRoutineElement = new RoutineElement() { Namespace = routineNamespace, Type = routineClass, Member = routineMember, For = routineFor};
+                ourRoutineElement = new RoutineElement() { Namespace = routineNamespace, Type = routineClass, Member = routineMember, For = routineFor };
                 ourRoutineElement.Validate();
                 routinesConfigurationSection.Routines.Add(ourRoutineElement);
             }
             if (ourResolvableElement == null)
             {
-                ourResolvableElement = new ResolvableElement() { Namespace = resolvableNamespace, Type = resolvableType, Value = resolvableValue};
+                ourResolvableElement = new ResolvableElement() { Namespace = resolvableNamespace, Type = resolvableType, Value = resolvableValue };
                 ourResolvableElement.Validate();
                 ourRoutineElement.Resolvables.Add(ourResolvableElement);
             }
@@ -106,19 +108,19 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         //    systemConfiugration.Save();
         //    ConfigurationManager.RefreshSection(sectionName);
         //}
-
+        [System.Obsolete]
         public static string GetConfigurationXml(string sectionName = key)
         {
             var routinesConfigurationSection = (RoutinesConfigurationSection)ConfigurationManager.GetSection(sectionName);
             return routinesConfigurationSection.GetXml(sectionName);
         }
-
+        [System.Obsolete]
         public static string TimeStamps(string sectionName = key)
         {
             var routinesConfigurationSection = (RoutinesConfigurationSection)ConfigurationManager.GetSection(sectionName);
             return routinesConfigurationSection.ToString();
         }
-
+        [System.Obsolete]
         public static string GetConfigurationManualXml(string sectionName = key)
         {
             var routinesConfigurationSection = (RoutinesConfigurationSection)ConfigurationManager.GetSection(sectionName);
@@ -144,5 +146,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework
             var xml = stringBuilder.ToString();
             return xml;
         }
+        #endregion
     }
+
 }

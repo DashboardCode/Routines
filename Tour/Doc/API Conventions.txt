@@ -38,7 +38,7 @@ Grab       - return single istance, there foreach loop inside
 Get        - return single istance, there is member operations inside
 List       - return IReadOnlyList
 Handle     - try .. catch or smth like it inside, parameters are delegates
-Resolve    - "container" type objects method, both virtual and not virtual
+Resolve    - "container" type objects method, both virtual and not virtual, but without parameters (except type parameter)
  
 Static classes
 ----------------------------------------------------------------------------------------------------------

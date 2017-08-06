@@ -32,13 +32,13 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
         // in db and reset sessions if there are changes
         public static UserContext GetUserContext(
             HttpContext httpContext,
-            RoutineGuid routineGuid,
+            RoutineGuid routineTag,
             IIdentity identity,
             CultureInfo cultureInfo,
             string connectionString,
             RepositoryHandlerFactory repositoryHandlerFactory,
-            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
-            IAppConfiguration configuration
+            Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+            ConfigurationContainerFactory configurationContainerFactory
             )
         {
             // get userContextGuid from session
@@ -53,8 +53,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             }
             else
             {
-                var authenticationSerivce = new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configuration);
-                userContext = authenticationSerivce.GetUserContext(routineGuid, identity, cultureInfo);
+                var authenticationSerivce = new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configurationContainerFactory);
+                userContext = authenticationSerivce.GetUserContext(routineTag, identity, cultureInfo);
                 userJson = InjectedManager.SerializeToJson(userContext.User, 1, false);
                 httpContext.Session.SetString("User", userJson);
             }

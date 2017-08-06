@@ -16,7 +16,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             TestIsland.Reset(databaseName);
 
             var userContext1 = new UserContext("UnitTest");
-            var routine1 = new AdminkaRoutine(new MemberTag(this), userContext1, ZoningSharedSourceManager.GetConfiguration(databaseName), new { input = "Input text" });
+            var configuration = ZoningSharedSourceManager.GetConfiguration(databaseName);
+            var routine1 = new AdminkaRoutine(new MemberTag(this), userContext1, configuration, new { input = "Input text" });
             routine1.Handle((state, dataAccess) =>
             {
                 var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();

@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.SqlServer;
-using DashboardCode.AdminkaV1.DomAuthentication;
-using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
@@ -28,33 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             return WindowsIdentity.GetCurrent();
         }
-        #region Depends on configuration
-        public static StorageMetaService GetStorageMetaService(IAppConfiguration configuration)
-        {
-            var connectionString = configuration.ResolveConnectionString();
-            var migrationAssembly = configuration.ResolveMigrationAssembly();
-            var storageType = configuration.ResolveStorageType();
-            return new StorageMetaService(connectionString, migrationAssembly, storageType);
-        }
-        internal static IResolver GetSpecifiedResolver(this RoutineGuid routineGuid, UserContext userContext, IAppConfiguration configuration)
-        {
-            GetResolver(routineGuid, configuration, out Func<UserContext, IResolver> specifyResolver);
-            var @value = specifyResolver(userContext);
-            return @value;
-        }
-        internal static IResolver GetResolver(this RoutineGuid routineGuid, IAppConfiguration configuration, out Func<UserContext, IResolver> specifyResolver)
-        {
-            var specifieableConfigurationContainer = configuration.ResolveConfigurationContainer(routineGuid.MemberTag);
-            specifyResolver = (userContext) => {
-                var @for = (userContext?.User?.HasPrivilege(Privilege.VerboseLogging) ?? false) ? Privilege.VerboseLogging : null;
-                var configurationContainer = specifieableConfigurationContainer.Specify(@for);
-                return new Resolver(configurationContainer);
-            };
 
-            var resolver = new Resolver(specifieableConfigurationContainer);
-            return resolver;
-        }
-        #endregion
         #region Exception
         public static List<FieldError> Analyze(this Exception exception, StorageModel storageModel)
         {
@@ -99,7 +71,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         #endregion
 
-#region Serialize
+        #region Serialize
         public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class
         {
             var knownTypes = include.ListLeafTypes();
@@ -132,7 +104,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public static string SerializeToJson(object o, int depth, bool ignoreDuplicates)
         {
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
+            #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
             var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
                 return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
             #else
@@ -146,21 +118,21 @@ namespace DashboardCode.AdminkaV1.Injected
             var html = m.Transform(text);
             return html;
         }
-#endregion
+        #endregion
 
-#region Active directory
+        #region Active directory
         public static IEnumerable<string> GetGroups(this IIdentity identity, out string identityName, out string givenName, out string surname)
         {
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
+            #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7)
             var groups = ActiveDirectoryManager.ListGroups(identity, out identityName, out givenName, out surname);
                 return groups;
             #else
                 throw new NotImplementedException("LDAP is not supported for NETStandard");
             #endif
         }
-#endregion
+        #endregion
 
-#region Logging
+        #region Logging
         public static Exception DefaultRoutineTagTransformException(Exception exception, RoutineGuid routineGuid, Func<Exception, string> markdownException)
         {
             exception.Data[nameof(RoutineGuid.CorrelationToken)]  = routineGuid.CorrelationToken;
@@ -173,7 +145,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             return new NLogAuthenticationLogging();
         }
-        public static Func<RoutineGuid, IResolver, RoutineLoggingTransients> ComposeNLogTransients(
+        public static Func<RoutineGuid, IContainer, RoutineLoggingTransients> ComposeNLogTransients(
                 Func<Exception, string> markdownException,
                 Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException
             )
@@ -194,7 +166,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 return new RoutineLoggingTransients(adminkaLogging, authenticationLogging, (ex) => routineTransformException(ex, t, markdownException));
             };
         }
-        public static Func<RoutineGuid, IResolver, RoutineLoggingTransients> ComposeListLoggingTransients(
+        public static Func<RoutineGuid, IContainer, RoutineLoggingTransients> ComposeListLoggingTransients(
             List<string> logger,
             LoggingConfiguration loggingConfiguration,
             LoggingVerboseConfiguration loggingVerboseConfiguration,
@@ -217,6 +189,6 @@ namespace DashboardCode.AdminkaV1.Injected
                     ex => DefaultRoutineTagTransformException(ex, t, markdownException));
             };
         }
-#endregion
+        #endregion
     }
 }

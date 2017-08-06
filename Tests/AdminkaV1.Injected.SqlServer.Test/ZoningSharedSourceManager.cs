@@ -1,21 +1,13 @@
-﻿#if NETCOREAPP1_1
-    using DashboardCode.AdminkaV1.Injected.SqlServer.NETCore.Test;
-#else
-    using DashboardCode.AdminkaV1.Injected.SqlServer.NETFramework.Test;
-#endif 
-
-
-namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
+﻿namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
-
     public static class ZoningSharedSourceManager
     {
-        public static IAppConfiguration GetConfiguration()
+        public static IApplicationFactory GetConfiguration()
         {
 #if NETCOREAPP1_1
-            return new ConfigurationNETCore(StorageType.SQLSERVER);
+            return new NETCore.Test.ConfigurationNETCore();
 #else
-            return new ConfigurationNETFramework(StorageType.SQLSERVER);
+            return new NETFramework.Test.ConfigurationNETFramework();
 #endif
         }
     }

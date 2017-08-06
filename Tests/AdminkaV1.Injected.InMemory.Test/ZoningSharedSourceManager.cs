@@ -1,21 +1,13 @@
-﻿#if NETCOREAPP1_1
-    using DashboardCode.AdminkaV1.Injected.InMemory.NETCore.Test;
-#else
-    using DashboardCode.AdminkaV1.Injected.InMemory.NETFramework.Test;
-#endif 
-
-
-namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
+﻿namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
-
     public static class ZoningSharedSourceManager
     {
-        public static IAppConfiguration GetConfiguration(string databaseName)
+        public static IApplicationFactory GetConfiguration(string databaseName)
         {
 #if NETCOREAPP1_1
-            return new ConfigurationNETCore(StorageType.INMEMORY, null, databaseName);
+            return new NETCore.Test.ApplicationFactory(databaseName);
 #else
-            return new ConfigurationNETFramework(StorageType.INMEMORY,  databaseName);
+            return new NETFramework.Test.ApplicationFactory(databaseName);
 #endif
         }
     }

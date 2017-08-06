@@ -1,24 +1,19 @@
-﻿#if NETCOREAPP1_1
-    using DashboardCode.Routines.Configuration.NETCore.Test;
-#else
-    using DashboardCode.Routines.Configuration.NETFramework.Test;
-#endif 
-namespace DashboardCode.Routines.Configuration.Test
+﻿namespace DashboardCode.Routines.Configuration.Test
 {
     public static class ZoningSharedSourceManager
     {
 #if NETCOREAPP1_1
-        public static ConfigurationNETStandard GetConfiguration()
+        public static IConfigurationManagerLoader GetLoader()
         {
-
-            ConfigurationNETStandard Configuration = new ConfigurationNETStandard();
-            return new ConfigurationNETStandard();
+            var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
+            Microsoft.Extensions.Configuration.JsonConfigurationExtensions.AddJsonFile(configurationBuilder, "appsettings.json", false, true);
+	        var configurationRoot = configurationBuilder.Build();
+            return new NETStandard.ConfigurationManagerLoader(configurationRoot);
         }
 #else
-        public static ConfigurationNETFramework GetConfiguration()
+        public static IConfigurationManagerLoader GetLoader()
         {
-            ConfigurationNETFramework Configuration = new ConfigurationNETFramework();
-            return new ConfigurationNETFramework();
+            return new NETFramework.ConfigurationManagerLoader();
         }
 #endif
     }

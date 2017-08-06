@@ -40,15 +40,11 @@ namespace DashboardCode.Routines
 
     public static class RoutineGuidExtensions
     {
-        public static string ToText(this RoutineGuid routineGuid)
-        {
-            return routineGuid.CorrelationToken + " " + routineGuid.GetCategory();
-        }
+        public static string ToText(this RoutineGuid routineGuid) =>
+            routineGuid.CorrelationToken + " " + routineGuid.GetCategory();
 
-        public static string GetCategory(this RoutineGuid routineGuid)
-        {
-            var value = (routineGuid.MemberTag.Namespace != null ? routineGuid.MemberTag.Namespace + "." : "") + routineGuid.MemberTag.Type + "." + routineGuid.MemberTag.Member;
-            return value;
-        }
+        public static string GetCategory(this RoutineGuid routineGuid) =>
+            (routineGuid.MemberTag.Namespace != null ? routineGuid.MemberTag.Namespace + "." : "") 
+                + routineGuid.MemberTag.Type + "." + routineGuid.MemberTag.Member;
     }
 }

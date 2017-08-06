@@ -11,27 +11,28 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public class AuthenticationService
     {
-        private readonly Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory;
+        private readonly Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory;
         private readonly RepositoryHandlerFactory repositoryHandlerFactory;
         private readonly UserContext systemUserContext;
-        private readonly IAppConfiguration appConfiguration;
+        private readonly ConfigurationContainerFactory configurationContainerFactory;
         public AuthenticationService(
-            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
-            IAppConfiguration appConfiguration)
+            ConfigurationContainerFactory configurationContainerFactory)
         {
             this.loggingTransientsFactory = loggingTransientsFactory;
             this.repositoryHandlerFactory = repositoryHandlerFactory;
-            this.appConfiguration = appConfiguration;
             systemUserContext = new UserContext("Authentication");
+            this.configurationContainerFactory = configurationContainerFactory;
         }
 
         public UserContext GetUserContext(RoutineGuid routineGuid, IIdentity identity, CultureInfo cultureInfo)
         {
-            var authenticationRoutineTag = new RoutineGuid(routineGuid.CorrelationToken, new MemberTag(this));
-            var basicResolver = authenticationRoutineTag.GetResolver(appConfiguration, out Func<UserContext, IResolver> specifyResolver);
-            var resolver = specifyResolver(systemUserContext);
-            var adConfiguration = resolver.Resolve<AdConfiguration>();
+            var authenticationRoutineGuid = new RoutineGuid(routineGuid.CorrelationToken, new MemberTag(this));
+            var specifyResolver = configurationContainerFactory.ComposeContainerFactory(authenticationRoutineGuid);
+            var systemUserContextResolver = specifyResolver(systemUserContext);
+
+            var adConfiguration = systemUserContextResolver.Resolve<AdConfiguration>();
             bool useAdAuthorization = adConfiguration.UseAdAuthorization;
             var input = new
             {
@@ -41,9 +42,8 @@ namespace DashboardCode.AdminkaV1.Injected
                 PrincipalType = identity.GetType().FullName,
                 UseAdAuthorization = useAdAuthorization
             };
-            var systemUserContextResolver = specifyResolver(systemUserContext);
             var routine = new AdminkaRoutine(
-                authenticationRoutineTag,
+                authenticationRoutineGuid,
                 systemUserContext,
                 systemUserContextResolver,
                 loggingTransientsFactory,
@@ -53,7 +53,6 @@ namespace DashboardCode.AdminkaV1.Injected
             {
                 try
                 {
-                    
                     var dataAccessServices = repositoryHandlerFactory.CreateDataAccessFactory(state); 
                     var dbContextManager = dataAccessServices.CreateDbContextHandler();
                     var servicesContainer = new ServicesContainer(dbContextManager);
@@ -66,10 +65,10 @@ namespace DashboardCode.AdminkaV1.Injected
                     }
                     else
                     {
-                        var fakeAdConfiguration = resolver.Resolve<FakeAdConfiguration>();
+                        var fakeAdConfiguration = systemUserContextResolver.Resolve<FakeAdConfiguration>();
                         user = authenticationService.GetUser(fakeAdConfiguration.FakeAdUser, null, null, fakeAdConfiguration.FakeAdGroups);
                     }
-                    var loggingTransients = loggingTransientsFactory(routineGuid, resolver);
+                    var loggingTransients = loggingTransientsFactory(routineGuid, systemUserContextResolver);
                     loggingTransients.AuthenticationLoggingAdapter.TraceAuthentication(routineGuid, user.LoginName);
                     return new UserContext(user, cultureInfo);
                 }

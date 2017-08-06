@@ -5,33 +5,27 @@ using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
-    public class InstallerConfiguration : IAppConfiguration
+    public class InstallerApplicationFactory : IApplicationFactory
     {
         public IConfigurationRoot ConfigurationRoot  { get; private set;}
-        public InstallerConfiguration()
+        readonly IConfigurationManagerLoader configurationManagerLoader;
+        public InstallerApplicationFactory()
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
             this.ConfigurationRoot = configurationBuilder.Build();
-        }
-        public ISpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag)
-        {
-            return RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, memberTag);
+            configurationManagerLoader = new ConfigurationManagerLoader(ConfigurationRoot);
         }
 
-        public string ResolveConnectionString()
-        {
-            return RoutinesConfigurationManager.MakeConnectionString(ConfigurationRoot, "adminka");
-        }
+        public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
+            new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
 
-        public string ResolveMigrationAssembly()
+        public AdminkaStorageConfiguration CreateAdminkaStorageConfiguration()
         {
-            return "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp";
-        }
-
-        public StorageType ResolveStorageType()
-        {
-            return StorageType.SQLSERVER;
+            var connectionString = configurationManagerLoader.GetConnectionString("AdminkaConnectionString");
+            var migrationAssembly = "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp";
+            var storageType = StorageType.SQLSERVER;
+            return new AdminkaStorageConfiguration(connectionString, migrationAssembly, storageType);
         }
     }
 }

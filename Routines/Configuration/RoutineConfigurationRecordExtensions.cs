@@ -2,20 +2,13 @@
 
 namespace DashboardCode.Routines.Configuration
 {
-    public static class RoutinesExtensions
+    public static class RoutineConfigurationRecordExtensions
     {
-        public static SpecifiableConfigurationContainer GetConfigurationContainer(this IEnumerable<IRoutineResolvable> routines, MemberTag memberTag)
+        public static SortedDictionary<int, IRoutineConfigurationRecord> RangedRoutines(this IEnumerable<IRoutineConfigurationRecord> routines, MemberTag memberTag)
         {
-            var rangedRoutines = routines.RangedRoutines(memberTag);
-            var configurationContainer = new SpecifiableConfigurationContainer(rangedRoutines);
-            return configurationContainer;
-        }
-
-        public static SortedDictionary<int, IRoutineResolvable> RangedRoutines(this IEnumerable<IRoutineResolvable> routines, MemberTag memberTag)
-        {
-            var rangedRoutines = new Dictionary<int, IRoutineResolvable>();
+            var rangedRoutines = new Dictionary<int, IRoutineConfigurationRecord>();
             int rA = 0, rB = 1000, rC = 2000;
-            foreach (IRoutineResolvable routine in routines)
+            foreach (IRoutineConfigurationRecord routine in routines)
             {
                 if (
                     (routine.Namespace == memberTag.Namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())
@@ -48,7 +41,7 @@ namespace DashboardCode.Routines.Configuration
                         rangedRoutines.Add(2999, routine);
                 }
             }
-            return new SortedDictionary<int, IRoutineResolvable>(rangedRoutines);
+            return new SortedDictionary<int, IRoutineConfigurationRecord>(rangedRoutines);
         }
     }
 }

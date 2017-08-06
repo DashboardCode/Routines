@@ -1,7 +1,7 @@
 ﻿namespace DashboardCode.Routines.Configuration
 {
     // TODO: replace with ResolvableRecord
-    public interface IResolvable
+    public interface IResolvableConfigurationRecord
     {
         string Namespace { get; }
         string Type      { get; }

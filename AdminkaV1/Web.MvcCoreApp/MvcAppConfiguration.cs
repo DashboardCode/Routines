@@ -5,22 +5,22 @@ using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
-    public class MvcAppConfiguration : IAppConfiguration
+    public class MvcApplicationFactory : IApplicationFactory
     {
-        public readonly IConfigurationRoot ConfigurationRoot;
-        public MvcAppConfiguration(IConfigurationRoot configurationRoot) =>
-            ConfigurationRoot=configurationRoot;
+        readonly IConfigurationManagerLoader configurationManagerLoader;
+        readonly AdminkaStorageConfiguration adminkaStorageConfiguration;
+        public MvcApplicationFactory(IConfigurationRoot configurationRoot)
+        {
+            configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot);
+            adminkaStorageConfiguration =
+                new AdminkaStorageConfiguration(configurationManagerLoader.GetConnectionString("AdminkaConnectionString"), 
+                default(string), StorageType.SQLSERVER);
+        }
 
-        public ISpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag) =>
-            RoutinesConfigurationManager.CreateConfigurationContainer(ConfigurationRoot, memberTag);
+        public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
+            new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
 
-        public string ResolveConnectionString() =>
-            RoutinesConfigurationManager.MakeConnectionString(ConfigurationRoot, "adminka");
-
-        public string ResolveMigrationAssembly() =>
-            null;
-
-        public StorageType ResolveStorageType() =>
-            StorageType.SQLSERVER;
+        public AdminkaStorageConfiguration CreateAdminkaStorageConfiguration() =>
+            adminkaStorageConfiguration;
     }
 }

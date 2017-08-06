@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
-    public class ResolvableElement : ConfigurationElement, ICollectionMemberElement, IResolvable //, IResolvableRecord
+    public class ResolvableElement : ConfigurationElement, ICollectionMemberElement, IResolvableConfigurationRecord //, IResolvableRecord
     {
         private static readonly ConfigurationProperty namespaceProperty =
             new ConfigurationProperty("namespace", typeof(string), "", ConfigurationPropertyOptions.None);

@@ -2,9 +2,8 @@
 {
     public class ConfigurationNETFramework
     {
-        public SpecifiableConfigurationContainer GetSpecifiableConfigurationContainer(MemberTag memberTag)
-        {
-            return RoutinesConfigurationManager.GetConfigurationContainer(memberTag);
-        }
+        ConfigurationManagerLoader configurationManagerLoader = new ConfigurationManagerLoader();
+        public ConfigurationContainer Create(MemberTag memberTag) =>
+            new ConfigurationContainer(configurationManagerLoader, memberTag);
     }
 }

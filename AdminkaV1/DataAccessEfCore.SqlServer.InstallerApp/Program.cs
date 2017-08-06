@@ -9,8 +9,11 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
         static void Main(string[] args)
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
-            var installerConfiguration = new InstallerConfiguration();
-            var routine = new AdminkaRoutine(typeof(Program).Namespace, nameof(Program), nameof(Main), userContext, installerConfiguration, new { });
+            var installerApplicationFactory = new InstallerApplicationFactory();
+
+            var routine = new AdminkaRoutine(typeof(Program).Namespace, nameof(Program), nameof(Main), 
+                userContext, 
+                installerApplicationFactory, new { });
 
             routine.Handle(
                 (state, dataAccessServcies) => {

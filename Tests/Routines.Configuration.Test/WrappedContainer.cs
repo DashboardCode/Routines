@@ -2,25 +2,22 @@
 
 namespace DashboardCode.Routines.Configuration.Test
 {
-    public class State
+    public class WrappedContainer
     {
-        IConfigurationContainer configContainer;
-        public State(string type, string member, string @for=null)
+        ConfigurationContainer configurationContainer;
+        public WrappedContainer(string type, string member, string @for=null)
         {
-            var basicConfigContainer = ZoningSharedSourceManager.GetConfiguration().GetSpecifiableConfigurationContainer(new MemberTag(type, member));
+            var loader = ZoningSharedSourceManager.GetLoader();
             if (string.IsNullOrWhiteSpace(@for))
-            {
-                configContainer = basicConfigContainer;
-            }else
-            {
-                configContainer = basicConfigContainer.Specify(@for);
-            }
+                configurationContainer = new ConfigurationContainer(loader, new MemberTag(type, member));
+            else
+                configurationContainer = new ConfigurationContainer(loader, new MemberTag(type, member), @for);
         }
 
         public T Resolve<T>() where T: new()
         {
             var t = new T();
-            var serialized = configContainer.ResolveSerialized<T>();
+            var serialized = configurationContainer.ResolveSerialized<T>();
             if (t is IProgress<string>)
             {
                 ((IProgress<string>)t).Report(serialized);

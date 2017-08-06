@@ -7,13 +7,15 @@ namespace DashboardCode.AdminkaV1.Injected
     public class RepositoryHandlerFactory : IRepositoryHandlerFactory<UserContext>
     {
         readonly StorageMetaService storageMetaService;
-        public RepositoryHandlerFactory(StorageMetaService storageMetaService)
+        readonly AdminkaStorageConfiguration adminkaStorageConfiguration;
+        public RepositoryHandlerFactory(AdminkaStorageConfiguration adminkaStorageConfiguration, StorageMetaService storageMetaService)
         {
+            this.adminkaStorageConfiguration = adminkaStorageConfiguration;
             this.storageMetaService = storageMetaService;
         }
         public DataAccessFactory CreateDataAccessFactory(Routine<UserContext> state)
         {
-            var dataAccessFactory = new DataAccessFactory(state, storageMetaService);
+            var dataAccessFactory = new DataAccessFactory(state, adminkaStorageConfiguration, storageMetaService);
             return dataAccessFactory;
         }
 

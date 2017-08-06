@@ -4,10 +4,44 @@ using System.Linq;
 
 namespace DashboardCode.Routines.Configuration
 {
-    public class ConfigurationContainer : IConfigurationContainer
+    public class ConfigurationContainer 
     {
-        private readonly List<IResolvable> elements;
-        public ConfigurationContainer(List<IResolvable> elements) => this.elements = elements;
+        private readonly List<IResolvableConfigurationRecord> elements;
+        public ConfigurationContainer(IConfigurationManagerLoader loader, MemberTag memberTag)
+        {
+            var rangedRoutines = loader.RoutineResolvables.RangedRoutines(memberTag);
+            elements = new List<IResolvableConfigurationRecord>();
+            foreach (var pair in rangedRoutines)
+            {
+                var routineElement = pair.Value;
+                if (routineElement.For.IsNullOrWhiteSpaceOrAsterix())
+                {
+                    foreach (var r in routineElement.Resolvables)
+                    {
+                        if (!elements.Any(e => e.Type == r.Type && e.Namespace == r.Namespace))
+                            elements.Add(r);
+                    }
+                }
+            }
+        }
+
+        public ConfigurationContainer(IConfigurationManagerLoader loader, MemberTag memberTag, string @for)
+        {
+            var rangedRoutines = loader.RoutineResolvables.RangedRoutines(memberTag);
+            elements = new List<IResolvableConfigurationRecord>();
+            foreach (var pair in rangedRoutines)
+            {
+                var routineElement = pair.Value;
+                if (routineElement.For.IsNullOrWhiteSpaceOrAsterix() || routineElement.For == @for)
+                {
+                    foreach (var r in routineElement.Resolvables)
+                    {
+                        if (!elements.Any(e => e.Type == r.Type && e.Namespace == r.Namespace))
+                            elements.Add(r);
+                    }
+                }
+            }
+        }
 
         public string ResolveSerialized<T>()
         {
@@ -27,7 +61,16 @@ namespace DashboardCode.Routines.Configuration
             return @value;
         }
 
-        public T Resolve<T>() where T : IProgress<string>, new()
+        public T Resolve<T>() where T : IBuilder<string>, new()
+        {
+            var @value = new T();
+            var serialized = ResolveSerialized<T>();
+            if (serialized != null)
+                @value.Build(serialized);
+            return @value;
+        }
+
+        public T ResolveAlt<T>() where T : IProgress<string>, new()
         {
             var @value = new T();
             var serialized = ResolveSerialized<T>();

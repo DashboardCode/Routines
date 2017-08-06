@@ -1,8 +1,8 @@
-﻿using DashboardCode.Routines.Configuration.NETStandard;
-using Microsoft.Extensions.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
 using Xunit;
+using Microsoft.Extensions.Configuration;
+using DashboardCode.Routines.Configuration.NETStandard;
 
 [assembly: CollectionBehavior(MaxParallelThreads = 1, DisableTestParallelization = true)]
 
@@ -10,6 +10,9 @@ namespace DashboardCode.Routines.Configuration.NETCore.Test
 {
     public class ConfigurationNETStandard
     {
+        /// <summary>
+        /// Recreate file in test folder (need for OpenCover)
+        /// </summary>
         static ConfigurationNETStandard(){
             // create  configuration file
             string fileName = "appsettings.json";
@@ -21,15 +24,17 @@ namespace DashboardCode.Routines.Configuration.NETCore.Test
                         reader.BaseStream.CopyTo(fileStream);
         }
 
-        private readonly IConfigurationRoot configurationRoot;
+        readonly IConfigurationRoot configurationRoot;
+        readonly ConfigurationManagerLoader configurationManagerLoader;
         public ConfigurationNETStandard()
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
             configurationRoot = configurationBuilder.Build();
+            configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot);
         }
 
-        public ISpecifiableConfigurationContainer GetSpecifiableConfigurationContainer(MemberTag memberTag) =>
-            RoutinesConfigurationManager.CreateConfigurationContainer(configurationRoot, memberTag);
+        public ConfigurationContainer Create(MemberTag memberTag) =>
+            new ConfigurationContainer(configurationManagerLoader, memberTag);
     }
 }

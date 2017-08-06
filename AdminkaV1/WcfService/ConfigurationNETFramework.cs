@@ -4,18 +4,20 @@ using DashboardCode.Routines.Configuration.NETFramework;
 
 namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
-    public class ConfigurationNETFramework : IAppConfiguration
+    public class WcfApplicationFactory : IApplicationFactory
     {
-        public ISpecifiableConfigurationContainer ResolveConfigurationContainer(MemberTag memberTag)=>
-            RoutinesConfigurationManager.GetConfigurationContainer(memberTag);
+        readonly AdminkaStorageConfiguration adminkaStorageConfiguration;
+        readonly IConfigurationManagerLoader configurationManagerLoader = new ConfigurationManagerLoader();
+        public WcfApplicationFactory()
+        {
+            var connectionString = configurationManagerLoader.GetConnectionString("adminka");
+            adminkaStorageConfiguration = new AdminkaStorageConfiguration(connectionString, null, StorageType.INMEMORY);
+        }
 
-        public string ResolveConnectionString() =>
-            RoutinesConfigurationManager.GetConnectionString("adminka");
+        public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
+            new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
 
-        public string ResolveMigrationAssembly()
-            => null;
-
-        public StorageType ResolveStorageType() =>
-            StorageType.INMEMORY;
+        public AdminkaStorageConfiguration CreateAdminkaStorageConfiguration() =>
+            adminkaStorageConfiguration;
     }
 }

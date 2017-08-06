@@ -12,7 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConfigurationTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoggingConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoggingPerformanceConfiguration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)State.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WrappedContainer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StaticTools.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ZoningSharedSourceManager.cs" />

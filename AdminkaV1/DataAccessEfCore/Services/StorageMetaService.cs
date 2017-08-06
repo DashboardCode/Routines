@@ -6,27 +6,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class StorageMetaService
     {
-        readonly string connectionString;
-        readonly string migrationAssemly;
-        readonly StorageType storageType;
-        public StorageMetaService(string connectionString, string migrationAssemly, StorageType storageType)
-        {
-            this.connectionString= connectionString;
-            this.migrationAssemly = migrationAssemly;
-            this.storageType = storageType;
-        }
-        public StorageType GetStorageType()
-        {
-            return storageType;
-        }
-        public string GetMigrationAssembly()
-        {
-            return migrationAssemly;
-        }
-        public string GetConnectionString()
-        {
-            return connectionString;
-        }
         public List<StorageModel> GetStorageModels()
         {
             //TODO: 

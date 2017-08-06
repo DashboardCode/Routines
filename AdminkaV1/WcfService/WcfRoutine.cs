@@ -7,9 +7,18 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging
     public class WcfRoutine : AdminkaRoutine
     {
         public WcfRoutine(MemberTag memberTag, string faultCodeNamespace, object input) 
-            : base(new RoutineGuid(memberTag), GetUserContext(), TransformException(faultCodeNamespace), new ConfigurationNETFramework(), input)
+            : this(new RoutineGuid(memberTag), GetUserContext(), faultCodeNamespace,
+                  new WcfApplicationFactory(), input)
         {
         }
+
+        protected WcfRoutine(RoutineGuid routineGuid, UserContext userContext, string faultCodeNamespace, 
+            IApplicationFactory applicationFactory, object input)
+            : base(routineGuid, userContext, TransformException(faultCodeNamespace),
+                   applicationFactory, input)
+        {
+        }
+
         private static UserContext GetUserContext() =>
             new UserContext("Anonymous");
 

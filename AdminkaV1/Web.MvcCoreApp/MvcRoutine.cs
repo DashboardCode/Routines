@@ -31,7 +31,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                        InjectedManager.Markdown,
                        InjectedManager.DefaultRoutineTagTransformException
                      ),
-                 new MvcAppConfiguration(controller.ConfigurationRoot),
+                 new MvcApplicationFactory(controller.ConfigurationRoot),
                  input)
         {
             controller.HttpContext.Items["routineGuid"] = routineGuid;
@@ -45,15 +45,14 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             }
         }
         private MvcRoutine(RoutineController controller, RoutineGuid routineGuid,
-            Func<RoutineGuid, IResolver, RoutineLoggingTransients> loggingContainer,
-            MvcAppConfiguration appConfiguration,
+            Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingFactory,
+            IApplicationFactory applicationFactory,
             object input) :
             base(
                 routineGuid,
                 controller.User.Identity,
-                loggingContainer,
-                new RepositoryHandlerFactory(InjectedManager.GetStorageMetaService(appConfiguration)),
-                appConfiguration,
+                loggingFactory,
+                applicationFactory,
                 input)
         {
             this.Controller = controller;

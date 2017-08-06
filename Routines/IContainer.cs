@@ -1,6 +1,6 @@
 ﻿namespace DashboardCode.Routines
 {
-    public interface IResolver
+    public interface IContainer
     {
         T Resolve<T>() where T : new();
     }

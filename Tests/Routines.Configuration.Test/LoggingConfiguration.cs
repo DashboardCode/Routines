@@ -1,5 +1,5 @@
 ﻿
-namespace DashboardCode.Routines.Configuration.NETFramework.Test
+namespace DashboardCode.Routines.Configuration.Test
 {
     public class LoggingConfiguration
     {

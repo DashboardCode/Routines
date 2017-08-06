@@ -6,7 +6,7 @@ using System.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
-    public class RoutineElement :  ConfigurationElement, ICollectionMemberElement, IRoutineResolvable //, IRoutineResolvableRecord
+    public class RoutineElement :  ConfigurationElement, ICollectionMemberElement, IRoutineConfigurationRecord //, IRoutineResolvableRecord
     {
         private static readonly ConfigurationProperty NamespaceProperty =
             new ConfigurationProperty("namespace", typeof(string), "", ConfigurationPropertyOptions.None);
@@ -80,6 +80,7 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         //public RoutineResolvableRecord GetRoutineResolvableRecord() =>
         //    new RoutineResolvableRecord() { Namespace = this.Namespace, Type = this.Type, Member = this.Member, For=this.For, Resolvables= ((IEnumerable)base[""]).Cast<IResolvable>().ToArray() };
 
+
         [ConfigurationProperty("namespace")]
         public string Namespace
         {
@@ -137,11 +138,11 @@ namespace DashboardCode.Routines.Configuration.NETFramework
             }
         }
 
-        IEnumerable<IResolvable> IRoutineResolvable.Resolvables
+        IEnumerable<IResolvableConfigurationRecord> IRoutineConfigurationRecord.Resolvables
         {
             get
             {
-                return ((IEnumerable)base[""]).Cast<IResolvable>();
+                return ((IEnumerable)base[""]).Cast<IResolvableConfigurationRecord>();
             }
         }
 

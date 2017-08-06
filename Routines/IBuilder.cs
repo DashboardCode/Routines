@@ -3,8 +3,8 @@
     /// <summary>
     /// Now IProgress used instead of this.
     /// </summary>
-    public interface IResolving 
+    public interface IBuilder<in T> 
     {
-        void Resolving<T>();
+        void Build(T t);
     }
 }

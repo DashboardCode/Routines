@@ -44,7 +44,7 @@
     <Compile Include="RoutinesConfigurationSection.cs" />
     <Compile Include="RoutineElement.cs" />
     <Compile Include="RoutineElementCollection.cs" />
-    <Compile Include="RoutinesConfigurationManager.cs" />
+    <Compile Include="ConfigurationManagerLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

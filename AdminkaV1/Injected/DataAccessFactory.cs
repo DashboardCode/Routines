@@ -13,11 +13,14 @@ namespace DashboardCode.AdminkaV1.Injected
     {
         readonly Routine<UserContext> state;
         readonly StorageMetaService storageMetaService;
+        readonly AdminkaStorageConfiguration adminkaStorageConfiguration;
         public DataAccessFactory(
-            Routine<UserContext> state, 
+            Routine<UserContext> state,
+            AdminkaStorageConfiguration adminkaStorageConfiguration,
             StorageMetaService storageMetaService)
         {
             this.state = state;
+            this.adminkaStorageConfiguration = adminkaStorageConfiguration;
             this.storageMetaService = storageMetaService;
         }
 
@@ -30,17 +33,17 @@ namespace DashboardCode.AdminkaV1.Injected
             }
         }
 
-        private IAdminkaOptionsFactory CreateAdminkaOptionsFactory(StorageMetaService storageMetaService)
+        private IAdminkaOptionsFactory CreateAdminkaOptionsFactory()
         {
             IAdminkaOptionsFactory optionsFactory=null;
-            if (storageMetaService.GetStorageType()== StorageType.INMEMORY)
+            if (adminkaStorageConfiguration.StorageType== StorageType.INMEMORY)
             {
                 optionsFactory = new InMemoryAdminkaOptionsFactory("AdminkaV1_InMemmory");
             }
             else
             {
-                var connectionString  = storageMetaService.GetConnectionString();
-                var migrationAssembly = storageMetaService.GetMigrationAssembly();
+                var connectionString  = adminkaStorageConfiguration.ConnectionString;
+                var migrationAssembly = adminkaStorageConfiguration.MigrationAssembly;
                 optionsFactory = new SqlServerAdminkaOptionsFactory(connectionString, migrationAssembly);
             }
             return optionsFactory;
@@ -48,7 +51,7 @@ namespace DashboardCode.AdminkaV1.Injected
 
         public AdminkaDbContext CreateAdminkaDbContext()
         {
-            var optionsFactory = CreateAdminkaOptionsFactory(storageMetaService);
+            var optionsFactory = CreateAdminkaOptionsFactory();
             var dbContextFactory = new AdminkaDbContextFactory(optionsFactory, state);
             var dbContext = dbContextFactory.CreateAdminkaDbContext();
             return dbContext;
@@ -56,7 +59,7 @@ namespace DashboardCode.AdminkaV1.Injected
 
         public AdminkaDbContextHandler CreateDbContextHandler()
         {
-            var optionsFactory = CreateAdminkaOptionsFactory(storageMetaService);
+            var optionsFactory = CreateAdminkaOptionsFactory();
             var dbContextHandler = new AdminkaDbContextHandler(state, SetAudit, optionsFactory);
             return dbContextHandler;
         }

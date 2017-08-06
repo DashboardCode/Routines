@@ -2,13 +2,13 @@
 
 namespace DashboardCode.Routines.Configuration
 {
-    public interface IRoutineResolvable
+    public interface IRoutineConfigurationRecord
     {
         string Namespace { get; }
         string Type      { get; }
         string Member    { get; }
         string For       { get; }
-        IEnumerable<IResolvable> Resolvables { get; }
+        IEnumerable<IResolvableConfigurationRecord> Resolvables { get; }
     }
 
     //public interface IRoutineResolvableRecord
