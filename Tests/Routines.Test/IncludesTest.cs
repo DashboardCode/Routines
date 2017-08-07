@@ -12,7 +12,7 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void IncludesCloneIncludeTest()
         {
-            Include<TestModel> include1 = t => t
+            Include<TestModel> include1 = chain => chain
                     .Include(e => e.IntNullable1)
                     .Include(e => e.IntNullable1)
                     .IncludeAll(e => e.TestChilds).ThenIncludeAll(e => e.Uniques).ThenInclude(e => e.IndexName)
@@ -33,13 +33,11 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void IncludesAppendLeafsTest()
         {
-            Include<TestModel> include1 = t => t
-                    .IncludeAll(e => e.TestChilds).ThenIncludeAll(e => e.Uniques);
-            Include<TestModel> includeX = t => t.Include(e => e.PropertyInt); 
-            var include2 = include1.AppendLeafs(); 
-
-            var pathes1 = include2.ListLeafKeyPaths();
-
+            Include<TestModel> include1 = chain => chain
+                    .IncludeAll(e => e.TestChilds)
+                    .ThenIncludeAll(e => e.Uniques);
+            var appendedInclude = include1.AppendLeafs(); 
+            var pathes1 = appendedInclude.ListLeafKeyPaths();
             if (pathes1.Count!=6)
                 throw new ApplicationException("IncludesAppendLeafsTest error");
         }

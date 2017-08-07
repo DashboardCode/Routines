@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace JsonNet.Test
+namespace Routines.Json.Test
 {
     public class TestTool
     {

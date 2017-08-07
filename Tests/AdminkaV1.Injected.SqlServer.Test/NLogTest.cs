@@ -11,7 +11,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public virtual void TestNLogSuccess() // 161 ms
         {
-            var routine = new AdminkaRoutine(new MemberTag(this), ZoningSharedSourceManager.GetConfiguration(), new { input="Input text" });
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), ZoningSharedSourceManager.GetConfiguration(), new { input="Input text" });
             var x = routine.Handle(container =>
             {
                 container.Verbose("Test message");
@@ -22,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void TestNLogFailure() // 149 ms
         {
-            var routine = new AdminkaRoutine(new MemberTag(this), ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
             try
             { 
                 var x = routine.Handle<string>(container =>

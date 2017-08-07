@@ -10,7 +10,7 @@ using DashboardCode.Routines.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
-    public class MvcRoutine : AdminkaRoutine
+    public class MvcRoutine : AdminkaRoutineHandler
     {
         public readonly SessionState SessionState;
         public readonly RoutineController Controller;

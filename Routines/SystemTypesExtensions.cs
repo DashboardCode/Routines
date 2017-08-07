@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace DashboardCode.Routines
 {
@@ -59,5 +61,35 @@ namespace DashboardCode.Routines
         {
             return SystemTypes.Contains(type);
         }
+
+        public static LambdaExpression CreatePropertyLambda(this Type declaringType, PropertyInfo propertyInfo)
+        {
+            ParameterExpression eParameterExpression = Expression.Parameter(declaringType, "e");
+            var propertyCallExpression = Expression.Property(
+                eParameterExpression,
+                propertyInfo
+                );
+            var propertyLambda = Expression.Lambda(propertyCallExpression, new[] { eParameterExpression });
+            return propertyLambda;
+        }
+
+        public static PropertyInfo GrabDeclaredOrInheritedPoperty(this TypeInfo typeInfo, string propertyName)
+        {
+            foreach (var p in ListProperties(typeInfo))
+                if (p.Name == propertyName)
+                    return p;
+            throw new Exception($"Property '{propertyName}' not found in type '{typeInfo.Name}'");
+        }
+
+        public static IEnumerable<PropertyInfo> ListProperties(this TypeInfo typeInfo)
+        {
+            while (typeInfo != null)
+            {
+                foreach (var p in typeInfo.DeclaredProperties)
+                    yield return p;
+                typeInfo = typeInfo.BaseType?.GetTypeInfo();
+            }
+        }
+
     }
 }

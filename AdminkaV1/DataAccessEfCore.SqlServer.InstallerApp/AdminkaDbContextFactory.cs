@@ -11,7 +11,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
             var installerApplicationFactory = new InstallerApplicationFactory();
-            var routine = new AdminkaRoutine(new MemberTag(this), userContext, installerApplicationFactory, new { });
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, installerApplicationFactory, new { });
             return routine.Handle(
                 (container, dataAccessServcies) => {
                     var dbContext = dataAccessServcies.CreateAdminkaDbContext();

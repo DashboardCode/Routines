@@ -16,7 +16,8 @@ namespace DashboardCode.Routines.Configuration.NETStandard
             section.Bind(routineResolvables);
         }
 
-        public IEnumerable<IRoutineConfigurationRecord> RoutineResolvables => routineResolvables;
+        public IEnumerable<IRoutineConfigurationRecord> RoutineResolvables => 
+            routineResolvables;
 
         public string GetConnectionString(string name = "ConnectionString")
         {

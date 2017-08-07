@@ -199,7 +199,7 @@ namespace DashboardCode.Routines.Json
         private static LambdaExpression CreateGetterLambdaExpression(Type entityType, Type propertyType, string propertyName)
         {
             var o = Expression.Parameter(entityType, "o");
-            var getterMemberExpression = Expression.Property(o, entityType.GetTypeInfo().GetDeclaredProperty(propertyName));
+            var getterMemberExpression = Expression.Property(o, entityType.GetTypeInfo().GrabDeclaredOrInheritedPoperty(propertyName));
             var getterExpression = Expression.Lambda(getterMemberExpression, new[] { o });
             return getterExpression;
         }

@@ -77,5 +77,26 @@ namespace DashboardCode.AdminkaV1.Injected
             );
             return repositoryHandler;
         }
+
+        #region IRepositoryHandler<TEntity> in place
+        public void Handle<TEntity>(Action<IRepository<TEntity>> action, bool noTracking = true) where TEntity : class
+        {
+            var handler = CreateRepositoryHandler<TEntity>(noTracking);
+            handler.Handle(action);
+        }
+
+        public void Handle<TEntity>(Action<IRepository<TEntity>, IStorage<TEntity>> action, bool noTracking = true) where TEntity : class
+        {
+            var handler = CreateRepositoryHandler<TEntity>(noTracking);
+            handler.Handle(action);
+        }
+
+        
+        //TOutput Handle<TOutput>(Func<IRepository<TEntity>, TOutput> func);
+        //Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, TOutput> func);
+
+        //TOutput Handle<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func);
+        //Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func);
+        #endregion
     }
 }

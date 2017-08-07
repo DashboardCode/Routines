@@ -1,26 +1,24 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Collections.Generic;
 
-namespace JsonNet.Test
+namespace Routines.Json.Test
 {
     // Exception Newtonsoft.Json.JsonSerializationException: 'Self referencing loop detected for property '..' with type  '..'
 
     [TestClass]
-    public class JsonNetUnitTest
+    public class JsonNetTest
     {
         public abstract class Business
         {
             public string Name { get; set; }
         }
- 
+
         public class Hotel : Business
         {
-             public int Stars { get; set; }
+            public int Stars { get; set; }
         }
-        
+
         public class Stockholder
         {
             public string FullName { get; set; }

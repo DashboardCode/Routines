@@ -11,7 +11,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         {
             Clear(databaseName);
 
-            var routine = new AdminkaRoutine(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 var typeRecord1 = new TypeRecord()
@@ -143,7 +143,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 
         public static void Clear(string databaseName = "AdminkaV1")
         {
-            var routine = new AdminkaRoutine(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
             routine.Handle((state, dataAccess) =>
             {
                 dataAccess.CreateRepositoryHandler<ChildRecord>().Handle((repository, storage) =>

@@ -9,7 +9,7 @@
     <Import_RootNamespace>AdminkaV1.Injected.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)AdminkaRoutine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AdminkaRoutineHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AuthenticationService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ConfigurationContainerFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\AdConfiguration.cs" />

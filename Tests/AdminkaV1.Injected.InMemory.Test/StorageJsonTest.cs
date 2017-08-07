@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.AdminkaV1.DomTest;
 using DashboardCode.Routines;
-using DashboardCode.Routines.Storage;
-using System;
+using DashboardCode.Routines.Json;
+using System.Linq;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
@@ -17,16 +17,24 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 
             var userContext1 = new UserContext("UnitTest");
             var configuration = ZoningSharedSourceManager.GetConfiguration(databaseName);
-            var routine1 = new AdminkaRoutine(new MemberTag(this), userContext1, configuration, new { input = "Input text" });
-            routine1.Handle((state, dataAccess) =>
+            var adminka = new AdminkaRoutineHandler(
+                new MemberTag(this), 
+                userContext1, 
+                configuration, new { input = "Input text" });
+            adminka.Handle((routine, dataAccess) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
-                repositoryHandler.Handle((repository, storage) =>
-                {
-                    var lists = repository.List();
-                    //var storageError = storage.Handle(batch => batch.Add(t0));
-                    //storageError.ThrowIfNotNull();
-                });
+                dataAccess.Handle<ParentRecord>(
+                    (repository, storage) =>{
+                        Include<ParentRecord> include = chain => chain.IncludeAll(e=>e.ParentRecordHierarchyRecordMap);
+                        var lists = repository.List(include);
+
+                        var serailizeInclude = repository.AppendModelFields(include);
+                        var t = serailizeInclude.ListXPaths();
+                        var formatter = serailizeInclude.ComposeFormatter();
+                        var item = lists.First();
+                        var json = formatter(item);
+                    }
+                );
             });
         }
     }

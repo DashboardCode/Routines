@@ -7,7 +7,7 @@ namespace DashboardCode.Routines
         public readonly Action<string> Verbose;
         public readonly RoutineGuid RoutineGuid;
         public readonly TUserContext UserContext;
-        private readonly IContainer resolver;
+        readonly IContainer resolver;
 
         public Routine(TUserContext userContext, RoutineGuid routineGuid, Action<DateTime, string> verbose, IContainer resolver)
         {

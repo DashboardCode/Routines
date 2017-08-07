@@ -17,7 +17,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             this.asNoTracking = asNoTracking;
         }
 
-        public IQueryable<TEntity> MakeQueryable(Include<TEntity> addIncludes)
+        public IQueryable<TEntity> MakeQueryable(Include<TEntity> include)
         {
             var dbSet = context.Set<TEntity>();
             IQueryable<TEntity> query;
@@ -25,7 +25,7 @@ namespace DashboardCode.Routines.Storage.EfCore
                 query = dbSet.AsNoTracking();
             else
                 query = dbSet.AsQueryable();
-            query = query.Include(addIncludes);
+            query = query.Include(include);
             return query;
         }
 
@@ -66,6 +66,21 @@ namespace DashboardCode.Routines.Storage.EfCore
             {
                 context.Detach(entity, include);
             }
+        }
+
+        public Include<TEntity> AppendModelFields(Include<TEntity> include) 
+        {
+            return EfCoreExtensions.AppendModelFields(include, context);
+        }
+
+        public Include<TEntity> ExtractNavigations(Include<TEntity> include)
+        {
+            return EfCoreExtensions.ExtractNavigations(include, context);
+        }
+
+        public Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include)
+        {
+            return EfCoreExtensions.ExtractNavigationsAppendKeyLeafs(include, context);
         }
     }
 }

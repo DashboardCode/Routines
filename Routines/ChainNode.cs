@@ -75,5 +75,8 @@ namespace DashboardCode.Routines
 
         public static IReadOnlyCollection<string> ListLeafXPaths(ChainNode node) =>
               TreeExtensions.ListLeafXPaths(meta, node);
+
+        public static IReadOnlyCollection<string> ListXPaths(ChainNode node) =>
+            TreeExtensions.ListXPaths(meta, node);
     }
 }

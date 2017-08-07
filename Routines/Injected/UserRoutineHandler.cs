@@ -4,10 +4,10 @@ using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class UserRoutine<TUserContext> : RoutineHandler<Routine<TUserContext>>
+    public class UserRoutineHandler<TUserContext> : RoutineHandler<Routine<TUserContext>>
     {
         readonly IRepositoryHandlerFactory<TUserContext> repositoryHandlerFactory;
-        public UserRoutine(
+        public UserRoutineHandler(
             IBasicLogging basicLogging,
             Func<Exception, Exception> transformException,
             Func<Action<DateTime, string>, Routine<TUserContext>> createRoutineState,

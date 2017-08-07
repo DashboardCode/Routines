@@ -97,7 +97,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogTestApp", "Tests\Consol
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Tests\Benchmark\Benchmark.csproj", "{C30762B6-E02B-4FA8-9A51-3B4FAFD86B0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonNet.Test", "Tests\JsonNet.Test\JsonNet.Test.csproj", "{C6E950B6-5342-4B51-A313-566FFB905B78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Json.Test", "Tests\Routines.Json.Test\Routines.Json.Test.csproj", "{C6E950B6-5342-4B51-A313-566FFB905B78}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkClassic", "Tests\BenchmarkClassic\BenchmarkClassic.csproj", "{C2C1EFFA-18F0-4ADB-B740-7CF17949672F}"
 EndProject

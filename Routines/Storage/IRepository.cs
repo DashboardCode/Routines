@@ -19,5 +19,13 @@ namespace DashboardCode.Routines.Storage
         void Detach(TEntity entity, Include<TEntity> include = null);
         void Detach(IEnumerable<TEntity> entity, Include<TEntity> include = null);
         #endregion
+
+        #region Navigations meta
+        Include<TEntity> AppendModelFields(Include<TEntity> include);
+
+        Include<TEntity> ExtractNavigations(Include<TEntity> include);
+
+        Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include);
+        #endregion
     }
 }

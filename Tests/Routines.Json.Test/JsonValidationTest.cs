@@ -1,11 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DashboardCode.Routines.Json;
 
-namespace DashboardCode.Routines.Test
+namespace Routines.Json.Test
 {
     [TestClass]
     public class JsonValidationTest

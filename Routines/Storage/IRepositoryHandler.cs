@@ -9,12 +9,12 @@ namespace DashboardCode.Routines.Storage
     /// <typeparam name="TEntity"></typeparam>
     public interface IRepositoryHandler<TEntity> where TEntity : class
     {
-        void Handle(Action<IRepository<TEntity>> action);
-        TOutput Handle<TOutput>(Func<IRepository<TEntity>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, TOutput> func);
+        void          Handle               (Action<IRepository<TEntity>> action);
+        TOutput       Handle<TOutput>      (Func<IRepository<TEntity>, TOutput> func);
+        Task<TOutput> HandleAsync<TOutput> (Func<IRepository<TEntity>, TOutput> func);
 
-        TOutput Handle<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func);
-        void Handle(Action<IRepository<TEntity>, IStorage<TEntity>> action);
-        Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func);
+        void          Handle(Action<IRepository<TEntity>, IStorage<TEntity>> action);
+        TOutput       Handle<TOutput>      (Func<IRepository<TEntity>,   IStorage<TEntity>, TOutput> func);
+        Task<TOutput> HandleAsync<TOutput> (Func<IRepository<TEntity>,   IStorage<TEntity>, TOutput> func);
     }
 }

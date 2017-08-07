@@ -16,14 +16,14 @@ namespace DashboardCode.Routines
         /// <param name="include"></param>
         public static void Detach<T>(T entity, Include<T> include) where T : class
         {
-            var chainNode = include.GetChainNode();
+            var chainNode = include.CreateChainNode();
             var paths = ChainNodeTree.ListLeafKeyPaths(chainNode);
             DetachRecursive(entity, paths);
         }
 
         public static void DetachAll<TCol, T>(IEnumerable<T> entities, Include<T> include) where TCol : IEnumerable<T>
         {
-            var chainNode = include.GetChainNode();
+            var chainNode = include.CreateChainNode();
             var paths = ChainNodeTree.ListLeafKeyPaths(chainNode);
             foreach (var entity in entities)
             {
@@ -34,7 +34,7 @@ namespace DashboardCode.Routines
 
         public static void Detach2<T>(T entity, Include<T> include) where T : class
         {
-            var chainNode = include.GetChainNode();
+            var chainNode = include.CreateChainNode();
             var paths = ChainNodeTree.ListLeafKeyPaths(chainNode);
             DetachRecursive2(entity, paths);
         }
@@ -167,7 +167,7 @@ namespace DashboardCode.Routines
         {
             IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
             if (include != null)
-                nodes = include.GetChainNode().Children.Values;
+                nodes = include.CreateChainNode().Children.Values;
             return ChainNodeExtensions.EqualsNodes(entity1, entity2, nodes);
         }
 
@@ -176,7 +176,7 @@ namespace DashboardCode.Routines
         {
             IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
             if (include != null)
-                nodes = include.GetChainNode().Children.Values;
+                nodes = include.CreateChainNode().Children.Values;
             return ChainNodeExtensions.EqualsNodes(entity1, entity2, nodes);
         }
 
@@ -185,7 +185,7 @@ namespace DashboardCode.Routines
         {
             IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
             if (include != null)
-                nodes = include.GetChainNode().Children.Values;
+                nodes = include.CreateChainNode().Children.Values;
             ChainNodeExtensions.CopyNodes(source, destination, nodes, systemTypes);
         }
 
@@ -194,7 +194,7 @@ namespace DashboardCode.Routines
         {
             IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
             if (include != null)
-                nodes = include.GetChainNode().Children.Values;
+                nodes = include.CreateChainNode().Children.Values;
             ChainNodeExtensions.CopyNodes(source, destination, nodes, systemTypes);
         }
 

@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace DashboardCode.Routines.Storage.EfCore
 {
-    public class QueryableIncluding<TRootEntity> : IChainVisitor<TRootEntity> where TRootEntity : class
+    public class QueryableChainVisitor<TRootEntity> : IChainVisitor<TRootEntity> where TRootEntity : class
     {
         public IQueryable<TRootEntity> Queryable { get; private set; }
         public bool isEnumerable;
 
-        public QueryableIncluding(IQueryable<TRootEntity> rootQueryable) =>
+        public QueryableChainVisitor(IQueryable<TRootEntity> rootQueryable) =>
             Queryable = rootQueryable ?? throw new ArgumentNullException(nameof(rootQueryable));
 
         public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)

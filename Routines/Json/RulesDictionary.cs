@@ -183,7 +183,7 @@ namespace DashboardCode.Routines.Json
                 throw new ArgumentNullException(nameof(include), "Serialization for subset can't be configured if subset is defined for the root only include (include is null)");
 
             var subDictionary = new RulesSubDictionary<TEntity>(
-                include.GetChainNode(),
+                include.CreateChainNode(),
                 useToString         ?? this.useToString,
                 dateTimeFormat      ?? this.dateTimeFormat, 
                 floatingPointFormat ?? this.floatingPointFormat,

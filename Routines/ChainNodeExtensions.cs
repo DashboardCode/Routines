@@ -9,6 +9,47 @@ namespace DashboardCode.Routines
 {
     public static class ChainNodeExtensions
     {
+        public static bool HasLeafs(this ChainNode node)
+        {
+            bool @value = false;
+            foreach (var n in node.Children.Values)
+            {
+                if (n.Children.Count()==0)
+                {
+                    @value = true;
+                    break;
+                }
+            }
+            return @value;
+        }
+
+        public static void AddChild(this ChainNode node, PropertyInfo propertyInfo)
+        {
+            var expression = node.Type.CreatePropertyLambda(propertyInfo);
+            node.Children.Add(propertyInfo.Name, new ChainPropertyNode(propertyInfo.PropertyType, expression, propertyInfo, propertyInfo.Name, false, node));
+        }
+
+        public static void AppendLeafs(this ChainNode node)
+        {
+                foreach (var n in node.Children.Values)
+                    AppendLeafs(n);
+                var hasLeafs = node.HasLeafs();
+                if (!hasLeafs)
+                {
+                    //TODO: compare performance
+                    //var childProperties = MemberExpressionExtensions.GetSimpleProperties(propertyType, SystemTypesExtensions.SystemTypes);
+
+                    var childProperties = MemberExpressionExtensions.GetPrimitiveOrSimpleProperties(
+                        node.Type,
+                        SystemTypesExtensions.DefaultSimpleTextTypes,
+                        SystemTypesExtensions.DefaultSimpleSymbolTypes);
+                    foreach (var propertyInfo in childProperties)
+                    {
+                        node.AddChild(propertyInfo);
+                    }
+                }
+        }
+
         public static Include<T> ComposeInclude<T>(this ChainNode root)
         {
             var parents = new ChainPropertyNode[0];
@@ -102,12 +143,17 @@ namespace DashboardCode.Routines
             return number + 1;
         }
 
-        public static List<Type> ListLeafTypes(this ChainNode node)
+        public static IReadOnlyCollection<Type> ListLeafTypes(this ChainNode node)
         {
             var nodes = node.Children.Values;
             var types = new List<Type>();
             ListLeafTypesRecursive(nodes, types);
             return types;
+        }
+
+        public static IReadOnlyCollection<string> ListXPaths(this ChainNode node)
+        {
+            return ChainNodeTree.ListXPaths(node);
         }
 
         private static void ListLeafTypesRecursive(this IEnumerable<ChainPropertyNode> nodes, List<Type> types)

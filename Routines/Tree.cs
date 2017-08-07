@@ -265,7 +265,7 @@ namespace DashboardCode.Routines
         }
         #endregion
 
-        #region GetTreeAs
+        #region List - Traversal
 
         public static List<TNodePrimal> ListLeafPaths<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal root, Func<TNodePrimal, bool> condition = null)
             where TNode : TNodePrimal
@@ -335,11 +335,11 @@ namespace DashboardCode.Routines
             var pathes = new List<string>();
             var children = tree.GetChildren(node);
             foreach (var c in children)
-                tree.ListLeafXPaths(c, "", pathes);
+                tree.ListLeafXPathsRecursive(c, "", pathes);
             return pathes;
         }
 
-        private static void ListLeafXPaths<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode node, string basePath, List<string> pathes)
+        private static void ListLeafXPathsRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode node, string basePath, List<string> pathes)
             where TNode : TNodePrimal
         {
             var children = tree.GetChildren(node);
@@ -349,7 +349,7 @@ namespace DashboardCode.Routines
                 pathes.Add(path);
             else
                 foreach (var c in children)
-                    tree.ListLeafXPaths(c, path, pathes);
+                    tree.ListLeafXPathsRecursive(c, path, pathes);
         }
 
         public static string CollectLeafsToXPathUnion<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node)
@@ -370,6 +370,28 @@ namespace DashboardCode.Routines
 
             var @value = (sb.Length == 0)? "/": sb.ToString();
             return @value;
+        }
+
+
+        public static List<string> ListXPaths<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node)
+            where TNode : TNodePrimal
+        {
+            var pathes = new List<string>();
+            var children = tree.GetChildren(node);
+            foreach (var c in children)
+                tree.ListXPathsRecursive(c, "", pathes);
+            return pathes;
+        }
+
+        private static void ListXPathsRecursive<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNode node, string basePath, List<string> pathes)
+            where TNode : TNodePrimal
+        {
+            var children = tree.GetChildren(node);
+            var key = tree.GetKey(node);
+            var path = basePath + @"/" + key;
+            pathes.Add(path);
+                foreach (var c in children)
+                    tree.ListXPathsRecursive(c, path, pathes);
         }
         #endregion
     }

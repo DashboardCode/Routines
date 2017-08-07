@@ -60,7 +60,7 @@ namespace DashboardCode.Routines.Injected.Test
                 (verbose)=>new Routine<UserContext>(userContext, routineGuid, verbose, null);
             string result = null;
             
-            var routine = new UserRoutine<UserContext>(
+            var routine = new UserRoutineHandler<UserContext>(
                 loggingTransients.BasicRoutineLoggingAdapter,
                 loggingTransients.TransformException,
                 createRoutineState, 
@@ -125,7 +125,7 @@ namespace DashboardCode.Routines.Injected.Test
                 (verbose) => new Routine<UserContext>(userContext, tag, null/*no verbose logging for this routineGuid */, null); 
             try
             {
-                var routine = new UserRoutine<UserContext>(
+                var routine = new UserRoutineHandler<UserContext>(
                     loggingTransients.BasicRoutineLoggingAdapter,
                     loggingTransients.TransformException,
                     createRoutineState,

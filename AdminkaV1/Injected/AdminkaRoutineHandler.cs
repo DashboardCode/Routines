@@ -8,12 +8,12 @@ using DashboardCode.AdminkaV1.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
-    public class AdminkaRoutine : UserRoutine<UserContext>
+    public class AdminkaRoutineHandler : UserRoutineHandler<UserContext>
     {
         readonly RepositoryHandlerFactory repositoryHandlerFactory;
         protected readonly UserContext userContext;
         #region constructors without usercontext
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             MemberTag memberTag,
             IApplicationFactory applicationFactory,
             object input
@@ -25,7 +25,7 @@ namespace DashboardCode.AdminkaV1.Injected
               input)
         {
         }
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             IApplicationFactory applicationFactory,
             object input
@@ -37,7 +37,7 @@ namespace DashboardCode.AdminkaV1.Injected
               input)
         {
         }
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             string @namespace, string controller, string action,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             IApplicationFactory applicationFactory,
@@ -50,7 +50,7 @@ namespace DashboardCode.AdminkaV1.Injected
               input)
         {
         }
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             IIdentity identity,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
@@ -64,7 +64,7 @@ namespace DashboardCode.AdminkaV1.Injected
               input)
         {
         }
-        protected AdminkaRoutine(
+        protected AdminkaRoutineHandler(
              RoutineGuid routineGuid,
              IIdentity identity,
              Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
@@ -79,7 +79,7 @@ namespace DashboardCode.AdminkaV1.Injected
               input)
         {
         }
-        private AdminkaRoutine(
+        private AdminkaRoutineHandler(
              RoutineGuid routineGuid,
              IIdentity identity,
              Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
@@ -97,7 +97,7 @@ namespace DashboardCode.AdminkaV1.Injected
               input)
         {
         }
-        private AdminkaRoutine(
+        private AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
@@ -114,7 +114,7 @@ namespace DashboardCode.AdminkaV1.Injected
               input)
         {
         }
-        private AdminkaRoutine(
+        private AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             IIdentity identity,
             CultureInfo cultureInfo,
@@ -135,7 +135,7 @@ namespace DashboardCode.AdminkaV1.Injected
         #endregion
 
         #region constructors with usercontext
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             string @namespace, string controller, string action,
             UserContext userContext,
             IApplicationFactory configuration,
@@ -147,7 +147,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     input)
         {
         }
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             string @namespace, string controller, string action,
             UserContext userContext,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
@@ -161,7 +161,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     input)
         {
         }
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             MemberTag memberTag,
             UserContext userContext,
             IApplicationFactory configuration,
@@ -172,7 +172,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     input)
         {
         }
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             UserContext userContext,
             IApplicationFactory configuration,
@@ -184,7 +184,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
         }
 
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             UserContext userContext,
             Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException,
@@ -198,7 +198,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
         }
 
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             UserContext userContext,
             ConfigurationContainerFactory configurationContainerFactory,
@@ -212,7 +212,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
         }
 
-        public AdminkaRoutine(
+        public AdminkaRoutineHandler(
             string @namespace, string controller, string action,
             UserContext userContext,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
@@ -228,7 +228,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
         }
 
-        protected AdminkaRoutine(
+        protected AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             UserContext userContext,
             Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException,
@@ -244,7 +244,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
         }
 
-        protected AdminkaRoutine(
+        protected AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             UserContext userContext,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
@@ -262,7 +262,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         #endregion
 
-        internal AdminkaRoutine(
+        internal AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             UserContext userContext,
             IContainer container,
@@ -278,7 +278,8 @@ namespace DashboardCode.AdminkaV1.Injected
                 input)
         {
         }
-        internal AdminkaRoutine(
+
+        internal AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             UserContext userContext,
             IContainer container,
@@ -296,7 +297,6 @@ namespace DashboardCode.AdminkaV1.Injected
             this.userContext = userContext;
             this.repositoryHandlerFactory = repositoryHandlerFactory;
         }
-
 
         #region Handle with data access
         public void Handle(Action<Routine<UserContext>, DataAccessFactory> action) =>

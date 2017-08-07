@@ -9,33 +9,34 @@ namespace DashboardCode.Routines.Json
     public static class JsonChainManager
     {
         public static Func<T, string> ComposeFormatter<T>(
-            Include<T> include = null
-            , Action<RulesDictionary<T>> configure = null
-            , bool useToString = false
-            , string dateTimeFormat      = null
-            , string floatingPointFormat = null
-            , bool handleEmptyObjectLiteral = true
-            , bool handleEmptyArrayLiteral  = true
-            , Func<StringBuilder, bool> nullSerializer = null
-            , bool handleNullProperty = true
-            , Func<StringBuilder, bool> nullArraySerializer = null
-            , bool handleNullArrayProperty = true
-            , bool rootHandleNull = true
-            , bool rootHandleEmptyObjectLiteral = true
-            , int stringBuilderCapacity = 32)
+           this Include<T> include
+           , Action<RulesDictionary<T>> configure = null
+           , bool useToString = false
+           , string dateTimeFormat = null
+           , string floatingPointFormat = null
+           , bool handleEmptyObjectLiteral = true
+           , bool handleEmptyArrayLiteral = true
+           , Func<StringBuilder, bool> nullSerializer = null
+           , bool handleNullProperty = true
+           , Func<StringBuilder, bool> nullArraySerializer = null
+           , bool handleNullArrayProperty = true
+           , bool rootHandleNull = true
+           , bool rootHandleEmptyObjectLiteral = true
+           , int stringBuilderCapacity = 16)
         {
             var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
                 /*stringAsJsonLiteral*/ false,
                 /*stringJsonEscape*/    true,
-                nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer, 
+                nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                 handleNullProperty,
-                    new InternalNodeOptions() {
+                    new InternalNodeOptions()
+                    {
                         HandleEmptyObjectLiteral = handleEmptyObjectLiteral,
-                        HandleEmptyArrayLiteral  = handleEmptyArrayLiteral,
-                        NullSerializer           = nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
-                        HandleNullProperty       = handleNullProperty,
-                        NullArraySerializer      = nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
-                        HandleNullArrayProperty  = handleNullArrayProperty,
+                        HandleEmptyArrayLiteral = handleEmptyArrayLiteral,
+                        NullSerializer = nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                        HandleNullProperty = handleNullProperty,
+                        NullArraySerializer = nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                        HandleNullArrayProperty = handleNullArrayProperty,
                     }
                 );
             configure?.Invoke(rulesDictionary);
@@ -49,6 +50,28 @@ namespace DashboardCode.Routines.Json
                 serializer(stringBuilder, t);
                 return stringBuilder.ToString();
             };
+        }
+
+        public static Func<T, string> ComposeFormatter<T>(
+            Action<RulesDictionary<T>> configure = null
+            , bool useToString = false
+            , string dateTimeFormat      = null
+            , string floatingPointFormat = null
+            , bool handleEmptyObjectLiteral = true
+            , bool handleEmptyArrayLiteral  = true
+            , Func<StringBuilder, bool> nullSerializer = null
+            , bool handleNullProperty = true
+            , Func<StringBuilder, bool> nullArraySerializer = null
+            , bool handleNullArrayProperty = true
+            , bool rootHandleNull = true
+            , bool rootHandleEmptyObjectLiteral = true
+            , int stringBuilderCapacity = 16)
+        {
+            return ComposeFormatter<T>(include: null, configure: configure, useToString: useToString, dateTimeFormat: dateTimeFormat,
+                    floatingPointFormat: floatingPointFormat, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
+                    nullSerializer : nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
+                    handleNullArrayProperty: handleNullArrayProperty, rootHandleNull: rootHandleNull, rootHandleEmptyObjectLiteral: rootHandleEmptyObjectLiteral, stringBuilderCapacity: stringBuilderCapacity
+                );
         }
 
         public static Func<StringBuilder, T, bool> ComposeSerializer<T>(
@@ -164,7 +187,7 @@ namespace DashboardCode.Routines.Json
         }
 
         public static Func<IEnumerable<T>, string> ComposeEnumerableFormatter<T>(
-            Include<T> include = null
+            this Include<T> include
             , Action<RulesDictionary<T>> config = null
             , bool useToString = false
             , string dateTimeFormat = null
@@ -177,7 +200,7 @@ namespace DashboardCode.Routines.Json
             , bool handleNullArrayProperty = true
             , bool rootHandleNullArray = true
             , bool rootHandleEmptyArrayLiteral = true
-            , int stringBuilderCapacity = 32)
+            , int stringBuilderCapacity = 16)
         {
 
             var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
@@ -211,6 +234,26 @@ namespace DashboardCode.Routines.Json
             };
         }
 
+        public static Func<IEnumerable<T>, string> ComposeEnumerableFormatter<T>(
+            Action<RulesDictionary<T>> config = null
+            , bool useToString = false
+            , string dateTimeFormat = null
+            , string floatingPointFormat = null
+            , bool handleEmptyObjectLiteral = true
+            , bool handleEmptyArrayLiteral = true
+            , Func<StringBuilder, bool> nullSerializer = null
+            , bool handleNullProperty = true
+            , Func<StringBuilder, bool> nullArraySerializer = null
+            , bool handleNullArrayProperty = true
+            , bool rootHandleNullArray = true
+            , bool rootHandleEmptyArrayLiteral = true
+            , int stringBuilderCapacity = 16)
+        {
+
+            return ComposeEnumerableFormatter<T>(include: null, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
+                floatingPointFormat: floatingPointFormat, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral, nullSerializer: nullSerializer, handleNullProperty: handleNullProperty,
+                rootHandleNullArray: rootHandleNullArray, rootHandleEmptyArrayLiteral: rootHandleEmptyArrayLiteral, stringBuilderCapacity: stringBuilderCapacity);
+        }
         public static Func<StringBuilder, IEnumerable<T>, bool> ComposeEnumerableSerializer<T>(
             Include<T> include
             , Func<ChainNode, SerializerOptions> getSerializerOptions

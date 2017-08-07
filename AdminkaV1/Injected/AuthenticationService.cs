@@ -42,7 +42,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 PrincipalType = identity.GetType().FullName,
                 UseAdAuthorization = useAdAuthorization
             };
-            var routine = new AdminkaRoutine(
+            var routine = new AdminkaRoutineHandler(
                 authenticationRoutineGuid,
                 systemUserContext,
                 systemUserContextResolver,

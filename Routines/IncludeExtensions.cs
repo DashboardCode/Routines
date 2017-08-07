@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace DashboardCode.Routines
 {
     public static class IncludeExtensions
     {
-        public static ChainNode GetChainNode<T>(this Include<T> include)
+        public static ChainNode CreateChainNode<T>(this Include<T> include)
         {
             var visitor = new ChainVisitor<T>();
             var chain = new Chain<T>(visitor);
@@ -17,68 +14,35 @@ namespace DashboardCode.Routines
             return rootNode;
         }
 
-        private static LambdaExpression CreatePropertyLambda(Type declaringType, PropertyInfo propertyInfo)
-        {
-            ParameterExpression eParameterExpression = Expression.Parameter(declaringType, "e");
-            var propertyCallExpression = Expression.Property(
-                eParameterExpression,
-                propertyInfo
-                );
-            var propertyLambda = Expression.Lambda(propertyCallExpression, new[] { eParameterExpression });
-            return propertyLambda;
-        }
-
         public static Include<T> AppendLeafs<T>(this Include<T> source) where T : class
         {
             var parser = new ChainVisitor<T>();
             var train = new Chain<T>(parser);
             source.Invoke(train);
             var root = parser.Root;
-
-            void AppendLeafs(ChainNode node)
-            {
-                var containsLeafs = node.Children.Values.Any(c => c.Children.Count == 0);
-                if (!containsLeafs)
-                {
-                    //TODO: compare performance
-                    //var childProperties = MemberExpressionExtensions.GetSimpleProperties(propertyType, SystemTypesExtensions.SystemTypes);
-
-                    var childProperties = MemberExpressionExtensions.GetPrimitiveOrSimpleProperties(
-                        node.Type,
-                        SystemTypesExtensions.DefaultSimpleTextTypes,
-                        SystemTypesExtensions.DefaultSimpleSymbolTypes);
-                    foreach (var propertyInfo in childProperties)
-                    {
-                        var expression = CreatePropertyLambda(propertyInfo.DeclaringType, propertyInfo);
-                        node.Children.Add(propertyInfo.Name, new ChainPropertyNode(propertyInfo.PropertyType, expression, propertyInfo, propertyInfo.Name, false, node));
-                    }
-                }
-
-                foreach (var n in node.Children.Values)
-                    AppendLeafs(n);
-            }
-            AppendLeafs(root);
+            root.AppendLeafs();
             var destination = root.ComposeInclude<T>();
             return destination;
         }
 
+        #region Lists
         public static IReadOnlyCollection<Type> ListLeafTypes<T>(this Include<T> include)
         {
-            var node = include.GetChainNode();
+            var node = include.CreateChainNode();
             var @types = node.ListLeafTypes();
             return @types;
         }
 
         public static IReadOnlyCollection<string[]> ListLeafKeyPaths<T>(this Include<T> include)
         {
-            var rootNode = include.GetChainNode();
+            var rootNode = include.CreateChainNode();
             var @paths = ChainNodeTree.ListLeafKeyPaths(rootNode);
             return @paths;
         }
 
         public static IReadOnlyCollection<ChainNode> ListLeafPaths<T>(this Include<T> include, Type type)
         {
-            var rootNode = include.GetChainNode();
+            var rootNode = include.CreateChainNode();
             var @paths = ChainNodeTree.ListLeafPaths(rootNode);
             return @paths;
         }
@@ -87,22 +51,32 @@ namespace DashboardCode.Routines
         {
             if (include == null)
                 return new List<string> { "/" };
-            var rootNode = include.GetChainNode();
+            var rootNode = include.CreateChainNode();
             var @paths = ChainNodeTree.ListLeafXPaths(rootNode);
             return @paths;
         }
 
+        public static IReadOnlyCollection<string> ListXPaths<T>(this Include<T> include)
+        {
+            if (include == null)
+                return new List<string> { "/" };
+            var rootNode = include.CreateChainNode();
+            var @paths = ChainNodeTree.ListXPaths(rootNode);
+            return @paths;
+        }
+        #endregion
+
         public static Include<T> Clone<T>(Include<T> include) where T : class
         {
-            var rootNode = include.GetChainNode();
+            var rootNode = include.CreateChainNode();
             var @cloned = rootNode.ComposeInclude<T>();
             return @cloned;
         }
 
         public static bool IsEqualTo<T>(this Include<T> include1, Include<T> include2)
         {
-            var rootNode1 = include1.GetChainNode();
-            var rootNode2 = include2.GetChainNode();
+            var rootNode1 = include1.CreateChainNode();
+            var rootNode2 = include2.CreateChainNode();
 
             bool @value = ChainNodeTree.IsEqualTo(rootNode1, rootNode2);
             return @value;
@@ -110,8 +84,8 @@ namespace DashboardCode.Routines
 
         public static bool IsSupersetOf<T>(this Include<T> include1, Include<T> include2)
         {
-            var rootNode1 = include1.GetChainNode();
-            var rootNode2 = include2.GetChainNode();
+            var rootNode1 = include1.CreateChainNode();
+            var rootNode2 = include2.CreateChainNode();
 
             bool @value = ChainNodeTree.IsSupersetOf(rootNode1, rootNode2);
             return @value;
@@ -119,8 +93,8 @@ namespace DashboardCode.Routines
 
         public static bool IsSubsetOf<T>(this Include<T> include1, Include<T> include2)
         {
-            var rootNode1 = include1.GetChainNode();
-            var rootNode2 = include2.GetChainNode();
+            var rootNode1 = include1.CreateChainNode();
+            var rootNode2 = include2.CreateChainNode();
 
             bool @value = ChainNodeTree.IsSubsetOf(rootNode1, rootNode2);
             return @value;
@@ -128,8 +102,8 @@ namespace DashboardCode.Routines
 
         public static Include<T> Merge<T>(this Include<T> include1, Include<T> include2)
         {
-            var rootNode1 = include1.GetChainNode();
-            var rootNode2 = include2.GetChainNode();
+            var rootNode1 = include1.CreateChainNode();
+            var rootNode2 = include2.CreateChainNode();
 
             var union = ChainNodeTree.Merge(rootNode1, rootNode2);
             var @value = union.ComposeInclude<T>();

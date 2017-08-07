@@ -18,7 +18,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public void TestConcurencyError()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutine(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
             // check constraint on UPDATE
             routine.Handle((state, dataAccess) =>
             {

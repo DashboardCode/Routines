@@ -26,7 +26,7 @@ namespace DashboardCode.AdminkaV1.DomTest
 
         public ICollection<ChildRecord> ChildRecords { get; set; }
 
-        public ICollection<ParentRecordHierarchyRecord> ParentRecordHierarchyRecordMap { get; set; }
+        public IEnumerable<ParentRecordHierarchyRecord> ParentRecordHierarchyRecordMap { get; set; }
 
         public IReadOnlyCollection<HierarchyRecord> GetHierarchyRecords()
         {

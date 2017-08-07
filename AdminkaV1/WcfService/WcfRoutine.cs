@@ -4,7 +4,7 @@ using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Wcf.Messaging
 {
-    public class WcfRoutine : AdminkaRoutine
+    public class WcfRoutine : AdminkaRoutineHandler
     {
         public WcfRoutine(MemberTag memberTag, string faultCodeNamespace, object input) 
             : this(new RoutineGuid(memberTag), GetUserContext(), faultCodeNamespace,
