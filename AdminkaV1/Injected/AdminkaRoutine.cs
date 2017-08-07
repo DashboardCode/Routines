@@ -265,15 +265,15 @@ namespace DashboardCode.AdminkaV1.Injected
         internal AdminkaRoutine(
             RoutineGuid routineGuid,
             UserContext userContext,
-            IContainer reslover,
+            IContainer container,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             RepositoryHandlerFactory repositoryHandlerFactory,
             object input
             ) : this(
                 routineGuid, 
                 userContext, 
-                reslover,
-                loggingTransientsFactory(routineGuid, reslover),
+                container,
+                loggingTransientsFactory(routineGuid, container),
                 repositoryHandlerFactory, 
                 input)
         {
@@ -281,14 +281,14 @@ namespace DashboardCode.AdminkaV1.Injected
         internal AdminkaRoutine(
             RoutineGuid routineGuid,
             UserContext userContext,
-            IContainer resolver,
+            IContainer container,
             RoutineLoggingTransients routineLoggingTransients,
             RepositoryHandlerFactory repositoryHandlerFactory,
             object input
             ) : base(
                 routineLoggingTransients.BasicRoutineLoggingAdapter,
                 routineLoggingTransients.TransformException,
-                verbose => new Routine<UserContext>(userContext, routineGuid, verbose, resolver),
+                verbose => new Routine<UserContext>(userContext, routineGuid, verbose, container),
                 repositoryHandlerFactory,
                 input
                 )
