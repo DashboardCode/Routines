@@ -50,42 +50,28 @@ namespace DashboardCode.Routines.Storage.EfCore
             return list;
         }
 
-        public IRepository<TNewBaseEntity> Sprout<TNewBaseEntity>() where TNewBaseEntity : class
-        {
-            return new Repository<TNewBaseEntity>(this.context, asNoTracking);
-        }
+        public IRepository<TNewBaseEntity> Sprout<TNewBaseEntity>() where TNewBaseEntity : class =>
+            new Repository<TNewBaseEntity>(this.context, asNoTracking);
 
-        public void Detach(TEntity entity, Include<TEntity> include = null)
-        {
+        public void Detach(TEntity entity, Include<TEntity> include = null) =>
             context.Detach(entity, include);
-        }
 
         public void Detach(IEnumerable<TEntity> entities, Include<TEntity> include = null)
         {
             foreach (var entity in entities)
-            {
                 context.Detach(entity, include);
-            }
         }
 
-        public Include<TEntity> AppendModelFields(Include<TEntity> include) 
-        {
-            return EfCoreExtensions.AppendModelFields(include, context);
-        }
+        public Include<TEntity> AppendModelFields(Include<TEntity> include) =>
+            EfCoreExtensions.AppendModelFields(include, context);
 
-        public Include<TEntity> AppendModelFieldsIfEmpty(Include<TEntity> include)
-        {
-            return EfCoreExtensions.AppendModelFieldsIfEmpty(include, context);
-        }
+        public Include<TEntity> AppendModelFieldsIfEmpty(Include<TEntity> include) =>
+            EfCoreExtensions.AppendModelFieldsIfEmpty(include, context);
 
-        public Include<TEntity> ExtractNavigations(Include<TEntity> include)
-        {
-            return EfCoreExtensions.ExtractNavigations(include, context);
-        }
+        public Include<TEntity> ExtractNavigations(Include<TEntity> include) =>
+            EfCoreExtensions.ExtractNavigations(include, context);
 
-        public Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include)
-        {
-            return EfCoreExtensions.ExtractNavigationsAppendKeyLeafs(include, context);
-        }
+        public Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include) =>
+            EfCoreExtensions.ExtractNavigationsAppendKeyLeafs(include, context);
     }
 }

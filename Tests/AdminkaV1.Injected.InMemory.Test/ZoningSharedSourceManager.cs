@@ -1,4 +1,7 @@
-﻿namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
+﻿using DashboardCode.Routines;
+using System;
+
+namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     public static class ZoningSharedSourceManager
     {
@@ -11,4 +14,37 @@
 #endif
         }
     }
+
+    public class AdminkaInMemoryTestRoutine : AdminkaRoutineHandler
+    {
+        public AdminkaInMemoryTestRoutine(RoutineGuid routineGuid, object input, string name = "adminka")
+            : base(routineGuid, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), input)
+        {
+        }
+
+        public AdminkaInMemoryTestRoutine(MemberTag memberTag, object input, string name = "adminka")
+            : base(memberTag, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), input)
+        {
+        }
+
+        public AdminkaInMemoryTestRoutine(RoutineGuid routineGuid,  string name = "adminka")
+            : base(routineGuid, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), new { })
+        {
+        }
+
+        public AdminkaInMemoryTestRoutine(MemberTag memberTag,  string name = "adminka")
+            : base(memberTag, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), new { })
+        {
+        }
+    }
+
+    public abstract class RepositoryBaseTest
+    {
+        public static readonly string readonlyDatabaseName = "adminka_readonly_" + Guid.NewGuid();
+        static RepositoryBaseTest()
+        {
+            TestIsland.Reset(readonlyDatabaseName);
+        }
+    }
+
 }

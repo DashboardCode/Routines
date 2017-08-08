@@ -7,10 +7,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     public static class TestIsland
     {
-        public static void Reset(string databaseName="AdminkaV1")
+        public static void Reset(string databaseName)
         {
-            Clear(databaseName);
-
             var routine = new AdminkaInMemoryTestRoutine(new RoutineGuid(Guid.NewGuid(), new MemberTag(typeof(TestIsland))), new { input = "Input text" }, databaseName);
             routine.Handle((state, dataAccess) =>
             {
@@ -138,59 +136,6 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                         batch.Add(parentRecordHierarchyRecord5);
                     }).ThrowIfNotNull("Can't add ParentRecordHierarchyRecord")
                 );
-            });
-        }
-
-        public static void Clear(string databaseName = "AdminkaV1")
-        {
-            var routine = new AdminkaInMemoryTestRoutine(new RoutineGuid(Guid.NewGuid(), new MemberTag(typeof(TestIsland))), new { input = "Input text" }, databaseName);
-            routine.Handle((state, dataAccess) =>
-            {
-                dataAccess.CreateRepositoryHandler<ChildRecord>().Handle((repository, storage) =>
-                {
-                    storage.Handle(batch =>
-                    {
-                        var list = repository.List();
-                        foreach (var e in list)
-                            batch.Remove(e);
-                    }).ThrowIfNotNull();
-                });
-                dataAccess.CreateRepositoryHandler<ParentRecordHierarchyRecord>().Handle((repository, storage) =>
-                {
-                    storage.Handle(batch =>
-                    {
-                        var list = repository.List();
-                        foreach (var e in list)
-                            batch.Remove(e);
-                    }).ThrowIfNotNull();
-                });
-                dataAccess.CreateRepositoryHandler<ParentRecord>().Handle((repository, storage) =>
-                {
-                    storage.Handle(batch =>
-                    {
-                        var list = repository.List();
-                        foreach (var e in list)
-                            batch.Remove(e);
-                    }).ThrowIfNotNull();
-                });
-                dataAccess.CreateRepositoryHandler<TypeRecord>().Handle((repository, storage) =>
-                {
-                    storage.Handle(batch =>
-                    {
-                        var list = repository.List();
-                        foreach (var e in list)
-                            batch.Remove(e);
-                    }).ThrowIfNotNull();
-                });
-                dataAccess.CreateRepositoryHandler<ParentRecordHierarchyRecord>().Handle((repository, storage) =>
-                {
-                    storage.Handle(batch =>
-                    {
-                        var list = repository.List();
-                        foreach (var e in list)
-                            batch.Remove(e);
-                    }).ThrowIfNotNull();
-                });
             });
         }
     }

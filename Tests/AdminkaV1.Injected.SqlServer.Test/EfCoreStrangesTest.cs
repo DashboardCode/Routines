@@ -8,12 +8,12 @@ using DashboardCode.AdminkaV1.DomTest;
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
     [TestClass]
-    public class EfCoreStrangesTest2
+    public class EfCoreStrangesTest
     {
         [TestMethod]
         public void EfCoreTestStoreUpdateRelationsErrorNoTracking()
         {
-            TestIsland.Reset();
+            TestIsland.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
@@ -59,7 +59,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void EfCoreTestStoreUpdateRelationsErrorTracking()
         {
-            TestIsland.Reset();
+            TestIsland.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
