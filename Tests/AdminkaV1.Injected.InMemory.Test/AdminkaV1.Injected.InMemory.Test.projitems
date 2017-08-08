@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AdminkaInMemoryTestRoutine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NLogTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StorageJsonTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestIsland.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ZoningSharedSourceManager.cs" />

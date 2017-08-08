@@ -1,15 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.DomTest;
-using System;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
     [TestClass]
     public class RoutineMeasureTest
     {
-
         public RoutineMeasureTest()
         {
             TestIsland.Clear(); // main reason is to cache ef core db context

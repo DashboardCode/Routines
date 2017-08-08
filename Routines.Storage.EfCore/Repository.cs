@@ -73,6 +73,11 @@ namespace DashboardCode.Routines.Storage.EfCore
             return EfCoreExtensions.AppendModelFields(include, context);
         }
 
+        public Include<TEntity> AppendModelFieldsIfEmpty(Include<TEntity> include)
+        {
+            return EfCoreExtensions.AppendModelFieldsIfEmpty(include, context);
+        }
+
         public Include<TEntity> ExtractNavigations(Include<TEntity> include)
         {
             return EfCoreExtensions.ExtractNavigations(include, context);

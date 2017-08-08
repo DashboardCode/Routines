@@ -35,19 +35,17 @@ namespace DashboardCode.Routines
 
     public static class ChainNodeTree
     {
+        
         private static readonly LinkedTree<ChainNode, ChainPropertyNode, string> meta = new LinkedTree<ChainNode, ChainPropertyNode, string>(
             n => n.Children.Values, 
             n => n.PropertyName, 
             (n,k)   => n.Children.GetValueOrDefault(k),
             (n)     => new ChainNode(n.Type), 
-            (n,p)   => {
-                var child = new ChainPropertyNode(n.Type, n.Expression, n.PropertyInfo, n.PropertyName, n.IsEnumerable, p);
-                p.Children.Add(n.PropertyName, child);
-                return child;
-                },
+            (n,p)   => n.CloneChainPropertyNode(p),
             (n)     => n.Parent,
             (n1,n2) => n1.Type==n2.Type
         );
+
 
         public static string FindLinkedRootXPath(ChainPropertyNode node) =>
              TreeExtensions.FindLinkedRootXPath(meta, node);

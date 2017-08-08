@@ -9,6 +9,13 @@ namespace DashboardCode.Routines
 {
     public static class ChainNodeExtensions
     {
+        public static ChainPropertyNode CloneChainPropertyNode(this ChainPropertyNode node, ChainNode parent)
+        {
+            var child = new ChainPropertyNode(node.Type, node.Expression, node.PropertyInfo, node.PropertyName, node.IsEnumerable, parent);
+            parent.Children.Add(node.PropertyName, child);
+            return child;
+        }
+
         public static bool HasLeafs(this ChainNode node)
         {
             bool @value = false;
@@ -57,9 +64,13 @@ namespace DashboardCode.Routines
             Type rootChainType = typeof(Chain<>).MakeGenericType(entityType);
             ParameterExpression tParameterExpression = Expression.Parameter(rootChainType, "t");
             int number = AddLevelRecursive(root, parents, 0, tParameterExpression, out Expression outExpression);
-            var lambdaExpression = Expression.Lambda<Include<T>>(outExpression, new[] { tParameterExpression });
-            var destination = lambdaExpression.Compile();
-            return destination;
+            Include<T> @destination = null;
+            if (outExpression != null)
+            {
+                var lambdaExpression = Expression.Lambda<Include<T>>(outExpression, new[] { tParameterExpression });
+                @destination = lambdaExpression.Compile();
+            }
+            return @destination;
         }
 
         private static int AddLevelRecursive(ChainNode root, ChainPropertyNode[] parents, int number, Expression inExpression, out Expression outExpression)

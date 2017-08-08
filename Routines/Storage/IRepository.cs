@@ -23,6 +23,8 @@ namespace DashboardCode.Routines.Storage
         #region Navigations meta
         Include<TEntity> AppendModelFields(Include<TEntity> include);
 
+        Include<TEntity> AppendModelFieldsIfEmpty(Include<TEntity> include);
+
         Include<TEntity> ExtractNavigations(Include<TEntity> include);
 
         Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include);
