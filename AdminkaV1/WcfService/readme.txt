@@ -4,4 +4,9 @@
 When all used Standard libraries are csproj of 
 <Project Sdk="Microsoft.NET.Sdk">
 
-Therefore packages referenced in Standard libraries can't be observed by wcf project. Therefore they should be referenced in the WCF project directly.
+Therefore packages referenced in Standard libraries can't be observed by wcf project. 
+This issue also named as "no transitive dependencies".
+
+Therefore all NUGET packages should be referenced in the WCF project directly.
+
+https://github.com/NuGet/Home/issues/4488
