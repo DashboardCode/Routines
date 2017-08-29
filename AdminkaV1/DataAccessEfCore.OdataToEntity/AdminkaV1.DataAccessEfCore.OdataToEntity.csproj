@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.6</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.AdminkaV1.DataAccessEfCore.OdataToEntity</AssemblyName>
     <RootNamespace>DashboardCode.AdminkaV1.DataAccessEfCore.OdataToEntity</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OdataToEntity.EfCore" Version="1.1.1.1" />
+    <PackageReference Include="OdataToEntity.EfCore" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>

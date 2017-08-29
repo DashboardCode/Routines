@@ -2,7 +2,7 @@
 {
     public static class ZoningSharedSourceManager
     {
-#if NETCOREAPP1_1
+#if NETCOREAPP1_1 || NETCOREAPP2_0
         public static IConfigurationManagerLoader GetLoader()
         {
             var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();

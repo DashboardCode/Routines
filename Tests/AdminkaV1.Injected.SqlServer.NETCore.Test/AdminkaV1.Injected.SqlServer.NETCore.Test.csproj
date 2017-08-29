@@ -1,9 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFramework>netcoreapp1.1</TargetFramework>    
+    <TargetFramework>netcoreapp2.0</TargetFramework>    
     <AssemblyName>DashboardCode.AdminkaV1.Injected.SqlServer.NETCore.Test</AssemblyName>    
-    <RootNamespace>DashboardCode.AdminkaV1.Injected.SqlServer.NETCore.Test</RootNamespace>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.SqlServer.NETCore.Test</RootNamespace>    
+    <Company>Roman Pokrovskij</Company>    
+    <Authors>Roman Pokrovskij</Authors>    
+    <Description />
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
   </ItemGroup>

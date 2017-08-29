@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6|| NETSTANDARD1_7)
-[assembly: AssemblyTitle("DashboardCode.AdminkaV1.Injected")]
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6|| NETSTANDARD1_7 || NETSTANDARD2_0)
+[assembly: AssemblyTitle("DashboardCode.AdminkaV1.Injected.NETStandard")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Roman Pokrovskij (Github user rpokrovskij)")]
-[assembly: AssemblyProduct("DashboardCode.AdminkaV1.Injected")]
+[assembly: AssemblyProduct("DashboardCode.AdminkaV1.Injected.NETStandard")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

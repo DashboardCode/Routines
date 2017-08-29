@@ -20,6 +20,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                 .Build();
 
             host.Run();
+
         }
         public static void TestDependencies()
         {

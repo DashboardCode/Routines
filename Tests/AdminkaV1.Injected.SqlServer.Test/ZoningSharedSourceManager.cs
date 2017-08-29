@@ -4,7 +4,7 @@
     {
         public static IApplicationFactory GetConfiguration()
         {
-#if NETCOREAPP1_1
+#if NETCOREAPP1_1 || NETCOREAPP2_0
             return new NETCore.Test.ConfigurationNETCore();
 #else
             return new NETFramework.Test.ConfigurationNETFramework();

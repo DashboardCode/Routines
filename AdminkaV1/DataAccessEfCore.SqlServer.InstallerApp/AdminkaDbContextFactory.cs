@@ -1,13 +1,13 @@
 ﻿using System.Globalization;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.Routines;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
-    public class AdminkaDbContextFactory : IDbContextFactory<AdminkaDbContext>
+    public class AdminkaDbContextFactory : IDesignTimeDbContextFactory<AdminkaDbContext>
     {
-        public AdminkaDbContext Create(DbContextFactoryOptions factoryOptions)
+        public AdminkaDbContext CreateDbContext(string[] args)
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
             var installerApplicationFactory = new InstallerApplicationFactory();

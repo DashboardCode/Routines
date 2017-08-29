@@ -16,16 +16,34 @@ namespace DashboardCode.Routines.Storage.EfCore
                 AnalyzeInvalidOperationException(invalidOperationException, fieldsErrors, storageModel);
         }
 
-        static Regex fieldPkOrUniqueConstraintNullRegex = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
+        static Regex fieldPkOrUniqueConstraintNullRegexV1 = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
+        static Regex fieldPkOrUniqueConstraintNullRegexV2 = new Regex("Unable to track an entity of type '(?<entity>.*?)' because alternate key property '(?<field>.*?)' is null.");
         public static void AnalyzeInvalidOperationException(InvalidOperationException ex, List<FieldError> fieldsErrors, StorageModel storageModel)
         {
-            var matchCollection = fieldPkOrUniqueConstraintNullRegex.Matches(ex.Message);
-            if (matchCollection.Count > 0)
             {
-                var entity = matchCollection[0].Groups["entity"].Value;
-                if (storageModel.Entity.Name == entity)
-                    fieldsErrors.Add(StorageModel.GenericErrorField, "ID or alternate id has no value");
-                return;
+                var matchCollectionV1 = fieldPkOrUniqueConstraintNullRegexV1.Matches(ex.Message);
+                if (matchCollectionV1.Count > 0)
+                {
+                    var entity = matchCollectionV1[0].Groups["entity"].Value;
+                    if (storageModel.Entity.Name == entity)
+                        fieldsErrors.Add(StorageModel.GenericErrorField, "ID or alternate id has no value");
+                    return;
+                }
+            }
+
+            {
+                var matchCollectionV2 = fieldPkOrUniqueConstraintNullRegexV2.Matches(ex.Message);
+                if (matchCollectionV2.Count > 0)
+                {
+                    if (ex.Message.Contains("If the alternate key is not used in a relationship, then consider using a unique index instead."))
+                    {
+                        var entity = matchCollectionV2[0].Groups["entity"].Value;
+                        var field = matchCollectionV2[0].Groups["field"].Value;
+                        if (storageModel.Entity.Name == entity)
+                            fieldsErrors.Add(field, "ID or alternate id has no value");
+                    }
+                    return;
+                }
             }
         }
 

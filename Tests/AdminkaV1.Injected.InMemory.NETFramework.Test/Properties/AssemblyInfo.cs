@@ -1,12 +1,11 @@
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("AdminkaV1.Injected.NETFramework.InMemory.Test")]
+[assembly: AssemblyTitle("DashboardCode.AdminkaV1.Injected.InMemory.NETFramework.Test")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AdminkaV1.Injected.NETFramework.InMemory.Test")]
+[assembly: AssemblyProduct("DashboardCode.AdminkaV1.Injected.InMemory.NETFramework.Test")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

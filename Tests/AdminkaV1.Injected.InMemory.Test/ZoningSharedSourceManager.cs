@@ -7,7 +7,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
     {
         public static IApplicationFactory GetConfiguration(string databaseName)
         {
-#if NETCOREAPP1_1
+#if NETCOREAPP1_1 || NETCOREAPP2_0
             return new NETCore.Test.ApplicationFactory(databaseName);
 #else
             return new NETFramework.Test.ApplicationFactory(databaseName);

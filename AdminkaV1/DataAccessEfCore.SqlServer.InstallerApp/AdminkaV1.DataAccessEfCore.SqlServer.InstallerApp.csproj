@@ -1,21 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.4</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
-    <Product>Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer</Product>
+    <Product>DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp</Product>
     <Copyright>Copyright ©  2016</Copyright>
-    <PackageId>Vse.AdminkaV1.DataAccessEfCore.SqlServer.Installer</PackageId>
+    <PackageId>DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp</PackageId>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <AssemblyVersion>1.0.12.0</AssemblyVersion>
     <FileVersion>1.0.12.0</FileVersion>
     <Description />
     <RootNamespace>DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp</RootNamespace>
     <AssemblyName>DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp</AssemblyName>
+    <ApplicationIcon />
+    <OutputType>Exe</OutputType>
+    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD1_4</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
@@ -33,11 +36,6 @@
     <Folder Include="Properties\" />
     <Folder Include="Properties\" />
     <Folder Include="Properties\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.2" />
   </ItemGroup>
 
   <ItemGroup>

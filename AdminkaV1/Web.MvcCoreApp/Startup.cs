@@ -18,6 +18,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -31,8 +32,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             {
                 // Set a short timeout for easy testing.
                 options.IdleTimeout = TimeSpan.FromMinutes(10);
-                options.CookieHttpOnly = true;
-                options.CookieName = ".AdminkaV1.Session";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.Name = ".AdminkaV1.Session";
             });
 
             // Add framework services.

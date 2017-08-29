@@ -25,8 +25,9 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
                 optionsBuilder.UseSqlServer(connectionString);
 
             var relationalOptions = RelationalOptionsExtension.Extract(optionsBuilder.Options);
-            relationalOptions.MigrationsHistoryTableName = "Migrations";
-            relationalOptions.MigrationsHistoryTableSchema = "ef";
+            // TODO: Migrate those 2 lines to EF Core 2
+            //relationalOptions.MigrationsHistoryTableName = "Migrations";
+            //relationalOptions.MigrationsHistoryTableSchema = "ef";
 
             var options = optionsBuilder.Options;
             return options;
