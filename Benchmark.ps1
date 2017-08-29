@@ -11,7 +11,7 @@ $BenchmarkProjectPath = "$SolutionFolderPath\Tests\Benchmark"
 
 & $dotnetPath build $BenchmarkProjectPath -c Release
 
-$BenchmarkProjectOutputPath = "$BenchmarkProjectPath\bin\Release\net462"
+$BenchmarkProjectOutputPath = "$BenchmarkProjectPath\bin\Release\net47"
 $BenchmarkStartPath = $SolutionFolderPath
 $BenchmarkReportPath = "$SolutionFolderPath\BenchmarkDotNet.Artifacts\results"
 cd "$BenchmarkStartPath"
