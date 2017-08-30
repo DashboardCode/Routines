@@ -1,10 +1,10 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using System.Reflection;
+using System.Text;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
-using System;
-using System.Reflection;
-using System.Text;
 using DashboardCode.Routines.Json;
 
 namespace Benchmark

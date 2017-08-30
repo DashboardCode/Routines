@@ -1,9 +1,9 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using System.Globalization;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
-using System;
-using System.Globalization;
 
 namespace Benchmark
 {

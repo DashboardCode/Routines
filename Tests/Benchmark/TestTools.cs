@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 
@@ -108,6 +107,5 @@ namespace Benchmark
                     .Include(i => i.IntNullable2);
             return includes;
         }
-
     }
 }
