@@ -10,7 +10,7 @@
 $TestProjectsGlobbing = @(,'*.Test.csproj')
 $mstestPath = 'C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\MSTest.exe' 
 $dotnetPath = 'C:\Program Files\dotnet\dotnet.exe'
-$netcoreapp = 'netcoreapp1.1'
+$netcoreapp = 'netcoreapp2.0'
 
 $NamespaceInclusiveFilters = @(,'*') # asterix means inlude all namespaces (which pdb found)
 $BuildNamespaceExclusiveFilters = $true # For core - test project's default namespace; For classic - namespaces where test project's types defined
@@ -27,7 +27,7 @@ $testsResultsFolder = 'TestResults'
 
 $excludeGlobbingFromFolders =  @('.git', '.vs', 'docs', $toolsFolder, $testsResultsFolder)
 
-#left it empty if you are not using coveralls (publish report online, integrate it with GitHub. more https://coveralls.io/)
+# left it empty if you are not using coveralls (publish report online, integrate it with GitHub. more https://coveralls.io/)
 $env:COVERALLS_REPO_TOKEN = "ZD4n81FTV3l3GG5XTLmJszvEmD5DKyHo8" 
 
 # STEP 1. Get Solution Folder
@@ -35,7 +35,7 @@ $SolutionFolderPath = $PSScriptRoot #or enter it manually there
 
 If ($SolutionFolderPath -eq '') {
     $SolutionFolderPath = 'D:\cot\DashboardCode'
-    #throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
+    # throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
 }
 
 # STEP 2. Get OpenCover, ReportGenerator, Coveralls pathes

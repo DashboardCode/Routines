@@ -3,7 +3,7 @@ $dotnetPath = 'C:\Program Files\dotnet\dotnet.exe'
 $SolutionFolderPath = $PSScriptRoot #or enter it manually there 
 If ($SolutionFolderPath -eq '') {
     $SolutionFolderPath = 'D:\cot\DashboardCode'
-    #throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
+    # throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
 }
 
 $BenchmarkProjectPath = "$SolutionFolderPath\Tests\BenchmarkClassic"
@@ -23,7 +23,7 @@ $snap1 = Get-ChildItem *.html -path "$BenchmarkReportPath"
 
 $snap2 = Get-ChildItem *.html -path "$BenchmarkReportPath"
 if ($snap1 -eq $null -and $snap2 -ne $null){
-    Invoke-Item "$SolutionFolderPath\BenchmarkDotNet.Artifacts\results\*.html"
+	Invoke-Item "$SolutionFolderPath\BenchmarkDotNet.Artifacts\results\*.html"
 }else{
     $list = Compare-Object -ReferenceObject $snap1 -DifferenceObject $snap2
     if ($list -ne $null){

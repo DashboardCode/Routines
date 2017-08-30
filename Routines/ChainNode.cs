@@ -9,9 +9,7 @@ namespace DashboardCode.Routines
     {
         public readonly Dictionary<string, ChainPropertyNode> Children = new Dictionary<string, ChainPropertyNode>();
         public readonly Type Type;
-
         public ChainNode(Type type) => Type = type;
-        
     }
 
     public class ChainPropertyNode : ChainNode
@@ -35,7 +33,6 @@ namespace DashboardCode.Routines
 
     public static class ChainNodeTree
     {
-        
         private static readonly LinkedTree<ChainNode, ChainPropertyNode, string> meta = new LinkedTree<ChainNode, ChainPropertyNode, string>(
             n => n.Children.Values, 
             n => n.PropertyName, 

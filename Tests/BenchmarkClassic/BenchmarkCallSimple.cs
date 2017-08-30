@@ -1,12 +1,12 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
-using System;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
 
 namespace BenchmarkClassic
 {

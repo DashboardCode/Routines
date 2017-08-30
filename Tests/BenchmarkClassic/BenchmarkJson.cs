@@ -1,13 +1,13 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Text;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
 

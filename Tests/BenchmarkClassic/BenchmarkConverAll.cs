@@ -1,8 +1,8 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using System.Collections.Generic;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
-using System.Collections.Generic;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 namespace BenchmarkClassic
@@ -40,6 +40,5 @@ namespace BenchmarkClassic
             var x = testArray.ConvertAll(e => string.Join(",", e));
             return x;
         }
-        
     }
 }
