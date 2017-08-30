@@ -43,7 +43,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var routine = new MvcRoutine(this, new { id = id });
             return await routine.HandleStorageAsync<IActionResult, Privilege>(repository =>
             {
-                var mvcTube = new MvcTube(this);
+                var mvcTube = new MvcHandler(this);
                 return mvcTube.Handle(
                     () => id != null,
                     () => repository.Find(e => e.PrivilegeId == id, detailsIncludes)
@@ -56,20 +56,20 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var routine = new MvcRoutine(this, new { id = id });
             return await routine.HandleStorageAsync<IActionResult, Privilege>(repository =>
             {
-                var rolesNavigation = new MvcNavigationManager<Privilege, Role, RolePrivilege, int>(
+                var rolesNavigation = new MvcNavigationFacade<Privilege, Role, RolePrivilege, int>(
                     this, "Roles", e => e.RoleId, nameof(Role.RoleName),
                     repository.Sprout<Role>().List()
                     );
-                var groupsNavigation = new MvcNavigationManager<Privilege, Group, GroupRole, int>(
+                var groupsNavigation = new MvcNavigationFacade<Privilege, Group, GroupRole, int>(
                     this, "Groups", e => e.GroupId, nameof(Group.GroupName),
                     repository.Sprout<Group>().List()
                 );
-                var usersNavigation = new MvcNavigationManager<Privilege, User, UserRole, int>(
+                var usersNavigation = new MvcNavigationFacade<Privilege, User, UserRole, int>(
                    this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
                    repository.Sprout<User>().List()
                 );
 
-                var mvcTube = new MvcTube(this);
+                var mvcTube = new MvcHandler(this);
                 return mvcTube.Handle(
                         () => id != null,
                         () => repository.Find(e => e.PrivilegeId == id, editIncludes),
@@ -92,7 +92,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                 if (!state.UserContext.HasPrivilege(Privilege.ConfigureSystem))
                     return Unauthorized();
 
-                var rolesNavigation = new MvcNavigationManager<Privilege, Role, RolePrivilege, int>(
+                var rolesNavigation = new MvcNavigationFacade<Privilege, Role, RolePrivilege, int>(
                     this, "Roles", e => e.RoleId, nameof(Role.RoleName),
                     repository.Sprout<Role>().List()
                 );
@@ -100,7 +100,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                     e => new RolePrivilege() { PrivilegeId = entity.PrivilegeId, RoleId = e.RoleId },
                     s => int.Parse(s));
 
-                var groupsNavigation = new MvcNavigationManager<Privilege, Group, GroupPrivilege, int>(
+                var groupsNavigation = new MvcNavigationFacade<Privilege, Group, GroupPrivilege, int>(
                      this, "Groups", e => e.GroupId, nameof(Group.GroupName),
                      repository.Sprout<Group>().List()
                  );
@@ -108,7 +108,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                     e => new GroupPrivilege() { PrivilegeId = entity.PrivilegeId, GroupId = e.GroupId },
                                     s => int.Parse(s));
 
-                var usersNavigation = new MvcNavigationManager<Privilege, User, UserPrivilege, int>(
+                var usersNavigation = new MvcNavigationFacade<Privilege, User, UserPrivilege, int>(
                     this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
                     repository.Sprout<User>().List()
                  );
@@ -117,7 +117,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                     e => new UserPrivilege() { PrivilegeId = entity.PrivilegeId, UserId = e.UserId },
                                     s => int.Parse(s));
 
-                var mvcFork = new MvcFork(this, ModelState.IsValid);
+                var mvcFork = new MvcHandler(this, ModelState.IsValid);
                 return mvcFork.Handle(
                     () => storage.Handle(
                         batch =>

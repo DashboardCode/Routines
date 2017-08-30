@@ -81,6 +81,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-7576-4179-9A35-823A02D24EFF}"
 	ProjectSection(SolutionItems) = preProject
 		Tour\Doc\API Conventions.txt = Tour\Doc\API Conventions.txt
+		Article.txt = Article.txt
 		Tour\Doc\Asp.Core.txt = Tour\Doc\Asp.Core.txt
 		Tour\Doc\Dashboard.txt = Tour\Doc\Dashboard.txt
 		Tour\Doc\DeleteCache.ps1 = Tour\Doc\DeleteCache.ps1

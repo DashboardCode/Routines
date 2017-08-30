@@ -46,7 +46,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var routine = new MvcRoutine(this, new { id = id });
             return await routine.HandleStorageAsync<IActionResult, User>(repository =>
             {
-                var mvcTube = new MvcTube(this);
+                var mvcTube = new MvcHandler(this);
                 return mvcTube.Handle(
                     () => id != null,
                     () => repository.Find(e => e.UserId == id, detailsIncludes)
@@ -59,22 +59,22 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var routine = new MvcRoutine(this, new { id = id });
             return await routine.HandleStorageAsync<IActionResult, User>(repository =>
             {
-                var privilegesNavigation = new MvcNavigationManager<User, Privilege, UserPrivilege, string>(
+                var privilegesNavigation = new MvcNavigationFacade<User, Privilege, UserPrivilege, string>(
                     this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
                     repository.Sprout<Privilege>().List()
                 );
 
-                var rolesNavigation = new MvcNavigationManager<User, Role, UserRole, int>(
+                var rolesNavigation = new MvcNavigationFacade<User, Role, UserRole, int>(
                     this, "Roles", e => e.RoleId, nameof(Role.RoleName),
                     repository.Sprout<Role>().List()
                 );
 
-                var groupsNavigation = new MvcNavigationManager<User, Group, UserGroup, int>(
+                var groupsNavigation = new MvcNavigationFacade<User, Group, UserGroup, int>(
                     this, "Groups", e => e.GroupId, nameof(Group.GroupName),
                     repository.Sprout<Group>().List()
                 );
 
-                var mvcTube = new MvcTube(this);
+                var mvcTube = new MvcHandler(this);
                 return mvcTube.Handle(
                         () => id != null,
                         () => repository.Find(e => e.UserId == id, editIncludes),
@@ -97,7 +97,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                     if (!state.UserContext.HasPrivilege(Privilege.ConfigureSystem))
                         return Unauthorized();
 
-                    var privilegesNavigation = new MvcNavigationManager<User, Privilege, UserPrivilege, string>(
+                    var privilegesNavigation = new MvcNavigationFacade<User, Privilege, UserPrivilege, string>(
                         this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
                         repository.Sprout<Privilege>().List()
                     );
@@ -106,7 +106,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                         e => new UserPrivilege() { UserId = entity.UserId, PrivilegeId = e.PrivilegeId },
                         s => s);
 
-                    var rolesNavigation = new MvcNavigationManager<User, Role, UserRole, int>(
+                    var rolesNavigation = new MvcNavigationFacade<User, Role, UserRole, int>(
                         this, "Roles", e => e.RoleId, nameof(Role.RoleName),
                         repository.Sprout<Role>().List()
                     );
@@ -116,17 +116,16 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                          s => int.Parse(s)
                     );
 
-                    var groupsNavigation = new MvcNavigationManager<User, Group, UserGroup, int>(
+                    var groupsNavigation = new MvcNavigationFacade<User, Group, UserGroup, int>(
                         this, "Groups", e => e.GroupId, nameof(Group.GroupName),
                         repository.Sprout<Group>().List()
                     );
 
-                    var mvcFork = new MvcFork(this, ModelState.IsValid);
+                    var mvcFork = new MvcHandler(this, ModelState.IsValid);
                     return mvcFork.Handle(
                         () => storage.Handle(
                             batch =>
                             {
-                                //throw new ApplicationException("kuku");
                                 batch.Modify(entity);
                                 batch.UpdateRelations(entity,
                                     e => e.UserRoleMap,

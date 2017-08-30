@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public class MvcNavigationManager<TP, TF, TMM, TfID> where TP : class where TF : class
+    public class MvcNavigationFacade<TP, TF, TMM, TfID> where TP : class where TF : class
     {
         public readonly Controller controller;
         public readonly List<TMM> Selected;
@@ -18,7 +18,7 @@ namespace DashboardCode.Routines.AspNetCore
         private readonly List<TfID> Ids;
         private readonly Func<TF, TfID> getId;
 
-        public MvcNavigationManager(Controller controller,
+        public MvcNavigationFacade(Controller controller,
             string name,
             Expression<Func<TF, TfID>> getId,
             string optionName,

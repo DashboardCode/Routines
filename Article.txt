@@ -1,0 +1,14 @@
+ASP Boilerplate
+https://aspnetboilerplate.com/
+
+Repositories Topic
+https://habrahabr.ru/post/335856/
+https://aspnetboilerplate.com/Pages/Documents/Repositories
+https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
+https://cpratt.co/truly-generic-repository/
+https://martinfowler.com/eaaCatalog/repository.html
+
+
+Expression for includes
+https://habrahabr.ru/post/313394/
+

@@ -56,3 +56,8 @@ Offline react app
 Web Api Questions:
 a) how to pass error details instead off requested data?
 b) how to separate SPA to several pages/islands
+
+
+Check Start Up lounch platforms 
+COSS, Starbase, 
+Kickico (https://habrahabr.ru/post/336702/.com)
