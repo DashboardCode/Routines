@@ -39,8 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TraceServiceWcfClient.cs" />
     <Compile Include="ExceptionExtensions.cs" />
-    <Compile Include="TraceServiceClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service References\TraceServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -83,6 +83,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Routines\Routines.csproj">
+      <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>
+      <Name>Routines</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Abstractions\AdminkaV1.csproj">
+      <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
+      <Name>AdminkaV1</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <WCFMetadataStorage Include="Service References\TraceServiceReference\" />
   </ItemGroup>
   <ItemGroup>
@@ -99,16 +109,6 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Routines\Routines.csproj">
-      <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>
-      <Name>Routines</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Abstractions\AdminkaV1.csproj">
-      <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
-      <Name>AdminkaV1</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

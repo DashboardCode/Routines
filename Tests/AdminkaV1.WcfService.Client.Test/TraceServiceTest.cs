@@ -13,7 +13,7 @@ namespace DashboardCode.AdminkaV1.WcfApp.Messaging.Client.Test
         [TestMethod]
         public void GetTrace()
         {
-            var traceService = new TraceServiceClient();
+            var traceService = new TraceServiceWcfClient();
             var guid = Guid.NewGuid();
             try
             {

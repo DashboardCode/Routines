@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="cff92f78-7fb9-4810-bcb0-d658778a636e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ea7433bd-9645-4be2-8f27-ff7ae685a162" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
     <EnableDataBinding>true</EnableDataBinding>
     <ExcludedTypes />
     <ImportXmlTypes>false</ImportXmlTypes>
-    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateInternalTypes>true</GenerateInternalTypes>
     <GenerateMessageContracts>false</GenerateMessageContracts>
     <NamespaceMappings />
     <CollectionMappings>
@@ -26,14 +26,14 @@
     <MetadataSource Address="http://localhost:64220/TraceService.svc" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="TraceService.xsd" MetadataType="Schema" ID="f97a36dc-1c21-4741-b642-69c8ec9aa95b" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd0" />
-    <MetadataFile FileName="TraceService1.xsd" MetadataType="Schema" ID="c5db4114-d619-49e1-a874-f34eb025a49a" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd4" />
-    <MetadataFile FileName="TraceService.disco" MetadataType="Disco" ID="87a5c8de-cf22-424f-b5dc-9cc0a38ba083" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?disco" />
-    <MetadataFile FileName="TraceService2.xsd" MetadataType="Schema" ID="15489669-be54-4e15-96f9-0e5e507c9774" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd2" />
-    <MetadataFile FileName="TraceService3.xsd" MetadataType="Schema" ID="a130b0bf-ab6d-4fd0-b057-dc1308a6f83e" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd1" />
-    <MetadataFile FileName="TraceService4.xsd" MetadataType="Schema" ID="2e76bdb2-f272-4baa-98c8-7930735cef33" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd3" />
-    <MetadataFile FileName="TraceService.wsdl" MetadataType="Wsdl" ID="c57173c7-631c-4450-becf-deadfacb49fd" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?wsdl" />
-    <MetadataFile FileName="TraceService1.wsdl" MetadataType="Wsdl" ID="3bfe65be-c46e-4b82-9ce1-c972959a97a4" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?wsdl=wsdl0" />
+    <MetadataFile FileName="TraceService.xsd" MetadataType="Schema" ID="ead91191-3d89-4702-8f6d-d4f64d49dae8" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd0" />
+    <MetadataFile FileName="TraceService1.xsd" MetadataType="Schema" ID="4621556f-64e8-403e-a228-871be61b6f7d" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd4" />
+    <MetadataFile FileName="TraceService.disco" MetadataType="Disco" ID="b54e06c8-28e5-488d-aadb-10ea9a842810" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?disco" />
+    <MetadataFile FileName="TraceService2.xsd" MetadataType="Schema" ID="8609ee79-b534-42ae-b849-f16b7c7898f7" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd2" />
+    <MetadataFile FileName="TraceService3.xsd" MetadataType="Schema" ID="4226794d-f6fb-4bd9-9c59-7e900f18b109" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd1" />
+    <MetadataFile FileName="TraceService4.xsd" MetadataType="Schema" ID="ee5ea28c-2fd3-4a58-9d21-5f3de4db5f64" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?xsd=xsd3" />
+    <MetadataFile FileName="TraceService.wsdl" MetadataType="Wsdl" ID="ba1a9c77-caf8-4200-9616-94b3ccbaab7d" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?wsdl" />
+    <MetadataFile FileName="TraceService1.wsdl" MetadataType="Wsdl" ID="5331b0bf-11e0-4760-8073-669dc6315bc3" SourceId="1" SourceUrl="http://localhost:64220/TraceService.svc?wsdl=wsdl0" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
