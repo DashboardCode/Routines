@@ -8,10 +8,202 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
+namespace DashboardCode.AdminkaV1.WcfClient.TraceServiceReference {
     using System.Runtime.Serialization;
     using System;
     
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Trace", Namespace="http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.LoggingDom")]
+    [System.SerializableAttribute()]
+    public partial class Trace : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Collections.Generic.List<DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.Operation> OperationsField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.Generic.List<DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.Operation> Operations {
+            get {
+                return this.OperationsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.OperationsField, value) != true)) {
+                    this.OperationsField = value;
+                    this.RaisePropertyChanged("Operations");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="Operation", Namespace="http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.LoggingDom")]
+    [System.SerializableAttribute()]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.Generic.Dictionary<string, string>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.Trace))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(System.Collections.Generic.List<DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.Operation>))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.RoutineError))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.RoutineGuid))]
+    [System.Runtime.Serialization.KnownTypeAttribute(typeof(DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.AuthenticationFault))]
+    public partial class Operation : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ApplicationField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FinishActivityRecordField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string InputField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string OperationNameField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string OutputField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string StartActivityRecordField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private object VerboseRecordField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Application {
+            get {
+                return this.ApplicationField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ApplicationField, value) != true)) {
+                    this.ApplicationField = value;
+                    this.RaisePropertyChanged("Application");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FinishActivityRecord {
+            get {
+                return this.FinishActivityRecordField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FinishActivityRecordField, value) != true)) {
+                    this.FinishActivityRecordField = value;
+                    this.RaisePropertyChanged("FinishActivityRecord");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Input {
+            get {
+                return this.InputField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.InputField, value) != true)) {
+                    this.InputField = value;
+                    this.RaisePropertyChanged("Input");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string OperationName {
+            get {
+                return this.OperationNameField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.OperationNameField, value) != true)) {
+                    this.OperationNameField = value;
+                    this.RaisePropertyChanged("OperationName");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Output {
+            get {
+                return this.OutputField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.OutputField, value) != true)) {
+                    this.OutputField = value;
+                    this.RaisePropertyChanged("Output");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string StartActivityRecord {
+            get {
+                return this.StartActivityRecordField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.StartActivityRecordField, value) != true)) {
+                    this.StartActivityRecordField = value;
+                    this.RaisePropertyChanged("StartActivityRecord");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public object VerboseRecord {
+            get {
+                return this.VerboseRecordField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.VerboseRecordField, value) != true)) {
+                    this.VerboseRecordField = value;
+                    this.RaisePropertyChanged("VerboseRecord");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
@@ -23,13 +215,16 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
         private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private System.Collections.Generic.Dictionary<string, string> DataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string DetailsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string MessageField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.RoutineGuid RoutineGuidField;
+        private DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.RoutineGuid RoutineGuidField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string UserContextExceptionCodeField;
@@ -41,6 +236,19 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
             }
             set {
                 this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public System.Collections.Generic.Dictionary<string, string> Data {
+            get {
+                return this.DataField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DataField, value) != true)) {
+                    this.DataField = value;
+                    this.RaisePropertyChanged("Data");
+                }
             }
         }
         
@@ -71,7 +279,7 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.RoutineGuid RoutineGuid {
+        public DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.RoutineGuid RoutineGuid {
             get {
                 return this.RoutineGuidField;
             }
@@ -249,23 +457,23 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
     public interface TraceService {
         
         [System.ServiceModel.OperationContractAttribute(Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTrace", ReplyAction="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceResponse")]
-        [System.ServiceModel.FaultContractAttribute(typeof(DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.RoutineError), Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceRoutineErr" +
+        [System.ServiceModel.FaultContractAttribute(typeof(DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.RoutineError), Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceRoutineErr" +
             "orFault", Name="RoutineError", Namespace="https://adminka-v1.dashboardcode.com")]
-        [System.ServiceModel.FaultContractAttribute(typeof(DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.AuthenticationFault), Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceAuthentica" +
+        [System.ServiceModel.FaultContractAttribute(typeof(DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.AuthenticationFault), Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceAuthentica" +
             "tionFaultFault", Name="AuthenticationFault", Namespace="https://adminka-v1.dashboardcode.com")]
-        DashboardCode.AdminkaV1.DomLogging.Trace GetTrace(System.Guid correlationToken);
+        DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.Trace GetTrace(System.Guid correlationToken);
         
         [System.ServiceModel.OperationContractAttribute(Action="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTrace", ReplyAction="https://adminka-v1.dashboardcode.com/TraceService/TraceService/GetTraceResponse")]
-        System.Threading.Tasks.Task<DashboardCode.AdminkaV1.DomLogging.Trace> GetTraceAsync(System.Guid correlationToken);
+        System.Threading.Tasks.Task<DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.Trace> GetTraceAsync(System.Guid correlationToken);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface TraceServiceChannel : DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.TraceService, System.ServiceModel.IClientChannel {
+    public interface TraceServiceChannel : DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.TraceService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class TraceServiceClient : System.ServiceModel.ClientBase<DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.TraceService>, DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference.TraceService {
+    public partial class TraceServiceClient : System.ServiceModel.ClientBase<DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.TraceService>, DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.TraceService {
         
         public TraceServiceClient() {
         }
@@ -286,11 +494,11 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference {
                 base(binding, remoteAddress) {
         }
         
-        public DashboardCode.AdminkaV1.DomLogging.Trace GetTrace(System.Guid correlationToken) {
+        public DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.Trace GetTrace(System.Guid correlationToken) {
             return base.Channel.GetTrace(correlationToken);
         }
         
-        public System.Threading.Tasks.Task<DashboardCode.AdminkaV1.DomLogging.Trace> GetTraceAsync(System.Guid correlationToken) {
+        public System.Threading.Tasks.Task<DashboardCode.AdminkaV1.WcfClient.TraceServiceReference.Trace> GetTraceAsync(System.Guid correlationToken) {
             return base.Channel.GetTraceAsync(correlationToken);
         }
     }

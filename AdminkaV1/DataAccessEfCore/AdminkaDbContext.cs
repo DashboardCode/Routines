@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using DashboardCode.AdminkaV1.DomAuthentication;
-using DashboardCode.AdminkaV1.DomLogging;
-using DashboardCode.AdminkaV1.DomTest;
+using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.AdminkaV1.LoggingDom;
+using DashboardCode.AdminkaV1.TestDom;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {

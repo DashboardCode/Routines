@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines;
-using DashboardCode.AdminkaV1.DomTest;
+using DashboardCode.AdminkaV1.TestDom;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {

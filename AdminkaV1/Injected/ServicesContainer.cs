@@ -1,5 +1,5 @@
-﻿using DashboardCode.AdminkaV1.DomLogging;
-using DashboardCode.AdminkaV1.DomAuthentication;
+﻿using DashboardCode.AdminkaV1.LoggingDom;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Security.Principal;
 using Microsoft.EntityFrameworkCore.Migrations;
-using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 

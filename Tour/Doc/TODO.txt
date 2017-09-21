@@ -1,4 +1,4 @@
-Routines
+﻿Routines
 1) icon as bulb {}
 2) DashboardCode at https://coveralls.io 
 3) review method prefixes (compose, get, construct, compose, build)?
@@ -61,3 +61,6 @@ b) how to separate SPA to several pages/islands
 Check Start Up lounch platforms 
 COSS, Starbase, 
 Kickico (https://habrahabr.ru/post/336702/.com)
+
+Cloud deployment https://habrahabr.ru/post/332130/.com Выбираем бесплатный сервер в облаке для тестовых целей, домашних проектов и т.д
+----------------------------------------------------------------------

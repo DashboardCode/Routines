@@ -1,5 +1,5 @@
 ﻿using System;
-using DashboardCode.AdminkaV1.DomLogging;
+using DashboardCode.AdminkaV1.LoggingDom;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services

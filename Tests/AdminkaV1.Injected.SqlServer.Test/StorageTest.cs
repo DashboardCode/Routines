@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines;
-using DashboardCode.AdminkaV1.DomTest;
+using DashboardCode.AdminkaV1.TestDom;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {

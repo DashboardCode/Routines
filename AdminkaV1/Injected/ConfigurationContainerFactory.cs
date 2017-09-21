@@ -1,5 +1,5 @@
 ﻿using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
-using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.Routines;
 using System;
 

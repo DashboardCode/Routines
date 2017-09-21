@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks; // assync actions
 using Microsoft.AspNetCore.Mvc; // controler
-using DashboardCode.AdminkaV1.DomAuthentication; // entity
+using DashboardCode.AdminkaV1.AuthenticationDom; // entity
 using DashboardCode.Routines.AspNetCore;
 using Microsoft.Extensions.Configuration;
 using DashboardCode.Routines;
@@ -73,7 +73,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                     repository.Sprout<Group>().List()
                 );
                 var usersNavigation = new MvcNavigationFacade<Role, User, UserRole, int>(
-                   this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
+                   this, "Users", e => e.UserId, nameof(AuthenticationDom.User.LoginName),
                    repository.Sprout<User>().List()
                 );
                 privilegesNavigation.Reset();
@@ -111,7 +111,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                );
 
                var usersNavigation = new MvcNavigationFacade<Role, User, UserRole, int>(
-                    this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
+                    this, "Users", e => e.UserId, nameof(AuthenticationDom.User.LoginName),
                     repository.Sprout<User>().List()
                 );
                usersNavigation.Parse(
@@ -154,7 +154,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                     repository.Sprout<Group>().List()
                 );
                 var usersNavigation = new MvcNavigationFacade<Role, User, UserRole, int>(
-                   this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
+                   this, "Users", e => e.UserId, nameof(AuthenticationDom.User.LoginName),
                    repository.Sprout<User>().List()
                 );
 
@@ -198,7 +198,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                     s => int.Parse(s));
 
                 var usersNavigation = new MvcNavigationFacade<User, User, UserRole, int>(
-                    this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
+                    this, "Users", e => e.UserId, nameof(AuthenticationDom.User.LoginName),
                     repository.Sprout<User>().List()
                  );
 

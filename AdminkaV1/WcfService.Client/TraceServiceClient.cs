@@ -1,16 +1,16 @@
 ﻿using System;
 using System.ServiceModel;
-using DashboardCode.AdminkaV1.DomLogging;
-using DashboardCode.AdminkaV1.Wcf.Messaging.Client.TraceServiceReference;
+using DashboardCode.AdminkaV1.WcfClient.TraceServiceReference;
+using DashboardCode.AdminkaV1.LoggingDom;
 
-namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client
+namespace DashboardCode.AdminkaV1.WcfClient
 {
     // TODO: this code can be generated with T4
     public class TraceServiceClient : ITraceService
     {
-        public DomLogging.Trace GetTrace(Guid correlationToken)
+        public LoggingDom.Trace GetTrace(Guid correlationToken)
         {
-            var client = new TraceServiceReference.TraceServiceClient();
+            var client = new TraceServiceClient();
             try
             {
                 return client.GetTrace(correlationToken);
@@ -20,13 +20,12 @@ namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client
                 if (ex.Detail.UserContextExceptionCode != null)
                 {
                     var baseException = new UserContextException(ex.Message, ex, ex.Detail.UserContextExceptionCode);
-                    baseException.Data["RemoteUserContextExceptionCode"] = ex.Detail.UserContextExceptionCode;
-                    baseException.Data["RemoteCorrelationToken"] = ex.Detail.RoutineGuid.CorrelationToken;
-                    baseException.Data["RemoteNamespace"] = ex.Detail.RoutineGuid.Namespace;
-                    baseException.Data["RemoteType"] = ex.Detail.RoutineGuid.Type;
-                    baseException.Data["RemoteMember"] = ex.Detail.RoutineGuid.Member;
-                    baseException.Data["RemoteDetails"] = ex.Detail.Details;
+                    baseException.CopyData(ex.Detail.Data);
                     throw baseException;
+                }
+                else
+                {
+                    ex.CopyData(ex.Detail.Data);
                 }
                 throw;
             }

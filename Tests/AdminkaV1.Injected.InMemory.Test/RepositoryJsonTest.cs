@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DashboardCode.AdminkaV1.DomTest;
+using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
 

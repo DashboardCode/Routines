@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{52BA4719-F064-4388-A426-1E1174D3A0EB}"
 EndProject
@@ -22,9 +22,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1", "AdminkaV1\Abst
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore", "AdminkaV1\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj", "{BF9FB9B0-BAEE-457A-8C8E-D82DC68E0710}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Wcf.Messaging", "AdminkaV1\WcfService\AdminkaV1.Wcf.Messaging.csproj", "{38A0A937-1800-4703-B207-BA3BBBF95D8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Injected.WcfApp", "AdminkaV1\WcfService\AdminkaV1.Injected.WcfApp.csproj", "{38A0A937-1800-4703-B207-BA3BBBF95D8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Wcf.Messaging.Client", "AdminkaV1\WcfService.Client\AdminkaV1.Wcf.Messaging.Client.csproj", "{5B251776-C32B-4B06-B52D-6A302BEAC69D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.WcfClient", "AdminkaV1\WcfService.Client\AdminkaV1.WcfClient.csproj", "{5B251776-C32B-4B06-B52D-6A302BEAC69D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{38A0A937-1800-4703-B207-BA3BBBF95D8D} = {38A0A937-1800-4703-B207-BA3BBBF95D8D}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Configuration.NETFramework", "Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj", "{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}"
 EndProject

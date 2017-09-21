@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks; // assync actions
 using System.Linq;
 using Microsoft.AspNetCore.Mvc; // controler
-using DashboardCode.AdminkaV1.DomAuthentication; // entity
+using DashboardCode.AdminkaV1.AuthenticationDom; // entity
 using DashboardCode.Routines;
 using DashboardCode.Routines.AspNetCore;
 using Microsoft.Extensions.Configuration;
@@ -10,10 +10,10 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 {
     public class UsersController : RoutineController
     {
-        const string BindedFields = nameof(DomAuthentication.User.UserId) + ", "
-            + nameof(DomAuthentication.User.LoginName) + ", "
-            + nameof(DomAuthentication.User.FirstName) + ", "
-            + nameof(DomAuthentication.User.SecondName);
+        const string BindedFields = nameof(AuthenticationDom.User.UserId) + ", "
+            + nameof(AuthenticationDom.User.LoginName) + ", "
+            + nameof(AuthenticationDom.User.FirstName) + ", "
+            + nameof(AuthenticationDom.User.SecondName);
         Include<User> indexIncludes;
         Include<User> detailsIncludes;
         Include<User> editIncludes;

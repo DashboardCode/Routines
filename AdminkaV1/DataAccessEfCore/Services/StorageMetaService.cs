@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using DashboardCode.AdminkaV1.DomTest;
+using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
@@ -14,12 +14,12 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
             var list = new List<StorageModel> {
                 new StorageModel()
                 {
-                    Entity = new Entity() { Name = typeof(DomAuthentication.Group).Name, Namespace = typeof(DomAuthentication.Group).Namespace},
+                    Entity = new Entity() { Name = typeof(AuthenticationDom.Group).Name, Namespace = typeof(AuthenticationDom.Group).Namespace},
                     TableName = "dbo.Groups",
-                    Key = new Key() { Attributes = new[] { nameof(DomAuthentication.Group.GroupId) }},
+                    Key = new Key() { Attributes = new[] { nameof(AuthenticationDom.Group.GroupId) }},
                     Uniques = new[] {
-                        new Unique { IndexName="IX_Groups_GroupName", Fields = new[] {nameof(DomAuthentication.Group.GroupName)}},
-                        new Unique { IndexName="IX_Groups_GroupAdName", Fields = new[] { nameof(DomAuthentication.Group.GroupAdName) } }},
+                        new Unique { IndexName="IX_Groups_GroupName", Fields = new[] {nameof(AuthenticationDom.Group.GroupName)}},
+                        new Unique { IndexName="IX_Groups_GroupAdName", Fields = new[] { nameof(AuthenticationDom.Group.GroupAdName) } }},
                 },
 
                 new StorageModel()

@@ -25,24 +25,24 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp.DTO
 
     public static class UserDtoExtnesions
     {
-        public static DomAuthentication.User Cast(this UserDto userDto)
+        public static AuthenticationDom.User Cast(this UserDto userDto)
         {
-            var user = new DomAuthentication.User() {
+            var user = new AuthenticationDom.User() {
                 UserId = userDto.UserId,
                 LoginName = userDto.LoginName,
                 FirstName = userDto.FirstName,
                 SecondName = userDto.SecondName,
             };
             if (userDto.UserPrivilegeMap!=null)
-                user.UserPrivilegeMap = new List<DomAuthentication.UserPrivilege>();
+                user.UserPrivilegeMap = new List<AuthenticationDom.UserPrivilege>();
             foreach (var userPrivilegeMap in userDto.UserPrivilegeMap)
             {
                 if (userPrivilegeMap != null)
                 {
-                    var userPrivilege = new DomAuthentication.UserPrivilege();
+                    var userPrivilege = new AuthenticationDom.UserPrivilege();
                     if (userPrivilegeMap.Privilege != null)
                     {
-                        userPrivilege.Privilege = new DomAuthentication.Privilege()
+                        userPrivilege.Privilege = new AuthenticationDom.Privilege()
                         {
                             PrivilegeId = userPrivilegeMap.Privilege.PrivilegeId,
                             PrivilegeName = userPrivilegeMap.Privilege.PrivilegeName
@@ -54,7 +54,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp.DTO
             return user;
         }
 
-        public static UserDto Cast(this DomAuthentication.User user)
+        public static UserDto Cast(this AuthenticationDom.User user)
         {
             var userDto = new UserDto(){
                 UserId = user.UserId,

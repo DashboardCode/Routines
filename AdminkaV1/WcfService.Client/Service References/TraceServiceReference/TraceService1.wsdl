@@ -5,7 +5,8 @@
       <xsd:import schemaLocation="http://localhost:64220/TraceService.svc?xsd=xsd0" namespace="https://adminka-v1.dashboardcode.com/TraceService" />
       <xsd:import schemaLocation="http://localhost:64220/TraceService.svc?xsd=xsd3" namespace="https://adminka-v1.dashboardcode.com" />
       <xsd:import schemaLocation="http://localhost:64220/TraceService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
-      <xsd:import schemaLocation="http://localhost:64220/TraceService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.DomLogging" />
+      <xsd:import schemaLocation="http://localhost:64220/TraceService.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.LoggingDom" />
+      <xsd:import schemaLocation="http://localhost:64220/TraceService.svc?xsd=xsd4" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="TraceService_GetTrace_InputMessage">

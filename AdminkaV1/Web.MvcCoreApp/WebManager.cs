@@ -48,7 +48,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var userJson = httpContext.Session.GetString("User");
             if (userJson != null)
             {
-                var user = InjectedManager.DeserializeJson<DomAuthentication.User>(userJson);
+                var user = InjectedManager.DeserializeJson<AuthenticationDom.User>(userJson);
                 userContext = new UserContext(user);
             }
             else

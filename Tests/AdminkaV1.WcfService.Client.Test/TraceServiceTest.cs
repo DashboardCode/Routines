@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using DashboardCode.AdminkaV1.WcfClient;
 
-namespace DashboardCode.AdminkaV1.Wcf.Messaging.Client.Test
+namespace DashboardCode.AdminkaV1.WcfApp.Messaging.Client.Test
 {
     /// <summary>
     /// Start web service DashboardCode.AdminkaV1.Wcf before testing

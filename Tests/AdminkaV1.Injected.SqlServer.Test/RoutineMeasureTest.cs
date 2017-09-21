@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.AdminkaV1.Injected.Configuration;
-using DashboardCode.AdminkaV1.DomTest;
+using DashboardCode.AdminkaV1.TestDom;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {

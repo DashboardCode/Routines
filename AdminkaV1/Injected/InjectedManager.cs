@@ -62,12 +62,9 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         private static void AppendUserContextException(this StringBuilder stringBuilder, UserContextException exception)
         {
-            if (exception is UserContextException)
-            {
-                var userContextException = exception;
-                stringBuilder.AppendMarkdownLine(nameof(UserContextException) + " specific:");
-                stringBuilder.Append("   ").AppendMarkdownProperty("Code", userContextException.Code);
-            }
+            var userContextException = exception;
+            stringBuilder.AppendMarkdownLine(nameof(UserContextException) + " specific:");
+            stringBuilder.Append("   ").AppendMarkdownProperty("Code", userContextException.Code);
         }
         #endregion
 

@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1
 {

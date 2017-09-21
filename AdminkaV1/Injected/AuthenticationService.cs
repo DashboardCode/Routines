@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Security.Principal;
-using DashboardCode.AdminkaV1.DomAuthentication;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.Routines;

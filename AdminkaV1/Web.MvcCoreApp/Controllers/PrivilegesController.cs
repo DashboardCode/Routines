@@ -2,7 +2,7 @@
 using System.Threading.Tasks; // assync actions
 using Microsoft.AspNetCore.Mvc; // controler
 using Microsoft.Extensions.Configuration;
-using DashboardCode.AdminkaV1.DomAuthentication; // entity
+using DashboardCode.AdminkaV1.AuthenticationDom; // entity
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines;
 
@@ -65,7 +65,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                     repository.Sprout<Group>().List()
                 );
                 var usersNavigation = new MvcNavigationFacade<Privilege, User, UserRole, int>(
-                   this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
+                   this, "Users", e => e.UserId, nameof(AuthenticationDom.User.LoginName),
                    repository.Sprout<User>().List()
                 );
 
@@ -109,7 +109,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                     s => int.Parse(s));
 
                 var usersNavigation = new MvcNavigationFacade<Privilege, User, UserPrivilege, int>(
-                    this, "Users", e => e.UserId, nameof(DomAuthentication.User.LoginName),
+                    this, "Users", e => e.UserId, nameof(AuthenticationDom.User.LoginName),
                     repository.Sprout<User>().List()
                  );
 
