@@ -16,7 +16,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
             return dbContextHandler.Handle<Trace>(
                 dbContext =>
                 {
-                    throw new UserContextException("");
+                    throw new UserContextException($"User exception from '{nameof(GetTrace)}'","TEST");
                     //return new Trace(); 
                 });
         }
@@ -26,7 +26,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
             dbContextHandler.Handle(
                 dbContext =>
                 {
-                    throw new UserContextException("");
+                    throw new UserContextException($"User exception from '{nameof(ResetTrace)}'", "TEST");
                     
                 });
         }

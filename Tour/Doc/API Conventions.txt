@@ -12,6 +12,7 @@ Wcf.Service        - wcf or rest service
 Wcf.ODataService   - wcf or rest service
 WcfService.Client - Wcf service reference wrapped into class
 XxxApp       - StartUp projects (command line or web)
+XxxExtensibles     - Api Extensibles (e.g. NLogTools)
 
 
 Suffixes used in class names
@@ -24,6 +25,7 @@ Adapter    - class that gets functors in constructor and provide methods to exec
 Facade     - class that gets several interfaces, functors in constructor, each Facade's method 
 			 combines calls to them
 Handler    - classes which provides try{..}catch{} or using(..){..} funcitonal way (Hanlde methods)
+Extensions - static 
 
 Suffixes in method names
 ----------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,4 @@
+Extensions used:
+
+Visual Studio WCF Connected Service - 
+https://marketplace.visualstudio.com/items?itemName=WCFCORETEAM.VisualStudioWCFConnectedService

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Security.Principal;
 using Microsoft.EntityFrameworkCore.Migrations;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected;
@@ -23,7 +22,9 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                     var adConfiguration = state.Resolve<AdConfiguration>();
                     if (adConfiguration.UseAdAuthorization)
                     {
-                        loginName = WindowsIdentity.GetCurrent().Name;
+                        // TODO: Core 2.1 will contains AD functionality https://github.com/dotnet/corefx/issues/2089 and 
+                        // there I will need to update this code to get name from AD similar to WindowsIdentity.GetCurrent().Name;
+                        loginName = Environment.UserDomainName + "\\" + Environment.UserName;
                     }
                     else
                     {

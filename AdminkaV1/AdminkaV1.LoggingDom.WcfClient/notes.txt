@@ -1,0 +1,4 @@
+﻿1. Proxy was generated using Microsoft WCF Web Service Reference Provider ver 0.5.10808.800
+	https://marketplace.visualstudio.com/items?itemName=WCFCORETEAM.VisualStudioWCFConnectedService  
+2. AdminkaV1 were referenced as "file" since VS2017 only then its types can be reused (vitaly important)
+2b. Keep "Copy Local" property for AdminakV1.Abstractions.dll  off

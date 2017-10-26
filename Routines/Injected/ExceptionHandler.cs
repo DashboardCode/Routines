@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 
 namespace DashboardCode.Routines.Injected
 {
     public class ExceptionHandler : IExceptionHandler
     {
-        private readonly IExceptionAdapter defaultExceptionAdapter;
-        private readonly Action<long> monitorRoutineDurationTicks;
+        private readonly IExceptionAdapter exceptionAdapter;
+        private readonly Action<long> monitorDurationTicks;
         public ExceptionHandler(
-            IExceptionAdapter defaultExceptionAdapter,
-            Action<long> monitorRoutineDurationTicks
+            IExceptionAdapter exceptionAdapter,
+            Action<long> monitorDurationTicks
             )
         {
-            this.defaultExceptionAdapter = defaultExceptionAdapter;
-            this.monitorRoutineDurationTicks = monitorRoutineDurationTicks;
+            this.exceptionAdapter = exceptionAdapter;
+            this.monitorDurationTicks = monitorDurationTicks;
         }
 
         public void Handle(Action action, Action onFailure)
@@ -26,28 +27,49 @@ namespace DashboardCode.Routines.Injected
             catch (Exception exception)
             {
                 var dateTime = DateTime.Now;
-                defaultExceptionAdapter.LogException(dateTime, exception);
+                exceptionAdapter.LogException(dateTime, exception);
                 var transformedException = exception;
                 try
                 {
-                    transformedException = defaultExceptionAdapter.TransformException(exception);
+                    transformedException = exceptionAdapter.TransformException(exception);
                 }
                 catch(Exception exceptionOnExceptionTransformation)
                 {
-                    var message = new Exception("Excepion during exception transformation", exceptionOnExceptionTransformation);
-                    defaultExceptionAdapter.LogException(dateTime, message);
+                    var message = new Exception("Excepion on exception transformation", exceptionOnExceptionTransformation);
+                    exceptionAdapter.LogException(dateTime, message);
                 }
 
                 onFailure();
 
                 if (exception == transformedException)
-                    throw;
+                {
+                    // Preserve stack trace: after this catched exception's StackTrace will contains two logical parts
+                    // Compare those two ways two rethrow of the exception (actual error in 'ExceptionHandlerTest.Inner.cs:line 18')
+
+                    // 1) throw; then StackTrace text looks like:
+                    // at System.IO.File.OpenText(String path)
+                    // at DashboardCode.Routines.Configuration.Test.ExceptionHandlerTest.<> c.< TestMethod > b__1_0() in D:\..\ExceptionHandlerTest.Inner.cs:line 18
+                    // at DashboardCode.Routines.Injected.ExceptionHandler.Handle(Action action, Action onFailure) in D:\..\ExceptionHandler.cs:line 46
+                    // at DashboardCode.Routines.Configuration.Test.ExceptionHandlerTest.TestMethod() in D:\..\ExceptionHandlerTest.Inner.cs:line 16
+
+                    // 2) ExceptionDispatchInfo.Capture(exception).Throw(); then StackTrace text looks like:
+                    // at System.IO.File.OpenText(String path)
+                    // at DashboardCode.Routines.Configuration.Test.ExceptionHandlerTest.<> c.< TestMethod > b__1_0() in D:\..\ExceptionHandlerTest.Inner.cs:line 18
+                    // at DashboardCode.Routines.Injected.ExceptionHandler.Handle(Action action, Action onFailure) in D:\..\ExceptionHandler.cs:line 25
+                    // --- End of stack trace from previous location where exception was thrown ---
+                    // at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                    // at DashboardCode.Routines.Injected.ExceptionHandler.Handle(Action action, Action onFailure) in D:\..\ExceptionHandler.cs:line 50
+                    // at DashboardCode.Routines.Configuration.Test.ExceptionHandlerTest.TestMethod() in D:\..\ExceptionHandlerTest.Inner.cs:line 16
+                    // NOTE: https://connect.microsoft.com/VisualStudio/feedback/details/689516/exceptiondispatchinfo-api-modifications
+                    var exceptionDispatchInfo = ExceptionDispatchInfo.Capture(exception);
+                    exceptionDispatchInfo.Throw();
+                }
                 throw transformedException;
             }
             finally
             {
                 stopWatch.Stop();
-                monitorRoutineDurationTicks?.Invoke(stopWatch.ElapsedTicks);
+                monitorDurationTicks?.Invoke(stopWatch.ElapsedTicks);
             }
         }
     }

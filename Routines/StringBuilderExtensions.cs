@@ -11,7 +11,7 @@ namespace DashboardCode.Routines
         public static StringBuilder AppendMarkdownHeaderLine(this StringBuilder stringBuilder, string text) =>
             stringBuilder.Append("### ").Append(text).Append("   ").Append(Environment.NewLine);
 
-        public static StringBuilder AppendMarkdownStackTrace(this StringBuilder stringBuilder, string text) =>
+        public static StringBuilder AppendMarkdownLineBlock(this StringBuilder stringBuilder, string text) =>
             stringBuilder.AppendMarkdownLine("```").AppendMarkdownLine(text).AppendMarkdownLine("```");
 
         public static StringBuilder AppendMarkdownProperty(this StringBuilder stringBuilder, string name, string value) =>

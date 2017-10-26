@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics;
+
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
+    [DebuggerDisplay("{Namespace}.{Type}; {InstanceCreatedAt}/{StaticCreatedAt}")]
+    [DebuggerTypeProxy(typeof(ResolvableElementDebugView))]
     public class ResolvableElement : ConfigurationElement, ICollectionMemberElement, IResolvableConfigurationRecord //, IResolvableRecord
     {
         private static readonly ConfigurationProperty namespaceProperty =
@@ -14,7 +18,9 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         private static readonly ConfigurationProperty valueProperty =
             new ConfigurationProperty("value", typeof(string), "", ConfigurationPropertyOptions.IsRequired);
 
-        private static readonly ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection { namespaceProperty, typeProperty, valueProperty };
+        private static readonly ConfigurationPropertyCollection properties = 
+            new ConfigurationPropertyCollection { namespaceProperty, typeProperty, valueProperty };
+
         public override bool IsReadOnly()
         {
             return false;
@@ -83,13 +89,28 @@ namespace DashboardCode.Routines.Configuration.NETFramework
                 throw new InvalidOperationException("Config's element Type property should be valid .NET type name");
         }
         public string Key { get; } = Guid.NewGuid().ToString();
+
         #region Debug
         public static readonly DateTime StaticCreatedAt = DateTime.Now;
-        public readonly DateTime CreatedAt = DateTime.Now;
+        public readonly DateTime InstanceCreatedAt = DateTime.Now;
+
         public override string ToString()
         {
-            return $"{Namespace}.{Type}; {CreatedAt}/{StaticCreatedAt}";
+            return $"{Namespace}.{Type}; {InstanceCreatedAt}/{StaticCreatedAt}";
         }
         #endregion
+
+        [DebuggerNonUserCode]
+        class ResolvableElementDebugView
+        {
+            private readonly ResolvableElement resolvableElement;
+
+            public string Namespace { get { return resolvableElement.Namespace; } }
+            public string Type      { get { return resolvableElement.Type; } }
+            public string Value     { get { return resolvableElement.Value; } }
+
+            public ResolvableElementDebugView(ResolvableElement resolvableElement) =>
+                this.resolvableElement = resolvableElement;
+        }
     }
 }

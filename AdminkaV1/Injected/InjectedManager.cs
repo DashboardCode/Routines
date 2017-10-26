@@ -8,13 +8,14 @@ using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
+using System.Threading;
 
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
 using System.Security.Principal;
     using DashboardCode.Routines.Serialization.NETFramework;
     using DashboardCode.Routines.ActiveDirectory.NETFramework;
 #else
-using System.Security.Principal;
+    using System.Security.Principal;
     using DashboardCode.Routines.Serialization.NETStandard;
 #endif
 
@@ -24,10 +25,17 @@ namespace DashboardCode.AdminkaV1.Injected
     {
         public static IIdentity GetDefaultIdentity()
         {
-            return WindowsIdentity.GetCurrent();
+#if (NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
+            // TODO: Core 2.1 will contains AD functionality https://github.com/dotnet/corefx/issues/2089 and 
+            // there we will need update this code to get roles similar to WindowsIdentity.GetCurrent().
+
+            return new GenericIdentity(Environment.UserDomainName + "\\" + Environment.UserName, "Anonymous");
+#else 
+            return WindowsIdentity.GetCurrent(); 
+#endif 
         }
 
-        #region Exception
+#region Exception
         public static List<FieldError> Analyze(this Exception exception, StorageModel storageModel)
         {
             var list = StorageErrorExtensions.AnalyzeException(exception,
@@ -66,9 +74,9 @@ namespace DashboardCode.AdminkaV1.Injected
             stringBuilder.AppendMarkdownLine(nameof(UserContextException) + " specific:");
             stringBuilder.Append("   ").AppendMarkdownProperty("Code", userContextException.Code);
         }
-        #endregion
+#endregion
 
-        #region Serialize
+#region Serialize
         public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class
         {
             var knownTypes = include.ListLeafTypes();
@@ -107,7 +115,7 @@ namespace DashboardCode.AdminkaV1.Injected
 #else
             var types = typeof(UserContext).GetTypeInfo().Assembly.GetTypes();
                 return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
-            #endif
+#endif
         }
         public static string Markdown(string text)
         {
@@ -115,9 +123,9 @@ namespace DashboardCode.AdminkaV1.Injected
             var html = m.Transform(text);
             return html;
         }
-        #endregion
+#endregion
 
-        #region Active directory
+#region Active directory
         public static IEnumerable<string> GetGroups(this IIdentity identity, out string identityName, out string givenName, out string surname)
         {
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
@@ -125,11 +133,11 @@ namespace DashboardCode.AdminkaV1.Injected
                 return groups;
 #else
             throw new NotImplementedException("LDAP is not supported for NETStandard");
-            #endif
+#endif
         }
-        #endregion
+#endregion
 
-        #region Logging
+#region Logging
         public static Exception DefaultRoutineTagTransformException(Exception exception, RoutineGuid routineGuid, Func<Exception, string> markdownException)
         {
             exception.Data[nameof(RoutineGuid.CorrelationToken)]  = routineGuid.CorrelationToken;
@@ -173,7 +181,7 @@ namespace DashboardCode.AdminkaV1.Injected
             return (t, r) =>
             {
                 Func<Exception, string> markdownException = Markdown;
-                var adminkaLogging = new ListLoggingAdapter(
+                var adminkaLogging = new LoggingToListAdapter(
                     logger,
                     t,
                     markdownException,
@@ -186,6 +194,6 @@ namespace DashboardCode.AdminkaV1.Injected
                     ex => DefaultRoutineTagTransformException(ex, t, markdownException));
             };
         }
-        #endregion
+#endregion
     }
 }

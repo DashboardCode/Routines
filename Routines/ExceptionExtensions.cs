@@ -8,61 +8,52 @@ namespace DashboardCode.Routines
         public static string Markdown(this Exception exception, Action<StringBuilder, Exception> specificAppender = null)
         {
             var stringBuilder = new StringBuilder();
-            if (exception.InnerException != null)
+
+            void appendHeadersRecursive(Exception ex)
             {
-                var iter = exception;
+                stringBuilder.Append(" - ").AppendMarkdownLine(ex.Message);
+                if (ex.InnerException != null)
+                    appendHeadersRecursive(ex.InnerException);
+                if (ex is AggregateException aException)
+                    foreach (var e in aException.InnerExceptions)
+                        appendHeadersRecursive(e);
+            }
+
+            if (exception.InnerException != null || (exception is AggregateException aggregateException))
+            {
                 stringBuilder.AppendMarkdownHeaderLine("SUMMARY");
-                stringBuilder.Append(" - ").AppendMarkdownLine(iter.Message);
-                while (iter.InnerException != null)
-                {
-                    iter = iter.InnerException;
-                    stringBuilder.Append(" - ").AppendMarkdownLine(iter.Message);
-                }
+                appendHeadersRecursive(exception);
             }
 
-            Action<Exception, string, StringBuilder> append = (ex, header, sb) => {
-                sb.Append(header).Append(" ")
-                  .Append(exception.GetType().FullName)
-                  .Append(" - ").AppendMarkdownLine(exception.Message)
-                  .AppendException(ex);
-                if (ex is ArgumentException argumentException)
-                    sb.AppendArgumentException(argumentException);
-                if (ex is System.IO.FileLoadException fileLoadException)
-                    sb.AppendFileLoadException(fileLoadException);
-                if (ex is System.IO.FileNotFoundException fileNotFoundException)
-                    sb.AppendFileNotFoundException(fileNotFoundException);
-                specificAppender?.Invoke(sb, ex);
-                if (exception.StackTrace != null)
-                    sb.AppendMarkdownStackTrace(exception.StackTrace.Replace(Environment.NewLine, "  " + Environment.NewLine));
-            };
-
-            append(exception, "### ", stringBuilder);
-
-            while (exception.InnerException != null)
+            void appendStackTraceAndDataRecursive(Exception ex)
             {
-                exception = exception.InnerException;
-                append(exception, "### ", stringBuilder);
+                stringBuilder.Append("### ").Append(" ")
+                      .Append(ex.GetType().FullName)
+                      .Append(" - ").AppendMarkdownLine(ex.Message)
+                      .AppendException(ex);
+                if (ex is ArgumentException argumentException)
+                    stringBuilder.AppendArgumentException(argumentException);
+                if (ex is System.IO.FileLoadException fileLoadException)
+                    stringBuilder.AppendFileLoadException(fileLoadException);
+                if (ex is System.IO.FileNotFoundException fileNotFoundException)
+                    stringBuilder.AppendFileNotFoundException(fileNotFoundException);
+                specificAppender?.Invoke(stringBuilder, ex);
+                if (ex.StackTrace != null)
+                {
+                    // TODO 1: highlight <new line>--- End of stack trace from previous location where exception was thrown ---<end line>
+                    // TODO 2: highlight <new line>at
+                    stringBuilder.AppendMarkdownLineBlock(ex.StackTrace.Replace(Environment.NewLine, "  " + Environment.NewLine));
+                }
+                if (ex.InnerException != null)
+                    appendStackTraceAndDataRecursive(ex.InnerException);
+                if (ex is AggregateException aException)
+                    foreach (var e in aException.InnerExceptions)
+                        appendStackTraceAndDataRecursive(e);
             }
+
+            appendStackTraceAndDataRecursive(exception);
             var text = stringBuilder.ToString();
             return text;
-        }
-
-        private static void AppendFileLoadException(this StringBuilder stringBuilder, System.IO.FileLoadException exception)
-        {
-            stringBuilder.AppendMarkdownLine("FileLoadException specific:");
-            stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
-                stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
-#endif
-        }
-
-        private static void AppendFileNotFoundException(this StringBuilder stringBuilder, System.IO.FileNotFoundException exception)
-        {
-            stringBuilder.AppendMarkdownLine("FileLoadException specific:");
-            stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
-                stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
-#endif
         }
 
         private static void AppendException(this StringBuilder stringBuilder, Exception exception)
@@ -88,6 +79,24 @@ namespace DashboardCode.Routines
                 }
 
             }
+        }
+
+        private static void AppendFileLoadException(this StringBuilder stringBuilder, System.IO.FileLoadException exception)
+        {
+            stringBuilder.AppendMarkdownLine("FileLoadException specific:");
+            stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
+                stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
+#endif
+        }
+
+        private static void AppendFileNotFoundException(this StringBuilder stringBuilder, System.IO.FileNotFoundException exception)
+        {
+            stringBuilder.AppendMarkdownLine("FileLoadException specific:");
+            stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");
+#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
+                stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
+#endif
         }
 
         private static void AppendArgumentException(this StringBuilder stringBuilder, ArgumentException exception)

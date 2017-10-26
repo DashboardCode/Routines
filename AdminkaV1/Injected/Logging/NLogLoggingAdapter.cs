@@ -19,6 +19,10 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         readonly Func<Exception, string> markdownException;
         readonly Func<object, string> serializeObject;
         readonly Logger logger;
+        
+        // TODO: mailLogger is not tested yet, better for performance this functionality provide through NLog API
+        //static readonly PerDayСounter counter = new PerDayСounter();
+        //readonly Logger mailLogger;
 
         public bool ShouldBufferVerbose { get; private set; }
         public bool ShouldVerboseWithStackTrace { get; private set; }
@@ -50,6 +54,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             ShouldVerboseWithStackTrace = loggingVerboseConfiguration.ShouldVerboseWithStackTrace;
             var loggerName = "Routine:"+ routineGuid.GetCategory();
             logger = LogManager.GetLogger(loggerName); // ~0.5 ms
+            //mailLogger = LogManager.GetLogger("Mail":loggerName);
         }
 
         public void LogActivityStart(DateTime dateTime)
@@ -64,6 +69,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logEventInfo.Properties["Description"] = $"Start;";
             logger.Log(logEventInfo);
         }
+
         public void LogActivityFinish(DateTime dateTime, TimeSpan timeSpan, bool isSuccess)
         {
             var message = (isSuccess ? "Finished" : "FAILURE") + "; " +
@@ -79,6 +85,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logEventInfo.Properties["Description"] = $"Finish";
             logger.Log(logEventInfo);
         }
+
         public void LogVerbose(DateTime dateTime, string message)
         {
             var logEventInfo = new LogEventInfo()
@@ -91,6 +98,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logEventInfo.Properties["Description"] = $"Verbose";
             logger.Log(logEventInfo);
         }
+
         public void LogBufferedVerbose(List<VerboseMessage> verboseMessages)
         {
             var count = verboseMessages.Count();
@@ -126,6 +134,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logEventInfo.AppendRoutineTag(routineGuid);
             logEventInfo.Properties["Description"] = $"Exception";
             logger.Log(logEventInfo);
+            //if (counter.Increment())
+            //    mailLogger.Log(logEventInfo);
         }
 
         public void Input(DateTime dateTime, object input)
@@ -161,6 +171,5 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 logger.Log(logEventInfo);
             }
         }
-
     }
 }

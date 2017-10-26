@@ -3,9 +3,12 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
+    [DebuggerDisplay("{Namespace}.{Type}.{Member}/{For}; {InstanceCreatedAt}/{StaticCreatedAt}")]
+    [DebuggerTypeProxy(typeof(RoutineElementDebugView))]
     public class RoutineElement :  ConfigurationElement, ICollectionMemberElement, IRoutineConfigurationRecord //, IRoutineResolvableRecord
     {
         private static readonly ConfigurationProperty NamespaceProperty =
@@ -148,15 +151,29 @@ namespace DashboardCode.Routines.Configuration.NETFramework
 
         #region Debug
         public static readonly DateTime StaticCreatedAt = DateTime.Now;
-        public readonly DateTime CreatedAt = DateTime.Now;
+        public readonly DateTime InstanceCreatedAt = DateTime.Now;
         public override string ToString()
         {
-            var txt = Key+" "+ CreatedAt;
+            var @value = Key+" "+ InstanceCreatedAt;
             foreach (var r in Resolvables)
             {
-                txt += "  "+ r.ToString();
+                @value += "  "+ r.ToString();
             }
-            return txt;
+            return @value;
+        }
+
+        [DebuggerNonUserCode]
+        class RoutineElementDebugView
+        {
+            private readonly RoutineElement routineElement;
+            public IEnumerable<IResolvableConfigurationRecord> Resolvables
+                { get { return ((IRoutineConfigurationRecord)routineElement).Resolvables.ToList(); } }
+            public string Namespace { get { return routineElement.Namespace; } }
+            public string Type { get { return routineElement.Type; } }
+            public string Member { get { return routineElement.Member; } }
+            public string For { get { return routineElement.For; } }
+            public RoutineElementDebugView(RoutineElement routineElement) =>
+                this.routineElement = routineElement;
         }
         #endregion
     }

@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Linq;
 using System.Configuration;
+using System.Diagnostics;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
+    [DebuggerTypeProxy(typeof(RoutinesConfigurationSectionDebugView))]
     public class RoutinesConfigurationSection : ConfigurationSection
     {
-        private static readonly ConfigurationProperty routinesCollectionProperty 
-            = new ConfigurationProperty("",typeof(RoutineElementCollection),null,ConfigurationPropertyOptions.IsDefaultCollection);
-        private static readonly ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection{routinesCollectionProperty};
+        private static readonly ConfigurationProperty routinesCollectionProperty
+            = new ConfigurationProperty("", typeof(RoutineElementCollection), null, ConfigurationPropertyOptions.IsDefaultCollection);
+        private static readonly ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection { routinesCollectionProperty };
         protected override ConfigurationPropertyCollection Properties
         {
             get
@@ -34,12 +39,29 @@ namespace DashboardCode.Routines.Configuration.NETFramework
 
         public override string ToString()
         {
-            var text = $"{ConstructedAt}/{StaticConstructedAt} " +  base.ToString();
+            var text = $"{ConstructedAt}/{StaticConstructedAt} " + base.ToString();
             foreach (var r in Routines)
             {
                 text = text + "; " + r.ToString();
             }
             return text;
+        }
+
+        [DebuggerNonUserCode]
+        class RoutinesConfigurationSectionDebugView{
+            RoutinesConfigurationSection routinesConfigurationSection;
+
+            public IEnumerable<RoutineElement> Routines { get
+                {
+                    var x = ((IEnumerable)routinesConfigurationSection.Routines).Cast<RoutineElement>();
+                    return x.ToList();
+                }
+            }
+
+            public RoutinesConfigurationSectionDebugView(RoutinesConfigurationSection routinesConfigurationSection)
+            {
+                this.routinesConfigurationSection = routinesConfigurationSection;
+            }
         }
         #endregion
     }

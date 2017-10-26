@@ -5,7 +5,6 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.Routines;
-using DashboardCode.Routines.Configuration;
 
 namespace DashboardCode.AdminkaV1.Injected
 {

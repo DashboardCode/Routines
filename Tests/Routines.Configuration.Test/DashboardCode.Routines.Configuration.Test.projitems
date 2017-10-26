@@ -10,6 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)ConfigurationTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExceptionHandlerTest.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExceptionHandlerTest.Inner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoggingConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LoggingPerformanceConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WrappedContainer.cs" />

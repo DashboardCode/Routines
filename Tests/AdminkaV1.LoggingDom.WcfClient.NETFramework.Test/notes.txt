@@ -1,0 +1,2 @@
+﻿1. No transitive dependenicies between NET Frameworks and Standard so 
+System.ServiceModel.Primitives and System.ServiceModel.Http (used by AdminkaV1.LoggingDom.WcfClient) where referenced manually

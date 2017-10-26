@@ -11,9 +11,9 @@
 *.userprefs
 
 #Logs
-AppData/*.log.xml
-AppData/*.log.txt
-AppData/*.zip
+App_Data/*.log.xml
+App_Data/*.log.txt
+App_Data/*.zip
 
 #Test results
 TestsResults/
