@@ -1,0 +1,8 @@
+# show not pushed commits
+git log origin/master..master 
+
+# Reset last 3 commits and commit new
+# but somehow stay in vi (or less) so it is possible to quit only with :wq
+# https://stackoverflow.com/questions/5189560/squash-my-last-x-commits-together-using-git 
+git reset --soft HEAD~3 && 
+git commit

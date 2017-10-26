@@ -81,6 +81,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-757
 		Tour\Doc\Asp.Core.txt = Tour\Doc\Asp.Core.txt
 		Tour\Doc\Dashboard.txt = Tour\Doc\Dashboard.txt
 		Tour\Doc\DeleteCache.ps1 = Tour\Doc\DeleteCache.ps1
+		github log.txt = github log.txt
 		LICENSE = LICENSE
 		README.md = README.md
 		Tour\Doc\TODO.txt = Tour\Doc\TODO.txt
@@ -129,7 +130,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AdminkaV1.LoggingDom.WcfCli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.LoggingDom.WcfClient.NETFramework.Test", "Tests\AdminkaV1.LoggingDom.WcfClient.NETFramework.Test\AdminkaV1.LoggingDom.WcfClient.NETFramework.Test.csproj", "{B83C8D67-B9AD-46DE-A91B-3808E7C35CBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.LoggingDom.WcfClient.NETCore.Test", "Tests\AdminkaV1.LoggingDom.WcfClient.NETCore.Test\AdminkaV1.LoggingDom.WcfClient.NETCore.Test.csproj", "{681B47F1-0915-43D8-994E-47858BBB5967}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.LoggingDom.WcfClient.NETCore.Test", "Tests\AdminkaV1.LoggingDom.WcfClient.NETCore.Test\AdminkaV1.LoggingDom.WcfClient.NETCore.Test.csproj", "{681B47F1-0915-43D8-994E-47858BBB5967}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
