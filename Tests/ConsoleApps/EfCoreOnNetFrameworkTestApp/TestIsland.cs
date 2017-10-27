@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace EfCoreOnNetFrameworkTestApp
+namespace DashboardCode.EfCore.NETFramework.Sandbox
 {
     public static class TestIsland
     {

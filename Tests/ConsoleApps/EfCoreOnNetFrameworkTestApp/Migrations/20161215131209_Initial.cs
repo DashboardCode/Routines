@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace EfCoreOnNetFrameworkTestApp.Migrations
+namespace DashboardCode.EfCore.NETFramework.Sandbox.Migrations
 {
     public partial class Initial : Migration
     {

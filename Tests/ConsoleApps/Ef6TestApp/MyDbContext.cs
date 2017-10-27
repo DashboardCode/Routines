@@ -1,4 +1,4 @@
-﻿using Ef6TestApp;
+﻿using Ef6Sandbox;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ef6TestApp
+namespace Ef6Sandbox
 {
     public class MyDbContext : DbContext
     {

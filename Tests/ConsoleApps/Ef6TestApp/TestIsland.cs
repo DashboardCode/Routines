@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ef6TestApp
+namespace Ef6Sandbox
 {
     public static class TestIsland
     {

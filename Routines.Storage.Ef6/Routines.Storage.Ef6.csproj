@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DashboardCode.Routines.Storage.Ef6</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.Storage.Ef6</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Routines\Routines.csproj" />
+  </ItemGroup>
+
+</Project>

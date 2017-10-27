@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace EfCoreOnNetFrameworkTestApp
+namespace DashboardCode.EfCore.NETFramework.Sandbox
 {
     class Program
     {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
 
-namespace EfCoreOnCoreTestApp
+namespace DashboardCode.EfCore.NETCore.Sandbox
 {
     public class MyDbContext : DbContext
     {

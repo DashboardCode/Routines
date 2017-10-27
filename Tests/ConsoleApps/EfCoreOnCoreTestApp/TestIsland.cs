@@ -1,4 +1,4 @@
-﻿namespace EfCoreOnCoreTestApp
+﻿namespace DashboardCode.EfCore.NETCore.Sandbox
 {
     public static class TestIsland
     {

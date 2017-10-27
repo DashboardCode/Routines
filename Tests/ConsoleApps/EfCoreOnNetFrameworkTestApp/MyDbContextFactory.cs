@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;//.Infrastructure;
 using System.Configuration;
 
-namespace EfCoreOnNetFrameworkTestApp
+namespace DashboardCode.EfCore.NETFramework.Sandbox
 {
     public class MyDbContextFactory : /*IDbContextFactory<MyDbContext>,*/ IDesignTimeDbContextFactory<MyDbContext>
     {

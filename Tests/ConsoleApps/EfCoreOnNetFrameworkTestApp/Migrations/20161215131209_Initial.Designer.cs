@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 
-namespace EfCoreOnNetFrameworkTestApp.Migrations
+namespace DashboardCode.EfCore.NETFramework.Sandbox.Migrations
 {
     [DbContext(typeof(MyDbContext))]
     [Migration("20161215131209_Initial")]

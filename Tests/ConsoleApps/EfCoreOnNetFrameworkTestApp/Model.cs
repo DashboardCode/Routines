@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace EfCoreOnNetFrameworkTestApp
+namespace DashboardCode.EfCore.NETFramework.Sandbox
 {
     /// <summary>
     /// Shares ParentRecord's key. Tests inheritance implemented in relational model.
