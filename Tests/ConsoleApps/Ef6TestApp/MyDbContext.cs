@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ef6Sandbox
+namespace DashboardCode.Ef6.Sandbox
 {
     public class MyDbContext : DbContext
     {

@@ -38,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.SqlServer"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore.SqlServer", "AdminkaV1\DataAccessEfCore.SqlServer\AdminkaV1.DataAccessEfCore.SqlServer.csproj", "{215CD0DE-09D8-46F4-A9CF-5C4EAE8217F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ef6Sandbox", "Tests\ConsoleApps\Ef6TestApp\Ef6Sandbox.csproj", "{FAEEA516-2296-4C52-9BE5-525B56F50880}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ef6.Sandbox", "Tests\ConsoleApps\Ef6TestApp\Ef6.Sandbox.csproj", "{FAEEA516-2296-4C52-9BE5-525B56F50880}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.ActiveDirectory.NETFramework", "Routines.ActiveDirectory.NETFramework\Routines.ActiveDirectory.NETFramework.csproj", "{1C1AE759-8C0E-40B3-8936-94EC077AAAF2}"
 EndProject
