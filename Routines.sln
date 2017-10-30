@@ -79,6 +79,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-757
 		Tour\Doc\API Conventions.txt = Tour\Doc\API Conventions.txt
 		Article.txt = Article.txt
 		Tour\Doc\Asp.Core.txt = Tour\Doc\Asp.Core.txt
+		CHANGELOG.md = CHANGELOG.md
 		Tour\Doc\Dashboard.txt = Tour\Doc\Dashboard.txt
 		Tour\Doc\DeleteCache.ps1 = Tour\Doc\DeleteCache.ps1
 		github log.txt = github log.txt
@@ -134,7 +135,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.LoggingDom.WcfCli
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internals", "Internals", "{321B262B-54AF-4039-A4B5-08F234FF4B5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.Ef6", "Routines.Storage.Ef6\Routines.Storage.Ef6.csproj", "{919F46A5-7781-44FA-B4AA-A0E13683A058}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.Ef6", "Routines.Storage.Ef6\Routines.Storage.Ef6.csproj", "{919F46A5-7781-44FA-B4AA-A0E13683A058}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
