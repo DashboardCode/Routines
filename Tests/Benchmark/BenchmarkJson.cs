@@ -12,7 +12,7 @@ using DashboardCode.Routines.Json;
 
 namespace Benchmark
 {
-    //[Config(typeof(Config))]
+    [Config(typeof(MyManualConfig))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [ClrJob, CoreJob]
     [HtmlExporter, MarkdownExporter]

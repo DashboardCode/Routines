@@ -1,4 +1,8 @@
-﻿using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Exporters;
+using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Toolchains.CsProj;
 
 namespace Benchmark
 {
@@ -6,7 +10,8 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            var b = new BenchmarkRef();
+            var b = new BenchmarkConcurencyCollection();
+            b.ConcurrentQueue();
             //var x1 = b.DelegateBuilded();
             //var x2 = b.Expression();
             //var s1 = b.();
@@ -23,7 +28,16 @@ namespace Benchmark
             //var jO = b.TestFuncDynamicInvoke();
             //var jA = b.TestFunc();
             //var jB = b.TestFuncBuilded();
-            BenchmarkRunner.Run<BenchmarkRef>();
+            //BenchmarkRunner.Run<BenchmarkConcurencyCollection>();
+        }
+    }
+
+    public class MyManualConfig : ManualConfig
+    {
+        public MyManualConfig()
+        {
+            Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp20)); 
+            Add(Job.Default.With(CsProjClassicNetToolchain.Net47));
         }
     }
 }

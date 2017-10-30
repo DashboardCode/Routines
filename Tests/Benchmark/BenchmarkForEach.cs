@@ -6,6 +6,7 @@ using BenchmarkDotNet.Attributes.Jobs;
 
 namespace Benchmark
 {
+    [Config(typeof(MyManualConfig))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [ClrJob, CoreJob]
     [HtmlExporter, MarkdownExporter]
