@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
-namespace DashboardCode.Routines.Storage.EfCore
+namespace DashboardCode.Routines.Storage.Ef6
 {
     public class Batch<TEntity> : IBatch<TEntity> where TEntity : class
     {
@@ -41,14 +41,13 @@ namespace DashboardCode.Routines.Storage.EfCore
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class
         {
-            Expression <Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable = getRelation.ContravarianceToIEnumerable();
-
-            EntityEntry<TEntity> entry = context.Entry(entity);
-            var col = entry.Collection(getRelationAsEnumerable);
+            DbEntityEntry<TEntity> entry = context.Entry(entity);
+            var name = getRelation.GetMemberName();
+            var col = entry.Collection(name);
             col.Load();
+
             var getRelationFunc = getRelation.Compile();
-            var enumerable = getRelationFunc(entity);
-            var oldRelations = enumerable;
+            var oldRelations = getRelationFunc(entity);
             var tmp = new List<TRelationEntity>();
             foreach (var e in oldRelations)
                 if (!newRelations.Any(e2 => equalsById(e, e2)))

@@ -9,10 +9,28 @@ namespace DashboardCode.Routines
 {
     public static class MemberExpressionExtensions
     {
-        public static string GetMemberName<T1, T2>(Expression<Func<T1, T2>> expression)
+        public static string GetMemberName<T1, T2>(this Expression<Func<T1, T2>> expression)
         {
             var memberExpression = (MemberExpression)expression.Body;
             return memberExpression.Member.Name;
+        }
+
+        public static string GetMemberName<T1, T2>(this Expression<Func<T1, ICollection<T2>>> expression)
+        {
+            var memberExpression = (MemberExpression)expression.Body;
+            return memberExpression.Member.Name;
+            //var member = (PropertyInfo)memberExpression.Member;
+            //var name = member.Name;
+            //return name;
+        }
+
+        public static string GetMemberName<T1, T2>(this Expression<Func<T1, IEnumerable<T2>>> expression)
+        {
+            var memberExpression = (MemberExpression)expression.Body;
+            return memberExpression.Member.Name;
+            //var member = (PropertyInfo)memberExpression.Member;
+            //var name = member.Name;
+            //return name;
         }
 
         public static object GetMemberValue(this MemberExpression memberExpression, object entity)
@@ -135,6 +153,20 @@ namespace DashboardCode.Routines
                     }
                 }
             return list;
+        }
+
+        // Contravariance enables you to use a LESS derived type (means base) than that specified by the generic parameter. 
+        public static Expression<Func<TEntity, IEnumerable<TRelationEntity>>> ContravarianceToIEnumerable<TEntity, TRelationEntity>(
+            this Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelation)
+        {
+            var memberExpression = (MemberExpression)getRelation.Body;
+            var member = (PropertyInfo)memberExpression.Member;
+            var tParameterExpression = Expression.Parameter(typeof(TEntity), "t");
+            var newMemberExpression  = Expression.Property(tParameterExpression, member);
+
+            Expression<Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable =
+                Expression.Lambda<Func<TEntity, IEnumerable<TRelationEntity>>>(newMemberExpression, new[] { tParameterExpression });
+            return getRelationAsEnumerable;
         }
     }
 }

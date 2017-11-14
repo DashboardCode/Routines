@@ -26,7 +26,7 @@ namespace DashboardCode.Ef6.Sandbox
                     .Include("ParentRecordHierarchyRecordMap")
                     .Include("ParentRecordHierarchyRecordMap.HierarchyRecord").First(e => e.FieldA == "1_A");
                 var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count(); // 5
-                var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2).ToList();
+                var only2  = parentRecord.ParentRecordHierarchyRecordMap.Take(2).ToList();
                 var count2 = only2.Count(); // 2
                 foreach (var map in only2)
                 {

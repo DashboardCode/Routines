@@ -13,7 +13,7 @@
 #Logs
 *.log.xml
 *.log.txt
-
+*.zip
 
 #Test results
 TestsResults/

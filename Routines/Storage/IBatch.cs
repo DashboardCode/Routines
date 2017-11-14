@@ -11,7 +11,7 @@ namespace DashboardCode.Routines.Storage
         void Remove(TEntity t);
         void UpdateRelations<TRelationEntity>(
                 TEntity entity,
-                Expression<Func<TEntity, IEnumerable<TRelationEntity>>> getRelationExpression,
+                Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelationExpression,
                 IEnumerable<TRelationEntity> newRelations,
                 Func<TRelationEntity, TRelationEntity, bool> equalsById
         ) where TRelationEntity : class;

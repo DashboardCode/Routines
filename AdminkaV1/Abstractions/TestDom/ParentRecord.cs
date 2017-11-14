@@ -10,23 +10,23 @@ namespace DashboardCode.AdminkaV1.TestDom
     {
         public int ParentRecordId { get; set; }
 
-        public string FieldA { get; set; }
+        public string FieldA      { get; set; }
 
-        public string FieldB1 { get; set; }
+        public string FieldB1     { get; set; }
 
-        public string FieldB2 { get; set; }
+        public string FieldB2     { get; set; }
 
-        public string FieldCA { get; set; }
+        public string FieldCA     { get; set; }
 
-        public string FieldCB1 { get; set; }
+        public string FieldCB1    { get; set; }
 
-        public string FieldCB2 { get; set; }
+        public string FieldCB2    { get; set; }
 
-        public int FieldNotNull { get; set; }
+        public int FieldNotNull   { get; set; }
 
         public ICollection<ChildRecord> ChildRecords { get; set; }
 
-        public IEnumerable<ParentRecordHierarchyRecord> ParentRecordHierarchyRecordMap { get; set; }
+        public ICollection<ParentRecordHierarchyRecord> ParentRecordHierarchyRecordMap { get; set; }
 
         public IReadOnlyCollection<HierarchyRecord> GetHierarchyRecords()
         {

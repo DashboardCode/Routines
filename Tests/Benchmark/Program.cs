@@ -11,7 +11,7 @@ namespace Benchmark
         static void Main(string[] args)
         {
             var b = new BenchmarkConcurencyCollection();
-            b.ConcurrentQueue();
+            b.ConcurrentBagAdd();
             //var x1 = b.DelegateBuilded();
             //var x2 = b.Expression();
             //var s1 = b.();

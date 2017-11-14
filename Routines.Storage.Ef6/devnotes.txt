@@ -1,0 +1,2 @@
+﻿1. Can't be migrated to .NET Standard Framework
+https://github.com/aspnet/EntityFramework6/issues/271 
