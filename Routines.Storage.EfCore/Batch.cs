@@ -34,7 +34,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             context.Set<TEntity>().Remove(entity);
         }
 
-        public void UpdateRelations<TRelationEntity>(
+        public void ModifyWithRelated<TRelationEntity>(
             TEntity entity,
             Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelation,
             IEnumerable<TRelationEntity> newRelations,

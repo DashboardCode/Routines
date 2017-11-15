@@ -127,12 +127,12 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                             batch =>
                             {
                                 batch.Modify(entity);
-                                batch.UpdateRelations(entity,
+                                batch.ModifyWithRelated(entity,
                                     e => e.UserRoleMap,
                                     rolesNavigation.Selected,
                                     (e1, e2) => e1.RoleId == e2.RoleId
                                 );
-                                batch.UpdateRelations(entity,
+                                batch.ModifyWithRelated(entity,
                                     e => e.UserPrivilegeMap,
                                     privilegesNavigation.Selected,
                                     (e1, e2) => e1.PrivilegeId == e2.PrivilegeId
