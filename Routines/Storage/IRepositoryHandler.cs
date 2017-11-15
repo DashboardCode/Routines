@@ -14,7 +14,7 @@ namespace DashboardCode.Routines.Storage
         Task<TOutput> HandleAsync<TOutput> (Func<IRepository<TEntity>, TOutput> func);
 
         void          Handle(Action<IRepository<TEntity>, IStorage<TEntity>> action);
-        TOutput       Handle<TOutput>      (Func<IRepository<TEntity>,   IStorage<TEntity>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput> (Func<IRepository<TEntity>,   IStorage<TEntity>, TOutput> func);
+        TOutput       Handle<TOutput>      (Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func);
+        Task<TOutput> HandleAsync<TOutput> (Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func);
     }
 }

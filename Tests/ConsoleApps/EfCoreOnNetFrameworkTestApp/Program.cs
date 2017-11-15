@@ -4,20 +4,48 @@ using System.Configuration;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using DashboardCode.Routines.Storage.EfModelTest;
+using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
+using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.EfCore.NETFramework.Sandbox
 {
     class Program
     {
+        private static Action<DbContextOptionsBuilder<MyDbContext>> BuildOptionsBuilder(
+            string connectionString,
+            bool inMemory)
+        {
+            return (optionsBuilder) =>
+            {
+                if (inMemory)
+                    optionsBuilder.UseInMemoryDatabase(
+                      "EfCoreTest_InMemory"
+                    );
+                else
+                    optionsBuilder.UseSqlServer(
+                            connectionString,
+                            sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly("EfCoreTestApp")
+                            );
+            };
+        }
+
         static void Main(string[] args)
         {
             bool inMemory = true;
             var connectionString = ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
             Console.WriteLine("Check connection string:");
             Console.WriteLine(connectionString);
-            if (!inMemory)
-                TestIsland.Clear(connectionString);
-            TestIsland.Reset(connectionString, inMemory);
+
+            using (var dbContext = new MyDbContext(BuildOptionsBuilder(connectionString, inMemory)))
+            {
+                if (!inMemory)
+                {
+                    dbContext.Database.Migrate();
+                    TestIsland.Clear(new AdoBatch(dbContext, (o) => { }));
+                }
+                TestIsland.Reset(new Storage(dbContext, null, (o) => { } ));
+            }
             var loggerProvider = new MyLoggerProvider();
             var messages = new List<string>();
             loggerProvider.Verbose = (text) => {
@@ -25,12 +53,12 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox
                 Console.WriteLine(text);
                 Console.WriteLine();
             };
-            TestHierarchy(connectionString, loggerProvider);
+            TestHierarchy(connectionString, inMemory, loggerProvider);
         }
 
-        private static void TestHierarchy(string connectionString, MyLoggerProvider loggerProvider)
+        private static void TestHierarchy(string connectionString, bool inMemory, MyLoggerProvider loggerProvider)
         {
-            using (var dbContext = new MyDbContext(connectionString, loggerProvider))
+            using (var dbContext = new MyDbContext(BuildOptionsBuilder(connectionString, inMemory), loggerProvider))
             {
                 var parentRecord = dbContext.ParentRecords
                     .Include(e => e.ParentRecordHierarchyRecordMap)

@@ -4,16 +4,32 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
+using DashboardCode.Routines.Storage.EfCore;
+using DashboardCode.Routines.Storage.EfModelTest;
+using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
+
 namespace DashboardCode.EfCore.NETCore.Sandbox
 {
     class Program
     {
+        private static Action<DbContextOptionsBuilder<MyDbContext>> BuildOptionsBuilder(
+            string databaseName
+            )
+        {
+            return (optionsBuilder) =>
+            {
+                optionsBuilder.UseInMemoryDatabase(databaseName);
+            };
+        }
+
         static void Main(string[] args)
         {
             var databaseName = "MyTest_InMemmory";
             Console.Write($"DatabaseName: {databaseName}");
-
-            TestIsland.Reset(databaseName);
+            using (var dbContext = new MyDbContext(BuildOptionsBuilder(databaseName)))
+            {
+                TestIsland.Reset(new Storage(dbContext, null, (o)=> { }));
+            }
             var loggerProvider = new MyLoggerProvider();
             var messages = new List<string>();
             loggerProvider.Verbose = (text) => {
@@ -24,9 +40,9 @@ namespace DashboardCode.EfCore.NETCore.Sandbox
             TestHierarchy(databaseName, loggerProvider);
         }
 
-        private static void TestHierarchy(string connectionString, MyLoggerProvider loggerProvider)
+        private static void TestHierarchy(string databaseName, MyLoggerProvider loggerProvider)
         {
-            using (var dbContext = new MyDbContext(connectionString, loggerProvider))
+            using (var dbContext = new MyDbContext(BuildOptionsBuilder(databaseName), loggerProvider))
             {
                 var parentRecord = dbContext.ParentRecords
                     .Include(e => e.ParentRecordHierarchyRecordMap)

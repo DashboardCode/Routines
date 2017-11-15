@@ -42,4 +42,43 @@ namespace DashboardCode.Routines.Storage.Ef6
             return null;
         }
     }
+
+    public class Storage : IStorage
+    {
+        private readonly DbContext context;
+        private readonly Func<Exception, List<FieldError>> analyzeException;
+        private readonly Action<object> setAudit;
+
+        public Storage(
+            DbContext context,
+            Func<Exception, List<FieldError>> analyzeException,
+            Action<object> setAudit)
+        {
+            this.context = context;
+            this.analyzeException = analyzeException;
+            this.setAudit = setAudit;
+        }
+
+        public StorageError Handle(Action<IBatch> action)
+        {
+            var batch = new Batch(context, setAudit);
+            try
+            {
+                using (var transaction = context.Database.BeginTransaction())
+                {
+                    action(batch);
+                    context.SaveChanges();
+                    transaction.Commit();
+                }
+            }
+            catch (Exception exception)
+            {
+                var list = analyzeException(exception);
+                if (list.Count > 0)
+                    return new StorageError(exception, list);
+                throw;
+            }
+            return null;
+        }
+    }
 }

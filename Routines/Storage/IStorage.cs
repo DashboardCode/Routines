@@ -6,4 +6,9 @@ namespace DashboardCode.Routines.Storage
     {
         StorageError Handle(Action<IBatch<TEntity>> action);
     }
+
+    public interface IStorage
+    {
+        StorageError Handle(Action<IBatch> action);
+    }
 }

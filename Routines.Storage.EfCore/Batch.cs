@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace DashboardCode.Routines.Storage.EfCore
 {
@@ -62,6 +62,53 @@ namespace DashboardCode.Routines.Storage.EfCore
                     setAudit(e);
                     oldRelations.Add(e);
                 }
+        }
+    }
+
+
+    public class Batch : IBatch
+    {
+        private readonly DbContext context;
+        private readonly Action<object> setAudit;
+
+        public Batch(DbContext context, Action<object> setAudit)
+        {
+            this.context = context;
+            this.setAudit = setAudit;
+        }
+        public void Add<TEntity>(TEntity entity) where TEntity : class
+        {
+            setAudit(entity);
+            context.Set<TEntity>().Add(entity);
+        }
+
+        public void Modify<TEntity>(TEntity entity) where TEntity : class
+        {
+            setAudit(entity);
+            context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Remove<TEntity>(TEntity entity) where TEntity : class
+        {
+            context.Set<TEntity>().Remove(entity);
+        }
+    }
+
+    public class AdoBatch : IAdoBatch
+    {
+        private readonly DbContext context;
+        private readonly Action<object> setAudit;
+
+        public AdoBatch(DbContext context, Action<object> setAudit)
+        {
+            this.context = context;
+            this.setAudit = setAudit;
+        }
+
+        public void RemoveAll<TEntity>() where TEntity : class
+        {
+            //TODO realization
+            //context.ExecuteSqlCommand("DELETE FROM tst.ParentRecordHierarchyRecordMap");
         }
     }
 }

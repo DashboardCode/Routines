@@ -16,4 +16,16 @@ namespace DashboardCode.Routines.Storage
                 Func<TRelationEntity, TRelationEntity, bool> equalsById
         ) where TRelationEntity : class;
     }
+
+    public interface IBatch
+    {
+        void Add<TEntity>(TEntity t) where TEntity : class;
+        void Modify<TEntity>(TEntity t) where TEntity : class;
+        void Remove<TEntity>(TEntity t) where TEntity : class;
+    }
+
+    public interface IAdoBatch
+    {
+        void RemoveAll<TEntity>() where TEntity : class;
+    }
 }

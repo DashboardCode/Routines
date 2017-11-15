@@ -1,5 +1,4 @@
-﻿using DashboardCode.Routines.Storage.EfModelTest;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -8,8 +7,9 @@ using System.Data.Entity.Infrastructure.Interception;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DashboardCode.Routines.Storage.EfModelTest;
 
-namespace DashboardCode.Ef6.Sandbox
+namespace DashboardCode.Routines.Storage.Ef6.Test.NETFramework
 {
     public class MyDbContext : DbContext
     {

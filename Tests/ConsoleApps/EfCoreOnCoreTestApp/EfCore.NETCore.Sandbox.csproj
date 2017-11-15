@@ -12,4 +12,13 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj" />
+    <ProjectReference Include="..\..\..\Routines\Routines.csproj" />
+  </ItemGroup>
+
+  <Import Project="..\..\Routines.Storage.Test\Routines.Storage.Test.projitems" Label="Shared" />
+
+  <Import Project="..\..\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems" Label="Shared" />
+
 </Project>

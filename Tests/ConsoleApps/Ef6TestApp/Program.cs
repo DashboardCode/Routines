@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DashboardCode.Routines.Storage.Ef6;
+using DashboardCode.Routines.Storage.EfModelTest;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -19,9 +21,9 @@ namespace DashboardCode.Ef6.Sandbox
                 Console.WriteLine(text);
             };
             var connectionStringName = "Ef6Test";
-            TestIsland.Reset(connectionStringName);
             using (var dbContext = new MyDbContext(connectionStringName, verbose))
             {
+                TestIsland.Reset(new Storage(dbContext,null,(o)=> { }));
                 var parentRecord = dbContext.ParentRecords
                     .Include("ParentRecordHierarchyRecordMap")
                     .Include("ParentRecordHierarchyRecordMap.HierarchyRecord").First(e => e.FieldA == "1_A");
