@@ -15,15 +15,15 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             adminka.Handle((routine, dataAccess) =>
             {
                 dataAccess.Handle<ParentRecord>(
-                    (repository, storage) => {
+                    (repository, storage, model) => {
                         Include<ParentRecord> include = chain => chain
                             .IncludeAll(e => e.ParentRecordHierarchyRecordMap)
                             .ThenInclude(e => e.HierarchyRecordId);
 
-                        var navigationInclude = repository.ExtractNavigations(include);
+                        var navigationInclude = model.ExtractNavigations(include);
                         var lists = repository.List(navigationInclude);
 
-                        var serailizeInclude = repository.ExtractNavigationsAppendKeyLeafs(include);
+                        var serailizeInclude = model.ExtractNavigationsAppendKeyLeafs(include);
                         var formatter = serailizeInclude.ComposeEnumerableFormatter();
                         var json = formatter(lists);
                     }

@@ -12,23 +12,13 @@ namespace DashboardCode.Routines.Storage
         TEntity Find(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
         IQueryable<TEntity> MakeQueryable(Include<TEntity> include = null);
 
-        #region Prototyping support
-        IRepository<TNewBaseEntity> Sprout<TNewBaseEntity>() where TNewBaseEntity : class;
+        #region Prototype support
+        IRepository<TNewBaseEntity> Clone<TNewBaseEntity>() where TNewBaseEntity : class;
         #endregion
 
-        #region ORM "abstraction leaks"
+        #region ORM "abstraction leaks" - sometimes you need to manipulate entities without pushing changes to db
         void Detach(TEntity entity, Include<TEntity> include = null);
         void Detach(IEnumerable<TEntity> entity, Include<TEntity> include = null);
-        #endregion
-
-        #region Navigations meta
-        Include<TEntity> AppendModelFields(Include<TEntity> include);
-
-        Include<TEntity> AppendModelFieldsIfEmpty(Include<TEntity> include);
-
-        Include<TEntity> ExtractNavigations(Include<TEntity> include);
-
-        Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include);
         #endregion
     }
 }

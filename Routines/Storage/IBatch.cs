@@ -23,9 +23,4 @@ namespace DashboardCode.Routines.Storage
         void Modify<TEntity>(TEntity t) where TEntity : class;
         void Remove<TEntity>(TEntity t) where TEntity : class;
     }
-
-    public interface IAdoBatch
-    {
-        void RemoveAll<TEntity>() where TEntity : class;
-    }
 }

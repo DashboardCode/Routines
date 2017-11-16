@@ -58,15 +58,15 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             {
                 var rolesNavigation = new MvcNavigationFacade<Privilege, Role, RolePrivilege, int>(
                     this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                    repository.Sprout<Role>().List()
+                    repository.Clone<Role>().List()
                     );
                 var groupsNavigation = new MvcNavigationFacade<Privilege, Group, GroupRole, int>(
                     this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                    repository.Sprout<Group>().List()
+                    repository.Clone<Group>().List()
                 );
                 var usersNavigation = new MvcNavigationFacade<Privilege, User, UserRole, int>(
                    this, "Users", e => e.UserId, nameof(AuthenticationDom.User.LoginName),
-                   repository.Sprout<User>().List()
+                   repository.Clone<User>().List()
                 );
 
                 var mvcTube = new MvcHandler(this);
@@ -94,7 +94,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 
                 var rolesNavigation = new MvcNavigationFacade<Privilege, Role, RolePrivilege, int>(
                     this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                    repository.Sprout<Role>().List()
+                    repository.Clone<Role>().List()
                 );
                 rolesNavigation.Parse(
                     e => new RolePrivilege() { PrivilegeId = entity.PrivilegeId, RoleId = e.RoleId },
@@ -102,7 +102,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 
                 var groupsNavigation = new MvcNavigationFacade<Privilege, Group, GroupPrivilege, int>(
                      this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                     repository.Sprout<Group>().List()
+                     repository.Clone<Group>().List()
                  );
                 groupsNavigation.Parse(
                                     e => new GroupPrivilege() { PrivilegeId = entity.PrivilegeId, GroupId = e.GroupId },
@@ -110,7 +110,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 
                 var usersNavigation = new MvcNavigationFacade<Privilege, User, UserPrivilege, int>(
                     this, "Users", e => e.UserId, nameof(AuthenticationDom.User.LoginName),
-                    repository.Sprout<User>().List()
+                    repository.Clone<User>().List()
                  );
 
                 usersNavigation.Parse(

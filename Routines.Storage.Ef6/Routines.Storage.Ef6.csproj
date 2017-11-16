@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Batch.cs" />
     <Compile Include="Ef6Extensions.cs" />
+    <Compile Include="Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryableChainVisitor.cs" />
     <Compile Include="Repository.cs" />

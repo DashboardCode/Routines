@@ -50,7 +50,7 @@ namespace DashboardCode.Routines.Storage.Ef6
             return list;
         }
 
-        public IRepository<TNewBaseEntity> Sprout<TNewBaseEntity>() where TNewBaseEntity : class =>
+        public IRepository<TNewBaseEntity> Clone<TNewBaseEntity>() where TNewBaseEntity : class =>
             new Repository<TNewBaseEntity>(this.context, asNoTracking);
 
         public void Detach(TEntity entity, Include<TEntity> include = null) =>

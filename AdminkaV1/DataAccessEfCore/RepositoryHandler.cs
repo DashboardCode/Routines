@@ -47,6 +47,14 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             });
         }
 
+        public void Handle(Action<IRepository<TEntity>, IStorage<TEntity>> action)
+        {
+            adminkaDbContextHandler.Handle((container, context, setAudit) => action(
+                new Repository<TEntity>(container, false),
+                new Storage<TEntity>(container, analyzeException, setAudit)
+                ));
+        }
+
         public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func)
         {
             return adminkaDbContextHandler.Handle((container, context, setAudit) => func(
@@ -71,12 +79,41 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             });
         }
 
-        public void Handle(Action<IRepository<TEntity>, IStorage<TEntity>> action)
+        
+
+        public void Handle(Action<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>> action)
         {
             adminkaDbContextHandler.Handle((container, context, setAudit) => action(
+               new Repository<TEntity>(container, false),
+               new Storage<TEntity>(container, analyzeException, setAudit),
+               new Model<TEntity>(container)
+               ));
+        }
+
+        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>, TOutput> func)
+        {
+            return adminkaDbContextHandler.Handle((container, context, setAudit) => func(
                 new Repository<TEntity>(container, false),
-                new Storage<TEntity>(container,  analyzeException, setAudit)
+                new Storage<TEntity>(container, analyzeException, setAudit),
+                new Model<TEntity>(container)
                 ));
+        }
+
+        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>, TOutput> func)
+        {
+            return Task.Run(() =>
+            {
+                var output = default(TOutput);
+                adminkaDbContextHandler.Handle((container, context, setAudit) =>
+                {
+                    output = func(
+                        new Repository<TEntity>(container, noTracking),
+                        new Storage<TEntity>(container, analyzeException, setAudit),
+                        new Model<TEntity>(container)
+                        );
+                });
+                return output;
+            });
         }
     }
 }

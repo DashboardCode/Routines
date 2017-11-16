@@ -31,7 +31,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count(); // 5
                         var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2);
                         var count2 = only2.Count(); // 2
-                        repository.Sprout<ParentRecordHierarchyRecord>().Detach(only2, (i) => i.Include(e => e.RowVersion));
+                        repository.Clone<ParentRecordHierarchyRecord>().Detach(only2, (i) => i.Include(e => e.RowVersion));
 
                         batch.Handle(
                             (storage) =>
@@ -77,7 +77,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count(); // 5
                         var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2);
                         var count2 = only2.Count(); // 2
-                        repository.Sprout<ParentRecordHierarchyRecord>().Detach(only2, (i)=>i.Include(e=>e.RowVersion));
+                        repository.Clone<ParentRecordHierarchyRecord>().Detach(only2, (i)=>i.Include(e=>e.RowVersion));
 
                         batch.Handle(
                             (storage) =>

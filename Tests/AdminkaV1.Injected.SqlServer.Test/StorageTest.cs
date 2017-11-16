@@ -34,7 +34,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 // Create
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var privilegesList = repository.Sprout<Privilege>().List();
+                    var privilegesList = repository.Clone<Privilege>().List();
                     var selectedPrivileges = new List<GroupPrivilege>();
                     var privilegesIdsText = "CFGS,VLOG";
                     if (!string.IsNullOrEmpty(privilegesIdsText))
@@ -67,7 +67,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 var entity = new Group() { GroupId = newGroupId, GroupName = "TestStore2", GroupAdName = "TestStore\\TestStore2" };
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var privilegesList = repository.Sprout<Privilege>().List();
+                    var privilegesList = repository.Clone<Privilege>().List();
                     var selectedPrivileges = new List<GroupPrivilege>();
                     var privilegesIdsText = "CFGS";
                     if (!string.IsNullOrEmpty(privilegesIdsText))
@@ -143,7 +143,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count();
                         var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2);
                         var count2 = only2.Count();
-                        repository.Sprout<ParentRecordHierarchyRecord>().Detach(only2, (i) => i.Include(e => e.RowVersion));
+                        repository.Clone<ParentRecordHierarchyRecord>().Detach(only2, (i) => i.Include(e => e.RowVersion));
 
                         batch.Handle(
                             (storage) =>
@@ -161,7 +161,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         var parentRecord2 = repository.Find(e => e.FieldA == "1_A", includes);
                         var count3 = parentRecord2.ParentRecordHierarchyRecordMap.Count();
                         var only1 = parentRecord2.ParentRecordHierarchyRecordMap.Take(1);
-                        repository.Sprout<ParentRecordHierarchyRecord>().Detach(only1, (i) => i.Include(e => e.RowVersion));
+                        repository.Clone<ParentRecordHierarchyRecord>().Detach(only1, (i) => i.Include(e => e.RowVersion));
 
                         try
                         {

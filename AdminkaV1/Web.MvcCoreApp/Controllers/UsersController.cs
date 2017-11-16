@@ -61,17 +61,17 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             {
                 var privilegesNavigation = new MvcNavigationFacade<User, Privilege, UserPrivilege, string>(
                     this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
-                    repository.Sprout<Privilege>().List()
+                    repository.Clone<Privilege>().List()
                 );
 
                 var rolesNavigation = new MvcNavigationFacade<User, Role, UserRole, int>(
                     this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                    repository.Sprout<Role>().List()
+                    repository.Clone<Role>().List()
                 );
 
                 var groupsNavigation = new MvcNavigationFacade<User, Group, UserGroup, int>(
                     this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                    repository.Sprout<Group>().List()
+                    repository.Clone<Group>().List()
                 );
 
                 var mvcTube = new MvcHandler(this);
@@ -99,7 +99,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 
                     var privilegesNavigation = new MvcNavigationFacade<User, Privilege, UserPrivilege, string>(
                         this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
-                        repository.Sprout<Privilege>().List()
+                        repository.Clone<Privilege>().List()
                     );
 
                     privilegesNavigation.Parse(
@@ -108,7 +108,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 
                     var rolesNavigation = new MvcNavigationFacade<User, Role, UserRole, int>(
                         this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                        repository.Sprout<Role>().List()
+                        repository.Clone<Role>().List()
                     );
 
                     rolesNavigation.Parse(
@@ -118,7 +118,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
 
                     var groupsNavigation = new MvcNavigationFacade<User, Group, UserGroup, int>(
                         this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                        repository.Sprout<Group>().List()
+                        repository.Clone<Group>().List()
                     );
 
                     var mvcFork = new MvcHandler(this, ModelState.IsValid);

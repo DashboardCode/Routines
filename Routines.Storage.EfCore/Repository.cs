@@ -50,7 +50,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             return list;
         }
 
-        public IRepository<TNewBaseEntity> Sprout<TNewBaseEntity>() where TNewBaseEntity : class =>
+        public IRepository<TNewBaseEntity> Clone<TNewBaseEntity>() where TNewBaseEntity : class =>
             new Repository<TNewBaseEntity>(this.context, asNoTracking);
 
         public void Detach(TEntity entity, Include<TEntity> include = null) =>
@@ -61,17 +61,5 @@ namespace DashboardCode.Routines.Storage.EfCore
             foreach (var entity in entities)
                 context.Detach(entity, include);
         }
-
-        public Include<TEntity> AppendModelFields(Include<TEntity> include) =>
-            EfCoreExtensions.AppendModelFields(include, context);
-
-        public Include<TEntity> AppendModelFieldsIfEmpty(Include<TEntity> include) =>
-            EfCoreExtensions.AppendModelFieldsIfEmpty(include, context);
-
-        public Include<TEntity> ExtractNavigations(Include<TEntity> include) =>
-            EfCoreExtensions.ExtractNavigations(include, context);
-
-        public Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include) =>
-            EfCoreExtensions.ExtractNavigationsAppendKeyLeafs(include, context);
     }
 }
