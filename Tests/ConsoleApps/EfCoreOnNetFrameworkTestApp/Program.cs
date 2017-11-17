@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DashboardCode.Routines.Storage.EfModelTest;
 using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
 using DashboardCode.Routines.Storage.EfCore;
+using System.Reflection;
+using DashboardCode.Routines.Storage.EfCore.Relational;
 
 namespace DashboardCode.EfCore.NETFramework.Sandbox
 {
@@ -23,16 +25,17 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox
                       "EfCoreTest_InMemory"
                     );
                 else
+                    //Assembly.GetAssembly(typeof(Program))
                     optionsBuilder.UseSqlServer(
                             connectionString,
-                            sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly("EfCoreTestApp")
+                            sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly( "EfCore.NETFramework.Sandbox")
                             );
             };
         }
 
         static void Main(string[] args)
         {
-            bool inMemory = true;
+            bool inMemory = false;
             var connectionString = ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
             Console.WriteLine("Check connection string:");
             Console.WriteLine(connectionString);
@@ -41,7 +44,7 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox
             {
                 if (!inMemory)
                 {
-                    dbContext.Database.Migrate();
+                    //dbContext.Database.Migrate();
                     TestIsland.Clear(new AdoBatch(dbContext, (o) => { }));
                 }
                 TestIsland.Reset(new Storage(dbContext, null, (o) => { } ));

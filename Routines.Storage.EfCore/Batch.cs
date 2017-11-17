@@ -93,22 +93,4 @@ namespace DashboardCode.Routines.Storage.EfCore
             context.Set<TEntity>().Remove(entity);
         }
     }
-
-    public class AdoBatch : IAdoBatch
-    {
-        private readonly DbContext context;
-        private readonly Action<object> setAudit;
-
-        public AdoBatch(DbContext context, Action<object> setAudit)
-        {
-            this.context = context;
-            this.setAudit = setAudit;
-        }
-
-        public void RemoveAll<TEntity>() where TEntity : class
-        {
-            //TODO realization
-            //context.ExecuteSqlCommand("DELETE FROM tst.ParentRecordHierarchyRecordMap");
-        }
-    }
 }
