@@ -24,7 +24,7 @@ namespace DashboardCode.AdminkaV1.Injected
             this.storageMetaService = storageMetaService;
         }
 
-        private void SetAudit(object o)
+        private void SetAuditProperties(object o)
         {
             if (o is IVersioned versionedEntity)
             {
@@ -60,7 +60,7 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaDbContextHandler CreateDbContextHandler()
         {
             var optionsFactory = CreateAdminkaOptionsFactory();
-            var dbContextHandler = new AdminkaDbContextHandler(state, SetAudit, optionsFactory);
+            var dbContextHandler = new AdminkaDbContextHandler(state, SetAuditProperties, optionsFactory);
             return dbContextHandler;
         }
 

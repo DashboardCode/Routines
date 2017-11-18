@@ -7,33 +7,33 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     public class AdminkaDbContextHandler
     {
         readonly AdminkaDbContextFactory dbContextFactory;
-        readonly Routine<UserContext> state;
-        readonly Action<object> setAudit;
-        public AdminkaDbContextHandler(Routine<UserContext> state, Action<object> setAudit, IAdminkaOptionsFactory optionsFactory)
+        readonly Routine<UserContext>    state;
+        readonly Action<object>  setAuditProperties;
+        public AdminkaDbContextHandler(Routine<UserContext> state, Action<object> setAuditProperties, IAdminkaOptionsFactory optionsFactory)
         {
             this.state = state;
-            this.setAudit = setAudit;
+            this.setAuditProperties = setAuditProperties;
             dbContextFactory = new AdminkaDbContextFactory(optionsFactory, state);
         }
         public TOutput Handle<TOutput>(Func<AdminkaDbContext, Routine<UserContext>, Action<object>, TOutput> func)
         {
             using (var context = dbContextFactory.CreateAdminkaDbContext())
             {
-                return func(context, state, setAudit);
+                return func(context, state, setAuditProperties);
             }
         }
         public void Handle(Action<AdminkaDbContext, Routine<UserContext>, Action<object>> func)
         {
             using (var context = dbContextFactory.CreateAdminkaDbContext())
             {
-                func(context, state, setAudit);
+                func(context, state, setAuditProperties);
             }
         }
         public TOutput Handle<TOutput>(Func<AdminkaDbContext, Action<object>, TOutput> func)
         {
             using (var context = dbContextFactory.CreateAdminkaDbContext())
             {
-                return func(context, setAudit);
+                return func(context, setAuditProperties);
             }
         }
         public TOutput Handle<TOutput>(Func<AdminkaDbContext,  TOutput> func) 
@@ -47,7 +47,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         {
             using (var context = dbContextFactory.CreateAdminkaDbContext())
             {
-                func(context, setAudit);
+                func(context, setAuditProperties);
             }
         }
         public void Handle(Action<AdminkaDbContext> func)

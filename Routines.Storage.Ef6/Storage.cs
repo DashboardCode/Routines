@@ -8,21 +8,21 @@ namespace DashboardCode.Routines.Storage.Ef6
     {
         private readonly DbContext context;
         private readonly Func<Exception, List<FieldError>> analyzeException;
-        private readonly Action<object> setAudit;
+        private readonly Action<object> setAuditProperties;
 
         public Storage(
             DbContext context,
             Func<Exception, List<FieldError>> analyzeException,
-            Action<object> setAudit)
+            Action<object> setAuditProperties)
         {
             this.context = context;
             this.analyzeException = analyzeException;
-            this.setAudit = setAudit;
+            this.setAuditProperties = setAuditProperties;
         }
 
         public StorageError Handle(Action<IBatch<TEntity>> action)
         {
-            var batch = new Batch<TEntity>(context, setAudit);
+            var batch = new Batch<TEntity>(context, setAuditProperties);
             try
             {
                 using (var transaction = context.Database.BeginTransaction())
@@ -47,21 +47,21 @@ namespace DashboardCode.Routines.Storage.Ef6
     {
         private readonly DbContext context;
         private readonly Func<Exception, List<FieldError>> analyzeException;
-        private readonly Action<object> setAudit;
+        private readonly Action<object> setAuditProperties;
 
         public Storage(
             DbContext context,
             Func<Exception, List<FieldError>> analyzeException,
-            Action<object> setAudit)
+            Action<object> setAuditProperties)
         {
             this.context = context;
             this.analyzeException = analyzeException;
-            this.setAudit = setAudit;
+            this.setAuditProperties = setAuditProperties;
         }
 
         public StorageError Handle(Action<IBatch> action)
         {
-            var batch = new Batch(context, setAudit);
+            var batch = new Batch(context, setAuditProperties);
             try
             {
                 using (var transaction = context.Database.BeginTransaction())

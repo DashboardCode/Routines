@@ -7,7 +7,7 @@ namespace DashboardCode.Routines.Configuration.Test
 {
     partial class ExceptionHandlerTest
     {
-        public static void TestMethod()
+        private static void TestMethod()
         {
             var list = new List<string>();
             var exceptionHandler = new ExceptionHandler(new ExceptionAdapter(list), null);

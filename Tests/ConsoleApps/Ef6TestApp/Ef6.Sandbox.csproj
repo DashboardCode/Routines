@@ -57,6 +57,10 @@
       <Project>{9443A79D-E76C-4107-AA05-9992F3EDD2B6}</Project>
       <Name>Routines.Storage.Ef6</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj">
+      <Project>{49629314-6D2C-4630-A478-09E4338CA8D1}</Project>
+      <Name>Routines.Storage.SqlServer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Routines\Routines.csproj">
       <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>
       <Name>Routines</Name>

@@ -10,7 +10,6 @@
         public string[] Binaries {get;set;}
         public Unique[] Uniques { get; set; }
         public Constraint[] Constraints { get; set; }
-
     }
 
     public class Entity
@@ -18,6 +17,7 @@
         public string Namespace { get; set; }
         public string Name { get; set; }
     }
+
     public class Key
     {
         public string[] Attributes { get; set; }

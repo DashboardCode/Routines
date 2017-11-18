@@ -121,8 +121,7 @@
 
         public static void Clear(IAdoBatch adoBatch)
         {
-            //TODO delete * from ParentRecordHierarchyRecordMap
-            //adoBatch.RemoveAll<ParentRecordHierarchyRecordMap>();
+            adoBatch.RemoveAll<ParentRecordHierarchyRecord>();
             adoBatch.RemoveAll<HierarchyRecord>();
             adoBatch.RemoveAll<ChildRecord>();
             adoBatch.RemoveAll<ParentRecord>();

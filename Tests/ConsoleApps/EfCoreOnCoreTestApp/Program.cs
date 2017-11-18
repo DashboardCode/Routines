@@ -7,11 +7,26 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.Routines.Storage.EfModelTest;
 using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
+using DashboardCode.Routines.Storage;
+using DashboardCode.Routines.Storage.SqlServer;
 
 namespace DashboardCode.EfCore.NETCore.Sandbox
 {
     class Program
     {
+        static readonly List<StorageModel> storageModel = new StorageMetaService().GetStorageModels();
+
+        private static List<FieldError> Analyze(Exception exception, StorageModel storageModel)
+        {
+            var list = StorageErrorExtensions.AnalyzeException(exception,
+                  (ex, l) => {
+                      EfCoreManager.Analyze(exception, l, storageModel);
+                      SqlServerManager.Analyze(ex, l, storageModel);
+                  }
+            );
+            return list;
+        }
+
         private static Action<DbContextOptionsBuilder<MyDbContext>> BuildOptionsBuilder(
             string databaseName
             )

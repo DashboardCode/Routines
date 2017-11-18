@@ -10,25 +10,25 @@ namespace DashboardCode.Routines.Storage.Ef6
     public class Batch<TEntity> : IBatch<TEntity> where TEntity : class
     {
         private readonly DbContext context;
-        private readonly Action<object> setAudit;
+        private readonly Action<object> setAuditProperties;
 
-        public Batch(DbContext context, Action<object> setAudit)
+        public Batch(DbContext context, Action<object> setAuditProperties)
         {
             this.context = context;
-            this.setAudit = setAudit;
+            this.setAuditProperties = setAuditProperties;
         }
+
         public void Add(TEntity entity)
         {
-            setAudit(entity);
+            setAuditProperties(entity);
             context.Set<TEntity>().Add(entity);
         }
 
         public void Modify(TEntity entity)
         {
-            setAudit(entity);
+            setAuditProperties(entity);
             context.Entry(entity).State = EntityState.Modified;
         }
-
 
         public void Remove(TEntity entity)
         {
@@ -37,29 +37,30 @@ namespace DashboardCode.Routines.Storage.Ef6
 
         public void ModifyWithRelated<TRelationEntity>(
             TEntity entity,
-            Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelation,
-            IEnumerable<TRelationEntity> newRelations,
+            Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelated,
+            IEnumerable<TRelationEntity> newRelated,
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class
         {
+            setAuditProperties(entity); // TODO: test does it change
             DbEntityEntry<TEntity> entry = context.Entry(entity);
-            var name = getRelation.GetMemberName();
+            var name = getRelated.GetMemberName();
             var col = entry.Collection(name);
             col.Load();
 
-            var getRelationFunc = getRelation.Compile();
+            var getRelationFunc = getRelated.Compile();
             var oldRelations = getRelationFunc(entity);
             var tmp = new List<TRelationEntity>();
             foreach (var e in oldRelations)
-                if (!newRelations.Any(e2 => equalsById(e, e2)))
+                if (!newRelated.Any(e2 => equalsById(e, e2)))
                     tmp.Add(e);
             foreach (var e in tmp)
                 oldRelations.Remove(e);
 
-            foreach (var e in newRelations)
+            foreach (var e in newRelated)
                 if (!oldRelations.Any(e2 => equalsById(e, e2)))
                 {
-                    setAudit(e);
+                    setAuditProperties(e);
                     oldRelations.Add(e);
                 }
         }
@@ -68,39 +69,29 @@ namespace DashboardCode.Routines.Storage.Ef6
     public class Batch : IBatch
     {
         private readonly DbContext context;
-        private readonly Action<object> setAudit;
+        private readonly Action<object> setAuditProperties;
 
-        public Batch(DbContext context, Action<object> setAudit)
+        public Batch(DbContext context, Action<object> setAuditProperties)
         {
             this.context = context;
-            this.setAudit = setAudit;
+            this.setAuditProperties = setAuditProperties;
         }
+
         public void Add<TEntity>(TEntity entity) where TEntity : class
         {
-            setAudit(entity);
+            setAuditProperties(entity);
             context.Set<TEntity>().Add(entity);
         }
 
         public void Modify<TEntity>(TEntity entity) where TEntity : class
         {
-            setAudit(entity);
+            setAuditProperties(entity);
             context.Entry(entity).State = EntityState.Modified;
         }
 
         public void Remove<TEntity>(TEntity entity) where TEntity : class
         {
             context.Set<TEntity>().Remove(entity);
-        }
-    }
-
-    public class AdoBatch : IAdoBatch
-    {
-        private readonly DbContext context;
-        private readonly Action<object> setAudit;
-
-        public void RemoveAll<TEntity>() where TEntity : class
-        {
-            context.Database.ExecuteSqlCommand("DELETE FROM tst.ParentRecordHierarchyRecordMap");
         }
     }
 }

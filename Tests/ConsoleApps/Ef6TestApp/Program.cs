@@ -1,17 +1,31 @@
-﻿using DashboardCode.Routines.Storage.Ef6;
-using DashboardCode.Routines.Storage.EfModelTest;
-using System;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using DashboardCode.Routines.Storage.Ef6;
+using DashboardCode.Routines.Storage.EfModelTest;
+using DashboardCode.Routines.Storage;
+using DashboardCode.Routines.Storage.SqlServer;
 
 namespace DashboardCode.Ef6.Sandbox
 {
     public class Program
     {
+        static readonly List<StorageModel> storageModel = new StorageMetaService().GetStorageModels();
+
+        private static List<FieldError> Analyze(Exception exception, StorageModel storageModel)
+        {
+            var list = StorageErrorExtensions.AnalyzeException(exception,
+                  (ex, l) => {
+                      Ef6Manager.Analyze(exception, l, storageModel);
+                      SqlServerManager.Analyze(ex, l, storageModel);
+                  }
+            );
+            return list;
+        }
+
         static void Main(string[] args)
         {
             var logger = new List<string>();
@@ -23,7 +37,11 @@ namespace DashboardCode.Ef6.Sandbox
             var connectionStringName = "Ef6Test";
             using (var dbContext = new MyDbContext(connectionStringName, verbose))
             {
-                TestIsland.Reset(new Storage(dbContext,null,(o)=> { }));
+                TestIsland.Clear(new AdoBatch(dbContext));
+                TestIsland.Reset(new Storage(dbContext, null, (o) => { }));
+            }
+            using (var dbContext = new MyDbContext(connectionStringName, verbose))
+            {
                 var parentRecord = dbContext.ParentRecords
                     .Include("ParentRecordHierarchyRecordMap")
                     .Include("ParentRecordHierarchyRecordMap.HierarchyRecord").First(e => e.FieldA == "1_A");

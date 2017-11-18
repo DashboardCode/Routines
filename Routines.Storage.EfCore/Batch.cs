@@ -10,22 +10,22 @@ namespace DashboardCode.Routines.Storage.EfCore
     public class Batch<TEntity> : IBatch<TEntity> where TEntity : class
     {
         private readonly DbContext context;
-        private readonly Action<object> setAudit;
+        private readonly Action<object> setAuditProperties;
 
-        public Batch(DbContext context, Action<object> setAudit)
+        public Batch(DbContext context, Action<object> setAuditProperties)
         {
             this.context = context;
-            this.setAudit = setAudit;
+            this.setAuditProperties = setAuditProperties;
         }
         public void Add(TEntity entity)
         {
-            setAudit(entity);
+            setAuditProperties( entity);
             context.Set<TEntity>().Add(entity);
         }
 
         public void Modify(TEntity entity)
         {
-            setAudit(entity);
+            setAuditProperties(entity);
             context.Entry(entity).State = EntityState.Modified;
         }
 
@@ -41,8 +41,8 @@ namespace DashboardCode.Routines.Storage.EfCore
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class
         {
+            setAuditProperties(entity); // TODO: test if ModifyWithRelated modifies entity ?
             Expression <Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable = getRelation.ContravarianceToIEnumerable();
-
             EntityEntry<TEntity> entry = context.Entry(entity);
             var col = entry.Collection(getRelationAsEnumerable);
             col.Load();
@@ -59,7 +59,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             foreach (var e in newRelations)
                 if (!oldRelations.Any(e2 => equalsById(e, e2)))
                 {
-                    setAudit(e);
+                    setAuditProperties(e);
                     oldRelations.Add(e);
                 }
         }
@@ -69,22 +69,22 @@ namespace DashboardCode.Routines.Storage.EfCore
     public class Batch : IBatch
     {
         private readonly DbContext context;
-        private readonly Action<object> setAudit;
+        private readonly Action<object> setAuditProperties;
 
-        public Batch(DbContext context, Action<object> setAudit)
+        public Batch(DbContext context, Action<object> setAuditProperties)
         {
             this.context = context;
-            this.setAudit = setAudit;
+            this.setAuditProperties = setAuditProperties;
         }
         public void Add<TEntity>(TEntity entity) where TEntity : class
         {
-            setAudit(entity);
+            setAuditProperties(entity);
             context.Set<TEntity>().Add(entity);
         }
 
         public void Modify<TEntity>(TEntity entity) where TEntity : class
         {
-            setAudit(entity);
+            setAuditProperties(entity);
             context.Entry(entity).State = EntityState.Modified;
         }
 

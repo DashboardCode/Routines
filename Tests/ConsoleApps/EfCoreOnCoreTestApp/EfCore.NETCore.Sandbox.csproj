@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj" />
+    <ProjectReference Include="..\..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\..\..\Routines\Routines.csproj" />
   </ItemGroup>
 
