@@ -66,7 +66,7 @@ namespace DashboardCode.NLogExtensibles.Test
                             {
                                 var verboseMessages = LogManager.Generate();
                                 var count = verboseMessages.Count();
-                                var i = 0;
+                                //var i = 0;
                                 var at = DateTime.Now;
                                 foreach (var verbose in verboseMessages.Take(20))
                                 {
