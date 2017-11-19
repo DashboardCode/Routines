@@ -2,7 +2,7 @@
 {
     public static class TestIsland
     {
-        public static void Reset(IStorage storage)
+        public static void Reset(IOrmStorage storage)
         {
             storage.Handle(
                 batch =>

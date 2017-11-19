@@ -13,12 +13,12 @@ namespace DashboardCode.Routines.Storage
         TOutput       Handle<TOutput>      (Func<IRepository<TEntity>, TOutput> func);
         Task<TOutput> HandleAsync<TOutput> (Func<IRepository<TEntity>, TOutput> func);
 
-        void          Handle(Action<IRepository<TEntity>, IStorage<TEntity>> action);
-        TOutput       Handle<TOutput>      (Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput> (Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func);
+        void          Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action);
+        TOutput       Handle<TOutput>      (Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func);
+        Task<TOutput> HandleAsync<TOutput> (Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func);
 
-        void Handle(Action<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>> action);
-        TOutput Handle<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>, TOutput> func);
+        void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>, IModel<TEntity>> action);
+        TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IModel<TEntity>, TOutput> func);
+        Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IModel<TEntity>, TOutput> func);
     }
 }

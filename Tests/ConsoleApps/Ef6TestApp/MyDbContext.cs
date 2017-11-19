@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure.Annotations;
+
 using DashboardCode.Routines.Storage.EfModelTest;
 
 namespace DashboardCode.Ef6.Sandbox

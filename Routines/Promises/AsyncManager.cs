@@ -141,35 +141,38 @@ namespace DashboardCode.Routines
 
         public override void Send(SendOrPostCallback callback, object state)
         {
-            throw new NotImplementedException("Not covered");
-            if (Current as AsyncSynchronizationContext == this)
-            {
-                callback(state);
-            }
-            else
-            {
-                var actionTask = startNew(callback, state);
-                actionTask.GetAwaiter().GetResult();
-            }
+            throw new NotImplementedException(nameof(Send) +" not used in this concreate use case");
+            // NOTE: sample realization
+            // if (Current as AsyncSynchronizationContext == this)
+            // {
+            //    callback(state);
+            // }
+            // else
+            // {
+            //    var actionTask = startNew(callback, state);
+            //    actionTask.GetAwaiter().GetResult();
+            // }
         }
 
         public override SynchronizationContext CreateCopy()
         {
-            throw new NotImplementedException("Not covered");
-            return this;
+            throw new NotImplementedException(nameof(CreateCopy) + " not used in this concreate use case");
+            // NOTE: sample realization
+            // return this;
         }
 
         public override void OperationStarted()
         {
-            throw new NotImplementedException("Not covered");
-            asyncTaskScheduler.Increment();
+            throw new NotImplementedException(nameof(OperationStarted) + " not used in this concreate use case");
+            // NOTE: sample realization
+            // asyncTaskScheduler.Increment();
         }
 
         public override void OperationCompleted()
         {
-            throw new NotImplementedException("Not covered");
-            asyncTaskScheduler.Decrement();
+            throw new NotImplementedException(nameof(OperationCompleted) + " not used in this concreate use case");
+            // NOTE: sample realization
+            // asyncTaskScheduler.Decrement();
         }
-
     }
 }

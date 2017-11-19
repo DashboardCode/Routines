@@ -85,13 +85,13 @@ namespace DashboardCode.AdminkaV1.Injected
             handler.Handle(action);
         }
 
-        public void Handle<TEntity>(Action<IRepository<TEntity>, IStorage<TEntity>> action, bool noTracking = true) where TEntity : class
+        public void Handle<TEntity>(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action, bool noTracking = true) where TEntity : class
         {
             var handler = CreateRepositoryHandler<TEntity>(noTracking);
             handler.Handle(action);
         }
 
-        public void Handle<TEntity>(Action<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>> action, bool noTracking = true) where TEntity : class
+        public void Handle<TEntity>(Action<IRepository<TEntity>, IOrmStorage<TEntity>, IModel<TEntity>> action, bool noTracking = true) where TEntity : class
         {
             var handler = CreateRepositoryHandler<TEntity>(noTracking);
             handler.Handle(action);

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+using System.Data.Entity;
 
-namespace DashboardCode.Routines.Storage.EfCore
+namespace DashboardCode.Routines.Storage.Ef6
 {
-    public class Storage<TEntity> : IStorage<TEntity> where TEntity : class
+    public class OrmStorage<TEntity> : IOrmStorage<TEntity> where TEntity : class
     {
         private readonly DbContext context;
         private readonly Func<Exception, List<FieldError>> analyzeException;
         private readonly Action<object> setAuditProperties;
 
-        public Storage(
+        public OrmStorage(
             DbContext context,
             Func<Exception, List<FieldError>> analyzeException,
             Action<object> setAuditProperties)
@@ -43,13 +43,13 @@ namespace DashboardCode.Routines.Storage.EfCore
         }
     }
 
-    public class Storage : IStorage
+    public class OrmStorage : IOrmStorage
     {
         private readonly DbContext context;
         private readonly Func<Exception, List<FieldError>> analyzeException;
         private readonly Action<object> setAuditProperties;
 
-        public Storage(
+        public OrmStorage(
             DbContext context,
             Func<Exception, List<FieldError>> analyzeException,
             Action<object> setAuditProperties)
@@ -59,7 +59,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             this.setAuditProperties = setAuditProperties;
         }
 
-        public StorageError Handle(Action<IBatch> action) 
+        public StorageError Handle(Action<IBatch> action)
         {
             var batch = new Batch(context, setAuditProperties);
             try

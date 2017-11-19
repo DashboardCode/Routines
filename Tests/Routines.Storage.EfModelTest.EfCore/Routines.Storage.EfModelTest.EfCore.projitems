@@ -10,5 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)MyDbContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StraightEfTests.cs" />
   </ItemGroup>
 </Project>

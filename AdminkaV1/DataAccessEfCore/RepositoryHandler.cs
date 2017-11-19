@@ -47,23 +47,23 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             });
         }
 
-        public void Handle(Action<IRepository<TEntity>, IStorage<TEntity>> action)
+        public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action)
         {
             adminkaDbContextHandler.Handle((container, context, audit) => action(
                 new Repository<TEntity>(container, false),
-                new Storage<TEntity>(container, analyzeException, audit)
+                new OrmStorage<TEntity>(container, analyzeException, audit)
                 ));
         }
 
-        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func)
+        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func)
         {
             return adminkaDbContextHandler.Handle((container, context, audit) => func(
                 new Repository<TEntity>(container, false),
-                new Storage<TEntity>(container, analyzeException, audit)
+                new OrmStorage<TEntity>(container, analyzeException, audit)
                 ));
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func)
+        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func)
         {
             return Task.Run(() =>
             {
@@ -72,7 +72,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 {
                     output = func(
                         new Repository<TEntity>(container, noTracking),
-                        new Storage<TEntity>(container,  analyzeException, audit)
+                        new OrmStorage<TEntity>(container,  analyzeException, audit)
                         );
                 });
                 return output;
@@ -81,25 +81,25 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
         
 
-        public void Handle(Action<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>> action)
+        public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>, IModel<TEntity>> action)
         {
             adminkaDbContextHandler.Handle((container, context, audit) => action(
                new Repository<TEntity>(container, false),
-               new Storage<TEntity>(container, analyzeException, audit),
+               new OrmStorage<TEntity>(container, analyzeException, audit),
                new Model<TEntity>(container)
                ));
         }
 
-        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>, TOutput> func)
+        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IModel<TEntity>, TOutput> func)
         {
             return adminkaDbContextHandler.Handle((container, context, audit) => func(
                 new Repository<TEntity>(container, false),
-                new Storage<TEntity>(container, analyzeException, audit),
+                new OrmStorage<TEntity>(container, analyzeException, audit),
                 new Model<TEntity>(container)
                 ));
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IStorage<TEntity>, IModel<TEntity>, TOutput> func)
+        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IModel<TEntity>, TOutput> func)
         {
             return Task.Run(() =>
             {
@@ -108,7 +108,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 {
                     output = func(
                         new Repository<TEntity>(container, noTracking),
-                        new Storage<TEntity>(container, analyzeException, audit),
+                        new OrmStorage<TEntity>(container, analyzeException, audit),
                         new Model<TEntity>(container)
                         );
                 });

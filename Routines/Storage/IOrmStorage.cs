@@ -2,12 +2,12 @@
 
 namespace DashboardCode.Routines.Storage
 {
-    public interface IStorage<TEntity>
+    public interface IOrmStorage<TEntity>
     {
         StorageError Handle(Action<IBatch<TEntity>> action);
     }
 
-    public interface IStorage
+    public interface IOrmStorage
     {
         StorageError Handle(Action<IBatch> action);
     }

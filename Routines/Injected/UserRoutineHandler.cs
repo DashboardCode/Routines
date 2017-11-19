@@ -64,7 +64,7 @@ namespace DashboardCode.Routines.Injected
             });
         }
         public async Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func
+            Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func
             ) where TEntity : class
         {
             return await HandleAsync(state =>
@@ -121,7 +121,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public void HandleStorage<TEntity>(
-            Action<IRepository<TEntity>, IStorage<TEntity>> action
+            Action<IRepository<TEntity>, IOrmStorage<TEntity>> action
         ) where TEntity : class
         {
             Handle(state =>
@@ -135,7 +135,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public TOutput HandleStorage<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func
+            Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func
             ) where TEntity : class
         {
             return Handle(state =>
@@ -149,7 +149,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public async Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IStorage<TEntity>, TOutput> func
+            Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func
             ) where TEntity : class
         {
             return await HandleAsync(state =>
@@ -163,7 +163,7 @@ namespace DashboardCode.Routines.Injected
             });
         }
         public void HandleStorage<TEntity>(
-            Action<IRepository<TEntity>, IStorage<TEntity>, Routine<TUserContext>> action
+            Action<IRepository<TEntity>, IOrmStorage<TEntity>, Routine<TUserContext>> action
         ) where TEntity : class
         {
             Handle(state =>
@@ -177,7 +177,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public TOutput HandleStorage<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IStorage<TEntity>, Routine<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, IOrmStorage<TEntity>, Routine<TUserContext>, TOutput> func
             ) where TEntity : class
         {
             return Handle(state =>
@@ -191,7 +191,7 @@ namespace DashboardCode.Routines.Injected
         }
 
         public async Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IStorage<TEntity>, Routine<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, IOrmStorage<TEntity>, Routine<TUserContext>, TOutput> func
             ) where TEntity : class
         {
             return await HandleAsync(state =>

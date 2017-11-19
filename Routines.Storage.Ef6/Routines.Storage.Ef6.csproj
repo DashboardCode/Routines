@@ -54,7 +54,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QueryableChainVisitor.cs" />
     <Compile Include="Repository.cs" />
-    <Compile Include="Storage.cs" />
+    <Compile Include="OrmStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Routines\Routines.csproj">
