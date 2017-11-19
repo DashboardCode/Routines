@@ -5,23 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.Routines.Storage.EfModelTest;
 using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
-using DashboardCode.Routines.Storage;
-using DashboardCode.Routines.Storage.SqlServer;
 
 namespace DashboardCode.EfCore.NETCore.Sandbox
 {
     class Program
     {
-        private static Action<DbContextOptionsBuilder<MyDbContext>> BuildOptionsBuilder(
-            string databaseName
-            )
-        {
-            return (optionsBuilder) =>
-            {
-                optionsBuilder.UseInMemoryDatabase(databaseName);
-            };
-        }
-
         static void Main(string[] args)
         {
             var databaseName = "MyTest_InMemmory";
@@ -41,6 +29,14 @@ namespace DashboardCode.EfCore.NETCore.Sandbox
             {
                 StraightEfTests.TestHierarchy(dbContext);
             }
+        }
+
+        private static Action<DbContextOptionsBuilder<MyDbContext>> BuildOptionsBuilder(string databaseName)
+        {
+            return (optionsBuilder) =>
+            {
+                optionsBuilder.UseInMemoryDatabase(databaseName);
+            };
         }
     }
 }

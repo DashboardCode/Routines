@@ -65,7 +65,6 @@ namespace DashboardCode.Routines.Storage.EfCore
         }
     }
 
-
     public class Batch : IBatch
     {
         private readonly DbContext context;

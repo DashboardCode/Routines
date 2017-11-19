@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
-//using DashboardCode.Routines.Storage.EfModelTest;
 
 namespace DashboardCode.Routines.Storage.EfModelTest.EfCoreTest
 {
@@ -155,7 +154,4 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCoreTest
             provider.Verbose?.Invoke($"MESSAGE; categoryName={categoryName} eventId={eventId} logLevel={logLevel}" + Environment.NewLine+ text);
         }
     }
-
-    
 }
-

@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 using DashboardCode.Routines.Storage.EfModelTest;
 using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
 using DashboardCode.Routines.Storage.EfCore;
@@ -13,25 +12,6 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox
 {
     class Program
     {
-        private static Action<DbContextOptionsBuilder<MyDbContext>> BuildOptionsBuilder(
-            string connectionString,
-            bool inMemory)
-        {
-            return (optionsBuilder) =>
-            {
-                if (inMemory)
-                    optionsBuilder.UseInMemoryDatabase(
-                      "EfCoreTest_InMemory"
-                    );
-                else
-                    //Assembly.GetAssembly(typeof(Program))
-                    optionsBuilder.UseSqlServer(
-                            connectionString,
-                            sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly( "EfCore.NETFramework.Sandbox")
-                            );
-            };
-        }
-
         static void Main(string[] args)
         {
             bool inMemory = false;
@@ -58,6 +38,23 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox
             {
                 StraightEfTests.TestHierarchy(dbContext);
             }
+        }
+
+        private static Action<DbContextOptionsBuilder<MyDbContext>> BuildOptionsBuilder(string connectionString, bool inMemory)
+        {
+            return (optionsBuilder) =>
+            {
+                if (inMemory)
+                    optionsBuilder.UseInMemoryDatabase(
+                      "EfCoreTest_InMemory"
+                    );
+                else
+                    //Assembly.GetAssembly(typeof(Program))
+                    optionsBuilder.UseSqlServer(
+                            connectionString,
+                            sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly("EfCore.NETFramework.Sandbox")
+                            );
+            };
         }
     }
 }
