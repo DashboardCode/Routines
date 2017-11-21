@@ -9,7 +9,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
     {
         public static HtmlString MarkdownException(this IHtmlHelper helper, Exception exception)
         {
-            var html = InjectedManager.Html(exception);
+            var html = InjectedManager.ToHtml(exception);
             return new HtmlString(html);
         }
     }

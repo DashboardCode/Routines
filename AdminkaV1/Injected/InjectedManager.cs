@@ -46,13 +46,17 @@ namespace DashboardCode.AdminkaV1.Injected
             );
             return list;
         }
-        public static string Html(this Exception exception)
+        public static string ToHtml(this Exception exception)
         {
             string text = Markdown(exception);
             var markdown = new HeyRed.MarkdownSharp.Markdown();
-            string html = markdown.Transform(text);
-            return html;
+
+            string html1 = markdown.Transform(text);
+            var html2 = html1.Replace("<code>\n   at ", "<code><br />at ");
+
+            return html2;
         }
+
         public static string Markdown(this Exception exception)
         {
             string text = Markdown(exception, null);

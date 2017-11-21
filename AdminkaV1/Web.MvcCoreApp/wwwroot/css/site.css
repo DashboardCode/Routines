@@ -45,3 +45,7 @@ textarea {
     border-width: 0em;
     padding: 0.5em
 }
+
+.dc-exception p code {
+    background-color: mistyrose;
+}
