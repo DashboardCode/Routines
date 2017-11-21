@@ -35,3 +35,13 @@ textarea {
         display: none;
     }
 }
+
+.dc-exception {
+    cursor: pointer;
+    background-color: mistyrose;
+    color: darkred;
+    width: 100%;
+    max-width: 100%;
+    border-width: 0em;
+    padding: 0.5em
+}

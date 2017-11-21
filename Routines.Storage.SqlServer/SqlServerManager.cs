@@ -18,23 +18,26 @@ namespace DashboardCode.Routines.Storage.SqlServer
 
         public static void AppendSqlException(this StringBuilder stringBuilder, SqlException exception)
         {
-            stringBuilder.AppendMarkdownLine("SqlException data: ");
+            stringBuilder.AppendMarkdownLine("SqlException Properties: ");
             if (!string.IsNullOrEmpty(exception.Procedure))
             {
                 stringBuilder
-                    .Append("procedure: ")
+                    .Append("Procedure: ")
                     .Append(exception.Procedure)
                     .Append(", line ").AppendMarkdownLine(exception.LineNumber.ToString());
             }
-            stringBuilder.AppendLine("SqlException messages: ");
-            int i = 1;
-            foreach (var error in exception.Errors)
+            if (exception.Errors != null && exception.Errors.Count > 0)
             {
-                if (error is SqlError sqlError)
-                    stringBuilder.AppendMarkdownProperty(i.ToString(), sqlError.ToString() + ((sqlError.LineNumber>0)?(" Line:"+ sqlError.LineNumber):""));
-                else
-                    stringBuilder.AppendMarkdownProperty(i.ToString(), error.ToString());
-                i++;
+                stringBuilder.AppendMarkdownLine("Errors: ");
+                int i = 1;
+                foreach (var error in exception.Errors)
+                {
+                    if (error is SqlError sqlError)
+                        stringBuilder.AppendMarkdownEnumeration(i, sqlError.ToString() + ((sqlError.LineNumber > 0) ? (" line:" + sqlError.LineNumber) : ""));
+                    else
+                        stringBuilder.AppendMarkdownEnumeration(i, error.ToString());
+                    i++;
+                }
             }
         }
 

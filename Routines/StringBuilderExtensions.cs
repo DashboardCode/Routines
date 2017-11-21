@@ -16,5 +16,8 @@ namespace DashboardCode.Routines
 
         public static StringBuilder AppendMarkdownProperty(this StringBuilder stringBuilder, string name, string value) =>
             stringBuilder.Append("" + name + ": " + value).Append("   ").Append(Environment.NewLine);
+
+        public static StringBuilder AppendMarkdownEnumeration(this StringBuilder stringBuilder, int number, string value) =>
+            stringBuilder.Append("" + number + ") " + value).Append("    ").Append(Environment.NewLine);
     }
 }

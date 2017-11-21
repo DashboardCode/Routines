@@ -10,7 +10,7 @@
             <th>
             @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
             {
-                <button type="button" class="btn btn-default btn-sm" onclick="location.href='@Url.Action("Create", "Groups")'"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Create", "Groups")'"><span class="glyphicon glyphicon-plus-sign"></span></button>
             }
             </th>
             <th>
@@ -38,11 +38,11 @@
         {
             <tr>
                 <td class="tableActionColumn">
-                    <button type="button" class="btn btn-default btn-sm" onclick="location.href='@Url.Action("Details", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-list"></span></button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Details", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-list"></span></button>
                     @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                     {
-                        <button type="button" class="btn btn-default btn-sm" onclick="location.href='@Url.Action("Edit", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-edit"></span></button>
-                        <button type="button" class="btn btn-default btn-sm" onclick="location.href='@Url.Action("Delete", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-remove"></span></button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Edit", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-edit"></span></button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Delete", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-remove"></span></button>
                     }
                 </td>
                 <td>

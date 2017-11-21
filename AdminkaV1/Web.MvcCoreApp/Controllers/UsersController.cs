@@ -103,7 +103,6 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                 this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
                                 repository.Clone<Privilege>().List()
                             );
-
                             privilegesNavigation.Parse(
                                 e => new UserPrivilege() { UserId = entity.UserId, PrivilegeId = e.PrivilegeId },
                                 s => s);
@@ -112,7 +111,6 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                 this, "Roles", e => e.RoleId, nameof(Role.RoleName),
                                 repository.Clone<Role>().List()
                             );
-
                             rolesNavigation.Parse(
                                  e => new UserRole() { UserId = entity.UserId, RoleId = e.RoleId },
                                  s => int.Parse(s)

@@ -143,7 +143,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Routines.Storage.EfModelTes
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Routines.Storage.EfModelTest.EfCore", "Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.shproj", "{724E7146-C083-4E3F-9759-5BDA6C78FA01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.EfCore.Relational", "Routines.Storage.EfCore.Relational\Routines.Storage.EfCore.Relational.csproj", "{ADAA1949-6416-49B3-9B7A-2165EF74C079}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore.Relational", "Routines.Storage.EfCore.Relational\Routines.Storage.EfCore.Relational.csproj", "{ADAA1949-6416-49B3-9B7A-2165EF74C079}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
