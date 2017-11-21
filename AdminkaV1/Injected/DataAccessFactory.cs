@@ -7,6 +7,7 @@ using DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer;
 using DashboardCode.AdminkaV1.DataAccessEfCore.InMemory;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -70,10 +71,10 @@ namespace DashboardCode.AdminkaV1.Injected
             var dbContextHandler = CreateDbContextHandler();
             var storageModels = storageMetaService.GetStorageModels();
             var storageModel  = storageModels.FirstOrDefault(e=>e.Entity.Namespace+"."+ e.Entity.Name==typeof(TEntity).FullName);
-                            
+
             var repositoryHandler = new RepositoryHandler<TEntity>(
                 dbContextHandler,
-                ex=>InjectedManager.Analyze(ex,storageModel),
+                ex=> (storageModel==null)?new List<FieldError>():InjectedManager.Analyze(ex,storageModel),
                 noTracking
             );
             return repositoryHandler;

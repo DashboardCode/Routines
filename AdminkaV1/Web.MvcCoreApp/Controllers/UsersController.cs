@@ -46,8 +46,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var routine = new MvcRoutine(this, new { id = id });
             return await routine.HandleStorageAsync<IActionResult, User>(repository =>
             {
-                var mvcTube = new MvcHandler(this);
-                return mvcTube.Handle(
+                return this.MakeActionResultOnRequest(
                     () => id != null,
                     () => repository.Find(e => e.UserId == id, detailsIncludes)
                 );
@@ -74,8 +73,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                     repository.Clone<Group>().List()
                 );
 
-                var mvcTube = new MvcHandler(this);
-                return mvcTube.Handle(
+                return this.MakeActionResultOnRequest(
                         () => id != null,
                         () => repository.Find(e => e.UserId == id, editIncludes),
                         (entity) =>
@@ -91,61 +89,66 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
         public async Task<IActionResult> Edit([Bind(BindedFields)] User entity)
         {
             var routine = new MvcRoutine(this, new { entity = entity });
-            return await routine.HandleStorageAsync<IActionResult, User>(
-                (repository, storage, state) =>
-                {
-                    if (!state.UserContext.HasPrivilege(Privilege.ConfigureSystem))
+            
+            return await routine.HandleTransactionAsync<IActionResult, User>((commit, state) =>
+            {
+                if (!state.UserContext.HasPrivilege(Privilege.ConfigureSystem))
                         return Unauthorized();
 
-                    var privilegesNavigation = new MvcNavigationFacade<User, Privilege, UserPrivilege, string>(
-                        this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
-                        repository.Clone<Privilege>().List()
-                    );
-
-                    privilegesNavigation.Parse(
-                        e => new UserPrivilege() { UserId = entity.UserId, PrivilegeId = e.PrivilegeId },
-                        s => s);
-
-                    var rolesNavigation = new MvcNavigationFacade<User, Role, UserRole, int>(
-                        this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                        repository.Clone<Role>().List()
-                    );
-
-                    rolesNavigation.Parse(
-                         e => new UserRole() { UserId = entity.UserId, RoleId = e.RoleId },
-                         s => int.Parse(s)
-                    );
-
-                    var groupsNavigation = new MvcNavigationFacade<User, Group, UserGroup, int>(
-                        this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                        repository.Clone<Group>().List()
-                    );
-
-                    var mvcFork = new MvcHandler(this, ModelState.IsValid);
-                    return mvcFork.Handle(
-                        () => storage.Handle(
-                            batch =>
-                            {
-                                batch.Modify(entity);
-                                batch.ModifyWithRelated(entity,
-                                    e => e.UserRoleMap,
-                                    rolesNavigation.Selected,
-                                    (e1, e2) => e1.RoleId == e2.RoleId
-                                );
-                                batch.ModifyWithRelated(entity,
-                                    e => e.UserPrivilegeMap,
-                                    privilegesNavigation.Selected,
-                                    (e1, e2) => e1.PrivilegeId == e2.PrivilegeId
-                                );
-                            }),
-                        () =>
+                return commit(
+                        (repository, save) =>
                         {
-                            privilegesNavigation.Reset();
-                            rolesNavigation.Reset();
-                            groupsNavigation.Reset();
-                            return View(entity);
-                        }
-                    );
+                            #region Prepare navigation facades
+                            var privilegesNavigation = new MvcNavigationFacade<User, Privilege, UserPrivilege, string>(
+                                this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
+                                repository.Clone<Privilege>().List()
+                            );
+
+                            privilegesNavigation.Parse(
+                                e => new UserPrivilege() { UserId = entity.UserId, PrivilegeId = e.PrivilegeId },
+                                s => s);
+
+                            var rolesNavigation = new MvcNavigationFacade<User, Role, UserRole, int>(
+                                this, "Roles", e => e.RoleId, nameof(Role.RoleName),
+                                repository.Clone<Role>().List()
+                            );
+
+                            rolesNavigation.Parse(
+                                 e => new UserRole() { UserId = entity.UserId, RoleId = e.RoleId },
+                                 s => int.Parse(s)
+                            );
+
+                            var groupsNavigation = new MvcNavigationFacade<User, Group, UserGroup, int>(
+                                this, "Groups", e => e.GroupId, nameof(Group.GroupName),
+                                repository.Clone<Group>().List()
+                            );
+                            #endregion
+
+                            return this.MakeActionResultOnSave(
+                                () => save(
+                                        batch =>
+                                        {
+                                            batch.Modify(entity);
+                                            batch.ModifyWithRelated(entity,
+                                                e => e.UserRoleMap,
+                                                rolesNavigation.Selected,
+                                                (e1, e2) => e1.RoleId == e2.RoleId
+                                            );
+                                            batch.ModifyWithRelated(entity,
+                                                e => e.UserPrivilegeMap,
+                                                privilegesNavigation.Selected,
+                                                (e1, e2) => e1.PrivilegeId == e2.PrivilegeId
+                                            );
+                                        }),
+                                () =>
+                                {
+                                    privilegesNavigation.Reset();
+                                    rolesNavigation.Reset();
+                                    groupsNavigation.Reset();
+                                    return View(entity);
+                                }
+                            );
+                        });
                 });
         }
     }

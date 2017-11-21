@@ -46,6 +46,13 @@ namespace DashboardCode.AdminkaV1.Injected
             );
             return list;
         }
+        public static string Html(this Exception exception)
+        {
+            string text = Markdown(exception);
+            var markdown = new HeyRed.MarkdownSharp.Markdown();
+            string html = markdown.Transform(text);
+            return html;
+        }
         public static string Markdown(this Exception exception)
         {
             string text = Markdown(exception, null);

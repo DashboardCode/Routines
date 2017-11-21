@@ -50,8 +50,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var routine = new MvcRoutine(this, new { id = id });
             return await routine.HandleStorageAsync<IActionResult, Group>(repository =>
             {
-                var mvcTube = new MvcHandler(this);
-                return mvcTube.Handle(
+                return this.MakeActionResultOnRequest(
                     () => id != null,
                     () => repository.Find(e => e.GroupId == id, detailsIncludes)
                 );
@@ -102,8 +101,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                    e => new GroupRole() { GroupId = entity.GroupId, RoleId = e.RoleId },
                                    s => int.Parse(s));
 
-               var mvcHandler = new MvcHandler(this, ModelState.IsValid);
-               return mvcHandler.Handle(
+               return this.MakeActionResultOnSave(
+                   ModelState.IsValid,
                    () => storage.Handle(
                        batch =>
                        {
@@ -136,8 +135,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                     repository.Clone<Role>().List()
                 );
 
-                var mvcTube = new MvcHandler(this);
-                return mvcTube.Handle(
+                return this.MakeActionResultOnRequest(
                     () => id != null,
                     () => repository.Find(e => e.GroupId == id, editIncludes),
                     (entity) =>
@@ -177,8 +175,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                      s => int.Parse(s)
                 );
 
-                var mvcFork = new MvcHandler(this, ModelState.IsValid);
-                return mvcFork.Handle(
+                return this.MakeActionResultOnSave(
+                    ModelState.IsValid,
                     () => storage.Handle(
                         batch =>
                         {
@@ -209,8 +207,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var routine = new MvcRoutine(this, new { id = id });
             return await routine.HandleStorageAsync<IActionResult, Group>(repository =>
             {
-                var mvcTube = new MvcHandler(this);
-                return mvcTube.Handle(
+                return this.MakeActionResultOnRequest(
                         () => id != null,
                         () => repository.Find(e => e.GroupId == id, deleteIncludes)
                     );
@@ -225,8 +222,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                 if (!state.UserContext.HasPrivilege(Privilege.ConfigureSystem))
                     return Unauthorized();
                 var entity = repository.Find(e => e.GroupId == id);
-                var mvcFork = new MvcHandler(this);
-                return mvcFork.Handle(
+                return this.MakeActionResultOnSave(
+                        true,
                         () => storage.Handle(batch => batch.Remove(entity)),
                         () => View(nameof(GroupsController.Delete), entity)
                     );

@@ -5,28 +5,14 @@ using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public class MvcHandler
+    public static class MvcHandler
     {
-        readonly Controller controller;
-        readonly bool isValid;
-        public MvcHandler(Controller controller, bool isValid=true)
+        public static IActionResult MakeActionResultOnSave(this Controller controller, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success = null)
         {
-            this.controller = controller;
-            this.isValid = isValid;
+            return MakeActionResultOnSave(controller, controller.ModelState.IsValid, func, error);
         }
 
-        public IActionResult Handle<TEntity>(Func<bool> isValidInput, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
-        {
-            if (!isValidInput())
-                return new StatusCodeResult((int)HttpStatusCode.BadRequest);
-            var entity = getEntity();
-            if (entity == null)
-                return controller.NotFound();
-            prepareRendering?.Invoke(entity);
-            return controller.View(entity);
-        }
-
-        public IActionResult Handle(Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success = null)
+        public static IActionResult MakeActionResultOnSave(this Controller controller, bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success = null)
         {
             if (!isValid)
                 return error();
@@ -50,6 +36,17 @@ namespace DashboardCode.Routines.AspNetCore
                 controller.ViewBag.Exception = ex;
             }
             return error();
+        }
+
+        public static IActionResult MakeActionResultOnRequest<TEntity>(this Controller controller, Func<bool> isValidInput, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
+        {
+            if (!isValidInput())
+                return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+            var entity = getEntity();
+            if (entity == null)
+                return controller.NotFound();
+            prepareRendering?.Invoke(entity);
+            return controller.View(entity);
         }
     }
 }

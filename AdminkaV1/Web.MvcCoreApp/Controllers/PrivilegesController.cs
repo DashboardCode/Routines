@@ -43,8 +43,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             var routine = new MvcRoutine(this, new { id = id });
             return await routine.HandleStorageAsync<IActionResult, Privilege>(repository =>
             {
-                var mvcTube = new MvcHandler(this);
-                return mvcTube.Handle(
+                return this.MakeActionResultOnRequest(
                     () => id != null,
                     () => repository.Find(e => e.PrivilegeId == id, detailsIncludes)
                 );
@@ -69,8 +68,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                    repository.Clone<User>().List()
                 );
 
-                var mvcTube = new MvcHandler(this);
-                return mvcTube.Handle(
+                return this.MakeActionResultOnRequest(
                         () => id != null,
                         () => repository.Find(e => e.PrivilegeId == id, editIncludes),
                         (entity) =>
@@ -117,8 +115,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                     e => new UserPrivilege() { PrivilegeId = entity.PrivilegeId, UserId = e.UserId },
                                     s => int.Parse(s));
 
-                var mvcFork = new MvcHandler(this, ModelState.IsValid);
-                return mvcFork.Handle(
+                return this.MakeActionResultOnSave(
+                    ModelState.IsValid, 
                     () => storage.Handle(
                         batch =>
                         {

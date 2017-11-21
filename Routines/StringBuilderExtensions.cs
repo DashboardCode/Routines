@@ -12,9 +12,9 @@ namespace DashboardCode.Routines
             stringBuilder.Append("### ").Append(text).Append("   ").Append(Environment.NewLine);
 
         public static StringBuilder AppendMarkdownLineBlock(this StringBuilder stringBuilder, string text) =>
-            stringBuilder.AppendMarkdownLine("```").AppendMarkdownLine(text).AppendMarkdownLine("```");
+            stringBuilder.AppendLine("```").AppendMarkdownLine(text).AppendLine("```");
 
         public static StringBuilder AppendMarkdownProperty(this StringBuilder stringBuilder, string name, string value) =>
-            stringBuilder.Append("**" + name + "**: " + value).Append("   ").Append(Environment.NewLine);
+            stringBuilder.Append("" + name + ": " + value).Append("   ").Append(Environment.NewLine);
     }
 }

@@ -23,6 +23,7 @@ namespace DashboardCode.Routines
             {
                 stringBuilder.AppendMarkdownHeaderLine("SUMMARY");
                 appendHeadersRecursive(exception);
+                stringBuilder.AppendLine();
             }
 
             void appendStackTraceAndDataRecursive(Exception ex)

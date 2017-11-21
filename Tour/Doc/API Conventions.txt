@@ -4,8 +4,8 @@ V1           - was added because become possible to develop several versions in 
 			   for "one developer army"). 
 Abstractions - assembly DashboardCode.AdminkaV1 phisically located in the folder named 'DashboardCode\AdminkaV1\Abstractions' 
 		       to avoid "AdminkaV1\Adminka" tautology and because Abstractions put folder to the first place in folders list.
-DomXxx - Folders/Subnamespace in the root assembly DashboardCode.AdminkaV1 allways starts with 'Dom' prefix to indicate
-		 that this folder/subnamespace is located exactly in root assembly. e.g.  DashboardCode.AdminkaV1.DomAuthentication
+XxxDom - Folders/Subnamespace in the root assembly DashboardCode.AdminkaV1 allways starts with 'Dom' prefix to indicate
+		 that this folder/subnamespace is located exactly in root assembly. e.g.  DashboardCode.AdminkaV1.AuthenticationDom
 		 opposite to names like 'DashboardCode.AdminkaV1.DataAccessEfCore' that has its own assembly
 
 Wcf.Service        - wcf or rest service

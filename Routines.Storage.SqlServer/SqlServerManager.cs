@@ -30,7 +30,10 @@ namespace DashboardCode.Routines.Storage.SqlServer
             int i = 1;
             foreach (var error in exception.Errors)
             {
-                stringBuilder.AppendMarkdownProperty(i.ToString(), error.ToString());
+                if (error is SqlError sqlError)
+                    stringBuilder.AppendMarkdownProperty(i.ToString(), sqlError.ToString() + ((sqlError.LineNumber>0)?(" Line:"+ sqlError.LineNumber):""));
+                else
+                    stringBuilder.AppendMarkdownProperty(i.ToString(), error.ToString());
                 i++;
             }
         }

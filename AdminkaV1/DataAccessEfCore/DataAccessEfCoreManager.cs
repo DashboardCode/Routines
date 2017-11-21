@@ -10,7 +10,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     {
         public static void Analyze(Exception exception, List<FieldError> list, StorageModel storageModel)
         {
-            EfCoreManager.Analyze(exception, list, storageModel);
+            EfCoreManager.Analyze(exception, list, storageModel.Entity.Name);
         }
 
         public static void Append(StringBuilder sb, Exception ex)

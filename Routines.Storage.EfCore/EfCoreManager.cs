@@ -8,24 +8,24 @@ namespace DashboardCode.Routines.Storage.EfCore
 {
     public static class EfCoreManager
     {
-        public static void Analyze(Exception exception, List<FieldError> fieldsErrors, StorageModel storageModel)
+        public static void Analyze(Exception exception, List<FieldError> fieldsErrors, string entityName)
         {
             if (exception is DbUpdateConcurrencyException dbUpdateConcurrencyException)
                 AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, fieldsErrors);
             if (exception is InvalidOperationException invalidOperationException)
-                AnalyzeInvalidOperationException(invalidOperationException, fieldsErrors, storageModel);
+                AnalyzeInvalidOperationException(invalidOperationException, fieldsErrors, entityName);
         }
 
         static Regex fieldPkOrUniqueConstraintNullRegexV1 = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
         static Regex fieldPkOrUniqueConstraintNullRegexV2 = new Regex("Unable to track an entity of type '(?<entity>.*?)' because alternate key property '(?<field>.*?)' is null.");
-        public static void AnalyzeInvalidOperationException(InvalidOperationException ex, List<FieldError> fieldsErrors, StorageModel storageModel)
+        public static void AnalyzeInvalidOperationException(InvalidOperationException ex, List<FieldError> fieldsErrors, string entityName)
         {
             {
                 var matchCollectionV1 = fieldPkOrUniqueConstraintNullRegexV1.Matches(ex.Message);
                 if (matchCollectionV1.Count > 0)
                 {
                     var entity = matchCollectionV1[0].Groups["entity"].Value;
-                    if (storageModel.Entity.Name == entity)
+                    if (entityName == entity)
                         fieldsErrors.Add(StorageModel.GenericErrorField, "ID or alternate id has no value");
                     return;
                 }
@@ -39,7 +39,7 @@ namespace DashboardCode.Routines.Storage.EfCore
                     {
                         var entity = matchCollectionV2[0].Groups["entity"].Value;
                         var field = matchCollectionV2[0].Groups["field"].Value;
-                        if (storageModel.Entity.Name == entity)
+                        if (entityName == entity)
                             fieldsErrors.Add(field, "ID or alternate id has no value");
                     }
                     return;

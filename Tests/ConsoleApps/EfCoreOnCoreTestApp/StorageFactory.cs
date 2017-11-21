@@ -17,7 +17,7 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox
         {
             var list = StorageErrorExtensions.AnalyzeException(exception,
                   (ex, l) => {
-                      EfCoreManager.Analyze(exception, l, storageModel);
+                      EfCoreManager.Analyze(exception, l, storageModel.Entity.Name);
                       SqlServerManager.Analyze(ex, l, storageModel);
                   }
             );

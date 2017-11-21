@@ -6,29 +6,29 @@ namespace DashboardCode.Routines.Storage.Ef6
 {
     public class OrmStorage<TEntity> : IOrmStorage<TEntity> where TEntity : class
     {
-        private readonly DbContext context;
+        private readonly DbContext dbContext;
         private readonly Func<Exception, List<FieldError>> analyzeException;
         private readonly Action<object> setAuditProperties;
 
         public OrmStorage(
-            DbContext context,
+            DbContext dbContext,
             Func<Exception, List<FieldError>> analyzeException,
             Action<object> setAuditProperties)
         {
-            this.context = context;
+            this.dbContext = dbContext;
             this.analyzeException = analyzeException;
             this.setAuditProperties = setAuditProperties;
         }
 
         public StorageError Handle(Action<IBatch<TEntity>> action)
         {
-            var batch = new Batch<TEntity>(context, setAuditProperties);
+            var batch = new Batch<TEntity>(dbContext, setAuditProperties);
             try
             {
-                using (var transaction = context.Database.BeginTransaction())
+                using (var transaction = dbContext.Database.BeginTransaction())
                 {
                     action(batch);
-                    context.SaveChanges();
+                    dbContext.SaveChanges();
                     transaction.Commit();
                 }
             }
@@ -40,6 +40,38 @@ namespace DashboardCode.Routines.Storage.Ef6
                 throw;
             }
             return null;
+        }
+
+        public StorageError HandleException(Action action)
+        {
+            try
+            {
+                action();
+                dbContext.SaveChanges();
+            }
+            catch (Exception exception)
+            {
+                var list = analyzeException(exception);
+                if (list.Count > 0)
+                    return new StorageError(exception, list);
+                throw;
+            }
+            return null;
+        }
+
+        public void HandleCommit(Action action)
+        {
+            using (var transaction = dbContext.Database.BeginTransaction())
+            {
+                action();
+                transaction.Commit();
+            }
+        }
+
+        public void HandleSave(Action<IBatch<TEntity>> action)
+        {
+            action(new Batch<TEntity>(dbContext, setAuditProperties));
+            dbContext.SaveChanges();
         }
     }
 

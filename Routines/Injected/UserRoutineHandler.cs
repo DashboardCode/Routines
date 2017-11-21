@@ -205,5 +205,20 @@ namespace DashboardCode.Routines.Injected
             });
         }
 
+        public async Task<TOutput> HandleTransactionAsync<TOutput, TEntity>(
+            Func<Transacted<TEntity, TOutput>, Routine<TUserContext>, TOutput> func
+            ) where TEntity : class
+        {
+            return await HandleAsync(state =>
+            {
+                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
+                return repositoryHandler.Handle((repository, storage) =>
+                {
+                    return func(
+                        f => f(repository, f2 => storage.HandleException(() => storage.HandleCommit(() => storage.HandleSave(batch => f2(batch))))),
+                        state);
+                });
+            });
+        }
     }
 }
