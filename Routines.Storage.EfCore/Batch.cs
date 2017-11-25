@@ -23,10 +23,21 @@ namespace DashboardCode.Routines.Storage.EfCore
             context.Set<TEntity>().Add(entity);
         }
 
-        public void Modify(TEntity entity)
+        public void Modify(TEntity entity, Include<TEntity> include = null)
         {
             setAuditProperties(entity);
-            context.Entry(entity).State = EntityState.Modified;
+            var dbSet = context.Set<TEntity>();
+            var entry = context.Entry(entity);
+            var properties = entry.GetDatabaseValues();
+            var x = properties.GetValue<int>("ParentRecordId");
+            //if (include == null)
+            //{
+            //    entry.State = EntityState.Modified;
+            //}
+            //else
+            //{
+            //    var p2 = entry.GetDatabaseValues();
+            //}
         }
 
         public void Remove(TEntity entity)
@@ -34,7 +45,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             context.Set<TEntity>().Remove(entity);
         }
 
-        public void ModifyWithRelated<TRelationEntity>(
+        public void ModifyRelated<TRelationEntity>(
             TEntity entity,
             Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelation,
             IEnumerable<TRelationEntity> newRelations,
@@ -44,6 +55,8 @@ namespace DashboardCode.Routines.Storage.EfCore
             setAuditProperties(entity); // TODO: test if ModifyWithRelated modifies entity ?
             Expression <Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable = getRelation.ContravarianceToIEnumerable();
             EntityEntry<TEntity> entry = context.Entry(entity);
+            //if (entry.State == EntityState.Detached)
+            //    entry.State = EntityState.Unchanged;
             var col = entry.Collection(getRelationAsEnumerable);
             col.Load();
             var getRelationFunc = getRelation.Compile();

@@ -2,11 +2,29 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using DashboardCode.Routines.Storage.SqlServer;
+using DashboardCode.Routines.Storage.EfCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Linq;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCoreTest
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 {
     public class MyDbContext : DbContext
     {
+        //public static void AddLoggerProvider(Action<DbContextOptionsBuilder<MyDbContext>> buildOptionsBuilder, MyLoggerProvider loggerProvider)
+        //{
+        //    var _serviceScope = ((IServiceScopeFactory)ServiceProviderServiceExtensions.GetRequiredService<IServiceScopeFactory>(ServiceProviderCache.Instance.GetOrAdd((IDbContextOptions)options, true))).CreateScope();
+
+        //    IServiceProvider serviceProvider = _serviceScope.ServiceProvider;
+        //    IDbContextServices service = (IDbContextServices)ServiceProviderServiceExtensions.GetService<IDbContextServices>(serviceProvider);
+
+        //    //ServiceProviderServiceExtensions.GetService<ILoggerFactory>()
+        //    using (var dbContex = new MyDbContext(buildOptionsBuilder))
+        //        dbContex.GetService<ILoggerFactory>().AddProvider(loggerProvider);
+        //}
+
         private static DbContextOptions<MyDbContext> CreateOptions(
             Action<DbContextOptionsBuilder<MyDbContext>> buildOptionsBuilder
             )
@@ -22,11 +40,11 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCoreTest
             : base(CreateOptions(buildOptionsBuilder))
         {
         }
-        public MyDbContext(Action<DbContextOptionsBuilder<MyDbContext>> buildOptionsBuilder, MyLoggerProvider loggerProvider)
-            : base(CreateOptions(buildOptionsBuilder))
-        {
-            this.GetService<ILoggerFactory>().AddProvider(loggerProvider);
-        }
+        //public MyDbContext(Action<DbContextOptionsBuilder<MyDbContext>> buildOptionsBuilder, MyLoggerProvider loggerProvider)
+        //    : base(CreateOptions(buildOptionsBuilder))
+        //{
+        //    this.GetService<ILoggerFactory>().AddProvider(loggerProvider);
+        //}
         private static string GetEntityTableName(string value)
         {
             return value + "s";
@@ -107,51 +125,6 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCoreTest
                 .HasForeignKey(r => r.HierarchyRecordId);
             #endregion
             #endregion
-        }
-    }
-
-    public sealed class MyLoggerProvider : ILoggerProvider
-    {
-        public Action<string> Verbose { get; set; }
-        public MyLoggerProvider()
-        {
-        }
-
-        public ILogger CreateLogger(string categoryName)
-        {
-            return new MyV1Logger(categoryName, this);
-        }
-
-        public void Dispose()
-        {
-
-        }
-    }
-
-    class MyV1Logger : ILogger
-    {
-        readonly string categoryName;
-        readonly MyLoggerProvider provider;
-        public MyV1Logger(string categoryName, MyLoggerProvider provider)
-        {
-            this.categoryName = categoryName;
-            this.provider = provider;
-        }
-
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            return null;
-        }
-
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            return provider.Verbose != null;
-        }
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-        {
-            var text = formatter(state, exception);
-            provider.Verbose?.Invoke($"MESSAGE; categoryName={categoryName} eventId={eventId} logLevel={logLevel}" + Environment.NewLine+ text);
         }
     }
 }

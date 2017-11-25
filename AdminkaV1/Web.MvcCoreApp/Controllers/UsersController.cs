@@ -14,6 +14,9 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             + nameof(AuthenticationDom.User.LoginName) + ", "
             + nameof(AuthenticationDom.User.FirstName) + ", "
             + nameof(AuthenticationDom.User.SecondName);
+
+        const string EditBindedFields = nameof(AuthenticationDom.User.UserId);
+
         Include<User> indexIncludes;
         Include<User> detailsIncludes;
         Include<User> editIncludes;
@@ -86,7 +89,7 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
             });
         }
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind(BindedFields)] User entity)
+        public async Task<IActionResult> Edit([Bind(EditBindedFields)] User entity)
         {
             var routine = new MvcRoutine(this, new { entity = entity });
             
@@ -127,12 +130,12 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                         batch =>
                                         {
                                             batch.Modify(entity);
-                                            batch.ModifyWithRelated(entity,
+                                            batch.ModifyRelated(entity,
                                                 e => e.UserRoleMap,
                                                 rolesNavigation.Selected,
                                                 (e1, e2) => e1.RoleId == e2.RoleId
                                             );
-                                            batch.ModifyWithRelated(entity,
+                                            batch.ModifyRelated(entity,
                                                 e => e.UserPrivilegeMap,
                                                 privilegesNavigation.Selected,
                                                 (e1, e2) => e1.PrivilegeId == e2.PrivilegeId

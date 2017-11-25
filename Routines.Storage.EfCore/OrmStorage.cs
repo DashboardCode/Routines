@@ -22,24 +22,11 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public StorageError Handle(Action<IBatch<TEntity>> action)
         {
-            var batch = new Batch<TEntity>(dbContext, setAuditProperties);
-            try
-            {
-                using (var transaction = dbContext.Database.BeginTransaction())
-                {
+            return HandleException(() => {
+                HandleSave((batch) => {
                     action(batch);
-                    dbContext.SaveChanges();
-                    transaction.Commit();
-                }
-            }
-            catch (Exception exception)
-            {
-                var list = analyzeException(exception);
-                if (list.Count > 0)
-                    return new StorageError(exception, list);
-                throw;
-            }
-            return null;
+                });
+            });
         }
 
         public StorageError HandleException(Action action)
@@ -111,6 +98,5 @@ namespace DashboardCode.Routines.Storage.EfCore
             }
             return null;
         }
-
     }
 }

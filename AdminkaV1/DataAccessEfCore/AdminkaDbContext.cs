@@ -1,13 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.Logging;
+
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.TestDom;
+using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
     public class AdminkaDbContext : DbContext
     {
+        public readonly ILoggerFactory loggerFactory;
+        public readonly Action<ILoggerFactory> returnLoggerFactory;
         static AdminkaDbContext()
         {
             var loadit = new[] 
@@ -19,8 +26,36 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         }
 
         public AdminkaDbContext(IAdminkaOptionsFactory optionsFactory)
-            : base(optionsFactory.CreateOptions<AdminkaDbContext>())
+            : base(optionsFactory
+                  .BuildOptions(
+                        new DbContextOptionsBuilder<AdminkaDbContext>()
+                    )
+              )
         {
+        }
+
+        public AdminkaDbContext(
+            IAdminkaOptionsFactory optionsFactory, 
+            Func<StatefullLoggerFactory>   getLoggerFactory,
+            Action<StatefullLoggerFactory> returnLoggerFactory
+            )
+            : this(optionsFactory)
+        {
+        }
+
+        private AdminkaDbContext(IAdminkaOptionsFactory optionsFactory,
+            ILoggerFactory loggerFactory,
+            Action<ILoggerFactory> returnLoggerFactory
+            )
+            : base(optionsFactory
+                  .BuildOptions(
+                        new DbContextOptionsBuilder<AdminkaDbContext>()
+                            .UseLoggerFactory(loggerFactory)
+                    )
+              )
+        {
+            this.loggerFactory = loggerFactory;
+            this.returnLoggerFactory = returnLoggerFactory;
         }
 
         #region DbSets
@@ -250,8 +285,15 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             #endregion
         }
 
+        // NOTE: not threadsafe way of disposing
+        bool isDisposed;
         public override void Dispose()
         {
+            if (!isDisposed)
+            {
+                returnLoggerFactory(this.loggerFactory);
+                isDisposed = true;
+            }
             base.Dispose();
         }
     }

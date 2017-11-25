@@ -8,7 +8,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     {
         readonly AdminkaDbContextFactory dbContextFactory;
         readonly Routine<UserContext>    state;
-        readonly Action<object>  setAuditProperties;
+        readonly Action<object>          setAuditProperties;
         public AdminkaDbContextHandler(Routine<UserContext> state, Action<object> setAuditProperties, IAdminkaOptionsFactory optionsFactory)
         {
             this.state = state;

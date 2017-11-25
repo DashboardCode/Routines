@@ -12,8 +12,8 @@ namespace DashboardCode.Routines.Storage
     {
         void Add(TEntity t);
         void Remove(TEntity t);
-        void Modify(TEntity t);
-        void ModifyWithRelated<TRelationEntity>(
+        void Modify(TEntity t, Include<TEntity> include=null);
+        void ModifyRelated<TRelationEntity>(
                 TEntity entity,
                 Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelated,
                 IEnumerable<TRelationEntity> releatedCollection,

@@ -9,6 +9,8 @@
     <Import_RootNamespace>Routines.Storage.EfModelTest.EfCore</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)StatefullLoggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ExceptionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MyDbContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StraightEfTests.cs" />
   </ItemGroup>

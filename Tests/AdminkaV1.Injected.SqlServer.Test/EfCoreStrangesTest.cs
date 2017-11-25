@@ -36,7 +36,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch.Handle(
                             (storage) =>
                             {
-                                storage.ModifyWithRelated(
+                                storage.ModifyRelated(
                                     parentRecord,
                                     e => e.ParentRecordHierarchyRecordMap,
                                     only2,
@@ -82,7 +82,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch.Handle(
                             (storage) =>
                             {
-                                storage.ModifyWithRelated(
+                                storage.ModifyRelated(
                                     parentRecord,
                                     e => e.ParentRecordHierarchyRecordMap,
                                     only2,

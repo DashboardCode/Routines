@@ -24,10 +24,18 @@ namespace DashboardCode.Routines.Storage.Ef6
             context.Set<TEntity>().Add(entity);
         }
 
-        public void Modify(TEntity entity)
+        public void Modify(TEntity entity, Include<TEntity> include = null)
         {
             setAuditProperties(entity);
-            context.Entry(entity).State = EntityState.Modified;
+            var entry = context.Entry(entity);
+            if (include == null)
+            {
+                entry.State = EntityState.Modified;
+            }
+            else
+            {
+                var p = entry.GetDatabaseValues();
+            }
         }
 
         public void Remove(TEntity entity)
@@ -35,7 +43,7 @@ namespace DashboardCode.Routines.Storage.Ef6
             context.Set<TEntity>().Remove(entity);
         }
 
-        public void ModifyWithRelated<TRelationEntity>(
+        public void ModifyRelated<TRelationEntity>(
             TEntity entity,
             Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelated,
             IEnumerable<TRelationEntity> newRelated,
@@ -64,6 +72,7 @@ namespace DashboardCode.Routines.Storage.Ef6
                     oldRelations.Add(e);
                 }
         }
+
     }
 
     public class Batch : IBatch

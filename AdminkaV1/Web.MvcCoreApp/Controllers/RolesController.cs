@@ -126,9 +126,9 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                        batch =>
                        {
                            batch.Add(entity);
-                           batch.ModifyWithRelated(entity, e => e.RolePrivilegeMap, privilegesNavigation.Selected, (e1, e2) => e1.RoleId == e2.RoleId);
-                           batch.ModifyWithRelated(entity, e => e.GroupRoleMap, groupsNavigation.Selected, (e1, e2) => e1.RoleId == e2.RoleId);
-                           batch.ModifyWithRelated(entity, e => e.UserRoleMap, usersNavigation.Selected, (e1, e2) => e1.RoleId == e2.RoleId);
+                           batch.ModifyRelated(entity, e => e.RolePrivilegeMap, privilegesNavigation.Selected, (e1, e2) => e1.RoleId == e2.RoleId);
+                           batch.ModifyRelated(entity, e => e.GroupRoleMap, groupsNavigation.Selected, (e1, e2) => e1.RoleId == e2.RoleId);
+                           batch.ModifyRelated(entity, e => e.UserRoleMap, usersNavigation.Selected, (e1, e2) => e1.RoleId == e2.RoleId);
                        }),
                    () =>
                    {
@@ -216,17 +216,17 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                                         batch =>
                                         {
                                             batch.Modify(role);
-                                            batch.ModifyWithRelated(role,
+                                            batch.ModifyRelated(role,
                                                  e => e.GroupRoleMap,
                                                  groupsNavigation.Selected,
                                                  (e1, e2) => e1.RoleId == e2.RoleId
                                             );
-                                            batch.ModifyWithRelated(role,
+                                            batch.ModifyRelated(role,
                                                  e => e.RolePrivilegeMap,
                                                  privilegesNavigation.Selected,
                                                  (e1, e2) => e1.PrivilegeId == e2.PrivilegeId
                                             );
-                                            batch.ModifyWithRelated(role,
+                                            batch.ModifyRelated(role,
                                                  e => e.UserRoleMap,
                                                  usersNavigation.Selected,
                                                  (e1, e2) => e1.RoleId == e2.RoleId

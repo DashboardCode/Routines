@@ -121,17 +121,17 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                         batch =>
                         {
                             batch.Modify(entity);
-                            batch.ModifyWithRelated(entity,
+                            batch.ModifyRelated(entity,
                                 e => e.GroupPrivilegeMap,
                                 groupsNavigation.Selected,
                                 (e1, e2) => e1.PrivilegeId == e2.PrivilegeId
                             );
-                            batch.ModifyWithRelated(entity,
+                            batch.ModifyRelated(entity,
                                 e => e.RolePrivilegeMap,
                                 rolesNavigation.Selected,
                                 (e1, e2) => e1.PrivilegeId == e2.PrivilegeId
                             );
-                            batch.ModifyWithRelated(entity,
+                            batch.ModifyRelated(entity,
                                 e => e.UserPrivilegeMap,
                                 usersNavigation.Selected,
                                 (e1, e2) => e1.PrivilegeId == e2.PrivilegeId

@@ -5,7 +5,7 @@ using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfModelTest;
-using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
+using DashboardCode.Routines.Storage.EfModelTest.EfCore;
 
 namespace DashboardCode.EfCore.NETFramework.Sandbox
 {

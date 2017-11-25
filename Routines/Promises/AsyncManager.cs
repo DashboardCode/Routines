@@ -73,7 +73,6 @@ namespace DashboardCode.Routines
             blockingCollection.Dispose();
         }
 
-
         protected override IEnumerable<Task> GetScheduledTasks()
         {
             foreach (var (hasAwait, task) in blockingCollection)

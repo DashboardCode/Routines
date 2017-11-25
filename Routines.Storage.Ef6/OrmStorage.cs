@@ -15,31 +15,18 @@ namespace DashboardCode.Routines.Storage.Ef6
             Func<Exception, List<FieldError>> analyzeException,
             Action<object> setAuditProperties)
         {
-            this.dbContext = dbContext;
-            this.analyzeException = analyzeException;
+            this.dbContext          = dbContext;
+            this.analyzeException   = analyzeException;
             this.setAuditProperties = setAuditProperties;
         }
 
         public StorageError Handle(Action<IBatch<TEntity>> action)
         {
-            var batch = new Batch<TEntity>(dbContext, setAuditProperties);
-            try
-            {
-                using (var transaction = dbContext.Database.BeginTransaction())
-                {
+            return HandleException(()=> {
+                HandleSave((batch) => {
                     action(batch);
-                    dbContext.SaveChanges();
-                    transaction.Commit();
-                }
-            }
-            catch (Exception exception)
-            {
-                var list = analyzeException(exception);
-                if (list.Count > 0)
-                    return new StorageError(exception, list);
-                throw;
-            }
-            return null;
+                });
+            });
         }
 
         public StorageError HandleException(Action action)
@@ -47,7 +34,6 @@ namespace DashboardCode.Routines.Storage.Ef6
             try
             {
                 action();
-                dbContext.SaveChanges();
             }
             catch (Exception exception)
             {

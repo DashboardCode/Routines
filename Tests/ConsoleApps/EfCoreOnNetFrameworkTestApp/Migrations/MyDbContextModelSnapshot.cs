@@ -1,7 +1,7 @@
-﻿using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using DashboardCode.Routines.Storage.EfModelTest.EfCore;
 
 namespace DashboardCode.EfCore.NETFramework.Sandbox.Migrations
 {

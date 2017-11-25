@@ -49,7 +49,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch =>
                         {
                             batch.Add(group);
-                            batch.ModifyWithRelated(
+                            batch.ModifyRelated(
                                 group,
                                 e => e.GroupPrivilegeMap,
                                 selectedPrivileges, 
@@ -82,7 +82,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch =>
                         {
                             batch.Modify(entity);
-                            batch.ModifyWithRelated(
+                            batch.ModifyRelated(
                                 entity,
                                 (e => e.GroupPrivilegeMap),
                                 selectedPrivileges,
@@ -148,7 +148,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch.Handle(
                             (storage) =>
                             {
-                                storage.ModifyWithRelated(
+                                storage.ModifyRelated(
                                     parentRecord,
                                     e => e.ParentRecordHierarchyRecordMap,
                                     only2,
@@ -168,7 +168,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                             batch.Handle(
                                 (storage) =>
                                 {
-                                    storage.ModifyWithRelated(
+                                    storage.ModifyRelated(
                                         parentRecord2,
                                         e => e.ParentRecordHierarchyRecordMap,
                                         only1,

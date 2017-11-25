@@ -49,3 +49,7 @@ textarea {
 .dc-exception p code {
     background-color: mistyrose;
 }
+
+.dc-exception p  {
+    margin-left: 0.2em;
+}

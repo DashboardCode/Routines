@@ -107,8 +107,8 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                        batch =>
                        {
                            batch.Add(entity);
-                           batch.ModifyWithRelated(entity, e => e.GroupPrivilegeMap, privilegesNavigation.Selected, (e1, e2) => e1.GroupId == e2.GroupId);
-                           batch.ModifyWithRelated(entity, e => e.GroupRoleMap, rolesNavigation.Selected, (e1, e2) => e1.GroupId == e2.GroupId);
+                           batch.ModifyRelated(entity, e => e.GroupPrivilegeMap, privilegesNavigation.Selected, (e1, e2) => e1.GroupId == e2.GroupId);
+                           batch.ModifyRelated(entity, e => e.GroupRoleMap, rolesNavigation.Selected, (e1, e2) => e1.GroupId == e2.GroupId);
                        }),
                    () =>
                    {
@@ -181,12 +181,12 @@ namespace DashboardCode.AdminkaV1.Web.MvcCoreApp
                         batch =>
                         {
                             batch.Modify(group);
-                            batch.ModifyWithRelated(group,
+                            batch.ModifyRelated(group,
                                 e => e.GroupRoleMap,
                                 rolesNavigation.Selected,
                                 (e1, e2) => e1.RoleId == e2.RoleId
                             );
-                            batch.ModifyWithRelated(group,
+                            batch.ModifyRelated(group,
                                 e => e.GroupPrivilegeMap,
                                 privilegesNavigation.Selected,
                                 (e1, e2) => e1.PrivilegeId == e2.PrivilegeId
