@@ -5,8 +5,8 @@ namespace DashboardCode.Routines.Storage.EfCore
 {
     public class StatefullLoggerProvider : ILoggerProvider
     {
-        private LoggerProviderConfiguration loggerProviderConfiguration;
-        private Action<string> verbose;
+        internal LoggerProviderConfiguration loggerProviderConfiguration;
+        internal Action<string> verbose;
         internal StatefullLoggerProvider() {}
 
         internal void Set(Action<string> verbose, LoggerProviderConfiguration loggerProviderConfiguration)
@@ -16,7 +16,7 @@ namespace DashboardCode.Routines.Storage.EfCore
         }
 
         public ILogger CreateLogger(string categoryName) =>
-            new Logger(categoryName, verbose, loggerProviderConfiguration);
+            new Logger(categoryName, this);
 
         void IDisposable.Dispose(){}
     }

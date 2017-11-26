@@ -23,23 +23,21 @@ namespace DashboardCode.EfCore.NETCore.Sandbox
 
             var databaseName = "MyTest_InMemmory";
             Console.Write($"DatabaseName: {databaseName}");
-            using (var dbContext = new MyDbContext(BuildOptionsBuilder(databaseName, verbose)))
+            using (var dbContext = new MyDbContext(BuildOptionsBuilder(databaseName), verbose))
             {
                 TestIsland.Reset(new OrmStorage(dbContext, null, (o)=> { }));
             }
-            using (var dbContext = new MyDbContext(BuildOptionsBuilder(databaseName, verbose)))
+            using (var dbContext = new MyDbContext(BuildOptionsBuilder(databaseName), verbose))
             {
                 StraightEfTests.TestHierarchy(dbContext);
             }
         }
 
-        private static Action<DbContextOptionsBuilder<MyDbContext>> BuildOptionsBuilder(string databaseName, Action<string> verbose)
+        private static Action<DbContextOptionsBuilder> BuildOptionsBuilder(string databaseName)
         {
             return (optionsBuilder) =>
             {
                 optionsBuilder.UseInMemoryDatabase(databaseName);
-                var loggerFactory = StatefullLoggerFactoryPool.Instance.Get(verbose, new LoggerProviderConfiguration() { Enabled = true });
-                optionsBuilder.UseLoggerFactory(loggerFactory);
             };
         }
     }

@@ -2,7 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.Logging;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.LoggingDom;
@@ -13,8 +12,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
     public class AdminkaDbContext : DbContext
     {
-        public readonly ILoggerFactory loggerFactory;
-        public readonly Action<ILoggerFactory> returnLoggerFactory;
         static AdminkaDbContext()
         {
             var loadit = new[] 
@@ -25,37 +22,39 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             };
         }
 
-        public AdminkaDbContext(IAdminkaOptionsFactory optionsFactory)
-            : base(optionsFactory
-                  .BuildOptions(
-                        new DbContextOptionsBuilder<AdminkaDbContext>()
-                    )
-              )
+        readonly Action<DbContextOptionsBuilder> buildOptionsBuilder;
+        readonly Action<string> verbose;
+        public AdminkaDbContext(Action<DbContextOptionsBuilder> buildOptionsBuilder, Action<string> verbose = null)
+            : base()
         {
+            this.buildOptionsBuilder = buildOptionsBuilder;
+            this.verbose = verbose;
         }
 
-        public AdminkaDbContext(
-            IAdminkaOptionsFactory optionsFactory, 
-            Func<StatefullLoggerFactory>   getLoggerFactory,
-            Action<StatefullLoggerFactory> returnLoggerFactory
-            )
-            : this(optionsFactory)
+        private void SetupVersioned<T>(EntityTypeBuilder<T> builder) where T : class, IVersioned
         {
+            builder.Property(e => e.RowVersionBy).HasMaxLength(LengthConstants.AdName);
+            builder.Property(e => e.RowVersion).IsRowVersion();
         }
 
-        private AdminkaDbContext(IAdminkaOptionsFactory optionsFactory,
-            ILoggerFactory loggerFactory,
-            Action<ILoggerFactory> returnLoggerFactory
-            )
-            : base(optionsFactory
-                  .BuildOptions(
-                        new DbContextOptionsBuilder<AdminkaDbContext>()
-                            .UseLoggerFactory(loggerFactory)
-                    )
-              )
+        private Action returnLoggerFactory;
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            this.loggerFactory = loggerFactory;
-            this.returnLoggerFactory = returnLoggerFactory;
+            if (verbose != null)
+            {
+                var loggerFactory = StatefullLoggerFactoryPool.Instance.Get(verbose, new LoggerProviderConfiguration { Enabled = true, CommandBuilderOnly = false });
+                returnLoggerFactory = () => StatefullLoggerFactoryPool.Instance.Return(loggerFactory);
+                optionsBuilder.UseLoggerFactory(loggerFactory);
+            }
+            buildOptionsBuilder(optionsBuilder);
+        }
+
+        // NOTE: not threadsafe way of disposing
+        public override void Dispose()
+        {
+            returnLoggerFactory?.Invoke();
+            returnLoggerFactory = null;
+            base.Dispose();
         }
 
         #region DbSets
@@ -79,11 +78,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         }
         #endregion
 
-        private void SetupVersioned<T>(EntityTypeBuilder<T> builder) where T : class, IVersioned
-        {
-            builder.Property(e => e.RowVersionBy).HasMaxLength(LengthConstants.AdName);
-            builder.Property(e => e.RowVersion).IsRowVersion();
-        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             SetupVersioned(modelBuilder.Entity<TypeRecord>());
@@ -283,18 +277,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 .WithMany(p => p.UserRoleMap)
                 .HasForeignKey(up => up.RoleId);
             #endregion
-        }
-
-        // NOTE: not threadsafe way of disposing
-        bool isDisposed;
-        public override void Dispose()
-        {
-            if (!isDisposed)
-            {
-                returnLoggerFactory(this.loggerFactory);
-                isDisposed = true;
-            }
-            base.Dispose();
         }
     }
 }

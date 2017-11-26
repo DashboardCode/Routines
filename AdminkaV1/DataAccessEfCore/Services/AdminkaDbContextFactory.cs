@@ -7,38 +7,21 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
     public class AdminkaDbContextFactory
     {
         readonly IAdminkaOptionsFactory optionsFactory;
-        readonly Func<StatefullLoggerFactory> getLoggerFactory;
-        readonly Action<StatefullLoggerFactory> returnLoggerFactory;
-
+        readonly Action<string> verbose;
         public AdminkaDbContextFactory(
             IAdminkaOptionsFactory optionsFactory, 
             Routine<UserContext> state)
         {
             this.optionsFactory = optionsFactory;
             var loggerProviderConfiguration = state.Resolve<LoggerProviderConfiguration>();
-            var verbose = state.Verbose;
             if (loggerProviderConfiguration.Enabled)
-            {
-                this.getLoggerFactory = () =>
-                {
-                    var l = StatefullLoggerFactoryPool.Instance.Get(verbose, loggerProviderConfiguration);
-                    return l;
-                };
-
-                this.returnLoggerFactory = (l) =>
-                {
-                    StatefullLoggerFactoryPool.Instance.Return(l);
-                };
-            }
+                verbose = state.Verbose;
         }
 
         public AdminkaDbContext CreateAdminkaDbContext()
         {
-            var dbContext = (getLoggerFactory == null)?
-                new AdminkaDbContext(optionsFactory):
-                new AdminkaDbContext(optionsFactory, getLoggerFactory, returnLoggerFactory);
+            var dbContext = new AdminkaDbContext((b)=>optionsFactory.BuildOptions(b), verbose);
             return dbContext;
         }
     }
 }
-

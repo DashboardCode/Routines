@@ -9,17 +9,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.InMemory
         public InMemoryAdminkaOptionsFactory(string databaseName) =>
             this.databaseName = databaseName;
 
-        //public DbContextOptions<TContext> CreateOptions<TContext>() where TContext : DbContext
-        //{
-        //    var optionsBuilder = new DbContextOptionsBuilder<TContext>();
-        //    optionsBuilder.UseInMemoryDatabase(databaseName);
-        //    optionsBuilder.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-
-        //    var options = optionsBuilder.Options;
-        //    return options;
-        //}
-
-        public DbContextOptions<TContext> BuildOptions<TContext>(DbContextOptionsBuilder<TContext> optionsBuilder) where TContext : DbContext
+        public DbContextOptions BuildOptions(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseInMemoryDatabase(databaseName);
             optionsBuilder.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));

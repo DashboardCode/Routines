@@ -1,71 +1,50 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.Routines.Storage.EfCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore.Internal;
-using System.Linq;
 
 namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 {
     public class MyDbContext : DbContext
     {
-        //public static void AddLoggerProvider(Action<DbContextOptionsBuilder<MyDbContext>> buildOptionsBuilder, MyLoggerProvider loggerProvider)
-        //{
-        //    var _serviceScope = ((IServiceScopeFactory)ServiceProviderServiceExtensions.GetRequiredService<IServiceScopeFactory>(ServiceProviderCache.Instance.GetOrAdd((IDbContextOptions)options, true))).CreateScope();
-
-        //    IServiceProvider serviceProvider = _serviceScope.ServiceProvider;
-        //    IDbContextServices service = (IDbContextServices)ServiceProviderServiceExtensions.GetService<IDbContextServices>(serviceProvider);
-
-        //    //ServiceProviderServiceExtensions.GetService<ILoggerFactory>()
-        //    using (var dbContex = new MyDbContext(buildOptionsBuilder))
-        //        dbContex.GetService<ILoggerFactory>().AddProvider(loggerProvider);
-        //}
-
-        private static DbContextOptions<MyDbContext> CreateOptions(
-            Action<DbContextOptionsBuilder<MyDbContext>> buildOptionsBuilder
-            )
+        readonly Action<DbContextOptionsBuilder> buildOptionsBuilder;
+        readonly Action<string> verbose;
+        public MyDbContext(Action<DbContextOptionsBuilder> buildOptionsBuilder, Action<string> verbose=null): base()
         {
-            var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
-            buildOptionsBuilder(optionsBuilder);
-
-            var options = optionsBuilder.Options;
-            return options;
+            this.buildOptionsBuilder = buildOptionsBuilder;
+            this.verbose = verbose;
         }
 
-        public MyDbContext(Action<DbContextOptionsBuilder<MyDbContext>> buildOptionsBuilder)
-            : base(CreateOptions(buildOptionsBuilder))
-        {
-        }
-        //public MyDbContext(Action<DbContextOptionsBuilder<MyDbContext>> buildOptionsBuilder, MyLoggerProvider loggerProvider)
-        //    : base(CreateOptions(buildOptionsBuilder))
-        //{
-        //    this.GetService<ILoggerFactory>().AddProvider(loggerProvider);
-        //}
         private static string GetEntityTableName(string value)
         {
             return value + "s";
         }
+
         private static string GetMapTableName(string value)
         {
             return value + "Map";
         }
+
         #region DbSets
-        public DbSet<ParentRecord> ParentRecords { get; set; }
-        public DbSet<ChildRecord> ChildRecords { get; set; }
+        public DbSet<ParentRecord> ParentRecords  { get; set; }
+        public DbSet<ChildRecord> ChildRecords    { get; set; }
         public DbSet<HierarchyRecord> TestRecords { get; set; }
         public DbSet<TypeRecord> TypeRecords { get; set; }
         public DbSet<HierarchyRecord> HierarchyRecords { get; set; }
         public DbSet<ParentRecordHierarchyRecord> ParentRecordHierarchyRecords { get; set; }
         #endregion
 
+        private Action returnLoggerFactory;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
+            if (verbose != null)
+            {
+                var loggerFactory = StatefullLoggerFactoryPool.Instance.Get(verbose, new LoggerProviderConfiguration { Enabled = true, CommandBuilderOnly = false });
+                returnLoggerFactory = () => StatefullLoggerFactoryPool.Instance.Return(loggerFactory);
+                optionsBuilder.UseLoggerFactory(loggerFactory);
+            }
+            buildOptionsBuilder(optionsBuilder);
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             #region Test Island
@@ -107,9 +86,6 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                .ToTable(GetEntityTableName(nameof(HierarchyRecord)), schema: testIslandSchema)
                .HasKey(e => e.HierarchyRecordId);
 
-            #region ParentRecordHierarchyRecord
-
-
             modelBuilder.Entity<ParentRecordHierarchyRecord>()
                 .ToTable(GetMapTableName(nameof(ParentRecordHierarchyRecord)), schema: testIslandSchema)
                 .HasKey(e => new { e.ParentRecordId, e.HierarchyRecordId });
@@ -124,7 +100,14 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 .WithMany(hr => hr.ParentRecordHierarchyRecordMap)
                 .HasForeignKey(r => r.HierarchyRecordId);
             #endregion
-            #endregion
+        }
+
+        // NOTE: not threadsafe way of disposing
+        public override void Dispose()
+        {
+            returnLoggerFactory?.Invoke();
+            returnLoggerFactory = null;
+            base.Dispose();
         }
     }
 }

@@ -5,7 +5,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
 {
     // TODO: support sql express
     // optionsBuilder.UseSqlite("Filename=./blog.db");
-
     public class SqlServerAdminkaOptionsFactory: IAdminkaOptionsFactory
     {
         readonly string connectionString;
@@ -16,24 +15,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
             this.migrationAssembly = migrationAssembly;
         }
 
-        //public DbContextOptions<TContext> CreateOptions<TContext>() where TContext : DbContext
-        //{
-        //    var optionsBuilder = new DbContextOptionsBuilder<TContext>();
-        //    if (migrationAssembly != null)
-        //        optionsBuilder.UseSqlServer(connectionString, sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly(migrationAssembly));
-        //    else
-        //        optionsBuilder.UseSqlServer(connectionString);
-
-        //    var relationalOptions = RelationalOptionsExtension.Extract(optionsBuilder.Options);
-        //    // TODO: Migrate those 2 lines to EF Core 2
-        //    //relationalOptions.MigrationsHistoryTableName = "Migrations";
-        //    //relationalOptions.MigrationsHistoryTableSchema = "ef";
-
-        //    var options = optionsBuilder.Options;
-        //    return options;
-        //}
-
-        public DbContextOptions<TContext> BuildOptions<TContext>(DbContextOptionsBuilder<TContext> optionsBuilder) where TContext : DbContext
+        public DbContextOptions BuildOptions(DbContextOptionsBuilder optionsBuilder) 
         {
             if (migrationAssembly != null)
                 optionsBuilder.UseSqlServer(connectionString, sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly(migrationAssembly));
