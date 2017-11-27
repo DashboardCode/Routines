@@ -15,7 +15,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public DataAccessFactory CreateDataAccessFactory(Routine<UserContext> state)
         {
-            var dataAccessFactory = new DataAccessFactory(state, adminkaStorageConfiguration, storageMetaService);
+            var dataAccessFactory = new DataAccessFactory(state, adminkaStorageConfiguration, storageMetaService, InjectedManager.Analyze);
             return dataAccessFactory;
         }
 

@@ -6,10 +6,10 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class AdminkaDbContextFactory
     {
-        readonly IAdminkaOptionsFactory optionsFactory;
+        readonly IDbContextOptionsBuilder optionsFactory;
         readonly Action<string> verbose;
         public AdminkaDbContextFactory(
-            IAdminkaOptionsFactory optionsFactory, 
+            IDbContextOptionsBuilder optionsFactory, 
             Routine<UserContext> state)
         {
             this.optionsFactory = optionsFactory;
@@ -20,7 +20,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 
         public AdminkaDbContext CreateAdminkaDbContext()
         {
-            var dbContext = new AdminkaDbContext((b)=>optionsFactory.BuildOptions(b), verbose);
+            var dbContext = new AdminkaDbContext((b)=>optionsFactory.Build(b), verbose);
             return dbContext;
         }
     }

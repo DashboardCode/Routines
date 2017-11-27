@@ -1,6 +1,7 @@
 ﻿using System;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.Routines;
+using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
@@ -9,11 +10,11 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         readonly AdminkaDbContextFactory dbContextFactory;
         readonly Routine<UserContext>    state;
         readonly Action<object>          setAuditProperties;
-        public AdminkaDbContextHandler(Routine<UserContext> state, Action<object> setAuditProperties, IAdminkaOptionsFactory optionsFactory)
+        public AdminkaDbContextHandler(Routine<UserContext> state, Action<object> setAuditProperties, IDbContextOptionsBuilder optionsBuilder)
         {
             this.state = state;
             this.setAuditProperties = setAuditProperties;
-            dbContextFactory = new AdminkaDbContextFactory(optionsFactory, state);
+            dbContextFactory = new AdminkaDbContextFactory(optionsBuilder, state);
         }
         public TOutput Handle<TOutput>(Func<AdminkaDbContext, Routine<UserContext>, Action<object>, TOutput> func)
         {

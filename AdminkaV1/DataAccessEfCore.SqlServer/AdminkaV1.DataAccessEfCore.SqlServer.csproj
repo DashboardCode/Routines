@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj" />
+    <ProjectReference Include="..\..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj" />
   </ItemGroup>
 
 </Project>

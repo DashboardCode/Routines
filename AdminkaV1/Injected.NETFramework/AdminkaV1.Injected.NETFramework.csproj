@@ -73,14 +73,6 @@
       <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
       <Name>AdminkaV1</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataAccessEfCore.InMemory\AdminkaV1.DataAccessEfCore.InMemory.csproj">
-      <Project>{bd6c0115-bc5e-4528-acbe-d1a6afc1790a}</Project>
-      <Name>AdminkaV1.DataAccessEfCore.InMemory</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DataAccessEfCore.SqlServer\AdminkaV1.DataAccessEfCore.SqlServer.csproj">
-      <Project>{215cd0de-09d8-46f4-a9cf-5c4eae8217f6}</Project>
-      <Name>AdminkaV1.DataAccessEfCore.SqlServer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj">
       <Project>{bf9fb9b0-baee-457a-8c8e-d82dc68e0710}</Project>
       <Name>AdminkaV1.DataAccessEfCore</Name>

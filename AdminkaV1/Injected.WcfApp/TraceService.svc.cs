@@ -10,9 +10,8 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
         {
             var input = new { searchForCorrelationToken = searchForCorrelationToken };
             var routine = new WcfRoutine(new MemberTag(this), RoutineErrorDataContractConstants.FaultCodeNamespace, input);
-            return routine.Handle((container, dataAccess) =>
+            return routine.HandleServicesContainer(servicesContainer =>
             {
-                var servicesContainer = new ServicesContainer(dataAccess);
                 var service = servicesContainer.ResolveTraceService();
                 return service.GetTrace(searchForCorrelationToken);
             });

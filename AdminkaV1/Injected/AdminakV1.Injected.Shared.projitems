@@ -18,7 +18,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\LoggingConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\LoggingPerformanceConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\LoggingVerboseConfiguration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)DataAccessFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InjectedManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\IAuthenticationLogging.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingToListAdapter.cs" />

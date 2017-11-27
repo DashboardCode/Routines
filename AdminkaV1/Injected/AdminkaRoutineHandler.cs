@@ -308,5 +308,16 @@ namespace DashboardCode.AdminkaV1.Injected
         public async Task<TOutput> HandleAsync<TOutput>(Func<Routine<UserContext>, DataAccessFactory, TOutput> func) =>
             await HandleAsync(state => func(state, repositoryHandlerFactory.CreateDataAccessFactory(state)));
         #endregion
+
+        #region Handle ServiceContainer
+        public void HandleServicesContainer(Action<ServicesContainer> action) =>
+            Handle(state => action(new ServicesContainer(repositoryHandlerFactory.CreateDataAccessFactory(state))));
+
+        public TOutput HandleServicesContainer<TOutput>(Func<ServicesContainer, TOutput> func) =>
+            Handle(state => func(new ServicesContainer(repositoryHandlerFactory.CreateDataAccessFactory(state))));
+
+        public async Task<TOutput> HandleServicesContainerAsync<TOutput>(Func<ServicesContainer, TOutput> func) =>
+            await HandleAsync(state => func(new ServicesContainer(repositoryHandlerFactory.CreateDataAccessFactory(state))));
+        #endregion
     }
 }

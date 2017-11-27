@@ -24,6 +24,8 @@
     <ProjectReference Include="..\..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
+    <ProjectReference Include="..\DataAccessEfCore.InMemory\AdminkaV1.DataAccessEfCore.InMemory.csproj" />
+    <ProjectReference Include="..\DataAccessEfCore.SqlServer\AdminkaV1.DataAccessEfCore.SqlServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

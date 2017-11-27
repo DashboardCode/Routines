@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
@@ -7,7 +8,7 @@ using DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer;
 using DashboardCode.AdminkaV1.DataAccessEfCore.InMemory;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
-using System.Collections.Generic;
+using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -16,14 +17,17 @@ namespace DashboardCode.AdminkaV1.Injected
         readonly Routine<UserContext> state;
         readonly StorageMetaService storageMetaService;
         readonly AdminkaStorageConfiguration adminkaStorageConfiguration;
+        readonly Func<Exception, StorageModel, List<FieldError>> analyze;
         public DataAccessFactory(
             Routine<UserContext> state,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            StorageMetaService storageMetaService)
+            StorageMetaService storageMetaService,
+            Func<Exception, StorageModel, List<FieldError>> analyze)
         {
             this.state = state;
             this.adminkaStorageConfiguration = adminkaStorageConfiguration;
             this.storageMetaService = storageMetaService;
+            this.analyze = analyze;
         }
 
         private void SetAuditProperties(object o)
@@ -35,34 +39,34 @@ namespace DashboardCode.AdminkaV1.Injected
             }
         }
 
-        private IAdminkaOptionsFactory CreateAdminkaOptionsFactory()
+        private IDbContextOptionsBuilder CreateDbContextOptionsBuilder()
         {
-            IAdminkaOptionsFactory optionsFactory=null;
+            IDbContextOptionsBuilder buidler=null;
             if (adminkaStorageConfiguration.StorageType== StorageType.INMEMORY)
             {
-                optionsFactory = new InMemoryAdminkaOptionsFactory("AdminkaV1_InMemmory");
+                buidler = new InMemoryAdminkaOptionsBuilder("AdminkaV1_InMemmory");
             }
             else
             {
                 var connectionString  = adminkaStorageConfiguration.ConnectionString;
                 var migrationAssembly = adminkaStorageConfiguration.MigrationAssembly;
-                optionsFactory = new SqlServerAdminkaOptionsFactory(connectionString, migrationAssembly);
+                buidler = new SqlServerAdminkaOptionsBuilder(connectionString, migrationAssembly);
             }
-            return optionsFactory;
+            return buidler;
         }
 
         public AdminkaDbContext CreateAdminkaDbContext()
         {
-            var optionsFactory = CreateAdminkaOptionsFactory();
-            var dbContextFactory = new AdminkaDbContextFactory(optionsFactory, state);
+            var optionsBuilder = CreateDbContextOptionsBuilder();
+            var dbContextFactory = new AdminkaDbContextFactory(optionsBuilder, state);
             var dbContext = dbContextFactory.CreateAdminkaDbContext();
             return dbContext;
         }
 
         public AdminkaDbContextHandler CreateDbContextHandler()
         {
-            var optionsFactory = CreateAdminkaOptionsFactory();
-            var dbContextHandler = new AdminkaDbContextHandler(state, SetAuditProperties, optionsFactory);
+            var optionsBuilder = CreateDbContextOptionsBuilder();
+            var dbContextHandler = new AdminkaDbContextHandler(state, SetAuditProperties, optionsBuilder);
             return dbContextHandler;
         }
 
@@ -74,7 +78,7 @@ namespace DashboardCode.AdminkaV1.Injected
 
             var repositoryHandler = new RepositoryHandler<TEntity>(
                 dbContextHandler,
-                ex=> (storageModel==null)?new List<FieldError>():InjectedManager.Analyze(ex,storageModel),
+                ex=> (storageModel==null)?new List<FieldError>():analyze(ex,storageModel),
                 noTracking
             );
             return repositoryHandler;

@@ -1,21 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.InMemory
 {
-    public class InMemoryAdminkaOptionsFactory: IAdminkaOptionsFactory
+    public class InMemoryAdminkaOptionsBuilder: IDbContextOptionsBuilder
     {
         readonly string databaseName;
-        public InMemoryAdminkaOptionsFactory(string databaseName) =>
+        public InMemoryAdminkaOptionsBuilder(string databaseName) =>
             this.databaseName = databaseName;
 
-        public DbContextOptions BuildOptions(DbContextOptionsBuilder optionsBuilder)
+        public void Build(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseInMemoryDatabase(databaseName);
             optionsBuilder.ConfigureWarnings(x => x.Ignore(InMemoryEventId.TransactionIgnoredWarning));
-
-            var options = optionsBuilder.Options;
-            return options;
         }
     }
 }

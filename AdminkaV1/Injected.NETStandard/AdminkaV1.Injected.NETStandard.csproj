@@ -33,8 +33,6 @@
     <ProjectReference Include="..\..\Routines.Serialization.NETStandard\Routines.Serialization.NETStandard.csproj" />
     <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
-    <ProjectReference Include="..\DataAccessEfCore.InMemory\AdminkaV1.DataAccessEfCore.InMemory.csproj" />
-    <ProjectReference Include="..\DataAccessEfCore.SqlServer\AdminkaV1.DataAccessEfCore.SqlServer.csproj" />
     <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj" />
   </ItemGroup>
 
