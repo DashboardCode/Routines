@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using DashboardCode.Routines.Storage.EfCore;
 
@@ -108,6 +109,23 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             returnLoggerFactory?.Invoke();
             returnLoggerFactory = null;
             base.Dispose();
+        }
+
+        public static Action<DbContextOptionsBuilder> BuildOptionsBuilder(string connectionString, bool inMemory = false)
+        {
+            return (optionsBuilder) =>
+            {
+                if (inMemory)
+                    optionsBuilder.UseInMemoryDatabase(connectionString);
+                else
+                {
+                    string assembly = typeof(MyDbContext).GetTypeInfo().Assembly.FullName;
+                    optionsBuilder.UseSqlServer(
+                            connectionString,
+                            sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly(assembly)
+                            );
+                }
+            };
         }
     }
 }

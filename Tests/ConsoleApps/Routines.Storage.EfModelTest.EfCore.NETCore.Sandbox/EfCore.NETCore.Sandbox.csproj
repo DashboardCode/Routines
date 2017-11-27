@@ -8,18 +8,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Routines.Storage.EfCore.Relational\Routines.Storage.EfCore.Relational.csproj" />
     <ProjectReference Include="..\..\..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj" />
     <ProjectReference Include="..\..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\..\..\Routines\Routines.csproj" />
   </ItemGroup>
 
-  <Import Project="..\..\Routines.Storage.Test\Routines.Storage.Test.projitems" Label="Shared" />
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <Import Project="..\..\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems" Label="Shared" />
 
   <Import Project="..\..\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems" Label="Shared" />
 

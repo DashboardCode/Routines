@@ -82,12 +82,8 @@ namespace DashboardCode.Routines.Storage.EfCore
             var batch = new Batch(context, setAuditProperties);
             try
             {
-                using (var transaction = context.Database.BeginTransaction())
-                {
-                    action(batch);
-                    context.SaveChanges();
-                    transaction.Commit();
-                }
+                action(batch);
+                context.SaveChanges();
             }
             catch (Exception exception)
             {

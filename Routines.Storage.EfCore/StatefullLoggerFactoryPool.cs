@@ -25,5 +25,10 @@ namespace DashboardCode.Routines.Storage.EfCore
             statefullLoggerFactory.LoggerProvider.Set(null, null);
             bag.Add(statefullLoggerFactory);
         }
+
+        public int Count()
+        {
+            return bag.Count;
+        }
     }
 }

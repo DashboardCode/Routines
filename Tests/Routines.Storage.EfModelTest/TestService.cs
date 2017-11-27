@@ -1,6 +1,6 @@
 ﻿namespace DashboardCode.Routines.Storage.EfModelTest
 {
-    public static class TestIsland
+    public static class TestService
     {
         public static void Reset(IOrmStorage storage)
         {

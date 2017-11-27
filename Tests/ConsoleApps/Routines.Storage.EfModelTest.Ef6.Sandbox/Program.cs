@@ -19,8 +19,8 @@ namespace DashboardCode.Ef6.Sandbox
             var connectionStringName = "Ef6Test";
             using (var dbContext = new MyDbContext(connectionStringName, verbose))
             {
-                TestIsland.Clear(new AdoBatch(dbContext));
-                TestIsland.Reset(new OrmStorage(dbContext, null, (o) => { }));
+                TestService.Clear(new AdoBatch(dbContext));
+                TestService.Reset(new OrmStorage(dbContext, null, (o) => { }));
             }
             using (var dbContext = new MyDbContext(connectionStringName, verbose))
             {
