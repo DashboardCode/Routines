@@ -1,0 +1,8 @@
+﻿1. Add manually to the project file
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
+  </ItemGroup>
+1b. reload project / dotnet restore
+2. cd D:\cot\DashboardCode\Routines\tests\ConsoleApps\Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox 
+3. dotnet ef migrations add InitialCreate
+4. dotnet ef database update

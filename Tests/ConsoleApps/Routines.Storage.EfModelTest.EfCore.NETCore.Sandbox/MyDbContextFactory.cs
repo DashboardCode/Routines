@@ -1,19 +1,18 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 {
-    class Program
+    public class MyDbContextFactory : IDesignTimeDbContextFactory<MyDbContext>
     {
-        static void Main(string[] args)
+        public MyDbContext CreateDbContext(string[] args)
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
             var configurationRoot = configurationBuilder.Build();
             var connectionString = configurationRoot.GetSection("ConnectionString").Value;
 
-            DbContextTests.ParallelTest(connectionString);
-            DbContextTests.SqlServerTest(connectionString);
-            DbContextTests.InMemoryTest();
+            return new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString));
         }
     }
 }

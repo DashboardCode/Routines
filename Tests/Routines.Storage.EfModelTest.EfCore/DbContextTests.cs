@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using DashboardCode.Routines.Storage.EfModelTest.EfCore;
 using DashboardCode.Routines.Storage.EfCore.Relational;
 using DashboardCode.Routines.Storage.EfCore;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCoreTest
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 {
     public class DbContextTests
     {
@@ -32,7 +31,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCoreTest
                 buffers.Add(messages);
                 Action<string> verbose = (text) => {
                     messages.Add(text);
-                    Console.WriteLine(text);
+                    Console.WriteLine(t+") "+text);
                     Console.WriteLine();
                 };
 

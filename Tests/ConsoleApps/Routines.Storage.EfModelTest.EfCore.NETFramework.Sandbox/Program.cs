@@ -1,7 +1,6 @@
 ﻿using System.Configuration;
-using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
 
-namespace DashboardCode.EfCore.NETFramework.Sandbox
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Sandbox
 {
     class Program
     {
@@ -13,4 +12,4 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox
             DbContextTests.InMemoryTest();
         }
     }
-}
+} 

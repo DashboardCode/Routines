@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AC5C1C59-1611-4A6B-9E88-9E85BC4D22D8}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>EfCore.NETFramework.Sandbox</RootNamespace>
-    <AssemblyName>EfCore.NETFramework.Sandbox</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Sandbox</RootNamespace>
+    <AssemblyName>DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Sandbox</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -35,6 +35,9 @@
   <ItemGroup>
     <Reference Include="Microsoft.EntityFrameworkCore, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.EntityFrameworkCore.2.0.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Design, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.EntityFrameworkCore.Design.2.0.1\lib\net461\Microsoft.EntityFrameworkCore.Design.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore.InMemory, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.EntityFrameworkCore.InMemory.2.0.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.InMemory.dll</HintPath>
@@ -105,11 +108,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\20161215131209_Initial.cs" />
-    <Compile Include="Migrations\20161215131209_Initial.Designer.cs">
-      <DependentUpon>20161215131209_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\MyDbContextModelSnapshot.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -137,6 +135,7 @@
       <Name>Routines</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="..\..\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems" Label="Shared" />
   <Import Project="..\..\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

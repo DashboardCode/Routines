@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{52BA4719-F064-4388-A426-1E1174D3A0EB}"
 EndProject
@@ -148,6 +148,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfModelTest.EfCore.NETCore.Test", "Tests\Routines.Storage.EfModelTest.EfCore.NETCore.Test\Routines.Storage.EfModelTest.EfCore.NETCore.Test.csproj", "{3A845F98-B313-4CCF-B06C-605E7F1E44A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.EfModelTest.EfCore.NETFramework.Test", "Tests\Routines.Storage.EfModelTest.EfCore.NETFramework.Test\Routines.Storage.EfModelTest.EfCore.NETFramework.Test.csproj", "{FA89405B-83F0-4C41-A6E7-0AA65A5991BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "tests\ConsoleApps\ConsoleApp1\ConsoleApp1.csproj", "{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -1628,6 +1630,38 @@ Global
 		{FA89405B-83F0-4C41-A6E7-0AA65A5991BF}.Release|x64.Build.0 = Release|Any CPU
 		{FA89405B-83F0-4C41-A6E7-0AA65A5991BF}.Release|x86.ActiveCfg = Release|Any CPU
 		{FA89405B-83F0-4C41-A6E7-0AA65A5991BF}.Release|x86.Build.0 = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Android.Build.0 = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|iOS.Build.0 = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|x64.Build.0 = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Debug|x86.Build.0 = Debug|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Android.ActiveCfg = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Android.Build.0 = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|iOS.ActiveCfg = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|iOS.Build.0 = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|x64.ActiveCfg = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|x64.Build.0 = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|x86.ActiveCfg = Release|Any CPU
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1678,6 +1712,7 @@ Global
 		{724E7146-C083-4E3F-9759-5BDA6C78FA01} = {FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}
 		{3A845F98-B313-4CCF-B06C-605E7F1E44A3} = {FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}
 		{FA89405B-83F0-4C41-A6E7-0AA65A5991BF} = {FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}
+		{4E51BC65-08F0-4F92-AC8D-AFB4D38776A6} = {0A13BD11-5233-4DFE-8ADD-88CBC4F597DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14B58345-1A5E-4882-9F6F-DC259439D43A}

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Metadata;
+using System;
+using System.Collections.Generic;
 
-namespace DashboardCode.EfCore.NETFramework.Sandbox.Migrations
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -102,7 +102,7 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox.Migrations
                 schema: "tst",
                 columns: table => new
                 {
-                    ParentRecordId = table.Column<int>(maxLength: 4, nullable: false),
+                    ParentRecordId = table.Column<int>(nullable: false),
                     TypeRecordId = table.Column<string>(maxLength: 4, nullable: false),
                     XmlField1 = table.Column<string>(type: "xml", nullable: true),
                     XmlField2 = table.Column<string>(type: "xml", nullable: true)
@@ -133,6 +133,12 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox.Migrations
                 column: "TypeRecordId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ParentRecordHierarchyRecordMap_HierarchyRecordId",
+                schema: "tst",
+                table: "ParentRecordHierarchyRecordMap",
+                column: "HierarchyRecordId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ParentRecords_FieldA",
                 schema: "tst",
                 table: "ParentRecords",
@@ -145,12 +151,6 @@ namespace DashboardCode.EfCore.NETFramework.Sandbox.Migrations
                 table: "ParentRecords",
                 columns: new[] { "FieldB1", "FieldB2" },
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ParentRecordHierarchyRecordMap_HierarchyRecordId",
-                schema: "tst",
-                table: "ParentRecordHierarchyRecordMap",
-                column: "HierarchyRecordId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TypeRecords_TypeRecordName",

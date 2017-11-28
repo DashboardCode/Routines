@@ -1,8 +1,7 @@
-using DashboardCode.Routines.Storage.EfModelTest.EfCoreTest;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Routines.Storage.EfModelTest.EfCore.NETFramework.Test
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Test
 {
     [TestClass]
     public class EfModelEfCoreUnitTest
