@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 using DashboardCode.Routines.Storage.EfCore.Relational;
 using DashboardCode.Routines.Storage.EfCore;
 
@@ -94,6 +95,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 }
         }
 
+        
         internal static void InMemoryTest()
         {
             var connectionString = Guid.NewGuid().ToString();
@@ -127,7 +129,8 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             Console.WriteLine(connectionString);
 
             int id = 0;
-            // TODO: github error - verbose ruins test
+            // it is impossible to use verbose logger with InMemory provider
+            // read this: https://github.com/aspnet/EntityFrameworkCore/issues/10420
             using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString, inMemory), inMemory ? null : verbose))
             {
                 var parentRecords = dbContext.ParentRecords
@@ -139,18 +142,42 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 DbContextTests.TestHierarchy(dbContext);
             }
 
-            //using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString, inMemory), verbose))
-            //{
-            //    var storage = new OrmStorage<ParentRecord>(dbContext,
-            //        (ex) => ExceptionExtensions.Analyze(ex, null),
-            //        (o) => {; });
-            //    var parentRecord = new ParentRecord { ParentRecordId = id };
+            
+        }
 
-            //    storage.Handle((b) =>
-            //    {
-            //        b.Modify(parentRecord);
-            //    });
-            //}
+        internal static void Try(string connectionString)
+        {
+            int id = 0;
+            // it is impossible to use verbose logger with InMemory provider
+            // read this: https://github.com/aspnet/EntityFrameworkCore/issues/10420
+            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString), null))
+            {
+                var parentRecords = dbContext.ParentRecords
+                   .Include(e => e.ParentRecordHierarchyRecordMap)
+                   .ThenInclude(e => e.HierarchyRecord).ToList();
+                var parentRecord = parentRecords.First(e => e.FieldA == "1_A");
+                id = parentRecord.ParentRecordId;
+            }
+
+            var messages = new List<string>();
+            Action<string> verbose = (text) => {
+                messages.Add(text);
+                Console.WriteLine(text);
+                Console.WriteLine();
+            };
+
+            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString), verbose))
+            {
+                var storage = new OrmStorage<ParentRecord>(dbContext,
+                    (ex) => ExceptionExtensions.Analyze(ex, null),
+                    (o) => {; });
+                var parentRecord = new ParentRecord { ParentRecordId = id };
+
+                storage.Handle((b) =>
+                {
+                    b.Modify(parentRecord);
+                });
+            }
         }
 
         internal static void ParallelTest(string connectionString)

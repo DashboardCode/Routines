@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.AuthenticationDom
 {
@@ -14,9 +14,9 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
         //[DisplayName("Name")]
         public string PrivilegeName { get; set; }
 
-        public ICollection<UserPrivilege> UserPrivilegeMap { get; set; }
+        public ICollection<UserPrivilege>  UserPrivilegeMap  { get; set; }
         public ICollection<GroupPrivilege> GroupPrivilegeMap { get; set; }
-        public ICollection<RolePrivilege> RolePrivilegeMap { get; set; }
+        public ICollection<RolePrivilege>  RolePrivilegeMap  { get; set; }
 
         #region Many to Many
         public IReadOnlyCollection<User> GetUsers()

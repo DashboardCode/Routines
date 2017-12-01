@@ -28,14 +28,13 @@ namespace DashboardCode.Routines.Storage.Ef6
         {
             setAuditProperties(entity);
             var entry = context.Entry(entity);
-            if (include == null)
+            if (include != null)
             {
-                entry.State = EntityState.Modified;
+                var propertyValues = entry.GetDatabaseValues();
+                var entityDbState = (TEntity)propertyValues.ToObject();
+                ObjectExtensions.Copy(entityDbState, entity, include);
             }
-            else
-            {
-                var p = entry.GetDatabaseValues();
-            }
+            entry.State = EntityState.Modified;
         }
 
         public void Remove(TEntity entity)

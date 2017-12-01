@@ -69,7 +69,7 @@
       <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
       <Name>AdminkaV1</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AdminkaV1\AdminkaV1.LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj">
+    <ProjectReference Include="..\..\AdminkaV1\LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj">
       <Project>{932b5777-027d-42b9-aa43-57e182f6d08d}</Project>
       <Name>AdminkaV1.LoggingDom.WcfClient</Name>
     </ProjectReference>

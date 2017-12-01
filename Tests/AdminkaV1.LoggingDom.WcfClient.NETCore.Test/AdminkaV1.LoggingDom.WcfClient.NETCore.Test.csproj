@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
-    <ProjectReference Include="..\..\AdminkaV1\AdminkaV1.LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
   </ItemGroup>
 

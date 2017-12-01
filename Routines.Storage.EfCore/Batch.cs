@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -26,18 +26,14 @@ namespace DashboardCode.Routines.Storage.EfCore
         public void Modify(TEntity entity, Include<TEntity> include = null)
         {
             setAuditProperties(entity);
-            var dbSet = context.Set<TEntity>();
-            var entry = context.Entry(entity);
-            var properties = entry.GetDatabaseValues();
-            var x = properties.GetValue<int>("ParentRecordId");
-            //if (include == null)
-            //{
-            //    entry.State = EntityState.Modified;
-            //}
-            //else
-            //{
-            //    var p2 = entry.GetDatabaseValues();
-            //}
+            EntityEntry<TEntity> entry = context.Entry(entity);
+            if (include != null)
+            {
+                var propertyValues = entry.GetDatabaseValues();
+                var entityDbState = (TEntity)propertyValues.ToObject();
+                ObjectExtensions.Copy(entityDbState, entity, include);
+            }
+            entry.State = EntityState.Modified;
         }
 
         public void Remove(TEntity entity)

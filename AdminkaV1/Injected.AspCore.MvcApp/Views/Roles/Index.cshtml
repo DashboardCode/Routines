@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Role>
+@{
+    var UserContext = (UserContext)ViewBag.UserContext;
+}
+<h3>Roles</h3>
+
+<table id="adminka-groups-table" class="table table-hover table-bordered mainTable">
+    <thead>
+        <tr>
+            <th>
+            @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
+            {
+                <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Create", "Roles")'"><span class="glyphicon glyphicon-plus-sign"></span></button>
+            }
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoleId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RoleName)
+            </th>
+            <th>
+                Privileges
+            </th>
+            <th>
+                Groups
+            </th>
+            <th>
+                Users
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="tableActionColumn">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Details", "Roles", new { id = item.RoleId })'"><span class="glyphicon  glyphicon-list"></span></button>
+                    @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
+                    {
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Edit", "Roles", new { id = item.RoleId })'"><span class="glyphicon  glyphicon-edit"></span></button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Delete", "Roles", new { id = item.RoleId })'"><span class="glyphicon  glyphicon-remove"></span></button>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoleId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoleName)
+                </td>
+                <td>
+                    @{  var privileges = item.GetPrivileges();
+                        foreach (var p in privileges)
+                        {
+                            <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Privileges", new { id = p.PrivilegeId })">@p.PrivilegeName</a></div>
+                        }
+                    }
+                </td>
+                <td>
+                    @{  var groups = item.GetGroups();
+                        foreach (var g in groups)
+                        {
+                            <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Groups", new { id = g.GroupId })">@g.GroupName</a></div>
+                        }
+                     }
+                </td>
+                <td>
+                    @{  var users = item.GetUsers();
+                        @foreach (var u in users)
+                        {
+                            <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Users", new { id = u.UserId })">@u.LoginName</a></div>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -36,7 +36,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                     migrationBuilder.Sql(
                         $"INSERT INTO dbo.Users (LoginName) VALUES ('{loginName}');" + Environment.NewLine
                         + $"INSERT INTO dbo.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.ConfigureSystem}','Configure System');" + Environment.NewLine
-                        + $"INSERT INTO dbo.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.VerboseLogging}','VerboseLogging');" + Environment.NewLine
+                        + $"INSERT INTO dbo.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.VerboseLogging}','Verbose Logging');" + Environment.NewLine
                         + $"INSERT INTO dbo.UserPrivilegeMap (UserId, PrivilegeId) VALUES (IDENT_CURRENT('dbo.Users'),'{Privilege.ConfigureSystem}');" + Environment.NewLine
                         + $"INSERT INTO dbo.Groups (GroupName, GroupAdName) VALUES ('Sample','{groupAdName}');" + Environment.NewLine
                         + $"INSERT INTO dbo.GroupPrivilegeMap (GroupId, PrivilegeId) VALUES (IDENT_CURRENT('dbo.Groups'),'{Privilege.VerboseLogging}');" + Environment.NewLine

@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "name": "dashboard-code.adminka-v1.web.mvc-core-app",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "4.0.0-alpha.6",
+    "jquery": "3.2.1",
+    "jquery-validation": "1.17.0",
+    "jquery-validation-unobtrusive": "3.2.6",
+    "tether": "1.4.3",
+    "popper.js": "1.13.0-next"
+  }
+} 

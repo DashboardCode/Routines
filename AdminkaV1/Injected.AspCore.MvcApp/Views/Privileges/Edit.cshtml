@@ -1,0 +1,51 @@
+﻿@model Privilege
+
+<h3>Edit Privilege (@Model.PrivilegeId)</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <hr/>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.PrivilegeId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PrivilegeName, htmlAttributes: new { @class = "control-label col-lg-2" })
+            <div class="col-lg-10">
+                @Html.EditorFor(model => model.PrivilegeName, new { htmlAttributes = new { @class = "form-control" , @readonly = "readonly", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.PrivilegeName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Users", "Users", htmlAttributes: new { @class = "control-label col-lg-2" })
+            <div class="col-lg-10">
+                @Html.ListBox("Users", ViewBag.UsersMultiSelectList as MultiSelectList, new { @class = "form-control"})
+                @Html.ValidationMessage("Users", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Roles", "Roles", htmlAttributes: new { @class = "control-label col-lg-2" })
+            <div class="col-lg-10">
+                @Html.ListBox("Roles", ViewBag.RolesMultiSelectList as MultiSelectList, new { @class = "form-control"})
+                @Html.ValidationMessage("Roles", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Groups", "Groups", htmlAttributes: new { @class = "control-label col-lg-2" })
+            <div class="col-lg-10">
+                @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" })
+                @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-12">
+                <input type="submit" value="Save" class="btn btn-secondary" /> | @Html.ActionLink("Back to List", "Index")
+            </div>
+        </div>
+    </div>
+}
