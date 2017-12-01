@@ -145,7 +145,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfModelTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.EfModelTest.EfCore.NETFramework.Test", "Tests\Routines.Storage.EfModelTest.EfCore.NETFramework.Test\Routines.Storage.EfModelTest.EfCore.NETFramework.Test.csproj", "{FA89405B-83F0-4C41-A6E7-0AA65A5991BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Injected.AspCore.ReduxApp", "AdminkaV1\Injected.AspCore.ReduxApp\AdminkaV1.Injected.AspCore.ReduxApp.csproj", "{DDC61EFA-0D8B-43BA-AE32-3F3FA55E2E2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.ReduxApp", "AdminkaV1\Injected.AspCore.ReduxApp\AdminkaV1.Injected.AspCore.ReduxApp.csproj", "{DDC61EFA-0D8B-43BA-AE32-3F3FA55E2E2A}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

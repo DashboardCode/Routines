@@ -1,5 +1,4 @@
-﻿
-namespace DashboardCode.AdminkaV1.TestDom
+﻿namespace DashboardCode.AdminkaV1.TestDom
 {
     public class ParentRecordHierarchyRecord : VersionedBase
     {

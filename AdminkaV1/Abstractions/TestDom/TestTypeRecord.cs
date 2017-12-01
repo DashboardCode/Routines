@@ -13,4 +13,3 @@ namespace DashboardCode.AdminkaV1.TestDom
         public ICollection<TypeRecord> TypeRecords { get; set; }
     }
 }
-
