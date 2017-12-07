@@ -151,6 +151,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.props'))" />
     <Error Condition="!Exists('..\..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Ascon.NetMemoryProfiler.1.0.2\build\Ascon.NetMemoryProfiler.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Ascon.NetMemoryProfiler.1.0.2\build\Ascon.NetMemoryProfiler.targets'))" />
   </Target>
   <Import Project="..\..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\..\packages\MSTest.TestAdapter.1.2.0\build\net45\MSTest.TestAdapter.targets')" />
+  <Import Project="..\..\packages\Ascon.NetMemoryProfiler.1.0.2\build\Ascon.NetMemoryProfiler.targets" Condition="Exists('..\..\packages\Ascon.NetMemoryProfiler.1.0.2\build\Ascon.NetMemoryProfiler.targets')" />
 </Project>

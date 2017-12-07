@@ -1,13 +1,26 @@
 {
-  "version": "1.0.0",
   "name": "dashboard-code.adminka-v1.web.mvc-core-app",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "bootstrap": "4.0.0-alpha.6",
+  "description": "Adminka - ASP.NET Core MVC Boilerplate",
+  "main": "index.js",
+  "devDependencies": {
+    "bootstrap": "4.0.0-beta.2",
     "jquery": "3.2.1",
     "jquery-validation": "1.17.0",
     "jquery-validation-unobtrusive": "3.2.6",
-    "tether": "1.4.3",
-    "popper.js": "1.13.0-next"
-  }
-} 
+    "popper.js": "1.13.0",
+    "ts-loader": "3.2.0",
+    "typescript": "2.6.2",
+    "webpack": "3.10.0",
+    "material-design-icons": "3.0.1",
+    "gulp": "3.9.1",
+    "gulp-sass": "3.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

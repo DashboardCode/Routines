@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
-using Xunit;
 using Microsoft.Extensions.Configuration;
+using Xunit;
 using DashboardCode.Routines.Configuration.NETStandard;
 
 [assembly: CollectionBehavior(MaxParallelThreads = 1, DisableTestParallelization = true)]

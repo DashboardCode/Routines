@@ -7,10 +7,11 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Sandbox
         static void Main(string[] args)
         {
             var connectionString = ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
-            //DbContextTests.ParallelTest(connectionString);
+            DbContextTests.ParallelTest(connectionString);
             //DbContextTests.SqlServerTest(connectionString);
             //DbContextTests.InMemoryTest();
-            DbContextTests.Try(connectionString);
+            //DbContextTests.Try(connectionString);
+            System.Console.ReadLine();
         }
     }
 } 

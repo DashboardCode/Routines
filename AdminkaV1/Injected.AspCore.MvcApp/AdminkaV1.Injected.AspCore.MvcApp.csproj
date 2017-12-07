@@ -3,11 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
 	<PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
+	<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <PropertyGroup>
     <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.MvcApp</AssemblyName>
     <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.MvcApp</RootNamespace>
+    <UserSecretsId>a6ef2ebe-eb8f-4132-89cb-03648daa76e3</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +29,7 @@
   
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
+	<DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
   </ItemGroup>
   
   <ItemGroup>
@@ -35,5 +38,9 @@
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
     <ProjectReference Include="..\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />
   </ItemGroup>
 </Project>

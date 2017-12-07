@@ -8,7 +8,7 @@ namespace DashboardCode.Routines
 {
     public static class AsyncManager
     {
-        public static void Run(Func<Task> func)
+        public static void Handle(Func<Task> func)
         {
             using (var asyncTaskScheduler = new AsyncTaskScheduler())
             {

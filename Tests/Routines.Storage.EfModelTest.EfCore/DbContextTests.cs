@@ -91,7 +91,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 
                 if (count3 != 2)
                 {
-                    var str = "this is an error from ef6 point of view";
+                    Console.WriteLine("this is an error from ef6 point of view");
                 }
         }
 

@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETStandard
 {
@@ -22,6 +22,9 @@ namespace DashboardCode.Routines.Configuration.NETStandard
         public string GetConnectionString(string name = "ConnectionString")
         {
             var connectionString = configurationRoot.GetSection(name).Value;
+            var password = configurationRoot["AdminkaPassword"];
+            var loginName = configurationRoot["AdminkaUserName"];
+
             return connectionString;
         }
     }

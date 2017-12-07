@@ -1,7 +1,7 @@
 {
-  "name": "Injected.AspCore.ReduxApp",
+  "name": "dashboard-code.adminka-v1.injected.asp-core.redux-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "devDependencies": {
     "@types/history": "4.6.0",
     "@types/react": "15.0.35",
@@ -39,6 +39,7 @@
     "url-loader": "0.5.9",
     "webpack": "2.5.1",
     "webpack-hot-middleware": "2.18.2",
-    "webpack-merge": "4.1.0"
+    "webpack-merge": "4.1.0",
+    "core-js": "2.5.1"
   }
 }

@@ -20,6 +20,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
 
+            if (env.IsDevelopment())
+                builder.AddUserSecrets<Startup>();
         }
 
         public IConfigurationRoot Configuration { get; }

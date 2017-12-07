@@ -10,7 +10,8 @@
             <th>
             @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
             {
-                <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Create", "Groups")'"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                var urlCreateAction = @Url.Action("Create", "Groups");
+                <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@urlCreateAction'"><span class="material-icons">note_add</span></button>
             }
             </th>
             <th>
@@ -36,13 +37,16 @@
     <tbody>
         @foreach (var item in Model)
         {
+            var urlDetailsAction = @Url.Action("Details", "Groups", new { id = item.GroupId });
+            var urlEditAction = @Url.Action("Edit", "Groups", new { id = item.GroupId });
+            var urlDeleteAction = @Url.Action("Edit", "Groups", new { id = item.GroupId });
             <tr>
                 <td class="tableActionColumn">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Details", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-list"></span></button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@urlDetailsAction'"><span class="material-icons">insert_drive_file</span></button>
                     @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                     {
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Edit", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-edit"></span></button>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@Url.Action("Delete", "Groups", new { id = item.GroupId })'"><span class="glyphicon  glyphicon-remove"></span></button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@urlEditAction'"><span class="material-icons">edit</span></button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@urlDeleteAction'"><span class="material-icons">delete</span></button>
                     }
                 </td>
                 <td>

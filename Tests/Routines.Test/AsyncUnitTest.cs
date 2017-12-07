@@ -30,7 +30,7 @@ namespace DashboardCode.Routines.Test
             }
 
 
-            AsyncManager.Run(async () =>
+            AsyncManager.Handle(async () =>
             {
                 using (StreamReader SourceReader = File.OpenText(inputPath))
                 using (StreamWriter DestinationWriter = File.CreateText(outputPath))

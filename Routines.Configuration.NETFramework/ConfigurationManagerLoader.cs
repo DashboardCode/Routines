@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
+﻿using System.Text;
 using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
@@ -148,5 +148,4 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         }
         #endregion
     }
-
 }

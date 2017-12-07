@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 {

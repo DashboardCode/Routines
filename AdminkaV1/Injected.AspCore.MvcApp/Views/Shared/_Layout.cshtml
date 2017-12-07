@@ -1,7 +1,7 @@
-﻿    @*  
+﻿@*
     TODO: ApplicationInsights
     @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-    *@
+*@
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,21 +10,24 @@
     <title>@ViewData["Title"] - DashboardCode.AdminkaV1.Web.MvcCoreClient</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="~/lib/tether/dist/css/tether.css" />
+        <link rel="stylesheet" href="~/lib/material-design-icons/iconfont/material-icons.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-reboot.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="~/lib/tether/dist/css/tether.min.css" />
+
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
-        @*
+    @*
         TODO: ApplicationInsights
         @Html.Raw(JavaScriptSnippet.FullScript)
-        *@
+    *@
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark fixed-top navbar-expand-lg">
@@ -50,7 +53,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" asp-area="" asp-controller="Groups" asp-action="Index">Groups</a>
-                        <a class="dropdown-item" asp-area="" asp-controller="Roles"  asp-action="Index">Roles</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
                         <a class="dropdown-item" asp-area="" asp-controller="Privileges" asp-action="Index">Privileges</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
@@ -58,9 +61,9 @@
                 </li>
             </ul>
             @*<form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>*@
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>*@
         </div>
     </nav>
     <div class="container body-content">
@@ -77,12 +80,13 @@
 
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/tether/dist/js/tether.js"></script>
         <script src="~/lib/popper.js/dist/umd/popper.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
+        <script src="~/dist/main.js" asp-append-version="true"></script>
+        @* TODO: asp-fallback-test for all *@
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
@@ -90,14 +94,6 @@
                 integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f">
         </script>
 
-        @* TODO: asp-fallback-test *@         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.1/js/tether.min.js"
-                asp-fallback-src="~/lib/tether/dist/js/tether.min.js"
-                crossorigin="anonymous"
-                integrity="sha384-vdc8rIJaiZKq4hszRcxQkghNNcGR5Km5miB/VzE1AJv56exEadTmczFqwwAYT9Zf">
-        </script>
-
-        @* TODO: asp-fallback-test *@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0-next/umd/popper-utils.js"
                 asp-fallback-src="~/lib/popper.js/dist/umd/popper.min.js"
                 crossorigin="anonymous"

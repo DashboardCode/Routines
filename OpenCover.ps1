@@ -35,6 +35,7 @@ $SolutionFolderPath = $PSScriptRoot #or enter it manually there
 
 If ($SolutionFolderPath -eq '') {
     $SolutionFolderPath = 'D:\cot\DashboardCode'
+    # NOTE: or is it better to throw an exception?
     # throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
 }
 
@@ -51,8 +52,7 @@ New-Item -ItemType Directory -Force -Path $testsResultsFolderPath | Out-Null
 $openCoverOutputFilePath         = "$testsResultsFolderPath\opencoverOutput.xml"
 $reportGeneratorOutputFolderPath = "$testsResultsFolderPath\report"
 
-
-# STEP 5. find projects
+# STEP 4. find projects
 $ClassicProjects =  @();
 $CoreProjects = @();
 Get-ChildItem "$SolutionFolderPath" -Directory -Exclude $excludeGlobbingFromFolders | %{ 
@@ -109,7 +109,7 @@ Function GetFilter($inclusive, $exclusive) {
      return $filters;
 }
 
-#STEP 7. Execute OpenCover
+#STEP 5. Execute OpenCover
 If ($testClassicProjects){
     $mstestOutputFolderPath = "$testsResultsFolderPath\mstestOutput"
     New-Item -ItemType Directory -Force -Path $mstestOutputFolderPath | Out-Null
@@ -168,7 +168,7 @@ If ($testCoreProjects){
     }
 }
 
-# STEP 8. Execute ReportGenerator
+# STEP 6. Execute ReportGenerator
 
 & $reportGeneratorPath "-reports:$openCoverOutputFilePath" "-targetdir:$reportGeneratorOutputFolderPath"
 
@@ -178,7 +178,7 @@ If ( Test-Path env:COVERALLS_REPO_TOKEN) {
     }
 }
 
-# STEP 9. Open report in a browser
+# STEP 7. Open report in a browser
 If (Test-Path "$reportGeneratorOutputFolderPath\index.htm"){
     Invoke-Item "$reportGeneratorOutputFolderPath\index.htm"
 }

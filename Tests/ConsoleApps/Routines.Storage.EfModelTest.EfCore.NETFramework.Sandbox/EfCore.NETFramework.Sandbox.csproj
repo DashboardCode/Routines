@@ -12,6 +12,8 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -135,8 +137,17 @@
       <Name>Routines</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="readme.txt" />
+  </ItemGroup>
   <Import Project="..\..\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems" Label="Shared" />
   <Import Project="..\..\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\..\packages\Ascon.NetMemoryProfiler.1.0.2\Build\Ascon.NetMemoryProfiler.targets" Condition="Exists('..\..\..\packages\Ascon.NetMemoryProfiler.1.0.2\Build\Ascon.NetMemoryProfiler.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\packages\Ascon.NetMemoryProfiler.1.0.2\Build\Ascon.NetMemoryProfiler.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\Ascon.NetMemoryProfiler.1.0.2\Build\Ascon.NetMemoryProfiler.targets'))" />
+  </Target>
 </Project>
