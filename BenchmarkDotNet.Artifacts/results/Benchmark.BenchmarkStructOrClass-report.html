@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkStructOrClass</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.10, OS=Windows 10 Redstone 2 [1703, Creators Update] (10.0.15063.726)
+Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
+Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
+.NET Core SDK=2.0.3
+  [Host] : .NET Core 2.0.3 (Framework 4.6.25815.02), 64bit RyuJIT
+  Clr    : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2115.0
+  Core   : .NET Core 2.0.3 (Framework 4.6.25815.02), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>     Method</th><th>Job</th><th>Runtime</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>TestStructReturn</td><td>Clr</td><td>Clr</td><td>17.57 ns</td><td>0.1960 ns</td><td>0.1834 ns</td><td>17.25 ns</td><td>17.89 ns</td><td>17.55 ns</td><td>4</td><td>0.0127</td><td>40 B</td>
+</tr><tr><td>TestClassReturn</td><td>Clr</td><td>Clr</td><td>21.93 ns</td><td>0.4554 ns</td><td>0.5244 ns</td><td>21.17 ns</td><td>23.26 ns</td><td>21.86 ns</td><td>5</td><td>0.0229</td><td>72 B</td>
+</tr><tr><td>TestStructReturn8</td><td>Clr</td><td>Clr</td><td>38.99 ns</td><td>0.8302 ns</td><td>1.4097 ns</td><td>37.36 ns</td><td>42.35 ns</td><td>38.50 ns</td><td>8</td><td>0.0127</td><td>40 B</td>
+</tr><tr><td>TestClassReturn8</td><td>Clr</td><td>Clr</td><td>23.69 ns</td><td>0.5373 ns</td><td>0.6987 ns</td><td>22.70 ns</td><td>25.24 ns</td><td>23.37 ns</td><td>6</td><td>0.0305</td><td>96 B</td>
+</tr><tr><td>TestStructReturn</td><td>Core</td><td>Core</td><td>12.28 ns</td><td>0.1882 ns</td><td>0.1760 ns</td><td>11.92 ns</td><td>12.57 ns</td><td>12.30 ns</td><td>1</td><td>0.0127</td><td>40 B</td>
+</tr><tr><td>TestClassReturn</td><td>Core</td><td>Core</td><td>15.33 ns</td><td>0.4343 ns</td><td>0.4063 ns</td><td>14.83 ns</td><td>16.44 ns</td><td>15.31 ns</td><td>2</td><td>0.0229</td><td>72 B</td>
+</tr><tr><td>TestStructReturn8</td><td>Core</td><td>Core</td><td>34.11 ns</td><td>0.7089 ns</td><td>1.4954 ns</td><td>31.52 ns</td><td>36.81 ns</td><td>34.03 ns</td><td>7</td><td>0.0127</td><td>40 B</td>
+</tr><tr><td>TestClassReturn8</td><td>Core</td><td>Core</td><td>17.04 ns</td><td>0.2299 ns</td><td>0.2150 ns</td><td>16.68 ns</td><td>17.41 ns</td><td>16.98 ns</td><td>3</td><td>0.0305</td><td>96 B</td>
+</tr></tbody></table>
+</body>
+</html>

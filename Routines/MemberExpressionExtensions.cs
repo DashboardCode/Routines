@@ -168,5 +168,29 @@ namespace DashboardCode.Routines
                 Expression.Lambda<Func<TEntity, IEnumerable<TRelationEntity>>>(newMemberExpression, new[] { tParameterExpression });
             return getRelationAsEnumerable;
         }
+
+        public static Action<TEntity, TPropertyValue> CompileSetter<TEntity, TPropertyValue>(this Expression<Func<TEntity, TPropertyValue>> expression)
+        {
+            var memberExpression = (MemberExpression)expression.Body;
+            return CompileSetter<TEntity, TPropertyValue>(memberExpression);
+        }
+
+        public static Action<TEntity, TPropertyValue> CompileSetter<TEntity, TPropertyValue>(this MemberExpression memberExpression)
+        {
+            //var expr = memberExpression.Expression;
+            ParameterExpression eParameter = (ParameterExpression)memberExpression.Expression;
+            ParameterExpression vParameter = Expression.Parameter(typeof(TPropertyValue), "v");
+            var assign = Expression.Assign(memberExpression, vParameter);
+            var lambda = Expression.Lambda<Action<TEntity, TPropertyValue>>(assign, eParameter, vParameter);
+            var setter = lambda.Compile();
+            return setter;
+        }
+
+        public static Func<TEntity, Action<TValue>> CompileSettterWithConverter<TEntity, TValue, TPropertyValue>(this MemberExpression memberExpression, Func<TValue, TPropertyValue> converter)
+        {
+            var setter = CompileSetter<TEntity, TPropertyValue>(memberExpression);
+            Func<TEntity, Action<TValue>> action = FunctionalExtensions.CombineSetterAndConverter(setter, converter); 
+            return action;
+        }
     }
 }

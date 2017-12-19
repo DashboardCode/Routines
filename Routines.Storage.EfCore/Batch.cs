@@ -11,11 +11,13 @@ namespace DashboardCode.Routines.Storage.EfCore
     {
         private readonly DbContext context;
         private readonly Action<object> setAuditProperties;
+        private readonly Func<object, bool> isAuditable;
 
-        public Batch(DbContext context, Action<object> setAuditProperties)
+        public Batch(DbContext context, Func<object, bool> isAuditable, Action<object> setAuditProperties)
         {
             this.context = context;
             this.setAuditProperties = setAuditProperties;
+            this.isAuditable = isAuditable;
         }
         public void Add(TEntity entity)
         {
@@ -38,6 +40,13 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public void Remove(TEntity entity)
         {
+            if (isAuditable(entity))
+            {
+                //EntityEntry<TEntity> entry = context.Entry(entity);
+                //var propertyValues = entry.GetDatabaseValues();
+                //var entityDbState = (TEntity)propertyValues.ToObject();
+                //setAuditProperties(entityDbState);
+            }
             context.Set<TEntity>().Remove(entity);
         }
 

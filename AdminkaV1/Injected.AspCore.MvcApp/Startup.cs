@@ -18,13 +18,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            ConfigurationRoot = builder.Build();
 
             if (env.IsDevelopment())
                 builder.AddUserSecrets<Startup>();
         }
 
-        public IConfigurationRoot Configuration { get; }
+        private IConfigurationRoot ConfigurationRoot { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -41,13 +41,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
             // Add framework services.
             services.AddMvc();
-            services.AddSingleton(Configuration);
+            services.AddSingleton(ConfigurationRoot);
+            services.AddSingleton(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceCollection services)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddConsole(ConfigurationRoot.GetSection("Logging"));
             loggerFactory.AddDebug();
 
             if (env.IsDevelopment())
@@ -79,6 +80,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                  name: "forms",
+                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
             });
         }
     }

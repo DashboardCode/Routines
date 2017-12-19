@@ -36,7 +36,7 @@
         {
             var urlDetailsAction = @Url.Action("Details", "Roles", new { id = item.RoleId });
             var urlEditAction = @Url.Action("Edit", "Roles", new { id = item.RoleId });
-            var urlDeleteAction = @Url.Action("Edit", "Roles", new { id = item.RoleId });
+            var urlDeleteAction = @Url.Action("Delete", "Roles", new { id = item.RoleId });
             <tr>
                 <td class="tableActionColumn">
                     <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@urlDetailsAction'"><span class="material-icons">insert_drive_file</span></button>

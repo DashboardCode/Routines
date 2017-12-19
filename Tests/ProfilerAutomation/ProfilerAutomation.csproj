@@ -57,6 +57,9 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="readme.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\Ascon.NetMemoryProfiler.1.0.2\Build\Ascon.NetMemoryProfiler.targets" Condition="Exists('..\..\packages\Ascon.NetMemoryProfiler.1.0.2\Build\Ascon.NetMemoryProfiler.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

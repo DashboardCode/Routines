@@ -9,15 +9,18 @@ namespace DashboardCode.Routines.Storage.EfCore
         private readonly DbContext dbContext;
         private readonly Func<Exception, List<FieldError>> analyzeException;
         private readonly Action<object> setAuditProperties;
+        private readonly Func<object, bool> isAuditable;
 
         public OrmStorage(
             DbContext dbContext,
             Func<Exception, List<FieldError>> analyzeException,
+            Func<object, bool> isAuditable,
             Action<object> setAuditProperties)
         {
             this.dbContext = dbContext;
             this.analyzeException = analyzeException;
             this.setAuditProperties = setAuditProperties;
+            this.isAuditable = isAuditable;
         }
 
         public StorageError Handle(Action<IBatch<TEntity>> action)
@@ -56,7 +59,7 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public void HandleSave(Action<IBatch<TEntity>> action)
         {
-            action(new Batch<TEntity>(dbContext, setAuditProperties));
+            action(new Batch<TEntity>(dbContext, isAuditable, setAuditProperties));
             dbContext.SaveChanges();
         }
     }

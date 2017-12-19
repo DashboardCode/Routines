@@ -9,6 +9,7 @@
         <hr/>
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.GroupId)
+        @Html.HiddenFor(model => model.RowVersion)
 
         <div class="form-group">
             @Html.LabelFor(model => model.GroupName, htmlAttributes: new { @class = "control-label col-lg-2" })
@@ -39,6 +40,14 @@
             <div class="col-lg-10">
                 @Html.ListBox("Roles", ViewBag.RolesMultiSelectList as MultiSelectList, new { @class = "form-control" })
                 @Html.ValidationMessage("Roles", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Users", "Users", htmlAttributes: new { @class = "control-label col-lg-2" })
+            <div class="col-lg-10">
+                @Html.ListBox("Users", ViewBag.RolesMultiSelectList as MultiSelectList, new { @class = "form-control" })
+                @Html.ValidationMessage("Users", "", new { @class = "text-danger" })
             </div>
         </div>
 

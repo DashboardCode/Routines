@@ -242,8 +242,6 @@ namespace DashboardCode.Routines.Json
             return @value;
         }
 
-        
-
         internal static MethodCallExpression CreateSerializeArrayMethodCall(
             Type serializationType,
             bool? isNullableStruct,//SerializationPipeline propertyPipeline,

@@ -116,6 +116,35 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             Do(connectionString, false);
         }
 
+        internal static void SqlServerTest2(string connectionString)
+        {
+            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString)))
+            {
+                TestService.Clear(new AdoBatch(dbContext));
+                TestService.Reset(StorageFactory.CreateStorage(dbContext));
+            }
+
+            var messages = new List<string>();
+            Action<string> verbose = (text) => {
+                messages.Add(text);
+                Console.WriteLine(text);
+                Console.WriteLine();
+            };
+
+            Console.WriteLine("Check connection string:");
+            Console.WriteLine(connectionString);
+
+            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString, false), verbose))
+            {
+                var parentRecords = dbContext.ParentRecords
+                   .Include(e => e.ParentRecordHierarchyRecordMap)
+                   .ThenInclude(e => e.HierarchyRecord).ToList();
+                var parentRecord = parentRecords.First(e => e.FieldA == "1_A");
+                parentRecord.FieldNotNull = 777;
+                dbContext.SaveChanges();
+            }
+        }
+
         private static void Do(string connectionString, bool inMemory)
         {
             var messages = new List<string>();
@@ -170,6 +199,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             {
                 var storage = new OrmStorage<ParentRecord>(dbContext,
                     (ex) => ExceptionExtensions.Analyze(ex, null),
+                    (o) => false,
                     (o) => {; });
                 var parentRecord = new ParentRecord { ParentRecordId = id };
 

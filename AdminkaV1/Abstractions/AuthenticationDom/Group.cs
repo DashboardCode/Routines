@@ -1,18 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DashboardCode.AdminkaV1.AuthenticationDom
 {
-    public class Group
+    public class Group : IVersioned
     {
         public int GroupId { get; set; }
-        //[DisplayName("Name")]
         public string GroupName { get; set; }
-        //[DisplayName("AD")]
         public string GroupAdName { get; set; }
         public ICollection<GroupPrivilege> GroupPrivilegeMap { get; set; }
         public ICollection<GroupRole> GroupRoleMap { get; set; }
         public ICollection<UserGroup> UserGroupMap { get; set; }
+
+        public string RowVersionBy { get; set; }
+        public DateTime RowVersionAt { get; set; }
+        public byte[] RowVersion { get; set; }
+
         public IReadOnlyCollection<User> GetUsers()
         {
             IReadOnlyCollection<User> @value = null;

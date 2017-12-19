@@ -1,20 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace DashboardCode.AdminkaV1.AuthenticationDom
 {
-    public class User
+    public class User : IVersioned
     {
         public int UserId { get; set; }
 
-        //[DisplayName("Login")]
         public string LoginName { get; set; }
-
-        //[DisplayName("First Name")]
         public string FirstName { get; set; }
-
-        //[DisplayName("Second Name")]
         public string SecondName { get; set; }
+
+        public string   RowVersionBy { get; set; }
+        public DateTime RowVersionAt { get; set; }
+        public byte[]   RowVersion { get; set; }
 
         public ICollection<UserGroup> UserGroupMap { get; set; }
         public ICollection<UserRole> UserRoleMap { get; set; }

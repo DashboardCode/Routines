@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore.Migrations;
+
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.AdminkaV1.Injected.Configuration;
@@ -33,34 +34,45 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                     }
                     if (loginName == null)
                         throw new Exception("login name can't be null");
+
                     migrationBuilder.Sql(
-                        $"INSERT INTO dbo.Users (LoginName) VALUES ('{loginName}');" + Environment.NewLine
-                        + $"INSERT INTO dbo.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.ConfigureSystem}','Configure System');" + Environment.NewLine
-                        + $"INSERT INTO dbo.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.VerboseLogging}','Verbose Logging');" + Environment.NewLine
-                        + $"INSERT INTO dbo.UserPrivilegeMap (UserId, PrivilegeId) VALUES (IDENT_CURRENT('dbo.Users'),'{Privilege.ConfigureSystem}');" + Environment.NewLine
-                        + $"INSERT INTO dbo.Groups (GroupName, GroupAdName) VALUES ('Sample','{groupAdName}');" + Environment.NewLine
-                        + $"INSERT INTO dbo.GroupPrivilegeMap (GroupId, PrivilegeId) VALUES (IDENT_CURRENT('dbo.Groups'),'{Privilege.VerboseLogging}');" + Environment.NewLine
-                        + $"INSERT INTO dbo.UserGroupMap (UserId, GroupId) VALUES (IDENT_CURRENT('dbo.Users'),IDENT_CURRENT('dbo.Groups'));" + Environment.NewLine
+                        "ALTER TABLE tst.TypeRecords ADD CONSTRAINT CK_tst_TypeRecords_TypeRecordName CHECK(TypeRecordName NOT LIKE '%[^a-z0-9 ]%');");
+
+                    migrationBuilder.Sql("ALTER TABLE scr.Privileges ADD CONSTRAINT CK_scr_Privileges_PrivilegeId CHECK(PrivilegeId NOT LIKE '%[^a-z0-9]%');");
+
+                    migrationBuilder.Sql(@"ALTER TABLE scr.Users ADD CONSTRAINT CK_scr_Users_FirstName CHECK(FirstName NOT LIKE '%[^a-z ]%');");
+                    migrationBuilder.Sql(@"ALTER TABLE scr.Users ADD CONSTRAINT CK_scr_Users_SecondName CHECK(SecondName NOT LIKE '%[^a-z '']%');");
+                    migrationBuilder.Sql(@"ALTER TABLE scr.Users ADD CONSTRAINT CK_scr_Users_LoginName CHECK(LoginName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!');");
+
+                    migrationBuilder.Sql(@"ALTER TABLE scr.Roles ADD CONSTRAINT CK_scr_Roles_RoleName CHECK(RoleName NOT LIKE '%[^a-z0-9 ]%');");
+                    migrationBuilder.Sql(@"ALTER TABLE scr.Groups ADD CONSTRAINT CK_scr_Groups_GroupName CHECK(GroupName NOT LIKE '%[^a-z0-9 ]%');");
+                    migrationBuilder.Sql(@"ALTER TABLE scr.Groups ADD CONSTRAINT CK_scr_Groups_GroupAdName CHECK(GroupAdName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!');");
+
+                    ValueTuple<string, string>[] tables = new[] { ("tst", "TypeRecords"), ("tst", "ChildRecords"), ("tst", "ParentRecords")
+                            ,("scr","Users"),("scr","Privileges"),("scr","Groups"),("scr","Roles")
+                            ,("scr","GroupPrivilegeMap"),("scr","GroupRoleMap"),("scr","RolePrivilegeMap")
+                            ,("scr","UserGroupMap"),("scr","UserPrivilegeMap"),("scr","UserRoleMap")
+                    };
+                    foreach ( var (schema,table) in tables)
+                    {
+                        migrationBuilder.Sql(
+                            $"ALTER TABLE {schema}.{table} ADD CONSTRAINT DF_{schema}_{table}_RowVersionAt DEFAULT GETDATE() FOR RowVersionAt;");
+                        migrationBuilder.Sql(
+                            $"ALTER TABLE {schema}.{table} ADD CONSTRAINT DF_{schema}_{table}_RowVersionBy DEFAULT SUSER_SNAME() FOR RowVersionBy;");
+                        migrationBuilder.Sql($"ALTER TABLE {schema}.{table} ADD CONSTRAINT CK_{schema}_{table}_RowVersionBy CHECK(RowVersionBy NOT LIKE '%[^a-z!.!-!_!\\!@]%' ESCAPE '!');");
+                    }
+
+                    migrationBuilder.Sql(
+                          $"INSERT INTO scr.Users (LoginName) VALUES ('{loginName}');" + Environment.NewLine
+                        + $"INSERT INTO scr.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.ConfigureSystem}','Configure System');" + Environment.NewLine
+                        + $"INSERT INTO scr.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.VerboseLogging}','Verbose Logging');" + Environment.NewLine
+                        + $"INSERT INTO scr.UserPrivilegeMap (UserId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Users'),'{Privilege.ConfigureSystem}');" + Environment.NewLine
+                        + $"INSERT INTO scr.Groups (GroupName, GroupAdName) VALUES ('Sample','{groupAdName}');" + Environment.NewLine
+                        + $"INSERT INTO scr.GroupPrivilegeMap (GroupId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Groups'),'{Privilege.VerboseLogging}');" + Environment.NewLine
+                        + $"INSERT INTO scr.UserGroupMap (UserId, GroupId) VALUES (IDENT_CURRENT('scr.Users'),IDENT_CURRENT('scr.Groups'));" + Environment.NewLine
+                        + $"INSERT INTO scr.Roles (RoleName) VALUES ('Administrator');" + Environment.NewLine
+                        + $"INSERT INTO scr.RolePrivilegeMap (RoleId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Roles'),'{Privilege.ConfigureSystem}');" + Environment.NewLine
                     );
-
-                    migrationBuilder.Sql(
-                        "ALTER TABLE tst.TypeRecords ADD CONSTRAINT CK_TypeRecords_TypeRecordName CHECK(TypeRecordName NOT LIKE '%[^a-z0-9 ]%');");
-
-                    migrationBuilder.Sql(
-                        "ALTER TABLE tst.TypeRecords ADD CONSTRAINT DF_TypeRecords_RowVersionAt DEFAULT GETDATE() FOR RowVersionAt;");
-                    migrationBuilder.Sql(
-                        "ALTER TABLE tst.TypeRecords ADD CONSTRAINT DF_TypeRecords_RowVersionBy DEFAULT SUSER_SNAME() FOR RowVersionBy;");
-
-
-                    migrationBuilder.Sql(
-                        "ALTER TABLE tst.ChildRecords ADD CONSTRAINT DF_ChildRecords_RowVersionAt DEFAULT GETDATE() FOR RowVersionAt;");
-                    migrationBuilder.Sql(
-                        "ALTER TABLE tst.ChildRecords ADD CONSTRAINT DF_ChildRecords_RowVersionBy DEFAULT SUSER_SNAME() FOR RowVersionBy;");
-
-                    migrationBuilder.Sql(
-                        "ALTER TABLE tst.ParentRecords ADD CONSTRAINT DF_ParentRecords_RowVersionAt DEFAULT GETDATE() FOR RowVersionAt;");
-                    migrationBuilder.Sql(
-                        "ALTER TABLE tst.ParentRecords ADD CONSTRAINT DF_ParentRecords_RowVersionBy DEFAULT SUSER_SNAME() FOR RowVersionBy;");
                 });
         }
     }

@@ -30,6 +30,11 @@ namespace DashboardCode.AdminkaV1.Injected
             this.analyze = analyze;
         }
 
+        private bool IsAuditProperty(object o)
+        {
+            return (o is IVersioned);
+        }
+
         private void SetAuditProperties(object o)
         {
             if (o is IVersioned versionedEntity)
@@ -66,7 +71,7 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaDbContextHandler CreateDbContextHandler()
         {
             var optionsBuilder = CreateDbContextOptionsBuilder();
-            var dbContextHandler = new AdminkaDbContextHandler(state, SetAuditProperties, optionsBuilder);
+            var dbContextHandler = new AdminkaDbContextHandler(state, IsAuditProperty, SetAuditProperties, optionsBuilder);
             return dbContextHandler;
         }
 

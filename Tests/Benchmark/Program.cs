@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.CsProj;
@@ -10,8 +9,12 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            var b = new BenchmarkConcurencyCollection();
-            b.ConcurrentBagAdd();
+            //var b = new BenchmarkAsyncNotAwaitInterface();
+            //var i1 = b.Completed();
+            //var i2 = b.CompletedAwait();
+            //var i3 = b.Pragma();
+            //var i4 = b.Yield();
+            //b.ConcurrentBagAdd();
             //var x1 = b.DelegateBuilded();
             //var x2 = b.Expression();
             //var s1 = b.();
@@ -28,7 +31,7 @@ namespace Benchmark
             //var jO = b.TestFuncDynamicInvoke();
             //var jA = b.TestFunc();
             //var jB = b.TestFuncBuilded();
-            //BenchmarkRunner.Run<BenchmarkConcurencyCollection>();
+            BenchmarkRunner.Run<BenchmarkStructOrClass>();
         }
     }
 

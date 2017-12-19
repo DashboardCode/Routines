@@ -14,6 +14,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     {
         public readonly SessionState SessionState;
         public readonly RoutineController Controller;
+        public MvcRoutine(RoutineController controller, [CallerMemberName] string action = "") :
+            this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), controller.HttpContext.Request.ToLog(), action)
+        {
+        }
         public MvcRoutine(RoutineController controller, object input, [CallerMemberName] string action = "") :
             this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), input, action)
         {

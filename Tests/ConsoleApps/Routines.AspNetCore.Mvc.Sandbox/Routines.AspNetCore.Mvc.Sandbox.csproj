@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>DashboardCode.Routines.AspNetCore.Mvc.Sandbox</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.AspNetCore.Mvc.Sandbox</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Routines.AspNetCore\Routines.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\..\Routines\Routines.csproj" />
+  </ItemGroup>
+
+</Project>

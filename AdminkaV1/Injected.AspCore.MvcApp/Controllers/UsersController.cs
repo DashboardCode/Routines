@@ -1,159 +1,108 @@
 ﻿using System.Threading.Tasks; // assync actions
-using System.Linq;
 using Microsoft.AspNetCore.Mvc; // controler
 using Microsoft.Extensions.Configuration;
 
 using DashboardCode.AdminkaV1.AuthenticationDom; // entity
-using DashboardCode.Routines;
 using DashboardCode.Routines.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
 {
     public class UsersController : RoutineController
     {
-        const string BindedFields = nameof(AuthenticationDom.User.UserId) + ", "
-            + nameof(AuthenticationDom.User.LoginName) + ", "
-            + nameof(AuthenticationDom.User.FirstName) + ", "
-            + nameof(AuthenticationDom.User.SecondName);
+        #region Meta
+        static ControllerMeta<User, int?> meta = new ControllerMeta<User, int?>(
+            () => new User(),
+            new ReferencesMeta<User>(new IManyToMany<User>[] {
+                new ManyToMany<User, Privilege, UserPrivilege, string>(
+                    new MvcNavigationFacade2<User, Privilege, UserPrivilege, string>(
+                        "Privileges", e => e.PrivilegeId,
+                        nameof(Privilege.PrivilegeName),
+                        (ep, ef) => new UserPrivilege() { UserId = ep.UserId, PrivilegeId = ef.PrivilegeId },
+                        s => s
+                    ),
+                    repository=>repository.Clone<Privilege>().List(),
+                    e => e.UserPrivilegeMap,
+                    (e1, e2) => e1.PrivilegeId == e2.PrivilegeId,
+                    e => e.PrivilegeId
+                ),
+                new ManyToMany<User, Role, UserRole, int>(
+                    new MvcNavigationFacade2<User, Role, UserRole, int>(
+                        "Roles", e => e.RoleId,
+                        nameof(Role.RoleName),
+                        (ep, ef) => new UserRole() { UserId = ep.UserId, RoleId = ef.RoleId },
+                        s => int.Parse(s)
+                    ),
+                    repository=>repository.Clone<Role>().List(),
+                    e => e.UserRoleMap,
+                    (e1, e2) => e1.RoleId == e2.RoleId,
+                    e => e.RoleId
+                ),
+                new ManyToMany<User, Group, UserGroup, int>(
+                    new MvcNavigationFacade2<User, Group, UserGroup, int>(
+                        "Groups", e => e.GroupId,
+                        nameof(AuthenticationDom.User.LoginName),
+                        (ep, ef) => new UserGroup() { GroupId = ep.UserId, UserId = ef.GroupId },
+                        s => int.Parse(s)
+                    ),
+                    repository=>repository.Clone<Group>().List(),
+                    e => e.UserGroupMap,
+                    (e1, e2) => e1.UserId == e2.UserId,
+                    e => e.UserId
+                )
+            }),
+            chain => chain
+                       .IncludeAll(e => e.UserPrivilegeMap)
+                       .ThenInclude(e => e.Privilege)
+                       .IncludeAll(e => e.UserRoleMap)
+                       .ThenInclude(e => e.Role)
+                       .IncludeAll(e => e.UserGroupMap)
+                       .ThenInclude(e => e.Group),
+            chain => chain.IncludeAll(e => e.UserPrivilegeMap)
+                       .ThenInclude(e => e.Privilege)
+                       .IncludeAll(e => e.UserRoleMap)
+                       .ThenInclude(e => e.Role)
+                       .IncludeAll(e => e.UserGroupMap)
+                       .ThenInclude(e => e.Group),
+            id => e => e.UserId == id.Value,
+            null,
+            editables => 
+                editables.Add(e=>e.LoginName, setter=> e => sv => Binder.TryStringValidateLength(sv, v=> setter(e, v), 100))
+                    .Add(e=>e.FirstName, setter => e => sv => Binder.TryStringValidateLength(sv, v => setter(e, v), 100))
+                    .Add(e=>e.SecondName, setter => e => sv => Binder.TryStringValidateLength(sv, v => setter(e,v), 100)),
+            notEditables => notEditables.Add(e => e.UserId).Add(e=>e.RowVersion)
+            
+        );
+        #endregion
 
-        const string EditBindedFields = nameof(AuthenticationDom.User.UserId);
-
-        Include<User> indexIncludes;
-        Include<User> detailsIncludes;
-        Include<User> editIncludes;
-        public UsersController(IConfigurationRoot configurationRoot) : base(configurationRoot)
+        CrudRoutineControllerConsumer<User, int?> consumer;
+        public UsersController(IConfigurationRoot configurationRoot) :base(configurationRoot)
         {
-            this.indexIncludes = includable =>
-                includable.IncludeAll(y => y.UserPrivilegeMap)
-                    .ThenInclude(y => y.Privilege)
-                    .IncludeAll(y => y.UserGroupMap)
-                    .ThenInclude(y => y.Group)
-                    .IncludeAll(y => y.UserRoleMap)
-                    .ThenInclude(y => y.Role);
-            this.detailsIncludes = indexIncludes;
-            this.editIncludes = indexIncludes;
+            consumer = new CrudRoutineControllerConsumer<User, int?>(this, meta, (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem));
+        }
+
+        #region Details / Index
+        public async Task<IActionResult> Details(int? id)
+        {
+            return await consumer.Details(id);
         }
 
         public async Task<IActionResult> Index()
         {
-            var routine = new MvcRoutine(this, null);
-            return await routine.HandleStorageAsync<IActionResult, User>(
-                (repository) =>
-                {
-                    var entities = repository.List(indexIncludes);
-                    return View(entities);
-                });
+            return await consumer.Index();
         }
+        #endregion
 
-        public async Task<IActionResult> Details(int? id)
-        {
-            var routine = new MvcRoutine(this, new { id = id });
-            return await routine.HandleStorageAsync<IActionResult, User>(repository =>
-            {
-                return this.MakeActionResultOnRequest(
-                    () => id != null,
-                    () => repository.Find(e => e.UserId == id, detailsIncludes)
-                );
-            });
-        }
-
+        #region Edit
         public async Task<IActionResult> Edit(int? id)
         {
-            var routine = new MvcRoutine(this, new { id = id });
-            return await routine.HandleStorageAsync<IActionResult, User>(repository =>
-            {
-                var privilegesNavigation = new MvcNavigationFacade<User, Privilege, UserPrivilege, string>(
-                    this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
-                    repository.Clone<Privilege>().List()
-                );
-
-                var rolesNavigation = new MvcNavigationFacade<User, Role, UserRole, int>(
-                    this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                    repository.Clone<Role>().List()
-                );
-
-                var groupsNavigation = new MvcNavigationFacade<User, Group, UserGroup, int>(
-                    this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                    repository.Clone<Group>().List()
-                );
-
-                return this.MakeActionResultOnRequest(
-                        () => id != null,
-                        () => repository.Find(e => e.UserId == id, editIncludes),
-                        (entity) =>
-                        {
-                            privilegesNavigation.Reset(entity.UserPrivilegeMap.Select(e => e.PrivilegeId));
-                            rolesNavigation.Reset(entity.UserRoleMap.Select(e => e.RoleId));
-                            groupsNavigation.Reset(entity.UserGroupMap.Select(e => e.GroupId));
-                        }
-                    );
-            });
+            return await consumer.Edit(id);
         }
-        [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([Bind(EditBindedFields)] User entity)
+
+        [HttpPost, ActionName(nameof(Edit)), ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditConfirmed()
         {
-            var routine = new MvcRoutine(this, new { entity = entity });
-            
-            return await routine.HandleTransactionAsync<IActionResult, User>((commit, state) =>
-            {
-                if (!state.UserContext.HasPrivilege(Privilege.ConfigureSystem))
-                        return Unauthorized();
-
-                return commit(
-                        (repository, save) =>
-                        {
-                            #region Prepare navigation facades
-                            var privilegesNavigation = new MvcNavigationFacade<User, Privilege, UserPrivilege, string>(
-                                this, "Privileges", e => e.PrivilegeId, nameof(Privilege.PrivilegeName),
-                                repository.Clone<Privilege>().List()
-                            );
-                            privilegesNavigation.Parse(
-                                e => new UserPrivilege() { UserId = entity.UserId, PrivilegeId = e.PrivilegeId },
-                                s => s);
-
-                            var rolesNavigation = new MvcNavigationFacade<User, Role, UserRole, int>(
-                                this, "Roles", e => e.RoleId, nameof(Role.RoleName),
-                                repository.Clone<Role>().List()
-                            );
-                            rolesNavigation.Parse(
-                                 e => new UserRole() { UserId = entity.UserId, RoleId = e.RoleId },
-                                 s => int.Parse(s)
-                            );
-
-                            var groupsNavigation = new MvcNavigationFacade<User, Group, UserGroup, int>(
-                                this, "Groups", e => e.GroupId, nameof(Group.GroupName),
-                                repository.Clone<Group>().List()
-                            );
-                            #endregion
-
-                            return this.MakeActionResultOnSave(
-                                () => save(
-                                        batch =>
-                                        {
-                                            batch.Modify(entity, chain=>chain.Include(e=>e.LoginName)
-                                                    .Include(e => e.FirstName)
-                                                    .Include(e => e.SecondName));
-                                            batch.ModifyRelated(entity,
-                                                e => e.UserRoleMap,
-                                                rolesNavigation.Selected,
-                                                (e1, e2) => e1.RoleId == e2.RoleId
-                                            );
-                                            batch.ModifyRelated(entity,
-                                                e => e.UserPrivilegeMap,
-                                                privilegesNavigation.Selected,
-                                                (e1, e2) => e1.PrivilegeId == e2.PrivilegeId
-                                            );
-                                        }),
-                                () =>
-                                {
-                                    privilegesNavigation.Reset();
-                                    rolesNavigation.Reset();
-                                    groupsNavigation.Reset();
-                                    return View(entity);
-                                }
-                            );
-                        });
-                });
+            return await consumer.EditConfirmed();
         }
+        #endregion
     }
 }

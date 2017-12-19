@@ -1,18 +1,20 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace DashboardCode.AdminkaV1.AuthenticationDom
 {
-    public class Privilege
+    public class Privilege : IVersioned
     {
         public const string ConfigureSystem = "CFGS";
         public const string VerboseLogging = "VLOG";
 
-        //[DisplayName("ID")]
-        public string PrivilegeId { get; set; }
+        public string PrivilegeId          { get; set; }
+        public string PrivilegeName        { get; set; }
 
-        //[DisplayName("Name")]
-        public string PrivilegeName { get; set; }
+        public string RowVersionBy   { get; set; }
+        public DateTime RowVersionAt { get; set; }
+        public byte[] RowVersion     { get; set; }
 
         public ICollection<UserPrivilege>  UserPrivilegeMap  { get; set; }
         public ICollection<GroupPrivilege> GroupPrivilegeMap { get; set; }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Text;
+using System.Globalization;
 
 namespace DashboardCode.Routines.Json
 {
@@ -298,7 +298,7 @@ namespace DashboardCode.Routines.Json
             return true;
         }
 
-        private static StringBuilder AppendJsonEscaped(this StringBuilder stringBuilder, string text)
+        public static StringBuilder AppendJsonEscaped(this StringBuilder stringBuilder, string text)
         {
             foreach (char c in text)
             {

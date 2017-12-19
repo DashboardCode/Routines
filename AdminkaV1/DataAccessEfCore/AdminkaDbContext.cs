@@ -80,12 +80,13 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region Test Island
             SetupVersioned(modelBuilder.Entity<TypeRecord>());
             SetupVersioned(modelBuilder.Entity<ChildRecord>());
             SetupVersioned(modelBuilder.Entity<HierarchyRecord>());
             SetupVersioned(modelBuilder.Entity<ParentRecordHierarchyRecord>());
             SetupVersioned(modelBuilder.Entity<ParentRecord>());
-            #region Test Island
+
             string testIslandSchema = "tst";
             modelBuilder.Entity<ParentRecord>()
                 .ToTable(GetEntityTableName(nameof(ParentRecord)), schema: testIslandSchema)
@@ -157,33 +158,66 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             #endregion
             #endregion
 
-            modelBuilder.Entity<ActivityRecord>().HasKey(e=> e.ActivityRecordId);
+            #region Logging Island
+            string loggingIslandSchema = "log";
+            modelBuilder.Entity<ActivityRecord>()
+                .ToTable(GetEntityTableName(nameof(ActivityRecord)), schema: loggingIslandSchema)
+                .HasKey(e=> e.ActivityRecordId);
             modelBuilder.Entity<ActivityRecord>().Property(e => e.CorrelationToken).IsRequired();
             modelBuilder.Entity<ActivityRecord>().Property(e => e.Application).IsRequired().HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<ActivityRecord>().Property(e => e.FullActionName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
-            modelBuilder.Entity<VerboseRecord>().HasKey(e => e.ActivityRecordId);
+
+            modelBuilder.Entity<VerboseRecord>()
+                .ToTable(GetEntityTableName(nameof(VerboseRecord)), schema: loggingIslandSchema)
+                .HasKey(e => e.ActivityRecordId);
             modelBuilder.Entity<VerboseRecord>().Property(e => e.CorrelationToken).IsRequired();
             modelBuilder.Entity<VerboseRecord>().Property(e => e.Application).IsRequired().HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<VerboseRecord>().Property(e => e.FullActionName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
             modelBuilder.Entity<VerboseRecord>().Property(e => e.VerboseRecordTypeId).IsRequired().HasMaxLength(LengthConstants.GoodForKey);
+            #endregion
 
-            modelBuilder.Entity<Privilege>().HasKey(e => e.PrivilegeId);
+            #region Security Island
+            SetupVersioned(modelBuilder.Entity<Privilege>());
+            SetupVersioned(modelBuilder.Entity<User>());
+            SetupVersioned(modelBuilder.Entity<Group>());
+            SetupVersioned(modelBuilder.Entity<Role>());
+
+            SetupVersioned(modelBuilder.Entity<UserPrivilege>());
+            SetupVersioned(modelBuilder.Entity<GroupPrivilege>());
+            SetupVersioned(modelBuilder.Entity<UserGroup>());
+            SetupVersioned(modelBuilder.Entity<GroupRole>());
+            SetupVersioned(modelBuilder.Entity<RolePrivilege>());
+            SetupVersioned(modelBuilder.Entity<UserRole>());
+
+            string securityIslandSchema = "scr";
+            modelBuilder.Entity<Privilege>()
+                .ToTable(GetEntityTableName(nameof(Privilege)), schema: securityIslandSchema)
+                .HasKey(e => e.PrivilegeId); 
             modelBuilder.Entity<Privilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<Privilege>().Property(e => e.PrivilegeName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
-            modelBuilder.Entity<User>().HasKey(e => e.UserId);
+
+            modelBuilder.Entity<User>()
+                .ToTable(GetEntityTableName(nameof(User)), schema: securityIslandSchema)
+                .HasKey(e => e.UserId);
             modelBuilder.Entity<User>().Property(e => e.LoginName).IsRequired().HasMaxLength(LengthConstants.AdName);
-            modelBuilder.Entity<User>().Property(e => e.FirstName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
-            modelBuilder.Entity<User>().Property(e => e.SecondName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
-            modelBuilder.Entity<Group>().HasKey(e=>e.GroupId);
+            modelBuilder.Entity<User>().Property(e => e.FirstName).HasMaxLength(LengthConstants.GoodForTitle);
+            modelBuilder.Entity<User>().Property(e => e.SecondName).HasMaxLength(LengthConstants.GoodForName);
+
+            modelBuilder.Entity<Group>()
+                .ToTable(GetEntityTableName(nameof(Group)), schema: securityIslandSchema)
+                .HasKey(e=>e.GroupId);
             modelBuilder.Entity<Group>().Property(e => e.GroupName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
             modelBuilder.Entity<Group>().Property(e => e.GroupAdName).IsRequired().HasMaxLength(LengthConstants.AdName);
-            modelBuilder.Entity<Role>().HasKey(e => e.RoleId);
+
+            modelBuilder.Entity<Role>()
+                .ToTable(GetEntityTableName(nameof(Role)), schema: securityIslandSchema)
+                .HasKey(e => e.RoleId);
             modelBuilder.Entity<Role>().Property(e => e.RoleName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
 
             #region UsersPrivileges
             modelBuilder.Entity<UserPrivilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<UserPrivilege>()
-                .ToTable(GetMapTableName(nameof(UserPrivilege)))
+                .ToTable(GetMapTableName(nameof(UserPrivilege)), schema: securityIslandSchema)
                 .HasKey(e => new { e.UserId, e.PrivilegeId });
 
             modelBuilder.Entity<UserPrivilege>()
@@ -200,7 +234,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             #region GroupsPrivileges
             modelBuilder.Entity<GroupPrivilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<GroupPrivilege>()
-                .ToTable(GetMapTableName(nameof(GroupPrivilege)))
+                .ToTable(GetMapTableName(nameof(GroupPrivilege)), schema: securityIslandSchema)
                 .HasKey(e => new { e.GroupId, e.PrivilegeId });
 
             modelBuilder.Entity<GroupPrivilege>()
@@ -216,7 +250,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             #region UsersGroups
             modelBuilder.Entity<UserGroup>()
-                .ToTable(GetMapTableName(nameof(UserGroup)))
+                .ToTable(GetMapTableName(nameof(UserGroup)), schema: securityIslandSchema)
                 .HasKey(e => new { e.UserId, e.GroupId });
 
             modelBuilder.Entity<UserGroup>()
@@ -232,7 +266,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             #region GroupsRoles
             modelBuilder.Entity<GroupRole>()
-                .ToTable(GetMapTableName(nameof(GroupRole)))
+                .ToTable(GetMapTableName(nameof(GroupRole)), schema: securityIslandSchema)
                 .HasKey(gr => new { gr.GroupId, gr.RoleId });
 
             modelBuilder.Entity<GroupRole>()
@@ -248,7 +282,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             #region RolesPrivileges
             modelBuilder.Entity<RolePrivilege>()
-               .ToTable(GetMapTableName(nameof(RolePrivilege)))
+               .ToTable(GetMapTableName(nameof(RolePrivilege)), schema: securityIslandSchema)
                .HasKey(e => new { e.RoleId, e.PrivilegeId });
             modelBuilder.Entity<RolePrivilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<RolePrivilege>()
@@ -264,7 +298,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             #region UsersRoles
             modelBuilder.Entity<UserRole>()
-                .ToTable(GetMapTableName(nameof(UserRole)))
+                .ToTable(GetMapTableName(nameof(UserRole)), schema: securityIslandSchema)
                 .HasKey(e => new { e.UserId, e.RoleId });
 
             modelBuilder.Entity<UserRole>()
@@ -277,6 +311,9 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 .WithMany(p => p.UserRoleMap)
                 .HasForeignKey(up => up.RoleId);
             #endregion
+            #endregion
+
+
         }
     }
 }

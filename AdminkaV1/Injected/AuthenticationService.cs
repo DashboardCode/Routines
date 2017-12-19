@@ -65,7 +65,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     else
                     {
                         var fakeAdConfiguration = systemUserContextResolver.Resolve<FakeAdConfiguration>();
-                        user = authenticationService.GetUser(fakeAdConfiguration.FakeAdUser, null, null, fakeAdConfiguration.FakeAdGroups);
+                        user = authenticationService.GetUser(fakeAdConfiguration.FakeAdUser, "Anonymous", "Anonymous", fakeAdConfiguration.FakeAdGroups);
                     }
                     var loggingTransients = loggingTransientsFactory(routineGuid, systemUserContextResolver);
                     loggingTransients.AuthenticationLoggingAdapter.TraceAuthentication(routineGuid, user.LoginName);
