@@ -63,7 +63,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
                        .ThenInclude(e => e.User),
             id => e => e.PrivilegeId == id,
             chain => chain.Include(e => e.PrivilegeName),
-            editables => editables.Add(e=>e.PrivilegeName,  setter=>e => sv => Binder.TryString(sv, v => setter(e,v))),
+            editables => editables.Add(e=>e.PrivilegeName,  Binder.ConvertToString),
             notEditables => notEditables.Add(e => e.PrivilegeId).Add(e => e.RowVersion)
             
         );

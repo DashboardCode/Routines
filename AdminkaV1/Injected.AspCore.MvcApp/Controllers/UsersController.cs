@@ -66,9 +66,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
             id => e => e.UserId == id.Value,
             null,
             editables => 
-                editables.Add(e=>e.LoginName, setter=> e => sv => Binder.TryStringValidateLength(sv, v=> setter(e, v), 100))
-                    .Add(e=>e.FirstName, setter => e => sv => Binder.TryStringValidateLength(sv, v => setter(e, v), 100))
-                    .Add(e=>e.SecondName, setter => e => sv => Binder.TryStringValidateLength(sv, v => setter(e,v), 100)),
+                editables.Add(e=>e.LoginName, Binder.ConvertToString)
+                    .Add(e=>e.FirstName, Binder.ConvertToString)
+                    .Add(e=>e.SecondName, Binder.ConvertToString),
             notEditables => notEditables.Add(e => e.UserId).Add(e=>e.RowVersion)
             
         );

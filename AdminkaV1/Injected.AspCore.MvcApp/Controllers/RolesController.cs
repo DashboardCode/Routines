@@ -67,7 +67,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
             id => e => e.RoleId == id.Value,
             null,
             editables =>
-                editables.Add(e=>e.RoleName, setter=> e => sv => Binder.TryStringValidateLength(sv, v => setter(e,v), 100)),
+                editables.Add(e=>e.RoleName, Binder.ConvertToString),
             
             notEditables => notEditables.Add(e => e.RoleId).Add(e => e.RowVersion)
         );

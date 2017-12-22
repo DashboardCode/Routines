@@ -169,15 +169,14 @@ namespace DashboardCode.Routines
             return getRelationAsEnumerable;
         }
 
-        public static Action<TEntity, TPropertyValue> CompileSetter<TEntity, TPropertyValue>(this Expression<Func<TEntity, TPropertyValue>> expression)
+        public static Action<TEntity, TPropertyValue> CompileSetProperty<TEntity, TPropertyValue>(this Expression<Func<TEntity, TPropertyValue>> expression)
         {
             var memberExpression = (MemberExpression)expression.Body;
-            return CompileSetter<TEntity, TPropertyValue>(memberExpression);
+            return CompileSetProperty<TEntity, TPropertyValue>(memberExpression);
         }
 
-        public static Action<TEntity, TPropertyValue> CompileSetter<TEntity, TPropertyValue>(this MemberExpression memberExpression)
+        public static Action<TEntity, TPropertyValue> CompileSetProperty<TEntity, TPropertyValue>(this MemberExpression memberExpression)
         {
-            //var expr = memberExpression.Expression;
             ParameterExpression eParameter = (ParameterExpression)memberExpression.Expression;
             ParameterExpression vParameter = Expression.Parameter(typeof(TPropertyValue), "v");
             var assign = Expression.Assign(memberExpression, vParameter);
@@ -186,11 +185,11 @@ namespace DashboardCode.Routines
             return setter;
         }
 
-        public static Func<TEntity, Action<TValue>> CompileSettterWithConverter<TEntity, TValue, TPropertyValue>(this MemberExpression memberExpression, Func<TValue, TPropertyValue> converter)
+        public static Func<TEntity, Action<TPropertyValue>> CompileFunctionalSetter<TEntity, TPropertyValue>(this MemberExpression memberExpression)
         {
-            var setter = CompileSetter<TEntity, TPropertyValue>(memberExpression);
-            Func<TEntity, Action<TValue>> action = FunctionalExtensions.CombineSetterAndConverter(setter, converter); 
-            return action;
+            Action<TEntity, TPropertyValue> setter = memberExpression.CompileSetProperty<TEntity, TPropertyValue>();
+            Func<TEntity, Action<TPropertyValue>> functionalSetter = (e) => (v) => setter(e,v);
+            return functionalSetter;
         }
     }
 }

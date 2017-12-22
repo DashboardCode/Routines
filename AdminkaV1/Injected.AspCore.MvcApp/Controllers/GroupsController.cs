@@ -66,25 +66,28 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
             id => e => e.GroupId == id.Value,
             null,
             //var roleNameLength = metaBrowser.GetLength<Role>(en => en.RoleName);
+            //editables.Add(e => e.GroupName, sv => Binder.ConvertToString(sv), s=>Binder.ValidateStringLength(10) )
             editables =>
-                editables.Add(e => e.GroupName,   setter => e => sv => Binder.TryString(sv, v => setter(e, v)))
-                         .Add(e => e.GroupAdName, setter => e => sv => Binder.TryStringValidateLength(sv, v => setter(e,v), 100))
-                         //editables..Add(e => e.GroupName,   setter => e => sv => Binder.TryString(sv, v => setter(e, v)))
-                         //editables.Add("GroupName", e => sv => Binder.TryString(sv, v => e.GroupName = v));
-                         //editables.Add("GroupName",   e => Binder.Try(sv => new ConvertResult<string> { Value = sv.ToString() }, v => { e.GroupName = v; return new BinderResult(); }));
-                         //editables.Add(e => e.GroupName,   setter => e => Binder.Try(sv => new ConvertResult<string> { Value = sv.ToString() }, v => { setter(e,v); return new BinderResult(); }))
-                         
-                         //editables.Add(e => e.GroupAdName, setter => e => sv => Binder.TryStringValidateLength(sv, v => setter(e,v), 100))
-                         //editables.Add("GroupAdName", e => sv => Binder.TryStringValidateLength(sv, v => e.GroupAdName = v, 100));
-                         //editables.Add("UserId", e => e.UserId,       setter => e => Binder.Try(sv=> new ConvertResult<int>{Value = int.Parse(sv.ToString())}, v => setter(e, v)));
+                editables.Add(e => e.GroupName, Binder.ConvertToString).Add(e => e.GroupAdName, Binder.ConvertToString, asserts => asserts.Add(v => v.Length <= 6, "Too big!"))
 
+                         //.Add(e => e.GroupAdName, setter => sv => Binder.TryStringValidateLength(sv, v => setter(v), 100))
+                         //.Add(e => e.GroupId,  Binder.ConvertToInt, asserts => asserts.Add(v => v < 100, "Too big!"))
+                         //.Add(e => e.GroupId,  Binder.ConvertToInt, v=>new BinderResult(v<100? null: "Too big!"), converter => setter => validator => validator(setter(converter())))
+                         //.Add(e => e.GroupId,  Binder.ConvertToInt,  convertor => setter => { var r = setter(convertor()); if (r.Value > 100) {; } return r.BinderResult; })
+                         //.Add(e => e.GroupId,  setter => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); setter(v);     return new BinderResult(v<100?null: "Too big!"); })
+                         //.Add("GroupId",           e => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); e.GroupId = v; return new BinderResult(v<100?null:"Too bug!"); })
             ,
-            notEditables => 
-                notEditables.Add(e=> e.GroupId).Add(e => e.RowVersion)
-                //notEditables.Add(e => e.GroupId, sv => int.Parse(sv.ToString()));
-                //notEditables.Add("GroupId", e => e.GroupId, setter => e => sv => setter(e, int.Parse(sv.ToString())));
-                //notEditables.Add("GroupId",    e => sv => e.GroupId= int.Parse(sv.ToString()));
-                //notEditables.Add("RowVersion", e => sv => e.RowVersion = Convert.FromBase64String(sv.ToString()));
+
+            notEditables =>
+                notEditables.Add(e => e.GroupId).Add(e => e.RowVersion)
+            //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()))
+            //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()), convertor => setter => setter(convertor()))
+            //.Add(e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
+            //.Add("GroupId", e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
+            //.Add("GroupId", e => sv => e.GroupId = int.Parse(sv.ToString()))
+
+
+        //
         );
         #endregion
 
