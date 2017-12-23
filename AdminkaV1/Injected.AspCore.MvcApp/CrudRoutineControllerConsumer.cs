@@ -8,7 +8,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
-    class CrudRoutineControllerConsumer<TEntity, TKey> where TEntity: class
+    class CrudRoutineControllerConsumer<TEntity, TKey> where TEntity: class, new()
     {
         readonly ControllerMeta<TEntity, TKey> meta;
         readonly RoutineController controller;

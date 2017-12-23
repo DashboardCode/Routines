@@ -45,12 +45,12 @@ namespace DashboardCode.Routines.AspNetCore
         {
             var options = getOptions(repository);
             setViewDataMultiSelectLists = (entity) =>
-                navigation.SetViewDataMultiSelectList(controller, getRelated(entity).Select(getTmmId), options, formField);
+                navigation.SetViewDataMultiSelectList(controller, getRelated(entity).Select(getTmmId), options);
         }
 
         void SetViewDataMultiSelectList(RoutineController controller, IReadOnlyCollection<TF> options)
         {
-            navigation.SetViewDataMultiSelectList(controller, options, formField);
+            navigation.SetViewDataMultiSelectList(controller, options);
         }
 
         public void ParseRequest(RoutineController controller, TP entity, IRepository<TP> repository, out Action<IBatch<TP>> modifyRelated, out Action setViewDataMultiSelectList)
@@ -58,7 +58,7 @@ namespace DashboardCode.Routines.AspNetCore
             var options = getOptions(repository);
             navigation.Parse(controller, entity, options, formField);
             modifyRelated = (batch) => batch.ModifyRelated(entity, getRelatedExpression, navigation.Selected, equalsById);
-            setViewDataMultiSelectList = () => navigation.SetViewDataMultiSelectList(controller, options, formField);
+            setViewDataMultiSelectList = () => navigation.SetViewDataMultiSelectList(controller, options);
         }
     }
 }

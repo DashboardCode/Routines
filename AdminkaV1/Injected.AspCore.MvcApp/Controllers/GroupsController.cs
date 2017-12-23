@@ -22,41 +22,39 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
     {
         #region Meta
         static ControllerMeta<Group, int> meta = new ControllerMeta<Group, int>(
-            () => new Group(),
             id => e => e.GroupId == id,
             Converters.TryParseInt,
             manyToMany => manyToMany.Add(
                 "Privileges",
                 repository => repository.Clone<Privilege>().List(),
+                nameof(Privilege.PrivilegeName),
                 e => e.GroupPrivilegeMap,
+                mm => mm.PrivilegeId,
+                mm => mm.GroupId,
                 e => e.PrivilegeId,
-                new MvcNavigationFacade<Group, Privilege, GroupPrivilege, string>(
-                        e => e.PrivilegeId,
-                        nameof(Privilege.PrivilegeName),
-                        (ep, ef) => new GroupPrivilege() { GroupId = ep.GroupId, PrivilegeId = ef.PrivilegeId }
-                    )
-                    
+                
+                (ep, ef) => new GroupPrivilege() { GroupId = ep.GroupId, PrivilegeId = ef.PrivilegeId }
+            
             ).Add("Roles",
                     repository => repository.Clone<Role>().List(),
+                    nameof(Role.RoleName),
                     e => e.GroupRoleMap,
+                    mm => mm.RoleId,
+                    mm => mm.GroupId,
                     e => e.RoleId,
-                    new MvcNavigationFacade<Group, Role, GroupRole, int>(
-                         e => e.RoleId,
-                        nameof(Role.RoleName),
-                        (ep, ef) => new GroupRole() { GroupId = ep.GroupId, RoleId = ef.RoleId }
-                    )
                     
-                ).Add(
+                    (ep, ef) => new GroupRole() { GroupId = ep.GroupId, RoleId = ef.RoleId }
+            ).Add(
                     "Users",
                     repository => repository.Clone<User>().List(),
+                    nameof(AuthenticationDom.User.LoginName),
                     e => e.UserGroupMap,
+                    mm => mm.UserId, 
+                    mm => mm.GroupId,
                     e => e.UserId,
-                    new MvcNavigationFacade<Group, User, UserGroup, int>(
-                         e => e.UserId,
-                        nameof(AuthenticationDom.User.LoginName),
-                        (ep, ef) => new UserGroup() { GroupId = ep.GroupId, UserId = ef.UserId }
-                    )
-                ),
+                    
+                    (ep, ef) => new UserGroup() { GroupId = ep.GroupId, UserId = ef.UserId }
+            ),
             chain => chain
                        .IncludeAll(e => e.GroupPrivilegeMap)
                        .ThenInclude(e => e.Privilege)

@@ -10,7 +10,7 @@ namespace DashboardCode.Routines.AspNetCore
     public class MvcNavigationFacade<TP, TF, TMM, TfID> where TP : class where TF : class
     {
         public readonly List<TMM> Selected;
-        //private readonly string name;
+        private readonly string formField;
         private readonly string optionId;
         private readonly string optionName;
         private readonly List<TfID> Ids;
@@ -19,7 +19,7 @@ namespace DashboardCode.Routines.AspNetCore
         private readonly Func<string, TfID> toId;
 
         public MvcNavigationFacade(
-            //string name,
+            string formField,
             Expression<Func<TF, TfID>> getId,
             string optionName,
             Func<TP, TF, TMM> construct,
@@ -27,7 +27,7 @@ namespace DashboardCode.Routines.AspNetCore
             )
         {
             //this.controller = controller;
-            //this.name = name;
+            this.formField = formField;
             this.optionId = MemberExpressionExtensions.GetMemberName(getId);
             this.optionName = optionName;
             this.getId = getId.Compile();
@@ -56,13 +56,13 @@ namespace DashboardCode.Routines.AspNetCore
             }
         }
 
-        public void SetViewDataMultiSelectList(Controller controller, IReadOnlyCollection<TF> options, string formField)
+        public void SetViewDataMultiSelectList(Controller controller, IReadOnlyCollection<TF> options)
         {
             controller.ViewData[formField + "MultiSelectList"] = new MultiSelectList(options, optionId, optionName);
             controller.ViewData[formField] = Ids;
         }
 
-        public void SetViewDataMultiSelectList(Controller controller, IEnumerable<TfID> ids, IReadOnlyCollection<TF> options, string formField)
+        public void SetViewDataMultiSelectList(Controller controller, IEnumerable<TfID> ids, IReadOnlyCollection<TF> options)
         {
             controller.ViewData[formField + "MultiSelectList"] = new MultiSelectList(options, optionId, optionName);
             controller.ViewData[formField] = ids;

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Primitives;
 namespace DashboardCode.Routines.AspNetCore
 {
     
-    public class ControllerMeta<TEntity, TKey> where TEntity : class
+    public class ControllerMeta<TEntity, TKey> where TEntity : class, new()
     {
         public readonly Func<TEntity> Constructor;
         public readonly ReferencesMeta<TEntity> ReferencesMeta;
@@ -337,13 +337,23 @@ namespace DashboardCode.Routines.AspNetCore
             public ManyToMany Add<TF, TMM, TfID>  (
                 string formField,
                 Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
+                string optionName,
                 Expression<Func<TEntity, ICollection<TMM>>> getRelatedExpression,
-                Func<TMM, TfID> getTmmId,
-                MvcNavigationFacade<TEntity, TF, TMM, TfID> navigation
+                //Expression<Func<TMM, TfID>> getTmmTpId,
+                Expression<Func<TMM, TfID>> getTmmTfIdExpression,
+                Expression<Func<TMM, TKey>> getTmmTKeyExpression,
+
+                Expression<Func<TF, TfID>> getId,
+
+                Func<TEntity, TF, TMM> construct,
+                Func<string, TfID> toId = null
                 ) where TF : class where TMM : class
             {
-                Func<TMM, TMM, bool> equalsById = (e1,e2)=> getTmmId(e1).Equals(getTmmId(e2));
-                var m = new ManyToMany<TEntity, TF, TMM, TfID>(formField, navigation, getOptions, getRelatedExpression, equalsById, getTmmId);
+                Func<TMM, TfID> getTmmTfId = getTmmTfIdExpression.Compile();
+                Func<TMM, TKey> getTmmTKey = getTmmTKeyExpression.Compile();
+                Func<TMM, TMM, bool> equalsById = (e1,e2)=> getTmmTfId(e1).Equals(getTmmTfId(e2));
+                var navigation = new MvcNavigationFacade<TEntity, TF, TMM, TfID>(formField, getId, optionName, construct, toId);
+                var m = new ManyToMany<TEntity, TF, TMM, TfID>(formField, navigation, getOptions, getRelatedExpression, equalsById, getTmmTfId);
                 manyToManyDictionary.Add(formField, m);
                 return this;
             }
@@ -351,7 +361,6 @@ namespace DashboardCode.Routines.AspNetCore
 
 
         public ControllerMeta(
-            Func<TEntity> constructor,
             Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
             Func<string, ConvertFuncResult<TKey>> keyConverter,
             Action<ManyToMany> manyToMany, //ReferencesMeta<TEntity> referencesMeta,
@@ -360,7 +369,7 @@ namespace DashboardCode.Routines.AspNetCore
             Include<TEntity> disabledProperties,
             Action<Editables> addEditableBinders,
             Action<NotEditables> addNotEditableBinders
-            ) : this(constructor, findByIdPredicate, keyConverter, manyToMany, indexIncludes, indexIncludes, indexIncludes, editIncludes, disabledProperties, addEditableBinders, addNotEditableBinders)
+            ) : this(findByIdPredicate, keyConverter, manyToMany, indexIncludes, indexIncludes, indexIncludes, editIncludes, disabledProperties, addEditableBinders, addNotEditableBinders)
         {
 
         }
@@ -368,7 +377,6 @@ namespace DashboardCode.Routines.AspNetCore
         
 
         public ControllerMeta(
-            Func<TEntity> constructor,
             Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
             Func<string, ConvertFuncResult<TKey>> keyConverter,
 
@@ -383,7 +391,7 @@ namespace DashboardCode.Routines.AspNetCore
             Action<NotEditables> addNotEditableBinders//Action<Action<string, Func<TEntity, Action<StringValues>>>> addNotEditableBinders 
             )
         {
-            this.Constructor = constructor;
+            this.Constructor = ()=>new TEntity();
             this.KeyConverter = keyConverter;
             //this.ReferencesMeta=referencesMeta;
             this.IndexIncludes = indexIncludes;
