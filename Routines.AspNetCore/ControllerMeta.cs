@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using DashboardCode.Routines.Storage;
 using Microsoft.Extensions.Primitives;
 
 namespace DashboardCode.Routines.AspNetCore
@@ -9,14 +10,15 @@ namespace DashboardCode.Routines.AspNetCore
     public class ControllerMeta<TEntity, TKey> where TEntity : class
     {
         public readonly Func<TEntity> Constructor;
-        public readonly ReferencesMeta<TEntity> ReferencesManager;
+        public readonly ReferencesMeta<TEntity> ReferencesMeta;
+        public readonly Func<string, ConvertFuncResult<TKey>> KeyConverter;
         public readonly Include<TEntity> IndexIncludes;
         public readonly Include<TEntity> DetailsIncludes;
         public readonly Include<TEntity> DeleteIncludes;
         public readonly Include<TEntity> EditIncludes;
         public readonly Func<TKey, Expression<Func<TEntity, bool>>> FindPredicate;
         public readonly Include<TEntity> DisabledProperties;
-        public readonly Dictionary<string, Func<TEntity, Func<StringValues, BinderResult>>> editableBinders;
+        public readonly Dictionary<string, Func<TEntity, Func<StringValues, VerboseResult>>> editableBinders;
         public readonly Dictionary<string, Func<TEntity, Action<StringValues>>> notEditableBinders;
 
         public class NotEditables
@@ -128,8 +130,8 @@ namespace DashboardCode.Routines.AspNetCore
 
         public class Editables
         {
-            readonly Dictionary<string, Func<TEntity, Func<StringValues, BinderResult>>> editableBinders;
-            public Editables(Dictionary<string, Func<TEntity, Func<StringValues, BinderResult>>> editableBinders)
+            readonly Dictionary<string, Func<TEntity, Func<StringValues, VerboseResult>>> editableBinders;
+            public Editables(Dictionary<string, Func<TEntity, Func<StringValues, VerboseResult>>> editableBinders)
             {
                 this.editableBinders = editableBinders;
             }
@@ -148,16 +150,16 @@ namespace DashboardCode.Routines.AspNetCore
                     return this;
                 }
 
-                public static Func<TProperty, BinderResult> ToValidate(Action<AssertsCollection<TProperty>> addAsserts)
+                public static Func<TProperty, VerboseResult> ToValidate(Action<AssertsCollection<TProperty>> addAsserts)
                 {
-                    Func<TProperty, BinderResult> validate = v =>
+                    Func<TProperty, VerboseResult> validate = v =>
                     {
                         var errorMessages = new List<string>();
                         var assertsCollection = new AssertsCollection<TProperty>();
                         addAsserts(assertsCollection);
                         foreach (var (f, s) in assertsCollection.List)
                             if (!f(v)) errorMessages.Add(s);
-                        return new BinderResult(errorMessages);
+                        return new VerboseResult(errorMessages);
                     };
                     return validate;
                 }
@@ -167,9 +169,9 @@ namespace DashboardCode.Routines.AspNetCore
             public Editables Add<TProperty>(
                 string formField,
                 Expression<Func<TEntity, TProperty>> getPropertyExpression,
-                Func<StringValues, ConvertResult<TProperty>> convert,
+                Func<StringValues, ConvertVerboseResult<TProperty>> convert,
                 Action<AssertsCollection<TProperty>> addAsserts,
-                Func<Func<ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, BinderResult>, BinderResult>>> action = null)
+                Func<Func<ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, VerboseResult>, VerboseResult>>> action = null)
             {
                 var validate = AssertsCollection<TProperty>.ToValidate(addAsserts);
                 Add(formField, getPropertyExpression, convert, validate, action);
@@ -178,9 +180,9 @@ namespace DashboardCode.Routines.AspNetCore
 
             public Editables Add<TProperty>(
                 Expression<Func<TEntity, TProperty>> getPropertyExpression,
-                Func<StringValues, ConvertResult<TProperty>> convert,
+                Func<StringValues, ConvertVerboseResult<TProperty>> convert,
                 Action<AssertsCollection<TProperty>> addAsserts,
-                Func<Func<ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, BinderResult>, BinderResult>>> action = null)
+                Func<Func<ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, VerboseResult>, VerboseResult>>> action = null)
             {
                 var validate = AssertsCollection<TProperty>.ToValidate(addAsserts);
                 Add(getPropertyExpression, convert, validate, action);
@@ -189,9 +191,9 @@ namespace DashboardCode.Routines.AspNetCore
 
             public Editables Add<TProperty>(
                 Expression<Func<TEntity, TProperty>> getPropertyExpression,
-                Func<StringValues, ConvertResult<TProperty>> convert,
-                Func<TProperty, BinderResult> validate = null,
-                Func<Func<ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, BinderResult>, BinderResult>>> action = null)
+                Func<StringValues, ConvertVerboseResult<TProperty>> convert,
+                Func<TProperty, VerboseResult> validate = null,
+                Func<Func<ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, VerboseResult>, VerboseResult>>> action = null)
             {
                 var memberExpression = (MemberExpression)getPropertyExpression.Body;
                 Add(memberExpression.Member.Name, (MemberExpression)getPropertyExpression.Body, convert, validate, action);
@@ -201,9 +203,9 @@ namespace DashboardCode.Routines.AspNetCore
             public Editables Add<TProperty>(
                 string formField,
                 Expression<Func<TEntity, TProperty>> getPropertyExpression,
-                Func<StringValues, ConvertResult<TProperty>> convert,
-                Func<TProperty, BinderResult> validate=null,
-                Func<Func<ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, BinderResult>, BinderResult>>> action = null)
+                Func<StringValues, ConvertVerboseResult<TProperty>> convert,
+                Func<TProperty, VerboseResult> validate=null,
+                Func<Func<ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, VerboseResult>, VerboseResult>>> action = null)
             {
                 Add(formField, (MemberExpression)getPropertyExpression.Body, convert, validate, action);
                 return this;
@@ -212,14 +214,14 @@ namespace DashboardCode.Routines.AspNetCore
             private Editables Add<TProperty>(
                 string formField,
                 MemberExpression memberExpression,
-                Func<StringValues, ConvertResult<TProperty>> convert,
-                Func<TProperty, BinderResult> validate=null,
-                Func<Func<ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, BinderResult>, BinderResult>>> action = null)
+                Func<StringValues, ConvertVerboseResult<TProperty>> convert,
+                Func<TProperty, VerboseResult> validate=null,
+                Func<Func<ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, VerboseResult>, VerboseResult>>> action = null)
             {
                 if (action == null)
                     action = converter => setter => validator => validator(setter(converter()));
                 var set = memberExpression.CompileSetProperty<TEntity, TProperty>();
-                Func<TEntity, Func<StringValues, BinderResult>> straightAction;
+                Func<TEntity, Func<StringValues, VerboseResult>> straightAction;
                 if (validate==null)
                     straightAction = e => sv => action(() => convert(sv))(cr => { if (cr.IsSuccess()) set(e, cr.Value); return cr; })(cr => cr.BinderResult);
                 else
@@ -233,8 +235,8 @@ namespace DashboardCode.Routines.AspNetCore
             #region provide with setters & convert
             public Editables Add<TProperty>(
                 Expression<Func<TEntity, TProperty>> getPropertyExpression,
-                Func<StringValues, ConvertResult<TProperty>> convert,
-                Func<Func<ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, ConvertResult<TProperty>>, BinderResult>> action)
+                Func<StringValues, ConvertVerboseResult<TProperty>> convert,
+                Func<Func<ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, ConvertVerboseResult<TProperty>>, VerboseResult>> action)
             {
                 var memberExpression = (MemberExpression)getPropertyExpression.Body;
                 Add(memberExpression.Member.Name, memberExpression, convert, action);
@@ -244,8 +246,8 @@ namespace DashboardCode.Routines.AspNetCore
             public Editables Add<TProperty>(
                 string formField,
                 Expression<Func<TEntity, TProperty>> getPropertyExpression,
-                Func<StringValues, ConvertResult<TProperty>> convert,
-                Func<Func<ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, ConvertResult<TProperty>>, BinderResult>> action)
+                Func<StringValues, ConvertVerboseResult<TProperty>> convert,
+                Func<Func<ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, ConvertVerboseResult<TProperty>>, VerboseResult>> action)
             {
                 Add(formField, (MemberExpression)getPropertyExpression.Body, convert, action);
                 return this;
@@ -253,71 +255,151 @@ namespace DashboardCode.Routines.AspNetCore
             public Editables Add<TProperty>(
                 string formField,
                 MemberExpression memberExpression,
-                Func<StringValues, ConvertResult<TProperty>> convert,
-                Func<Func<ConvertResult<TProperty>>, Func<Func<ConvertResult<TProperty>, ConvertResult<TProperty>>, BinderResult>> action)
+                Func<StringValues, ConvertVerboseResult<TProperty>> convert,
+                Func<Func<ConvertVerboseResult<TProperty>>, Func<Func<ConvertVerboseResult<TProperty>, ConvertVerboseResult<TProperty>>, VerboseResult>> action)
             {
                 var setter = memberExpression.CompileSetProperty<TEntity, TProperty>();
-                Func<TEntity, Func<StringValues, BinderResult>> straightAction = e => sv => action(() => convert(sv))(cr => { if (cr.IsSuccess()) setter(e, cr.Value); return cr; });
+                Func<TEntity, Func<StringValues, VerboseResult>> straightAction = e => sv => action(() => convert(sv))(cr => { if (cr.IsSuccess()) setter(e, cr.Value); return cr; });
                 editableBinders.Add(formField, straightAction);
                 return this;
             }
             #endregion
 
             #region provide with setters
-            public Editables Add<TProperty>(Expression<Func<TEntity, TProperty>> getPropertyExpression, Func<Action<TProperty>, Func<StringValues, BinderResult>> action)
+            public Editables Add<TProperty>(Expression<Func<TEntity, TProperty>> getPropertyExpression, Func<Action<TProperty>, Func<StringValues, VerboseResult>> action)
             {
                 var memberExpression = (MemberExpression)getPropertyExpression.Body;
-                AddX(memberExpression.Member.Name, memberExpression, action);
+                Add(memberExpression.Member.Name, memberExpression, action);
                 return this;
             }
 
-            public Editables AddX<TProperty>(string formField, Expression<Func<TEntity, TProperty>> getPropertyExpression, Func<Action<TProperty>, Func<StringValues, BinderResult>> action)
+            public Editables Add<TProperty>(string formField, Expression<Func<TEntity, TProperty>> getPropertyExpression, Func<Action<TProperty>, Func<StringValues, VerboseResult>> action)
             {
                 var memberExpression = (MemberExpression)getPropertyExpression.Body;
-                AddX(formField, memberExpression, action);
+                Add(formField, memberExpression, action);
                 return this;
             }
 
-            private Editables AddX<TProperty>(string formField, MemberExpression memberExpression, Func<Action<TProperty>, Func<StringValues, BinderResult>> action)
+            private Editables Add<TProperty>(string formField, MemberExpression memberExpression, Func<Action<TProperty>, Func<StringValues, VerboseResult>> action)
             {
                 var setter = memberExpression.CompileFunctionalSetter<TEntity, TProperty>();
-                Func<TEntity, Func<StringValues, BinderResult>> straightAction = e => action(setter(e));
+                Func<TEntity, Func<StringValues, VerboseResult>> straightAction = e => action(setter(e));
                 Add(formField, straightAction);
                 return this;
             }
             #endregion
 
-            public Editables Add(string formName, Func<TEntity, Func<StringValues, BinderResult>> straightAction)
+            public Editables Add(string formName, Func<TEntity, Func<StringValues, VerboseResult>> straightAction)
             {
                 editableBinders.Add(formName, straightAction);
                 return this;
             }
+            public Editables Add((string formName, Func<TEntity, Func<StringValues, VerboseResult>> straightAction) tuple)
+            {
+                editableBinders.Add(tuple.formName, tuple.straightAction);
+                return this;
+            }
         }
+
+        //private static Func<TEntity> CompileConstructor()
+        //{
+
+        //}
+
+        //private static Func<TKey, Expression<Func<TEntity, bool>>> CompileFindByIdPredicate<TProperty> (Expression<Func<TEntity, TProperty>> key)
+        //{
+
+        //}
+
+        //public ControllerMeta(
+        //    Expression<Func<TEntity, TProperty>> key,
+        //    Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
+        //    ReferencesMeta<TEntity> referencesManager,
+        //    Include<TEntity> indexIncludes,
+        //    Include<TEntity> editIncludes,
+        //    Include<TEntity> disabledProperties,
+        //    Action<Editables> addEditableBinders,
+        //    Action<NotEditables> addNotEditableBinders
+        //    ) : this(CompileConstructor(), findByIdPredicate, referencesManager, indexIncludes, indexIncludes, indexIncludes, editIncludes, disabledProperties, addEditableBinders, addNotEditableBinders)
+        //{
+
+        //}
+
+        public class ManyToMany
+        {
+            readonly Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary;
+
+            public ManyToMany(Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary)
+            {
+                this.manyToManyDictionary = manyToManyDictionary;
+            }
+
+            public ManyToMany Add<TF, TMM, TfID>  (
+                string formField,
+                Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
+                Expression<Func<TEntity, ICollection<TMM>>> getRelatedExpression,
+                Func<TMM, TfID> getTmmId,
+                MvcNavigationFacade<TEntity, TF, TMM, TfID> navigation
+                ) where TF : class where TMM : class
+            {
+                Func<TMM, TMM, bool> equalsById = (e1,e2)=> getTmmId(e1).Equals(getTmmId(e2));
+                var m = new ManyToMany<TEntity, TF, TMM, TfID>(formField, navigation, getOptions, getRelatedExpression, equalsById, getTmmId);
+                manyToManyDictionary.Add(formField, m);
+                return this;
+            }
+        }
+
 
         public ControllerMeta(
             Func<TEntity> constructor,
-            ReferencesMeta<TEntity> referencesManager,
+            Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
+            Func<string, ConvertFuncResult<TKey>> keyConverter,
+            Action<ManyToMany> manyToMany, //ReferencesMeta<TEntity> referencesMeta,
             Include<TEntity> indexIncludes,
-            Include<TEntity> detailsIncludes,
-            Include<TEntity> deleteIncludes,
             Include<TEntity> editIncludes,
-            Func<TKey, Expression<Func<TEntity, bool>>> findPredicate,
             Include<TEntity> disabledProperties,
             Action<Editables> addEditableBinders,
+            Action<NotEditables> addNotEditableBinders
+            ) : this(constructor, findByIdPredicate, keyConverter, manyToMany, indexIncludes, indexIncludes, indexIncludes, editIncludes, disabledProperties, addEditableBinders, addNotEditableBinders)
+        {
+
+        }
+
+        
+
+        public ControllerMeta(
+            Func<TEntity> constructor,
+            Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
+            Func<string, ConvertFuncResult<TKey>> keyConverter,
+
+            Action<ManyToMany> addManyToMany, //ReferencesMeta<TEntity> referencesMeta,
+            Include<TEntity>   indexIncludes,
+            Include<TEntity>   detailsIncludes,
+            Include<TEntity>   deleteIncludes,
+            Include<TEntity>   editIncludes,
+            Include<TEntity>   disabledProperties,
+            Action<Editables>  addEditableBinders,
 
             Action<NotEditables> addNotEditableBinders//Action<Action<string, Func<TEntity, Action<StringValues>>>> addNotEditableBinders 
             )
         {
             this.Constructor = constructor;
-            this.ReferencesManager=referencesManager;
+            this.KeyConverter = keyConverter;
+            //this.ReferencesMeta=referencesMeta;
             this.IndexIncludes = indexIncludes;
             this.DetailsIncludes = detailsIncludes;
             this.DeleteIncludes = deleteIncludes;
             this.EditIncludes = editIncludes;
-            this.FindPredicate = findPredicate;
+            this.FindPredicate = findByIdPredicate;
             this.DisabledProperties = disabledProperties;
 
-            this.editableBinders = new Dictionary<string, Func<TEntity, Func<StringValues, BinderResult>>>();
+            //List<IManyToMany<TEntity>> manyToManyCollection
+            var manyToManyBinders = new Dictionary<string, IManyToMany<TEntity>>();
+            var manyToMany = new ManyToMany(manyToManyBinders);
+            addManyToMany(manyToMany);
+            ReferencesMeta = new ReferencesMeta<TEntity>(manyToManyBinders);
+
+            this.editableBinders = new Dictionary<string, Func<TEntity, Func<StringValues, VerboseResult>>>();
             var editables = new Editables(editableBinders);
             addEditableBinders(editables);
 
@@ -325,80 +407,26 @@ namespace DashboardCode.Routines.AspNetCore
             var notEditables = new NotEditables(notEditableBinders);
             addNotEditableBinders(notEditables);
             //addNotEditableBinders((s, a) => this.notEditableBinders.Add(s, a));
-        }
-
-        public ControllerMeta(
-            Func<TEntity> constructor,
-            ReferencesMeta<TEntity> referencesManager,
-            Include<TEntity> indexIncludes,
-            Include<TEntity> editIncludes,
-            Func<TKey, Expression<Func<TEntity, bool>>> findPredicate,
-            Include<TEntity> disabledProperties,
-            Action<Editables> addEditableBinders,
-            //Action<Action<string, Func<TEntity, Func<StringValues, BinderResult>>>> addEditableBinders,
-            Action<NotEditables> addNotEditableBinders
-            //Action<Action<string, Func<TEntity, Action<StringValues>>>> addNotEditableBinders
-            ) :this(constructor, referencesManager, indexIncludes, indexIncludes, indexIncludes, editIncludes, findPredicate, disabledProperties, addEditableBinders, addNotEditableBinders)
-        {
 
         }
     }
 
-    public struct ConvertResult<T>
-    {
-        public T Value;
-        public ConvertResult(string message)
-        {
-            Value = default(T);
-            BinderResult = new BinderResult(message);
-        }
-        public BinderResult BinderResult;
-        public bool IsSuccess() => BinderResult.IsSuccess();
-    }
 
-    public struct BinderResult
-    {
-        public BinderResult(List<string> errorMessages)
-        {
-            if (errorMessages != null && errorMessages.Count > 0)
-            {
-                ErrorMessages = errorMessages;
-            }
-            else
-            {
-                ErrorMessages = null;
-            }
-        }
-
-        public BinderResult(string message = null)
-        {
-            if (message != null)
-            {
-                ErrorMessages = new List<string>() { message };
-            }
-            else
-            {
-                ErrorMessages = null;
-            }
-        }
-        public List<string> ErrorMessages;
-        public bool IsSuccess() { return ErrorMessages == null; }
-    }
 
     public class Binder
     {
-        public static Func<StringValues, ConvertResult<string>> ConvertToString
+        public static Func<StringValues, ConvertVerboseResult<string>> ConvertToString
         {
             get
             {
                 return (stringValues) =>
                 {
-                    return new ConvertResult<string> { Value = stringValues.ToString() };
+                    return new ConvertVerboseResult<string> { Value = stringValues.ToString() };
                 };
             }
         }
 
-        public static Func<StringValues, ConvertResult<int>> ConvertToInt
+        public static Func<StringValues, ConvertVerboseResult<int>> ConvertToInt
         {
             get
             {
@@ -406,17 +434,17 @@ namespace DashboardCode.Routines.AspNetCore
                 {
                     var str = stringValues.ToString();
                     if (int.TryParse(str, out int number))
-                        return new ConvertResult<int> { Value = number };
-                    return new ConvertResult<int>("Not number!");
+                        return new ConvertVerboseResult<int> { Value = number };
+                    return new ConvertVerboseResult<int>("Not number!");
                 };
             }
         }
 
-        public static BinderResult TryStringValidateLength(StringValues stringValues, Action<string> setter, int length)
+        public static VerboseResult TryStringValidateLength(StringValues stringValues, Action<string> setter, int length)
         {
             var v = stringValues.ToString();
             setter(v);
-            return new BinderResult(v.Length > length ? "Too long!" : null);
+            return new VerboseResult(v.Length > length ? "Too long!" : null);
         }
     }
 }

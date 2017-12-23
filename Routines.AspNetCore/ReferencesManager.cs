@@ -5,28 +5,30 @@ using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public class ReferencesMeta<T> where T : class
+    public class ReferencesMeta<TEntity> where TEntity : class
     {
-        readonly IManyToMany<T>[] manyToManyCollection;
+        readonly Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary;
 
-        public ReferencesMeta(IManyToMany<T>[] manyToManyCollection)
+        public ReferencesMeta(Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary)
         {
-            this.manyToManyCollection = manyToManyCollection;
+            this.manyToManyDictionary = manyToManyDictionary;
         }
 
-        public void SetViewDataMultiSelectLists(RoutineController controller, IRepository<T> repository)
+        public void SetViewDataMultiSelectLists(RoutineController controller, IRepository<TEntity> repository)
         {
-            foreach (var i in manyToManyCollection)
-                i.SetViewDataMultiSelectList(controller, repository);
-        }
-
-        public void ParseRequests(RoutineController controller, T entity, IRepository<T> repository, out Action<IBatch<T>> modifyRelateds, out Action setViewDataMultiSelectLists)
-        {
-            List<Action<IBatch<T>>> tmp0 = new List<Action<IBatch<T>>>();
-            List<Action> tmp1 = new List<Action>();
-            foreach (var i in manyToManyCollection)
+            foreach (var i in manyToManyDictionary)
             {
-                i.ParseRequest(controller, entity, repository, out Action<IBatch<T>> modifyRelated, out Action setViewDataMultiSelectList);
+                i.Value.SetViewDataMultiSelectList(controller, repository);
+            }
+        }
+
+        public void ParseRequests(RoutineController controller, TEntity entity, IRepository<TEntity> repository, out Action<IBatch<TEntity>> modifyRelateds, out Action setViewDataMultiSelectLists)
+        {
+            List<Action<IBatch<TEntity>>> tmp0 = new List<Action<IBatch<TEntity>>>();
+            List<Action> tmp1 = new List<Action>();
+            foreach (var i in manyToManyDictionary)
+            {
+                i.Value.ParseRequest(controller, entity, repository, out Action<IBatch<TEntity>> modifyRelated, out Action setViewDataMultiSelectList);
                 tmp0.Add(modifyRelated);
                 tmp1.Add(setViewDataMultiSelectList);
             }
@@ -40,12 +42,12 @@ namespace DashboardCode.Routines.AspNetCore
             };
         }
 
-        public void PrepareOptions(RoutineController controller, IRepository<T> repository, out Action<T> setViewDataMultiSelectLists)
+        public void PrepareOptions(RoutineController controller, IRepository<TEntity> repository, out Action<TEntity> setViewDataMultiSelectLists)
         {
-            List<Action<T>> tmp1 = new List<Action<T>>();
-            foreach (var i in manyToManyCollection)
+            List<Action<TEntity>> tmp1 = new List<Action<TEntity>>();
+            foreach (var i in manyToManyDictionary)
             {
-                i.PrepareOptions(controller, repository, out Action<T> setViewDataMultiSelectList);
+                i.Value.PrepareOptions(controller, repository, out Action<TEntity> setViewDataMultiSelectList);
                 tmp1.Add(setViewDataMultiSelectList);
             }
             setViewDataMultiSelectLists = (entity) => {

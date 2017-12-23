@@ -22,7 +22,7 @@ namespace DashboardCode.Routines.AspNetCore
             else
             {
                 var formCollection = request.Form;
-                
+
                 if (formCollection.Keys.Count > 0)
                 {
                     sb.Append("{");
@@ -49,9 +49,24 @@ namespace DashboardCode.Routines.AspNetCore
             return text;
         }
 
+        public static (T, bool) BindId<T>(this Controller controller, Func<string, T> converter)
+        {
+            bool value = false;
+            T id = default(T);
+            PathString pathString = controller.HttpContext.Request.Path;
+            if (pathString.HasValue)
+            {
+                var path = pathString.Value;
+                var idText = path.Substring(path.LastIndexOf("/") + 1);
+                if (!string.IsNullOrEmpty(idText))
+                    id = converter(idText);
+            }
+            return (id, value);
+        }
+
         public static T Bind<T>(this Controller controller, 
             Func<T> constructor, 
-            Dictionary<string, Func<T, Func<StringValues, BinderResult>>> propertyBinders,
+            Dictionary<string, Func<T, Func<StringValues, VerboseResult>>> propertyBinders,
             Dictionary<string, Func<T, Action<StringValues>>> propertySetters=null)
         {
             var t = constructor();
@@ -60,7 +75,7 @@ namespace DashboardCode.Routines.AspNetCore
                 var propertyName = pair.Key;
                 if (controller.HttpContext.Request.Form.TryGetValue(propertyName, out StringValues stringValues))
                 {
-                    Func<T, Func<StringValues, BinderResult>> func = pair.Value;
+                    Func<T, Func<StringValues, VerboseResult>> func = pair.Value;
                     var result = func(t)(stringValues);
                     if (!result.IsSuccess())
                         foreach(var errorMessage in result.ErrorMessages)

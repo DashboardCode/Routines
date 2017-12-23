@@ -9,64 +9,8 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public class MvcNavigationFacade<TP, TF, TMM, TfID> where TP : class where TF : class
     {
-        public readonly Controller controller;
         public readonly List<TMM> Selected;
-        private readonly string name;
-        private readonly IReadOnlyCollection<TF> Options;
-        private readonly string optionId;
-        private readonly string optionName;
-        private readonly List<TfID> Ids;
-        private readonly Func<TF, TfID> getId;
-
-        public MvcNavigationFacade(Controller controller,
-            string name,
-            Expression<Func<TF, TfID>> getId,
-            string optionName,
-            IReadOnlyCollection<TF> options
-            )
-        {
-            this.controller = controller;
-            this.name = name;
-            this.optionId = MemberExpressionExtensions.GetMemberName(getId);
-            this.optionName = optionName;
-            this.getId = getId.Compile();
-            Options = options;
-            Ids = new List<TfID>();
-            Selected = new List<TMM>();
-        }
-
-        public void Parse(
-            Func<TF, TMM> construct,
-            Func<string, TfID> toId)
-        {
-            var stringValues = controller.Request.Form[name];
-            if (stringValues.Count() > 0)
-            {
-                foreach (var s in stringValues)
-                    Ids.Add(toId(s));
-                Options.Where(e => Ids.Any(e2 => EqualityComparer<TfID>.Default.Equals(e2, getId(e))))
-                    .ToList()
-                    .ForEach(e => Selected.Add(construct(e)));
-            }
-        }
-
-        public void Reset()
-        {
-            controller.ViewData[name + "MultiSelectList"] = new MultiSelectList(Options, optionId, optionName);
-            controller.ViewData[name] = Ids;
-        }
-
-        public void Reset(IEnumerable<TfID> ids)
-        {
-            controller.ViewData[name + "MultiSelectList"] = new MultiSelectList(Options, optionId, optionName);
-            controller.ViewData[name] = ids;
-        }
-    }
-
-    public class MvcNavigationFacade2<TP, TF, TMM, TfID> where TP : class where TF : class
-    {
-        public readonly List<TMM> Selected;
-        private readonly string name;
+        //private readonly string name;
         private readonly string optionId;
         private readonly string optionName;
         private readonly List<TfID> Ids;
@@ -74,16 +18,16 @@ namespace DashboardCode.Routines.AspNetCore
         private readonly Func<TP, TF, TMM> construct;
         private readonly Func<string, TfID> toId;
 
-        public MvcNavigationFacade2(
-            string name,
+        public MvcNavigationFacade(
+            //string name,
             Expression<Func<TF, TfID>> getId,
             string optionName,
             Func<TP, TF, TMM> construct,
-            Func<string, TfID> toId
+            Func<string, TfID> toId=null
             )
         {
             //this.controller = controller;
-            this.name = name;
+            //this.name = name;
             this.optionId = MemberExpressionExtensions.GetMemberName(getId);
             this.optionName = optionName;
             this.getId = getId.Compile();
@@ -91,15 +35,17 @@ namespace DashboardCode.Routines.AspNetCore
             Ids = new List<TfID>();
             Selected = new List<TMM>();
             this.construct = construct;
+            if (toId == null)
+                toId = Converters.GetParser<TfID>();
             this.toId = toId;
         }
 
         public void Parse(
             Controller controller,
             TP tp,
-            IReadOnlyCollection<TF> options)
+            IReadOnlyCollection<TF> options, string formField)
         {
-            var stringValues = controller.Request.Form[name];
+            var stringValues = controller.Request.Form[formField];
             if (stringValues.Count() > 0)
             {
                 foreach (var s in stringValues)
@@ -110,16 +56,16 @@ namespace DashboardCode.Routines.AspNetCore
             }
         }
 
-        public void SetViewDataMultiSelectList(Controller controller, IReadOnlyCollection<TF> options)
+        public void SetViewDataMultiSelectList(Controller controller, IReadOnlyCollection<TF> options, string formField)
         {
-            controller.ViewData[name + "MultiSelectList"] = new MultiSelectList(options, optionId, optionName);
-            controller.ViewData[name] = Ids;
+            controller.ViewData[formField + "MultiSelectList"] = new MultiSelectList(options, optionId, optionName);
+            controller.ViewData[formField] = Ids;
         }
 
-        public void SetViewDataMultiSelectList(Controller controller, IEnumerable<TfID> ids, IReadOnlyCollection<TF> options)
+        public void SetViewDataMultiSelectList(Controller controller, IEnumerable<TfID> ids, IReadOnlyCollection<TF> options, string formField)
         {
-            controller.ViewData[name + "MultiSelectList"] = new MultiSelectList(options, optionId, optionName);
-            controller.ViewData[name] = ids;
+            controller.ViewData[formField + "MultiSelectList"] = new MultiSelectList(options, optionId, optionName);
+            controller.ViewData[formField] = ids;
         }
     }
 }

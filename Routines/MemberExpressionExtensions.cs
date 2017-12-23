@@ -188,7 +188,7 @@ namespace DashboardCode.Routines
         public static Func<TEntity, Action<TPropertyValue>> CompileFunctionalSetter<TEntity, TPropertyValue>(this MemberExpression memberExpression)
         {
             Action<TEntity, TPropertyValue> setter = memberExpression.CompileSetProperty<TEntity, TPropertyValue>();
-            Func<TEntity, Action<TPropertyValue>> functionalSetter = (e) => (v) => setter(e,v);
+            Func<TEntity, Action<TPropertyValue>> functionalSetter = e => v => setter(e,v);
             return functionalSetter;
         }
     }

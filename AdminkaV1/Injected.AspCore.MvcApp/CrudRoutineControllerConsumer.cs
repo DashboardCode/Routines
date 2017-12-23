@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.AspNetCore;
-          
+using Microsoft.Extensions.Primitives;
+
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     class CrudRoutineControllerConsumer<TEntity, TKey> where TEntity: class
@@ -33,14 +34,17 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 });
         }
 
-        public async Task<IActionResult> Details(TKey id)
+        public async Task<IActionResult> Details()
         {
-            var routine = new MvcRoutine(controller, new { id = id });
+            var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
+                var (id, valid) = controller.BindId(meta.KeyConverter);
+                var path = controller.HttpContext.Request.Path.Value;
+
                 return controller.MakeActionResultOnRequest(
-                    () => id != null,
-                    () => repository.Find(meta.FindPredicate(id), meta.DetailsIncludes)
+                    () => valid,
+                    () => repository.Find(meta.FindPredicate(id.Value), meta.DetailsIncludes)
                 );
             });
         }
@@ -50,12 +54,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             var routine = new MvcRoutine(controller, null);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
-                meta.ReferencesManager.SetViewDataMultiSelectLists(controller, repository);
+                meta.ReferencesMeta.SetViewDataMultiSelectLists(controller, repository);
                 return controller.View();
             });
         }
 
-        public async Task<IActionResult> CreateConfirmed()
+        public async Task<IActionResult> CreateFormData()
         {
             var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
@@ -64,7 +68,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     return controller.Unauthorized();
 
                 TEntity entity = controller.Bind(meta.Constructor, meta.editableBinders);
-                meta.ReferencesManager.ParseRequests(controller, entity, repository,
+                meta.ReferencesMeta.ParseRequests(controller, entity, repository,
                     out Action<IBatch<TEntity>> modifyRelateds, out Action setViewDataMultiSelectLists);
 
                 return controller.MakeActionResultOnSave(
@@ -84,22 +88,24 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             });
         }
 
-        public async Task<IActionResult> Edit(TKey id)
+        public async Task<IActionResult> Edit()
         {
-            var routine = new MvcRoutine(controller, new { id = id });
+            var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
-                meta.ReferencesManager.PrepareOptions(controller, repository, out Action<TEntity> setViewDataMultiSelectLists);
+                var (id, valid) = controller.BindId(meta.KeyConverter);
+
+                meta.ReferencesMeta.PrepareOptions(controller, repository, out Action<TEntity> setViewDataMultiSelectLists);
                 return controller.MakeActionResultOnRequest(
-                    () => id != null,
-                    () => repository.Find(meta.FindPredicate(id), meta.EditIncludes),
+                    () => valid,
+                    () => repository.Find(meta.FindPredicate(id.Value), meta.EditIncludes),
                     entity =>
                         setViewDataMultiSelectLists(entity)
                 );
             });
         }
 
-        public async Task<IActionResult> EditConfirmed()
+        public async Task<IActionResult> EditFormData()
         {
             var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(
@@ -110,7 +116,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
                     TEntity entity = controller.Bind(meta.Constructor, meta.editableBinders, meta.notEditableBinders);
 
-                    meta.ReferencesManager.ParseRequests(controller, entity, repository,
+                    meta.ReferencesMeta.ParseRequests(controller, entity, repository,
                        out Action<IBatch<TEntity>> modifyRelateds, out Action setViewDataMultiSelectLists);
 
                     return controller.MakeActionResultOnSave(
@@ -130,26 +136,28 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 });
         }
 
-        public async Task<IActionResult> Delete(TKey id)
+        public async Task<IActionResult> Delete()
         {
-            var routine = new MvcRoutine(controller, new { id = id });
+            var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
+                var (id, valid) = controller.BindId(meta.KeyConverter);
                 return controller.MakeActionResultOnRequest(
-                        () => id != null,
-                        () => repository.Find(meta.FindPredicate(id), meta.DeleteIncludes)
+                        () => valid,
+                        () => repository.Find(meta.FindPredicate(id.Value), meta.DeleteIncludes)
                     );
             });
         }
 
-        public async Task<IActionResult> DeleteConfirmed(TKey id)
+        public async Task<IActionResult> DeleteFormData()
         {
-            var routine = new MvcRoutine(controller, new { id = id });
+            var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
             {
                 if (!authorize(nameof(Delete), state.UserContext))
                     return controller.Unauthorized();
-                var entity = repository.Find(meta.FindPredicate(id));
+                var (id, valid) = controller.BindId(meta.KeyConverter);
+                var entity = repository.Find(meta.FindPredicate(id.Value));
 
                 return controller.MakeActionResultOnSave(
                         true,
