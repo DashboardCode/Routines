@@ -10,7 +10,7 @@ namespace DashboardCode.Routines.AspNetCore
     public class ControllerMeta<TEntity, TKey> where TEntity : class, new()
     {
         public readonly Func<TEntity> Constructor;
-        public readonly ReferencesMeta<TEntity> ReferencesMeta;
+        
         public readonly Func<string, ConvertFuncResult<TKey>> KeyConverter;
         public readonly Include<TEntity> IndexIncludes;
         public readonly Include<TEntity> DetailsIncludes;
@@ -20,6 +20,7 @@ namespace DashboardCode.Routines.AspNetCore
         public readonly Include<TEntity> DisabledProperties;
         public readonly Dictionary<string, Func<TEntity, Func<StringValues, VerboseResult>>> editableBinders;
         public readonly Dictionary<string, Func<TEntity, Action<StringValues>>> notEditableBinders;
+        public readonly ReferencesCollection<TEntity> ReferencesMeta;
 
         public class NotEditables
         {
@@ -300,31 +301,7 @@ namespace DashboardCode.Routines.AspNetCore
                 return this;
             }
         }
-
-        //private static Func<TEntity> CompileConstructor()
-        //{
-
-        //}
-
-        //private static Func<TKey, Expression<Func<TEntity, bool>>> CompileFindByIdPredicate<TProperty> (Expression<Func<TEntity, TProperty>> key)
-        //{
-
-        //}
-
-        //public ControllerMeta(
-        //    Expression<Func<TEntity, TProperty>> key,
-        //    Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
-        //    ReferencesMeta<TEntity> referencesManager,
-        //    Include<TEntity> indexIncludes,
-        //    Include<TEntity> editIncludes,
-        //    Include<TEntity> disabledProperties,
-        //    Action<Editables> addEditableBinders,
-        //    Action<NotEditables> addNotEditableBinders
-        //    ) : this(CompileConstructor(), findByIdPredicate, referencesManager, indexIncludes, indexIncludes, indexIncludes, editIncludes, disabledProperties, addEditableBinders, addNotEditableBinders)
-        //{
-
-        //}
-
+        
         public class ManyToMany
         {
             readonly Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary;
@@ -334,42 +311,85 @@ namespace DashboardCode.Routines.AspNetCore
                 this.manyToManyDictionary = manyToManyDictionary;
             }
 
-            public ManyToMany Add<TF, TMM, TfID>  (
-                string formField,
+            public ManyToMany Add<TF, TMM, TfID>(
+                string formFieldName,
+                string multiSelectListViewDataKey,
                 Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
-                string optionName,
+                
                 Expression<Func<TEntity, ICollection<TMM>>> getRelatedExpression,
-                //Expression<Func<TMM, TfID>> getTmmTpId,
-                Expression<Func<TMM, TfID>> getTmmTfIdExpression,
-                Expression<Func<TMM, TKey>> getTmmTKeyExpression,
-
-                Expression<Func<TF, TfID>> getId,
+                
+                Func<TMM, TfID> getTmmTfId,
+                Func<TMM, TKey> getTmmTKey,
+                Func<TF, TfID> getId,
+                string multiSelectListFormDataValueField,
+                string multiSelectListOptionText,
 
                 Func<TEntity, TF, TMM> construct,
                 Func<string, TfID> toId = null
                 ) where TF : class where TMM : class
             {
-                Func<TMM, TfID> getTmmTfId = getTmmTfIdExpression.Compile();
-                Func<TMM, TKey> getTmmTKey = getTmmTKeyExpression.Compile();
-                Func<TMM, TMM, bool> equalsById = (e1,e2)=> getTmmTfId(e1).Equals(getTmmTfId(e2));
-                var navigation = new MvcNavigationFacade<TEntity, TF, TMM, TfID>(formField, getId, optionName, construct, toId);
-                var m = new ManyToMany<TEntity, TF, TMM, TfID>(formField, navigation, getOptions, getRelatedExpression, equalsById, getTmmTfId);
-                manyToManyDictionary.Add(formField, m);
+                Func<TMM, TMM, bool> equalsById = (e1,e2) => getTmmTfId(e1).Equals(getTmmTfId(e2));
+
+                var navigation = new MvcNavigationFacade<TEntity, TF, TMM, TfID>(
+                    multiSelectListViewDataKey, 
+                    getId, multiSelectListFormDataValueField, multiSelectListOptionText, construct, toId);
+                var m = new ManyToMany<TEntity, TF, TMM, TfID>(
+                    formFieldName, navigation, getOptions, getRelatedExpression, equalsById, getTmmTfId);
+                manyToManyDictionary.Add(formFieldName, m);
                 return this;
             }
         }
 
+        public class OneToMany
+        {
+            readonly Dictionary<string, IOneToMany<TEntity>> onyToManyDictionary;
+
+            public OneToMany(Dictionary<string, IOneToMany<TEntity>> onyToManyDictionary)
+            {
+                this.onyToManyDictionary = onyToManyDictionary;
+            }
+
+            public OneToMany Add<TF, TMM, TfID>(
+                string formFieldName,
+                string multiSelectListViewDataKey,
+                Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
+
+                Expression<Func<TEntity, ICollection<TMM>>> getRelatedExpression,
+
+                Func<TMM, TfID> getTmmTfId,
+                Func<TMM, TKey> getTmmTKey,
+                Func<TF, TfID> getId,
+                string multiSelectListFormDataValueField,
+                string multiSelectListOptionText,
+
+                Func<TEntity, TF, TMM> construct,
+                Func<string, TfID> toId = null
+                ) where TF : class where TMM : class
+            {
+                Func<TMM, TMM, bool> equalsById = (e1, e2) => getTmmTfId(e1).Equals(getTmmTfId(e2));
+
+                var navigation = new MvcNavigationFacade<TEntity, TF, TMM, TfID>(
+                    multiSelectListViewDataKey,
+                    getId, multiSelectListFormDataValueField, multiSelectListOptionText, construct, toId);
+                var m = new OneToMany<TEntity, TF, TMM, TfID>(
+                    formFieldName, navigation, getOptions, getRelatedExpression, equalsById, getTmmTfId);
+                onyToManyDictionary.Add(formFieldName, m);
+                return this;
+            }
+        }
 
         public ControllerMeta(
-            Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
+            Func<TKey, Expression<Func<TEntity, bool>>> findByIdExpression,
             Func<string, ConvertFuncResult<TKey>> keyConverter,
-            Action<ManyToMany> manyToMany, //ReferencesMeta<TEntity> referencesMeta,
+             
             Include<TEntity> indexIncludes,
             Include<TEntity> editIncludes,
             Include<TEntity> disabledProperties,
             Action<Editables> addEditableBinders,
-            Action<NotEditables> addNotEditableBinders
-            ) : this(findByIdPredicate, keyConverter, manyToMany, indexIncludes, indexIncludes, indexIncludes, editIncludes, disabledProperties, addEditableBinders, addNotEditableBinders)
+            Action<NotEditables> addNotEditableBinders,
+            Action<OneToMany> oneToMany,
+            Action<ManyToMany> manyToMany
+            ) : this(findByIdExpression, keyConverter, indexIncludes, indexIncludes, indexIncludes, editIncludes, disabledProperties, addEditableBinders, addNotEditableBinders, oneToMany, manyToMany)
         {
 
         }
@@ -380,15 +400,16 @@ namespace DashboardCode.Routines.AspNetCore
             Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
             Func<string, ConvertFuncResult<TKey>> keyConverter,
 
-            Action<ManyToMany> addManyToMany, //ReferencesMeta<TEntity> referencesMeta,
             Include<TEntity>   indexIncludes,
             Include<TEntity>   detailsIncludes,
             Include<TEntity>   deleteIncludes,
+
             Include<TEntity>   editIncludes,
             Include<TEntity>   disabledProperties,
             Action<Editables>  addEditableBinders,
-
-            Action<NotEditables> addNotEditableBinders//Action<Action<string, Func<TEntity, Action<StringValues>>>> addNotEditableBinders 
+            Action<NotEditables> addNotEditableBinders,
+            Action<OneToMany> addOneToMany,
+            Action<ManyToMany> addManyToMany
             )
         {
             this.Constructor = ()=>new TEntity();
@@ -405,7 +426,12 @@ namespace DashboardCode.Routines.AspNetCore
             var manyToManyBinders = new Dictionary<string, IManyToMany<TEntity>>();
             var manyToMany = new ManyToMany(manyToManyBinders);
             addManyToMany(manyToMany);
-            ReferencesMeta = new ReferencesMeta<TEntity>(manyToManyBinders);
+
+            var oneToManyBinders = new Dictionary<string, IOneToMany<TEntity>>();
+            var oneToMany = new OneToMany(oneToManyBinders);
+            addOneToMany(oneToMany);
+
+            ReferencesMeta = new ReferencesCollection<TEntity>(oneToManyBinders, manyToManyBinders);
 
             this.editableBinders = new Dictionary<string, Func<TEntity, Func<StringValues, VerboseResult>>>();
             var editables = new Editables(editableBinders);

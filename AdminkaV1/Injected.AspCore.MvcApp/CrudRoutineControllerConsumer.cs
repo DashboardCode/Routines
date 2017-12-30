@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.AspNetCore;
-using Microsoft.Extensions.Primitives;
+using DashboardCode.Routines;
+using Microsoft.AspNetCore.Http;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -24,13 +25,61 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             this.authorize = authorize;
         }
 
+        #region Compose - Configurability
+        public static Func<RoutineController, Task<IActionResult>> Compose(
+            string action, Func<MvcRoutine, Controller, Task<IActionResult>> func)
+        {
+            return controller => func(new MvcRoutine(controller, action), controller);
+        }
+
+        public static Func<RoutineController, Task<IActionResult>> Compose(
+            string action,
+            Func<MvcRoutine, Func<Func<string, object, IActionResult>, Task<IActionResult>>> func)
+        {
+            return Compose(action, (routine, controller) => func(routine)((view, model) => controller.View(view, model)));
+        }
+
+        public static Func<RoutineController, Task<IActionResult>> ComposeAsync(
+            string action,
+            Func<IRepository<TEntity>, Func<Func<string, object, IActionResult>, IActionResult>> func)
+        {
+            return Compose(action,
+                async (routine, controller) =>
+                     await routine.HandleStorageAsync<IActionResult, TEntity>(
+                        repository => func(repository)((view, model) => controller.View(view, model))
+                    )
+            );
+        }
+
+
+        public static Func<RoutineController, Task<IActionResult>> ComposeAsync(
+            string action,
+            Func<HttpRequest, Func<IRepository<TEntity>, Func<Func<string, object, IActionResult>, IActionResult>>> func)
+        {
+            return Compose(action,
+                async (routine, controller) =>
+                     await routine.HandleStorageAsync<IActionResult, TEntity>(
+                        repository => func(controller.Request)(repository)((view, model) => controller.View(view, model))
+                    )
+            );
+        }
+
+        public static Func<Task<IActionResult>> ComposeIndex(RoutineController controller, Include<TEntity> indexIncludes)
+        {
+            return () => ComposeAsync("Index", request => repository => view => {
+                var entities = repository.List(indexIncludes);
+                return view("Index", entities);
+            })(controller);
+        }
+        #endregion
+
         public async Task<IActionResult> Index()
         {
             var routine = new MvcRoutine(controller, null);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(
-                (repository) => {
-                    var groups = repository.List(meta.IndexIncludes);
-                    return controller.View(groups);
+                repository => {
+                    var entities = repository.List(meta.IndexIncludes);
+                    return controller.View(nameof(Index), entities);
                 });
         }
 
@@ -39,11 +88,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
-                var (id, valid) = controller.BindId(meta.KeyConverter);
+                var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
                 var path = controller.HttpContext.Request.Path.Value;
 
-                return controller.MakeActionResultOnRequest(
-                    () => valid,
+                return controller.MakeActionResultOnEntityRequest(
+                    nameof(Details),
+                    valid,
                     () => repository.Find(meta.FindPredicate(id.Value), meta.DetailsIncludes)
                 );
             });
@@ -55,7 +105,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
                 meta.ReferencesMeta.SetViewDataMultiSelectLists(controller, repository);
-                return controller.View();
+                return controller.View(nameof(Create));
             });
         }
 
@@ -69,21 +119,22 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
                 TEntity entity = controller.Bind(meta.Constructor, meta.editableBinders);
                 meta.ReferencesMeta.ParseRequests(controller, entity, repository,
-                    out Action<IBatch<TEntity>> modifyRelateds, out Action setViewDataMultiSelectLists);
+                    out Action<IBatch<TEntity>> modifyRelated, out Action setViewDataMultiSelectLists);
 
-                return controller.MakeActionResultOnSave(
+                return controller.MakeActionResultOnEntitySave(
                     controller.ModelState.IsValid,
                     () => storage.Handle(
                         batch =>
                         {
                             batch.Add(entity);
-                            modifyRelateds(batch);
+                            modifyRelated(batch);
                         }),
                     () =>
                     {
                         setViewDataMultiSelectLists();
-                        return controller.View(entity);
-                    }
+                        return controller.View(nameof(Create), entity);
+                    },
+                    () => controller.RedirectToAction(nameof(Index))
                 );
             });
         }
@@ -93,11 +144,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
-                var (id, valid) = controller.BindId(meta.KeyConverter);
+                var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
 
                 meta.ReferencesMeta.PrepareOptions(controller, repository, out Action<TEntity> setViewDataMultiSelectLists);
-                return controller.MakeActionResultOnRequest(
-                    () => valid,
+                return controller.MakeActionResultOnEntityRequest(
+                    nameof(Edit),
+                    valid,
                     () => repository.Find(meta.FindPredicate(id.Value), meta.EditIncludes),
                     entity =>
                         setViewDataMultiSelectLists(entity)
@@ -114,24 +166,25 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     if (!authorize(nameof(Edit), state.UserContext))
                         return controller.Unauthorized();
 
-                    TEntity entity = controller.Bind(meta.Constructor, meta.editableBinders, meta.notEditableBinders);
+                    var entity = controller.Bind(meta.Constructor, meta.editableBinders, meta.notEditableBinders);
 
                     meta.ReferencesMeta.ParseRequests(controller, entity, repository,
-                       out Action<IBatch<TEntity>> modifyRelateds, out Action setViewDataMultiSelectLists);
+                       out var modifyRelated, out var setViewDataMultiSelectLists);
 
-                    return controller.MakeActionResultOnSave(
+                    return controller.MakeActionResultOnEntitySave(
                         controller.ModelState.IsValid,
                         () => storage.Handle(
                             batch =>
                             {
                                 batch.Modify(entity, meta.DisabledProperties);
-                                modifyRelateds(batch);
+                                modifyRelated(batch);
                             }),
                         () =>
                         {
                             setViewDataMultiSelectLists();
-                            return controller.View(entity);
-                        }
+                            return controller.View(nameof(Edit), entity);
+                        },
+                        () => controller.RedirectToAction(nameof(Index))
                     );
                 });
         }
@@ -141,9 +194,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
-                var (id, valid) = controller.BindId(meta.KeyConverter);
-                return controller.MakeActionResultOnRequest(
-                        () => valid,
+                var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
+                return controller.MakeActionResultOnEntityRequest(
+                        nameof(Delete),
+                        valid,
                         () => repository.Find(meta.FindPredicate(id.Value), meta.DeleteIncludes)
                     );
             });
@@ -156,13 +210,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             {
                 if (!authorize(nameof(Delete), state.UserContext))
                     return controller.Unauthorized();
-                var (id, valid) = controller.BindId(meta.KeyConverter);
+                var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
                 var entity = repository.Find(meta.FindPredicate(id.Value));
 
-                return controller.MakeActionResultOnSave(
+                return controller.MakeActionResultOnEntitySave(
                         true,
                         () => storage.Handle(batch => batch.Remove(entity)),
-                        () => controller.View(nameof(Delete), entity)
+                        () => controller.View(nameof(Delete), entity),
+                        () => controller.RedirectToAction(nameof(Index))
                     );
             });
         }

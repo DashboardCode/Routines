@@ -14,37 +14,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         static ControllerMeta<Privilege, string> meta = new ControllerMeta<Privilege, string>(
             id => e => e.PrivilegeId == id,
             Converters.TryParseString, 
-            manyToMany=> manyToMany
-                .Add("Roles",
-                     repository => repository.Clone<Role>().List(),
-                     nameof(Role.RoleName),
-                     e => e.RolePrivilegeMap,
-                     mm => mm.RoleId,
-                     mm => mm.PrivilegeId,
-                     e => e.RoleId,
-                         
-                         (ep, ef) => new RolePrivilege() { PrivilegeId = ep.PrivilegeId, RoleId = ef.RoleId },
-                         s => int.Parse(s)
-                )
-                .Add("Groups",
-                     repository => repository.Clone<Group>().List(),
-                     nameof(Group.GroupName),
-                     e => e.GroupPrivilegeMap,
-                     mm => mm.GroupId,
-                     mm => mm.PrivilegeId,
-                     e => e.GroupId,
-                     (ep, ef) => new GroupPrivilege() { PrivilegeId = ep.PrivilegeId, GroupId = ef.GroupId }
-                )
-                .Add(
-                    "Users",
-                    repository => repository.Clone<User>().List(),
-                    nameof(AuthenticationDom.User.LoginName),
-                    e => e.UserPrivilegeMap,
-                    mm => mm.UserId,
-                    mm => mm.PrivilegeId,
-                    e => e.UserId,
-                    (ep, ef) => new UserPrivilege() { PrivilegeId = ep.PrivilegeId, UserId = ef.UserId }
-                ),
             chain => chain.IncludeAll(e => e.GroupPrivilegeMap)
                        .ThenInclude(e => e.Group)
                        .IncludeAll(e => e.RolePrivilegeMap)
@@ -59,7 +28,41 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
                        .ThenInclude(e => e.User),
             chain => chain.Include(e => e.PrivilegeName),
             editables => editables.Add(e=>e.PrivilegeName,  Binder.ConvertToString),
-            notEditables => notEditables.Add(e => e.PrivilegeId).Add(e => e.RowVersion)
+            notEditables => notEditables.Add(e => e.PrivilegeId).Add(e => e.RowVersion),
+            null,
+            manyToMany => manyToMany
+                .Add("Roles", "RolesMultiSelectList",
+                     repository => repository.Clone<Role>().List(),
+                     e => e.RolePrivilegeMap,
+                     mm => mm.RoleId,
+                     mm => mm.PrivilegeId,
+                     e => e.RoleId,
+                     nameof(Role.RoleId),
+                     nameof(Role.RoleName),
+                     (ep, ef) => new RolePrivilege() { PrivilegeId = ep.PrivilegeId, RoleId = ef.RoleId },
+                     s => int.Parse(s)
+                )
+                .Add("Groups", "GroupsMultiSelectList",
+                     repository => repository.Clone<Group>().List(),
+                     e => e.GroupPrivilegeMap,
+                     mm => mm.GroupId,
+                     mm => mm.PrivilegeId,
+                     e => e.GroupId,
+                     nameof(Group.GroupId),
+                     nameof(Group.GroupName),
+                     (ep, ef) => new GroupPrivilege() { PrivilegeId = ep.PrivilegeId, GroupId = ef.GroupId }
+                )
+                .Add(
+                    "Users", "UsersMultiSelectList",
+                    repository => repository.Clone<User>().List(),
+                    e => e.UserPrivilegeMap,
+                    mm => mm.UserId,
+                    mm => mm.PrivilegeId,
+                    e => e.UserId,
+                    nameof(AuthenticationDom.User.UserId),
+                    nameof(AuthenticationDom.User.LoginName),
+                    (ep, ef) => new UserPrivilege() { PrivilegeId = ep.PrivilegeId, UserId = ef.UserId }
+                )
         );
         #endregion
 

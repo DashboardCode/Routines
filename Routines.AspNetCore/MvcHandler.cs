@@ -7,17 +7,26 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public static class MvcHandler
     {
-        public static IActionResult MakeActionResultOnSave(this Controller controller, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success = null)
+        //public static IActionResult MakeActionResultOnSave(this Controller controller, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success = null)
+        //{
+        //    return MakeActionResultOnEntitySave(controller, controller.ModelState.IsValid, func, error);
+        //}
+
+        public static IActionResult MakeActionResultOnEntitySave(this Controller controller, bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success)
         {
-            return MakeActionResultOnSave(controller, controller.ModelState.IsValid, func, error);
+            return MakeActionResultOnEntitySave(isValid, func, error, success,
+                (ex) => controller.ViewBag.Exception = ex,
+                (key, value) => controller.ModelState.AddModelError(key, value)
+                );
         }
 
-        public static IActionResult MakeActionResultOnSave(this Controller controller, bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success = null)
+        public static IActionResult MakeActionResultOnEntitySave(
+            bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success,
+            Action<Exception> publishException, Action<string, string> publishStorageError
+            )
         {
             if (!isValid)
                 return error();
-            if (success == null)
-                success = () => controller.RedirectToAction("Index");
             try
             {
                 var storageError = func();
@@ -25,28 +34,40 @@ namespace DashboardCode.Routines.AspNetCore
                 {
                     var dictionary = storageError.FieldErrors.ToDictionary((v1, v2) => v1 + ";" + Environment.NewLine + v2);
                     foreach (var i in dictionary)
-                        controller.ModelState.AddModelError(i.Key, i.Value);
-                    controller.ViewBag.Exception = storageError.Exception;
+                        publishStorageError(i.Key, i.Value);
+                    publishException(storageError.Exception);
                     return error();
                 }
                 return success();
             }
             catch (Exception ex)
             {
-                controller.ViewBag.Exception = ex;
+                publishException(ex);
             }
             return error();
         }
 
-        public static IActionResult MakeActionResultOnRequest<TEntity>(this Controller controller, Func<bool> isValidInput, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
+        public static IActionResult MakeActionResultOnEntityRequest<TEntity>(this Controller controller, 
+            string view,
+            bool isValid, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
         {
-            if (!isValidInput())
+            return MakeActionResultOnEntityRequest(
+                o=>controller.View(view, o), ()=>controller.NotFound(), isValid, getEntity, prepareRendering
+                );
+        }
+
+        public static IActionResult MakeActionResultOnEntityRequest<TEntity>(
+            Func<object, IActionResult> view, 
+            Func<IActionResult> notFound,
+            bool isValid, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
+        {
+            if (!isValid)
                 return new StatusCodeResult((int)HttpStatusCode.BadRequest);
             var entity = getEntity();
             if (entity == null)
-                return controller.NotFound();
+                return notFound();
             prepareRendering?.Invoke(entity);
-            return controller.View(entity);
+            return view(entity);
         }
     }
 }

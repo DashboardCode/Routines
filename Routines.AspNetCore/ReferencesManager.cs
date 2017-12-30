@@ -5,12 +5,14 @@ using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public class ReferencesMeta<TEntity> where TEntity : class
+    public class ReferencesCollection<TEntity> where TEntity : class
     {
         readonly Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary;
+        readonly Dictionary<string, IOneToMany<TEntity>>  oneToManyDictionary;
 
-        public ReferencesMeta(Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary)
+        public ReferencesCollection(Dictionary<string, IOneToMany<TEntity>> oneToManyDictionary, Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary)
         {
+            this.oneToManyDictionary = oneToManyDictionary;
             this.manyToManyDictionary = manyToManyDictionary;
         }
 

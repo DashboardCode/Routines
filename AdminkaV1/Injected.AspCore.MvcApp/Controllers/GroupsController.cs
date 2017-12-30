@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Mvc;
 
-using DashboardCode.Routines.AspNetCore;
 using DashboardCode.AdminkaV1.AuthenticationDom;
-using Microsoft.Extensions.Primitives;
+using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
@@ -24,53 +24,21 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         static ControllerMeta<Group, int> meta = new ControllerMeta<Group, int>(
             id => e => e.GroupId == id,
             Converters.TryParseInt,
-            manyToMany => manyToMany.Add(
-                "Privileges",
-                repository => repository.Clone<Privilege>().List(),
-                nameof(Privilege.PrivilegeName),
-                e => e.GroupPrivilegeMap,
-                mm => mm.PrivilegeId,
-                mm => mm.GroupId,
-                e => e.PrivilegeId,
-                
-                (ep, ef) => new GroupPrivilege() { GroupId = ep.GroupId, PrivilegeId = ef.PrivilegeId }
-            
-            ).Add("Roles",
-                    repository => repository.Clone<Role>().List(),
-                    nameof(Role.RoleName),
-                    e => e.GroupRoleMap,
-                    mm => mm.RoleId,
-                    mm => mm.GroupId,
-                    e => e.RoleId,
-                    
-                    (ep, ef) => new GroupRole() { GroupId = ep.GroupId, RoleId = ef.RoleId }
-            ).Add(
-                    "Users",
-                    repository => repository.Clone<User>().List(),
-                    nameof(AuthenticationDom.User.LoginName),
-                    e => e.UserGroupMap,
-                    mm => mm.UserId, 
-                    mm => mm.GroupId,
-                    e => e.UserId,
-                    
-                    (ep, ef) => new UserGroup() { GroupId = ep.GroupId, UserId = ef.UserId }
-            ),
             chain => chain
-                       .IncludeAll(e => e.GroupPrivilegeMap)
-                       .ThenInclude(e => e.Privilege)
-                       .IncludeAll(e => e.GroupRoleMap)
-                       .ThenInclude(e => e.Role)
-                       .IncludeAll(e => e.UserGroupMap)
-                       .ThenInclude(e => e.User),
+                .IncludeAll(e => e.GroupPrivilegeMap)
+                .ThenInclude(e => e.Privilege)
+                .IncludeAll(e => e.GroupRoleMap)
+                .ThenInclude(e => e.Role)
+                .IncludeAll(e => e.UserGroupMap)
+                .ThenInclude(e => e.User),
             chain => chain.IncludeAll(e => e.GroupPrivilegeMap)
-                       .ThenInclude(e => e.Privilege)
-                       .IncludeAll(e => e.GroupRoleMap)
-                       .ThenInclude(e => e.Role)
-                       .IncludeAll(e => e.UserGroupMap)
-                       .ThenInclude(e => e.User),
+                .ThenInclude(e => e.Privilege)
+                .IncludeAll(e => e.GroupRoleMap)
+                .ThenInclude(e => e.Role)
+                .IncludeAll(e => e.UserGroupMap)
+                .ThenInclude(e => e.User),
             null,
             //var roleNameLength = metaBrowser.GetLength<Role>(en => en.RoleName);
-            //editables.Add(e => e.GroupName, sv => Binder.ConvertToString(sv), s=>Binder.ValidateStringLength(10) )
             formFields =>
                 formFields.Add(e => e.GroupName,   Binder.ConvertToString)
                           .Add(e => e.GroupAdName, Binder.ConvertToString, asserts => asserts.Add(v => v.Length <= 18, "Too big!"))
@@ -85,15 +53,49 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
 
             hiddenFormFields =>
                 hiddenFormFields.Add(e => e.GroupId)
-                            .Add(e => e.RowVersion)
+                            .Add(e => e.RowVersion),
             //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()))
             //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()), convertor => setter => setter(convertor()))
             //.Add(e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
             //.Add("GroupId", e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
             //.Add("GroupId", e => sv => e.GroupId = int.Parse(sv.ToString()))
+            null,
+            manyToMany => manyToMany.Add(
+                "Privileges",
+                "PrivilegesMultiSelectList",
+                repository => repository.Clone<Privilege>().List(),
+                e => e.GroupPrivilegeMap,
+                mm => mm.PrivilegeId,
+                mm => mm.GroupId,
+                e => e.PrivilegeId,
+                nameof(Privilege.PrivilegeId),
+                nameof(Privilege.PrivilegeName),
+                (ep, ef) => new GroupPrivilege() { GroupId = ep.GroupId, PrivilegeId = ef.PrivilegeId }
+            ).Add(
+                "Roles",
+                "RolesMultiSelectList",
+                repository => repository.Clone<Role>().List(),
+                e => e.GroupRoleMap,
+                mm => mm.RoleId,
+                mm => mm.GroupId,
+                e => e.RoleId,
+                nameof(Role.RoleId),
+                nameof(Role.RoleName),
+                (ep, ef) => new GroupRole() { GroupId = ep.GroupId, RoleId = ef.RoleId }
+            ).Add(
+                "Users",
+                "UsersMultiSelectList",
+                repository => repository.Clone<User>().List(),
+                e => e.UserGroupMap,
+                mm => mm.UserId,
+                mm => mm.GroupId,
+                e => e.UserId,
+                nameof(AuthenticationDom.User.UserId),
+                nameof(AuthenticationDom.User.LoginName),
+                (ep, ef) => new UserGroup() { GroupId = ep.GroupId, UserId = ef.UserId }
+            )
 
 
-        //
         );
         #endregion
 

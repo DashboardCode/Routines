@@ -11,4 +11,12 @@ namespace DashboardCode.Routines.AspNetCore
 
         void ParseRequest(RoutineController controller, TEntity entity, IRepository<TEntity> repository, out Action<IBatch<TEntity>> modifyRelated, out Action setViewDataMultiSelectList);
     }
+
+    public interface IOneToMany<TEntity> where TEntity : class
+    {
+        void SetViewDataSelectList(RoutineController controller, IRepository<TEntity> repository);
+        void PrepareOptions(RoutineController controller, IRepository<TEntity> repository, out Action<TEntity> setViewDataMultiSelectLists);
+
+        //void ParseRequest(RoutineController controller, TEntity entity, IRepository<TEntity> repository, out Action<IBatch<TEntity>> modifyRelated, out Action setViewDataMultiSelectList);
+    }
 }

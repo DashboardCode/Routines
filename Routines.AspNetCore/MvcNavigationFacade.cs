@@ -1,49 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public class MvcNavigationFacade<TP, TF, TMM, TfID> where TP : class where TF : class
+    public class MvcNavigationFacade<TEntity, TF, TMM, TfID> where TEntity : class where TF : class
     {
-        public readonly List<TMM> Selected;
-        private readonly string formField;
-        private readonly string optionId;
-        private readonly string optionName;
+        public  readonly List<TMM> Selected;
+        public  readonly string viewDataMultiSelectListKey;
+        private readonly string multiSelectListOptionValuePropertyName;
+        private readonly string multiSelectListOptionTextPropertyName;
         private readonly List<TfID> Ids;
         private readonly Func<TF, TfID> getId;
-        private readonly Func<TP, TF, TMM> construct;
+        private readonly Func<TEntity, TF, TMM> construct;
         private readonly Func<string, TfID> toId;
 
         public MvcNavigationFacade(
-            string formField,
-            Expression<Func<TF, TfID>> getId,
-            string optionName,
-            Func<TP, TF, TMM> construct,
+            string viewDataMultiSelectListKey,
+            Func<TF, TfID> getId,
+            string multiSelectListOptionValuePropertyName,
+            string multiSelectListOptionTextPropertyName,
+            Func<TEntity, TF, TMM> construct,
             Func<string, TfID> toId=null
             )
         {
-            //this.controller = controller;
-            this.formField = formField;
-            this.optionId = MemberExpressionExtensions.GetMemberName(getId);
-            this.optionName = optionName;
-            this.getId = getId.Compile();
-            //Options = options;
+            this.viewDataMultiSelectListKey = viewDataMultiSelectListKey;
+            this.getId = getId;
+            this.multiSelectListOptionValuePropertyName = multiSelectListOptionValuePropertyName;
+            this.multiSelectListOptionTextPropertyName = multiSelectListOptionTextPropertyName;
+            this.construct = construct;
+            this.toId = toId?? Converters.GetParser<TfID>();
             Ids = new List<TfID>();
             Selected = new List<TMM>();
-            this.construct = construct;
-            if (toId == null)
-                toId = Converters.GetParser<TfID>();
-            this.toId = toId;
         }
 
         public void Parse(
             Controller controller,
-            TP tp,
-            IReadOnlyCollection<TF> options, string formField)
+            TEntity tp,
+            IReadOnlyCollection<TF> options, 
+            string formField)
         {
             var stringValues = controller.Request.Form[formField];
             if (stringValues.Count() > 0)
@@ -58,14 +55,14 @@ namespace DashboardCode.Routines.AspNetCore
 
         public void SetViewDataMultiSelectList(Controller controller, IReadOnlyCollection<TF> options)
         {
-            controller.ViewData[formField + "MultiSelectList"] = new MultiSelectList(options, optionId, optionName);
-            controller.ViewData[formField] = Ids;
+            controller.ViewData[viewDataMultiSelectListKey] 
+                = new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, Ids);
         }
 
-        public void SetViewDataMultiSelectList(Controller controller, IEnumerable<TfID> ids, IReadOnlyCollection<TF> options)
+        public void SetViewDataMultiSelectList(Controller controller, IReadOnlyCollection<TF> options, IEnumerable<TfID> ids)
         {
-            controller.ViewData[formField + "MultiSelectList"] = new MultiSelectList(options, optionId, optionName);
-            controller.ViewData[formField] = ids;
+            controller.ViewData[viewDataMultiSelectListKey] 
+                = new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, ids);
         }
     }
 }

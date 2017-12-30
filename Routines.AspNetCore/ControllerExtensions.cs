@@ -49,11 +49,11 @@ namespace DashboardCode.Routines.AspNetCore
             return text;
         }
 
-        public static (T, bool) BindId<T>(this Controller controller, Func<string, T> converter)
+        public static (T, bool) BindId<T>(this HttpRequest request, Func<string, T> converter)
         {
             bool value = false;
             T id = default(T);
-            PathString pathString = controller.HttpContext.Request.Path;
+            PathString pathString = request.Path;
             if (pathString.HasValue)
             {
                 var path = pathString.Value;

@@ -10,9 +10,16 @@ https://cdnjs.com
 http://upgrade-bootstrap.bootply.com/
 
 4. from bower to webpack
+if nom is not working put C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Web\External to path variable
+
 npm init -y // in pr.folder creates package.json
 npm install npm@latest
 npm install webpack --save-dev
+
+
+npm outdated
+npm view bootstrap versions 
+npm view popper.js versions
 
 3.node.js
 there are two node.js installations
