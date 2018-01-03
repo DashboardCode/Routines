@@ -2,15 +2,15 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 using DashboardCode.Routines.Storage;
-using Microsoft.AspNetCore.Http;
 
 namespace DashboardCode.Routines.AspNetCore
 {
     public class ManyToMany<TEntity, TF, TMM, TfID> : IManyToMany<TEntity> where TEntity : class where TF : class where TMM : class
     {
-        private readonly MvcViewDataMultiSelectListFacade<TF, TfID> navigation;
+        private readonly Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>> addViewData;
         private readonly Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions;
         private readonly Expression<Func<TEntity, ICollection<TMM>>> getRelatedExpression;
         private readonly Func<TEntity, ICollection<TMM>> getRelated;
@@ -24,7 +24,7 @@ namespace DashboardCode.Routines.AspNetCore
 
         public ManyToMany(
             string formField,
-            MvcViewDataMultiSelectListFacade<TF, TfID> navigation,
+            Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>> addViewData,
             Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
             Expression<Func<TEntity, ICollection<TMM>>> getRelatedExpression, 
             Func<TMM, TMM, bool> equalsById,
@@ -35,35 +35,37 @@ namespace DashboardCode.Routines.AspNetCore
             Func<string, TfID> toId=null
             )
         {
-            this.navigation = navigation;
+            // common
+            this.addViewData = addViewData;
             this.getOptions = getOptions;
 
+            // used only in PreparePersistedOptions
             this.getRelated = getRelatedExpression.Compile();
             this.getTmmId = getTmmId;
 
+            // used only in PrepareParsedOptions
             this.getRelatedExpression = getRelatedExpression;
             this.equalsById = equalsById;
-            
             this.formField = formField;
             this.getId = getId;
             this.construct = construct;
             this.toId = toId?? Converters.GetParser<TfID>();
         }
 
-        public void AddViewDataMultiSelectList(Action<string, object> addViewData, IRepository<TEntity> repository)
+        public void PrepareDefaultOptions(Action<string, object> addViewData, IRepository<TEntity> repository)
         {
             var options = getOptions(repository);
-            navigation.AddViewData(addViewData, options, new List<TfID>());
+            this.addViewData(addViewData, options, new List<TfID>());
         }
 
-        public void PrepareOptions(Action<string, object> addViewData, IRepository<TEntity> repository, out Action<TEntity> addViewDataMultiSelectList)
+        public void PreparePersistedOptions(Action<string, object> addViewData, IRepository<TEntity> repository, out Action<TEntity> addViewDataMultiSelectList)
         {
             var options = getOptions(repository);
             addViewDataMultiSelectList = (entity) =>
-                navigation.AddViewData(addViewData, options, getRelated(entity).Select(getTmmId));
+                this.addViewData(addViewData, options, getRelated(entity).Select(getTmmId));
         }
 
-        public void ParseRelated(Action<string, object> addViewData, IRepository<TEntity> repository,  HttpRequest request, TEntity entity,  out Action<IBatch<TEntity>> modifyRelated, out Action addViewDataMultiSelectList)
+        public void PrepareParsedOptions(Action<string, object> addViewData, IRepository<TEntity> repository,  HttpRequest request, TEntity entity,  out Action<IBatch<TEntity>> modifyRelated, out Action addViewDataMultiSelectList)
         {
             var options = getOptions(repository);
 
@@ -80,54 +82,59 @@ namespace DashboardCode.Routines.AspNetCore
             }
 
             modifyRelated = batch => batch.ModifyRelated(entity, getRelatedExpression, selected, equalsById);
-            addViewDataMultiSelectList = () => navigation.AddViewData(addViewData, options, selectedIds);
+            addViewDataMultiSelectList = () => this.addViewData(addViewData, options, selectedIds);
         }
     }
 
     public class OneToMany<TP, TF, TfID> : IOneToMany<TP> where TP : class where TF : class 
     {
-        private readonly MvcOneToManyNavigationFacade<TP, TF, TfID> navigation;
+        private readonly Action<Action<string, object>, IReadOnlyCollection<TF>, TfID> addViewData;
         private readonly Func<IRepository<TP>, IReadOnlyCollection<TF>> getOptions;
         private readonly string formField;
         private readonly Func<TP, TfID> getId;
+
+        private readonly Func<string, TfID> toId;
+
         public OneToMany(
             string formFieldName,
-            MvcOneToManyNavigationFacade<TP, TF, TfID> navigation,
+            Action<Action<string, object>, IReadOnlyCollection<TF>, TfID> addViewData,
+            //MvcOneToManyNavigationFacade<TP, TF, TfID> navigation,
             Func<IRepository<TP>, IReadOnlyCollection<TF>> getOptions,
-            Func<TP, TfID> getId
+            Func<TP, TfID> getId,
+            
+            Func<string, TfID> toId = null
             )
         {
             this.formField = formFieldName;
-            this.navigation = navigation;
+            this.addViewData = addViewData;
+            //this.navigation = navigation;
             this.getOptions = getOptions;
             this.getId = getId;
+            this.toId = toId;
         }
 
-
-        public void PrepareOptions(Action<string, object> addViewData, IRepository<TP> repository, out Action<TP> setViewDataMultiSelectLists)
+        public void PrepareDefaultOptions(Action<string, object> addViewData, IRepository<TP> repository)
         {
             var options = getOptions(repository);
-            setViewDataMultiSelectLists = (entity) =>
-                navigation.AddViewData(addViewData, options, getId(entity));
+            this.addViewData(addViewData, options, default(TfID));
         }
 
-        public void ParseRequest(Action<string, object> addViewData, HttpRequest request, TP entity, IRepository<TP> repository, out Action setViewDataSelectList)
+
+        public void PreparePersistedOptions(Action<string, object> addViewData, IRepository<TP> repository, out Action<TP> addViewDataMultiSelectList)
         {
             var options = getOptions(repository);
-            navigation.Parse(request, entity, options, formField);
-            //modifyRelated = batch => batch.ModifyRelated(entity, getRelatedExpression, navigation.Selected, equalsById);
-            setViewDataSelectList = () => navigation.AddViewData(addViewData, options);
+            addViewDataMultiSelectList = (entity) =>
+                this.addViewData(addViewData, options, getId(entity));
         }
 
-        public void SetViewDataSelectList(Action<string, object> addViewData, IRepository<TP> repository)
+        public void PrepareParsedOptions(Action<string, object> addViewData, HttpRequest request, TP entity, IRepository<TP> repository, out Action addViewDataMultiSelectList)
         {
             var options = getOptions(repository);
-            SetViewDataSelectList(addViewData, options);
-        }
 
-        void SetViewDataSelectList(Action<string, object> addViewData, IReadOnlyCollection<TF> options)
-        {
-            navigation.AddViewData(addViewData, options);
+            var stringValues = request.Form[formField];
+            var textValue = stringValues.ToString();
+            var id = toId(textValue);
+            addViewDataMultiSelectList = () => this.addViewData(addViewData, options, id);
         }
     }
 }

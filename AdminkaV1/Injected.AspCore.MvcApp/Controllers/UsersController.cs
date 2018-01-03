@@ -37,7 +37,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
             notEditables => 
                 notEditables
                     .Add(e => e.UserId)
-                    .Add(e=>e.RowVersion),
+                    .Add(e => e.RowVersion),
             null,
             manyToMany => manyToMany
                 .Add("Privileges", "PrivilegesMultiSelectList",

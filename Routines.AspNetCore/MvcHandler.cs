@@ -7,33 +7,9 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public static class MvcHandler
     {
-        //public static IActionResult MakeActionResultOnSave(this Controller controller, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success = null)
-        //{
-        //    return MakeActionResultOnEntitySave(controller, controller.ModelState.IsValid, func, error);
-        //}
-
-        public static IActionResult MakeActionResultOnEntitySave(this Controller controller, bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success)
-        {
-            return MakeActionResultOnEntitySave(
-
-                isValid, func, error, success,
-                (ex) => controller.ViewBag.Exception = ex,
-                (key, value) => controller.ModelState.AddModelError(key, value)
-                );
-        }
-
-        public static IActionResult MakeActionResultOnEntitySave(Action<string, object> addViewData, Action<string,string> addModelError, bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success)
-        {
-            return MakeActionResultOnEntitySave(isValid, func, error, success,
-                (ex) => addViewData("Exception", ex),
-                addModelError
-                );
-        }
-
         public static IActionResult MakeActionResultOnEntitySave(
             bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success,
-            Action<Exception> publishException, Action<string, string> publishStorageError
-            )
+            Action<Exception> publishException, Action<string, string> publishStorageError)
         {
             if (!isValid)
                 return error();
@@ -57,21 +33,15 @@ namespace DashboardCode.Routines.AspNetCore
             return error();
         }
 
-        public static IActionResult MakeActionResultOnEntityRequest<TEntity>(this Controller controller, 
-            string viewName,
-            bool isValid, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
-        {
-            return MakeActionResultOnEntityRequest(
-                o=>controller.View(viewName, o), ()=>controller.NotFound(), isValid, getEntity, prepareRendering
+        public static IActionResult MakeActionResultOnEntitySave(Action<string, object> addViewData, Action<string,string> addModelError, bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success) =>
+            MakeActionResultOnEntitySave(isValid, func, error, success,
+                (ex) => addViewData("Exception", ex),
+                addModelError
                 );
-        }
+        
 
         public static IActionResult MakeActionResultOnEntityRequest<TEntity>(
-            Func<object, IActionResult> view, 
-            Func<IActionResult> notFound,
-            bool isValid, 
-            Func<TEntity> getEntity, 
-            Action<TEntity> prepareRendering = null)
+          Func<object, IActionResult> view, Func<IActionResult> notFound, bool isValid, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
         {
             if (!isValid)
                 return new StatusCodeResult((int)HttpStatusCode.BadRequest);

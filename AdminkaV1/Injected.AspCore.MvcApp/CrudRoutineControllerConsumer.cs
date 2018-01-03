@@ -283,8 +283,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
                 var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
-                return controller.MakeActionResultOnEntityRequest(
-                    nameof(Details),
+                return MvcHandler.MakeActionResultOnEntityRequest(
+                    o => controller.View(nameof(Details), o),
+                    controller.NotFound,
                     valid,
                     () => repository.Find(meta.FindPredicate(id.Value), meta.DetailsIncludes)
                 );
@@ -296,7 +297,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             var routine = new MvcRoutine(controller, null);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
-                meta.PrepareEmptyOptions((s, o) => controller.ViewData[s] = o, repository);
+                meta.ReferencesCollection.PrepareEmptyOptions((s, o) => controller.ViewData[s] = o, repository);
                 return controller.View(nameof(Create));
             });
         }
@@ -309,11 +310,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 if (! authorize(nameof(Create), state.UserContext))
                     return controller.Unauthorized();
 
-                TEntity entity = ControllerExtensions.Bind(controller.HttpContext.Request, (p,e)=>controller.ModelState.AddModelError(p,e), meta.Constructor, meta.editableBinders, meta.notEditableBinders);
+                TEntity entity = ControllerExtensions.Bind(controller.HttpContext.Request, (key, value) =>controller.ModelState.AddModelError(key, value), meta.Constructor, meta.FormFields, meta.HiddenFormFields);
 
-                var (modifyRelated, setViewDataMultiSelectLists) = meta.ParseRelated((s, o) => controller.ViewData[s] = o, repository, controller.HttpContext.Request, entity);
+                var (modifyRelated, setViewDataMultiSelectLists) = meta.ReferencesCollection.ParseRelated((s, o) => controller.ViewData[s] = o, repository, controller.HttpContext.Request, entity);
 
-                return controller.MakeActionResultOnEntitySave(
+                return MvcHandler.MakeActionResultOnEntitySave(
                     controller.ModelState.IsValid,
                     () => storage.Handle(
                         batch =>
@@ -326,7 +327,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         setViewDataMultiSelectLists();
                         return controller.View(nameof(Create), entity);
                     },
-                    () => controller.RedirectToAction(nameof(Index))
+                    () => controller.RedirectToAction(nameof(Index)),
+                    ex => controller.ViewData["Exception"] = ex,
+                    (key, value) => controller.ModelState.AddModelError(key, value)
                 );
             });
         }
@@ -338,10 +341,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             {
                 var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
 
-                var setViewDataMultiSelectLists = meta.PrepareOptions((s, o) => controller.ViewData[s] = o, repository);
+                var setViewDataMultiSelectLists = meta.ReferencesCollection.PrepareOptions((s, o) => controller.ViewData[s] = o, repository);
 
-                return controller.MakeActionResultOnEntityRequest(
-                    nameof(Edit),
+                return MvcHandler.MakeActionResultOnEntityRequest(
+                    o => controller.View(nameof(Details), o),
+                    controller.NotFound,
                     valid,
                     () => repository.Find(meta.FindPredicate(id.Value), meta.EditIncludes),
                     entity =>
@@ -360,16 +364,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         return controller.Unauthorized();
 
                     TEntity entity = ControllerExtensions.Bind(controller.HttpContext.Request, (p, e) => controller.ModelState.AddModelError(p, e), meta.Constructor, 
-                        meta.editableBinders, meta.notEditableBinders);
+                        meta.FormFields, meta.HiddenFormFields);
 
-                    var (modifyRelated, setViewDataMultiSelectLists) = meta.ParseRelated((s, o) => controller.ViewData[s] = o, repository, controller.HttpContext.Request, entity);
+                    var (modifyRelated, setViewDataMultiSelectLists) = meta.ReferencesCollection.ParseRelated((s, o) => controller.ViewData[s] = o, repository, controller.HttpContext.Request, entity);
                     
-                    return controller.MakeActionResultOnEntitySave(
+                    return MvcHandler.MakeActionResultOnEntitySave(
                         controller.ModelState.IsValid,
                         () => storage.Handle(
                             batch =>
                             {
-                                batch.Modify(entity, meta.DisabledProperties);
+                                batch.Modify(entity, meta.DisabledFormFields);
                                 modifyRelated(batch);
                             }),
                         () =>
@@ -377,7 +381,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                             setViewDataMultiSelectLists();
                             return controller.View(nameof(Edit), entity);
                         },
-                        () => controller.RedirectToAction(nameof(Index))
+                        () => controller.RedirectToAction(nameof(Index)),
+                        ex => controller.ViewBag.Exception = ex,
+                        (key, value) => controller.ModelState.AddModelError(key, value)
                     );
                 });
         }
@@ -388,8 +394,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
                 var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
-                return controller.MakeActionResultOnEntityRequest(
-                        nameof(Delete),
+                return MvcHandler.MakeActionResultOnEntityRequest(
+                        o => controller.View(nameof(Details), o),
+                        controller.NotFound,
                         valid,
                         () => repository.Find(meta.FindPredicate(id.Value), meta.DeleteIncludes)
                     );
@@ -406,11 +413,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
                 var entity = repository.Find(meta.FindPredicate(id.Value));
 
-                return controller.MakeActionResultOnEntitySave(
+                return MvcHandler.MakeActionResultOnEntitySave(
                         true,
                         () => storage.Handle(batch => batch.Remove(entity)),
                         () => controller.View(nameof(Delete), entity),
-                        () => controller.RedirectToAction(nameof(Index))
+                        () => controller.RedirectToAction(nameof(Index)),
+                        ex => controller.ViewBag.Exception = ex,
+                        (key, value) => controller.ModelState.AddModelError(key, value)
                     );
             });
         }
