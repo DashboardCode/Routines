@@ -2,7 +2,6 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.Extensions.Primitives;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
@@ -58,28 +57,30 @@ namespace DashboardCode.Routines.AspNetCore
             {
                 var path = pathString.Value;
                 var idText = path.Substring(path.LastIndexOf("/") + 1);
-                if (!string.IsNullOrEmpty(idText))
+                if (value = !string.IsNullOrEmpty(idText))
                     id = converter(idText);
             }
             return (id, value);
         }
 
-        public static T Bind<T>(this Controller controller, 
+        public static T Bind<T>(
+            HttpRequest request,
+            Action<string,string> addModelError,
             Func<T> constructor, 
             Dictionary<string, Func<T, Func<StringValues, VerboseResult>>> propertyBinders,
-            Dictionary<string, Func<T, Action<StringValues>>> propertySetters=null)
+            Dictionary<string, Func<T, Action<StringValues>>> propertySetters)
         {
             var t = constructor();
             foreach (var pair in propertyBinders)
             {
                 var propertyName = pair.Key;
-                if (controller.HttpContext.Request.Form.TryGetValue(propertyName, out StringValues stringValues))
+                if (request.Form.TryGetValue(propertyName, out StringValues stringValues))
                 {
                     Func<T, Func<StringValues, VerboseResult>> func = pair.Value;
                     var result = func(t)(stringValues);
                     if (!result.IsSuccess())
                         foreach(var errorMessage in result.ErrorMessages)
-                            controller.ModelState.AddModelError(propertyName, errorMessage);
+                            addModelError(propertyName, errorMessage);
                 }
             }
             if (propertySetters != null)
@@ -87,7 +88,7 @@ namespace DashboardCode.Routines.AspNetCore
                 foreach (var pair in propertySetters)
                 {
                     var propertyName = pair.Key;
-                    if (controller.HttpContext.Request.Form.TryGetValue(propertyName, out StringValues stringValues))
+                    if (request.Form.TryGetValue(propertyName, out StringValues stringValues))
                     {
                         var action = pair.Value;
                         action(t)(stringValues);

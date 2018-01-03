@@ -1,68 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public class MvcNavigationFacade<TEntity, TF, TMM, TfID> where TEntity : class where TF : class
+    public class MvcOneToManyNavigationFacade<TEntity, TF, TfID> where TEntity : class where TF : class
     {
-        public  readonly List<TMM> Selected;
-        public  readonly string viewDataMultiSelectListKey;
-        private readonly string multiSelectListOptionValuePropertyName;
-        private readonly string multiSelectListOptionTextPropertyName;
-        private readonly List<TfID> Ids;
+        private TfID Id;
+
+        public  readonly string viewDataSelectListKey;
+        private readonly string selectListOptionValuePropertyName;
+        private readonly string selectListOptionTextPropertyName;
         private readonly Func<TF, TfID> getId;
-        private readonly Func<TEntity, TF, TMM> construct;
         private readonly Func<string, TfID> toId;
 
-        public MvcNavigationFacade(
-            string viewDataMultiSelectListKey,
+        public MvcOneToManyNavigationFacade(
+            string viewDataSelectListKey,
             Func<TF, TfID> getId,
-            string multiSelectListOptionValuePropertyName,
-            string multiSelectListOptionTextPropertyName,
-            Func<TEntity, TF, TMM> construct,
-            Func<string, TfID> toId=null
+            string selectListOptionValuePropertyName,
+            string selectListOptionTextPropertyName,
+            Func<string, TfID> toId = null
             )
         {
-            this.viewDataMultiSelectListKey = viewDataMultiSelectListKey;
+            this.viewDataSelectListKey = viewDataSelectListKey;
             this.getId = getId;
-            this.multiSelectListOptionValuePropertyName = multiSelectListOptionValuePropertyName;
-            this.multiSelectListOptionTextPropertyName = multiSelectListOptionTextPropertyName;
-            this.construct = construct;
-            this.toId = toId?? Converters.GetParser<TfID>();
-            Ids = new List<TfID>();
-            Selected = new List<TMM>();
+            this.selectListOptionValuePropertyName = selectListOptionValuePropertyName;
+            this.selectListOptionTextPropertyName = selectListOptionTextPropertyName;
+            this.toId = toId ?? Converters.GetParser<TfID>();
+            Id = default(TfID);
+        }
+
+        public void AddViewData(Action<string, object> addViewData, IReadOnlyCollection<TF> options)
+        {
+            addViewData(viewDataSelectListKey, new SelectList(options, selectListOptionValuePropertyName, selectListOptionTextPropertyName, Id));
+        }
+
+        public void AddViewData(Action<string, object> addViewData, IReadOnlyCollection<TF> options, TfID id)
+        {
+            addViewData(viewDataSelectListKey, new SelectList(options, selectListOptionValuePropertyName, selectListOptionTextPropertyName, id));
         }
 
         public void Parse(
-            Controller controller,
+            HttpRequest request,
             TEntity tp,
-            IReadOnlyCollection<TF> options, 
+            IReadOnlyCollection<TF> options,
             string formField)
         {
-            var stringValues = controller.Request.Form[formField];
-            if (stringValues.Count() > 0)
-            {
-                foreach (var s in stringValues)
-                    Ids.Add(toId(s));
-                options.Where(e => Ids.Any(e2 => EqualityComparer<TfID>.Default.Equals(e2, getId(e))))
-                    .ToList()
-                    .ForEach(e => Selected.Add(construct(tp, e)));
-            }
+            var stringValues = request.Form[formField];
+            var textValue = stringValues.ToString();
+            Id = toId(textValue);
+        }
+    }
+
+    public class MvcViewDataMultiSelectListFacade<TF, TfID>
+    {
+        public  readonly string viewDataMultiSelectListKey;
+        private readonly string multiSelectListOptionValuePropertyName;
+        private readonly string multiSelectListOptionTextPropertyName;
+
+        public MvcViewDataMultiSelectListFacade(
+            string viewDataMultiSelectListKey,
+            string multiSelectListOptionValuePropertyName,
+            string multiSelectListOptionTextPropertyName
+            )
+        {
+            this.viewDataMultiSelectListKey = viewDataMultiSelectListKey;
+            this.multiSelectListOptionValuePropertyName = multiSelectListOptionValuePropertyName;
+            this.multiSelectListOptionTextPropertyName  = multiSelectListOptionTextPropertyName;
         }
 
-        public void SetViewDataMultiSelectList(Controller controller, IReadOnlyCollection<TF> options)
+        public void AddViewData(Action<string, object> addViewData, IReadOnlyCollection<TF> options, IEnumerable<TfID> selectedIds)
         {
-            controller.ViewData[viewDataMultiSelectListKey] 
-                = new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, Ids);
-        }
-
-        public void SetViewDataMultiSelectList(Controller controller, IReadOnlyCollection<TF> options, IEnumerable<TfID> ids)
-        {
-            controller.ViewData[viewDataMultiSelectListKey] 
-                = new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, ids);
+            addViewData(viewDataMultiSelectListKey, new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, selectedIds));
         }
     }
 }

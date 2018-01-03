@@ -18,7 +18,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         }
     }
 
-    public class GroupsController : RoutineController
+    public class GroupsController : ConfigurableController
     {
         #region Meta
         static ControllerMeta<Group, int> meta = new ControllerMeta<Group, int>(
@@ -126,7 +126,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         [HttpPost, ActionName(nameof(Create)), ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateFormData()
         {
-            return await consumer.CreateFormData();
+            return await consumer.CreateConfirmed();
         }
         #endregion
 
@@ -139,7 +139,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         [HttpPost, ActionName(nameof(Edit)), ValidateAntiForgeryToken]
         public async Task<IActionResult> EditFormData()
         {
-            return await consumer.EditFormData();
+            return await consumer.EditConfirmed();
         }
         #endregion
 
@@ -152,7 +152,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         [HttpPost, ActionName(nameof(Delete)), ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteFormData()
         {
-            return await consumer.DeleteFormData();
+            return await consumer.DeleteConfirmed();
         }
         #endregion
     }

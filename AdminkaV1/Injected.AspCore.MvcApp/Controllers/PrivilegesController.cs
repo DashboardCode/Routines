@@ -8,7 +8,7 @@ using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
 {
-    public class PrivilegesController : RoutineController
+    public class PrivilegesController : ConfigurableController
     {
         #region Meta
         static ControllerMeta<Privilege, string> meta = new ControllerMeta<Privilege, string>(
@@ -93,7 +93,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         [HttpPost, ActionName(nameof(Edit)), ValidateAntiForgeryToken]
         public async Task<IActionResult> EditFormData()
         {
-            return await consumer.EditFormData();
+            return await consumer.EditConfirmed();
         }
         #endregion
     }

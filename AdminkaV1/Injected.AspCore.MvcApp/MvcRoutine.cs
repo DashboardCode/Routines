@@ -13,22 +13,22 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     public class MvcRoutine : AdminkaRoutineHandler
     {
         public readonly SessionState SessionState;
-        public readonly RoutineController Controller;
-        public MvcRoutine(RoutineController controller, [CallerMemberName] string action = "") :
+        public readonly ConfigurableController Controller;
+        public MvcRoutine(ConfigurableController controller, [CallerMemberName] string action = "") :
             this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), controller.HttpContext.Request.ToLog(), action)
         {
         }
-        public MvcRoutine(RoutineController controller, object input, [CallerMemberName] string action = "") :
+        public MvcRoutine(ConfigurableController controller, object input, [CallerMemberName] string action = "") :
             this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), input, action)
         {
         }
-        private MvcRoutine(RoutineController controller, Guid correlationToken, object input, string action) :
+        private MvcRoutine(ConfigurableController controller, Guid correlationToken, object input, string action) :
             this(controller,
                 new RoutineGuid(correlationToken, controller.GetType().Namespace, controller.GetType().Name, action),
                 input)
         {
         }
-        public MvcRoutine(RoutineController controller, RoutineGuid routineGuid, object input) :
+        public MvcRoutine(ConfigurableController controller, RoutineGuid routineGuid, object input) :
             this(controller,
                  routineGuid,
                  InjectedManager.ComposeNLogTransients(
@@ -48,7 +48,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 headers.Add("X-RoutineGuid-MemberTag-Member",    routineGuid.MemberTag.Member);
             }
         }
-        private MvcRoutine(RoutineController controller, RoutineGuid routineGuid,
+        private MvcRoutine(ConfigurableController controller, RoutineGuid routineGuid,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingFactory,
             IApplicationFactory applicationFactory,
             object input) :

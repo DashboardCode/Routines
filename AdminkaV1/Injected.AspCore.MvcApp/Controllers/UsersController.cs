@@ -9,7 +9,7 @@ using System;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
 {
-    public class UsersController : RoutineController
+    public class UsersController : ConfigurableController
     {
         #region Meta
         static ControllerMeta<User, int> meta = new ControllerMeta<User, int>(
@@ -102,7 +102,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         [HttpPost, ActionName(nameof(Edit)), ValidateAntiForgeryToken]
         public async Task<IActionResult> EditFormData()
         {
-            return await consumer.EditFormData();
+            return await consumer.EditConfirmed();
         }
         #endregion
     }

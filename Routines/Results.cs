@@ -90,8 +90,7 @@ namespace DashboardCode.Routines
                 Func<string, short> d = (s) => short.Parse(s);
                 return (Func<string, T>)(Delegate)d;
             }
-
-            throw new NotImplementedException($"Type {typeof(T).FullName} is not supported");
+            throw new NotImplementedException($"Type '{typeof(T).FullName}' is not supported by '{nameof(Converters)}'.'{nameof(GetParser)}' method");
         }
 
 
@@ -128,7 +127,7 @@ namespace DashboardCode.Routines
                 return (Func<string, ConvertFuncResult<T>>)(Delegate)d;
             }
 
-            throw new NotImplementedException($"Type {typeof(T).FullName} is not supported");
+            throw new NotImplementedException($"Type '{typeof(T).FullName}' is not supported by '{nameof(Converters)}'.'{nameof(GerConverter)}' method");
         }
 
         public static ConvertFuncResult<int> TryParseInt(string s)

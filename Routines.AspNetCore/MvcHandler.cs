@@ -14,9 +14,19 @@ namespace DashboardCode.Routines.AspNetCore
 
         public static IActionResult MakeActionResultOnEntitySave(this Controller controller, bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success)
         {
-            return MakeActionResultOnEntitySave(isValid, func, error, success,
+            return MakeActionResultOnEntitySave(
+
+                isValid, func, error, success,
                 (ex) => controller.ViewBag.Exception = ex,
                 (key, value) => controller.ModelState.AddModelError(key, value)
+                );
+        }
+
+        public static IActionResult MakeActionResultOnEntitySave(Action<string, object> addViewData, Action<string,string> addModelError, bool isValid, Func<StorageError> func, Func<IActionResult> error, Func<IActionResult> success)
+        {
+            return MakeActionResultOnEntitySave(isValid, func, error, success,
+                (ex) => addViewData("Exception", ex),
+                addModelError
                 );
         }
 
@@ -48,18 +58,20 @@ namespace DashboardCode.Routines.AspNetCore
         }
 
         public static IActionResult MakeActionResultOnEntityRequest<TEntity>(this Controller controller, 
-            string view,
+            string viewName,
             bool isValid, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
         {
             return MakeActionResultOnEntityRequest(
-                o=>controller.View(view, o), ()=>controller.NotFound(), isValid, getEntity, prepareRendering
+                o=>controller.View(viewName, o), ()=>controller.NotFound(), isValid, getEntity, prepareRendering
                 );
         }
 
         public static IActionResult MakeActionResultOnEntityRequest<TEntity>(
             Func<object, IActionResult> view, 
             Func<IActionResult> notFound,
-            bool isValid, Func<TEntity> getEntity, Action<TEntity> prepareRendering = null)
+            bool isValid, 
+            Func<TEntity> getEntity, 
+            Action<TEntity> prepareRendering = null)
         {
             if (!isValid)
                 return new StatusCodeResult((int)HttpStatusCode.BadRequest);

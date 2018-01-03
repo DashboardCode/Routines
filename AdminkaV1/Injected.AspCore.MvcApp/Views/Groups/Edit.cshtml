@@ -46,7 +46,7 @@
         <div class="form-group">
             @Html.Label("Users", "Users", htmlAttributes: new { @class = "control-label col-lg-2" })
             <div class="col-lg-10">
-                @Html.ListBox("Users", ViewBag.RolesMultiSelectList as MultiSelectList, new { @class = "form-control" })
+                @Html.ListBox("Users", ViewBag.UsersMultiSelectList as MultiSelectList, new { @class = "form-control" })
                 @Html.ValidationMessage("Users", "", new { @class = "text-danger" })
             </div>
         </div>
