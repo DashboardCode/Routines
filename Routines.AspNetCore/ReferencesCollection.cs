@@ -36,7 +36,7 @@ namespace DashboardCode.Routines.AspNetCore
             return (entity) => tmp.ForEach(i => i(entity));
         }
 
-        public ValueTuple<Action<IBatch<TEntity>>, Action> ParseRelated(Action<string, object> addViewData, IRepository<TEntity> repository, HttpRequest request, TEntity entity)
+        public IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>> ParseRelated(Action<string, object> addViewData, HttpRequest request, IRepository<TEntity> repository, TEntity entity)
         {
             List<Action<IBatch<TEntity>>> tmp0 = new List<Action<IBatch<TEntity>>>();
             List<Action> tmp1 = new List<Action>();
@@ -48,7 +48,7 @@ namespace DashboardCode.Routines.AspNetCore
             }
             Action<IBatch<TEntity>> modifyRelateds = batch => tmp0.ForEach(i => i(batch));
             Action setViewDataMultiSelectLists = () => tmp1.ForEach(i => i());
-            return (modifyRelateds, setViewDataMultiSelectLists);
+            return new ComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>((modifyRelateds, setViewDataMultiSelectLists));
         }
     }
 

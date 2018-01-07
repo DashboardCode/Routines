@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
@@ -71,9 +73,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             string action, Func<Func<object, IActionResult>, Func<IActionResult>, Func<IRepository<TEntity>, IActionResult>> func)
             => (view, notFound) => ComposeAsync(action, func(view, notFound));
 
-        public static Func<Func<object, IActionResult>, Func<IActionResult>, Func<bool>, Action<string, object>,  Func<ConfigurableController, Task<IActionResult>>> ComposeAsync(
-            string action, Func<Func<object, IActionResult>, Func<IActionResult>, Func<bool>, Action<string, object>, Func<IRepository<TEntity>, IActionResult>> func)
-            => (view, notFound, isValid, addViewData) => ComposeAsync(action, func(view, notFound, isValid, addViewData));
+        public static Func<Func<object, IActionResult>, Func<IActionResult>, Action<string, object>,  Func<ConfigurableController, Task<IActionResult>>> ComposeAsync(
+            string action, Func<Func<object, IActionResult>, Func<IActionResult>, Action<string, object>, Func<IRepository<TEntity>, IActionResult>> func)
+            => (view, notFound, addViewData) => ComposeAsync(action, func(view, notFound, addViewData));
 
         public static Func<Func<object, IActionResult>, Func<IActionResult>, Action<string, string>, Action<string, object>, Func<IActionResult>, Func<ConfigurableController, Task<IActionResult>>> ComposeAsync(
             string action, Func<Func<object, IActionResult>, Func<IActionResult>, Action<string, string>, Action<string, object>, Func<IActionResult>, Func<IRepository<TEntity>, IOrmStorage<TEntity>, Routine<UserContext>, IActionResult>> func)
@@ -87,8 +89,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             string action, Func<HttpRequest, Func<Func<object, IActionResult>, Func<IActionResult>, Func<IRepository<TEntity>, IActionResult>>> func)
             => httpRequest => ComposeAsync(action, func(httpRequest));
 
-        public static Func<HttpRequest, Func<Func<object, IActionResult>, Func<IActionResult>, Func<bool>, Action<string, object>, Func<ConfigurableController, Task<IActionResult>>>> ComposeAsync(
-            string action, Func<HttpRequest, Func<Func<object, IActionResult>, Func<IActionResult>, Func<bool>, Action<string, object>, Func<IRepository<TEntity>, IActionResult>>> func)
+        public static Func<HttpRequest, Func<Func<object, IActionResult>, Func<IActionResult>,  Action<string, object>, Func<ConfigurableController, Task<IActionResult>>>> ComposeAsync(
+            string action, Func<HttpRequest, Func<Func<object, IActionResult>, Func<IActionResult>, Action<string, object>, Func<IRepository<TEntity>, IActionResult>>> func)
             => httpRequest => ComposeAsync(action, func(httpRequest));
 
         public static Func<HttpRequest, Func<Func<object, IActionResult>, Func<IActionResult>, Action<string, string>, Func<bool>, Action<string, object>, Func<IActionResult>, Func<ConfigurableController, Task<IActionResult>>>> ComposeAsync(
@@ -108,17 +110,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public static Func<Task<IActionResult>> ComposeDetails(
             ConfigurableController controller, 
             Include<TEntity> detailsIncludes,
-            Func<string, ConvertFuncResult<TKey>> keyConverter,
+            Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate) =>
-             () => ComposeAsync("Details", request => (view,notFound) => repository => {
-                 var (id, valid) = request.BindId(keyConverter);
-                 return MvcHandler.MakeActionResultOnEntityRequest(
+             () => ComposeAsync("Details", request => (view,notFound) => repository => MvcHandler.MakeActionResultOnEntityRequest(
+                      keyConverter,
+                      request,
                       view,
                       notFound,
-                      valid,
-                      () => repository.Find(findPredicate(id.Value), detailsIncludes)
-                 );
-             })(controller.HttpContext.Request)(o => controller.View("Details", o), ()=>controller.NotFound())(controller);
+                      key => repository.Find(findPredicate(key), detailsIncludes)
+                 )
+             )(controller.HttpContext.Request)(o => controller.View("Details", o), ()=>controller.NotFound())(controller);
 
         public static Func<Task<IActionResult>> ComposeCreate(
             ConfigurableController controller,
@@ -134,34 +135,26 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             ConfigurableController controller,
             Func<string, UserContext, bool> authorize,
             Func<TEntity> constructor,
-            Dictionary<string, Func<TEntity, Func<StringValues, VerboseResult>>> editableBinders,
-            Dictionary<string, Func<TEntity, Action<StringValues>>> notEditableBinders,
-            Func<Action<string, object>, HttpRequest, TEntity, IRepository<TEntity>, ValueTuple<Action<IBatch<TEntity>>, Action>> parseRelated) =>
-             () => ComposeAsync("CreateConfirmed", request => (view, unauthorized, addModelError, isValid, addViewData, redirect) => (repository, storage, state) =>
+            Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>> formFields,
+            Dictionary<string, Func<TEntity, Action<StringValues>>> hiddenFormFields,
+            Func<Action<string, object>, HttpRequest, IRepository<TEntity>, TEntity, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>> parseRelated) =>
+             () => ComposeAsync("CreateConfirmed", request2 => (view, unauthorized, addModelError, isValid, addViewData2, redirect) => (repository2, storage2, state2) =>
              {
-                 if (!authorize("Create", state.UserContext))
-                     return unauthorized();
-
-                 TEntity entity = ControllerExtensions.Bind(request, addModelError, constructor, editableBinders, notEditableBinders);
-
-                 var (modifyRelated, setViewDataMultiSelectLists) = parseRelated(addViewData, request, entity, repository);
-
-                 return MvcHandler.MakeActionResultOnEntitySave(
-                     addViewData,
+                 return MvcHandler.MakeActionResultOnEntitySave3(
+                     repository2, storage2, state2,
+                     unauthorized,
+                     request2,
+                     addViewData2,
                      addModelError,
-                     isValid(),
-                     () => storage.Handle(
-                         batch =>
-                         {
-                             batch.Add(entity);
-                             modifyRelated(batch);
-                         }),
-                     () =>
-                     {
-                         setViewDataMultiSelectLists();
-                         return view(entity);
-                     },
-                     redirect
+                     redirect,
+                     view,
+                     (repository, state) => steps =>
+                         steps(
+                             () => authorize(nameof(Create), state.UserContext),
+                             request => MvcHandler.Bind(request, constructor, formFields, hiddenFormFields),
+                             (request, entity, addViewData) => parseRelated(addViewData, request, repository, entity),
+                             (entity, batch) => batch.Add(entity)
+                     )
                  );
              })(controller.HttpContext.Request)(o => controller.View("Create", o), () => controller.Unauthorized(),
                  (p, e) => controller.ModelState.AddModelError(p, e), ()=> controller.ModelState.IsValid,
@@ -170,97 +163,93 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public static Func<Task<IActionResult>> ComposeEdit(
             ConfigurableController controller,
             Func<Action<string, object>, IRepository<TEntity>, Action<TEntity>> prepareOptions,
-            Func<string, ConvertFuncResult<TKey>> keyConverter,
+            Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate,
             Include<TEntity> editIncludes
             ) =>
-             () => ComposeAsync("Edit", request => (view, notFound, isValid, addViewData) => repository =>
-             {
-                 var (id, valid) = request.BindId(keyConverter);
-                 var setViewDataMultiSelectLists = prepareOptions(addViewData, repository);
-
-                 return MvcHandler.MakeActionResultOnEntityRequest(
-                     view,
-                     notFound,
-                     isValid(),
-                     () => repository.Find(findPredicate(id.Value), editIncludes),
-                     entity => setViewDataMultiSelectLists(entity)
-                 );
-             })(controller.HttpContext.Request)(o => controller.View("Edit", o), () => controller.NotFound(), () => controller.ModelState.IsValid, (n, o) => controller.ViewData.Add(n, o))(controller);
+             () => ComposeAsync("Edit", request => (view, notFound, addViewData) => repository =>
+                MvcHandler.MakeActionResultOnEntityRequest(
+                    keyConverter,
+                    request,
+                    view,
+                    notFound,
+                    key => repository.Find(findPredicate(key), editIncludes)
+                )
+             )(controller.HttpContext.Request)(o => controller.View("Edit", o), () => controller.NotFound(), (n, o) => controller.ViewData.Add(n, o))(controller);
 
         public static Func<Task<IActionResult>> ComposeEditConfirmed(
             ConfigurableController controller,
             Func<string, UserContext, bool> authorize,
-            Func<Action<string, object>, HttpRequest, TEntity, IRepository<TEntity>, ValueTuple<Action<IBatch<TEntity>>, Action>> parseRequests,
             Func<TEntity> constructor,
-            Dictionary<string, Func<TEntity, Func<StringValues, VerboseResult>>> editableBinders,
-            Dictionary<string, Func<TEntity, Action<StringValues>>> notEditableBinders,
-            Include<TEntity> disabledProperties) =>
-             () => ComposeAsync("EditConfirmed", request => (view, unauthorized, addModelError, isValid, addViewData, redirect) => (repository, storage, state) =>
+            Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>> formFields,
+            Dictionary<string, Func<TEntity, Action<StringValues>>> hiddenFormFields,
+            Include<TEntity> disabledFormFields,
+            Func<Action<string, object>, HttpRequest, IRepository<TEntity>, TEntity, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>> parseRelated) =>
+             () => ComposeAsync("EditConfirmed", request2 => (view, unauthorized, addModelError, isValid, addViewData2, redirect) => (repository2, storage2, state2) =>
              {
-                 if (!authorize("Edit", state.UserContext))
-                     return unauthorized();
-
-                 TEntity entity = ControllerExtensions.Bind(request, addModelError, constructor, editableBinders, notEditableBinders);
-                 var (modifyRelated, setViewDataMultiSelectLists) = parseRequests(addViewData, request, entity, repository);
-
-                 return MvcHandler.MakeActionResultOnEntitySave(
-                        addViewData,
+                 return MvcHandler.MakeActionResultOnEntitySave3(
+                        repository2, storage2, state2,
+                        unauthorized,
+                        request2,
+                        addViewData2,
                         addModelError,
-                        isValid(),
-                        () => storage.Handle(
-                            batch =>
-                            {
-                                batch.Modify(entity, disabledProperties);
-                                modifyRelated(batch);
-                            }),
-                        () =>
-                        {
-                            setViewDataMultiSelectLists();
-                            return view(entity);
-                        },
-                        redirect
+                        redirect,
+                        view,
+                        (repository, state) => steps => 
+                            steps(
+                                () => authorize(nameof(Edit), state.UserContext),
+                                request => MvcHandler.Bind(request, constructor, formFields, hiddenFormFields),
+                                (request, entity, addViewData) => parseRelated(addViewData, request, repository, entity),
+                                (entity, batch) => batch.Modify(entity, disabledFormFields)
+                        )
                     );
-             })(controller.HttpContext.Request)(o => controller.View("Create", o), () => controller.Unauthorized(),
+             })(controller.HttpContext.Request)(o => controller.View("Edit", o), () => controller.Unauthorized(),
                  (p, e) => controller.ModelState.AddModelError(p, e), () => controller.ModelState.IsValid,
                  (s, o) => controller.ViewData[s] = o, () => controller.RedirectToAction("Index"))(controller);
 
         public static Func<Task<IActionResult>> ComposeDelete(
             ConfigurableController controller,
             Include<TEntity> deleteIncludes,
-            Func<string, ConvertFuncResult<TKey>> keyConverter,
+            Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate) =>
-            () => ComposeAsync("Delete", request => (view, notFound) => repository => {
-                var (id, valid) = request.BindId(keyConverter);
-                return MvcHandler.MakeActionResultOnEntityRequest(
-                     view,
-                     notFound,
-                     valid,
-                     () => repository.Find(findPredicate(id.Value), deleteIncludes)
-                );
-            })(controller.HttpContext.Request)(o => controller.View("Delete", o), () => controller.NotFound())(controller);
+            () => ComposeAsync("Delete", request => (view, notFound) => repository => 
+                MvcHandler.MakeActionResultOnEntityRequest(
+                    keyConverter,
+                    request,
+                    view,
+                    notFound,
+                    key => repository.Find(findPredicate(key), deleteIncludes)
+                )
+            )(controller.HttpContext.Request)(o => controller.View("Delete", o), () => controller.NotFound())(controller);
 
         public static Func<Task<IActionResult>> ComposeDeleteConfirmed(
             ConfigurableController controller,
             Func<string, UserContext, bool> authorize,
-            Func<string, ConvertFuncResult<TKey>> keyConverter,
+            Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate) =>
-         () => ComposeAsync("DeleteConfirmed", request => (view, unauthorized, addModelError, addViewData, redirect) => (repository, storage, state) =>
+         () => ComposeAsync("DeleteConfirmed", request2 => (view, unauthorized, addModelError, addViewData2, redirect) => (repository2, storage2, state2) =>
          {
-             if (!authorize("Delete", state.UserContext))
-                 return unauthorized();
-
-             var (id, valid) = request.BindId(keyConverter);
-             var entity = repository.Find(findPredicate(id.Value));
-
-             return MvcHandler.MakeActionResultOnEntitySave(
-                    addViewData,
-                    addModelError,
-                    true,
-                    () => storage.Handle(batch => batch.Remove(entity)),
-                    () => view(entity),
-                    redirect
-                );
+             return MvcHandler.MakeActionResultOnEntitySave3(
+                        repository2, storage2, state2,
+                        unauthorized,
+                        controller.HttpContext.Request,
+                        addViewData2,
+                        addModelError,
+                        redirect,
+                        (e) => controller.View(nameof(Edit), e),
+                        (repository, state) => steps =>
+                            steps(
+                                () => authorize(nameof(Delete), state.UserContext),
+                                r =>
+                                {
+                                    var (id, valid) = r.BindId(keyConverter);
+                                    var entity = repository.Find(findPredicate(id.Value));
+                                    return new ComplexBinderResult<TEntity>(entity, null);
+                                },
+                                null,
+                                (entity, batch) => batch.Remove(entity)
+                        )
+                    );
          })(controller.HttpContext.Request)(o => controller.View("Delete", o), () => controller.Unauthorized(),
              (p, e) => controller.ModelState.AddModelError(p, e),
              (s, o) => controller.ViewData[s] = o, () => controller.RedirectToAction("Index"))(controller);
@@ -269,11 +258,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public async Task<IActionResult> Index()
         {
             var routine = new MvcRoutine(controller, null);
-            Func<object, IActionResult> view = o => controller.View(nameof(Index), o);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(
                 repository => {
                     var entities = repository.List(meta.IndexIncludes);
-                    return view(entities);
+                    return controller.View(nameof(Index), entities);
                 });
         }
 
@@ -284,10 +272,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             {
                 var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
                 return MvcHandler.MakeActionResultOnEntityRequest(
+                    meta.KeyConverter,
+                    controller.HttpContext.Request,
                     o => controller.View(nameof(Details), o),
                     controller.NotFound,
-                    valid,
-                    () => repository.Find(meta.FindPredicate(id.Value), meta.DetailsIncludes)
+                    key => repository.Find(meta.FindPredicate(key), meta.DetailsIncludes)
                 );
             });
         }
@@ -305,32 +294,24 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public async Task<IActionResult> CreateConfirmed()
         {
             var routine = new MvcRoutine(controller);
-            return await routine.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+            return await routine.HandleStorageAsync<IActionResult, TEntity>((repository2, storage2, state2) =>
             {
-                if (! authorize(nameof(Create), state.UserContext))
-                    return controller.Unauthorized();
-
-                TEntity entity = ControllerExtensions.Bind(controller.HttpContext.Request, (key, value) =>controller.ModelState.AddModelError(key, value), meta.Constructor, meta.FormFields, meta.HiddenFormFields);
-
-                var (modifyRelated, setViewDataMultiSelectLists) = meta.ReferencesCollection.ParseRelated((s, o) => controller.ViewData[s] = o, repository, controller.HttpContext.Request, entity);
-
-                return MvcHandler.MakeActionResultOnEntitySave(
-                    controller.ModelState.IsValid,
-                    () => storage.Handle(
-                        batch =>
-                        {
-                            batch.Add(entity);
-                            modifyRelated(batch);
-                        }),
-                    () =>
-                    {
-                        setViewDataMultiSelectLists();
-                        return controller.View(nameof(Create), entity);
-                    },
+            return MvcHandler.MakeActionResultOnEntitySave3(
+                    repository2, storage2, state2,
+                    () => controller.Unauthorized(),
+                    controller.HttpContext.Request,
+                    (n, v) => controller.ViewData[n] = v,
+                    (n ,v) => controller.ModelState.AddModelError(n,v),
                     () => controller.RedirectToAction(nameof(Index)),
-                    ex => controller.ViewData["Exception"] = ex,
-                    (key, value) => controller.ModelState.AddModelError(key, value)
-                );
+                    e => controller.View(nameof(Create), e),
+                    (repository, state) => steps =>
+                        steps(
+                                () => authorize(nameof(Create), state.UserContext),
+                                request => MvcHandler.Bind(request, meta.Constructor, meta.FormFields, meta.HiddenFormFields),
+                                (request, entity, addViewData) => meta.ReferencesCollection.ParseRelated(addViewData, request, repository, entity),
+                                (entity, batch) => batch.Add(entity)
+                            )
+                        );
             });
         }
 
@@ -341,15 +322,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             {
                 var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
 
-                var setViewDataMultiSelectLists = meta.ReferencesCollection.PrepareOptions((s, o) => controller.ViewData[s] = o, repository);
-
                 return MvcHandler.MakeActionResultOnEntityRequest(
-                    o => controller.View(nameof(Details), o),
+                    meta.KeyConverter,
+                    controller.HttpContext.Request,
+                    o => controller.View(nameof(Edit), o),
                     controller.NotFound,
-                    valid,
-                    () => repository.Find(meta.FindPredicate(id.Value), meta.EditIncludes),
-                    entity =>
-                        setViewDataMultiSelectLists(entity)
+                    key => repository.Find(meta.FindPredicate(key), meta.EditIncludes),
+                    entity => meta.ReferencesCollection.PrepareOptions((s, o) => controller.ViewData[s] = o, repository)
                 );
             });
         }
@@ -358,32 +337,23 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         {
             var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(
-                (repository, storage, state) =>
+                (repository2, storage2, state2) =>
                 {
-                    if (!authorize(nameof(Edit), state.UserContext))
-                        return controller.Unauthorized();
-
-                    TEntity entity = ControllerExtensions.Bind(controller.HttpContext.Request, (p, e) => controller.ModelState.AddModelError(p, e), meta.Constructor, 
-                        meta.FormFields, meta.HiddenFormFields);
-
-                    var (modifyRelated, setViewDataMultiSelectLists) = meta.ReferencesCollection.ParseRelated((s, o) => controller.ViewData[s] = o, repository, controller.HttpContext.Request, entity);
-                    
-                    return MvcHandler.MakeActionResultOnEntitySave(
-                        controller.ModelState.IsValid,
-                        () => storage.Handle(
-                            batch =>
-                            {
-                                batch.Modify(entity, meta.DisabledFormFields);
-                                modifyRelated(batch);
-                            }),
-                        () =>
-                        {
-                            setViewDataMultiSelectLists();
-                            return controller.View(nameof(Edit), entity);
-                        },
+                    return MvcHandler.MakeActionResultOnEntitySave3(
+                        repository2, storage2, state2,
+                        () => controller.Unauthorized(),
+                        controller.HttpContext.Request,
+                        (n, v) => controller.ViewData[n] = v,
+                        (n,v)=> controller.ModelState.AddModelError(n, v),
                         () => controller.RedirectToAction(nameof(Index)),
-                        ex => controller.ViewBag.Exception = ex,
-                        (key, value) => controller.ModelState.AddModelError(key, value)
+                        (e) => controller.View(nameof(Edit), e),
+                        (repository, state) => steps =>
+                            steps(
+                                () => authorize(nameof(Edit), state.UserContext),
+                                request => MvcHandler.Bind(request, meta.Constructor, meta.FormFields, meta.HiddenFormFields),
+                                (request, entity, addViewData) => meta.ReferencesCollection.ParseRelated(addViewData, request, repository, entity),
+                                (entity, batch) => batch.Modify(entity, meta.DisabledFormFields)
+                        )
                     );
                 });
         }
@@ -393,35 +363,47 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(repository =>
             {
-                var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
                 return MvcHandler.MakeActionResultOnEntityRequest(
-                        o => controller.View(nameof(Details), o),
-                        controller.NotFound,
-                        valid,
-                        () => repository.Find(meta.FindPredicate(id.Value), meta.DeleteIncludes)
-                    );
+                    meta.KeyConverter,
+                    controller.HttpContext.Request,
+                    o => controller.View(nameof(Delete), o),
+                    controller.NotFound,
+                    key => repository.Find(meta.FindPredicate(key), meta.DeleteIncludes)
+                 );
             });
         }
 
         public async Task<IActionResult> DeleteConfirmed()
         {
             var routine = new MvcRoutine(controller);
-            return await routine.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+            return await routine.HandleStorageAsync<IActionResult, TEntity>((repository2, storage2, state2) =>
             {
-                if (!authorize(nameof(Delete), state.UserContext))
-                    return controller.Unauthorized();
-                var (id, valid) = controller.HttpContext.Request.BindId(meta.KeyConverter);
-                var entity = repository.Find(meta.FindPredicate(id.Value));
-
-                return MvcHandler.MakeActionResultOnEntitySave(
-                        true,
-                        () => storage.Handle(batch => batch.Remove(entity)),
-                        () => controller.View(nameof(Delete), entity),
-                        () => controller.RedirectToAction(nameof(Index)),
-                        ex => controller.ViewBag.Exception = ex,
-                        (key, value) => controller.ModelState.AddModelError(key, value)
-                    );
+                return MvcHandler.MakeActionResultOnEntitySave3(
+                    repository2,
+                    storage2,
+                    state2,
+                    () => controller.Unauthorized(),
+                    controller.HttpContext.Request,
+                    (n, v) => controller.ViewData[n] = v,
+                    (n, v) => controller.ModelState.AddModelError(n, v),
+                    () => controller.RedirectToAction(nameof(Index)),
+                    (e) => controller.View(nameof(Delete), e),
+                    (repository, state) => steps =>
+                        steps(
+                            () => authorize(nameof(Delete), state.UserContext),
+                            request =>
+                            {
+                                var (id, valid) = request.BindId(meta.KeyConverter);
+                                var entity = repository.Find(meta.FindPredicate(id.Value));
+                                return new ComplexBinderResult<TEntity>(entity, null);
+                            },
+                            null,
+                            (entity, batch) => batch.Remove(entity)
+                       )
+                );
             });
         }
+
+        
     }
 }

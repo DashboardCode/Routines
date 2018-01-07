@@ -5,18 +5,18 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public static class Binder
     {
-        public static Func<StringValues, ConvertVerboseResult<string>> ConvertToString
+        public static Func<StringValues, ConvertResult<string>> ConvertToString
         {
             get
             {
                 return (stringValues) =>
                 {
-                    return new ConvertVerboseResult<string> { Value = stringValues.ToString() };
+                    return new ConvertResult<string> { Value = stringValues.ToString() };
                 };
             }
         }
         
-        public static Func<StringValues, ConvertVerboseResult<int>> ConvertToInt
+        public static Func<StringValues, ConvertResult<int>> ConvertToInt
         {
             get
             {
@@ -24,18 +24,18 @@ namespace DashboardCode.Routines.AspNetCore
                 {
                     var str = stringValues.ToString();
                     if (int.TryParse(str, out int number))
-                        return new ConvertVerboseResult<int> { Value = number };
-                    return new ConvertVerboseResult<int>("Not number!");
+                        return new ConvertResult<int> { Value = number };
+                    return new ConvertResult<int>( new[] { "Not number!" });
                 };
             }
         }
 
         // used in samples
-        public static VerboseResult TryStringValidateLength(StringValues stringValues, Action<string> setter, int length)
+        public static BinderResult TryStringValidateLength(StringValues stringValues, Action<string> setter, int length)
         {
             var v = stringValues.ToString();
             setter(v);
-            return new VerboseResult(v.Length > length ? "Too long!" : null);
+            return new BinderResult(v.Length > length ? new[] { "Too long!" } : null);
         }
     }
 }

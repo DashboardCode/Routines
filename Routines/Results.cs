@@ -1,163 +1,148 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DashboardCode.Routines
 {
-    public struct ConvertFuncResult<T>
+    public struct ConvertResult<T> : IValuableVerboseResult<T, List<string>> 
     {
-        public T Value;
+        public T Value { get; set; }
+
+        public ConvertResult(string[] messages)
+        {
+            Value = default(T);
+            if (messages != null)
+                Message = new List<string>(messages);
+            else
+                Message = null;
+        }
+        public List<string> Message { get; set; }
+
+        public bool IsOk() => Message==null;
+
+        public IVerboseResult<List<string>> ToVerboseResult() =>
+            new VerboseResult<List<string>>(Message);
+    }
+
+    
+    public struct BinderResult : IVerboseResult<List<string>>
+    {
+        public BinderResult(string errorMessage)
+        {
+            if (errorMessage != null)
+                Message = new List<string>() { errorMessage };
+            else
+                Message = null;
+        }
+
+        public BinderResult(List<string> errorMessages)
+        {
+            if (errorMessages != null && errorMessages.Count > 0)
+                Message = errorMessages;
+            else
+                Message = null;
+        }
+
+        public BinderResult(string[] errorMessages)
+        {
+            if (errorMessages != null && errorMessages.Length > 0)
+                Message = new List<string>(errorMessages);
+            else
+                Message = null;
+        }
+
+        public List<string> Message { get; set; }
+        public bool IsOk() { return Message == null; }
+    }
+
+    public interface IResult
+    {
+        bool IsOk();
+    }
+
+    public interface IVerboseResult<TMessage> : IResult
+    {
+        TMessage Message { get; set; }
+    }
+
+    public interface IValuable<TValue>
+    {
+        TValue Value { get; set; }
+    }
+
+    public interface IValuableVerboseResult<TValue,TMessage>: IValuable<TValue>, IVerboseResult<TMessage>
+    {
+        IVerboseResult<TMessage> ToVerboseResult();
+    }
+
+    public struct ValuableResult<TValue> : IResult, IValuable<TValue>
+    {
+        public TValue Value { get; set; }
         private bool success;
-        public ConvertFuncResult(T value, bool success)
+        public ValuableResult(TValue value, bool success)
         {
             Value = value;
             this.success = success;
         }
-        public bool IsSuccess() => success;
+        public bool IsOk() => success;
     }
 
-    public struct ConvertVerboseResult<T>
+    public struct VerboseResult<TMessage> : IVerboseResult<TMessage>
     {
-        public T Value;
-        public ConvertVerboseResult(string message)
+        public VerboseResult(TMessage message)=>
+            Message = message;
+
+        public bool IsOk() => EqualityComparer<TMessage>.Default.Equals(Message, default(TMessage));
+        public TMessage Message { get; set; }
+    }
+
+    public struct ValuableVerboseResult<TValue,TMessage> : IValuableVerboseResult<TValue, TMessage>
+    {
+        public ValuableVerboseResult(TValue value, TMessage message)
         {
-            Value = default(T);
-            BinderResult = new VerboseResult(message);
+            Message = message;
+            Value = value;
         }
-        public VerboseResult BinderResult;
-        public bool IsSuccess() => BinderResult.IsSuccess();
+
+        public bool IsOk() => EqualityComparer<TMessage>.Default.Equals(Message, default(TMessage));
+
+
+        public IVerboseResult<TMessage> ToVerboseResult()
+        {
+            return new VerboseResult<TMessage>(Message);
+        }
+
+        public TMessage Message { get; set; }
+
+        public TValue Value { get ; set; }
     }
 
-    public struct VerboseResult
+    public interface IComplexBinderResult<TValue>: IValuableVerboseResult<TValue, List<(string, List<string>)>>
     {
-        public VerboseResult(List<string> errorMessages)
+
+    }
+
+    public struct ComplexBinderResult<TValue> : IComplexBinderResult<TValue>
+    {
+        public ComplexBinderResult(TValue value) : this (value, null)
         {
-            if (errorMessages != null && errorMessages.Count > 0)
-            {
-                ErrorMessages = errorMessages;
-            }
+        }
+
+        public ComplexBinderResult(TValue value, List<(string, List<string>)> message)
+        {
+            if (message != null && message.Count > 0)
+                Message = message;
             else
-            {
-                ErrorMessages = null;
-            }
+                Message = null;
+            Value = value;
         }
 
-        public VerboseResult(string message = null)
-        {
-            if (message != null)
-            {
-                ErrorMessages = new List<string>() { message };
-            }
-            else
-            {
-                ErrorMessages = null;
-            }
-        }
-        public List<string> ErrorMessages;
-        public bool IsSuccess() { return ErrorMessages == null; }
-    }
-
-    public static class Converters
-    {
-        public static Func<string, T> GetParser<T>()
-        {
-            if (typeof(T) == typeof(int))
-            {
-                Func<string, int> d = (s) => int.Parse(s);
-                return (Func<string, T>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(string))
-            {
-                Func<string, string> d = (s) => s;
-                return (Func<string, T>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(Guid))
-            {
-                Func<string, Guid> d = (s) => Guid.Parse(s);
-                return (Func<string, T>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(long))
-            {
-                Func<string, long> d = (s) => long.Parse(s);
-                return (Func<string, T>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(byte))
-            {
-                Func<string, byte> d = (s) => byte.Parse(s);
-                return (Func<string, T>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(short))
-            {
-                Func<string, short> d = (s) => short.Parse(s);
-                return (Func<string, T>)(Delegate)d;
-            }
-            throw new NotImplementedException($"Type '{typeof(T).FullName}' is not supported by '{nameof(Converters)}'.'{nameof(GetParser)}' method");
-        }
+        public bool IsOk() => Message == null;
 
 
-        public static Func<string, ConvertFuncResult<T>> GerConverter<T>()
-        {
-            if (typeof(T) == typeof(int))
-            {
-                Func<string, ConvertFuncResult<int>> d = (s) => TryParseInt(s);
-                return (Func<string, ConvertFuncResult<T>>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(string))
-            {
-                Func<string, ConvertFuncResult<string>> d = (s) => TryParseString(s);
-                return (Func<string, ConvertFuncResult<T>>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(Guid))
-            {
-                Func<string, ConvertFuncResult<Guid>> d = (s) => TryParseGuid(s);
-                return (Func<string, ConvertFuncResult<T>>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(long))
-            {
-                Func<string, ConvertFuncResult<long>> d = (s) => TryParseLong(s);
-                return (Func<string, ConvertFuncResult<T>>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(byte))
-            {
-                Func<string, ConvertFuncResult<byte>> d = (s) => TryParseByte(s);
-                return (Func<string, ConvertFuncResult<T>>)(Delegate)d;
-            }
-            else if (typeof(T) == typeof(short))
-            {
-                Func<string, ConvertFuncResult<short>> d = (s) => TryParseShort(s);
-                return (Func<string, ConvertFuncResult<T>>)(Delegate)d;
-            }
+        public IVerboseResult<List<(string, List<string>)>> ToVerboseResult() =>
+            new VerboseResult<List<(string, List<string>)>>(Message);
 
-            throw new NotImplementedException($"Type '{typeof(T).FullName}' is not supported by '{nameof(Converters)}'.'{nameof(GerConverter)}' method");
-        }
+        public List<(string, List<string>)> Message { get; set; }
 
-        public static ConvertFuncResult<int> TryParseInt(string s)
-        {
-            var b = int.TryParse(s, out int id);
-            return new ConvertFuncResult<int>(id, b);
-        }
-        public static ConvertFuncResult<string> TryParseString(string s)
-        {
-            return new ConvertFuncResult<string>(s, true);
-        }
-        public static ConvertFuncResult<long> TryParseLong(string s)
-        {
-            var b = long.TryParse(s, out long id);
-            return new ConvertFuncResult<long>(id, b);
-        }
-        public static ConvertFuncResult<byte> TryParseByte(string s)
-        {
-            var b = byte.TryParse(s, out byte id);
-            return new ConvertFuncResult<byte>(id, b);
-        }
-        public static ConvertFuncResult<short> TryParseShort(string s)
-        {
-            var b = short.TryParse(s, out short id);
-            return new ConvertFuncResult<short>(id, b);
-        }
-        public static ConvertFuncResult<Guid> TryParseGuid(string s)
-        {
-            var b = Guid.TryParse(s, out Guid id);
-            return new ConvertFuncResult<Guid>(id, b);
-        }
+        public TValue Value { get; set; }
     }
 }

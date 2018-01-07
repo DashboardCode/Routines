@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.Extensions.Primitives;
+﻿using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 
@@ -48,54 +45,5 @@ namespace DashboardCode.Routines.AspNetCore
             return text;
         }
 
-        public static (T, bool) BindId<T>(this HttpRequest request, Func<string, T> converter)
-        {
-            bool value = false;
-            T id = default(T);
-            PathString pathString = request.Path;
-            if (pathString.HasValue)
-            {
-                var path = pathString.Value;
-                var idText = path.Substring(path.LastIndexOf("/") + 1);
-                if (value = !string.IsNullOrEmpty(idText))
-                    id = converter(idText);
-            }
-            return (id, value);
-        }
-
-        public static T Bind<T>(
-            HttpRequest request,
-            Action<string,string> addModelError,
-            Func<T> constructor, 
-            Dictionary<string, Func<T, Func<StringValues, VerboseResult>>> propertyBinders,
-            Dictionary<string, Func<T, Action<StringValues>>> propertySetters)
-        {
-            var t = constructor();
-            foreach (var pair in propertyBinders)
-            {
-                var propertyName = pair.Key;
-                if (request.Form.TryGetValue(propertyName, out StringValues stringValues))
-                {
-                    Func<T, Func<StringValues, VerboseResult>> func = pair.Value;
-                    var result = func(t)(stringValues);
-                    if (!result.IsSuccess())
-                        foreach(var errorMessage in result.ErrorMessages)
-                            addModelError(propertyName, errorMessage);
-                }
-            }
-            if (propertySetters != null)
-            {
-                foreach (var pair in propertySetters)
-                {
-                    var propertyName = pair.Key;
-                    if (request.Form.TryGetValue(propertyName, out StringValues stringValues))
-                    {
-                        var action = pair.Value;
-                        action(t)(stringValues);
-                    }
-                }
-            }
-            return t;
-        }
     }
 }

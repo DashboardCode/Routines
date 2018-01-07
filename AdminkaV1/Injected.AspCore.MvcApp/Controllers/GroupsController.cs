@@ -11,12 +11,12 @@ using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
 {
-    public static class Injected{
-        public static Func<Expression<Func<TEntity, TProperty>>, Func<TEntity, Func<StringValues, VerboseResult>>> MakeStraightAction<TEntity, TProperty>()
-        {
-            return null;
-        }
-    }
+    //public static class Injected{
+    //    public static Func<Expression<Func<TEntity, TProperty>>, Func<TEntity, Func<StringValues, VerboseListResult>>> MakeStraightAction<TEntity, TProperty>()
+    //    {
+    //        return null;
+    //    }
+    //}
 
     public class GroupsController : ConfigurableController
     {
@@ -42,23 +42,23 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
             formFields =>
                 formFields.Add(e => e.GroupName,   Binder.ConvertToString)
                           .Add(e => e.GroupAdName, Binder.ConvertToString, asserts => asserts.Add(v => v.Length <= 18, "Too big!"))
-                         //.Add(Injected.MakeEditable(e => e.GroupAdName) )
-            //.Add(e => e.GroupAdName, setter => sv => Binder.TryStringValidateLength(sv, v => setter(v), 100))
-            //.Add(e => e.GroupId,  Binder.ConvertToInt, asserts => asserts.Add(v => v < 100, "Too big!"))
-            //.Add(e => e.GroupId,  Binder.ConvertToInt, v=>new BinderResult(v<100? null: "Too big!"), converter => setter => validator => validator(setter(converter())))
-            //.Add(e => e.GroupId,  Binder.ConvertToInt,  convertor => setter => { var r = setter(convertor()); if (r.Value > 100) {; } return r.BinderResult; })
-            //.Add(e => e.GroupId,  setter => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); setter(v);     return new BinderResult(v<100?null: "Too big!"); })
-            //.Add("GroupId",           e => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); e.GroupId = v; return new BinderResult(v<100?null:"Too bug!"); })
+                          //.Add(e => e.GroupAdName, setter => sv => Binder.TryStringValidateLength(sv, v => setter(v), 100))
+                          //.Add(e => e.GroupId,  Binder.ConvertToInt, asserts => asserts.Add(v => v < 100, "Too big!"))
+                          //.Add(e => e.GroupId,  Binder.ConvertToInt, v=>new BinderResult(v<100? null: new[] { "Too big!" }), converter => setter => validator => validator(setter(converter())))
+                          //.Add(e => e.GroupId,  Binder.ConvertToInt,  convertor => setter => { var r = setter(convertor()); if (r.Value > 100) {; } return r.ToVerboseResult(); })
+                          //.Add(e => e.GroupId,  setter => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); setter(v);    return new BinderResult(v<100?null: "Too big!"); })
+                          //.Add("GroupId",           e => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); e.GroupId = v; return new BinderResult(v<100?null:"Too bug!"); })
             ,
 
             hiddenFormFields =>
                 hiddenFormFields.Add(e => e.GroupId)
-                            .Add(e => e.RowVersion),
+                            .Add(e => e.RowVersion)
             //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()))
             //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()), convertor => setter => setter(convertor()))
             //.Add(e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
             //.Add("GroupId", e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
             //.Add("GroupId", e => sv => e.GroupId = int.Parse(sv.ToString()))
+            ,
             null,
             manyToMany => manyToMany.Add(
                 "Privileges",
