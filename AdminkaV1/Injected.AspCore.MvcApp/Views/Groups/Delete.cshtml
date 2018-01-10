@@ -24,12 +24,12 @@
         </dt>
 
         <dd>
-            @{  var privileges = Model.GetPrivileges();
+            @{ var privileges = Model.GetPrivileges();
                 foreach (var p in privileges)
                 {
                     <span class="dashboardcode-adminka-item">@Html.ActionLink(p.PrivilegeName, "Details", "Privileges", new { id = p.PrivilegeId }, null)</span>
                 }
-             }
+            }
         </dd>
 
         <dt>
@@ -37,12 +37,12 @@
         </dt>
 
         <dd>
-            @{  var roles = Model.GetRoles();
+            @{ var roles = Model.GetRoles();
                 foreach (var r in roles)
                 {
-                   <span class="dashboardcode-adminka-item">@Html.ActionLink(r.RoleName, "Details", "Roles", new { id = r.RoleId }, null)</span>
+                    <span class="dashboardcode-adminka-item">@Html.ActionLink(r.RoleName, "Details", "Roles", new { id = r.RoleId }, null)</span>
                 }
-             }
+            }
         </dd>
 
         <dt>
@@ -50,7 +50,7 @@
         </dt>
 
         <dd>
-            @{  var users = Model.GetUsers();
+            @{ var users = Model.GetUsers();
                 foreach (var u in users)
                 {
                     <span class="dashboardcode-adminka-item">@Html.ActionLink(u.LoginName, "Details", "Users", new { id = u.UserId }, null)</span>
@@ -62,6 +62,7 @@
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.GroupId)
         @Html.HiddenFor(model => model.RowVersion)
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-secondary" /> | @Html.ActionLink("Back to List", "Index")

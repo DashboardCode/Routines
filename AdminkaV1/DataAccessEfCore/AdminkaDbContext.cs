@@ -1,12 +1,12 @@
 ﻿using System;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.TestDom;
-using DashboardCode.Routines.Storage.EfCore;
+
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
@@ -205,9 +205,11 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             modelBuilder.Entity<Group>()
                 .ToTable(GetEntityTableName(nameof(Group)), schema: securityIslandSchema)
-                .HasKey(e=>e.GroupId);
+                .HasKey(e => e.GroupId);
             modelBuilder.Entity<Group>().Property(e => e.GroupName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
             modelBuilder.Entity<Group>().Property(e => e.GroupAdName).IsRequired().HasMaxLength(LengthConstants.AdName);
+
+                
 
             modelBuilder.Entity<Role>()
                 .ToTable(GetEntityTableName(nameof(Role)), schema: securityIslandSchema)

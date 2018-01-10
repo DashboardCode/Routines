@@ -53,11 +53,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
             hiddenFormFields =>
                 hiddenFormFields.Add(e => e.GroupId)
                             .Add(e => e.RowVersion)
-            //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()))
-            //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()), convertor => setter => setter(convertor()))
-            //.Add(e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
-            //.Add("GroupId", e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
-            //.Add("GroupId", e => sv => e.GroupId = int.Parse(sv.ToString()))
+                            //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()))
+                            //.Add(e => e.GroupId, sv => int.Parse(sv.ToString()), convertor => setter => setter(convertor()))
+                            //.Add(e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
+                            //.Add("GroupId", e => e.GroupId, setter => sv => setter(int.Parse(sv.ToString())))
+                            //.Add("GroupId", e => sv => e.GroupId = int.Parse(sv.ToString()))
             ,
             null,
             manyToMany => manyToMany.Add(

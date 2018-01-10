@@ -1,4 +1,10 @@
-﻿Routines
+﻿https://github.com/aspnet/benchmarks
+
+https://github.com/sveinn-steinarsson/flot-downsample
+
+https://github.com/reinforced/Reinforced.Typings
+
+Routines
 1) icon as bulb {}
 2) DashboardCode at https://coveralls.io 
 3) review method prefixes (compose, get, construct, compose, build)?

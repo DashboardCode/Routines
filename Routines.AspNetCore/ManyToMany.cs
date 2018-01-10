@@ -62,7 +62,11 @@ namespace DashboardCode.Routines.AspNetCore
         {
             var options = getOptions(repository);
             addViewDataMultiSelectList = (entity) =>
-                this.addViewData(addViewData, options, getRelated(entity).Select(getTmmId));
+            {
+                var tmm = getRelated(entity);
+                var selected = tmm?.Select(getTmmId);
+                this.addViewData(addViewData, options, selected);
+            };
         }
 
         public void PrepareParsedOptions(Action<string, object> addViewData, IRepository<TEntity> repository,  HttpRequest request, TEntity entity,  out Action<IBatch<TEntity>> modifyRelated, out Action addViewDataMultiSelectList)

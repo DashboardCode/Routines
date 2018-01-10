@@ -11,7 +11,20 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public static class MvcHandler
     {
-        public static IActionResult MakeActionResultOnEntitySave3<TEntity, TState>(
+        public static void PublishResult(List<(string, List<string>)> message, Action<string, string> publishStorageError)
+        {
+            foreach (var messageItem in message)
+                foreach (var errorText in messageItem.Item2)
+                    publishStorageError(messageItem.Item1, errorText /*string.Join("; ", m.Item2.ToArray())*/);
+        }
+
+        public static void PublishResult(List<FieldError> message, Action<string, string> publishStorageError)
+        {
+            foreach (var errorField in message)
+                publishStorageError(errorField.Field, errorField.Message);
+        }
+
+        public static IActionResult MakeActionResultOnSave<TEntity, TState>(
             IRepository<TEntity> repository,
             IOrmStorage<TEntity> storage,
             TState state,
@@ -19,115 +32,257 @@ namespace DashboardCode.Routines.AspNetCore
             HttpRequest request,
             Action<string, object> addViewData,
             Action<string, string> publishStorageError,
-            Func<IActionResult> success,
+            Func<IActionResult> successView,
             Func<object, IActionResult> view,
-            //Action<Exception> publishException,
             Func<
                 IRepository<TEntity>, 
                 TState,
                 Func<
                     Func<
-                         Func<bool>, 
-                         Func<HttpRequest, IComplexBinderResult<TEntity>>,
-                         Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
-                         Action<TEntity, IBatch<TEntity>>,
-                         IActionResult>,
-                    IActionResult
-                    >> action
+                        Func<bool>, 
+                        Func<HttpRequest, IComplexBinderResult<TEntity>>,
+                        Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
+                        Action<TEntity, IBatch<TEntity>>,
+                        IActionResult>,
+                    IActionResult>
+                > action
             ) where TEntity : class
         {
-            Func<Func<bool>,
-                     Func<HttpRequest, IComplexBinderResult<TEntity>>,
-                     Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
-                     Action<TEntity, IBatch<TEntity>>,
-                     IActionResult> steps2 = (authorize, getEntity, getRelated, save) =>
-                      {
-                          if (!authorize())
-                              return unauthorized();
-                          var res = getEntity(request);
-                          var entity = res.Value;
-                          if (!res.IsOk())
-                          {
-                              foreach (var m in res.Message)
-                                  publishStorageError(m.Item1, string.Join("; ", m.Item2.ToArray()));
-                          }
-                          IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>> res2;
-                          if (getRelated != null)
-                          {
-                              res2 = getRelated(request, entity, addViewData);
-                              foreach (var m in res2.Message)
-                                  publishStorageError(m.Item1, string.Join("; ", m.Item2.ToArray()));
-                          }
-                          else
-                          {
-                              res2 = new ComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>();
-                          }
-                          var (modifyRelated, prepareViewData) = res2.Value;
-                          if (res.IsOk() && res2.IsOk())
-                          {
-                              Action<Exception> publishException = (ex) => addViewData("Exception", ex);
-                              try
-                              {
-                                  var storageError = storage.Handle(
-                                  batch =>
-                                  {
-                                      save(entity, batch);
-                                      modifyRelated?.Invoke(batch);
-                                  });
-                                  if (storageError != null && storageError.FieldErrors.Count > 0)
-                                  {
-                                      var dictionary = storageError.FieldErrors.ToDictionary((v1, v2) => v1 + ";" + Environment.NewLine + v2);
-                                      foreach (var i in dictionary)
-                                          publishStorageError(i.Key, i.Value);
-                                      publishException(storageError.Exception);
-                                      prepareViewData?.Invoke();
-                                      return view(entity);
-                                  }
-                                  return success();
-                              }
-                              catch (Exception ex)
-                              {
-                                  prepareViewData?.Invoke();
-                                  publishException(ex);
-                              }
-                          }
-                          return view(entity);
-                      };
-            return action(repository,  state)(steps2);
+            Func<
+                Func<bool>,
+                Func<HttpRequest, IComplexBinderResult<TEntity>>,
+                Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
+                Action<TEntity, IBatch<TEntity>>,
+                IActionResult> steps = (authorize, getEntity, getRelated, save) =>
+                {
+                    if (!authorize())
+                        return unauthorized();
+                    var getEntityResult = getEntity(request);
+                    if (!getEntityResult.IsOk())
+                        PublishResult(getEntityResult.Message, publishStorageError);
+                    var entity = getEntityResult.Value;
+                    if (entity == null)
+                        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                    bool isOk = getEntityResult.IsOk();
+                    var getRelatedResult = getRelated(request, entity, addViewData);
+                    if (!getRelatedResult.IsOk())
+                        PublishResult(getRelatedResult.Message, publishStorageError);
+                    var (modifyRelated, prepareViewData) = getRelatedResult.Value;
+                    
+                    if (getEntityResult.IsOk() && getRelatedResult.IsOk())
+                    {
+                        void publishException(Exception ex) { addViewData("Exception", ex); }
+                        try
+                        {
+                            var storageError = storage.Handle(
+                            batch =>
+                            {
+                                save(entity, batch);
+                                modifyRelated(batch);
+                            });
+                            if (storageError == null || storageError.FieldErrors.Count == 0)
+                                return successView();
+                            publishException(storageError.Exception);
+                            PublishResult(storageError.FieldErrors, publishStorageError);
+                        }
+                        catch (Exception ex)
+                        {
+                            publishException(ex);
+                        }
+                    }
+                    prepareViewData.Invoke();
+                    return view(entity);
+                };
+            return action(repository,  state)(steps);
         }
 
-       
-        public static IActionResult MakeActionResultOnEntityRequest<TEntity, TKey>(
-          Func<string, ValuableResult<TKey>> keyConverter,
-          HttpRequest request,
-          Func<object, IActionResult> view, 
-          Func<IActionResult> notFound, 
-          Func<TKey,TEntity> getEntity, 
-          Action<TEntity> prepareRendering = null)
+
+        public static IActionResult MakeActionResultOnSave<TEntity, TState>(
+            IRepository<TEntity> repository,
+            IOrmStorage<TEntity> storage,
+            TState state,
+            Func<IActionResult> unauthorized,
+            HttpRequest request,
+            Action<string, object> addViewData,
+            Action<string, string> publishStorageError,
+            Func<IActionResult> successView,
+            Func<object, IActionResult> view,
+            Func<
+                IRepository<TEntity>,
+                TState,
+                Func<
+                    Func<
+                        Func<bool>,
+                        Func<HttpRequest, IComplexBinderResult<TEntity>>,
+                        Action<TEntity, IBatch<TEntity>>,
+                        IActionResult>,
+                    IActionResult>
+                > action
+            ) where TEntity : class
         {
-            var (key, isValid) = request.BindId(keyConverter);
-            if (!isValid)
-                return new StatusCodeResult((int)HttpStatusCode.BadRequest);
-            var entity = getEntity(key.Value);
-            if (entity == null)
-                return notFound();
-            prepareRendering?.Invoke(entity);
-            return view(entity);
+            Func<
+                Func<bool>,
+                Func<HttpRequest, IComplexBinderResult<TEntity>>,
+                Action<TEntity, IBatch<TEntity>>,
+                IActionResult> steps = (authorize, getEntity, save) =>
+                {
+                    if (!authorize())
+                        return unauthorized();
+                    var getEntityResult = getEntity(request);
+                    if (!getEntityResult.IsOk())
+                        PublishResult(getEntityResult.Message, publishStorageError);
+                    var entity = getEntityResult.Value;
+                    if (entity == null)
+                        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                    if (getEntityResult.IsOk())
+                    {
+                        void publishException(Exception ex) { addViewData("Exception", ex); }
+                        try
+                        {
+                            var storageError = storage.Handle(
+                                batch => save(entity, batch)
+                            );
+                            if (storageError == null || storageError.FieldErrors.Count == 0)
+                                successView();
+                            publishException(storageError.Exception);
+                            PublishResult(storageError.FieldErrors, publishStorageError);
+                        }
+                        catch (Exception ex)
+                        {
+                            publishException(ex);
+                        }
+                    }
+                    return view(entity);
+                };
+            return action(repository, state)(steps);
         }
 
-        public static (T, bool) BindId<T>(this HttpRequest request, Func<string, T> converter)
+        public static IActionResult MakeActionResultOnRequest<TKey, TEntity>(
+          IRepository<TEntity> repository,
+          Action<string, object> addViewData,
+          HttpRequest request,
+          Func<object, IActionResult> view,
+          Func<IActionResult> notFound,
+          Func<
+              IRepository<TEntity>,
+              Func<
+                  Func<
+                      Func<string, ValuableResult<TKey>>, 
+                      Func<TKey, TEntity>,
+                      Action<TEntity, Action<string, object>>,
+                      IActionResult>,
+                  IActionResult>
+              > action
+          ) where TEntity: class
+        {
+            return action(repository)(
+                (keyConverter, getEntity, publishViewData) =>
+                {
+                    var valuableResult = MvcHandler.BindId(request, keyConverter);
+                    if (!valuableResult.IsOk())
+                        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                    var key = valuableResult.Value;
+                    var entity = getEntity(key);
+                    if (entity == null)
+                        return notFound();
+                    publishViewData?.Invoke(entity, addViewData);
+                    return view(entity);
+                }
+            );
+        }
+
+        public static IActionResult MakeActionResultOnRequest<TKey, TEntity>(
+          IRepository<TEntity> repository,
+          HttpRequest request,
+          Func<object, IActionResult> view,
+          Func<IActionResult> notFound,
+          Func<
+              IRepository<TEntity>,
+              Func<
+                  Func<
+                      Func<string, ValuableResult<TKey>>,
+                      Func<TKey, TEntity>,
+                      IActionResult>,
+                  IActionResult>
+              > action
+          ) where TEntity : class
+        {
+            return action(repository)(
+                (keyConverter, getEntity) =>
+                {
+                    var valuableResult = MvcHandler.BindId(request, keyConverter);
+                    if (!valuableResult.IsOk())
+                        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                    var key = valuableResult.Value;
+                    var entity = getEntity(key);
+                    if (entity == null)
+                        return notFound();
+                    return view(entity);
+                }
+            );
+        }
+
+        public static IActionResult MakeActionResultOnCreate<TEntity>(
+            IRepository<TEntity> repository,
+            Action<string, object> addViewData,
+            HttpRequest request,
+            Func<object, IActionResult> view,
+            Func<
+                IRepository<TEntity>,
+                Func<
+                    Func<
+                        Func<TEntity>,
+                        Action<TEntity, Action<string, object>>,
+                        IActionResult>,
+                    IActionResult>
+                > action
+        ) where TEntity : class
+        {
+            return action(repository)(
+                (getEntity, publishViewData) =>
+                {
+                    var entity = getEntity();
+                    publishViewData.Invoke(entity, addViewData);
+                    return view(entity);
+                }
+            );
+        }
+
+        public static IActionResult MakeActionResultOnCreate<TEntity>(
+            IRepository<TEntity> repository,
+            HttpRequest request,
+            Func<object, IActionResult> view,
+            Func<
+                IRepository<TEntity>,
+                Func<
+                    Func<
+                        Func<TEntity>,
+                        IActionResult>,
+                    IActionResult>
+                > action
+        ) where TEntity : class
+        {
+            return action(repository)(
+                (getEntity) =>
+                {
+                    var entity = getEntity();
+                    return view(entity);
+                }
+            );
+        }
+
+        public static ValuableResult<T> BindId<T>(this HttpRequest request, Func<string, ValuableResult<T>> converter) //  Func<string, ValuableResult<TKey> >
         {
             bool value = false;
-            T id = default(T);
             PathString pathString = request.Path;
             if (pathString.HasValue)
             {
                 var path = pathString.Value;
                 var idText = path.Substring(path.LastIndexOf("/") + 1);
                 if (value = !string.IsNullOrEmpty(idText))
-                    id = converter(idText);
+                    return converter(idText);
             }
-            return (id, value);
+            return new ValuableResult<T>(default(T),false);
         }
 
         public static IComplexBinderResult<T> Bind<T>(

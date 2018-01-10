@@ -9,7 +9,7 @@ namespace DashboardCode.Routines.AspNetCore
     public class ReferencesCollection<TEntity> where TEntity : class
     {
         Dictionary<string, IManyToMany<TEntity>> ManyToManyBinders = new Dictionary<string, IManyToMany<TEntity>>();
-        Dictionary<string, IOneToMany<TEntity>> OneToManyBinders = new Dictionary<string, IOneToMany<TEntity>>();
+        Dictionary<string, IOneToMany<TEntity>>  OneToManyBinders  = new Dictionary<string, IOneToMany<TEntity>>();
         public ReferencesCollection(Dictionary<string, IOneToMany<TEntity>> OneToManyBinders, Dictionary<string, IManyToMany<TEntity>> ManyToManyBinders)
         {
             this.OneToManyBinders = OneToManyBinders;
@@ -51,5 +51,4 @@ namespace DashboardCode.Routines.AspNetCore
             return new ComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>((modifyRelateds, setViewDataMultiSelectLists));
         }
     }
-
 }

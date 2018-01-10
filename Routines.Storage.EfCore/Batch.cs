@@ -29,6 +29,7 @@ namespace DashboardCode.Routines.Storage.EfCore
         {
             setAuditProperties(entity);
             EntityEntry<TEntity> entry = context.Entry(entity);
+            // alternative: context.Entry(entity).Property("GroupAdName").IsModified = false;
             if (include != null)
             {
                 var propertyValues = entry.GetDatabaseValues();

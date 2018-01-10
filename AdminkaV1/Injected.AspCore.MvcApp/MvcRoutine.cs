@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
@@ -64,27 +66,158 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             controller.ViewBag.Session = this.SessionState;
             controller.ViewBag.UserContext = userContext;
         }
-    }
 
-    public class SessionState
-    {
-        ISession session;
-        UserContext userContext;
-        public SessionState(ISession session, UserContext userContext)
-        {
-            this.session = session;
-            this.userContext = userContext;
-        }
-        public string UserContextKey
-        {
-            get
-            {
-                return session.GetString("UserContextKey");
-            }
-            set
-            {
-                session.SetString("UserContextKey", value);
-            }
-        }
+        #region MVC
+        public async Task<IActionResult> HandleMvcRequestAsync<TKey, TEntity>(
+                 string viewName,
+                 Func<
+                    IRepository<TEntity>,
+                    Func<
+                        Func<
+                            Func<string, ValuableResult<TKey>>,
+                            Func<TKey, TEntity>,
+                            Action<TEntity, Action<string, object>>,
+                            IActionResult>,
+                        IActionResult>
+                    > action
+                ) where TEntity : class =>
+                    await HandleStorageAsync<IActionResult, TEntity>( repository =>
+                        MvcHandler.MakeActionResultOnRequest(
+                                repository,
+                                (n,v) => Controller.ViewData[n]=v,
+                                Controller.HttpContext.Request,
+                                o => Controller.View(viewName, o),
+                                Controller.NotFound,
+                                action
+                             )
+                    );
+
+        public async Task<IActionResult> HandleMvcRequestAsync<TKey, TEntity>(
+                 string viewName,
+                 Func<
+                    IRepository<TEntity>,
+                    Func<
+                        Func<
+                            Func<string, ValuableResult<TKey>>,
+                            Func<TKey, TEntity>,
+                            IActionResult>,
+                        IActionResult>
+                    > action
+                ) where TEntity : class =>
+                    await HandleStorageAsync<IActionResult, TEntity>(repository =>
+                       MvcHandler.MakeActionResultOnRequest(
+                               repository,
+                               Controller.HttpContext.Request,
+                               o => Controller.View(viewName, o),
+                               Controller.NotFound,
+                               action
+                            )
+                    );
+
+        public async Task<IActionResult> HandleMvcCreateAsync<TEntity>(
+                 string viewName,
+                 Func<
+                    IRepository<TEntity>,
+                    Func<
+                        Func<
+                            Func<TEntity>,
+                            Action<TEntity, Action<string, object>>,
+                            IActionResult>,
+                        IActionResult>
+                    > action
+                ) where TEntity : class =>
+                        await HandleStorageAsync<IActionResult, TEntity>(repository =>
+                           MvcHandler.MakeActionResultOnCreate(
+                                   repository,
+                                   (n, v) => Controller.ViewData[n] = v,
+                                   Controller.HttpContext.Request,
+                                   o => Controller.View(viewName, o),
+                                   action
+                                )
+                        );
+
+        public async Task<IActionResult> HandleMvcCreateAsync<TEntity>(
+                 string viewName,
+                 Func<
+                    IRepository<TEntity>,
+                    Func<
+                        Func<
+                            Func<TEntity>,
+                            //Action<TEntity, Action<string, object>>,
+                            IActionResult>,
+                        IActionResult>
+                    > action
+                ) where TEntity : class =>
+                        await HandleStorageAsync<IActionResult, TEntity>(repository =>
+                           MvcHandler.MakeActionResultOnCreate(
+                                   repository,
+                                   Controller.HttpContext.Request,
+                                   o => Controller.View(viewName, o),
+                                   action
+                                )
+                        );
+
+        public async Task<IActionResult> HandleMvcSaveAsync<TEntity>(
+                 string viewName,
+                 Func<
+                    IRepository<TEntity>,
+                    Routine<UserContext>,
+                    Func<
+                       Func<
+                            Func<bool>,
+                            Func<HttpRequest, IComplexBinderResult<TEntity>>,
+                            Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
+                            Action<TEntity, IBatch<TEntity>>,
+                            IActionResult>,
+                       IActionResult
+                    >
+                 > action
+                ) where TEntity : class =>
+                    await HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                       MvcHandler.MakeActionResultOnSave(
+                           repository,
+                           storage,
+                           state,
+                           () => Controller.Unauthorized(),
+                           Controller.HttpContext.Request,
+                           (n, v) => Controller.ViewData[n] = v,
+                           (n, v) => Controller.ModelState.AddModelError(n, v),
+                           () => Controller.RedirectToAction("Index"),
+                           (e) => Controller.View(viewName, e),
+                           action
+                       )
+                    );
+
+        public async Task<IActionResult> HandleMvcSaveAsync<TEntity>(
+                 string viewName,
+                 Func<
+                    IRepository<TEntity>,
+                    Routine<UserContext>,
+                    Func<
+                       Func<
+                            Func<bool>,
+                            Func<HttpRequest, IComplexBinderResult<TEntity>>,
+                            //Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
+                            Action<TEntity, IBatch<TEntity>>,
+                            IActionResult>,
+                       IActionResult
+                    >
+                 > action
+                ) where TEntity : class =>
+                    await HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                       MvcHandler.MakeActionResultOnSave(
+                           repository,
+                           storage,
+                           state,
+                           () => Controller.Unauthorized(),
+                           Controller.HttpContext.Request,
+                           (n, v) => Controller.ViewData[n] = v,
+                           (n, v) => Controller.ModelState.AddModelError(n, v),
+                           () => Controller.RedirectToAction("Index"),
+                           (e) => Controller.View(viewName, e),
+                           action
+                       )
+                    );
+        #endregion
     }
 }

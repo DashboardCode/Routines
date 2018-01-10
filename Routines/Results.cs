@@ -135,6 +135,7 @@ namespace DashboardCode.Routines
             Value = value;
         }
 
+        
         public bool IsOk() => Message == null;
 
 

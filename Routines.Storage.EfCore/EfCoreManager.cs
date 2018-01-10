@@ -12,6 +12,8 @@ namespace DashboardCode.Routines.Storage.EfCore
         {
             if (exception is DbUpdateConcurrencyException dbUpdateConcurrencyException)
                 AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, fieldsErrors);
+            if (exception is DbUpdateException dbUpdateException)
+                AnalyzeDbUpdateException(dbUpdateException, fieldsErrors);
             if (exception is InvalidOperationException invalidOperationException)
                 AnalyzeInvalidOperationException(invalidOperationException, fieldsErrors, entityName);
         }
@@ -45,6 +47,12 @@ namespace DashboardCode.Routines.Storage.EfCore
                     return;
                 }
             }
+        }
+
+        public static void AnalyzeDbUpdateException(DbUpdateException exception, List<FieldError> fieldsErrors)
+        {
+            throw new Exception("Not implemented", exception);
+            fieldsErrors.Add(StorageModel.GenericErrorField, "");
         }
 
         public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, List<FieldError> fieldsErrors)

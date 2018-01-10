@@ -5,11 +5,12 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.GroupId)
+    @Html.HiddenFor(model => model.RowVersion)
+
     <div class="form-horizontal">
-        <hr/>
+        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.GroupId)
-        @Html.HiddenFor(model => model.RowVersion)
 
         <div class="form-group">
             @Html.LabelFor(model => model.GroupName, htmlAttributes: new { @class = "control-label col-lg-2" })
