@@ -75,7 +75,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                 {
                     var constraint = matchCollection[0].Groups["constraint"].Value;
                     var table = matchCollection[0].Groups["table"].Value;
-                    if (table.Contains(storageModel.TableName) && storageModel.Key != null)
+                    if (table.Contains(storageModel.SchemaName +"."+ storageModel.TableName) && storageModel.Key != null)
                     {
                         if (storageModel.Key.Attributes.Length == 1)
                         {
@@ -99,7 +99,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                 {
                     var column = matchCollection[0].Groups["column"].Value;
                     var table = matchCollection[0].Groups["table"].Value;
-                    if (table.Contains(storageModel.TableName))
+                    if (table.Contains(storageModel.SchemaName + "." + storageModel.TableName))
                     {
                         if (storageModel.Requireds != null && storageModel.Requireds.Contains(column))
                         {
@@ -133,7 +133,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                 {
                     var index = matchCollection[0].Groups["index"].Value;
                     var table = matchCollection[0].Groups["table"].Value;
-                    if (table.Contains(storageModel.TableName) && storageModel.Uniques != null)
+                    if (table.Contains(storageModel.SchemaName + "." + storageModel.TableName) && storageModel.Uniques != null)
                     {
                         var unique = storageModel.Uniques.FirstOrDefault(e => e.IndexName == index);
                         if (unique != null)
@@ -160,7 +160,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                 {
                     var constraint = matchCollection[0].Groups["constraint"].Value;
                     var table = matchCollection[0].Groups["table"].Value;
-                    if (table.Contains(storageModel.TableName) && storageModel.Uniques != null)
+                    if (table.Contains(storageModel.SchemaName + "." + storageModel.TableName) && storageModel.Uniques != null)
                     {
                         var unique = storageModel.Uniques.FirstOrDefault(e => e.IndexName == constraint);
                         if (unique != null)
@@ -192,7 +192,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                     var statementType = matchCollection[0].Groups["statementType"].Value;
                     var database = matchCollection[0].Groups["database"].Value;
                     var column = matchCollection[0].Groups["column"].Value;
-                    if (table == storageModel.TableName)
+                    if (table == storageModel.SchemaName + "." + storageModel.TableName)
                     {
                         var ck = storageModel.Constraints.FirstOrDefault(e => e.Name == constraint);
                         if (ck != null)

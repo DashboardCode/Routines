@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,62 +17,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
 
             migrationBuilder.EnsureSchema(
                 name: "tst");
-
-            migrationBuilder.CreateTable(
-                name: "ElectrodeRemelt",
-                columns: table => new
-                {
-                    ElectrodeId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ArchivedAt = table.Column<DateTime>(nullable: true),
-                    ArchivedBy = table.Column<string>(nullable: true),
-                    FurnaceTypeId = table.Column<string>(nullable: true),
-                    InpsectionsPercent = table.Column<int>(nullable: false),
-                    MeltPositionId = table.Column<int>(nullable: false),
-                    ReadyAt = table.Column<DateTime>(nullable: false),
-                    ReadyBy = table.Column<string>(nullable: true),
-                    RemeltStatusId = table.Column<string>(nullable: true),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
-                    SetupPercent = table.Column<int>(nullable: false),
-                    StatusAt = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ElectrodeRemelt", x => x.ElectrodeId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MeltPosition",
-                columns: table => new
-                {
-                    MeltPositionId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    MeltPositionName = table.Column<string>(nullable: true),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MeltPosition", x => x.MeltPositionId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Operator",
-                columns: table => new
-                {
-                    OperatorId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    FirstName = table.Column<string>(nullable: true),
-                    Initials = table.Column<string>(nullable: true),
-                    SecondName = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Operator", x => x.OperatorId);
-                });
 
             migrationBuilder.CreateTable(
                 name: "ActivityRecords",
@@ -247,51 +191,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                         principalTable: "TypeRecords",
                         principalColumn: "TestTypeRecordId",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ElectrodeRemeltInspectionsCheckList",
-                columns: table => new
-                {
-                    ElectrodeId = table.Column<int>(nullable: false),
-                    CheckListXml = table.Column<string>(type: "xml", nullable: true),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ElectrodeRemeltInspectionsCheckList", x => x.ElectrodeId);
-                    table.ForeignKey(
-                        name: "FK_ElectrodeRemeltInspectionsCheckList_ElectrodeRemelt_ElectrodeId",
-                        column: x => x.ElectrodeId,
-                        principalTable: "ElectrodeRemelt",
-                        principalColumn: "ElectrodeId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InspectionGroup",
-                columns: table => new
-                {
-                    InspectionGroupId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    InspectionGroupName = table.Column<string>(nullable: true),
-                    MeltPositionId = table.Column<int>(nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
-                    SeqNumber = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InspectionGroup", x => x.InspectionGroupId);
-                    table.ForeignKey(
-                        name: "FK_InspectionGroup_MeltPosition_MeltPositionId",
-                        column: x => x.MeltPositionId,
-                        principalTable: "MeltPosition",
-                        principalColumn: "MeltPositionId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -536,117 +435,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Inspection",
-                columns: table => new
-                {
-                    InspectionId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    InspectionGroupId = table.Column<int>(nullable: false),
-                    InspectionTitle = table.Column<string>(nullable: true),
-                    IsMeasured = table.Column<bool>(nullable: false),
-                    IsRejectionTrigger = table.Column<bool>(nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
-                    SeqNumberInGroup = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Inspection", x => x.InspectionId);
-                    table.ForeignKey(
-                        name: "FK_Inspection_InspectionGroup_InspectionGroupId",
-                        column: x => x.InspectionGroupId,
-                        principalTable: "InspectionGroup",
-                        principalColumn: "InspectionGroupId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ElectrodeRemeltInspection",
-                columns: table => new
-                {
-                    ElectrodeId = table.Column<int>(nullable: false),
-                    InspectionId = table.Column<int>(nullable: false),
-                    CompletedAt = table.Column<DateTime>(nullable: false),
-                    CompletedByOperatorId = table.Column<int>(nullable: false),
-                    InspectionArchived = table.Column<string>(nullable: true),
-                    IsCompleted = table.Column<bool>(nullable: false),
-                    Notes = table.Column<string>(nullable: true),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ElectrodeRemeltInspection", x => new { x.ElectrodeId, x.InspectionId });
-                    table.ForeignKey(
-                        name: "FK_ElectrodeRemeltInspection_Operator_CompletedByOperatorId",
-                        column: x => x.CompletedByOperatorId,
-                        principalTable: "Operator",
-                        principalColumn: "OperatorId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ElectrodeRemeltInspection_ElectrodeRemelt_ElectrodeId",
-                        column: x => x.ElectrodeId,
-                        principalTable: "ElectrodeRemelt",
-                        principalColumn: "ElectrodeId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ElectrodeRemeltInspection_Inspection_InspectionId",
-                        column: x => x.InspectionId,
-                        principalTable: "Inspection",
-                        principalColumn: "InspectionId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "FurnaceType",
-                columns: table => new
-                {
-                    FurnaceTypeId = table.Column<string>(nullable: false),
-                    InspectionId = table.Column<int>(nullable: true),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FurnaceType", x => x.FurnaceTypeId);
-                    table.ForeignKey(
-                        name: "FK_FurnaceType_Inspection_InspectionId",
-                        column: x => x.InspectionId,
-                        principalTable: "Inspection",
-                        principalColumn: "InspectionId",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ElectrodeRemeltInspection_CompletedByOperatorId",
-                table: "ElectrodeRemeltInspection",
-                column: "CompletedByOperatorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ElectrodeRemeltInspection_InspectionId",
-                table: "ElectrodeRemeltInspection",
-                column: "InspectionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FurnaceType_InspectionId",
-                table: "FurnaceType",
-                column: "InspectionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Inspection_InspectionGroupId",
-                table: "Inspection",
-                column: "InspectionGroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InspectionGroup_MeltPositionId",
-                table: "InspectionGroup",
-                column: "MeltPositionId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_GroupPrivilegeMap_PrivilegeId",
                 schema: "scr",
@@ -660,10 +448,38 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_scr_Groups_GroupAdName",
+                schema: "scr",
+                table: "Groups",
+                column: "GroupAdName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_scr_Groups_GroupName",
+                schema: "scr",
+                table: "Groups",
+                column: "GroupName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_scr_Privileges_PrivilegeName",
+                schema: "scr",
+                table: "Privileges",
+                column: "PrivilegeName",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RolePrivilegeMap_PrivilegeId",
                 schema: "scr",
                 table: "RolePrivilegeMap",
                 column: "PrivilegeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_scr_Roles_RoleName",
+                schema: "scr",
+                table: "Roles",
+                column: "RoleName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserGroupMap_GroupId",
@@ -682,6 +498,13 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                 schema: "scr",
                 table: "UserRoleMap",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_scr_Users_LoginName",
+                schema: "scr",
+                table: "Users",
+                column: "LoginName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChildRecords_TypeRecordId",
@@ -722,20 +545,11 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                 table: "TypeRecords",
                 column: "TypeRecordTestTypeRecordId");
 
-            InitialCustoms.Up(migrationBuilder);
+            InitialCustoms.Up(migrationBuilder, this.TargetModel);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ElectrodeRemeltInspection");
-
-            migrationBuilder.DropTable(
-                name: "ElectrodeRemeltInspectionsCheckList");
-
-            migrationBuilder.DropTable(
-                name: "FurnaceType");
-
             migrationBuilder.DropTable(
                 name: "ActivityRecords",
                 schema: "log");
@@ -777,15 +591,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                 schema: "tst");
 
             migrationBuilder.DropTable(
-                name: "Operator");
-
-            migrationBuilder.DropTable(
-                name: "ElectrodeRemelt");
-
-            migrationBuilder.DropTable(
-                name: "Inspection");
-
-            migrationBuilder.DropTable(
                 name: "Groups",
                 schema: "scr");
 
@@ -812,12 +617,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
             migrationBuilder.DropTable(
                 name: "ParentRecords",
                 schema: "tst");
-
-            migrationBuilder.DropTable(
-                name: "InspectionGroup");
-
-            migrationBuilder.DropTable(
-                name: "MeltPosition");
         }
     }
 }

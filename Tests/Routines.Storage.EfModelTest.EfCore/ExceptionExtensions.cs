@@ -12,7 +12,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
         {
             var list = StorageErrorExtensions.AnalyzeException(exception,
                   (ex, l) => {
-                      EfCoreManager.Analyze(exception, l, storageModel.Entity.Name);
+                      EfCoreManager.Analyze(exception, l, storageModel.Entity.Name, ex2=> SqlServerManager.Analyze(ex2, l, storageModel));
                       SqlServerManager.Analyze(ex, l, storageModel);
                   }
             );

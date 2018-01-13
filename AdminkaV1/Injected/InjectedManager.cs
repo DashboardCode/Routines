@@ -40,7 +40,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             var list = StorageErrorExtensions.AnalyzeException(exception,
                   (ex, l) => {
-                      DataAccessEfCoreManager.Analyze(ex, l, storageModel);
+                      DataAccessEfCoreManager.Analyze(ex, l, storageModel, (ex2)=> SqlServerManager.Analyze(ex2, l, storageModel));
                       SqlServerManager.Analyze(ex, l, storageModel);
                   }
             );

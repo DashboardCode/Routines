@@ -15,17 +15,67 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
                 new StorageModel()
                 {
                     Entity = new Entity() { Name = typeof(AuthenticationDom.Group).Name, Namespace = typeof(AuthenticationDom.Group).Namespace},
-                    TableName = "dbo.Groups",
+                    SchemaName ="scr", TableName = "Groups",
                     Key = new Key() { Attributes = new[] { nameof(AuthenticationDom.Group.GroupId) }},
                     Uniques = new[] {
-                        new Unique { IndexName="IX_Groups_GroupName", Fields = new[] {nameof(AuthenticationDom.Group.GroupName)}},
-                        new Unique { IndexName="IX_Groups_GroupAdName", Fields = new[] { nameof(AuthenticationDom.Group.GroupAdName) } }},
+                        new Unique { IndexName="IX_scr_Groups_GroupName", Fields = new[] {nameof(AuthenticationDom.Group.GroupName)}},
+                        new Unique { IndexName="IX_scr_Groups_GroupAdName", Fields = new[] { nameof(AuthenticationDom.Group.GroupAdName) } }},
+                    Constraints = new[]
+                    {
+                        new Constraint { Name="CK_scr_Groups_GroupName",  Message=@"[^a-z0-9 ]",   Fields = new[] { "GroupName" }, Body=@"CHECK(GroupName NOT LIKE '%[^a-z0-9 ]%')" },
+                        new Constraint { Name="CK_scr_Groups_GroupAdName", Message=@"[^a-z!.!-!_!\!@]", Fields = new[] { "GroupAdName" }, Body=@"CHECK(GroupAdName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!')"  }
+                    }
+                },
+
+                new StorageModel()
+                {
+                    Entity = new Entity() { Name = typeof(AuthenticationDom.Role).Name, Namespace = typeof(AuthenticationDom.Role).Namespace},
+                    SchemaName ="scr", TableName = "Roles",
+                    Key = new Key() { Attributes = new[] { nameof(AuthenticationDom.Role.RoleId) }},
+                    Uniques = new[] {
+                        new Unique { IndexName="IX_scr_Roles_RoleName", Fields = new[] {nameof(AuthenticationDom.Role.RoleName)}}
+                        },
+                    Constraints = new[]
+                    {
+                        new Constraint { Name="CK_scr_Roles_RoleName", Message=@"[^a-z0-9 ]", Fields = new[] { "RoleName" }, Body=@"CHECK(RoleName NOT LIKE '%[^a-z0-9 ]%')" }
+                    }
+                },
+
+
+                new StorageModel()
+                {
+                    Entity = new Entity() { Name = typeof(AuthenticationDom.User).Name, Namespace = typeof(AuthenticationDom.User).Namespace},
+                    SchemaName ="scr", TableName = "Users",
+                    Key = new Key() { Attributes = new[] { nameof(AuthenticationDom.User.UserId) }},
+                    Uniques = new[] {
+                        new Unique { IndexName="IX_scr_Users_LoginName", Fields = new[] {nameof(AuthenticationDom.User.LoginName) }}
+                        },
+                    Constraints = new[]
+                    {
+                        new Constraint { Name="CK_scr_Users_LoginName", Message=@"[^a-z!.!-!_!\!@] ESCAPE '!'", Fields = new[] { "LoginName" }, Body=@"CHECK(LoginName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!')" },
+                        new Constraint { Name="CK_scr_Users_SecondName", Message=@"[^a-z '']", Fields = new[] { "SecondName" }, Body=@"CHECK(SecondName NOT LIKE '%[^a-z '']%')" },
+                        new Constraint { Name="CK_scr_Users_FirstName", Message=@"[^a-z ]", Fields = new[] { "FirstName" }, Body=@"CHECK(FirstName NOT LIKE '%[^a-z ]%')" }
+                    }
+                },
+
+                new StorageModel()
+                {
+                    Entity = new Entity() { Name = typeof(AuthenticationDom.Privilege).Name, Namespace = typeof(AuthenticationDom.Privilege).Namespace},
+                    SchemaName ="scr", TableName = "Privileges",
+                    Key = new Key() { Attributes = new[] { nameof(AuthenticationDom.Privilege.PrivilegeId) }},
+                    Uniques = new[] {
+                        new Unique { IndexName="IX_scr_Privileges_PrivilegeName", Fields = new[] {nameof(AuthenticationDom.Privilege.PrivilegeName) }}
+                        },
+                    Constraints = new[]
+                    {
+                        new Constraint { Name="CK_scr_Privileges_PrivilegeId", Message=@"[^a-z0-9]", Fields = new[] { "PrivilegeId" }, Body=@"CHECK(PrivilegeId NOT LIKE '%[^a-z0-9]%')" }
+                    }
                 },
 
                 new StorageModel()
                 {
                     Entity = new Entity() { Name = typeof(ParentRecord).Name, Namespace = typeof(ParentRecord).Namespace},
-                    TableName = "tst.ParentRecords",
+                    SchemaName ="tst", TableName = "tst.ParentRecords",
                     Key = new Key() { Attributes = new[] { "ParentRecordId" }},
                     Requireds = new[] {  nameof(ParentRecord.FieldA), nameof(ParentRecord.FieldB1), nameof(ParentRecord.FieldB2), nameof(ParentRecord.FieldCA), nameof(ParentRecord.FieldCB1), nameof(ParentRecord.FieldCB2) },
                     Uniques = new[] {
@@ -39,21 +89,21 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
                 new StorageModel()
                 {
                     Entity = new Entity() { Name = typeof(ChildRecord).Name, Namespace = typeof(ChildRecord).Namespace},
-                    TableName = "tst.TypeRecords",
+                    SchemaName ="tst", TableName = "TypeRecords",
                     Key = new Key() { Attributes = new[] { nameof(ChildRecord.TypeRecordId), nameof(ChildRecord.ParentRecordId) }}
                 },
 
                 new StorageModel()
                 {
                     Entity = new Entity() { Name = typeof(HierarchyRecord).Name, Namespace = typeof(HierarchyRecord).Namespace},
-                    TableName = "tst.HierarchyRecordMap",
+                    SchemaName ="tst", TableName = "HierarchyRecordMap",
                     Key = new Key() { Attributes = new[] { nameof(HierarchyRecord.ParentHierarchyRecordId), nameof(HierarchyRecord.ParentHierarchyRecordId) }}
                 },
 
                 new StorageModel()
                 {
                     Entity = new Entity() { Name = typeof(TypeRecord).Name, Namespace = typeof(TypeRecord).Namespace},
-                    TableName = "tst.TypeRecords",
+                    SchemaName ="tst", TableName = "TypeRecords",
                     Key = new Key() { Attributes = new[] { nameof(TypeRecord.TestTypeRecordId) }},
                     Requireds = new[] {  nameof(TypeRecord.TypeRecordName) },
                     Constraints = new[] {

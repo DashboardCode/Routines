@@ -8,9 +8,9 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
     public static class DataAccessEfCoreManager
     {
-        public static void Analyze(Exception exception, List<FieldError> list, StorageModel storageModel)
+        public static void Analyze(Exception exception, List<FieldError> list, StorageModel storageModel, Action<Exception> analyzeInnerException)
         {
-            EfCoreManager.Analyze(exception, list, storageModel.Entity.Name);
+            EfCoreManager.Analyze(exception, list, storageModel.Entity.Name, analyzeInnerException);
         }
 
         public static void Append(StringBuilder sb, Exception ex)

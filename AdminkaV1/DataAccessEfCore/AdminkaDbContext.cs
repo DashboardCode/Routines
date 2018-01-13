@@ -6,7 +6,11 @@ using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.TestDom;
-
+using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.DependencyInjection;
+using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
@@ -195,6 +199,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 .HasKey(e => e.PrivilegeId); 
             modelBuilder.Entity<Privilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<Privilege>().Property(e => e.PrivilegeName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
+            modelBuilder.Entity<Privilege>().HasIndex(e => e.PrivilegeName).HasName("IX_scr_Privileges_PrivilegeName").IsUnique();
 
             modelBuilder.Entity<User>()
                 .ToTable(GetEntityTableName(nameof(User)), schema: securityIslandSchema)
@@ -202,19 +207,21 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             modelBuilder.Entity<User>().Property(e => e.LoginName).IsRequired().HasMaxLength(LengthConstants.AdName);
             modelBuilder.Entity<User>().Property(e => e.FirstName).HasMaxLength(LengthConstants.GoodForTitle);
             modelBuilder.Entity<User>().Property(e => e.SecondName).HasMaxLength(LengthConstants.GoodForName);
+            modelBuilder.Entity<User>().HasIndex(e => e.LoginName).HasName("IX_scr_Users_LoginName").IsUnique();
 
             modelBuilder.Entity<Group>()
                 .ToTable(GetEntityTableName(nameof(Group)), schema: securityIslandSchema)
                 .HasKey(e => e.GroupId);
             modelBuilder.Entity<Group>().Property(e => e.GroupName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
             modelBuilder.Entity<Group>().Property(e => e.GroupAdName).IsRequired().HasMaxLength(LengthConstants.AdName);
-
-                
+            modelBuilder.Entity<Group>().HasIndex(e => e.GroupName).HasName("IX_scr_Groups_GroupName").IsUnique();
+            modelBuilder.Entity<Group>().HasIndex(e => e.GroupAdName).HasName("IX_scr_Groups_GroupAdName").IsUnique();
 
             modelBuilder.Entity<Role>()
                 .ToTable(GetEntityTableName(nameof(Role)), schema: securityIslandSchema)
                 .HasKey(e => e.RoleId);
             modelBuilder.Entity<Role>().Property(e => e.RoleName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
+            modelBuilder.Entity<Role>().HasIndex(e => e.RoleName).HasName("IX_scr_Roles_RoleName").IsUnique();
 
             #region UsersPrivileges
             modelBuilder.Entity<UserPrivilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
@@ -315,6 +322,15 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             #endregion
             #endregion
 
+
+            var storageMetaService = new StorageMetaService();
+            foreach (var sm in storageMetaService.GetStorageModels())
+                if (sm.Constraints != null)
+                    modelBuilder.Entity(sm.Entity.Namespace + "." + sm.Entity.Name).HasAnnotation($"Constraints", sm.Constraints);
+
+            modelBuilder.Entity<TypeRecord>().HasAnnotation(
+                    "Constraints", new[] { new Constraint { Name = "CK_tst_TypeRecords_TypeRecordName", Fields = new[] { "TypeRecordName" }, Body = @"CHECK(TypeRecordName NOT LIKE '%[^a-z0-9 ]%')", Message = @"TypeRecordName NOT LIKE '%[^a-z0-9 ]%'" } }
+                );
 
         }
     }

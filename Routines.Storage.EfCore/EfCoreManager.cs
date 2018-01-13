@@ -8,13 +8,13 @@ namespace DashboardCode.Routines.Storage.EfCore
 {
     public static class EfCoreManager
     {
-        public static void Analyze(Exception exception, List<FieldError> fieldsErrors, string entityName)
+        public static void Analyze(Exception exception, List<FieldError> fieldsErrors, string entityName, Action<Exception> analyzeInnerException)
         {
             if (exception is DbUpdateConcurrencyException dbUpdateConcurrencyException)
                 AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, fieldsErrors);
-            if (exception is DbUpdateException dbUpdateException)
-                AnalyzeDbUpdateException(dbUpdateException, fieldsErrors);
-            if (exception is InvalidOperationException invalidOperationException)
+            else if (exception is DbUpdateException dbUpdateException && dbUpdateException.InnerException!=null)
+                analyzeInnerException(dbUpdateException.InnerException);
+            else if (exception is InvalidOperationException invalidOperationException)
                 AnalyzeInvalidOperationException(invalidOperationException, fieldsErrors, entityName);
         }
 
@@ -49,12 +49,6 @@ namespace DashboardCode.Routines.Storage.EfCore
             }
         }
 
-        public static void AnalyzeDbUpdateException(DbUpdateException exception, List<FieldError> fieldsErrors)
-        {
-            throw new Exception("Not implemented", exception);
-            fieldsErrors.Add(StorageModel.GenericErrorField, "");
-        }
-
         public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, List<FieldError> fieldsErrors)
         {
             fieldsErrors.Add(StorageModel.GenericErrorField, "The record you are attempted to edit is currently being modified by another user. The save operation was canceled! Refresh page and reload form before continue.");
@@ -63,12 +57,14 @@ namespace DashboardCode.Routines.Storage.EfCore
         public static void Append(StringBuilder sb, Exception ex)
         {
             if (ex is DbUpdateConcurrencyException dbUpdateConcurrencyException)
-                AppendDbUpdateConcurrencyException(sb, dbUpdateConcurrencyException);
+                AppendDbUpdateException(sb, dbUpdateConcurrencyException);
+            if (ex is DbUpdateException dbUpdateException)
+                AppendDbUpdateException(sb, dbUpdateException);
         }
 
-        public static void AppendDbUpdateConcurrencyException(StringBuilder stringBuilder, DbUpdateConcurrencyException ex)
+        public static void AppendDbUpdateException(StringBuilder stringBuilder, DbUpdateException ex)
         {
-            stringBuilder.AppendMarkdownLine("DbUpdateConcurrencyException data: ");
+            stringBuilder.AppendMarkdownLine($"{ex.GetType().Name} data: ");
             int i = 1;
             foreach (var e in ex.Entries)
             {

@@ -1,16 +1,21 @@
 ﻿using System;
+using System.Linq;
 using System.Globalization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.AdminkaV1.Injected.Configuration;
+using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
 {
     public static class InitialCustoms
     {
-        public static void Up(MigrationBuilder migrationBuilder)
+        public static void Up(MigrationBuilder migrationBuilder, IModel targetModel)
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
             var installerApplicationFactory = new InstallerApplicationFactory();
@@ -35,32 +40,33 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                     if (loginName == null)
                         throw new Exception("login name can't be null");
 
-                    migrationBuilder.Sql(
-                        "ALTER TABLE tst.TypeRecords ADD CONSTRAINT CK_tst_TypeRecords_TypeRecordName CHECK(TypeRecordName NOT LIKE '%[^a-z0-9 ]%');");
-
-                    migrationBuilder.Sql("ALTER TABLE scr.Privileges ADD CONSTRAINT CK_scr_Privileges_PrivilegeId CHECK(PrivilegeId NOT LIKE '%[^a-z0-9]%');");
-
-                    migrationBuilder.Sql(@"ALTER TABLE scr.Users ADD CONSTRAINT CK_scr_Users_FirstName CHECK(FirstName NOT LIKE '%[^a-z ]%');");
-                    migrationBuilder.Sql(@"ALTER TABLE scr.Users ADD CONSTRAINT CK_scr_Users_SecondName CHECK(SecondName NOT LIKE '%[^a-z '']%');");
-                    migrationBuilder.Sql(@"ALTER TABLE scr.Users ADD CONSTRAINT CK_scr_Users_LoginName CHECK(LoginName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!');");
-
-                    migrationBuilder.Sql(@"ALTER TABLE scr.Roles ADD CONSTRAINT CK_scr_Roles_RoleName CHECK(RoleName NOT LIKE '%[^a-z0-9 ]%');");
-                    migrationBuilder.Sql(@"ALTER TABLE scr.Groups ADD CONSTRAINT CK_scr_Groups_GroupName CHECK(GroupName NOT LIKE '%[^a-z0-9 ]%');");
-                    migrationBuilder.Sql(@"ALTER TABLE scr.Groups ADD CONSTRAINT CK_scr_Groups_GroupAdName CHECK(GroupAdName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!');");
-
-                    ValueTuple<string, string>[] tables = new[] { ("tst", "TypeRecords"), ("tst", "ChildRecords"), ("tst", "ParentRecords")
-                            ,("scr","Users"),("scr","Privileges"),("scr","Groups"),("scr","Roles")
-                            ,("scr","GroupPrivilegeMap"),("scr","GroupRoleMap"),("scr","RolePrivilegeMap")
-                            ,("scr","UserGroupMap"),("scr","UserPrivilegeMap"),("scr","UserRoleMap")
-                    };
-                    foreach ( var (schema,table) in tables)
+                    var entityTypes = targetModel.GetEntityTypes();
+                    foreach(var entityType in entityTypes)
                     {
-                        migrationBuilder.Sql(
-                            $"ALTER TABLE {schema}.{table} ADD CONSTRAINT DF_{schema}_{table}_RowVersionAt DEFAULT GETDATE() FOR RowVersionAt;");
-                        migrationBuilder.Sql(
-                            $"ALTER TABLE {schema}.{table} ADD CONSTRAINT DF_{schema}_{table}_RowVersionBy DEFAULT SUSER_SNAME() FOR RowVersionBy;");
-                        migrationBuilder.Sql($"ALTER TABLE {schema}.{table} ADD CONSTRAINT CK_{schema}_{table}_RowVersionBy CHECK(RowVersionBy NOT LIKE '%[^a-z!.!-!_!\\!@]%' ESCAPE '!');");
+                        var relationalEntityTypeAnnotations = entityType.Relational();
+                        var schema = relationalEntityTypeAnnotations.Schema;
+                        var tableName = relationalEntityTypeAnnotations.TableName;
+
+                        if (entityType.FindProperty("RowVersion") != null && entityType.FindProperty("RowVersionAt") != null && entityType.FindProperty("RowVersionBy") != null)
+                        {
+                            migrationBuilder.Sql(
+                                $"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT DF_{schema}_{tableName}_RowVersionAt DEFAULT GETDATE() FOR RowVersionAt;");
+                            migrationBuilder.Sql(
+                                $"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT DF_{schema}_{tableName}_RowVersionBy DEFAULT SUSER_SNAME() FOR RowVersionBy;");
+                            migrationBuilder.Sql($"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT CK_{schema}_{tableName}_RowVersionBy CHECK(RowVersionBy NOT LIKE '%[^a-z!.!-!_!\\!@]%' ESCAPE '!');");
+                        }
+
+                        var annotation = entityType.FindAnnotation("Constraints");
+                        if (annotation!=null)
+                        {
+                            var constraints = (Constraint[])annotation.Value;
+                            foreach (var c in constraints)
+                            {
+                                migrationBuilder.Sql($"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT {c.Name} {c.Body};");
+                            }
+                        }
                     }
+
 
                     migrationBuilder.Sql(
                           $"INSERT INTO scr.Users (LoginName) VALUES ('{loginName}');" + Environment.NewLine
@@ -76,4 +82,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                 });
         }
     }
+
+
 }
