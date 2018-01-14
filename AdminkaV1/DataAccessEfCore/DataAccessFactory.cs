@@ -17,17 +17,19 @@ namespace DashboardCode.AdminkaV1.Injected
         readonly Routine<UserContext> state;
         readonly StorageMetaService storageMetaService;
         readonly AdminkaStorageConfiguration adminkaStorageConfiguration;
-        readonly Func<Exception, StorageModel, List<FieldError>> analyze;
+        //readonly Func<Exception, StorageModel, List<FieldError>> analyze;
         public DataAccessFactory(
             Routine<UserContext> state,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            StorageMetaService storageMetaService,
-            Func<Exception, StorageModel, List<FieldError>> analyze)
+            StorageMetaService storageMetaService
+            //,
+            //Func<Exception, StorageModel, List<FieldError>> analyze
+            )
         {
             this.state = state;
             this.adminkaStorageConfiguration = adminkaStorageConfiguration;
             this.storageMetaService = storageMetaService;
-            this.analyze = analyze;
+            //this.analyze = analyze;
         }
 
         private bool IsAuditProperty(object o)
@@ -78,12 +80,12 @@ namespace DashboardCode.AdminkaV1.Injected
         public IRepositoryHandler<TEntity> CreateRepositoryHandler<TEntity>(bool noTracking = true) where TEntity : class
         {
             var dbContextHandler = CreateDbContextHandler();
-            var storageModels = storageMetaService.GetStorageModels();
-            var storageModel  = storageModels.FirstOrDefault(e=>e.Entity.Namespace+"."+ e.Entity.Name==typeof(TEntity).FullName);
+            //var storageModel = storageMetaService.FindStorageModel<TEntity>();
 
             var repositoryHandler = new RepositoryHandler<TEntity>(
                 dbContextHandler,
-                ex=> (storageModel==null)?new List<FieldError>():analyze(ex,storageModel),
+                ex=>storageMetaService.Analyze<TEntity>(ex),
+                //ex=> (storageModel==null)? new List<FieldError>() : analyze(ex, storageModel),
                 noTracking
             );
             return repositoryHandler;

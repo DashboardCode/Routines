@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.Routines.Storage;
+
 using DashboardCode.Routines;
+using DashboardCode.Routines.Storage;
 using DashboardCode.AdminkaV1.TestDom;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
@@ -78,7 +79,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                             .ForEach(e => selectedPrivileges.Add(new GroupPrivilege() { GroupId = entity.GroupId, PrivilegeId = e.PrivilegeId }));
                     }
                     
-                    var storageError = storage.Handle(
+                    var storageResult = storage.Handle(
                         batch =>
                         {
                             batch.Modify(entity);
@@ -88,7 +89,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                                 selectedPrivileges,
                                 (e1, e2) => e1.GroupId == e2.GroupId);
                         });
-                    if (storageError?.FieldErrors.Count > 0)
+                    if (!storageResult.IsOk())
                         throw new Exception("Test failed");
                 });
             });
@@ -99,10 +100,10 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var group = repository.Find(e => e.GroupId == newGroupId);
-                    var storageError = storage.Handle(batch =>
+                    var storageResult = storage.Handle(batch =>
                         batch.Remove(group)
                     );
-                    if (storageError?.FieldErrors.Count > 0)
+                    if (!storageResult.IsOk())
                         throw new Exception("Test failed: includes");
                 });
             });
@@ -113,12 +114,12 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var groups = repository.List(e => e.GroupName == "TestStore");
-                    var storageError = storage.Handle(batch =>
+                    var storageResult = storage.Handle(batch =>
                     {
                         foreach (var group in groups)
                             batch.Remove(group);
                     });
-                    if (storageError?.FieldErrors.Count > 0)
+                    if (!storageResult.IsOk())
                         throw new Exception("Test failed: includes");
                 });
             });

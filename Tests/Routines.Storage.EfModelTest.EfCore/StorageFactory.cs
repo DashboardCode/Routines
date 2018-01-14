@@ -10,11 +10,12 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
     {
         static readonly List<StorageModel> storageModel = new StorageMetaService().GetStorageModels();
 
-        public static List<FieldError> Analyze(Exception exception, StorageModel storageModel, Action<Exception> analyzeInnerException) =>
-            StorageErrorExtensions.AnalyzeException(exception,
+        public static List<FieldMessage> Analyze(Exception exception, StorageModel storageModel, Action<Exception> analyzeInnerException) =>
+            StorageResultExtensions.AnalyzeException(exception,
                   (ex, l) => {
-                      EfCoreManager.Analyze(exception, l, storageModel.Entity.Name, analyzeInnerException);
-                      SqlServerManager.Analyze(ex, l, storageModel);
+                      var errorBuilder = new ErrorBuilder(l, storageModel, "");
+                      EfCoreManager.Analyze(exception, errorBuilder, analyzeInnerException);
+                      SqlServerManager.Analyze(ex, errorBuilder);
                   }
             );
 

@@ -5,9 +5,9 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
     public class AdminkaDesignTimeServices : IDesignTimeServices
     {
-        public void ConfigureDesignTimeServices(IServiceCollection services)
+        public void ConfigureDesignTimeServices(IServiceCollection serviceCollection)
         {
-            services.AddSingleton<ICSharpHelper, AdminkaCSharpHelper>();
+            serviceCollection.AddSingleton<ICSharpHelper, AdminkaCSharpHelper>();
         }
     }
 }

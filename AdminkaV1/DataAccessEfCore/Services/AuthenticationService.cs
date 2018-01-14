@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using DashboardCode.AdminkaV1.AuthenticationDom;
+
 using DashboardCode.Routines.Storage.EfCore;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
@@ -10,9 +11,8 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
     {
         readonly AdminkaDbContextHandler dbContextManager;
         public AuthenticationService(AdminkaDbContextHandler dbContextManager)
-        {
-            this.dbContextManager = dbContextManager;
-        }
+            => this.dbContextManager = dbContextManager;
+        
         public User GetUser(string loginName, string firstName, string secondName, IEnumerable<string> adGroupsNames)
         {
             var user = dbContextManager.Handle(dbContext =>

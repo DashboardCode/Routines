@@ -1,46 +1,46 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Storage
 {
-    public static class StorageErrorExtensions
+    public static class StorageResultExtensions
     {
-        public static void ThrowIfNotNull(this StorageError storageError, string exceptionText = "StorageError contains exception")
+        public static void ThrowIfNotNull(this StorageResult storageResult, string exceptionText = "StorageError contains exception")
         {
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
-                if (storageError.FieldErrors.Count >= 1)
-                    throw new StorageErrorException(exceptionText, storageError.Exception);
+                if (storageResult.Message.Count >= 1)
+                    throw new StorageErrorException(exceptionText, storageResult.Exception);
             }
         }
 
-        public static void Assert(this StorageError storageError, int number, string field, string messageFragment, string exceptionText)
+        public static void Assert(this StorageResult storageResult, int number, string field, string messageFragment, string exceptionText)
         {
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
-                if (storageError.FieldErrors.Count == number)
+                if (storageResult.Message.Count == number)
                 {
-                    if (messageFragment == null && storageError.Contains(field)) return;
-                    if (messageFragment != null && storageError.ContainsLike(field, messageFragment)) return;
+                    if (messageFragment == null && storageResult.Contains(field)) return;
+                    if (messageFragment != null && storageResult.ContainsLike(field, messageFragment)) return;
                 }
             }
-            throw new StorageErrorException(exceptionText, storageError.Exception);
+            throw new StorageErrorException(exceptionText, storageResult.Exception);
         }
 
-        public static void Assert(this StorageError storageError, int number, string[] fields, string messageFragment, string exceptionText)
+        public static void Assert(this StorageResult storageResult, int number, string[] fields, string messageFragment, string exceptionText)
         {
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
-                if (storageError.FieldErrors.Count == number)
+                if (storageResult.Message.Count == number)
                 {
-                    if (messageFragment == null && storageError.Contains(fields)) return;
-                    if (messageFragment != null && storageError.ContainsLike(fields, messageFragment)) return;
+                    if (messageFragment == null && storageResult.Contains(fields)) return;
+                    if (messageFragment != null && storageResult.ContainsLike(fields, messageFragment)) return;
                 }
             }
-            throw new StorageErrorException(exceptionText, storageError.Exception);
+            throw new StorageErrorException(exceptionText, storageResult.Exception);
         }
-        public static bool Contains(this List<FieldError> fieldErrors, string field)
+        public static bool Contains(this List<FieldMessage> fieldErrors, string field)
         {
             var @value = false;
             if (fieldErrors != null)
@@ -50,24 +50,24 @@ namespace DashboardCode.Routines.Storage
             return @value;
         }
 
-        public static bool Contains(this StorageError storageError, string field)
+        public static bool Contains(this StorageResult storageResult, string field)
         {
             var @value = false;
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
-                @value = storageError.FieldErrors.Any(e => e.Field == field);
+                @value = storageResult.Message.Any(e => e.Field == field);
             }
             return @value;
         }
 
-        public static bool Contains(this StorageError storageError, string[] fields)
+        public static bool Contains(this StorageResult storageResult, string[] fields)
         {
             var @value = false;
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
                 foreach (var field in fields)
                 {
-                    bool success = storageError.FieldErrors.Any(e => e.Field == field);
+                    bool success = storageResult.Message.Any(e => e.Field == field);
                     if (!success)
                         break;
                 }
@@ -75,14 +75,14 @@ namespace DashboardCode.Routines.Storage
             }
             return @value;
         }
-        public static bool ContainsLike(this StorageError storageError, string[] fields, string message)
+        public static bool ContainsLike(this StorageResult storageResult, string[] fields, string message)
         {
             var @value = false;
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
                 foreach (var field in fields)
                 {
-                    bool success = storageError.FieldErrors.Any(e => e.Field == field && e.Message.StartsWith(message));
+                    bool success = storageResult.Message.Any(e => e.Field == field && e.Message.StartsWith(message));
                     if (!success)
                         break;
                 }
@@ -91,44 +91,44 @@ namespace DashboardCode.Routines.Storage
             return @value;
         }
 
-        public static bool Contains(this StorageError storageError, string field, string message)
+        public static bool Contains(this StorageResult storageResult, string field, string message)
         {
             var @value = false;
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
-                @value = storageError.FieldErrors.Any(e => e.Field == field && e.Message == message);
+                @value = storageResult.Message.Any(e => e.Field == field && e.Message == message);
             }
             return @value;
         }
-        public static bool ContainsLike(this StorageError storageError, string field, string message)
+        public static bool ContainsLike(this StorageResult storageResult, string field, string message)
         {
             var @value = false;
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
-                @value = storageError.FieldErrors.Any(e => e.Field == field && e.Message.StartsWith(message));
+                @value = storageResult.Message.Any(e => e.Field == field && e.Message.StartsWith(message));
             }
             return @value;
         }
-        public static int Count(this StorageError storageError)
+        public static int Count(this StorageResult storageResult)
         {
             var @value = 0;
-            if (storageError != null && storageError.FieldErrors != null)
+            if (!storageResult.IsOk())
             {
-                @value = storageError.FieldErrors.Count();
+                @value = storageResult.Message.Count();
             }
             return @value;
         }
-        public static void Add(this StorageError storageError, string field, string message)
+        public static void Add(this StorageResult storageResult, string field, string message)
         {
-            storageError.FieldErrors.Add(new FieldError(field, message));
+            storageResult.Message.Add(new FieldMessage(field, message));
         }
 
-        public static void Add(this List<FieldError> fieldErrors, string field, string message)
+        public static void Add(this List<FieldMessage> fieldErrors, string field, string message)
         {
-            fieldErrors.Add(new FieldError(field, message));
+            fieldErrors.Add(new FieldMessage(field, message));
         }
 
-        public static Dictionary<string, string> ToDictionary(this List<FieldError> list, Func<string, string, string> concatent)
+        public static Dictionary<string, string> ToDictionary(this List<FieldMessage> list, Func<string, string, string> concatent)
         {
             var dictionary = new Dictionary<string, string>();
             foreach (var item in list)
@@ -142,9 +142,9 @@ namespace DashboardCode.Routines.Storage
             return dictionary;
         }
 
-        public static List<FieldError> AnalyzeException(this Exception exception, Action<Exception, List<FieldError>> parser = null)
+        public static List<FieldMessage> AnalyzeException(this Exception exception, Action<Exception, List<FieldMessage>> parser = null)
         {
-            var list = new List<FieldError>();
+            var list = new List<FieldMessage>();
             do
             {
                 parser?.Invoke(exception, list);

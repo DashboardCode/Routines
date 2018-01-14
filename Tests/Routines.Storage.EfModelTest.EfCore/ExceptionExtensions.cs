@@ -8,12 +8,13 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 {
     public static class ExceptionExtensions
     {
-        public static List<FieldError> Analyze(this Exception exception, StorageModel storageModel)
+        public static List<FieldMessage> Analyze(this Exception exception, StorageModel storageModel)
         {
-            var list = StorageErrorExtensions.AnalyzeException(exception,
+            var list = StorageResultExtensions.AnalyzeException(exception,
                   (ex, l) => {
-                      EfCoreManager.Analyze(exception, l, storageModel.Entity.Name, ex2=> SqlServerManager.Analyze(ex2, l, storageModel));
-                      SqlServerManager.Analyze(ex, l, storageModel);
+                      var errorBuilder = new ErrorBuilder(l, storageModel, "");
+                      EfCoreManager.Analyze(exception, errorBuilder, ex2=> SqlServerManager.Analyze(ex2, errorBuilder));
+                      SqlServerManager.Analyze(ex, errorBuilder);
                   }
             );
             return list;

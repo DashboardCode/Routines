@@ -13,9 +13,10 @@ namespace DashboardCode.AdminkaV1.Injected
             this.adminkaStorageConfiguration = adminkaStorageConfiguration;
             this.storageMetaService = storageMetaService;
         }
+
         public DataAccessFactory CreateDataAccessFactory(Routine<UserContext> state)
         {
-            var dataAccessFactory = new DataAccessFactory(state, adminkaStorageConfiguration, storageMetaService, InjectedManager.Analyze);
+            var dataAccessFactory = new DataAccessFactory(state, adminkaStorageConfiguration, storageMetaService);
             return dataAccessFactory;
         }
 

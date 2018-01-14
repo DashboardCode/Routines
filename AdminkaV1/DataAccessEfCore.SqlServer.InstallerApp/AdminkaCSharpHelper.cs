@@ -1,9 +1,11 @@
-﻿using DashboardCode.Routines.Storage;
-using System.Linq;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore.Design.Internal;
+
+using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
-    public class AdminkaCSharpHelper : Microsoft.EntityFrameworkCore.Design.Internal.CSharpHelper
+    public class AdminkaCSharpHelper : CSharpHelper
     {
         public override string UnknownLiteral(object value)
         {

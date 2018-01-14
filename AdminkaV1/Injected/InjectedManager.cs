@@ -9,13 +9,14 @@ using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
 using System.Security.Principal;
     using DashboardCode.Routines.Serialization.NETFramework;
     using DashboardCode.Routines.ActiveDirectory.NETFramework;
 #else
-    using System.Security.Principal;
+using System.Security.Principal;
     using DashboardCode.Routines.Serialization.NETStandard;
 #endif
 
@@ -23,6 +24,22 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public static class InjectedManager
     {
+        #region Meta
+        public readonly static StorageMetaService StorageMetaService = new StorageMetaService(Analyze);
+
+        private static List<FieldMessage> Analyze(this Exception exception, StorageModel storageModel)
+        {
+            var list = StorageResultExtensions.AnalyzeException(exception,
+                  (ex, l) => {
+                      var errorBuilder = new ErrorBuilder(l, storageModel, "");
+                      DataAccessEfCoreManager.Analyze(ex, errorBuilder, (ex2) => SqlServerManager.Analyze(ex2, errorBuilder));
+                      SqlServerManager.Analyze(ex, errorBuilder);
+                  }
+            );
+            return list;
+        }
+        #endregion
+
         public static IIdentity GetDefaultIdentity()
         {
 #if (NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
@@ -36,16 +53,6 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
 #region Exception
-        public static List<FieldError> Analyze(this Exception exception, StorageModel storageModel)
-        {
-            var list = StorageErrorExtensions.AnalyzeException(exception,
-                  (ex, l) => {
-                      DataAccessEfCoreManager.Analyze(ex, l, storageModel, (ex2)=> SqlServerManager.Analyze(ex2, l, storageModel));
-                      SqlServerManager.Analyze(ex, l, storageModel);
-                  }
-            );
-            return list;
-        }
         public static string ToHtml(this Exception exception)
         {
             string text = Markdown(exception);
@@ -62,6 +69,7 @@ namespace DashboardCode.AdminkaV1.Injected
             string text = Markdown(exception, null);
             return text;
         }
+
         public static string Markdown(this Exception exception, Action<StringBuilder, Exception> appender = null)
         {
             string text = ExceptionExtensions.Markdown(exception,
@@ -79,13 +87,14 @@ namespace DashboardCode.AdminkaV1.Injected
             );
             return text;
         }
+
         private static void AppendUserContextException(this StringBuilder stringBuilder, UserContextException exception)
         {
             var userContextException = exception;
             stringBuilder.AppendMarkdownLine(nameof(UserContextException) + " specific:");
             stringBuilder.Append("   ").AppendMarkdownProperty("Code", userContextException.Code);
         }
-#endregion
+        #endregion
 
 #region Serialize
         public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class

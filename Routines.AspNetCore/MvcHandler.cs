@@ -18,7 +18,7 @@ namespace DashboardCode.Routines.AspNetCore
                     publishStorageError(messageItem.Item1, errorText /*string.Join("; ", m.Item2.ToArray())*/);
         }
 
-        public static void PublishResult(List<FieldError> message, Action<string, string> publishStorageError)
+        public static void PublishResult(List<FieldMessage> message, Action<string, string> publishStorageError)
         {
             foreach (var errorField in message)
                 publishStorageError(errorField.Field, errorField.Message);
@@ -74,16 +74,16 @@ namespace DashboardCode.Routines.AspNetCore
                         void publishException(Exception ex) { addViewData("Exception", ex); }
                         try
                         {
-                            var storageError = storage.Handle(
+                            var storageResult = storage.Handle(
                             batch =>
                             {
                                 save(entity, batch);
                                 modifyRelated(batch);
                             });
-                            if (storageError == null || storageError.FieldErrors.Count == 0)
+                            if (storageResult.IsOk())
                                 return successView();
-                            publishException(storageError.Exception);
-                            PublishResult(storageError.FieldErrors, publishStorageError);
+                            publishException(storageResult.Exception);
+                            PublishResult(storageResult.Message, publishStorageError);
                         }
                         catch (Exception ex)
                         {
@@ -139,13 +139,13 @@ namespace DashboardCode.Routines.AspNetCore
                         void publishException(Exception ex) { addViewData("Exception", ex); }
                         try
                         {
-                            var storageError = storage.Handle(
+                            var storageResult = storage.Handle(
                                 batch => save(entity, batch)
                             );
-                            if (storageError == null || storageError.FieldErrors.Count == 0)
+                            if (storageResult.IsOk())
                                 successView();
-                            publishException(storageError.Exception);
-                            PublishResult(storageError.FieldErrors, publishStorageError);
+                            publishException(storageResult.Exception);
+                            PublishResult(storageResult.Message, publishStorageError);
                         }
                         catch (Exception ex)
                         {

@@ -7,12 +7,12 @@ namespace DashboardCode.Routines.Storage.Ef6
     public class OrmStorage<TEntity> : IOrmStorage<TEntity> where TEntity : class
     {
         private readonly DbContext dbContext;
-        private readonly Func<Exception, List<FieldError>> analyzeException;
+        private readonly Func<Exception, List<FieldMessage>> analyzeException;
         private readonly Action<object> setAuditProperties;
 
         public OrmStorage(
             DbContext dbContext,
-            Func<Exception, List<FieldError>> analyzeException,
+            Func<Exception, List<FieldMessage>> analyzeException,
             Action<object> setAuditProperties)
         {
             this.dbContext          = dbContext;
@@ -20,16 +20,16 @@ namespace DashboardCode.Routines.Storage.Ef6
             this.setAuditProperties = setAuditProperties;
         }
 
-        public StorageError Handle(Action<IBatch<TEntity>> action)
+        public StorageResult Handle(Action<IBatch<TEntity>> action)
         {
-            return HandleException(()=> {
+            return HandleAnalyzableException(()=> {
                 HandleSave((batch) => {
                     action(batch);
                 });
             });
         }
 
-        public StorageError HandleException(Action action)
+        public StorageResult HandleAnalyzableException(Action action)
         {
             try
             {
@@ -39,10 +39,10 @@ namespace DashboardCode.Routines.Storage.Ef6
             {
                 var list = analyzeException(exception);
                 if (list.Count > 0)
-                    return new StorageError(exception, list);
+                    return new StorageResult(exception, list);
                 throw;
             }
-            return null;
+            return new StorageResult();
         }
 
         public void HandleCommit(Action action)
@@ -64,12 +64,12 @@ namespace DashboardCode.Routines.Storage.Ef6
     public class OrmStorage : IOrmStorage
     {
         private readonly DbContext context;
-        private readonly Func<Exception, List<FieldError>> analyzeException;
+        private readonly Func<Exception, List<FieldMessage>> analyzeException;
         private readonly Action<object> setAuditProperties;
 
         public OrmStorage(
             DbContext context,
-            Func<Exception, List<FieldError>> analyzeException,
+            Func<Exception, List<FieldMessage>> analyzeException,
             Action<object> setAuditProperties)
         {
             this.context = context;
@@ -77,7 +77,7 @@ namespace DashboardCode.Routines.Storage.Ef6
             this.setAuditProperties = setAuditProperties;
         }
 
-        public StorageError Handle(Action<IBatch> action)
+        public StorageResult Handle(Action<IBatch> action)
         {
             var batch = new Batch(context, setAuditProperties);
             try
@@ -93,10 +93,10 @@ namespace DashboardCode.Routines.Storage.Ef6
             {
                 var list = analyzeException(exception);
                 if (list.Count > 0)
-                    return new StorageError(exception, list);
+                    return new StorageResult(exception, list);
                 throw;
             }
-            return null;
+            return new StorageResult();
         }
     }
 }

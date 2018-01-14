@@ -2,15 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.DependencyInjection;
-using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
@@ -33,12 +30,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         {
             this.buildOptionsBuilder = buildOptionsBuilder;
             this.verbose = verbose;
-        }
-
-        private void SetupVersioned<T>(EntityTypeBuilder<T> builder) where T : class, IVersioned
-        {
-            builder.Property(e => e.RowVersionBy).HasMaxLength(LengthConstants.AdName);
-            builder.Property(e => e.RowVersion).IsRowVersion();
         }
 
         private Action returnLoggerFactory;
@@ -83,6 +74,11 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            BuildModel(modelBuilder);
+        }
+
+        public static void BuildModel(ModelBuilder modelBuilder)
         {
             #region Test Island
             SetupVersioned(modelBuilder.Entity<TypeRecord>());
@@ -166,7 +162,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             string loggingIslandSchema = "log";
             modelBuilder.Entity<ActivityRecord>()
                 .ToTable(GetEntityTableName(nameof(ActivityRecord)), schema: loggingIslandSchema)
-                .HasKey(e=> e.ActivityRecordId);
+                .HasKey(e => e.ActivityRecordId);
             modelBuilder.Entity<ActivityRecord>().Property(e => e.CorrelationToken).IsRequired();
             modelBuilder.Entity<ActivityRecord>().Property(e => e.Application).IsRequired().HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<ActivityRecord>().Property(e => e.FullActionName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
@@ -196,7 +192,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             string securityIslandSchema = "scr";
             modelBuilder.Entity<Privilege>()
                 .ToTable(GetEntityTableName(nameof(Privilege)), schema: securityIslandSchema)
-                .HasKey(e => e.PrivilegeId); 
+                .HasKey(e => e.PrivilegeId);
             modelBuilder.Entity<Privilege>().Property(e => e.PrivilegeId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<Privilege>().Property(e => e.PrivilegeName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
             modelBuilder.Entity<Privilege>().HasIndex(e => e.PrivilegeName).HasName("IX_scr_Privileges_PrivilegeName").IsUnique();
@@ -322,16 +318,54 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             #endregion
             #endregion
 
-
-            var storageMetaService = new StorageMetaService();
-            foreach (var sm in storageMetaService.GetStorageModels())
-                if (sm.Constraints != null)
-                    modelBuilder.Entity(sm.Entity.Namespace + "." + sm.Entity.Name).HasAnnotation($"Constraints", sm.Constraints);
-
-            modelBuilder.Entity<TypeRecord>().HasAnnotation(
-                    "Constraints", new[] { new Constraint { Name = "CK_tst_TypeRecords_TypeRecordName", Fields = new[] { "TypeRecordName" }, Body = @"CHECK(TypeRecordName NOT LIKE '%[^a-z0-9 ]%')", Message = @"TypeRecordName NOT LIKE '%[^a-z0-9 ]%'" } }
+            modelBuilder.Entity<TypeRecord>().HasAnnotation("Constraints",
+                new[] { new Constraint { Name = "CK_tst_TypeRecords_TypeRecordName", Fields = new[] { "TypeRecordName" }, Body = @"CHECK(TypeRecordName NOT LIKE '%[^a-z0-9 ]%')", Message = @"TypeRecordName NOT LIKE '%[^a-z0-9 ]%'" } }
                 );
 
+            modelBuilder.Entity<Group>().HasAnnotation("Constraints",
+                new[]
+                    {
+                        new Constraint { Name="CK_scr_Groups_GroupName",  Message=@"[^a-z0-9 ]",   Fields = new[] { "GroupName" }, Body=@"CHECK(GroupName NOT LIKE '%[^a-z0-9 ]%')" },
+                        new Constraint { Name="CK_scr_Groups_GroupAdName", Message=@"[^a-z!.!-!_!\!@]", Fields = new[] { "GroupAdName" }, Body=@"CHECK(GroupAdName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!')"  }
+                    }
+                );
+
+            modelBuilder.Entity<Role>().HasAnnotation("Constraints",
+                new[]
+                    {
+                        new Constraint { Name="CK_scr_Roles_RoleName", Message=@"[^a-z0-9 ]", Fields = new[] { "RoleName" }, Body=@"CHECK(RoleName NOT LIKE '%[^a-z0-9 ]%')" }
+                    }
+                );
+
+            modelBuilder.Entity<User>().HasAnnotation("Constraints",
+                new[]
+                    {
+                        new Constraint { Name="CK_scr_Users_LoginName", Message=@"[^a-z!.!-!_!\!@] ESCAPE '!'", Fields = new[] { "LoginName" }, Body=@"CHECK(LoginName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!')" },
+                        new Constraint { Name="CK_scr_Users_SecondName", Message=@"[^a-z '']", Fields = new[] { "SecondName" }, Body=@"CHECK(SecondName NOT LIKE '%[^a-z '']%')" },
+                        new Constraint { Name="CK_scr_Users_FirstName", Message=@"[^a-z ]", Fields = new[] { "FirstName" }, Body=@"CHECK(FirstName NOT LIKE '%[^a-z ]%')" }
+                    }
+                );
+
+            modelBuilder.Entity<Privilege>().HasAnnotation("Constraints",
+                new[]
+                    {
+                        new Constraint { Name="CK_scr_Privileges_PrivilegeId", Message=@"[^a-z0-9]", Fields = new[] { "PrivilegeId" }, Body=@"CHECK(PrivilegeId NOT LIKE '%[^a-z0-9]%')" }
+                    }
+                );
+
+            modelBuilder.Entity<TypeRecord>().HasAnnotation("Constraints",
+                new[] {
+                        new Constraint { Fields = new[] { nameof(TypeRecord.TypeRecordName) },
+                                         Message = "Only letters, numbers and space",
+                                         Name = "CK_TypeRecords_TypeRecordName" }
+                    }
+                );
+        }
+
+        private static void SetupVersioned<T>(EntityTypeBuilder<T> builder) where T : class, IVersioned
+        {
+            builder.Property(e => e.RowVersionBy).HasMaxLength(LengthConstants.AdName);
+            builder.Property(e => e.RowVersion).IsRowVersion();
         }
     }
 }

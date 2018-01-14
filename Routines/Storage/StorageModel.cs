@@ -2,12 +2,11 @@
 {
     public class StorageModel
     {
-        public const string GenericErrorField = "";
         public Entity Entity { get; set; }
         public string SchemaName { get; set; }
         public string TableName { get; set; }
+        public string[] Keys { get; set; }
         public string[] Requireds { get; set; } 
-        public Key Key { get; set; }
         public string[] Binaries {get;set;}
         public Unique[] Uniques { get; set; }
         public Constraint[] Constraints { get; set; }
@@ -15,14 +14,8 @@
 
     public class Entity
     {
-        public string Assembly { get; set; }
         public string Namespace { get; set; }
         public string Name { get; set; }
-    }
-
-    public class Key
-    {
-        public string[] Attributes { get; set; }
     }
 
     public class Unique
@@ -37,10 +30,5 @@
         public string Message { get; set; }
         public string[] Fields { get; set; }
         public string Body { get; set; }
-    }
-
-    public class Required
-    {
-        public string Attribute { get; set; }
     }
 }

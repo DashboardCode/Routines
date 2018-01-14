@@ -7,9 +7,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
     {
         readonly AdminkaDbContextHandler dbContextHandler;
         public TraceService(AdminkaDbContextHandler dbContextHandler)
-        {
-            this.dbContextHandler = dbContextHandler;
-        }
+            => this.dbContextHandler = dbContextHandler;
 
         public Trace GetTrace(Guid correlationToken)
         {
@@ -17,7 +15,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
                 dbContext =>
                 {
                     throw new UserContextException($"User exception from '{nameof(GetTrace)}'","TEST");
-                    //return new Trace(); 
                 });
         }
 
@@ -27,7 +24,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
                 dbContext =>
                 {
                     throw new UserContextException($"User exception from '{nameof(ResetTrace)}'", "TEST");
-                    
                 });
         }
     }

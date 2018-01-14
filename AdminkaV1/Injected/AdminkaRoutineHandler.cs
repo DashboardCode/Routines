@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Security.Principal;
-using System.Threading.Tasks;
 using System.Globalization;
+using System.Threading.Tasks;
+using System.Security.Principal;
+
 using DashboardCode.Routines;
 using DashboardCode.Routines.Injected;
 using DashboardCode.AdminkaV1.Injected.Logging;
@@ -21,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected
               new RoutineGuid(Guid.NewGuid(), memberTag),
               InjectedManager.GetDefaultIdentity(),
               InjectedManager.ComposeNLogTransients(InjectedManager.Markdown, InjectedManager.DefaultRoutineTagTransformException),
-              new ConfigurationContainerFactory(applicationFactory),
+              new ConfigurationContainerFactory(applicationFactory, InjectedManager.StorageMetaService),
               input)
         {
         }
@@ -33,7 +34,7 @@ namespace DashboardCode.AdminkaV1.Injected
               routineGuid,
               InjectedManager.GetDefaultIdentity(),
               InjectedManager.ComposeNLogTransients(InjectedManager.Markdown, InjectedManager.DefaultRoutineTagTransformException),
-              new ConfigurationContainerFactory(applicationFactory),
+              new ConfigurationContainerFactory(applicationFactory, InjectedManager.StorageMetaService),
               input)
         {
         }
@@ -46,7 +47,7 @@ namespace DashboardCode.AdminkaV1.Injected
               new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
               InjectedManager.GetDefaultIdentity(),
               loggingTransientsFactory,
-              new ConfigurationContainerFactory(applicationFactory),
+              new ConfigurationContainerFactory(applicationFactory, InjectedManager.StorageMetaService),
               input)
         {
         }
@@ -60,7 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected
               routineGuid,
               identity,
               loggingTransientsFactory,
-              new ConfigurationContainerFactory(applicationFactory),
+              new ConfigurationContainerFactory(applicationFactory, InjectedManager.StorageMetaService),
               input)
         {
         }
@@ -143,7 +144,7 @@ namespace DashboardCode.AdminkaV1.Injected
             ) : this(
                     new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
                     userContext,
-                    new ConfigurationContainerFactory(configuration),
+                    new ConfigurationContainerFactory(configuration, InjectedManager.StorageMetaService),
                     input)
         {
         }
@@ -157,7 +158,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     @namespace, controller, action,
                     userContext,
                     loggingTransientsFactory,
-                    new ConfigurationContainerFactory(configuration),
+                    new ConfigurationContainerFactory(configuration, InjectedManager.StorageMetaService),
                     input)
         {
         }
@@ -168,7 +169,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
             ) : this(new RoutineGuid(Guid.NewGuid(), memberTag),
                     userContext,
-                    new ConfigurationContainerFactory(configuration),
+                    new ConfigurationContainerFactory(configuration, InjectedManager.StorageMetaService),
                     input)
         {
         }
@@ -179,7 +180,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
             ) : this(routineGuid,
             userContext,
-            new ConfigurationContainerFactory(configuration),
+            new ConfigurationContainerFactory(configuration, InjectedManager.StorageMetaService),
             input)
         {
         }
@@ -193,7 +194,7 @@ namespace DashboardCode.AdminkaV1.Injected
             ) : this(routineGuid,
             userContext,
             routineTransformException,
-            new ConfigurationContainerFactory(configuration),
+            new ConfigurationContainerFactory(configuration, InjectedManager.StorageMetaService),
             input)
         {
         }

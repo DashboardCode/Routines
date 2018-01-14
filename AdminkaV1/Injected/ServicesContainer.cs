@@ -12,6 +12,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             this.dbContextManager = dataAccessServices.CreateDbContextHandler();
         }
+
         internal ServicesContainer(AdminkaDbContextHandler dbContextManager)
         {
             this.dbContextManager = dbContextManager;

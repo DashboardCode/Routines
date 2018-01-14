@@ -10,17 +10,21 @@ namespace DashboardCode.AdminkaV1.Injected
     {
         IApplicationFactory appilcationFactory;
         AdminkaStorageConfiguration adminkaStorageConfiguration;
-        public ConfigurationContainerFactory(IApplicationFactory appilcationFactory)
+        StorageMetaService storageMetaService;
+        public ConfigurationContainerFactory(IApplicationFactory appilcationFactory, StorageMetaService storageMetaService)
         {
             this.appilcationFactory = appilcationFactory;
+            this.storageMetaService = storageMetaService;
             this.adminkaStorageConfiguration = appilcationFactory.CreateAdminkaStorageConfiguration();
         }
+
         public IContainer CreateContainer(RoutineGuid routineGuid, UserContext userContext)
         {
             var specifyResolver = ComposeContainerFactory(routineGuid);
             var @value = specifyResolver(userContext);
             return @value;
         }
+
         public Func<UserContext, IContainer> ComposeContainerFactory(RoutineGuid routineGuid)
         {
             Func<UserContext, IContainer> specifyResolver = (userContext) =>
@@ -31,10 +35,11 @@ namespace DashboardCode.AdminkaV1.Injected
             };
             return specifyResolver;
         }
+
         public AdminkaStorageConfiguration ResolveAdminkaStorageConfiguration() =>
             adminkaStorageConfiguration;
 
         public RepositoryHandlerFactory ResolveRepositoryHandlerFactory() =>
-            new RepositoryHandlerFactory( adminkaStorageConfiguration, new StorageMetaService());
+            new RepositoryHandlerFactory(adminkaStorageConfiguration, storageMetaService);
     }
 }

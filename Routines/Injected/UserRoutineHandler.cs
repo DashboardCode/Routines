@@ -23,6 +23,7 @@ namespace DashboardCode.Routines.Injected
         {
             this.repositoryHandlerFactory = repositoryHandlerFactory;
         }
+
         public async Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
             Func<IRepository<TEntity>, TOutput> func
             ) where TEntity : class
@@ -50,6 +51,7 @@ namespace DashboardCode.Routines.Injected
                 });
             });
         }
+
         public TOutput HandleRepository<TOutput, TEntity>(
             Func<IRepository<TEntity>, TOutput> func
             ) where TEntity : class
@@ -63,6 +65,7 @@ namespace DashboardCode.Routines.Injected
                 });
             });
         }
+
         public async Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
             Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func
             ) where TEntity : class
@@ -77,6 +80,7 @@ namespace DashboardCode.Routines.Injected
                 });
             });
         }
+
         public void HandleRepository<TEntity>(
             Action<IRepository<TEntity>, Routine<TUserContext>> action
         ) where TEntity : class
@@ -162,6 +166,7 @@ namespace DashboardCode.Routines.Injected
                 });
             });
         }
+
         public void HandleStorage<TEntity>(
             Action<IRepository<TEntity>, IOrmStorage<TEntity>, Routine<TUserContext>> action
         ) where TEntity : class
@@ -215,7 +220,7 @@ namespace DashboardCode.Routines.Injected
                 return repositoryHandler.Handle((repository, storage) =>
                 {
                     return func(
-                        f => f(repository, f2 => storage.HandleException(() => storage.HandleCommit(() => storage.HandleSave(batch => f2(batch))))),
+                        f => f(repository, f2 => storage.HandleAnalyzableException(() => storage.HandleCommit(() => storage.HandleSave(batch => f2(batch))))),
                         state);
                 });
             });

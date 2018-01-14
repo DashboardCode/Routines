@@ -24,8 +24,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t0 = new ParentRecord() { };
-                    var storageError = storage.Handle(batch => batch.Add(t0));
-                    storageError.Assert(1, "FieldCA", "ID or alternate id has no value", "Case 1"); // NOTE: for ef core v1 - returns generic error (can't say which field is errored)
+                    var storageResult = storage.Handle(batch => batch.Add(t0));
+                    storageResult.Assert(1, "FieldCA", "ID or alternate id has no value", "Case 1"); // NOTE: for ef core v1 - returns generic error (can't say which field is errored)
                 });
             });
 

@@ -8,26 +8,25 @@ namespace DashboardCode.Routines.Storage.Ef6
 {
     public static class Ef6Manager
     {
-        public static void Analyze(Exception exception, List<FieldError> fieldsErrors, StorageModel storageModel)
+        public static void Analyze(Exception exception, IErrorBuilder erorrBuilder)
         {
             if (exception is DbUpdateConcurrencyException dbUpdateConcurrencyException)
-                AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, fieldsErrors);
+                AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, erorrBuilder);
             if (exception is InvalidOperationException invalidOperationException)
-                AnalyzeInvalidOperationException(invalidOperationException, fieldsErrors, storageModel);
+                AnalyzeInvalidOperationException(invalidOperationException, erorrBuilder);
         }
 
         static Regex fieldPkOrUniqueConstraintNullRegexV1 = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
         static Regex fieldPkOrUniqueConstraintNullRegexV2 = new Regex("Unable to track an entity of type '(?<entity>.*?)' because alternate key property '(?<field>.*?)' is null.");
 
-        public static void AnalyzeInvalidOperationException(InvalidOperationException ex, List<FieldError> fieldsErrors, StorageModel storageModel)
+        public static void AnalyzeInvalidOperationException(InvalidOperationException ex, IErrorBuilder erorrBuilder)
         {
             {
                 var matchCollectionV1 = fieldPkOrUniqueConstraintNullRegexV1.Matches(ex.Message);
                 if (matchCollectionV1.Count > 0)
                 {
                     var entity = matchCollectionV1[0].Groups["entity"].Value;
-                    if (storageModel.Entity.Name == entity)
-                        fieldsErrors.Add(StorageModel.GenericErrorField, "ID or alternate id has no value");
+                    erorrBuilder.AddNullPrimaryOrAlternateKey(entity);
                     return;
                 }
             }
@@ -40,17 +39,16 @@ namespace DashboardCode.Routines.Storage.Ef6
                     {
                         var entity = matchCollectionV2[0].Groups["entity"].Value;
                         var field = matchCollectionV2[0].Groups["field"].Value;
-                        if (storageModel.Entity.Name == entity)
-                            fieldsErrors.Add(field, "ID or alternate id has no value");
+                        erorrBuilder.AddNullPrimaryOrAlternateKey(entity, field);
                     }
                     return;
                 }
             }
         }
 
-        public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, List<FieldError> fieldsErrors)
+        public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, IErrorBuilder erorrBuilder)
         {
-            fieldsErrors.Add(StorageModel.GenericErrorField, "The record you are attempted to edit is currently being modified by another user. The save operation was canceled! Refresh page and reload form before continue.");
+            erorrBuilder.AddConcurrencyException();
         }
 
         public static void Append(StringBuilder sb, Exception ex)

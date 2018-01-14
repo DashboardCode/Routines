@@ -11,12 +11,12 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         where TEntity : class
     {
         readonly AdminkaDbContextHandler adminkaDbContextHandler;
-        readonly Func<Exception, List<FieldError>> analyzeException;
+        readonly Func<Exception, List<FieldMessage>> analyzeException;
         readonly bool noTracking;
 
         public RepositoryHandler(
             AdminkaDbContextHandler adminkaDbContextHandler,
-            Func<Exception, List<FieldError>> analyzeException,
+            Func<Exception, List<FieldMessage>> analyzeException,
             bool noTracking
             )
         {
@@ -79,8 +79,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 return output;
             });
         }
-
-        
 
         public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>, IModel<TEntity>> action)
         {
