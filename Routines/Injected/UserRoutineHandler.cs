@@ -4,17 +4,19 @@ using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class UserRoutineHandler<TUserContext> : RoutineHandler<Routine<TUserContext>>
+    public class UserRoutineHandler<TUserContext> : RoutineHandler<RoutineClosure<TUserContext>>
     {
+        readonly IOrmHandlerFactory<TUserContext> ormHandlerFactory;
         readonly IRepositoryHandlerFactory<TUserContext> repositoryHandlerFactory;
         public UserRoutineHandler(
             IBasicLogging basicLogging,
             Func<Exception, Exception> transformException,
-            Func<Action<DateTime, string>, Routine<TUserContext>> createRoutineState,
+            Func<Action<DateTime, string>, RoutineClosure<TUserContext>> createRoutineState,
             IRepositoryHandlerFactory<TUserContext> repositoryHandlerFactory,
+            IOrmHandlerFactory<TUserContext> ormHandlerFactory,
             object input
             ):base(
-                new BasicRoutineTransients<Routine<TUserContext>>(
+                new BasicRoutineTransients<RoutineClosure<TUserContext>>(
                     basicLogging,
                     transformException,
                     (verbose) => createRoutineState(verbose)
@@ -22,15 +24,16 @@ namespace DashboardCode.Routines.Injected
                 input)
         {
             this.repositoryHandlerFactory = repositoryHandlerFactory;
+            this.ormHandlerFactory = ormHandlerFactory;
         }
 
         public async Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
             Func<IRepository<TEntity>, TOutput> func
             ) where TEntity : class
         {
-            return await HandleAsync(state =>
+            return await HandleAsync(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
+                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
                 return repositoryHandler.Handle(repository =>
                 {
                     var output = func(repository);
@@ -38,13 +41,14 @@ namespace DashboardCode.Routines.Injected
                 });
             });
         }
+
         public void HandleRepository<TEntity>(
             Action<IRepository<TEntity>> action
         ) where TEntity : class
         {
-            Handle(state =>
+            Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
+                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
                 repositoryHandler.Handle(repository =>
                 {
                     action(repository);
@@ -56,9 +60,9 @@ namespace DashboardCode.Routines.Injected
             Func<IRepository<TEntity>, TOutput> func
             ) where TEntity : class
         {
-            return Handle(state =>
+            return Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
+                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
                 return repositoryHandler.Handle(repository =>
                 {
                     return func(repository);
@@ -70,9 +74,9 @@ namespace DashboardCode.Routines.Injected
             Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func
             ) where TEntity : class
         {
-            return await HandleAsync(state =>
+            return await HandleAsync(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
+                var repositoryHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
                 return repositoryHandler.Handle((repository, store) =>
                 {
                     var output = func(repository, store);
@@ -82,43 +86,43 @@ namespace DashboardCode.Routines.Injected
         }
 
         public void HandleRepository<TEntity>(
-            Action<IRepository<TEntity>, Routine<TUserContext>> action
+            Action<IRepository<TEntity>, RoutineClosure<TUserContext>> action
         ) where TEntity : class
         {
-            Handle(state =>
+            Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
+                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
                 repositoryHandler.Handle(repository =>
                 {
-                    action(repository, state);
+                    action(repository, closure);
                 });
             });
         }
 
         public TOutput HandleRepository<TOutput, TEntity>(
-            Func<IRepository<TEntity>, Routine<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, RoutineClosure<TUserContext>, TOutput> func
             ) where TEntity : class
         {
-            return Handle(state =>
+            return Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
+                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
                 return repositoryHandler.Handle(repository =>
                 {
-                    return func(repository, state);
+                    return func(repository, closure);
                 });
             });
         }
 
         public async Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, Routine<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, RoutineClosure<TUserContext>, TOutput> func
             ) where TEntity : class
         {
-            return await HandleAsync(state =>
+            return await HandleAsync(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
+                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
                 return repositoryHandler.Handle(repository =>
                 {
-                    var output = func(repository, state);
+                    var output = func(repository, closure);
                     return output;
                 });
             });
@@ -128,10 +132,10 @@ namespace DashboardCode.Routines.Injected
             Action<IRepository<TEntity>, IOrmStorage<TEntity>> action
         ) where TEntity : class
         {
-            Handle(state =>
+            Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
-                repositoryHandler.Handle((repository, store) =>
+                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                ormHandler.Handle((repository, store) =>
                 {
                     action(repository, store);
                 });
@@ -142,10 +146,10 @@ namespace DashboardCode.Routines.Injected
             Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func
             ) where TEntity : class
         {
-            return Handle(state =>
+            return Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
-                return repositoryHandler.Handle((repository, store) =>
+                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                return ormHandler.Handle((repository, store) =>
                 {
                     return func(repository, store);
                 });
@@ -156,10 +160,10 @@ namespace DashboardCode.Routines.Injected
             Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func
             ) where TEntity : class
         {
-            return await HandleAsync(state =>
+            return await HandleAsync(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
-                return repositoryHandler.Handle((repository, store) =>
+                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                return ormHandler.Handle((repository, store) =>
                 {
                     var output = func(repository, store);
                     return output;
@@ -168,60 +172,60 @@ namespace DashboardCode.Routines.Injected
         }
 
         public void HandleStorage<TEntity>(
-            Action<IRepository<TEntity>, IOrmStorage<TEntity>, Routine<TUserContext>> action
+            Action<IRepository<TEntity>, IOrmStorage<TEntity>, RoutineClosure<TUserContext>> action
         ) where TEntity : class
         {
-            Handle(state =>
+            Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
-                repositoryHandler.Handle((repository, store) =>
+                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                ormHandler.Handle((repository, store) =>
                 {
-                    action(repository, store, state);
+                    action(repository, store, closure);
                 });
             });
         }
 
         public TOutput HandleStorage<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IOrmStorage<TEntity>, Routine<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, IOrmStorage<TEntity>, RoutineClosure<TUserContext>, TOutput> func
             ) where TEntity : class
         {
-            return Handle(state =>
+            return Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
-                return repositoryHandler.Handle((repository, store) =>
+                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                return ormHandler.Handle((repository, store) =>
                 {
-                    return func(repository, store, state);
+                    return func(repository, store, closure);
                 });
             });
         }
 
         public async Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IOrmStorage<TEntity>, Routine<TUserContext>, TOutput> func
+            Func<IRepository<TEntity>, IOrmStorage<TEntity>, RoutineClosure<TUserContext>, TOutput> func
             ) where TEntity : class
         {
-            return await HandleAsync(state =>
+            return await HandleAsync(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
-                return repositoryHandler.Handle((repository, store) =>
+                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                return ormHandler.Handle((repository, store) =>
                 {
-                    var output = func(repository, store, state);
+                    var output = func(repository, store, closure);
                     return output;
                 });
             });
         }
 
         public async Task<TOutput> HandleTransactionAsync<TOutput, TEntity>(
-            Func<Transacted<TEntity, TOutput>, Routine<TUserContext>, TOutput> func
+            Func<Transacted<TEntity, TOutput>, RoutineClosure<TUserContext>, TOutput> func
             ) where TEntity : class
         {
-            return await HandleAsync(state =>
+            return await HandleAsync(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateRepositoryHandler<TEntity>(state);
-                return repositoryHandler.Handle((repository, storage) =>
+                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                return ormHandler.Handle((repository, storage) =>
                 {
                     return func(
                         f => f(repository, f2 => storage.HandleAnalyzableException(() => storage.HandleCommit(() => storage.HandleSave(batch => f2(batch))))),
-                        state);
+                        closure);
                 });
             });
         }

@@ -19,9 +19,8 @@ namespace DashboardCode.Ef6.Sandbox
                     verbose(message);
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        public static void CreateModel(DbModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<ParentRecord>().HasKey(e => e.ParentRecordId)
                 .ToTable("ParentRecords", "tst");
             modelBuilder.Entity<ParentRecord>().Property(t => t.FieldA).IsRequired().HasColumnAnnotation(IndexAnnotation.AnnotationName,
@@ -34,7 +33,7 @@ namespace DashboardCode.Ef6.Sandbox
 
             modelBuilder.Entity<ParentRecordHierarchyRecord>()
                 .HasKey(e => new { e.ParentRecordId, e.HierarchyRecordId })
-                .ToTable("ParentRecordHierarchyRecordMap","tst");
+                .ToTable("ParentRecordHierarchyRecordMap", "tst");
             modelBuilder.Entity<ParentRecordHierarchyRecord>()
                 .HasRequired(e => e.ParentRecord)
                 .WithMany(e => e.ParentRecordHierarchyRecordMap)
@@ -49,7 +48,12 @@ namespace DashboardCode.Ef6.Sandbox
 
             modelBuilder.Entity<TypeRecord>().HasKey(e => e.TestTypeRecordId)
                 .ToTable("TypeRecords", "tst");
+        }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            CreateModel(modelBuilder);
         }
 
         public DbSet<ParentRecord> ParentRecords { get; set; }

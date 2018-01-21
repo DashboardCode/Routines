@@ -1,39 +1,51 @@
 ﻿using DashboardCode.Routines;
 using System;
 
+#if NETCOREAPP1_1 || NETCOREAPP2_0
+using DashboardCode.AdminkaV1.Injected.NETStandard;
+#else
+using DashboardCode.AdminkaV1.Injected.NETFramework;
+#endif
+
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     public static class ZoningSharedSourceManager
     {
-        public static IApplicationFactory GetConfiguration(string databaseName)
+        public static IAdmikaConfigurationFacade GetConfiguration(string databaseName)
         {
-#if NETCOREAPP1_1 || NETCOREAPP2_0
-            return new NETCore.Test.ApplicationFactory(databaseName);
-#else
-            return new NETFramework.Test.ApplicationFactory(databaseName);
-#endif
+            return new InMemoryAdmikaConfigurationFacade(databaseName);
         }
     }
 
     public class AdminkaInMemoryTestRoutine : AdminkaRoutineHandler
     {
         public AdminkaInMemoryTestRoutine(RoutineGuid routineGuid, object input, string name = "adminka")
-            : base(routineGuid, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), input)
+            : this(routineGuid, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), input)
         {
         }
 
         public AdminkaInMemoryTestRoutine(MemberTag memberTag, object input, string name = "adminka")
-            : base(memberTag, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), input)
+            : this(memberTag, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), input)
         {
         }
 
         public AdminkaInMemoryTestRoutine(RoutineGuid routineGuid,  string name = "adminka")
-            : base(routineGuid, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), new { })
+            : this(routineGuid, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), new { })
         {
         }
 
         public AdminkaInMemoryTestRoutine(MemberTag memberTag,  string name = "adminka")
-            : base(memberTag, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), new { })
+            : this(memberTag, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), new { })
+        {
+        }
+
+        public AdminkaInMemoryTestRoutine(MemberTag memberTag, UserContext userContext, IAdmikaConfigurationFacade admikaConfigurationFacade, object input )
+           : base(memberTag, userContext, admikaConfigurationFacade, input)
+        {
+        }
+
+        public AdminkaInMemoryTestRoutine(RoutineGuid routineGuid, UserContext userContext, IAdmikaConfigurationFacade admikaConfigurationFacade, object input)
+           : base(routineGuid, userContext, admikaConfigurationFacade, input)
         {
         }
     }

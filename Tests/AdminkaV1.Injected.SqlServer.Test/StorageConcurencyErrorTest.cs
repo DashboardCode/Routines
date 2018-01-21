@@ -18,31 +18,32 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public void TestConcurencyError()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var applicaitonFactory = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, applicaitonFactory, new { input = "Input text" });
             // check constraint on UPDATE
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
                     TestTypeRecordId = "0000",
                     TypeRecordName = "TestType"
                 };
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(t0));
-                    storageError.ThrowIfNotNull();
+                    storageError.ThrowIfFailed();
                 });
             });
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
                 var t1 = new TypeRecord()
                 {
                     TestTypeRecordId   = "0000",
                     TypeRecordName = "TestType2"
                 };
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Modify(t1));

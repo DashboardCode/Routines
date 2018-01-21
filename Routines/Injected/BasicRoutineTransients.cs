@@ -9,7 +9,7 @@ namespace DashboardCode.Routines.Injected
         readonly TStateService stateService;
 
         public BasicRoutineTransients(
-            IBasicLogging basicRoutineLoggingAdapter,
+            IBasicLogging basicLogging,
             Func<Exception, Exception> transformException,
             Func<Action<DateTime, string>, TStateService> createStateService,
             Action<long> monitorRoutineDurationTicks = null,
@@ -22,22 +22,21 @@ namespace DashboardCode.Routines.Injected
             if (testOutput == null)
                 testOutput = (o) => false;
 
-            var activityLoggingAdapter = basicRoutineLoggingAdapter;
             var defaultExceptionAdapter = new ExceptionAdapter(
-                    basicRoutineLoggingAdapter.LogException, 
+                    basicLogging.LogException, 
                     transformException?? ((e)=> e)
                 );
 
             exceptionHandler = new ExceptionHandler(defaultExceptionAdapter, monitorRoutineDurationTicks);
-            if (basicRoutineLoggingAdapter.ShouldBufferVerbose)
+            if (basicLogging.ShouldBufferVerbose)
             {
                 var bufferedVerboseLoggingAdapter = new BufferedVerboseLogging(
-                    basicRoutineLoggingAdapter,
-                    basicRoutineLoggingAdapter.LogBufferedVerbose,
-                    basicRoutineLoggingAdapter.ShouldVerboseWithStackTrace
+                    basicLogging,
+                    basicLogging.LogBufferedVerbose,
+                    basicLogging.ShouldVerboseWithStackTrace
                     );
                 routineLogging = new BufferedRoutineLogging(
-                    activityLoggingAdapter, 
+                    basicLogging, 
                     bufferedVerboseLoggingAdapter, 
                     bufferedVerboseLoggingAdapter.Flash,
                     testInput,
@@ -47,8 +46,8 @@ namespace DashboardCode.Routines.Injected
             }
             else
             {
-                routineLogging = new RoutineLogging(activityLoggingAdapter, basicRoutineLoggingAdapter);
-                stateService = createStateService(basicRoutineLoggingAdapter.LogVerbose);
+                routineLogging = new RoutineLogging(basicLogging, basicLogging);
+                stateService = createStateService(basicLogging.LogVerbose);
             }
         }
 

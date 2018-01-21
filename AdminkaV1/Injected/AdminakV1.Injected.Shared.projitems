@@ -10,8 +10,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AdminkaRoutineHandler.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)AuthenticationService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ConfigurationContainerFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IAdmikaConfigurationFacade.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UserContextFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ContainerFactory.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\AdConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\ApplicationServicesConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Configuration\FakeAdConfiguration.cs" />
@@ -26,8 +27,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogLoggingAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\PerDayСounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\RoutineLoggingTransients.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RepositoryHandlerFactory.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Resolver.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ServicesContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Container.cs" />
   </ItemGroup>
 </Project>

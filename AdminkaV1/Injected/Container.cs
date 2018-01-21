@@ -4,10 +4,10 @@ using DashboardCode.Routines.Configuration;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
-    public class Resolver : IContainer
+    public class Container : IContainer
     {
         ConfigurationContainer configurationContainer;
-        public Resolver(ConfigurationContainer configurationContainer)
+        public Container(ConfigurationContainer configurationContainer)
         {
             this.configurationContainer = configurationContainer;
         }

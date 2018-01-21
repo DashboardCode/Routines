@@ -8,13 +8,13 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 {
     static class StorageFactory
     {
-        static readonly List<StorageModel> storageModel = new StorageMetaService().GetStorageModels();
+        static readonly List<IOrmEntitySchemaAdapter> storageModel = new StorageMetaService().GetStorageModels();
 
-        public static List<FieldMessage> Analyze(Exception exception, StorageModel storageModel, Action<Exception> analyzeInnerException) =>
-            StorageResultExtensions.AnalyzeException(exception,
-                  (ex, l) => {
-                      var errorBuilder = new ErrorBuilder(l, storageModel, "");
-                      EfCoreManager.Analyze(exception, errorBuilder, analyzeInnerException);
+        public static StorageResult Analyze(Exception exception, IOrmEntitySchemaAdapter storageModel, Action<Exception> analyzeInnerException) =>
+            StorageResultBuilder.AnalyzeExceptionRecursive(exception, storageModel, "",
+                  (ex, errorBuilder) => {
+                      //var errorBuilder = new ErrorBuilder(l, storageModel, "");
+                      EfCoreManager.Analyze(exception, errorBuilder/*, analyzeInnerException*/);
                       SqlServerManager.Analyze(ex, errorBuilder);
                   }
             );

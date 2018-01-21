@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,9 +51,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InMemoryAdmikaConfigurationFacade.cs" />
+    <Compile Include="SqlServerAdmikaConfigurationFacade.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj">
+      <Project>{5cec7388-fba6-4542-a23a-5c6a5ba607b9}</Project>
+      <Name>Routines.Configuration.NETFramework</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj">
       <Project>{49629314-6d2c-4630-a478-09e4338ca8d1}</Project>
       <Name>Routines.Storage.SqlServer</Name>

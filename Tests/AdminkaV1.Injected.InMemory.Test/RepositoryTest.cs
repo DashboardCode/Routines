@@ -14,11 +14,10 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public void TestRepositoryInMemory()
         {
-            var adminka = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
-            adminka.Handle((routine, dataAccess) =>
+            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
+            routine.HandleDbContext((closure, dbContext) =>
             {
-                var db = dataAccess.CreateAdminkaDbContext();
-                var list = db.ParentRecords
+                var list = dbContext.ParentRecords
                     .Include(e => e.ParentRecordHierarchyRecordMap)
                     //.ThenInclude(e => e.HierarchyRecordId)
                     .ToList();
@@ -32,9 +31,9 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
-            var record = routine.Handle((state, dataAccess) =>
+            var record = routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 return repositoryHandler.Handle((repository, storage) =>
                 {
                     var entity = repository.Find(e => e.TestTypeRecordId == "0000", include);
@@ -57,9 +56,9 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                             .ThenInclude(y => y.HierarchyRecord)
                        .IncludeAll(y => y.ChildRecords)
                             .ThenInclude(y => y.TypeRecord);
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var parent = repository.MakeQueryable(include).First(e => e.FieldA == "1_A");

@@ -19,7 +19,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
             {
                 var trace = traceService.GetTrace(guid);
             }
-            catch (UserContextException ex)
+            catch (AdminkaException ex)
             {
                 if (ex.Code != "TEST")
                     throw;
@@ -38,7 +38,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
             }
             catch(AggregateException ex)
             {
-                if (ex.InnerExceptions.Count > 0 && ex.InnerExceptions[0] is UserContextException userContextException)
+                if (ex.InnerExceptions.Count > 0 && ex.InnerExceptions[0] is AdminkaException userContextException)
                 {
                     if (userContextException.Code != "TEST")
                         throw;
@@ -59,7 +59,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
                 {
                     var trace = await traceService.GetTrace(guid);
                 }
-                catch (UserContextException ex)
+                catch (AdminkaException ex)
                 {
                     if (ex.Code != "TEST")
                         throw;

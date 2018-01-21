@@ -20,12 +20,12 @@ namespace DashboardCode.Routines.Storage.EfCore
             ObjectExtensions.Detach(entity, include);
         }
 
-        public static Include<T> AppendModelFields<T>(this Include<T> include, DbContext context) where T : class
+        public static Include<T> AppendModelFields<T>(this Include<T> include, IModel model) where T : class
         {
-            void appendModelFieldsRecursive(ChainNode node, IModel model)
+            void appendModelFieldsRecursive(ChainNode node)
             {
                 foreach (var n in node.Children)
-                    appendModelFieldsRecursive(n.Value, model);
+                    appendModelFieldsRecursive(n.Value);
                 var entityType = model.FindEntityType(node.Type);
                 if (entityType != null)
                 {
@@ -36,17 +36,17 @@ namespace DashboardCode.Routines.Storage.EfCore
                 }
             }
             var root = include.CreateChainNode();
-            appendModelFieldsRecursive(root, context.Model);
+            appendModelFieldsRecursive(root);
             var @value = root.ComposeInclude<T>();
             return @value;
         }
 
-        public static Include<T> AppendModelFieldsIfEmpty<T>(this Include<T> include, DbContext context) where T : class
+        public static Include<T> AppendModelFieldsIfEmpty<T>(this Include<T> include, IModel model) where T : class
         {
-            void appendModelFieldsRecursive(ChainNode node, IModel model)
+            void appendModelFieldsRecursive(ChainNode node)
             {
                 foreach (var n in node.Children)
-                    appendModelFieldsRecursive(n.Value, model);
+                    appendModelFieldsRecursive(n.Value);
 
                 var entityType = model.FindEntityType(node.Type);
                 if (entityType != null)
@@ -58,14 +58,14 @@ namespace DashboardCode.Routines.Storage.EfCore
                 }
             }
             var root = include.CreateChainNode();
-            appendModelFieldsRecursive(root, context.Model);
+            appendModelFieldsRecursive(root);
             var @value = root.ComposeInclude<T>();
             return @value;
         }
 
-        public static Include<T> ExtractNavigationsAppendKeyLeafs<T>(this Include<T> include, DbContext context) where T : class
+        public static Include<T> ExtractNavigationsAppendKeyLeafs<T>(this Include<T> include, IModel model) where T : class
         {
-            void extractNavigationsAppendKeyLeafsRecursive(ChainNode source, ChainNode destination, IModel model)
+            void extractNavigationsAppendKeyLeafsRecursive(ChainNode source, ChainNode destination)
             {
                 var entityType = model.FindEntityType(source.Type);
                 if (entityType != null)
@@ -78,7 +78,7 @@ namespace DashboardCode.Routines.Storage.EfCore
                         if (propertyInfo != null)
                         {
                             var childDestination = child.CloneChainPropertyNode(destination);
-                            extractNavigationsAppendKeyLeafsRecursive(child, childDestination, model);
+                            extractNavigationsAppendKeyLeafsRecursive(child, childDestination);
                         }
                     }
 
@@ -90,14 +90,14 @@ namespace DashboardCode.Routines.Storage.EfCore
             }
             var root = include.CreateChainNode();
             var destinaion = new ChainNode(root.Type);
-            extractNavigationsAppendKeyLeafsRecursive(root, destinaion, context.Model);
+            extractNavigationsAppendKeyLeafsRecursive(root, destinaion);
             var @value = destinaion.ComposeInclude<T>();
             return @value;
         }
 
-        public static Include<T> ExtractNavigations<T>(this Include<T> include, DbContext context) where T : class
+        public static Include<T> ExtractNavigations<T>(this Include<T> include, IModel model) where T : class
         {
-            void extractNavigationsAppendKeyLeafsRecursive(ChainNode source, ChainNode destination, IModel model)
+            void extractNavigationsAppendKeyLeafsRecursive(ChainNode source, ChainNode destination)
             {
                 var entityType = model.FindEntityType(source.Type);
                 if (entityType != null)
@@ -111,14 +111,14 @@ namespace DashboardCode.Routines.Storage.EfCore
                         {
                             var childDestination = child.CloneChainPropertyNode(destination);
                             //childDestination.AddChild(propertyInfo);
-                            extractNavigationsAppendKeyLeafsRecursive(child, childDestination, model);
+                            extractNavigationsAppendKeyLeafsRecursive(child, childDestination);
                         }
                     }
                 }
             }
             var root = include.CreateChainNode();
             var destinaion = new ChainNode(root.Type);
-            extractNavigationsAppendKeyLeafsRecursive(root, destinaion, context.Model);
+            extractNavigationsAppendKeyLeafsRecursive(root, destinaion);
             var @value = destinaion.ComposeInclude<T>();
             return @value;
         }

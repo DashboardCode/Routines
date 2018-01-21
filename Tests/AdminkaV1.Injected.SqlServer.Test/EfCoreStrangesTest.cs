@@ -16,14 +16,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             TestIsland.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var applicationConfiugration = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, applicationConfiugration, new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var rh = dataAccess.CreateRepositoryHandler<ParentRecord>(false);
+                var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(
                     (repository, batch) =>
                     {
@@ -62,14 +63,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             TestIsland.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var co = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, co, new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var rh = dataAccess.CreateRepositoryHandler<ParentRecord>(true);
+                var rh = ormHandlerFactory.Create<ParentRecord>(true);
                 rh.Handle(
                     (repository,batch) =>
                     {

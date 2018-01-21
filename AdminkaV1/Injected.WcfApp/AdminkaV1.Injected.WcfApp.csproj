@@ -32,6 +32,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -133,7 +134,6 @@
   <ItemGroup>
     <Compile Include="DataContractConstants.cs" />
     <Compile Include="TraceService.svc.cs" />
-    <Compile Include="WcfApplicationFactory.cs" />
     <Compile Include="ITraceService.cs" />
     <Compile Include="WcfException.cs" />
     <Compile Include="WcfRoutine.cs" />
@@ -156,10 +156,6 @@
     <ProjectReference Include="..\..\NLogExtensibles\NLogExtensibles.csproj">
       <Project>{0a46eac2-a602-4840-a0f8-b5d82b05fa2a}</Project>
       <Name>NLogExtensibles</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj">
-      <Project>{5cec7388-fba6-4542-a23a-5c6a5ba607b9}</Project>
-      <Name>Routines.Configuration.NETFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Routines\Routines.csproj">
       <Project>{7F19BF12-3F67-4185-A8F1-48BDC6129915}</Project>

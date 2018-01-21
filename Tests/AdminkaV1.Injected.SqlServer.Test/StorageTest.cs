@@ -22,16 +22,17 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public void TestStore()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, admikaConfigurationFacade, new { input = "Input text" });
             int newGroupId = 0;
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
                 var group = new Group{
                     GroupName = "TestStore",
                     GroupAdName = "TestStore\\TestStore"
                 };
 
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<Group>();
+                var repositoryHandler = ormHandlerFactory.Create<Group>();
                 // Create
                 repositoryHandler.Handle((repository, storage) =>
                 {
@@ -56,14 +57,14 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                                 selectedPrivileges, 
                                 (e1, e2) => e1.GroupId == e2.GroupId
                             );
-                        }).ThrowIfNotNull("Test failed");
+                        }).ThrowIfFailed("Test failed");
                     newGroupId = group.GroupId;
                 });
             });
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<Group>();
+                var repositoryHandler = ormHandlerFactory.Create<Group>();
                 // Update
                 var entity = new Group() { GroupId = newGroupId, GroupName = "TestStore2", GroupAdName = "TestStore\\TestStore2" };
                 repositoryHandler.Handle((repository, storage) =>
@@ -94,9 +95,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
             // Remove
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<Group>();
+                var repositoryHandler = ormHandlerFactory.Create<Group>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var group = repository.Find(e => e.GroupId == newGroupId);
@@ -108,9 +109,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
             // Remove 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<Group>();
+                var repositoryHandler = ormHandlerFactory.Create<Group>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var groups = repository.List(e => e.GroupName == "TestStore");
@@ -129,14 +130,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public void TestStoreUpdateRelations()
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
+            var applicaionFactory = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, applicaionFactory, new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var rh = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var rh = ormHandlerFactory.Create<ParentRecord>();
                 rh.Handle(
                     (repository, batch) =>
                     {

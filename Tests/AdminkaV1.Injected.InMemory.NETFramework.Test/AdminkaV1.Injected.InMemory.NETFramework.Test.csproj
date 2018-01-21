@@ -29,6 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -49,7 +50,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -66,10 +66,6 @@
     <ProjectReference Include="..\..\AdminkaV1\Injected.NETFramework\AdminkaV1.Injected.NETFramework.csproj">
       <Project>{02666e1b-53c7-42db-ac39-a16127dd5c81}</Project>
       <Name>AdminkaV1.Injected.NETFramework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj">
-      <Project>{5cec7388-fba6-4542-a23a-5c6a5ba607b9}</Project>
-      <Name>Routines.Configuration.NETFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Routines\Routines.csproj">
       <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>

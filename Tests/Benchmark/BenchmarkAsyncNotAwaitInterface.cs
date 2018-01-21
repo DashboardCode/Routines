@@ -1,11 +1,7 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
-using DashboardCode.Routines.Json;
 using System.Threading.Tasks;
 
 namespace Benchmark
@@ -46,6 +42,14 @@ namespace Benchmark
         }
 
         [Benchmark]
+        public int FromResult()
+        {
+            var t = new FromResultTest();
+            var t2 = t.DoAsync(context);
+            return t2.Result;
+        }
+
+        [Benchmark]
         public int Yield()
         {
             var t = new YieldTest();
@@ -58,6 +62,11 @@ namespace Benchmark
         {
             int Length { get; }
             Task DoAsync(string context);
+        }
+
+        public interface ITestInterface2
+        {
+            Task<int> DoAsync(string context);
         }
 
         class CompletedAwaitTest : ITestInterface
@@ -99,6 +108,15 @@ namespace Benchmark
             {
                 Length = context.Length;
                 await Task.Yield();
+            }
+        }
+
+        class FromResultTest : ITestInterface2
+        {
+            public async Task<int> DoAsync(string context)
+            {
+                var i = context.Length;
+                return await Task.FromResult(i);
             }
         }
     }

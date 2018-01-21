@@ -22,9 +22,9 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
             {
                 if (ex.InnerExceptions.Count > 0 && ex.InnerExceptions[0] is FaultException<RoutineError> faultException)
                 {
-                    if (faultException.Detail.UserContextExceptionCode != null)
+                    if (faultException.Detail.AdminkaExceptionCode != null)
                     {
-                        var baseException = new UserContextException(faultException.Message, faultException, faultException.Detail.UserContextExceptionCode);
+                        var baseException = new AdminkaException(faultException.Message, faultException, faultException.Detail.AdminkaExceptionCode);
                         baseException.CopyData(faultException.Detail.Data);
                         throw baseException;
                     }
@@ -41,13 +41,13 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
         {
             var routineError = exception.Detail;
             stringBuilder.AppendMarkdownLine(nameof(FaultException<RoutineError>) + " specific:");
-            stringBuilder.Append("   ").AppendMarkdownProperty("FaultCode.Name", exception.Code.Name);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.UserContextExceptionCode", routineError.UserContextExceptionCode);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.RoutineGuid.CorrelationToken", routineError.RoutineGuid.CorrelationToken.ToString());
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.RoutineGuid.Namespace", routineError.RoutineGuid.Namespace);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.RoutineGuid.Type", routineError.RoutineGuid.Type);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.RoutineGuid.Member", routineError.RoutineGuid.Member);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.Details", routineError.Details);
+            stringBuilder.Append("   ").AppendMarkdownProperty($"{nameof(exception)}.{nameof(exception.Code)}.{nameof(exception.Code.Name)}", exception.Code.Name);
+            stringBuilder.Append("   ").AppendMarkdownProperty($"{nameof(routineError)}.{nameof(routineError.AdminkaExceptionCode)}", routineError.AdminkaExceptionCode);
+            stringBuilder.Append("   ").AppendMarkdownProperty($"{nameof(routineError)}.{nameof(routineError.RoutineGuid)}.{nameof(routineError.RoutineGuid.CorrelationToken)}", routineError.RoutineGuid.CorrelationToken.ToString());
+            stringBuilder.Append("   ").AppendMarkdownProperty($"{nameof(routineError)}.{nameof(routineError.RoutineGuid)}.{nameof(routineError.RoutineGuid.Namespace)}", routineError.RoutineGuid.Namespace);
+            stringBuilder.Append("   ").AppendMarkdownProperty($"{nameof(routineError)}.{nameof(routineError.RoutineGuid)}.{nameof(routineError.RoutineGuid.Type)}", routineError.RoutineGuid.Type);
+            stringBuilder.Append("   ").AppendMarkdownProperty($"{nameof(routineError)}.{nameof(routineError.RoutineGuid)}.{nameof(routineError.RoutineGuid.Member)}", routineError.RoutineGuid.Member);
+            stringBuilder.Append("   ").AppendMarkdownProperty($"{nameof(routineError)}.{nameof(routineError.Details)}", routineError.Details);
         }
 
         public static void AppendWcfClientFaultException(StringBuilder stringBuilder, Exception exception)

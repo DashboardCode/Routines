@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.SqlServer;
+
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
@@ -25,19 +26,14 @@ namespace DashboardCode.AdminkaV1.Injected
     public static class InjectedManager
     {
         #region Meta
-        public readonly static StorageMetaService StorageMetaService = new StorageMetaService(Analyze);
-
-        private static List<FieldMessage> Analyze(this Exception exception, StorageModel storageModel)
-        {
-            var list = StorageResultExtensions.AnalyzeException(exception,
-                  (ex, l) => {
-                      var errorBuilder = new ErrorBuilder(l, storageModel, "");
-                      DataAccessEfCoreManager.Analyze(ex, errorBuilder, (ex2) => SqlServerManager.Analyze(ex2, errorBuilder));
-                      SqlServerManager.Analyze(ex, errorBuilder);
+        public readonly static StorageMetaService StorageMetaService = new StorageMetaService(
+            (exception, storageModel, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(exception, storageModel, genericErrorField,
+                  (ex, storageResultBuilder) => {
+                      DataAccessEfCoreManager.Analyze(ex, storageResultBuilder);
+                      SqlServerManager.Analyze(ex, storageResultBuilder);
                   }
-            );
-            return list;
-        }
+            )
+        );
         #endregion
 
         public static IIdentity GetDefaultIdentity()
@@ -75,8 +71,8 @@ namespace DashboardCode.AdminkaV1.Injected
             string text = ExceptionExtensions.Markdown(exception,
                 (sb, ex) =>
                 {
-                    if (ex is UserContextException)
-                        sb.AppendUserContextException((UserContextException)ex);
+                    if (ex is AdminkaException)
+                        sb.AppendUserContextException((AdminkaException)ex);
                     DataAccessEfCoreManager.Append(sb, ex);
                     SqlServerManager.Append(sb, ex);
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
@@ -88,10 +84,10 @@ namespace DashboardCode.AdminkaV1.Injected
             return text;
         }
 
-        private static void AppendUserContextException(this StringBuilder stringBuilder, UserContextException exception)
+        private static void AppendUserContextException(this StringBuilder stringBuilder, AdminkaException exception)
         {
             var userContextException = exception;
-            stringBuilder.AppendMarkdownLine(nameof(UserContextException) + " specific:");
+            stringBuilder.AppendMarkdownLine(nameof(AdminkaException) + " specific:");
             stringBuilder.Append("   ").AppendMarkdownProperty("Code", userContextException.Code);
         }
         #endregion
@@ -214,6 +210,52 @@ namespace DashboardCode.AdminkaV1.Injected
                     ex => DefaultRoutineTagTransformException(ex, t, markdownException));
             };
         }
-#endregion
+        #endregion
+
+
+        public static AdminkaDbContext CreateAdminkaDbContext(
+            IAdmikaConfigurationFacade  admikaConfigurationFacade,
+            MemberTag memberTag, 
+            UserContext userContext,
+            bool hasVerbose = false,
+            Action<DateTime, string> verbose = null
+            )
+        {
+            var routineGuid = new RoutineGuid(memberTag);
+            var configurationContainerFactory = new ContainerFactory(admikaConfigurationFacade);
+            var container = configurationContainerFactory.CreateContainer(routineGuid, userContext);
+
+            // NOTE : alternative how to build verbose logger
+            if (hasVerbose && verbose == null)
+            {
+                Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory =
+                    ComposeNLogTransients(Markdown, DefaultRoutineTagTransformException);
+                var routineLoggingTransients = loggingTransientsFactory(routineGuid, container);
+                var basicLogging = routineLoggingTransients.BasicRoutineLoggingAdapter;
+                var bufferedVerboseLoggingAdapter = new Routines.Injected.BufferedVerboseLogging(
+                    basicLogging,
+                    basicLogging.LogBufferedVerbose,
+                    basicLogging.ShouldVerboseWithStackTrace
+                    );
+                verbose = bufferedVerboseLoggingAdapter.LogVerbose;
+            }
+
+            var closure = new RoutineClosure<UserContext>(userContext, routineGuid, hasVerbose?verbose:null, container);
+            var adminkaStorageConfiguration = admikaConfigurationFacade.ResolveAdminkaStorageConfiguration();
+
+            var optionsFactoryContainer = new AdminkaDbContextContainer(adminkaStorageConfiguration);
+            var constructor = optionsFactoryContainer.ResolveAdminkaDbContextConstructor();
+            var adminkaDbContext = constructor(closure);
+
+            //  NOTE :  alternative how to build the same quick way
+            //  var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, installerApplicationFactory, new { });
+            //  return routine.Handle(
+            //    (closure, adminkaDbContextFactory) => {
+            //        var dbContext = adminkaDbContextFactory.Resolve();
+            //        return dbContext;
+            //    });
+
+            return adminkaDbContext;
+        }
     }
 }

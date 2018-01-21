@@ -20,9 +20,9 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
             }
             catch (FaultException<RoutineError> ex)
             {
-                if (ex.Detail.UserContextExceptionCode != null)
+                if (ex.Detail.AdminkaExceptionCode != null)
                 {
-                    var baseException = new UserContextException(ex.Message, ex, ex.Detail.UserContextExceptionCode);
+                    var baseException = new AdminkaException(ex.Message, ex, ex.Detail.AdminkaExceptionCode);
                     baseException.CopyData(ex.Detail.Data);
                     throw baseException;
                 }
@@ -38,9 +38,9 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
         //{
         //    if (ex.InnerExceptions.Count > 0 && ex.InnerExceptions[0] is FaultException<RoutineError> faultException)
         //    {
-        //        if (faultException.Detail.UserContextExceptionCode != null)
+        //        if (faultException.Detail.AdminkaExceptionCode != null)
         //        {
-        //            var baseException = new UserContextException(ex.Message, ex, faultException.Detail.UserContextExceptionCode);
+        //            var baseException = new UserContextException(ex.Message, ex, faultException.Detail.AdminkaExceptionCode);
         //            baseException.CopyData(faultException.Detail.Data);
         //            throw baseException;
         //        }
@@ -52,23 +52,10 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
         //    throw;
         //}
 
-        internal static void AppendFaultException(StringBuilder stringBuilder, FaultException<RoutineError> exception)
-        {
-            var routineError = exception.Detail;
-            stringBuilder.AppendMarkdownLine(nameof(FaultException<RoutineError>) + " specific:");
-            stringBuilder.Append("   ").AppendMarkdownProperty("FaultCode.Name", exception.Code.Name);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.UserContextExceptionCode", routineError.UserContextExceptionCode);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.RoutineGuid.CorrelationToken", routineError.RoutineGuid.CorrelationToken.ToString());
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.RoutineGuid.Namespace", routineError.RoutineGuid.Namespace);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.RoutineGuid.Type", routineError.RoutineGuid.Type);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.RoutineGuid.Member", routineError.RoutineGuid.Member);
-            stringBuilder.Append("   ").AppendMarkdownProperty("RoutineError.Details", routineError.Details);
-        }
-
         public static void AppendWcfClientFaultException(StringBuilder stringBuilder, Exception exception)
         {
-            if (exception is FaultException<RoutineError> faultException)
-                AppendFaultException(stringBuilder, faultException);
+            TraceServiceProxy.AppendWcfClientFaultException(stringBuilder, exception);
         }
+
     }
 }

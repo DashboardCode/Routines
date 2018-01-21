@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
+using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
@@ -9,13 +10,13 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        readonly AdminkaDbContextHandler dbContextManager;
-        public AuthenticationService(AdminkaDbContextHandler dbContextManager)
-            => this.dbContextManager = dbContextManager;
+        readonly RepositoryDbContextHandler<UserContext, AdminkaDbContext> repositoryDbContextHandler;
+        public AuthenticationService(RepositoryDbContextHandler<UserContext, AdminkaDbContext> repositoryDbContextHandler)
+            => this.repositoryDbContextHandler = repositoryDbContextHandler;
         
         public User GetUser(string loginName, string firstName, string secondName, IEnumerable<string> adGroupsNames)
         {
-            var user = dbContextManager.Handle(dbContext =>
+            var user = repositoryDbContextHandler.Handle(dbContext =>
             {
                 using (var transaction = dbContext.Database.BeginTransaction())
                 {

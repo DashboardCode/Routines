@@ -10,8 +10,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         {
             Clear(databaseName);
 
-            var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
-            routine.Handle((state, dataAccess) =>
+            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), admikaConfigurationFacade, new { input = "Input text" });
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
                 var typeRecord1 = new TypeRecord()
                 {
@@ -55,7 +56,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     FieldCB2 = "3_3"
                 };
 
-                var parentRecordHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var parentRecordHandler = ormHandlerFactory.Create<ParentRecord>();
                 parentRecordHandler.Handle((repository, storage) =>
                     storage.Handle(batch =>
                     {
@@ -63,13 +64,13 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch.Add(parentRecord2);
                         batch.Add(parentRecord3);
                     })
-                    .ThrowIfNotNull("Can't add TestParentRecord")
+                    .ThrowIfFailed("Can't add TestParentRecord")
                 );
 
-                var typeRecordHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var typeRecordHandler = ormHandlerFactory.Create<TypeRecord>();
                 typeRecordHandler.Handle((repository, storage) =>
                     storage.Handle(batch => { batch.Add(typeRecord1); batch.Add(typeRecord2); })
-                        .ThrowIfNotNull("Can't add TestTypeRecord")
+                        .ThrowIfFailed("Can't add TestTypeRecord")
                 );
 
                 var childRecord1 = new ChildRecord()
@@ -88,10 +89,10 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     XmlField2 = "<xml></xml>"
                 };
 
-                var childRecordHandler = dataAccess.CreateRepositoryHandler<ChildRecord>();
+                var childRecordHandler = ormHandlerFactory.Create<ChildRecord>();
                 childRecordHandler.Handle((repository, storage) =>
                     storage.Handle(batch => { batch.Add(childRecord1); batch.Add(childRecord2); })
-                        .ThrowIfNotNull("Can't add TestChildRecord")
+                        .ThrowIfFailed("Can't add TestChildRecord")
                 );
 
                 var hierarchyRecord1 = new HierarchyRecord()
@@ -119,76 +120,77 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     HierarchyRecordTitle = "Chierarchy 5"
                 };
 
-                var hierarchyRecordHandler = dataAccess.CreateRepositoryHandler<HierarchyRecord>();
+                var hierarchyRecordHandler = ormHandlerFactory.Create<HierarchyRecord>();
                 hierarchyRecordHandler.Handle((repository, storage) =>
                     storage.Handle(batch => { batch.Add(hierarchyRecord1); batch.Add(hierarchyRecord2); batch.Add(hierarchyRecord3); batch.Add(hierarchyRecord4); batch.Add(hierarchyRecord5); })
-                        .ThrowIfNotNull("Can't add HierarchyRecord")
+                        .ThrowIfFailed("Can't add HierarchyRecord")
                 );
                 var parentRecordHierarchyRecord1 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord1.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
                 var parentRecordHierarchyRecord2 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord2.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
                 var parentRecordHierarchyRecord3 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord3.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
                 var parentRecordHierarchyRecord4 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord4.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
                 var parentRecordHierarchyRecord5 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord5.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
-                var manyManyHandler = dataAccess.CreateRepositoryHandler<ParentRecordHierarchyRecord>();
+                var manyManyHandler = ormHandlerFactory.Create<ParentRecordHierarchyRecord>();
                 manyManyHandler.Handle((repository, storage) =>
                     storage.Handle(batch => {
                         batch.Add(parentRecordHierarchyRecord1); batch.Add(parentRecordHierarchyRecord2);
                         batch.Add(parentRecordHierarchyRecord3); batch.Add(parentRecordHierarchyRecord4);
                         batch.Add(parentRecordHierarchyRecord5);
-                    }).ThrowIfNotNull("Can't add ParentRecordHierarchyRecord")
+                    }).ThrowIfFailed("Can't add ParentRecordHierarchyRecord")
                 );
             });
         }
 
         public static void Clear(string databaseName = "AdminkaV1")
         {
-            var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
-            routine.Handle((state, dataAccess) =>
+            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), admikaConfigurationFacade, new { input = "Input text" });
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                dataAccess.CreateRepositoryHandler<ChildRecord>().Handle((repository, storage) =>
+                ormHandlerFactory.Create<ChildRecord>().Handle((repository, storage) =>
                 {
                     storage.Handle(batch =>
                     {
                         var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
-                    }).ThrowIfNotNull();
+                    }).ThrowIfFailed();
                 });
-                dataAccess.CreateRepositoryHandler<ParentRecordHierarchyRecord>().Handle((repository, storage) =>
+                ormHandlerFactory.Create<ParentRecordHierarchyRecord>().Handle((repository, storage) =>
                 {
                     storage.Handle(batch =>
                     {
                         var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
-                    }).ThrowIfNotNull();
+                    }).ThrowIfFailed();
                 });
-                dataAccess.CreateRepositoryHandler<ParentRecord>().Handle((repository, storage) =>
+                ormHandlerFactory.Create<ParentRecord>().Handle((repository, storage) =>
                 {
                     storage.Handle(batch =>
                     {
                         var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
-                    }).ThrowIfNotNull();
+                    }).ThrowIfFailed();
                 });
-                dataAccess.CreateRepositoryHandler<TypeRecord>().Handle((repository, storage) =>
+                ormHandlerFactory.Create<TypeRecord>().Handle((repository, storage) =>
                 {
                     storage.Handle(batch =>
                     {
                         var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
-                    }).ThrowIfNotNull();
+                    }).ThrowIfFailed();
                 });
-                dataAccess.CreateRepositoryHandler<ParentRecordHierarchyRecord>().Handle((repository, storage) =>
+                ormHandlerFactory.Create<ParentRecordHierarchyRecord>().Handle((repository, storage) =>
                 {
                     storage.Handle(batch =>
                     {
                         var list = repository.List();
                         foreach (var e in list)
                             batch.Remove(e);
-                    }).ThrowIfNotNull();
+                    }).ThrowIfFailed();
                 });
             });
         }

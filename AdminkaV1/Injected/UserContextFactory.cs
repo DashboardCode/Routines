@@ -4,29 +4,30 @@ using System.Security.Principal;
 
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
-    public class AuthenticationService
+    public class UserContextFactory
     {
         private readonly Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory;
-        private readonly RepositoryHandlerFactory repositoryHandlerFactory;
+        private readonly FactoryProxy factoryProxy2;
         private readonly UserContext systemUserContext;
-        private readonly ConfigurationContainerFactory configurationContainerFactory;
-        public AuthenticationService(
+        private readonly ContainerFactory configurationContainerFactory;
+        public UserContextFactory(
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            RepositoryHandlerFactory repositoryHandlerFactory,
-            ConfigurationContainerFactory configurationContainerFactory)
+            FactoryProxy ormHandlerFactory,
+            ContainerFactory configurationContainerFactory)
         {
             this.loggingTransientsFactory = loggingTransientsFactory;
-            this.repositoryHandlerFactory = repositoryHandlerFactory;
+            this.factoryProxy2 = ormHandlerFactory;
             systemUserContext = new UserContext("Authentication");
             this.configurationContainerFactory = configurationContainerFactory;
         }
 
-        public UserContext GetUserContext(RoutineGuid routineGuid, IIdentity identity, CultureInfo cultureInfo)
+        public UserContext Create(RoutineGuid routineGuid, IIdentity identity, CultureInfo cultureInfo)
         {
             var authenticationRoutineGuid = new RoutineGuid(routineGuid.CorrelationToken, new MemberTag(this));
             var specifyResolver = configurationContainerFactory.ComposeContainerFactory(authenticationRoutineGuid);
@@ -47,16 +48,14 @@ namespace DashboardCode.AdminkaV1.Injected
                 systemUserContext,
                 systemUserContextResolver,
                 loggingTransientsFactory,
-                repositoryHandlerFactory,
+                factoryProxy2,
                 input);
-            var userContext = routine.Handle(state =>
+            var userContext = routine.Handle(closure =>
             {
                 try
                 {
-                    var dataAccessServices = repositoryHandlerFactory.CreateDataAccessFactory(state); 
-                    var dbContextManager = dataAccessServices.CreateDbContextHandler();
-                    var servicesContainer = new ServicesContainer(dbContextManager);
-                    var authenticationService = new DataAccessEfCore.Services.AuthenticationService(dbContextManager); 
+                    var adminkaDbContextPrimitiveHandler = factoryProxy2.CreateRepositoryAdminkaDbContextHandlerContainer(closure).Resolve(); 
+                    var authenticationService = new DataAccessEfCore.Services.AuthenticationService(adminkaDbContextPrimitiveHandler); 
                     var user = default(User);
                     if (useAdAuthorization)
                     {
@@ -74,7 +73,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 }
                 catch (Exception ex)
                 {
-                    throw new UserContextException("User authetication and authorization service generates an error because of configuration or network connection problems", ex);
+                    throw new AdminkaDataAccessEfCoreException("User authetication and authorization service generates an error because of configuration or network connection problems", closure, ex);
                 }
             });
             return userContext;

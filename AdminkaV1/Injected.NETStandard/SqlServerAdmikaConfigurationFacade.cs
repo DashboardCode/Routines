@@ -3,27 +3,44 @@
 using DashboardCode.Routines;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 
-namespace DashboardCode.AdminkaV1.Injected.SqlServer.NETCore.Test
+namespace DashboardCode.AdminkaV1.Injected.NETStandard
 {
-    public class ApplicationFactory : IApplicationFactory
+    public class SqlServerAdmikaConfigurationFacade : IAdmikaConfigurationFacade
     {
         public IConfigurationRoot ConfigurationRoot { get; private set; }
         readonly string connectionStringName;
+        readonly string migrationAssembly;
         readonly IConfigurationManagerLoader configurationManagerLoader;
-        public ApplicationFactory(string connectionStringName= "AdminkaConnectionString")
+
+        private static IConfigurationRoot GetDefaultConfigurationRoot()
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
-            this.ConfigurationRoot = configurationBuilder.Build();
+            var configurationRoot = configurationBuilder.Build();
+            return configurationRoot;
+        }
+
+        public SqlServerAdmikaConfigurationFacade(string connectionStringName = "AdminkaConnectionString", string migrationAssembly = null) : this(
+            GetDefaultConfigurationRoot(), connectionStringName, migrationAssembly)
+        {
+
+        }
+
+        public SqlServerAdmikaConfigurationFacade(IConfigurationRoot configurationRoot, string connectionStringName = "AdminkaConnectionString", string migrationAssembly = null)
+        {
+            this.ConfigurationRoot = configurationRoot;
             this.connectionStringName = connectionStringName;
+            this.migrationAssembly = migrationAssembly;
             this.configurationManagerLoader = new ConfigurationManagerLoader(ConfigurationRoot);
         }
+
 
         public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
             new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
 
-        public AdminkaStorageConfiguration CreateAdminkaStorageConfiguration()
+        public AdminkaStorageConfiguration ResolveAdminkaStorageConfiguration()
         {
             var connectionString = configurationManagerLoader.GetConnectionString(connectionStringName);
             return new AdminkaStorageConfiguration(connectionString, null, StorageType.SQLSERVER);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace DashboardCode.Routines.Storage.EfCore
@@ -7,13 +6,13 @@ namespace DashboardCode.Routines.Storage.EfCore
     public class OrmStorage<TEntity> : IOrmStorage<TEntity> where TEntity : class
     {
         private readonly DbContext dbContext;
-        private readonly Func<Exception, List<FieldMessage>> analyzeException;
+        private readonly Func<Exception, StorageResult> analyzeException;
         private readonly Action<object> setAuditProperties;
         private readonly Func<object, bool> isAuditable;
 
         public OrmStorage(
             DbContext dbContext,
-            Func<Exception, List<FieldMessage>> analyzeException,
+            Func<Exception, StorageResult> analyzeException,
             Func<object, bool> isAuditable,
             Action<object> setAuditProperties)
         {
@@ -40,9 +39,9 @@ namespace DashboardCode.Routines.Storage.EfCore
             }
             catch (Exception exception)
             {
-                var list = analyzeException(exception);
-                if (list.Count > 0)
-                    return new StorageResult(exception, list);
+                var storageResult = analyzeException(exception);
+                if (!storageResult.IsOk())
+                    return storageResult;
                 throw;
             }
             return new StorageResult();
@@ -67,12 +66,12 @@ namespace DashboardCode.Routines.Storage.EfCore
     public class OrmStorage : IOrmStorage
     {
         private readonly DbContext context;
-        private readonly Func<Exception, List<FieldMessage>> analyzeException;
+        private readonly Func<Exception, StorageResult> analyzeException;
         private readonly Action<object> setAuditProperties;
 
         public OrmStorage(
             DbContext context,
-            Func<Exception, List<FieldMessage>> analyzeException,
+            Func<Exception, StorageResult> analyzeException,
             Action<object> setAuditProperties)
         {
             this.context = context;
@@ -90,9 +89,9 @@ namespace DashboardCode.Routines.Storage.EfCore
             }
             catch (Exception exception)
             {
-                var list = analyzeException(exception);
-                if (list.Count > 0)
-                    return new StorageResult(exception, list);
+                var storageResult = analyzeException(exception);
+                if (!storageResult.IsOk())
+                    return storageResult;
                 throw;
             }
             return new StorageResult();

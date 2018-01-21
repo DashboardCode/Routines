@@ -1,14 +1,16 @@
-﻿namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
+﻿#if NETCOREAPP1_1 || NETCOREAPP2_0
+    using DashboardCode.AdminkaV1.Injected.NETStandard;
+#else
+    using DashboardCode.AdminkaV1.Injected.NETFramework;
+#endif
+
+namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
     public static class ZoningSharedSourceManager
     {
-        public static IApplicationFactory GetConfiguration()
+        public static IAdmikaConfigurationFacade GetConfiguration()
         {
-#if NETCOREAPP1_1 || NETCOREAPP2_0
-            return new NETCore.Test.ApplicationFactory();
-#else
-            return new NETFramework.Test.ApplicationFactory();
-#endif
+            return new SqlServerAdmikaConfigurationFacade();
         }
     }
 }

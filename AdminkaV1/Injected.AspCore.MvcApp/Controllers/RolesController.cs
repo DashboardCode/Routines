@@ -11,7 +11,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
     public class RolesController : ConfigurableController
     {
         #region Meta
-        static IAdminkaBrowserMetaService metaBrowser;
         static ControllerMeta<Role, int> meta = new ControllerMeta<Role, int>(
             id => e => e.RoleId == id,
             Converters.TryParseInt,

@@ -39,11 +39,11 @@ namespace DashboardCode.Routines.Storage.SqlServer
         }
 
         #region Analyze
-        public static void Analyze(Exception exception, IErrorBuilder errorBuilder)
+        public static void Analyze(Exception exception, IStorageResultBuilder storageResultBuilder)
         {
-            if (errorBuilder != null)
+            if (storageResultBuilder != null)
                 if (exception is SqlException sqlException)
-                    AnalyzeSqlException(sqlException, errorBuilder);
+                    AnalyzeSqlException(sqlException, storageResultBuilder);
         }
 
         const string genericErrorField = "";
@@ -53,7 +53,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
         static Regex fieldUniqueConstraintRegex = new Regex("Violation of UNIQUE KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'");
         static Regex fieldPkConstraintRegex = new Regex(@"Violation of PRIMARY KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'. The duplicate key value is ((?<value>.*?)).");
         static Regex fieldCkRegex = new Regex("The (?<statementType>.*?) statement conflicted with the CHECK constraint \"(?<constraint>.*?)\". The conflict occurred in database \"(?<database>.*?)\", table \"(?<table>.*?)\", column '(?<column>.*?)'.");
-        public static void AnalyzeSqlException(this SqlException exception, IErrorBuilder errorBuilder)
+        public static void AnalyzeSqlException(this SqlException exception, IStorageResultBuilder errorBuilder)
         {
             var message = exception.Message;
             {

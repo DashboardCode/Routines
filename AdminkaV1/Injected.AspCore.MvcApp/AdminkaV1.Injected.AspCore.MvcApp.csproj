@@ -15,6 +15,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   
   <ItemGroup>
@@ -37,7 +38,6 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\Routines.AspNetCore\Routines.AspNetCore.csproj" />
-    <ProjectReference Include="..\..\Routines.Configuration.NETStandard\Routines.Configuration.NETStandard.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
     <ProjectReference Include="..\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj" />

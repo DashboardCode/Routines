@@ -20,7 +20,7 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
         [DataMember]
         public string Message                  { get; set; }
         [DataMember]
-        public string UserContextExceptionCode { get; set; }
+        public string AdminkaExceptionCode     { get; set; }
         [DataMember]
         public string Details                  { get; set; }
         /// <summary>

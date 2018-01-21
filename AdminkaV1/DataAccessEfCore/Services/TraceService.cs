@@ -1,29 +1,31 @@
 ﻿using System;
+
+using DashboardCode.Routines.Storage;
 using DashboardCode.AdminkaV1.LoggingDom;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class TraceService : ITraceService
     {
-        readonly AdminkaDbContextHandler dbContextHandler;
-        public TraceService(AdminkaDbContextHandler dbContextHandler)
+        readonly RepositoryDbContextHandler<UserContext, AdminkaDbContext> dbContextHandler;
+        public TraceService(RepositoryDbContextHandler<UserContext, AdminkaDbContext> dbContextHandler)
             => this.dbContextHandler = dbContextHandler;
 
         public Trace GetTrace(Guid correlationToken)
         {
             return dbContextHandler.Handle<Trace>(
-                dbContext =>
+                (dbContext,closure) =>
                 {
-                    throw new UserContextException($"User exception from '{nameof(GetTrace)}'","TEST");
+                    throw new AdminkaDataAccessEfCoreException($"User exception from '{nameof(GetTrace)}'", closure,  "TEST");
                 });
         }
 
         public void ResetTrace(Guid correlationToken)
         {
             dbContextHandler.Handle(
-                dbContext =>
+                (dbContext, closure) =>
                 {
-                    throw new UserContextException($"User exception from '{nameof(ResetTrace)}'", "TEST");
+                    throw new AdminkaDataAccessEfCoreException($"User exception from '{nameof(ResetTrace)}'", closure, "TEST");
                 });
         }
     }

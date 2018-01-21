@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DashboardCode.AdminkaV1.Injected.NETFramework;
 using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.WcfApp
@@ -8,15 +9,15 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
     {
         public WcfRoutine(MemberTag memberTag, string faultCodeNamespace, object input) 
             : this(new Routines.RoutineGuid(memberTag), GetUserContext(), faultCodeNamespace,
-                  new WcfApplicationFactory(), input)
+                  new SqlServerAdmikaConfigurationFacade(), input)
         {
         }
 
-        protected WcfRoutine(Routines.RoutineGuid routineGuid, UserContext userContext, string faultCodeNamespace, 
-            IApplicationFactory applicationFactory, object input)
+        protected WcfRoutine(Routines.RoutineGuid routineGuid, UserContext userContext, string faultCodeNamespace,
+            IAdmikaConfigurationFacade admikaConfigurationFacade,  object input)
             : base(routineGuid, userContext,
                   (ex, rg, md) => TransformException(ex, rg, faultCodeNamespace, md),
-                  applicationFactory, 
+                  admikaConfigurationFacade,
                   input)
         {
         }
@@ -28,10 +29,10 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
         {
             var message = default(string);
             var code = default(string);
-            if (exception is UserContextException)
+            if (exception is AdminkaException)
             {
                 message = exception.Message;
-                code = ((UserContextException)exception).Code;
+                code = ((AdminkaException)exception).Code;
             }
             else
             {
@@ -50,7 +51,7 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
                     Member = routineGuid.MemberTag.Member
                 },
                 Message = message,
-                UserContextExceptionCode = code,
+                AdminkaExceptionCode = code,
                 Details = markdownException(exception)
             };
 

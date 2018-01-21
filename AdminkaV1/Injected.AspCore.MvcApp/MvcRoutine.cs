@@ -9,6 +9,7 @@ using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.AdminkaV1.Injected.NETStandard;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -37,7 +38,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                        InjectedManager.Markdown,
                        InjectedManager.DefaultRoutineTagTransformException
                      ),
-                 new MvcApplicationFactory(controller.ConfigurationRoot),
+                 new SqlServerAdmikaConfigurationFacade(controller.ConfigurationRoot),
                  input)
         {
             controller.HttpContext.Items["routineGuid"] = routineGuid;
@@ -52,13 +53,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
         private MvcRoutine(ConfigurableController controller, RoutineGuid routineGuid,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingFactory,
-            IApplicationFactory applicationFactory,
+            IAdmikaConfigurationFacade admikaConfigurationFacade,
             object input) :
             base(
                 routineGuid,
                 controller.User.Identity,
                 loggingFactory,
-                applicationFactory,
+                admikaConfigurationFacade,
                 input)
         {
             this.Controller = controller;
@@ -161,7 +162,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  string viewName,
                  Func<
                     IRepository<TEntity>,
-                    Routine<UserContext>,
+                    RoutineClosure<UserContext>,
                     Func<
                        Func<
                             Func<bool>,
@@ -192,7 +193,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  string viewName,
                  Func<
                     IRepository<TEntity>,
-                    Routine<UserContext>,
+                    RoutineClosure<UserContext>,
                     Func<
                        Func<
                             Func<bool>,

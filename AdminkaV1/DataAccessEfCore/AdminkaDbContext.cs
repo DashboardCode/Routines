@@ -2,12 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
-using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.TestDom;
-using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+using DashboardCode.AdminkaV1.LoggingDom;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
@@ -15,6 +13,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     {
         static AdminkaDbContext()
         {
+            // test dependencies
             var loadit = new[] 
             {
                 typeof(Remotion.Linq.DefaultQueryProvider),

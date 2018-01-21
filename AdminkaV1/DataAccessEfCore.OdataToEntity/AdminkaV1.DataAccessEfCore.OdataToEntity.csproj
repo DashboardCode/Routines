@@ -6,6 +6,10 @@
     <RootNamespace>DashboardCode.AdminkaV1.DataAccessEfCore.OdataToEntity</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="OdataToEntity.EfCore" Version="1.3.0" />
   </ItemGroup>

@@ -11,13 +11,13 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public virtual void TestSerializtionRecursion()
         {
             var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
-            var record = routine.Handle((state, dataAccess) =>
+            var record = routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
                 Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
 
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 return repositoryHandler.Handle((repository, storage) =>
                 {
                     return repository.Find(e => e.TestTypeRecordId == "0000", include);
@@ -34,9 +34,9 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
-            var record = routine.Handle((state, dataAccess) =>
+            var record = routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 return repositoryHandler.Handle((repository, storage) =>
                 {
                     var entity = repository.Find(e => e.TestTypeRecordId == "0000", include);

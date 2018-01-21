@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.Injected;
+using DashboardCode.AdminkaV1.Injected.NETStandard;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
@@ -10,14 +11,11 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
     {
         public AdminkaDbContext CreateDbContext(string[] args)
         {
+            var installerApplicationFactory = new SqlServerAdmikaConfigurationFacade(/*migrationAssembly: "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp"*/);
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
-            var installerApplicationFactory = new InstallerApplicationFactory();
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, installerApplicationFactory, new { });
-            return routine.Handle(
-                (container, dataAccessServcies) => {
-                    var dbContext = dataAccessServcies.CreateAdminkaDbContext();
-                    return dbContext;
-                });
+            var tag = new MemberTag(this);
+            var adminkaDbContext = InjectedManager.CreateAdminkaDbContext(installerApplicationFactory,  tag, userContext);
+            return adminkaDbContext;
         }
     }
 }

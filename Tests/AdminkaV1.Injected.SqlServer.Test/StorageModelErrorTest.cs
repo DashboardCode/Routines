@@ -17,10 +17,11 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public void TestDatabaseFieldRequiredError() 
         {
             var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, ZoningSharedSourceManager.GetConfiguration(), new { input = "Input text" });
-            routine.Handle((state, dataAccess) =>
+            var applicaitonFactory = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext,  applicaitonFactory, new { input = "Input text" });
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t0 = new ParentRecord() { };
@@ -29,9 +30,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t0 = new ParentRecord() { FieldCA="1", FieldCB1 = "2", FieldCB2 = "3" };
@@ -50,19 +51,19 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 FieldCB2 = "3"
             };
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(parentRecord));
-                    storageError.ThrowIfNotNull("Add failed 1");
+                    storageError.ThrowIfFailed("Add failed 1");
                 });
             });
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t2 = new ParentRecord() { FieldA = "A", FieldB1 = "Ba", FieldB2 = "Ca",
@@ -75,9 +76,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t2 = new ParentRecord()
@@ -94,9 +95,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t2 = new ParentRecord() {
@@ -112,9 +113,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ParentRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t2 = new ParentRecord() {
@@ -136,12 +137,12 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 TypeRecordName="TestType"
             };
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    storage.Handle(batch => batch.Add(typeRecord)).ThrowIfNotNull("Can't add TestTypeRecord"); 
+                    storage.Handle(batch => batch.Add(typeRecord)).ThrowIfFailed("Can't add TestTypeRecord"); 
                 });
             });
 
@@ -153,23 +154,23 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 XmlField2 = "notxml"
             }; 
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<ChildRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<ChildRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    storage.Handle(batch => batch.Add(childRecord)).ThrowIfNotNull("Can't add TestChildRecord");
+                    storage.Handle(batch => batch.Add(childRecord)).ThrowIfFailed("Can't add TestChildRecord");
                 });
             });
 
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
                     TestTypeRecordId = "0000",
                     TypeRecordName = "TestType2"
                 };
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(t0));
@@ -178,14 +179,14 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             });
 
             // string that exceed its length limit
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
                     TestTypeRecordId = "0001x",
                     TypeRecordName = "TestType2"
                 };
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(t0));
@@ -194,14 +195,14 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             });
 
             // check constraint on INSERT
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
                     TestTypeRecordId = "0001",
                     TypeRecordName = "TestType2,,.."
                 };
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(t0));
@@ -210,9 +211,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             });
 
             // check constraint on UPDATE
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t1 = repository.Find(e => e.TestTypeRecordId == "0000");
@@ -223,9 +224,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             });
 
             // check NULL on UPDATE
-            routine.Handle((state, dataAccess) =>
+            routine.HandleOrmFactory((state, ormHandlerFactory) =>
             {
-                var repositoryHandler = dataAccess.CreateRepositoryHandler<TypeRecord>();
+                var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var t1 = repository.Find(e => e.TestTypeRecordId == "0000");

@@ -13,27 +13,29 @@
 </head>
 <body>
 <pre><code>
-BenchmarkDotNet=v0.10.10, OS=Windows 10 Redstone 2 [1703, Creators Update] (10.0.15063.726)
+BenchmarkDotNet=v0.10.11, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.192)
 Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
-Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
-.NET Core SDK=2.0.3
+Frequency=3233537 Hz, Resolution=309.2589 ns, Timer=TSC
+.NET Core SDK=2.1.2
   [Host] : .NET Core 2.0.3 (Framework 4.6.25815.02), 64bit RyuJIT
-  Clr    : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2115.0
+  Clr    : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2600.0
   Core   : .NET Core 2.0.3 (Framework 4.6.25815.02), 64bit RyuJIT
 </code></pre>
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>  Method</th><th>Job</th><th>Runtime</th><th>  Mean</th><th>Error</th><th>StdDev</th><th>   Min</th><th>   Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Allocated</th>
+<thead><tr><th>  Method</th><th>Job</th><th>Runtime</th><th>  Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>   Min</th><th>   Max</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
 </tr>
-</thead><tbody><tr><td>CompletedAwait</td><td>Clr</td><td>Clr</td><td>97.775 ns</td><td>1.9912 ns</td><td>2.6582 ns</td><td>93.746 ns</td><td>104.485 ns</td><td>98.416 ns</td><td>6</td><td>0.0075</td><td>-</td><td>24 B</td>
-</tr><tr><td>Completed</td><td>Clr</td><td>Clr</td><td>12.254 ns</td><td>0.2852 ns</td><td>0.7904 ns</td><td>11.005 ns</td><td>14.461 ns</td><td>12.158 ns</td><td>2</td><td>0.0076</td><td>-</td><td>24 B</td>
-</tr><tr><td>  Pragma</td><td>Clr</td><td>Clr</td><td>91.666 ns</td><td>1.8630 ns</td><td>2.2879 ns</td><td>87.121 ns</td><td>96.547 ns</td><td>91.648 ns</td><td>5</td><td>0.0075</td><td>-</td><td>24 B</td>
-</tr><tr><td>   Yield</td><td>Clr</td><td>Clr</td><td>1,913.335 ns</td><td>38.2067 ns</td><td>53.5605 ns</td><td>1,843.719 ns</td><td>2,045.178 ns</td><td>1,909.520 ns</td><td>7</td><td>0.0877</td><td>0.0038</td><td>320 B</td>
-</tr><tr><td>CompletedAwait</td><td>Core</td><td>Core</td><td>37.145 ns</td><td>0.5648 ns</td><td>0.5283 ns</td><td>36.400 ns</td><td>37.992 ns</td><td>37.187 ns</td><td>4</td><td>0.0076</td><td>-</td><td>24 B</td>
-</tr><tr><td>Completed</td><td>Core</td><td>Core</td><td>8.699 ns</td><td>0.1704 ns</td><td>0.1511 ns</td><td>8.395 ns</td><td>8.955 ns</td><td>8.701 ns</td><td>1</td><td>0.0076</td><td>-</td><td>24 B</td>
-</tr><tr><td>  Pragma</td><td>Core</td><td>Core</td><td>35.132 ns</td><td>0.7197 ns</td><td>0.7391 ns</td><td>34.033 ns</td><td>36.503 ns</td><td>35.061 ns</td><td>3</td><td>0.0076</td><td>-</td><td>24 B</td>
-</tr><tr><td>   Yield</td><td>Core</td><td>Core</td><td>2,128.040 ns</td><td>64.3668 ns</td><td>184.6804 ns</td><td>1,870.026 ns</td><td>2,651.805 ns</td><td>2,107.816 ns</td><td>8</td><td>0.0916</td><td>-</td><td>296 B</td>
+</thead><tbody><tr><td>CompletedAwait</td><td>Clr</td><td>Clr</td><td>95.253 ns</td><td>0.7491 ns</td><td>0.6641 ns</td><td>95.100 ns</td><td>94.461 ns</td><td>96.557 ns</td><td>7</td><td>0.0075</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>Completed</td><td>Clr</td><td>Clr</td><td>12.036 ns</td><td>0.0659 ns</td><td>0.0617 ns</td><td>12.026 ns</td><td>11.931 ns</td><td>12.154 ns</td><td>2</td><td>0.0076</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>  Pragma</td><td>Clr</td><td>Clr</td><td>87.868 ns</td><td>0.3923 ns</td><td>0.3670 ns</td><td>87.789 ns</td><td>87.336 ns</td><td>88.683 ns</td><td>6</td><td>0.0075</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>FromResult</td><td>Clr</td><td>Clr</td><td>107.009 ns</td><td>0.6671 ns</td><td>0.6240 ns</td><td>107.009 ns</td><td>106.204 ns</td><td>108.247 ns</td><td>8</td><td>0.0584</td><td>-</td><td>-</td><td>184 B</td>
+</tr><tr><td>   Yield</td><td>Clr</td><td>Clr</td><td>1,766.843 ns</td><td>26.5216 ns</td><td>24.8083 ns</td><td>1,770.383 ns</td><td>1,705.386 ns</td><td>1,800.653 ns</td><td>9</td><td>0.0877</td><td>0.0038</td><td>0.0019</td><td>320 B</td>
+</tr><tr><td>CompletedAwait</td><td>Core</td><td>Core</td><td>37.201 ns</td><td>0.1961 ns</td><td>0.1739 ns</td><td>37.227 ns</td><td>36.970 ns</td><td>37.559 ns</td><td>4</td><td>0.0076</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>Completed</td><td>Core</td><td>Core</td><td>9.017 ns</td><td>0.0690 ns</td><td>0.0577 ns</td><td>9.010 ns</td><td>8.925 ns</td><td>9.128 ns</td><td>1</td><td>0.0076</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>  Pragma</td><td>Core</td><td>Core</td><td>34.118 ns</td><td>0.4576 ns</td><td>0.4281 ns</td><td>34.259 ns</td><td>33.437 ns</td><td>34.792 ns</td><td>3</td><td>0.0076</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>FromResult</td><td>Core</td><td>Core</td><td>46.953 ns</td><td>1.2728 ns</td><td>1.1905 ns</td><td>46.467 ns</td><td>45.674 ns</td><td>49.868 ns</td><td>5</td><td>0.0533</td><td>-</td><td>-</td><td>168 B</td>
+</tr><tr><td>   Yield</td><td>Core</td><td>Core</td><td>2,480.980 ns</td><td>199.4416 ns</td><td>575.4347 ns</td><td>2,291.978 ns</td><td>1,810.644 ns</td><td>4,085.196 ns</td><td>10</td><td>0.0916</td><td>-</td><td>-</td><td>296 B</td>
 </tr></tbody></table>
 </body>
 </html>

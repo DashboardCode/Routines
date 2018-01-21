@@ -31,7 +31,7 @@ namespace Benchmark
             //var jO = b.TestFuncDynamicInvoke();
             //var jA = b.TestFunc();
             //var jB = b.TestFuncBuilded();
-            BenchmarkRunner.Run<BenchmarkStructOrClass>();
+            BenchmarkRunner.Run<BenchmarkAsyncNotAwaitInterface>();
         }
     }
 

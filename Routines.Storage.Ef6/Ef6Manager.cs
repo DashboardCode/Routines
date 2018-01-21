@@ -8,7 +8,7 @@ namespace DashboardCode.Routines.Storage.Ef6
 {
     public static class Ef6Manager
     {
-        public static void Analyze(Exception exception, IErrorBuilder erorrBuilder)
+        public static void Analyze(Exception exception, IStorageResultBuilder erorrBuilder)
         {
             if (exception is DbUpdateConcurrencyException dbUpdateConcurrencyException)
                 AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, erorrBuilder);
@@ -19,7 +19,7 @@ namespace DashboardCode.Routines.Storage.Ef6
         static Regex fieldPkOrUniqueConstraintNullRegexV1 = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
         static Regex fieldPkOrUniqueConstraintNullRegexV2 = new Regex("Unable to track an entity of type '(?<entity>.*?)' because alternate key property '(?<field>.*?)' is null.");
 
-        public static void AnalyzeInvalidOperationException(InvalidOperationException ex, IErrorBuilder erorrBuilder)
+        public static void AnalyzeInvalidOperationException(InvalidOperationException ex, IStorageResultBuilder erorrBuilder)
         {
             {
                 var matchCollectionV1 = fieldPkOrUniqueConstraintNullRegexV1.Matches(ex.Message);
@@ -46,9 +46,9 @@ namespace DashboardCode.Routines.Storage.Ef6
             }
         }
 
-        public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, IErrorBuilder erorrBuilder)
+        public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, IStorageResultBuilder erorrBuilder)
         {
-            erorrBuilder.AddConcurrencyException();
+            erorrBuilder.AddConcurrencyError();
         }
 
         public static void Append(StringBuilder sb, Exception ex)

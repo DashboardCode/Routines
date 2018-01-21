@@ -6,6 +6,10 @@
     <RootNamespace>DashboardCode.NLogExtensibles</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="NLog" Version="5.0.0-beta11" />
   </ItemGroup>

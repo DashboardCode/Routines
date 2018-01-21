@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -8,8 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.AdminkaV1.Injected.Configuration;
-using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
-using DashboardCode.Routines.Storage;
+using DashboardCode.AdminkaV1.Injected.NETStandard;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
 {
@@ -18,7 +16,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
         public static void Up(MigrationBuilder migrationBuilder, IModel targetModel)
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
-            var installerApplicationFactory = new InstallerApplicationFactory();
+            var installerApplicationFactory = new SqlServerAdmikaConfigurationFacade(/*migrationAssembly: "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp"*/);
             var routine = new AdminkaRoutineHandler(typeof(InitialCustoms).Namespace, nameof(InitialCustoms), nameof(Up), userContext, installerApplicationFactory, new { });
 
             routine.Handle(
@@ -56,14 +54,12 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrat
                             migrationBuilder.Sql($"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT CK_{schema}_{tableName}_RowVersionBy CHECK(RowVersionBy NOT LIKE '%[^a-z!.!-!_!\\!@]%' ESCAPE '!');");
                         }
 
-                        var annotation = entityType.FindAnnotation("Constraints");
+                        var annotation = entityType.FindAnnotation(Constraint.AnnotationName);
                         if (annotation!=null)
                         {
                             var constraints = (Constraint[])annotation.Value;
                             foreach (var c in constraints)
-                            {
                                 migrationBuilder.Sql($"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT {c.Name} {c.Body};");
-                            }
                         }
                     }
 

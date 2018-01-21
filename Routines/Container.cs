@@ -2,22 +2,22 @@
 
 namespace DashboardCode.Routines
 {
-    public class Routine<TUserContext>
+    public class RoutineClosure<TUserContext>
     {
         public readonly Action<string> Verbose;
         public readonly RoutineGuid RoutineGuid;
         public readonly TUserContext UserContext;
-        readonly IContainer resolver;
+        readonly IContainer container;
 
-        public Routine(TUserContext userContext, RoutineGuid routineGuid, Action<DateTime, string> verbose, IContainer resolver)
+        public RoutineClosure(TUserContext userContext, RoutineGuid routineGuid, Action<DateTime, string> verbose, IContainer container)
         {
             UserContext = userContext;
             RoutineGuid = routineGuid;
-            this.resolver = resolver;
+            this.container = container;
             if (verbose != null)
                 Verbose = (message) => verbose(DateTime.Now, message);
         }
 
-        public T Resolve<T>() where T : new() => resolver.Resolve<T>();
+        public T Resolve<T>() where T : new() => container.Resolve<T>();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using DashboardCode.Routines;
 using Microsoft.AspNetCore.Hosting;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
@@ -23,8 +24,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
         public static void TestDependencies()
         {
-            var userContextException = new UserContextException("test");
-            var storageErrorException = new Routines.Storage.StorageErrorException("test", null);
+            var t0 = typeof(UserContext);
+            var t1 = typeof(RoutineClosure<UserContext>);
             var identity = InjectedManager.GetDefaultIdentity();
             var html = InjectedManager.Markdown("*** test ***");
         }

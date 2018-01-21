@@ -47,7 +47,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             string viewName,
             Func<
                 IRepository<TEntity>,
-                Routine<UserContext>,
+                RoutineClosure<UserContext>,
                 Func<
                     Func<
                          Func<bool>,
@@ -71,7 +71,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             string viewName,
             Func<
                 IRepository<TEntity>,
-                Routine<UserContext>,
+                RoutineClosure<UserContext>,
                 Func<
                     Func<
                          Func<bool>,

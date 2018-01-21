@@ -26,7 +26,7 @@ namespace TraceServiceReference
         
         private TraceServiceReference.RoutineGuid RoutineGuidField;
         
-        private string UserContextExceptionCodeField;
+        private string AdminkaExceptionCodeField;
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         internal System.Collections.Generic.Dictionary<string, string> Data
@@ -81,15 +81,15 @@ namespace TraceServiceReference
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        internal string UserContextExceptionCode
+        internal string AdminkaExceptionCode
         {
             get
             {
-                return this.UserContextExceptionCodeField;
+                return this.AdminkaExceptionCodeField;
             }
             set
             {
-                this.UserContextExceptionCodeField = value;
+                this.AdminkaExceptionCodeField = value;
             }
         }
     }

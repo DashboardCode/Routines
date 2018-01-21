@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -36,9 +37,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             IIdentity identity,
             CultureInfo cultureInfo,
             string connectionString,
-            RepositoryHandlerFactory repositoryHandlerFactory,
+            FactoryProxy repositoryHandlerFactory,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            ConfigurationContainerFactory configurationContainerFactory
+            ContainerFactory configurationContainerFactory
             )
         {
             // get userContextGuid from session
@@ -53,8 +54,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             }
             else
             {
-                var authenticationSerivce = new AuthenticationService(loggingTransientsFactory, repositoryHandlerFactory, configurationContainerFactory);
-                userContext = authenticationSerivce.GetUserContext(routineTag, identity, cultureInfo);
+                var authenticationSerivce = new UserContextFactory(loggingTransientsFactory, repositoryHandlerFactory, configurationContainerFactory);
+                userContext = authenticationSerivce.Create(routineTag, identity, cultureInfo);
                 userJson = InjectedManager.SerializeToJson(userContext.User, 1, false);
                 httpContext.Session.SetString("User", userJson);
             }

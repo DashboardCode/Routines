@@ -6,17 +6,17 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
 {
     // TODO: support sql express
     // optionsBuilder.UseSqlite("Filename=./blog.db");
-    public class SqlServerAdminkaOptionsBuilder: IDbContextOptionsBuilder
+    public class SqlServerAdminkaOptionsFactory: IDbContextOptionsFactory
     {
         readonly string connectionString;
         readonly string migrationAssembly;
-        public SqlServerAdminkaOptionsBuilder(string connectionString, string migrationAssembly)
+        public SqlServerAdminkaOptionsFactory(string connectionString, string migrationAssembly)
         {
             this.connectionString = connectionString;
             this.migrationAssembly = migrationAssembly;
         }
 
-        public void Build(DbContextOptionsBuilder optionsBuilder) 
+        public void Create(DbContextOptionsBuilder optionsBuilder) 
         {
             if (migrationAssembly != null)
                 optionsBuilder.UseSqlServer(connectionString, sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly(migrationAssembly));

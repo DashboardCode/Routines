@@ -17,15 +17,14 @@ XxxExtensibles     - Api Extensibles (e.g. NLogTools)
 
 Suffixes used in class names
 ----------------------------------------------------------------------------------------------------------------
-Factory    - class contains only Create* methods;  all returns instances instantioned calling the methods
-Transients - class contains only primitive properties; all returns instances instantioned in class cunstructor
-Container  - class contains only Resolve* methods (instationing should be hidden, usually because it 
-			 has an interface which can have several implementations with different lifetimes strategies)
-Adapter    - class that gets functors in constructor and provide methods to execute functors
+Factory    - class contains only Create* methods (that have parameters);  all returned instances instantioned calling the methods
+Container  - class contains only Resolve* methods (getters that doesn't have parameters)
+Transients - class contains only  Resolve* methods ; all returned instances instantioned in class cunstructor; so all instances has the same life cycle
+Adapter    - class that gets functors in constructor and provide methods to execute functors directly (functor->interface)
 Facade     - class that gets several interfaces, functors in constructor, each Facade's method 
 			 combines calls to them
-Handler    - classes which provides try{..}catch{} or using(..){..} funcitonal way (Hanlde methods)
-Extensions - static 
+Handler    - classes which provides (Hanlde methods) try{..}catch{} or using(..){..} funcitonal way 
+Extensions - static extensions
 
 Suffixes in method names
 ----------------------------------------------------------------------------------------------------------------

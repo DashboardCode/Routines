@@ -2,8 +2,8 @@
 
 namespace DashboardCode.Routines.Storage.EfCore
 {
-    public interface IDbContextOptionsBuilder
+    public interface IDbContextOptionsFactory
     {
-        void Build(DbContextOptionsBuilder optionsBuilder);
+        void Create(DbContextOptionsBuilder optionsBuilder);
     }
 }

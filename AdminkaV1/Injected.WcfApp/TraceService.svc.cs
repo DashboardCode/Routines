@@ -1,6 +1,7 @@
 ﻿using System;
-using DashboardCode.AdminkaV1.LoggingDom;
+
 using DashboardCode.Routines;
+using DashboardCode.AdminkaV1.LoggingDom;
 
 namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
@@ -8,12 +9,10 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
     {
         public Trace GetTrace(Guid searchForCorrelationToken)
         {
-            var input = new { searchForCorrelationToken = searchForCorrelationToken };
-            var routine = new WcfRoutine(new MemberTag(this), RoutineErrorDataContractConstants.FaultCodeNamespace, input);
-            return routine.HandleServicesContainer(servicesContainer =>
+            var routine = new WcfRoutine(new MemberTag(this), RoutineErrorDataContractConstants.FaultCodeNamespace, new { searchForCorrelationToken });
+            return routine.HandleServicesContainer(traceService =>
             {
-                var service = servicesContainer.ResolveTraceService();
-                return service.GetTrace(searchForCorrelationToken);
+                return traceService.GetTrace(searchForCorrelationToken);
             });
         }
     }

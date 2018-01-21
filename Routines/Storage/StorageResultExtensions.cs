@@ -6,12 +6,11 @@ namespace DashboardCode.Routines.Storage
 {
     public static class StorageResultExtensions
     {
-        public static void ThrowIfNotNull(this StorageResult storageResult, string exceptionText = "StorageError contains exception")
+        public static void ThrowIfFailed(this StorageResult storageResult, string exceptionText = "Storage returns exception")
         {
-            if (!storageResult.IsOk())
+            if (storageResult.Exception!=null)
             {
-                if (storageResult.Message.Count >= 1)
-                    throw new StorageErrorException(exceptionText, storageResult.Exception);
+                throw new StorageResultException(exceptionText, storageResult);
             }
         }
 
@@ -25,7 +24,7 @@ namespace DashboardCode.Routines.Storage
                     if (messageFragment != null && storageResult.ContainsLike(field, messageFragment)) return;
                 }
             }
-            throw new StorageErrorException(exceptionText, storageResult.Exception);
+            throw new InvalidOperationException(exceptionText);
         }
 
         public static void Assert(this StorageResult storageResult, int number, string[] fields, string messageFragment, string exceptionText)
@@ -38,16 +37,7 @@ namespace DashboardCode.Routines.Storage
                     if (messageFragment != null && storageResult.ContainsLike(fields, messageFragment)) return;
                 }
             }
-            throw new StorageErrorException(exceptionText, storageResult.Exception);
-        }
-        public static bool Contains(this List<FieldMessage> fieldErrors, string field)
-        {
-            var @value = false;
-            if (fieldErrors != null)
-            {
-                @value = fieldErrors.Any(e => e.Field == field);
-            }
-            return @value;
+            throw new InvalidOperationException(exceptionText);
         }
 
         public static bool Contains(this StorageResult storageResult, string field)
@@ -91,15 +81,6 @@ namespace DashboardCode.Routines.Storage
             return @value;
         }
 
-        public static bool Contains(this StorageResult storageResult, string field, string message)
-        {
-            var @value = false;
-            if (!storageResult.IsOk())
-            {
-                @value = storageResult.Message.Any(e => e.Field == field && e.Message == message);
-            }
-            return @value;
-        }
         public static bool ContainsLike(this StorageResult storageResult, string field, string message)
         {
             var @value = false;
@@ -109,18 +90,13 @@ namespace DashboardCode.Routines.Storage
             }
             return @value;
         }
+
         public static int Count(this StorageResult storageResult)
         {
             var @value = 0;
             if (!storageResult.IsOk())
-            {
                 @value = storageResult.Message.Count();
-            }
             return @value;
-        }
-        public static void Add(this StorageResult storageResult, string field, string message)
-        {
-            storageResult.Message.Add(new FieldMessage(field, message));
         }
 
         public static void Add(this List<FieldMessage> fieldErrors, string field, string message)
@@ -128,29 +104,75 @@ namespace DashboardCode.Routines.Storage
             fieldErrors.Add(new FieldMessage(field, message));
         }
 
-        public static Dictionary<string, string> ToDictionary(this List<FieldMessage> list, Func<string, string, string> concatent)
-        {
-            var dictionary = new Dictionary<string, string>();
-            foreach (var item in list)
-            {
-                string value;
-                if (dictionary.TryGetValue(item.Field, out value))
-                    dictionary[item.Field] = concatent(value, item.Message);
-                else
-                    dictionary.Add(item.Field, item.Message);
-            }
-            return dictionary;
-        }
+        //public static StorageResult AnalyzeExceptionRecursive(Exception exception, IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, string genericErrorField, Action<Exception, IStorageResultBuilder> parser = null)
+        //{
+        //    return StorageResultExtensions.AnalyzeExceptionRecursive(
+        //        exception,
+        //        (recursiveParse) =>
+        //        {
 
-        public static List<FieldMessage> AnalyzeException(this Exception exception, Action<Exception, List<FieldMessage>> parser = null)
+        //            var errorBuilder = new StorageResultBuilder(exception, relationalEntitySchemaAdapter, genericErrorField);
+        //            recursiveParse(errorBuilder);
+        //            return errorBuilder.Build();
+        //        },
+        //        parser
+        //    );
+        //}
+
+        public static StorageResult AnalyzeExceptionRecursive2(
+            Exception exception,
+            IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, 
+            string genericErrorField,
+            Func<Action<IStorageResultBuilder>, StorageResult> analyzeException, Action<Exception, IStorageResultBuilder> parser = null)
         {
-            var list = new List<FieldMessage>();
+            var storageResultBuilder = new StorageResultBuilder(exception, relationalEntitySchemaAdapter, genericErrorField);
+
+            var ex = exception;
             do
             {
-                parser?.Invoke(exception, list);
-                exception = exception.InnerException;
-            } while (exception != null);
-            return list;
+                parser?.Invoke(ex, storageResultBuilder);
+                ex = ex.InnerException;
+            } while (ex != null);
+
+            return storageResultBuilder.Build();
+        }
+
+        public static StorageResult AnalyzeExceptionRecursive(Exception exception, Func<Action<IStorageResultBuilder>, StorageResult> analyzeException,  Action<Exception, IStorageResultBuilder> parser = null)
+        {
+            return analyzeException(
+                    (storageResultBuilder) =>
+                    {
+                        var ex = exception;
+                        do
+                        {
+                            parser?.Invoke(ex, storageResultBuilder);
+                            ex = ex.InnerException;
+                        } while (ex != null);
+                    }
+                );
         }
     }
+
+
+    //public interface IStorageResultBuilderEntityFactory
+    //{
+    //    IStorageResultBuilder CreateStorageResultBuilder(Exception exception);
+    //}
+
+    //public class StorageResultBuilderEntityFactory<TEntity> : IStorageResultBuilderEntityFactory where TEntity : class
+    //{
+    //    IOrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter;
+    //    string genericErrorFieldName;
+    //    public StorageResultBuilderEntityFactory(IOrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter, string genericErrorFieldName)
+    //    {
+    //        this.ormEntitySchemaAdapter = ormEntitySchemaAdapter;
+    //        this.genericErrorFieldName = genericErrorFieldName;
+    //    }
+
+    //    public IStorageResultBuilder CreateStorageResultBuilder(Exception exception)
+    //    {
+    //        var storageResultBuilder = new StorageResultBuilder(exception, ormEntitySchemaAdapter, genericErrorFieldName);
+    //        return storageResultBuilder;
+    //    }
+    //}
 }

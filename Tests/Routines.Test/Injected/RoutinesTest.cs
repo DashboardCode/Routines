@@ -34,8 +34,17 @@ namespace DashboardCode.Routines.Injected.Test
             if (log.Count != 4)
                 throw new ApplicationException("handle logging not working properly");
         }
-        public class TestRepositoryHandlerFactory : IRepositoryHandlerFactory<UserContext>{
-            public IRepositoryHandler<TEntity> CreateRepositoryHandler<TEntity>(Routine<UserContext> state) where TEntity : class
+
+        public class TestOrmHandlerFactory : IOrmHandlerFactory<UserContext>{
+            public IOrmHandler<TEntity> CreateAdminkaOrmHandler<TEntity>(RoutineClosure<UserContext> state) where TEntity : class
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class TestRepositoryHandlerFactory : IRepositoryHandlerFactory<UserContext>
+        {
+            public IRepositoryHandler<TEntity> CreateAdminkaRespositoryHandler<TEntity>(RoutineClosure<UserContext> state) where TEntity : class
             {
                 throw new NotImplementedException();
             }
@@ -54,17 +63,19 @@ namespace DashboardCode.Routines.Injected.Test
                 loggingTransients.TransformException,
                 (verbose) => new StateService(correlationToken, verbose)
                 );
+            var testOrmHandlerFactory = new TestOrmHandlerFactory();
             var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory();
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
-            Func<Action<DateTime, string>, Routine<UserContext>> createRoutineState =
-                (verbose)=>new Routine<UserContext>(userContext, routineGuid, verbose, null);
+            Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
+                (verbose)=>new RoutineClosure<UserContext>(userContext, routineGuid, verbose, null);
             string result = null;
             
             var routine = new UserRoutineHandler<UserContext>(
                 loggingTransients.BasicRoutineLoggingAdapter,
                 loggingTransients.TransformException,
                 createRoutineState, 
-                testRepositoryHandlerFactory, 
+                testRepositoryHandlerFactory,
+                testOrmHandlerFactory,
                 new { });
             routine.Handle((c) =>
             {
@@ -121,8 +132,9 @@ namespace DashboardCode.Routines.Injected.Test
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(tag, log);
             var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory(); // stub
-            Func<Action<DateTime, string>, Routine<UserContext>> createRoutineState =
-                (verbose) => new Routine<UserContext>(userContext, tag, null/*no verbose logging for this routineGuid */, null); 
+            var testOrmHandlerFactory = new TestOrmHandlerFactory(); // stub
+            Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
+                (verbose) => new RoutineClosure<UserContext>(userContext, tag, null/*no verbose logging for this routineGuid */, null); 
             try
             {
                 var routine = new UserRoutineHandler<UserContext>(
@@ -130,6 +142,7 @@ namespace DashboardCode.Routines.Injected.Test
                     loggingTransients.TransformException,
                     createRoutineState,
                     testRepositoryHandlerFactory,
+                    testOrmHandlerFactory,
                     new { }
                 );
 

@@ -17,6 +17,7 @@ namespace DashboardCode.AdminkaV1
             AuditStamp = auditStamp;
             CultureInfo = cultureInfo ?? CultureInfo.CurrentCulture;
         }
+
         public string AuditStamp { get; private set; }
 
         public CultureInfo CultureInfo { get; private set; }

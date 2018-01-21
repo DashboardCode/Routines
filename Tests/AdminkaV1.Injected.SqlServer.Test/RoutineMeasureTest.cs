@@ -23,8 +23,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
-            var applicationFactory = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutine), loggingTransientsFactory,   applicationFactory,  new { });
+            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutine), loggingTransientsFactory,   admikaConfigurationFacade,   new { });
             routine.Handle(container =>
             {
 
@@ -41,8 +41,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingTuple = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
             var userContext = new UserContext("UnitTest");
-            var applicationFactory = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineNoAuthorization), userContext, loggingTuple, applicationFactory, new { });
+            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineNoAuthorization), userContext, loggingTuple, admikaConfigurationFacade, new { });
             routine.Handle(container =>
             {
 
@@ -60,8 +60,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
-            var applicationFactory = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, applicationFactory,   new { });
+            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, admikaConfigurationFacade,   new { });
             routine.HandleRepository<ParentRecord>(repository =>
             {
 
@@ -80,8 +80,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingPerformanceConfiguration = new LoggingPerformanceConfiguration();
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration,
                 loggingVerboseConfiguration, loggingPerformanceConfiguration);
-            var configuration = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory, configuration,   new { });
+            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
+            var routine = new AdminkaRoutineHandler(nameof(Test), nameof(RoutineMeasureTest), nameof(MeasureRoutineRepository), loggingTransientsFactory,  admikaConfigurationFacade,  new { });
             try
             {
                 routine.HandleRepository<ParentRecord>(repository =>

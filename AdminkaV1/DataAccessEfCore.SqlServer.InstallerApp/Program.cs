@@ -1,10 +1,8 @@
-﻿using System.Linq;
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.EntityFrameworkCore;
+
 using DashboardCode.AdminkaV1.Injected;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.DependencyInjection;
-using DashboardCode.Routines.Storage;
+using DashboardCode.AdminkaV1.Injected.NETStandard;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
 {
@@ -13,21 +11,16 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
         static void Main(string[] args)
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
-            var installerApplicationFactory = new InstallerApplicationFactory();
+            var installerApplicationFactory = new SqlServerAdmikaConfigurationFacade(migrationAssembly: "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp");
 
             var routine = new AdminkaRoutineHandler(typeof(Program).Namespace, nameof(Program), nameof(Main), 
                 userContext, 
                 installerApplicationFactory, new { });
 
-            routine.Handle(
-                (state, dataAccessServcies) => {
-                    using (var dbContext = dataAccessServcies.CreateAdminkaDbContext())
-                    {
-                        dbContext.Database.Migrate();
-                    }
+            routine.HandleDbContext(
+                (closure, dbContext) => {
+                     dbContext.Database.Migrate();
                 });
         }
     }
-
- 
 }

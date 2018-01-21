@@ -8,22 +8,23 @@ using DashboardCode.Routines.Storage.Ef6;
 
 namespace DashboardCode.Ef6.Sandbox
 {
-
-
     class StorageFactory
     {
-        static readonly List<Routines.Storage.StorageModel> storageModel = new StorageMetaService().GetStorageModels();
+        static readonly List<IOrmEntitySchemaAdapter> storageModel = new StorageMetaService().GetStorageModels();
 
-        public static List<FieldMessage> Analyze(Exception exception, Routines.Storage.StorageModel storageModel)
+        public static StorageResult Analyze(Exception exception, IOrmEntitySchemaAdapter storageModel)
         {
-            var list = StorageResultExtensions.AnalyzeException(exception,
-                  (ex, l) => {
-                      var errorBuilder = new ErrorBuilder(l, storageModel, "");
-                      Ef6Manager.Analyze(exception, errorBuilder);
-                      SqlServerManager.Analyze(ex, errorBuilder);
-                  }
+            var storageResult = StorageResultBuilder.AnalyzeExceptionRecursive(
+                exception,
+                storageModel, 
+                "",
+                (ex, errorBuilder) => {
+                    
+                    Ef6Manager.Analyze(exception, errorBuilder);
+                    SqlServerManager.Analyze(ex, errorBuilder);
+                }
             );
-            return list;
+            return storageResult;
         }
 
         public static IOrmStorage CreateStorage(MyDbContext dbContext)

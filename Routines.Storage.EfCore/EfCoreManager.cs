@@ -8,26 +8,26 @@ namespace DashboardCode.Routines.Storage.EfCore
 {
     public static class EfCoreManager
     {
-        public static void Analyze(Exception exception, IErrorBuilder errorBuilder, /*List<FieldMessage> fieldsErrors, string entityName,*/ Action<Exception> analyzeInnerException)
+        public static void Analyze(Exception exception, IStorageResultBuilder storageResultBuilder/*, List<FieldMessage> fieldsErrors, string entityName,*/ /*Action<Exception> analyzeInnerException*/)
         {
             if (exception is DbUpdateConcurrencyException dbUpdateConcurrencyException)
-                AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, errorBuilder /*fieldsErrors*/);
-            else if (exception is DbUpdateException dbUpdateException && dbUpdateException.InnerException!=null)
-                analyzeInnerException(dbUpdateException.InnerException);
+                AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, storageResultBuilder /*fieldsErrors*/);
+            //else if (exception is DbUpdateException dbUpdateException && dbUpdateException.InnerException!=null)
+            //    analyzeInnerException(dbUpdateException.InnerException);
             else if (exception is InvalidOperationException invalidOperationException)
-                AnalyzeInvalidOperationException(invalidOperationException, errorBuilder/* fieldsErrors, entityName*/);
+                AnalyzeInvalidOperationException(invalidOperationException, storageResultBuilder/* fieldsErrors, entityName*/);
         }
 
         static Regex fieldPkOrUniqueConstraintNullRegexV1 = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
         static Regex fieldPkOrUniqueConstraintNullRegexV2 = new Regex("Unable to track an entity of type '(?<entity>.*?)' because alternate key property '(?<field>.*?)' is null.");
-        public static void AnalyzeInvalidOperationException(InvalidOperationException ex, IErrorBuilder errorBuilder /*List<FieldMessage> fieldsErrors, string entityName*/)
+        public static void AnalyzeInvalidOperationException(InvalidOperationException ex, IStorageResultBuilder storageResultBuilder /*List<FieldMessage> fieldsErrors, string entityName*/)
         {
             {
                 var matchCollectionV1 = fieldPkOrUniqueConstraintNullRegexV1.Matches(ex.Message);
                 if (matchCollectionV1.Count > 0)
                 {
                     var entity = matchCollectionV1[0].Groups["entity"].Value;
-                    errorBuilder.AddNullPrimaryOrAlternateKey(entity);
+                    storageResultBuilder.AddNullPrimaryOrAlternateKey(entity);
                     return;
                 }
             }
@@ -40,16 +40,16 @@ namespace DashboardCode.Routines.Storage.EfCore
                     {
                         var entity = matchCollectionV2[0].Groups["entity"].Value;
                         var field = matchCollectionV2[0].Groups["field"].Value;
-                        errorBuilder.AddNullPrimaryOrAlternateKey(entity, field);
+                        storageResultBuilder.AddNullPrimaryOrAlternateKey(entity, field);
                     }
                     return;
                 }
             }
         }
 
-        public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, IErrorBuilder errorBuilder /*List<FieldMessage> fieldsErrors*/)
+        public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, IStorageResultBuilder storageResultBuilder /*List<FieldMessage> fieldsErrors*/)
         {
-            errorBuilder.AddConcurrencyException();
+            storageResultBuilder.AddConcurrencyError();
         }
 
         public static void Append(StringBuilder sb, Exception ex)

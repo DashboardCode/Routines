@@ -11,19 +11,21 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public void TestStorageJson()
         {
-            var adminka = new AdminkaInMemoryTestRoutine(new MemberTag(this), new {}, readonlyDatabaseName);
-            adminka.Handle((routine, dataAccess) =>
+            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new {}, readonlyDatabaseName);
+            routine.HandleOrmFactory((closure, ormHandlersFactory) =>
             {
-                dataAccess.Handle<ParentRecord>(
-                    (repository, storage, model) => {
+                var ormHandler = ormHandlersFactory.Create<ParentRecord>();
+                ormHandler.Handle(
+                    (repository, storage, schemaAdapter) =>
+                    {
                         Include<ParentRecord> include = chain => chain
                             .IncludeAll(e => e.ParentRecordHierarchyRecordMap)
                             .ThenInclude(e => e.HierarchyRecordId);
 
-                        var navigationInclude = model.ExtractNavigations(include);
+                        var navigationInclude = schemaAdapter.ExtractNavigations(include);
                         var lists = repository.List(navigationInclude);
 
-                        var serailizeInclude = model.ExtractNavigationsAppendKeyLeafs(include);
+                        var serailizeInclude = schemaAdapter.ExtractNavigationsAppendKeyLeafs(include);
                         var formatter = serailizeInclude.ComposeEnumerableFormatter();
                         var json = formatter(lists);
                     }

@@ -7,12 +7,12 @@ namespace DashboardCode.Routines.Storage.Ef6
     public class OrmStorage<TEntity> : IOrmStorage<TEntity> where TEntity : class
     {
         private readonly DbContext dbContext;
-        private readonly Func<Exception, List<FieldMessage>> analyzeException;
+        private readonly Func<Exception, StorageResult> analyzeException;
         private readonly Action<object> setAuditProperties;
 
         public OrmStorage(
             DbContext dbContext,
-            Func<Exception, List<FieldMessage>> analyzeException,
+            Func<Exception, StorageResult> analyzeException,
             Action<object> setAuditProperties)
         {
             this.dbContext          = dbContext;
@@ -37,9 +37,9 @@ namespace DashboardCode.Routines.Storage.Ef6
             }
             catch (Exception exception)
             {
-                var list = analyzeException(exception);
-                if (list.Count > 0)
-                    return new StorageResult(exception, list);
+                var storageResult = analyzeException(exception);
+                if (!storageResult.IsOk())
+                    return storageResult;
                 throw;
             }
             return new StorageResult();
