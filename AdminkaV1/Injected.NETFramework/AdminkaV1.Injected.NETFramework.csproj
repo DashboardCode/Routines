@@ -84,6 +84,10 @@
       <Project>{bf9fb9b0-baee-457a-8c8e-d82dc68e0710}</Project>
       <Name>AdminkaV1.DataAccessEfCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj">
+      <Project>{932b5777-027d-42b9-aa43-57e182f6d08d}</Project>
+      <Name>AdminkaV1.LoggingDom.WcfClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

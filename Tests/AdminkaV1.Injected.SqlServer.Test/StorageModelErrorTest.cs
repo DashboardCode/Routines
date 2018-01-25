@@ -19,7 +19,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var userContext = new UserContext("UnitTest");
             var applicaitonFactory = ZoningSharedSourceManager.GetConfiguration();
             var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext,  applicaitonFactory, new { input = "Input text" });
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -30,7 +30,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -51,7 +51,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 FieldCB2 = "3"
             };
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -61,7 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -76,7 +76,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -95,7 +95,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -113,7 +113,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -137,7 +137,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 TypeRecordName="TestType"
             };
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -154,7 +154,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 XmlField2 = "notxml"
             }; 
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ChildRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -163,7 +163,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -179,7 +179,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             });
 
             // string that exceed its length limit
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -195,7 +195,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             });
 
             // check constraint on INSERT
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -211,7 +211,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             });
 
             // check constraint on UPDATE
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -224,7 +224,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             });
 
             // check NULL on UPDATE
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>

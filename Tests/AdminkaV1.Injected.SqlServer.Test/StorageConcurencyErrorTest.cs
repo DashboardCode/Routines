@@ -21,7 +21,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var applicaitonFactory = ZoningSharedSourceManager.GetConfiguration();
             var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, applicaitonFactory, new { input = "Input text" });
             // check constraint on UPDATE
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory(( ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -36,7 +36,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var t1 = new TypeRecord()
                 {

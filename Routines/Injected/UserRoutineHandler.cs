@@ -6,14 +6,17 @@ namespace DashboardCode.Routines.Injected
 {
     public class UserRoutineHandler<TUserContext> : RoutineHandler<RoutineClosure<TUserContext>>
     {
-        readonly IOrmHandlerFactory<TUserContext> ormHandlerFactory;
-        readonly IRepositoryHandlerFactory<TUserContext> repositoryHandlerFactory;
+        readonly IOrmHandlerGFactory<TUserContext> ormHandlerGFactory;
+        readonly IRepositoryHandlerGFactory<TUserContext> repositoryHandlerGFactory;
+
         public UserRoutineHandler(
             IBasicLogging basicLogging,
             Func<Exception, Exception> transformException,
             Func<Action<DateTime, string>, RoutineClosure<TUserContext>> createRoutineState,
-            IRepositoryHandlerFactory<TUserContext> repositoryHandlerFactory,
-            IOrmHandlerFactory<TUserContext> ormHandlerFactory,
+
+            IRepositoryHandlerGFactory<TUserContext> repositoryHandlerFactory,
+            IOrmHandlerGFactory<TUserContext> ormHandlerGFactory,
+            
             object input
             ):base(
                 new BasicRoutineTransients<RoutineClosure<TUserContext>>(
@@ -23,8 +26,8 @@ namespace DashboardCode.Routines.Injected
                     ), 
                 input)
         {
-            this.repositoryHandlerFactory = repositoryHandlerFactory;
-            this.ormHandlerFactory = ormHandlerFactory;
+            this.repositoryHandlerGFactory = repositoryHandlerFactory;
+            this.ormHandlerGFactory = ormHandlerGFactory;
         }
 
         public async Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
@@ -33,7 +36,7 @@ namespace DashboardCode.Routines.Injected
         {
             return await HandleAsync(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
+                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
                 return repositoryHandler.Handle(repository =>
                 {
                     var output = func(repository);
@@ -48,7 +51,7 @@ namespace DashboardCode.Routines.Injected
         {
             Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
+                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
                 repositoryHandler.Handle(repository =>
                 {
                     action(repository);
@@ -62,7 +65,7 @@ namespace DashboardCode.Routines.Injected
         {
             return Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
+                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
                 return repositoryHandler.Handle(repository =>
                 {
                     return func(repository);
@@ -76,7 +79,7 @@ namespace DashboardCode.Routines.Injected
         {
             return await HandleAsync(closure =>
             {
-                var repositoryHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                var repositoryHandler = ormHandlerGFactory.Create<TEntity>(closure);
                 return repositoryHandler.Handle((repository, store) =>
                 {
                     var output = func(repository, store);
@@ -91,7 +94,7 @@ namespace DashboardCode.Routines.Injected
         {
             Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
+                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
                 repositoryHandler.Handle(repository =>
                 {
                     action(repository, closure);
@@ -105,7 +108,7 @@ namespace DashboardCode.Routines.Injected
         {
             return Handle(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
+                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
                 return repositoryHandler.Handle(repository =>
                 {
                     return func(repository, closure);
@@ -119,7 +122,7 @@ namespace DashboardCode.Routines.Injected
         {
             return await HandleAsync(closure =>
             {
-                var repositoryHandler = repositoryHandlerFactory.CreateAdminkaRespositoryHandler<TEntity>(closure);
+                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
                 return repositoryHandler.Handle(repository =>
                 {
                     var output = func(repository, closure);
@@ -134,7 +137,7 @@ namespace DashboardCode.Routines.Injected
         {
             Handle(closure =>
             {
-                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                var ormHandler = ormHandlerGFactory.Create<TEntity>(closure);
                 ormHandler.Handle((repository, store) =>
                 {
                     action(repository, store);
@@ -148,7 +151,7 @@ namespace DashboardCode.Routines.Injected
         {
             return Handle(closure =>
             {
-                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                var ormHandler = ormHandlerGFactory.Create<TEntity>(closure);
                 return ormHandler.Handle((repository, store) =>
                 {
                     return func(repository, store);
@@ -162,7 +165,7 @@ namespace DashboardCode.Routines.Injected
         {
             return await HandleAsync(closure =>
             {
-                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                var ormHandler = ormHandlerGFactory.Create<TEntity>(closure);
                 return ormHandler.Handle((repository, store) =>
                 {
                     var output = func(repository, store);
@@ -177,7 +180,7 @@ namespace DashboardCode.Routines.Injected
         {
             Handle(closure =>
             {
-                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                var ormHandler = ormHandlerGFactory.Create<TEntity>(closure);
                 ormHandler.Handle((repository, store) =>
                 {
                     action(repository, store, closure);
@@ -191,7 +194,7 @@ namespace DashboardCode.Routines.Injected
         {
             return Handle(closure =>
             {
-                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                var ormHandler = ormHandlerGFactory.Create<TEntity>(closure);
                 return ormHandler.Handle((repository, store) =>
                 {
                     return func(repository, store, closure);
@@ -205,7 +208,7 @@ namespace DashboardCode.Routines.Injected
         {
             return await HandleAsync(closure =>
             {
-                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                var ormHandler = ormHandlerGFactory.Create<TEntity>(closure);
                 return ormHandler.Handle((repository, store) =>
                 {
                     var output = func(repository, store, closure);
@@ -220,7 +223,7 @@ namespace DashboardCode.Routines.Injected
         {
             return await HandleAsync(closure =>
             {
-                var ormHandler = ormHandlerFactory.CreateAdminkaOrmHandler<TEntity>(closure);
+                var ormHandler = ormHandlerGFactory.Create<TEntity>(closure);
                 return ormHandler.Handle((repository, storage) =>
                 {
                     return func(

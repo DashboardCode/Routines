@@ -5,21 +5,31 @@ namespace DashboardCode.Routines.Storage.EfCore
 {
     public class OrmStorage<TEntity> : IOrmStorage<TEntity> where TEntity : class
     {
+        static NoAuditVisitor noAuditVisitor = new NoAuditVisitor();
+        private class NoAuditVisitor : IAuditVisitor
+        {
+            public bool HasAuditProperties(object o)
+            {
+                return false;
+            }
+
+            public void SetAuditProperties(object o)
+            {
+            }
+        }
+
         private readonly DbContext dbContext;
         private readonly Func<Exception, StorageResult> analyzeException;
-        private readonly Action<object> setAuditProperties;
-        private readonly Func<object, bool> isAuditable;
+        private readonly IAuditVisitor auditVisitor;
 
         public OrmStorage(
             DbContext dbContext,
             Func<Exception, StorageResult> analyzeException,
-            Func<object, bool> isAuditable,
-            Action<object> setAuditProperties)
+            IAuditVisitor auditVisitor=null)
         {
             this.dbContext = dbContext;
             this.analyzeException = analyzeException;
-            this.setAuditProperties = setAuditProperties;
-            this.isAuditable = isAuditable;
+            this.auditVisitor = auditVisitor ?? noAuditVisitor;
         }
 
         public StorageResult Handle(Action<IBatch<TEntity>> action)
@@ -58,7 +68,7 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public void HandleSave(Action<IBatch<TEntity>> action)
         {
-            action(new Batch<TEntity>(dbContext, isAuditable, setAuditProperties));
+            action(new Batch<TEntity>(dbContext, auditVisitor));
             dbContext.SaveChanges();
         }
     }

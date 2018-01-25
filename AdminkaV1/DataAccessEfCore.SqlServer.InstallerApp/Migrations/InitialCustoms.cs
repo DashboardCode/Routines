@@ -5,11 +5,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.AdminkaV1.Injected.Configuration;
-using DashboardCode.AdminkaV1.Injected.NETStandard;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.Migrations
+namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
     public static class InitialCustoms
     {

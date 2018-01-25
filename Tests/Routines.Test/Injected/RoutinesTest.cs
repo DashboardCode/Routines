@@ -35,20 +35,20 @@ namespace DashboardCode.Routines.Injected.Test
                 throw new ApplicationException("handle logging not working properly");
         }
 
-        public class TestOrmHandlerFactory : IOrmHandlerFactory<UserContext>{
-            public IOrmHandler<TEntity> CreateAdminkaOrmHandler<TEntity>(RoutineClosure<UserContext> state) where TEntity : class
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //public class TestOrmHandlerFactory //: IOrmHandlerFactory<UserContext>{
+        //    public IOrmHandler<TEntity> CreateOrmHandler<TEntity>(RoutineClosure<UserContext> state) where TEntity : class
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
-        public class TestRepositoryHandlerFactory : IRepositoryHandlerFactory<UserContext>
-        {
-            public IRepositoryHandler<TEntity> CreateAdminkaRespositoryHandler<TEntity>(RoutineClosure<UserContext> state) where TEntity : class
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //public class TestRepositoryHandlerFactory //: IRepositoryHandlerFactory<UserContext>
+        //{
+        //    public IRepositoryHandler<TEntity> CreateRespositoryHandler<TEntity>(RoutineClosure<UserContext> state) where TEntity : class
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
 
         [TestMethod]
         public void RoutinesInjectedHandle2()
@@ -63,8 +63,8 @@ namespace DashboardCode.Routines.Injected.Test
                 loggingTransients.TransformException,
                 (verbose) => new StateService(correlationToken, verbose)
                 );
-            var testOrmHandlerFactory = new TestOrmHandlerFactory();
-            var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory();
+            IOrmHandlerGFactory<UserContext> testOrmHandlerFactory = null; // new TestOrmHandlerFactory();
+            IRepositoryHandlerGFactory<UserContext> testRepositoryHandlerFactory = null; // new TestRepositoryHandlerFactory();
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
             Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
                 (verbose)=>new RoutineClosure<UserContext>(userContext, routineGuid, verbose, null);
@@ -131,8 +131,10 @@ namespace DashboardCode.Routines.Injected.Test
 
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(tag, log);
-            var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory(); // stub
-            var testOrmHandlerFactory = new TestOrmHandlerFactory(); // stub
+            IOrmHandlerGFactory<UserContext> testOrmHandlerFactory = null; // new TestOrmHandlerFactory();
+            IRepositoryHandlerGFactory<UserContext> testRepositoryHandlerFactory = null; // new TestRepositoryHandlerFactory();
+            //var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory(); // stub
+            //var testOrmHandlerFactory = new TestOrmHandlerFactory(); // stub
             Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
                 (verbose) => new RoutineClosure<UserContext>(userContext, tag, null/*no verbose logging for this routineGuid */, null); 
             try

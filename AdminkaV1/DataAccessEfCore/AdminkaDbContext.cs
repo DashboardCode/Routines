@@ -9,46 +9,11 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
-    public class AdminkaDbContext : DbContext
+    public class AdminkaDbContext : VerboseDbContext
     {
-        static AdminkaDbContext()
-        {
-            // test dependencies
-            var loadit = new[] 
-            {
-                typeof(Remotion.Linq.DefaultQueryProvider),
-                typeof(System.Collections.Generic.AsyncEnumerator),
-                typeof(Remotion.Linq.DefaultQueryProvider)
-            };
-        }
-
-        readonly Action<DbContextOptionsBuilder> buildOptionsBuilder;
-        readonly Action<string> verbose;
         public AdminkaDbContext(Action<DbContextOptionsBuilder> buildOptionsBuilder, Action<string> verbose = null)
-            : base()
+            : base(buildOptionsBuilder, verbose)
         {
-            this.buildOptionsBuilder = buildOptionsBuilder;
-            this.verbose = verbose;
-        }
-
-        private Action returnLoggerFactory;
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (verbose != null)
-            {
-                var loggerFactory = StatefullLoggerFactoryPool.Instance.Get(verbose, new LoggerProviderConfiguration { Enabled = true, CommandBuilderOnly = false });
-                returnLoggerFactory = () => StatefullLoggerFactoryPool.Instance.Return(loggerFactory);
-                optionsBuilder.UseLoggerFactory(loggerFactory);
-            }
-            buildOptionsBuilder(optionsBuilder);
-        }
-
-        // NOTE: not threadsafe way of disposing
-        public override void Dispose()
-        {
-            returnLoggerFactory?.Invoke();
-            returnLoggerFactory = null;
-            base.Dispose();
         }
 
         #region DbSets

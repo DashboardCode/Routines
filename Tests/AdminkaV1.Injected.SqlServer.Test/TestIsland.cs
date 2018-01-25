@@ -12,7 +12,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 
             var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
             var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), admikaConfigurationFacade, new { input = "Input text" });
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var typeRecord1 = new TypeRecord()
                 {
@@ -145,7 +145,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         {
             var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
             var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), admikaConfigurationFacade, new { input = "Input text" });
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 ormHandlerFactory.Create<ChildRecord>().Handle((repository, storage) =>
                 {

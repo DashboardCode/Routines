@@ -13,16 +13,16 @@ namespace DashboardCode.AdminkaV1.Injected
     public class UserContextFactory
     {
         private readonly Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory;
-        private readonly FactoryProxy factoryProxy2;
+        private readonly AdminkaDataAccessFacade adminkaDataAccessFacade;
         private readonly UserContext systemUserContext;
         private readonly ContainerFactory configurationContainerFactory;
         public UserContextFactory(
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            FactoryProxy ormHandlerFactory,
+            AdminkaDataAccessFacade ormHandlerFactory,
             ContainerFactory configurationContainerFactory)
         {
             this.loggingTransientsFactory = loggingTransientsFactory;
-            this.factoryProxy2 = ormHandlerFactory;
+            this.adminkaDataAccessFacade = ormHandlerFactory;
             systemUserContext = new UserContext("Authentication");
             this.configurationContainerFactory = configurationContainerFactory;
         }
@@ -48,14 +48,14 @@ namespace DashboardCode.AdminkaV1.Injected
                 systemUserContext,
                 systemUserContextResolver,
                 loggingTransientsFactory,
-                factoryProxy2,
+                adminkaDataAccessFacade,
                 input);
             var userContext = routine.Handle(closure =>
             {
                 try
                 {
-                    var adminkaDbContextPrimitiveHandler = factoryProxy2.CreateRepositoryAdminkaDbContextHandlerContainer(closure).Resolve(); 
-                    var authenticationService = new DataAccessEfCore.Services.AuthenticationService(adminkaDbContextPrimitiveHandler); 
+                    var dbContextHandler = adminkaDataAccessFacade.CreateDbContextHandler(closure);
+                    var authenticationService = new DataAccessEfCore.Services.AuthenticationService(dbContextHandler); 
                     var user = default(User);
                     if (useAdAuthorization)
                     {

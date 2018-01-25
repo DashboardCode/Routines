@@ -15,7 +15,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public void TestRepositoryInMemory()
         {
             var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
-            routine.HandleDbContext((closure, dbContext) =>
+            routine.HandleDbContext((dbContext, closure) =>
             {
                 var list = dbContext.ParentRecords
                     .Include(e => e.ParentRecordHierarchyRecordMap)
@@ -31,7 +31,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
-            var record = routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            var record = routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 return repositoryHandler.Handle((repository, storage) =>
@@ -56,7 +56,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                             .ThenInclude(y => y.HierarchyRecord)
                        .IncludeAll(y => y.ChildRecords)
                             .ThenInclude(y => y.TypeRecord);
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>

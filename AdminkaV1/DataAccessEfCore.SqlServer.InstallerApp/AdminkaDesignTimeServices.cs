@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
+namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
     public class AdminkaDesignTimeServices : IDesignTimeServices
     {

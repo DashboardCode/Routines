@@ -12,7 +12,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public void TestStorageJson()
         {
             var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new {}, readonlyDatabaseName);
-            routine.HandleOrmFactory((closure, ormHandlersFactory) =>
+            routine.HandleOrmFactory(ormHandlersFactory =>
             {
                 var ormHandler = ormHandlersFactory.Create<ParentRecord>();
                 ormHandler.Handle(

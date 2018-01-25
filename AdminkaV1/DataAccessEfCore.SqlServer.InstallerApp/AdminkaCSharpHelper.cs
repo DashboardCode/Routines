@@ -1,7 +1,8 @@
 ﻿using System.Linq;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 using Microsoft.EntityFrameworkCore.Design.Internal;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
+namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
     public class AdminkaCSharpHelper : CSharpHelper
     {

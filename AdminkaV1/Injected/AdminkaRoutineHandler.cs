@@ -15,7 +15,7 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public class AdminkaRoutineHandler : UserRoutineHandler<UserContext>
     {
-        readonly FactoryProxy factoryProxy;
+        readonly AdminkaDataAccessFacade adminkaDataAccessFacade;
         protected readonly UserContext userContext;
         #region constructors without usercontext
         public AdminkaRoutineHandler(
@@ -26,7 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected
               new RoutineGuid(Guid.NewGuid(), memberTag),
               InjectedManager.GetDefaultIdentity(),
               InjectedManager.ComposeNLogTransients(InjectedManager.Markdown, InjectedManager.DefaultRoutineTagTransformException),
-              new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+              new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
               new ContainerFactory(applicationFacade),
               input)
         {
@@ -39,7 +39,7 @@ namespace DashboardCode.AdminkaV1.Injected
               routineGuid,
               InjectedManager.GetDefaultIdentity(),
               InjectedManager.ComposeNLogTransients(InjectedManager.Markdown, InjectedManager.DefaultRoutineTagTransformException),
-              new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+              new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
               new ContainerFactory(applicationFacade),
               input)
         {
@@ -53,7 +53,7 @@ namespace DashboardCode.AdminkaV1.Injected
               new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
               InjectedManager.GetDefaultIdentity(),
               loggingTransientsFactory,
-              new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+              new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
               new ContainerFactory(applicationFacade),
 
               input)
@@ -69,7 +69,7 @@ namespace DashboardCode.AdminkaV1.Injected
               routineGuid,
               identity,
               loggingTransientsFactory,
-              new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+              new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
               new ContainerFactory(applicationFacade),
               input)
         {
@@ -78,7 +78,7 @@ namespace DashboardCode.AdminkaV1.Injected
              RoutineGuid routineGuid,
              IIdentity identity,
              Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-             FactoryProxy factoryProxy,
+             AdminkaDataAccessFacade adminkaDataAccessFacade,
              ContainerFactory configurationContainerFactory,
              object input
         ) : this(
@@ -86,8 +86,8 @@ namespace DashboardCode.AdminkaV1.Injected
               identity,
               CultureInfo.CurrentCulture,
               loggingTransientsFactory,
-              factoryProxy,
-              new UserContextFactory(loggingTransientsFactory, factoryProxy, configurationContainerFactory),
+              adminkaDataAccessFacade,
+              new UserContextFactory(loggingTransientsFactory, adminkaDataAccessFacade, configurationContainerFactory),
               configurationContainerFactory,
               input)
         {
@@ -95,7 +95,7 @@ namespace DashboardCode.AdminkaV1.Injected
         private AdminkaRoutineHandler(
             RoutineGuid routineGuid,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            FactoryProxy factoryProxy,
+            AdminkaDataAccessFacade adminkaDataAccessFacade,
             ContainerFactory configurationContainerFactory,
             object input
         ) : this(
@@ -103,8 +103,8 @@ namespace DashboardCode.AdminkaV1.Injected
               InjectedManager.GetDefaultIdentity(),
               CultureInfo.CurrentCulture,
               loggingTransientsFactory,
-              factoryProxy,
-              new UserContextFactory(loggingTransientsFactory, factoryProxy, configurationContainerFactory),
+              adminkaDataAccessFacade,
+              new UserContextFactory(loggingTransientsFactory, adminkaDataAccessFacade, configurationContainerFactory),
               configurationContainerFactory,
               input)
         {
@@ -114,7 +114,7 @@ namespace DashboardCode.AdminkaV1.Injected
             IIdentity identity,
             CultureInfo cultureInfo,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            FactoryProxy factoryProxy,
+            AdminkaDataAccessFacade adminkaDataAccessFacade,
             UserContextFactory authenticationServices,
             ContainerFactory configurationContainerFactory,
             object input
@@ -122,7 +122,7 @@ namespace DashboardCode.AdminkaV1.Injected
                   routineGuid,
                   authenticationServices.Create(routineGuid, identity, cultureInfo),
                   loggingTransientsFactory,
-                  factoryProxy,
+                  adminkaDataAccessFacade,
                   configurationContainerFactory,
                   input)
         {
@@ -139,7 +139,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
                     userContext,
                     new ContainerFactory(applicationFacade),
-                    new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+                    new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
                     input)
         {
         }
@@ -154,7 +154,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     userContext,
                     loggingTransientsFactory,
                     new ContainerFactory(applicationFacade),
-                    new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+                    new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
                     input)
         {
         }
@@ -166,7 +166,7 @@ namespace DashboardCode.AdminkaV1.Injected
             ) : this(new RoutineGuid(Guid.NewGuid(), memberTag),
                     userContext,
                     new ContainerFactory(applicationFacade),
-                    new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+                    new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
                     input)
         {
         }
@@ -178,7 +178,7 @@ namespace DashboardCode.AdminkaV1.Injected
             ) : this(routineGuid,
             userContext,
             new ContainerFactory(applicationFacade),
-            new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+            new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
             input)
         {
         }
@@ -193,7 +193,7 @@ namespace DashboardCode.AdminkaV1.Injected
             userContext,
             routineTransformException,
             new ContainerFactory(applicationFacade),
-            new FactoryProxy(applicationFacade.ResolveAdminkaStorageConfiguration(), InjectedManager.StorageMetaService),
+            new AdminkaDataAccessFacade(InjectedManager.StorageMetaService, new AdminkaDbContextFactory(applicationFacade.ResolveAdminkaStorageConfiguration()).Create),
             input)
         {
         }
@@ -202,13 +202,13 @@ namespace DashboardCode.AdminkaV1.Injected
             RoutineGuid routineGuid,
             UserContext userContext,
             ContainerFactory configurationContainerFactory,
-            FactoryProxy factoryProxy,
+            AdminkaDataAccessFacade adminkaDataAccessFacade,
             object input
             ) : this(routineGuid,
                     userContext,
                     configurationContainerFactory.CreateContainer(routineGuid, userContext),
                     InjectedManager.ComposeNLogTransients(InjectedManager.Markdown, InjectedManager.DefaultRoutineTagTransformException),
-                    factoryProxy,
+                    adminkaDataAccessFacade,
                     input)
         {
         }
@@ -218,13 +218,13 @@ namespace DashboardCode.AdminkaV1.Injected
             UserContext userContext,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             ContainerFactory configurationContainerFactory,
-            FactoryProxy factoryProxy,
+            AdminkaDataAccessFacade adminkaDataAccessFacade,
             object input
             ) : this(
                     new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
                     userContext,
                     loggingTransientsFactory,
-                    factoryProxy,
+                    adminkaDataAccessFacade,
                     configurationContainerFactory,
                     input)
         {
@@ -235,14 +235,14 @@ namespace DashboardCode.AdminkaV1.Injected
             UserContext userContext,
             Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException,
             ContainerFactory configurationContainerFactory,
-            FactoryProxy factoryProxy,
+            AdminkaDataAccessFacade adminkaDataAccessFacade,
             object input
         ) : this(
            routineGuid,
            userContext,
            configurationContainerFactory.CreateContainer(routineGuid, userContext),
            InjectedManager.ComposeNLogTransients(InjectedManager.Markdown, routineTransformException),
-           factoryProxy,
+           adminkaDataAccessFacade,
            input)
         {
         }
@@ -251,7 +251,7 @@ namespace DashboardCode.AdminkaV1.Injected
             RoutineGuid routineGuid,
             UserContext userContext,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            FactoryProxy factoryProxy,
+            AdminkaDataAccessFacade adminkaDataAccessFacade,
             ContainerFactory configurationContainerFactory,
             object input
             ) : this(
@@ -259,7 +259,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 userContext,
                 configurationContainerFactory.CreateContainer(routineGuid, userContext),
                 loggingTransientsFactory,
-                factoryProxy,
+                adminkaDataAccessFacade,
                 input)
         {
         }
@@ -270,14 +270,14 @@ namespace DashboardCode.AdminkaV1.Injected
             UserContext userContext,
             IContainer container,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            FactoryProxy factoryProxy,
+            AdminkaDataAccessFacade adminkaDataAccessFacade,
             object input
             ) : this(
                 routineGuid,
                 userContext,
                 container,
                 loggingTransientsFactory(routineGuid, container),
-                factoryProxy,
+                adminkaDataAccessFacade,
                 input)
         {
         }
@@ -287,71 +287,124 @@ namespace DashboardCode.AdminkaV1.Injected
             UserContext userContext,
             IContainer container,
             RoutineLoggingTransients routineLoggingTransients,
-            FactoryProxy factoryProxy,
+            AdminkaDataAccessFacade adminkaDataAccessFacade,
             object input
             ) : base(
                 routineLoggingTransients.BasicRoutineLoggingAdapter,
                 routineLoggingTransients.TransformException,
                 verbose => new RoutineClosure<UserContext>(userContext, routineGuid, verbose, container),
-                factoryProxy,
-                factoryProxy,
+                adminkaDataAccessFacade.RepositoryHandlerFactory,
+                adminkaDataAccessFacade.OrmHandlerFactory,
                 input
                 )
         {
             this.userContext = userContext;
-            this.factoryProxy = factoryProxy;
+            this.adminkaDataAccessFacade = adminkaDataAccessFacade;
         }
 
         #region Handle with AdminkaDbContext
-        public void HandleDbContext(Action<RoutineClosure<UserContext>, AdminkaDbContext> action) =>
-            Handle(closure => factoryProxy
-                        .CreateRepositoryAdminkaDbContextHandlerContainer(closure)
-                        .Resolve().Handle(context => action(closure, context) )
-            );
+        public void HandleDbContext(AdminkaDbContextAction action) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextActionHandled(action));
 
-        public TOutput HandleDbContext<TOutput>(Func<RoutineClosure<UserContext>, AdminkaDbContext, TOutput> func) =>
-            Handle(closure => factoryProxy
-                        .CreateRepositoryAdminkaDbContextHandlerContainer(closure)
-                        .Resolve().Handle(context => func(closure, context))
-            );
+        public TOutput HandleDbContext<TOutput>(AdminkaDbContextFunc<TOutput> func) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextFuncHandled(func));
 
-        public async Task<TOutput> HandleDbContextAsync<TOutput>(Func<RoutineClosure<UserContext>, AdminkaDbContext, TOutput> func) =>
-            await HandleAsync(closure => factoryProxy
-                        .CreateRepositoryAdminkaDbContextHandlerContainer(closure)
-                        .Resolve().Handle(context => func(closure, context))
-            );
+        public async Task<TOutput> HandleDbContextAsync<TOutput>(AdminkaDbContextFunc<TOutput> func) =>
+            await HandleAsync(adminkaDataAccessFacade.ComposeAdminkaDbContextFuncHandled(func));
+
+
+        public void HandleDbContext(AdminkaDbContextUniAction action) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextActionHandled(action));
+
+        public TOutput HandleDbContext<TOutput>(AdminkaDbContextUniFunc<TOutput> func) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextFuncHandled(func));
+
+        public async Task<TOutput> HandleDbContextAsync<TOutput>(AdminkaDbContextUniFunc<TOutput> func) =>
+            await HandleAsync(adminkaDataAccessFacade.ComposeAdminkaDbContextFuncHandled(func));
+
         #endregion
 
-        #region Handle with AdminkaOrmHandlerFactory
-        public void HandleOrmFactory(Action<RoutineClosure<UserContext>, AdminkaOrmHandlerFactory> action) =>
-            Handle(closure => action(closure, factoryProxy.CreateAdminkaOrmHandlerFactory(closure)));
+        #region Handle with Handler's Factory
+        public void HandleOrmFactory(AdminkaDbContextOrmFactoryAction action) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextOrmFactoryActionHandled(action));
 
-        public TOutput HandleOrmFactory<TOutput>(Func<RoutineClosure<UserContext>, AdminkaOrmHandlerFactory, TOutput> func) =>
-            Handle(closure =>func(closure, factoryProxy.CreateAdminkaOrmHandlerFactory(closure)));
+        public TOutput HandleOrmFactory<TOutput>(AdminkaDbContextOrmFactoryFunc<TOutput> func) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextOrmFactoryFuncHandled(func));
         
-        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<RoutineClosure<UserContext>, AdminkaOrmHandlerFactory, TOutput> func) =>
-            await HandleAsync(closure => func(closure, factoryProxy.CreateAdminkaOrmHandlerFactory(closure)));
+        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(AdminkaDbContextOrmFactoryFunc<TOutput> func) =>
+            await HandleAsync(adminkaDataAccessFacade.ComposeAdminkaDbContextOrmFactoryFuncHandled(func));
+
+        public void HandleRepositoryFactory(AdminkaDbContextRepositoryFactoryAction action) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextRepositoryFactoryActionHandled(action));
+
+        public TOutput HandleRepositoryFactory<TOutput>(AdminkaDbContextRepositoryFactoryFunc<TOutput> func) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextRepositoryFactoryFuncHandled(func));
+
+        public async Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(AdminkaDbContextRepositoryFactoryFunc<TOutput> func) =>
+            await HandleAsync(adminkaDataAccessFacade.ComposeAdminkaDbContextRepositoryFactoryFuncHandled(func));
+
+
+
+        public void HandleOrmFactory(AdminkaDbContextOrmFactoryUniAction action) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextOrmFactoryActionHandled(action));
+
+        public TOutput HandleOrmFactory<TOutput>(AdminkaDbContextOrmFactoryUniFunc<TOutput> func) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextOrmFactoryFuncHandled(func));
+
+        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(AdminkaDbContextOrmFactoryUniFunc<TOutput> func) =>
+            await HandleAsync(adminkaDataAccessFacade.ComposeAdminkaDbContextOrmFactoryFuncHandled(func));
+
+        public void HandleRepositoryFactory(AdminkaDbContextRepositoryFactoryUniAction action) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextRepositoryFactoryActionHandled(action));
+
+        public TOutput HandleRepositoryFactory<TOutput>(AdminkaDbContextRepositoryFactoryUniFunc<TOutput> func) =>
+            Handle(adminkaDataAccessFacade.ComposeAdminkaDbContextRepositoryFactoryFuncHandled(func));
+
+        public async Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(AdminkaDbContextRepositoryFactoryUniFunc<TOutput> func) =>
+            await HandleAsync(adminkaDataAccessFacade.ComposeAdminkaDbContextRepositoryFactoryFuncHandled(func));
+
+        //public delegate void AdminkaDbContextUniAction(AdminkaDbContext adminkaDbContext);
+
+        //public delegate TOutput AdminkaDbContextUniFunc<TOutput>(AdminkaDbContext adminkaDbContext);
+
+        //public delegate void AdminkaDbContextOrmFactoryUniAction(ReliantOrmHandlerGFactory<UserContext, AdminkaDbContext> adminkaDbContextFactory);
+
+        //public delegate TOutput AdminkaDbContextOrmFactoryUniFunc<TOutput>(ReliantOrmHandlerGFactory<UserContext, AdminkaDbContext> adminkaDbContextFactory);
+
+        //public delegate void AdminkaDbContextRepositoryFactoryUniAction(ReliantRepositoryHandlerGFactory<UserContext, AdminkaDbContext> adminkaDbContextFactory);
+
+        //public delegate TOutput AdminkaDbContextRepositoryFactoryUniFunc<TOutput>(ReliantRepositoryHandlerGFactory<UserContext, AdminkaDbContext> adminkaDbContextFactory);
         #endregion
 
-        #region Handle TraceService
+        #region Handle Business Layer Services
         public void HandleServicesContainer(Action<ITraceService> action) =>
-            Handle(state => action(new TraceService(factoryProxy.CreateRepositoryAdminkaDbContextHandlerContainer(state).Resolve() )));
+            Handle(closure => action(new TraceService(adminkaDataAccessFacade.CreateDbContextHandler(closure))));
 
         public TOutput HandleServicesContainer<TOutput>(Func<ITraceService, TOutput> func) =>
-            Handle(state => func(new TraceService(factoryProxy.CreateRepositoryAdminkaDbContextHandlerContainer(state).Resolve())));
+            Handle(closure => func(new TraceService(adminkaDataAccessFacade.CreateDbContextHandler(closure))));
 
         public async Task<TOutput> HandleServicesContainerAsync<TOutput>(Func<ITraceService, TOutput> func) =>
-            await HandleAsync(state => func(new TraceService(factoryProxy.CreateRepositoryAdminkaDbContextHandlerContainer(state).Resolve())));
+            await HandleAsync(closure => func(new TraceService(adminkaDataAccessFacade.CreateDbContextHandler(closure))));
 
         public void HandleServicesContainer(Action<IAuthenticationService> action) =>
-            Handle(state => action(new AuthenticationService(factoryProxy.CreateRepositoryAdminkaDbContextHandlerContainer(state).Resolve())));
+            Handle(closure => action(new AuthenticationService(adminkaDataAccessFacade.CreateDbContextHandler(closure))));
 
         public TOutput HandleServicesContainer<TOutput>(Func<IAuthenticationService, TOutput> func) =>
-            Handle(state => func(new AuthenticationService(factoryProxy.CreateRepositoryAdminkaDbContextHandlerContainer(state).Resolve())));
+            Handle(closure => func(new AuthenticationService(adminkaDataAccessFacade.CreateDbContextHandler(closure) )));
 
         public async Task<TOutput> HandleServicesContainerAsync<TOutput>(Func<IAuthenticationService, TOutput> func) =>
-            await HandleAsync(state => func(new AuthenticationService(factoryProxy.CreateRepositoryAdminkaDbContextHandlerContainer(state).Resolve())));
+            await HandleAsync(closure => func(new AuthenticationService(adminkaDataAccessFacade.CreateDbContextHandler(closure) )));
+        #endregion
 
+        #region Handle Remote Services
+        public void HandleRemoteServicesContainer(Action<ITraceService> action) =>
+            Handle(state => action(new LoggingDom.WcfClient.TraceServiceProxy()));
+
+        public TOutput HandleRemoteServicesContainer<TOutput>(Func<ITraceService, TOutput> func) =>
+            Handle(state => func(new LoggingDom.WcfClient.TraceServiceProxy()));
+
+        public async Task<TOutput> HandleRemoteServicesContainerAsync<TOutput>(Func<ITraceService, TOutput> func) =>
+            await HandleAsync(state => func(new LoggingDom.WcfClient.TraceServiceProxy())); // TODO: use TraceServiceAsyncProxy
         #endregion
     }
 }

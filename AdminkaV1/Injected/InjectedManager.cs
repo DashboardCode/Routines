@@ -10,14 +10,15 @@ using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.Injected.Logging;
-using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+
+using DashboardCode.AdminkaV1.LoggingDom.WcfClient;
 
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
 using System.Security.Principal;
     using DashboardCode.Routines.Serialization.NETFramework;
     using DashboardCode.Routines.ActiveDirectory.NETFramework;
 #else
-using System.Security.Principal;
+    using System.Security.Principal;
     using DashboardCode.Routines.Serialization.NETStandard;
 #endif
 
@@ -26,8 +27,9 @@ namespace DashboardCode.AdminkaV1.Injected
     public static class InjectedManager
     {
         #region Meta
-        public readonly static StorageMetaService StorageMetaService = new StorageMetaService(
-            (exception, storageModel, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(exception, storageModel, genericErrorField,
+        public readonly static IStorageMetaService StorageMetaService = new StorageMetaService(
+            (exception, storageModel, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(
+                  exception, storageModel, genericErrorField,
                   (ex, storageResultBuilder) => {
                       DataAccessEfCoreManager.Analyze(ex, storageResultBuilder);
                       SqlServerManager.Analyze(ex, storageResultBuilder);
@@ -73,6 +75,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 {
                     if (ex is AdminkaException)
                         sb.AppendUserContextException((AdminkaException)ex);
+                    WcfClientManager.AppendWcfClientFaultException(sb, ex);
                     DataAccessEfCoreManager.Append(sb, ex);
                     SqlServerManager.Append(sb, ex);
 #if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
@@ -242,10 +245,8 @@ namespace DashboardCode.AdminkaV1.Injected
 
             var closure = new RoutineClosure<UserContext>(userContext, routineGuid, hasVerbose?verbose:null, container);
             var adminkaStorageConfiguration = admikaConfigurationFacade.ResolveAdminkaStorageConfiguration();
-
-            var optionsFactoryContainer = new AdminkaDbContextContainer(adminkaStorageConfiguration);
-            var constructor = optionsFactoryContainer.ResolveAdminkaDbContextConstructor();
-            var adminkaDbContext = constructor(closure);
+            var adminkaDbContextFactory = new AdminkaDbContextFactory(adminkaStorageConfiguration);
+            var adminkaDbContext = adminkaDbContextFactory.Create(closure);
 
             //  NOTE :  alternative how to build the same quick way
             //  var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, installerApplicationFactory, new { });

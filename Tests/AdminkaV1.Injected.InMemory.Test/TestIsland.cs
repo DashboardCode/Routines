@@ -10,7 +10,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public static void Reset(string databaseName)
         {
             var routine = new AdminkaInMemoryTestRoutine(new RoutineGuid(Guid.NewGuid(), new MemberTag(typeof(TestIsland))), new { input = "Input text" }, databaseName);
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory(( ormHandlerFactory) =>
             {
                 var typeRecord1 = new TypeRecord()
                 {

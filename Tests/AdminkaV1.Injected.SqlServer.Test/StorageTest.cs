@@ -25,7 +25,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
             var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, admikaConfigurationFacade, new { input = "Input text" });
             int newGroupId = 0;
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var group = new Group{
                     GroupName = "TestStore",
@@ -62,7 +62,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<Group>();
                 // Update
@@ -95,7 +95,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
             // Remove
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<Group>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -109,7 +109,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
             // Remove 
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<Group>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -136,7 +136,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>();
                 rh.Handle(

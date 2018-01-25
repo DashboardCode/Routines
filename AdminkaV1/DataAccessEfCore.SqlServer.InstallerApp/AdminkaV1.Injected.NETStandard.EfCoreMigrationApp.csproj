@@ -10,8 +10,8 @@
     <AssemblyVersion>1.0.12.0</AssemblyVersion>
     <FileVersion>1.0.12.0</FileVersion>
     <Description />
-    <RootNamespace>DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp</RootNamespace>
-    <AssemblyName>DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp</AssemblyName>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />

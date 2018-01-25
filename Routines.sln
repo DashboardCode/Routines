@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{52BA4719-F064-4388-A426-1E1174D3A0EB}"
 EndProject
@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Configuration.NETF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Test", "Tests\Routines.Test\Routines.Test.csproj", "{2B5CADED-2F8B-4809-ABA8-7B679D31E162}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp", "AdminkaV1\DataAccessEfCore.SqlServer.InstallerApp\AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.NETStandard.EfCoreMigrationApp", "AdminkaV1\DataAccessEfCore.SqlServer.InstallerApp\AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore", "Routines.Storage.EfCore\Routines.Storage.EfCore.csproj", "{E0AB2637-9207-4941-9C9D-1FA6FD67FFE6}"
 EndProject
@@ -149,9 +149,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfilerAutomation", "Tests\ProfilerAutomation\ProfilerAutomation.csproj", "{C29284E1-6331-4D20-905F-322FA0321B49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.AspNetCore.Sandbox", "Tests\ConsoleApps\Routines.AspNetCore.Sandbox\Routines.AspNetCore.Sandbox.csproj", "{1F6B776C-CD8A-4087-A4C3-C18E30997299}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Sandbox", "Tests\ConsoleApps\Routines.AspNetCore.Sandbox\Routines.AspNetCore.Sandbox.csproj", "{1F6B776C-CD8A-4087-A4C3-C18E30997299}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.AspNetCore.Mvc.Sandbox", "Tests\ConsoleApps\Routines.AspNetCore.Mvc.Sandbox\Routines.AspNetCore.Mvc.Sandbox.csproj", "{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Mvc.Sandbox", "Tests\ConsoleApps\Routines.AspNetCore.Mvc.Sandbox\Routines.AspNetCore.Mvc.Sandbox.csproj", "{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

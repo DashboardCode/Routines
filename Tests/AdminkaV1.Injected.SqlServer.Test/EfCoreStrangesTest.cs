@@ -22,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory(( ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(
@@ -69,7 +69,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.HandleOrmFactory((state, ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>(true);
                 rh.Handle(

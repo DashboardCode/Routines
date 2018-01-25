@@ -37,7 +37,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             IIdentity identity,
             CultureInfo cultureInfo,
             string connectionString,
-            FactoryProxy repositoryHandlerFactory,
+            AdminkaDataAccessFacade repositoryHandlerFactory,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             ContainerFactory configurationContainerFactory
             )

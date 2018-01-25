@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace DashboardCode.Routines
 {
     public static class ExceptionExtensions
     {
+        public static void CopyData(this Exception exception, Dictionary<string, string> data)
+        {
+            if (data != null)
+                foreach (var pair in data)
+                    exception.Data[pair.Key] = pair.Value;
+        }
+
         public static string Markdown(this Exception exception, Action<StringBuilder, Exception> specificAppender = null)
         {
             var stringBuilder = new StringBuilder();

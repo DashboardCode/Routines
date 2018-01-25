@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
+namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
-    public class StorageMetaService
+    public class StorageMetaService : IStorageMetaService
     {
         readonly Dictionary<string, IOrmEntitySchemaAdapter> entityMetas;
         readonly IMutableModel mutableModel;

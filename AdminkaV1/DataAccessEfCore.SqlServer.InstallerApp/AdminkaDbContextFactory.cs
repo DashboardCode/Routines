@@ -2,10 +2,9 @@
 using Microsoft.EntityFrameworkCore.Design;
 
 using DashboardCode.Routines;
-using DashboardCode.AdminkaV1.Injected;
-using DashboardCode.AdminkaV1.Injected.NETStandard;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp
+namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
     public class AdminkaDbContextFactory : IDesignTimeDbContextFactory<AdminkaDbContext>
     {

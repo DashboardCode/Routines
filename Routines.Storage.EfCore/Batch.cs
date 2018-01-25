@@ -10,24 +10,22 @@ namespace DashboardCode.Routines.Storage.EfCore
     public class Batch<TEntity> : IBatch<TEntity> where TEntity : class
     {
         private readonly DbContext context;
-        private readonly Action<object> setAuditProperties;
-        private readonly Func<object, bool> isAuditable;
+        private readonly IAuditVisitor auditVisitor;
 
-        public Batch(DbContext context, Func<object, bool> isAuditable, Action<object> setAuditProperties)
+        public Batch(DbContext context, IAuditVisitor auditVisitor)
         {
             this.context = context;
-            this.setAuditProperties = setAuditProperties;
-            this.isAuditable = isAuditable;
+            this.auditVisitor = auditVisitor;
         }
         public void Add(TEntity entity)
         {
-            setAuditProperties( entity);
+            auditVisitor.SetAuditProperties( entity);
             context.Set<TEntity>().Add(entity);
         }
 
         public void Modify(TEntity entity, Include<TEntity> include = null)
         {
-            setAuditProperties(entity);
+            auditVisitor.SetAuditProperties(entity);
             EntityEntry<TEntity> entry = context.Entry(entity);
             // alternative: context.Entry(entity).Property("GroupAdName").IsModified = false;
             if (include != null)
@@ -41,7 +39,7 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public void Remove(TEntity entity)
         {
-            if (isAuditable(entity))
+            if (auditVisitor.HasAuditProperties(entity))
             {
                 //EntityEntry<TEntity> entry = context.Entry(entity);
                 //var propertyValues = entry.GetDatabaseValues();
@@ -58,7 +56,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class
         {
-            setAuditProperties(entity); // TODO: test if ModifyWithRelated modifies entity ?
+            auditVisitor.SetAuditProperties(entity); // TODO: test if ModifyWithRelated modifies entity ?
             Expression <Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable = getRelation.ContravarianceToIEnumerable();
             EntityEntry<TEntity> entry = context.Entry(entity);
             //if (entry.State == EntityState.Detached)
@@ -78,7 +76,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             foreach (var e in newRelations)
                 if (!oldRelations.Any(e2 => equalsById(e, e2)))
                 {
-                    setAuditProperties(e);
+                    auditVisitor.SetAuditProperties(e);
                     oldRelations.Add(e);
                 }
         }
