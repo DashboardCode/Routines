@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Configuration.NETF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Test", "Tests\Routines.Test\Routines.Test.csproj", "{2B5CADED-2F8B-4809-ABA8-7B679D31E162}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.NETStandard.EfCoreMigrationApp", "AdminkaV1\DataAccessEfCore.SqlServer.InstallerApp\AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.NETStandard.EfCoreMigrationApp", "AdminkaV1\Injected.NETStandard.EfCoreMigrationApp\AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore", "Routines.Storage.EfCore\Routines.Storage.EfCore.csproj", "{E0AB2637-9207-4941-9C9D-1FA6FD67FFE6}"
 EndProject
