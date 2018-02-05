@@ -118,8 +118,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="InMemoryAdmikaConfigurationFacade.cs" />
-    <Compile Include="SqlServerAdmikaConfigurationFacade.cs" />
+    <Compile Include="ConfigurationFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

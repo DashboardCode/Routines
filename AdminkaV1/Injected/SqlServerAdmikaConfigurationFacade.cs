@@ -1,25 +1,21 @@
-﻿using Microsoft.Extensions.Configuration;
-
-using DashboardCode.Routines;
+﻿
 using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
-using System;
 
-namespace DashboardCode.AdminkaV1.Injected.NETStandard
+namespace DashboardCode.AdminkaV1.Injected
 {
     public class SqlServerAdmikaConfigurationFacade 
     {
-        public IConfigurationRoot ConfigurationRoot { get; private set; }
+        readonly IConnectionStringAccess connectionStringAccess;
         readonly string connectionStringName;
         readonly string migrationAssembly;
-        readonly IConnectionStringAccess connectionStringAccess;
-
         public SqlServerAdmikaConfigurationFacade(
-            IConnectionStringAccess connectionStringAccess,
-            string connectionStringName = "AdminkaConnectionString", string migrationAssembly = null)
+            IConnectionStringAccess connectionStringAccess, 
+            string connectionStringName = "AdminkaConnectionString",
+            string migrationAssembly = null)
         {
-            this.connectionStringAccess = connectionStringAccess;
             this.connectionStringName = connectionStringName;
+            this.connectionStringAccess = connectionStringAccess;
             this.migrationAssembly = migrationAssembly;
         }
 
