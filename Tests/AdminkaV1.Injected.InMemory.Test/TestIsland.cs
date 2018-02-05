@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
@@ -9,7 +9,13 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
     {
         public static void Reset(string databaseName)
         {
-            var routine = new AdminkaInMemoryTestRoutine(new RoutineGuid(Guid.NewGuid(), new MemberTag(typeof(TestIsland))), new { input = "Input text" }, databaseName);
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
+            var routine = new AdminkaInMemoryTestRoutine(
+                loggingTransientsFactory,
+                new MemberTag(typeof(TestIsland)),
+                new { input = "Input text" }, databaseName);
             routine.HandleOrmFactory(( ormHandlerFactory) =>
             {
                 var typeRecord1 = new TypeRecord()

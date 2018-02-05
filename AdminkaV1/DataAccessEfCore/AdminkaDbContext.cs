@@ -283,14 +283,15 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             #endregion
 
             modelBuilder.Entity<TypeRecord>().HasAnnotation("Constraints",
-                new[] { new Constraint { Name = "CK_tst_TypeRecords_TypeRecordName", Fields = new[] { "TypeRecordName" }, Body = @"CHECK(TypeRecordName NOT LIKE '%[^a-z0-9 ]%')", Message = @"TypeRecordName NOT LIKE '%[^a-z0-9 ]%'" } }
+                new[] { new Constraint { Name = "CK_tst_TypeRecords_TypeRecordName", Fields = new[] { "TypeRecordName" }, Body = @"CHECK (TypeRecordName NOT LIKE '%[^a-z0-9 ]%')",
+                    Message = @"Only letters, numbers and space" } }
                 );
 
             modelBuilder.Entity<Group>().HasAnnotation("Constraints",
                 new[]
                     {
-                        new Constraint { Name="CK_scr_Groups_GroupName",  Message=@"[^a-z0-9 ]",   Fields = new[] { "GroupName" }, Body=@"CHECK(GroupName NOT LIKE '%[^a-z0-9 ]%')" },
-                        new Constraint { Name="CK_scr_Groups_GroupAdName", Message=@"[^a-z!.!-!_!\!@]", Fields = new[] { "GroupAdName" }, Body=@"CHECK(GroupAdName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!')"  }
+                        new Constraint { Name="CK_scr_Groups_GroupName",  Message=@"Only letters, numbers and space",   Fields = new[] { "GroupName" }, Body=@"CHECK (GroupName NOT LIKE '%[^a-z0-9 ]%')" },
+                        new Constraint { Name="CK_scr_Groups_GroupAdName", Message=@"Only letters, numbers and .-_@", Fields = new[] { "GroupAdName" }, Body=@"CHECK (GroupAdName NOT LIKE '%[^a-z0-9!.!-!_!\!@]%' ESCAPE '!')"  }
                     }
                 );
 
@@ -304,16 +305,16 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             modelBuilder.Entity<User>().HasAnnotation("Constraints",
                 new[]
                     {
-                        new Constraint { Name="CK_scr_Users_LoginName", Message=@"[^a-z!.!-!_!\!@] ESCAPE '!'", Fields = new[] { "LoginName" }, Body=@"CHECK(LoginName NOT LIKE '%[^a-z!.!-!_!\!@]%' ESCAPE '!')" },
-                        new Constraint { Name="CK_scr_Users_SecondName", Message=@"[^a-z '']", Fields = new[] { "SecondName" }, Body=@"CHECK(SecondName NOT LIKE '%[^a-z '']%')" },
-                        new Constraint { Name="CK_scr_Users_FirstName", Message=@"[^a-z ]", Fields = new[] { "FirstName" }, Body=@"CHECK(FirstName NOT LIKE '%[^a-z ]%')" }
+                        new Constraint { Name="CK_scr_Users_LoginName", Message=@"Only letters, numbers and .-_@", Fields = new[] { "LoginName" }, Body=@"CHECK (LoginName NOT LIKE '%[^a-z0-9!.!-!_!\!@]%' ESCAPE '!')" },
+                        new Constraint { Name="CK_scr_Users_SecondName", Message=@"Only letters, space and apostrophe", Fields = new[] { "SecondName" }, Body=@"CHECK (SecondName NOT LIKE '%[^a-z '']%')" },
+                        new Constraint { Name="CK_scr_Users_FirstName", Message=@"Only letters and space", Fields = new[] { "FirstName" }, Body=@"CHECK (FirstName NOT LIKE '%[^a-z ]%')" }
                     }
                 );
 
             modelBuilder.Entity<Privilege>().HasAnnotation("Constraints",
                 new[]
                     {
-                        new Constraint { Name="CK_scr_Privileges_PrivilegeId", Message=@"[^a-z0-9]", Fields = new[] { "PrivilegeId" }, Body=@"CHECK(PrivilegeId NOT LIKE '%[^a-z0-9]%')" }
+                        new Constraint { Name="CK_scr_Privileges_PrivilegeId", Message=@"Only letters and numbers", Fields = new[] { "PrivilegeId" }, Body=@"CHECK (PrivilegeId NOT LIKE '%[^a-z0-9]%')" }
                     }
                 );
 
@@ -321,7 +322,8 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 new[] {
                         new Constraint { Fields = new[] { nameof(TypeRecord.TypeRecordName) },
                                          Message = "Only letters, numbers and space",
-                                         Name = "CK_TypeRecords_TypeRecordName" }
+                                         Name = "CK_TypeRecords_TypeRecordName",
+                                         Body=@"CHECK (TypeRecordName NOT LIKE '%[^a-z0-9 ]%')" }
                     }
                 );
         }

@@ -1,0 +1,256 @@
+﻿using System;
+using System.Threading.Tasks;
+
+using DashboardCode.Routines.Injected;
+
+namespace DashboardCode.Routines.Storage
+{
+    public class StorageRoutineHandler<TUserContext, TDbContext> : UserRoutineHandler<TUserContext>
+        where TDbContext : IDisposable
+    {
+        readonly IStorageMetaService storageMetaService;
+        readonly Func<RoutineClosure<TUserContext>, TDbContext> createDbContext;
+        readonly Func<RoutineClosure<TUserContext>, (TDbContext, IAuditVisitor)> createDbContextForStorage;
+        readonly IRepositoryGFactory<TDbContext> repositoryGFactory;
+        readonly IOrmGFactory<TDbContext> ormGFactory;
+
+        protected readonly TUserContext userContext;
+
+        public StorageRoutineHandler(
+            TUserContext userContext,
+            
+            IStorageMetaService storageMetaService,
+            Func<RoutineClosure<TUserContext>, TDbContext> createDbContext,
+            Func<RoutineClosure<TUserContext>, (TDbContext, IAuditVisitor)> createDbContextForStorage,
+            IRepositoryGFactory<TDbContext> repositoryGFactory,
+            IOrmGFactory<TDbContext> ormGFactory,
+
+            IBasicLogging basicLogging,
+            Func<Exception, Exception> transformException,
+            Func<Action<DateTime, string>, RoutineClosure<TUserContext>> createRoutineState,
+            object input
+            ) : base(
+                basicLogging, 
+                transformException, 
+                createRoutineState,
+                new IndependentRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, createDbContext), 
+                new IndependentOrmHandlerGFactory<TUserContext, TDbContext>(
+                        repositoryGFactory, ormGFactory,
+                        storageMetaService, createDbContextForStorage), 
+                input)
+        {
+            this.userContext = userContext;
+
+            this.storageMetaService = storageMetaService;
+
+            this.createDbContext    = createDbContext;
+            this.createDbContextForStorage = createDbContextForStorage;
+            this.repositoryGFactory        = repositoryGFactory;
+            this.ormGFactory               = ormGFactory;
+        }
+
+        protected IndependentDbContextHandler<TUserContext, TDbContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
+        {
+            var dbContextHandler = new IndependentDbContextHandler<TUserContext, TDbContext>(closure, createDbContext);
+            return dbContextHandler;
+        }
+
+        private IndependentRepositoryHandler<TUserContext, TDbContext, TEntity> CreateRespositoryHandler<TEntity>(RoutineClosure<TUserContext> closure, bool noTracking = false) where TEntity : class
+        {
+            Func<TDbContext, bool, IRepository<TEntity>> createRepository = repositoryGFactory.ComposeCreateRepository<TEntity>();
+            var repositoryHandler = new IndependentRepositoryHandler<TUserContext, TDbContext, TEntity>(closure, createDbContext, dbContext => createRepository(dbContext, noTracking));
+            return repositoryHandler;
+        }
+
+        private IndependentOrmHandler<TUserContext, TDbContext, TEntity> CreateOrmHandler<TEntity>(RoutineClosure<TUserContext> closure, bool noTracking = false) where TEntity : class
+        {
+            IOrmEntitySchemaAdapter ormEntitySchemaAdapter  = storageMetaService.GetOrmEntitySchemaAdapter<TEntity>();
+            Func<Exception, StorageResult> analyzeException = storageMetaService.Analyze<TEntity>;
+            Func<TDbContext, bool, IRepository<TEntity>> createRepository = null;
+            Func<TDbContext,
+                 Func<Exception, StorageResult>,
+                 IAuditVisitor,
+                 IOrmStorage<TEntity>
+                 > createOrmStorage = null;
+            Func<TDbContext, IOrmEntitySchemaAdapter, IOrmEntitySchemaAdapter<TEntity>> createOrmMetaAdapter = null;
+            var ormHandler = new IndependentOrmHandler<TUserContext, TDbContext, TEntity>(
+                    closure, createDbContextForStorage, ormEntitySchemaAdapter, analyzeException, createRepository, noTracking, createOrmStorage, createOrmMetaAdapter
+                );
+            return ormHandler;
+        }
+
+        private Action<RoutineClosure<TUserContext>> ComposeDbContextHandled(Action<TDbContext, RoutineClosure<TUserContext>> action)
+        {
+            return closure =>
+            {
+                using (var dbContext = createDbContext(closure))
+                    action(dbContext, closure);
+            };
+        }
+
+        private Func<RoutineClosure<TUserContext>, TOutput> ComposeDbContextFuncHandled<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, TOutput> func)
+        {
+            return closure =>
+            {
+                using (var dbContext = createDbContext(closure))
+                    return func(dbContext, closure);
+            };
+        }
+
+        public Action<RoutineClosure<TUserContext>> ComposeDbContextHandled(Action<TDbContext> action)
+        {
+            return closure =>
+            {
+                using (var dbContext = createDbContext(closure))
+                    action(dbContext);
+            };
+        }
+
+        public Func<RoutineClosure<TUserContext>, TOutput> ComposeDbContextHandled<TOutput>(Func<TDbContext, TOutput> func)
+        {
+            return closure =>
+            {
+                using (var dbContext = createDbContext(closure))
+                    return func(dbContext);
+            };
+        }
+        #region  Compose Factory
+
+        public Action<RoutineClosure<TUserContext>> ComposeOrmFactoryHandled(Action<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>> action)
+        {
+            return closure =>
+            {
+                var (dbContext, auditVisitor) = createDbContextForStorage(closure);
+                using (dbContext)
+                    action(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, storageMetaService, auditVisitor, dbContext), closure);
+            };
+        }
+
+        public Func<RoutineClosure<TUserContext>, TOutput> ComposeOrmFactoryHandled<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func)
+        {
+            return closure =>
+            {
+                var (dbContext, auditVisitor) = createDbContextForStorage(closure);
+                using (dbContext)
+                    return func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, storageMetaService, auditVisitor, dbContext), closure);
+            };
+        }
+
+        public Action<RoutineClosure<TUserContext>> ComposeRepositoryFactoryHandled(Action<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>> action)
+        {
+            return closure =>
+            {
+                using (var dbContext = createDbContext(closure))
+                    action(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext), closure);
+            };
+        }
+
+        public Func<RoutineClosure<TUserContext>, TOutput> ComposeRepositoryFactoryHandled<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func)
+        {
+            return closure =>
+            {
+                using (var dbContext = createDbContext(closure))
+                    return func(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext), closure);
+            };
+        }
+
+        public Action<RoutineClosure<TUserContext>> ComposeOrmFactoryHandled(Action<ReliantOrmHandlerGFactory<TUserContext, TDbContext>> action)
+        {
+            return closure =>
+            {
+                var (dbContext, auditVisitor) = createDbContextForStorage(closure);
+                using (dbContext)
+                    action(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, storageMetaService, auditVisitor, dbContext));
+            };
+        }
+
+        public Func<RoutineClosure<TUserContext>, TOutput> ComposeOrmFactoryHandled<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, TOutput> func)
+        {
+            return closure =>
+            {
+                var (dbContext, auditVisitor) = createDbContextForStorage(closure);
+                using (dbContext)
+                    return func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, storageMetaService, auditVisitor, dbContext));
+            };
+        }
+
+        public Action<RoutineClosure<TUserContext>> ComposeRepositoryFactoryHandled(Action<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>> action)
+        {
+            return closure =>
+            {
+                using (var dbContext = createDbContext(closure))
+                    action(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext));
+            };
+        }
+
+        public Func<RoutineClosure<TUserContext>, TOutput> ComposeRepositoryFactoryHandled<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, TOutput> func)
+        {
+            return closure =>
+            {
+                using (var dbContext = createDbContext(closure))
+                    return func(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext));
+            };
+        }
+        #endregion
+
+        #region Handle with AdminkaDbContext
+        public void HandleDbContext(Action<TDbContext> action) =>
+            Handle(ComposeDbContextHandled(action));
+
+        public TOutput HandleDbContext<TOutput>(Func<TDbContext, TOutput> func) =>
+            Handle(ComposeDbContextHandled(func));
+
+        public async Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, TOutput> func) =>
+            await HandleAsync(ComposeDbContextHandled(func));
+
+
+        public void HandleDbContext(Action<TDbContext, RoutineClosure<TUserContext>> action) =>
+            Handle(ComposeDbContextHandled(action));
+
+        public TOutput HandleDbContext<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, TOutput> func) =>
+            Handle(ComposeDbContextFuncHandled(func));
+
+        public async Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, TOutput> func) =>
+            await HandleAsync(ComposeDbContextFuncHandled(func));
+
+        #endregion
+
+        #region Handle with Handler's Factory
+        public void HandleOrmFactory(Action<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>> action) =>
+            Handle(ComposeOrmFactoryHandled(action));
+
+        public TOutput HandleOrmFactory<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func) =>
+            Handle(ComposeOrmFactoryHandled(func));
+
+        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func) =>
+            await HandleAsync(ComposeOrmFactoryHandled(func));
+
+        public void HandleRepositoryFactory(Action<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>> action) =>
+            Handle(ComposeRepositoryFactoryHandled(action));
+
+        public TOutput HandleRepositoryFactory<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func) =>
+            Handle(ComposeRepositoryFactoryHandled(func));
+
+        public async Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func) =>
+            await HandleAsync(ComposeRepositoryFactoryHandled(func));
+
+        public void HandleOrmFactory(Action<ReliantOrmHandlerGFactory<TUserContext, TDbContext>> action) =>
+            Handle(ComposeOrmFactoryHandled(action));
+
+        public TOutput HandleOrmFactory<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
+            Handle(ComposeOrmFactoryHandled(func));
+
+        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
+            await HandleAsync(ComposeOrmFactoryHandled(func));
+
+        public void HandleRepositoryFactory(Action<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>> action) =>
+            Handle(ComposeRepositoryFactoryHandled(action));
+
+        public TOutput HandleRepositoryFactory<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
+            Handle(ComposeRepositoryFactoryHandled(func));
+
+        public async Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
+            await HandleAsync(ComposeRepositoryFactoryHandled(func));
+        #endregion
+    }
+}

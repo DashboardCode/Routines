@@ -5,8 +5,9 @@ using System.Security.Principal;
 using Microsoft.AspNetCore.Http;
 
 using DashboardCode.Routines;
-using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.AdminkaV1.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -33,13 +34,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         // in db and reset sessions if there are changes
         public static UserContext GetUserContext(
             HttpContext httpContext,
-            RoutineGuid routineTag,
+            RoutineGuid routineGuid,
             IIdentity identity,
             CultureInfo cultureInfo,
             string connectionString,
-            AdminkaDataAccessFacade repositoryHandlerFactory,
+            AdminkaStorageConfiguration adminkaStorageConfiguration,
+            //IAdminkaConfigurationFacade adminkaConfigurationFacade,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            ContainerFactory configurationContainerFactory
+            ContainerFactory<UserContext> configurationContainerFactory
             )
         {
             // get userContextGuid from session
@@ -54,8 +56,19 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             }
             else
             {
-                var authenticationSerivce = new UserContextFactory(loggingTransientsFactory, repositoryHandlerFactory, configurationContainerFactory);
-                userContext = authenticationSerivce.Create(routineTag, identity, cultureInfo);
+                //var authenticationSerivce = new UserContextFactory(
+                //    loggingTransientsFactory,
+                //    storageRoutineTransitions,
+                //    adminkaStorageConfiguration,
+                //    configurationContainerFactory);
+                //userContext = authenticationSerivce.Create(routineTag, identity, cultureInfo);
+
+                userContext = InjectedManager.GetUserContext(loggingTransientsFactory,
+                    adminkaStorageConfiguration,
+                    configurationContainerFactory,
+                    routineGuid, identity, CultureInfo.CurrentCulture
+                    );
+
                 userJson = InjectedManager.SerializeToJson(userContext.User, 1, false);
                 httpContext.Session.SetString("User", userJson);
             }

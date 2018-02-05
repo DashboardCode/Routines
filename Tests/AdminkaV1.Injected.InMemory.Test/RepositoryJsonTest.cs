@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
@@ -11,7 +13,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public void TestStorageJson()
         {
-            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new {}, readonlyDatabaseName);
+            var logger = new List<string>();
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new {}, readonlyDatabaseName);
             routine.HandleOrmFactory(ormHandlersFactory =>
             {
                 var ormHandler = ormHandlersFactory.Create<ParentRecord>();

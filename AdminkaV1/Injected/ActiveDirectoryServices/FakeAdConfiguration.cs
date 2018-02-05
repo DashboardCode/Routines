@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DashboardCode.AdminkaV1.Injected.Configuration
+namespace DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices
 {
     public class FakeAdConfiguration : System.IProgress<string>
     {

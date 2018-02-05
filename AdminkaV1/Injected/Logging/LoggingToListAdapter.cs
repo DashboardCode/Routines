@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Injected;
+using DashboardCode.AdminkaV1.Injected.Performance;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
@@ -117,7 +117,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 
         public void TraceAuthentication(RoutineGuid routineGuid, string message)
         {
-            
+            logger.Add($"{routineGuid.CorrelationToken} {RoutineGuidExtensions.ToText(routineGuid)} {message}");
         }
     }
 }

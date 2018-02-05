@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
@@ -14,7 +17,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public void TestRepositoryInMemory()
         {
-            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
+            var logger = new List<string>();
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
             routine.HandleDbContext((dbContext, closure) =>
             {
                 var list = dbContext.ParentRecords
@@ -27,7 +31,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public virtual void TestProblematicDetachUsage()
         {
-            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
+            var logger = new List<string>();
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
@@ -48,7 +53,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public virtual void TestDetach()
         {
-            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
+            var logger = new List<string>();
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
 
             Include<ParentRecord> include = includable =>
                        includable

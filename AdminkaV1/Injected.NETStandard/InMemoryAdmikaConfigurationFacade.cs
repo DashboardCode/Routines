@@ -7,24 +7,45 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard
 {
-    public class InMemoryAdmikaConfigurationFacade : IAdmikaConfigurationFacade
+    public class ConfigurationFactory : IConfigurationFactory
     {
-        public IConfigurationRoot ConfigurationRoot { get; private set; }
-        private readonly string databaseName;
         readonly IConfigurationManagerLoader configurationManagerLoader;
-        public InMemoryAdmikaConfigurationFacade(string databaseName)
+        public ConfigurationFactory(IConfigurationManagerLoader configurationManagerLoader)
+        {
+            this.configurationManagerLoader = configurationManagerLoader;
+        }
+
+        public ConfigurationFactory()
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
-            this.ConfigurationRoot = configurationBuilder.Build();
+            var configurationRoot = configurationBuilder.Build();
+            configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot);
+        }
+        public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
+            new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
+    }
+
+    public class InMemoryAdmikaConfigurationFacade //: IAdminkaConfigurationFacade
+    {
+        //public IConfigurationRoot ConfigurationRoot { get; private set; }
+        private readonly string databaseName;
+        //readonly IConfigurationManagerLoader configurationManagerLoader;
+        public InMemoryAdmikaConfigurationFacade(string databaseName)
+        {
             this.databaseName = databaseName;
-            configurationManagerLoader = new ConfigurationManagerLoader(ConfigurationRoot);
+
+            //ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            //configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
+            //this.ConfigurationRoot = configurationBuilder.Build();
+            
+            //configurationManagerLoader = new ConfigurationManagerLoader(ConfigurationRoot);
         }
 
         public AdminkaStorageConfiguration ResolveAdminkaStorageConfiguration() =>
             new AdminkaStorageConfiguration(databaseName, null, StorageType.INMEMORY);
 
-        public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
-            new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
+        //public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
+        //    new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
     }
 }

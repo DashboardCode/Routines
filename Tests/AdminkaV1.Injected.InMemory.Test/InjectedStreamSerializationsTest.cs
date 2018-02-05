@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,7 +11,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public virtual void TestSerializtionRecursion()
         {
-            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
+            var logger = new List<string>();
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
             var record = routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 Include<TypeRecord> include = includable =>
@@ -30,7 +32,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public virtual void TestXmlSerializeAndDesirialize()
         {
-            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { }, readonlyDatabaseName);
+            var logger = new List<string>();
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);

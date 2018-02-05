@@ -1,6 +1,6 @@
 ﻿using DashboardCode.Routines;
 
-namespace DashboardCode.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public interface IAuthenticationLogging 
     {

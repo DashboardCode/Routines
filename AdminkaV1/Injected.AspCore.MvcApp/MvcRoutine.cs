@@ -10,6 +10,9 @@ using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.NETStandard;
+using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -31,14 +34,29 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 input)
         {
         }
+
         public MvcRoutine(ConfigurableController controller, RoutineGuid routineGuid, object input) :
             this(controller,
+                 routineGuid,
+                 new ConfigurationManagerLoader(controller.ConfigurationRoot),
+                 input)
+        {
+        }
+
+        public MvcRoutine(
+                ConfigurableController controller, 
+                RoutineGuid routineGuid,
+                ConfigurationManagerLoader configurationManagerLoader,
+                object input) :
+            this(
+                 new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration(),
+                 new ConfigurationFactory(configurationManagerLoader),
+                 controller,
                  routineGuid,
                  InjectedManager.ComposeNLogTransients(
                        InjectedManager.Markdown,
                        InjectedManager.DefaultRoutineTagTransformException
                      ),
-                 new SqlServerAdmikaConfigurationFacade(controller.ConfigurationRoot),
                  input)
         {
             controller.HttpContext.Items["routineGuid"] = routineGuid;
@@ -51,15 +69,18 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 headers.Add("X-RoutineGuid-MemberTag-Member",    routineGuid.MemberTag.Member);
             }
         }
-        private MvcRoutine(ConfigurableController controller, RoutineGuid routineGuid,
-            Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingFactory,
-            IAdmikaConfigurationFacade admikaConfigurationFacade,
+        private MvcRoutine(
+            AdminkaStorageConfiguration admikaConfigurationFacade,
+            IConfigurationFactory configurationFactory,
+            ConfigurableController controller, RoutineGuid routineGuid,
+            Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             object input) :
             base(
+                admikaConfigurationFacade,
+                configurationFactory,
+                loggingTransientsFactory,
                 routineGuid,
                 controller.User.Identity,
-                loggingFactory,
-                admikaConfigurationFacade,
                 input)
         {
             this.Controller = controller;

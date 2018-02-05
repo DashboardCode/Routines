@@ -1,6 +1,7 @@
 ﻿Do not forget to setup project as start up
 Then: 
-	Add-Migration MigrationName
-	Update-Database
+	PS> Add-Migration MigrationName
+	modify MigrationName.cs, add customs: e.g. InitialCustoms.Up(migrationBuilder, TargetModel);
+	PS> Update-Database
 
 	

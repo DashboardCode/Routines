@@ -1,6 +1,7 @@
 ﻿using System.IO;
-using DashboardCode.Routines;
 using Microsoft.AspNetCore.Hosting;
+
+using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -22,6 +23,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             host.Run();
 
         }
+
         public static void TestDependencies()
         {
             var t0 = typeof(UserContext);

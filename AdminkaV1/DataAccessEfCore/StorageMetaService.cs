@@ -127,7 +127,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             return analyze(ex, entityMeta, "");
         }
 
-        public IOrmEntitySchemaAdapter<TEntity> GetOrmMetaAdapter<TEntity>() where TEntity : class
+        public IOrmEntitySchemaAdapter<TEntity> GetOrmEntitySchemaAdapter<TEntity>() where TEntity : class
         {
             var entityMeta = entityMetas[typeof(TEntity).FullName];
             var @output = new OrmMetaAdapter<TEntity>(mutableModel, entityMeta);

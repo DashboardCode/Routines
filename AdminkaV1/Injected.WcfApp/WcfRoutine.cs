@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using DashboardCode.AdminkaV1.Injected.NETFramework;
+
 using DashboardCode.Routines;
+using DashboardCode.Routines.Configuration;
+using DashboardCode.Routines.Configuration.NETFramework;
+
+using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.AdminkaV1.Injected.NETFramework;
 
 namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
@@ -9,15 +14,26 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
     {
         public WcfRoutine(MemberTag memberTag, string faultCodeNamespace, object input) 
             : this(new Routines.RoutineGuid(memberTag), GetUserContext(), faultCodeNamespace,
-                  new SqlServerAdmikaConfigurationFacade(), input)
+                  new ConfigurationManagerLoader(), input)
         {
         }
 
         protected WcfRoutine(Routines.RoutineGuid routineGuid, UserContext userContext, string faultCodeNamespace,
-            IAdmikaConfigurationFacade admikaConfigurationFacade,  object input)
-            : base(routineGuid, userContext,
+            ConfigurationManagerLoader configurationManagerLoader, object input)
+            : this(routineGuid, GetUserContext(), faultCodeNamespace,
+                  new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration(),
+                  new ConfigurationFactory(configurationManagerLoader),  input)
+        {
+        }
+
+        protected WcfRoutine(Routines.RoutineGuid routineGuid, UserContext userContext, string faultCodeNamespace,
+            AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IConfigurationFactory configurationFactory, object input)
+            : base(
+                  adminkaStorageConfiguration,
+                  configurationFactory,
                   (ex, rg, md) => TransformException(ex, rg, faultCodeNamespace, md),
-                  admikaConfigurationFacade,
+                  routineGuid, userContext,
                   input)
         {
         }

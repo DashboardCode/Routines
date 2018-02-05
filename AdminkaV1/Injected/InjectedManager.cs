@@ -2,19 +2,23 @@
 using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Globalization;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.SqlServer;
-
-using DashboardCode.AdminkaV1.DataAccessEfCore;
-using DashboardCode.AdminkaV1.Injected.Configuration;
-using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.LoggingDom.WcfClient;
+using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
-using System.Security.Principal;
+using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
+using DashboardCode.AdminkaV1.Injected.Performance;
+
+#if !NETSTANDARD2_0
+    using System.Security.Principal;
     using DashboardCode.Routines.Serialization.NETFramework;
     using DashboardCode.Routines.ActiveDirectory.NETFramework;
 #else
@@ -40,7 +44,7 @@ namespace DashboardCode.AdminkaV1.Injected
 
         public static IIdentity GetDefaultIdentity()
         {
-#if (NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
+#if NETSTANDARD2_0
             // TODO: Core 2.1 will contains AD functionality https://github.com/dotnet/corefx/issues/2089 and 
             // there we will need update this code to get roles similar to WindowsIdentity.GetCurrent().
 
@@ -50,7 +54,7 @@ namespace DashboardCode.AdminkaV1.Injected
 #endif 
         }
 
-#region Exception
+        #region Exception
         public static string ToHtml(this Exception exception)
         {
             string text = Markdown(exception);
@@ -68,7 +72,7 @@ namespace DashboardCode.AdminkaV1.Injected
             return text;
         }
 
-        public static string Markdown(this Exception exception, Action<StringBuilder, Exception> appender = null)
+        private static string Markdown(this Exception exception, Action<StringBuilder, Exception> appender = null)
         {
             string text = ExceptionExtensions.Markdown(exception,
                 (sb, ex) =>
@@ -95,18 +99,18 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         #endregion
 
-#region Serialize
+        #region Serialize
         public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class
         {
             var knownTypes = include.ListLeafTypes();
             return DeserializeXml<T>(xmlText, knownTypes);
         }
-        public static string SerializeToXml<T>(T t, Include<T> include) where T: class
+        public static string SerializeToXml<T>(T t, Include<T> include) where T : class
         {
             var knownTypes = include.ListLeafTypes();
             return SerializeToXml(t, typeof(T), knownTypes);
         }
-        public static string SerializeToXml(object o, IEnumerable<Type> knownTypes=null)
+        public static string SerializeToXml(object o, IEnumerable<Type> knownTypes = null)
         {
             return SerializeToXml(o, o.GetType(), knownTypes);
         }
@@ -133,7 +137,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
 #else
             var types = typeof(UserContext).GetTypeInfo().Assembly.GetTypes();
-                return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
+            return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
 #endif
         }
         public static string Markdown(string text)
@@ -142,27 +146,15 @@ namespace DashboardCode.AdminkaV1.Injected
             var html = m.Transform(text);
             return html;
         }
-#endregion
+        #endregion
 
-#region Active directory
-        public static IEnumerable<string> GetGroups(this IIdentity identity, out string identityName, out string givenName, out string surname)
-        {
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
-            var groups = ActiveDirectoryManager.ListGroups(identity, out identityName, out givenName, out surname);
-                return groups;
-#else
-            throw new NotImplementedException("LDAP is not supported for NETStandard");
-#endif
-        }
-#endregion
-
-#region Logging
+        #region Logging
         public static Exception DefaultRoutineTagTransformException(Exception exception, RoutineGuid routineGuid, Func<Exception, string> markdownException)
         {
-            exception.Data[nameof(RoutineGuid.CorrelationToken)]  = routineGuid.CorrelationToken;
-            exception.Data[nameof(MemberTag.Namespace)]           = routineGuid.MemberTag.Namespace;
-            exception.Data[nameof(MemberTag.Type)]                = routineGuid.MemberTag.Type;
-            exception.Data[nameof(MemberTag.Member)]              = routineGuid.MemberTag.Member;
+            exception.Data[nameof(RoutineGuid.CorrelationToken)] = routineGuid.CorrelationToken;
+            exception.Data[nameof(MemberTag.Namespace)] = routineGuid.MemberTag.Namespace;
+            exception.Data[nameof(MemberTag.Type)] = routineGuid.MemberTag.Type;
+            exception.Data[nameof(MemberTag.Member)] = routineGuid.MemberTag.Member;
             return exception;
         }
         internal static NLogAuthenticationLogging GetNLogAuthenticationLogging()
@@ -192,9 +184,9 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public static Func<RoutineGuid, IContainer, RoutineLoggingTransients> ComposeListLoggingTransients(
             List<string> logger,
-            LoggingConfiguration loggingConfiguration,
-            LoggingVerboseConfiguration loggingVerboseConfiguration,
-            LoggingPerformanceConfiguration loggingPerformanceConfiguration
+            LoggingConfiguration loggingConfiguration = null,
+            LoggingVerboseConfiguration loggingVerboseConfiguration = null,
+            LoggingPerformanceConfiguration loggingPerformanceConfiguration = null
             )
         {
             return (t, r) =>
@@ -205,9 +197,9 @@ namespace DashboardCode.AdminkaV1.Injected
                     t,
                     markdownException,
                     SerializeToJson,
-                    loggingConfiguration,
-                    loggingVerboseConfiguration,
-                    loggingPerformanceConfiguration
+                    loggingConfiguration ?? new LoggingConfiguration(),
+                    loggingVerboseConfiguration ?? new LoggingVerboseConfiguration(),
+                    loggingPerformanceConfiguration ?? new LoggingPerformanceConfiguration()
                     );
                 return new RoutineLoggingTransients(adminkaLogging, adminkaLogging,
                     ex => DefaultRoutineTagTransformException(ex, t, markdownException));
@@ -215,20 +207,19 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         #endregion
 
-
         public static AdminkaDbContext CreateAdminkaDbContext(
-            IAdmikaConfigurationFacade  admikaConfigurationFacade,
-            MemberTag memberTag, 
+            AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IConfigurationFactory configurationFactory,
+            MemberTag memberTag,
             UserContext userContext,
             bool hasVerbose = false,
             Action<DateTime, string> verbose = null
             )
         {
             var routineGuid = new RoutineGuid(memberTag);
-            var configurationContainerFactory = new ContainerFactory(admikaConfigurationFacade);
+            var configurationContainerFactory = InjectedManager.CreateContainerFactory(configurationFactory);
             var container = configurationContainerFactory.CreateContainer(routineGuid, userContext);
 
-            // NOTE : alternative how to build verbose logger
             if (hasVerbose && verbose == null)
             {
                 Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory =
@@ -243,20 +234,97 @@ namespace DashboardCode.AdminkaV1.Injected
                 verbose = bufferedVerboseLoggingAdapter.LogVerbose;
             }
 
-            var closure = new RoutineClosure<UserContext>(userContext, routineGuid, hasVerbose?verbose:null, container);
-            var adminkaStorageConfiguration = admikaConfigurationFacade.ResolveAdminkaStorageConfiguration();
+            var closure = new RoutineClosure<UserContext>(userContext, routineGuid, hasVerbose ? verbose : null, container);
             var adminkaDbContextFactory = new AdminkaDbContextFactory(adminkaStorageConfiguration);
             var adminkaDbContext = adminkaDbContextFactory.Create(closure);
-
-            //  NOTE :  alternative how to build the same quick way
-            //  var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, installerApplicationFactory, new { });
-            //  return routine.Handle(
-            //    (closure, adminkaDbContextFactory) => {
-            //        var dbContext = adminkaDbContextFactory.Resolve();
-            //        return dbContext;
-            //    });
-
             return adminkaDbContext;
+        }
+
+        class JsonDeserializer : IGFactory<string>
+        {
+            public T Create<T>(string json) =>
+                DeserializeJson<T>(json);
+        }
+        static readonly JsonDeserializer jsonDeserializer = new JsonDeserializer();
+
+        public static string GetVerboseLoggingFlag(UserContext userContext) =>
+            (userContext?.User?.HasPrivilege(Privilege.VerboseLogging) ?? false) ? Privilege.VerboseLogging : null;
+        
+
+        public static ContainerFactory<UserContext> CreateContainerFactory(IConfigurationFactory configurationFactory) =>
+            new ContainerFactory<UserContext>(
+                configurationFactory,
+                GetVerboseLoggingFlag,
+                jsonDeserializer);
+
+        public static IContainer CreateContainer(IConfigurationFactory configurationFactory, RoutineGuid routineGuid, UserContext userContext) =>
+             new ContainerFactory<UserContext>(
+                 configurationFactory,
+                 GetVerboseLoggingFlag,
+                 jsonDeserializer).CreateContainer(routineGuid, userContext);
+
+        public static UserContext GetUserContext(
+                Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+                AdminkaStorageConfiguration adminkaStorageConfiguration,
+                ContainerFactory<UserContext> containerFactory,
+                RoutineGuid routineGuid,
+                IIdentity identity,
+                CultureInfo cultureInfo
+            )
+        {
+            var systemUserContext = new UserContext("Authentication");
+            var newRoutineGuid = new RoutineGuid(routineGuid.CorrelationToken, new MemberTag("InjectedManager", "GetUserContext"));
+            var container = containerFactory.CreateContainer(routineGuid, systemUserContext);
+
+            /// 1) it writes activity and verbose messages to log with its own MemberTag but with the parent's CorrelationToken, Guid.
+            /// 2) subroutine uses the same configuration as parent routine but can "use different @for specification", means configuration can be overrided for "user"
+            
+            var newRoutine = new AdminkaRoutineHandler(
+                adminkaStorageConfiguration,
+                loggingTransientsFactory,
+                newRoutineGuid,
+                systemUserContext,
+                container,
+                new
+                {
+                    PrincipalAuthenticationType = identity.AuthenticationType,
+                    PrincipalName = identity.Name,
+                    PrincipalIsAuthenticated = identity.IsAuthenticated,
+                    PrincipalType = identity.GetType().FullName,
+                    CultureInfo = cultureInfo.ToString()
+                });
+            var user = newRoutine.HandleServicesContainer((authenticationService, closure, logAuthentication) =>
+            {
+                try
+                {
+                    var adConfiguration = closure.Resolve<AdConfiguration>();
+                    bool useAdAuthorization = adConfiguration.UseAdAuthorization;
+                    closure?.Verbose($"useAdAuthorization={useAdAuthorization}");
+                    User @value;
+                    if (useAdAuthorization)
+                    {
+#if !NETSTANDARD2_0
+                        var groups = ActiveDirectoryManager.ListGroups(identity, out string loginName, out string firstName, out string secondName);
+                        @value = authenticationService.GetUser(loginName, firstName, secondName, groups);
+#else
+                        throw new NotImplementedException("LDAP is not supported for NETStandard");
+#endif
+                    }
+                    else
+                    {
+                        var fakeAdConfiguration = closure.Resolve<FakeAdConfiguration>();
+                        @value = authenticationService.GetUser(
+                            fakeAdConfiguration.FakeAdUser, "Anonymous", "Anonymous", fakeAdConfiguration.FakeAdGroups);
+                    }
+                    logAuthentication(routineGuid, @value.LoginName);
+                    return @value;
+                }
+                catch (Exception ex)
+                {
+                    throw new AdminkaException("User authetication and authorization service generates an error because of configuration or      network connection problems", ex);
+                }
+            });
+            return new UserContext(user, cultureInfo);
         }
     }
 }

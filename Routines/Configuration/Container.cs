@@ -1,14 +1,14 @@
 ﻿using System;
-using DashboardCode.Routines;
-using DashboardCode.Routines.Configuration;
 
-namespace DashboardCode.AdminkaV1.Injected
+namespace DashboardCode.Routines.Configuration
 {
     public class Container : IContainer
     {
         ConfigurationContainer configurationContainer;
-        public Container(ConfigurationContainer configurationContainer)
+        IGFactory<string> deserializer;
+        public Container(ConfigurationContainer configurationContainer, IGFactory<string> deserializer)
         {
+            this.deserializer = deserializer;
             this.configurationContainer = configurationContainer;
         }
         public T Resolve<T>() where T : new()
@@ -23,7 +23,7 @@ namespace DashboardCode.AdminkaV1.Injected
             {
                 if (serialized != null)
                 {
-                    t = InjectedManager.DeserializeJson<T>(serialized);
+                    t = deserializer.Create<T>(serialized);
                 }
             }
             return t;

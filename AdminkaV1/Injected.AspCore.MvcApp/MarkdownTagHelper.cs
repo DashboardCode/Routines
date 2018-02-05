@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Html;
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     /// <summary>
-    /// Just a sample of TagHelper. It is not working for exception becaus it is not working for multiline content.
-    /// Usage like <markdown>@DashboardCode.AdminkaV1.AdminkaManager.Markdown(Model)</markdown> doesn't work as you can expect. 
-    /// Because of Razor @... operator changes the text therefore new lines become encoded through escape characters.
+    /// Just a sample of TagHelper. Exactly this tagHelper is not working  because it has a problem with multiline content (and exception text is multiline).
+    /// Razor @... operator changes the text therefore new lines become encoded through escape characters.
+    /// Need further investigation.
     /// </summary>
     [HtmlTargetElement("markdown")]
     [OutputElementHint("p")]

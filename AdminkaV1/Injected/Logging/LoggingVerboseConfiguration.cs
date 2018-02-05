@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DashboardCode.AdminkaV1.Injected.Configuration
+namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public class LoggingVerboseConfiguration :IProgress<string>
     {

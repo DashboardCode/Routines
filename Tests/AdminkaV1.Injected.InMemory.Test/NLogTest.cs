@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.Routines;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
@@ -10,7 +11,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public virtual void TestNLogSuccess() // 161 ms
         {
-            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { input="Input text" }, readonlyDatabaseName);
+            var logger = new List<string>();
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input="Input text" }, readonlyDatabaseName);
             var x = routine.Handle(container =>
             {
                 container.Verbose("Test message");
@@ -21,7 +23,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         [TestMethod]
         public void TestNLogFailure() // 149 ms
         {
-            var routine = new AdminkaInMemoryTestRoutine(new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
+            var logger = new List<string>();
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
             try
             { 
                 var x = routine.Handle<string>(container =>

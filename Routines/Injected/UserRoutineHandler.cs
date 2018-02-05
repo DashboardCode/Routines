@@ -16,14 +16,14 @@ namespace DashboardCode.Routines.Injected
 
             IRepositoryHandlerGFactory<TUserContext> repositoryHandlerFactory,
             IOrmHandlerGFactory<TUserContext> ormHandlerGFactory,
-            
+
             object input
-            ):base(
+            ) : base(
                 new BasicRoutineTransients<RoutineClosure<TUserContext>>(
                     basicLogging,
                     transformException,
                     (verbose) => createRoutineState(verbose)
-                    ), 
+                    ),
                 input)
         {
             this.repositoryHandlerGFactory = repositoryHandlerFactory;
@@ -233,4 +233,6 @@ namespace DashboardCode.Routines.Injected
             });
         }
     }
+
+
 }

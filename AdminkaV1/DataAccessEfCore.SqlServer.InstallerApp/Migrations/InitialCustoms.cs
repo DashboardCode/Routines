@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+using DashboardCode.Routines;
+using DashboardCode.Routines.Configuration.NETStandard;
 using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
@@ -15,14 +17,20 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
         public static void Up(MigrationBuilder migrationBuilder, IModel targetModel)
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
-            var installerApplicationFactory = new SqlServerAdmikaConfigurationFacade(/*migrationAssembly: "DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer.InstallerApp"*/);
-            var routine = new AdminkaRoutineHandler(typeof(InitialCustoms).Namespace, nameof(InitialCustoms), nameof(Up), userContext, installerApplicationFactory, new { });
+            var configurationLoader = new ConfigurationManagerLoader();
+            var sqlServerAdmikaConfigurationFacade = new SqlServerAdmikaConfigurationFacade(configurationLoader);
+            var configurationFactory = new ConfigurationFactory(configurationLoader); 
+            var routine = new AdminkaRoutineHandler(
+                sqlServerAdmikaConfigurationFacade.ResolveAdminkaStorageConfiguration(),
+                configurationFactory,
+                new MemberTag(typeof(InitialCustoms).Namespace, nameof(InitialCustoms), nameof(Up)), userContext,
+                new { });
 
             routine.Handle(
-                (state) => {
+                closure => {
                     string loginName = null;
                     string groupAdName = "FakeDomain\\Testers";
-                    var adConfiguration = state.Resolve<AdConfiguration>();
+                    var adConfiguration = closure.Resolve<AdConfiguration>();
                     if (adConfiguration.UseAdAuthorization)
                     {
                         // TODO: Core 2.1 will contains AD functionality https://github.com/dotnet/corefx/issues/2089 and 
@@ -31,7 +39,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                     }
                     else
                     {
-                        var fakeAdConfiguration = state.Resolve<FakeAdConfiguration>();
+                        var fakeAdConfiguration = closure.Resolve<FakeAdConfiguration>();
                         loginName = fakeAdConfiguration.FakeAdUser;
                     }
                     if (loginName == null)
@@ -54,14 +62,16 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                         }
 
                         var annotation = entityType.FindAnnotation(Constraint.AnnotationName);
-                        if (annotation!=null)
+                        if (annotation != null)
                         {
                             var constraints = (Constraint[])annotation.Value;
                             foreach (var c in constraints)
-                                migrationBuilder.Sql($"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT {c.Name} {c.Body};");
+                            {
+                                var s = $"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT {c.Name} {c.Body};";
+                                migrationBuilder.Sql(s);
+                            }
                         }
                     }
-
 
                     migrationBuilder.Sql(
                           $"INSERT INTO scr.Users (LoginName) VALUES ('{loginName}');" + Environment.NewLine
@@ -77,6 +87,4 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                 });
         }
     }
-
-
 }

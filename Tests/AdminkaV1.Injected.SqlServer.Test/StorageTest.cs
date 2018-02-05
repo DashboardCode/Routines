@@ -13,6 +13,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
     [TestClass]
     public class StorageTest
     {
+        ZoningSharedSourceManager zoningSharedSourceManager = new ZoningSharedSourceManager();
+
         public StorageTest()
         {
             TestIsland.Reset();
@@ -21,9 +23,16 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void TestStore()
         {
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
             var userContext = new UserContext("UnitTest");
-            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, admikaConfigurationFacade, new { input = "Input text" });
+            
+            var routine = new AdminkaRoutineHandler(
+                zoningSharedSourceManager.GetConfiguration(),
+                zoningSharedSourceManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                new MemberTag(this), userContext, new { input = "Input text" });
             int newGroupId = 0;
             routine.HandleOrmFactory((ormHandlerFactory) =>
             {
@@ -129,9 +138,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void TestStoreUpdateRelations()
         {
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
             var userContext = new UserContext("UnitTest");
-            var applicaionFactory = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, applicaionFactory, new { input = "Input text" });
+            var routine = new AdminkaRoutineHandler(
+                zoningSharedSourceManager.GetConfiguration(),
+                zoningSharedSourceManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                new MemberTag(this), userContext, new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)

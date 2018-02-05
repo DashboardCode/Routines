@@ -4,7 +4,6 @@ using DashboardCode.Routines;
 using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.AdminkaV1.DataAccessEfCore.InMemory;
 using DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer;
-using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
@@ -36,20 +35,5 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             var adminkaDbContext = Create(verbose);
             return adminkaDbContext;
         }
-    }
-
-    public class RepositoryGFactory : IRepositoryGFactory<AdminkaDbContext>
-    {
-        public Func<AdminkaDbContext, bool, IRepository<TEntity>> ComposeCreateRepository<TEntity>() where TEntity : class =>
-            (adminkaDbContext, noTracking) => new Repository<TEntity>(adminkaDbContext, noTracking);
-    }
-
-    public class OrmGFactory : IOrmGFactory<AdminkaDbContext> 
-    {
-        public Func<AdminkaDbContext, IOrmEntitySchemaAdapter, IOrmEntitySchemaAdapter<TEntity>> ComposeCreateOrmMetaAdapter<TEntity>() where TEntity : class =>
-            (adminkaDbContext, ormEntitySchemaAdapter) => new OrmMetaAdapter<TEntity>(adminkaDbContext.Model, ormEntitySchemaAdapter);
-
-        public Func<AdminkaDbContext, Func<Exception, StorageResult>, IAuditVisitor, IOrmStorage<TEntity>> ComposeCreateOrmStorage<TEntity>() where TEntity : class=>
-            (adminkaDbContext, analyzeException, auditVisitor) => new OrmStorage<TEntity>(adminkaDbContext, analyzeException, auditVisitor);
     }
 }

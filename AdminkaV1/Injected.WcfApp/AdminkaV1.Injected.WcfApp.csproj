@@ -157,6 +157,14 @@
       <Project>{0a46eac2-a602-4840-a0f8-b5d82b05fa2a}</Project>
       <Name>NLogExtensibles</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj">
+      <Project>{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}</Project>
+      <Name>Routines.Configuration.NETFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj">
+      <Project>{e0ab2637-9207-4941-9c9d-1fa6fd67ffe6}</Project>
+      <Name>Routines.Storage.EfCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Routines\Routines.csproj">
       <Project>{7F19BF12-3F67-4185-A8F1-48BDC6129915}</Project>
       <Name>Routines</Name>
@@ -164,6 +172,10 @@
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj">
       <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
       <Name>AdminkaV1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj">
+      <Project>{bf9fb9b0-baee-457a-8c8e-d82dc68e0710}</Project>
+      <Name>AdminkaV1.DataAccessEfCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\Injected.NETFramework\AdminkaV1.Injected.NETFramework.csproj">
       <Project>{02666e1b-53c7-42db-ac39-a16127dd5c81}</Project>

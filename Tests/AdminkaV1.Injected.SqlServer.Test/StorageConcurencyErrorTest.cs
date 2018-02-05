@@ -1,14 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
+
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
     [TestClass]
     public class StorageConcurencyErrorTest
     {
+        ZoningSharedSourceManager zoningSharedSourceManager = new ZoningSharedSourceManager();
+
         public StorageConcurencyErrorTest()
         {
             TestIsland.Clear();
@@ -18,8 +23,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public void TestConcurencyError()
         {
             var userContext = new UserContext("UnitTest");
-            var applicaitonFactory = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, applicaitonFactory, new { input = "Input text" });
+
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
+            var routine = new AdminkaRoutineHandler(
+                zoningSharedSourceManager.GetConfiguration(),
+                zoningSharedSourceManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                new MemberTag(this), userContext,  new { input = "Input text" });
             // check constraint on UPDATE
             routine.HandleOrmFactory(( ormHandlerFactory) =>
             {

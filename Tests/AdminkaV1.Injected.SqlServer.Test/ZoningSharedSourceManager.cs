@@ -1,16 +1,36 @@
-﻿#if NETCOREAPP1_1 || NETCOREAPP2_0
+﻿using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.Routines.Configuration;
+#if NETCOREAPP1_1 || NETCOREAPP2_0
     using DashboardCode.AdminkaV1.Injected.NETStandard;
+    using DashboardCode.Routines.Configuration.NETStandard;
 #else
     using DashboardCode.AdminkaV1.Injected.NETFramework;
+    using DashboardCode.Routines.Configuration.NETFramework;
 #endif
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
-    public static class ZoningSharedSourceManager
+    public class ZoningSharedSourceManager
     {
-        public static IAdmikaConfigurationFacade GetConfiguration()
+        ConfigurationManagerLoader configurationManagerLoader;
+        public ZoningSharedSourceManager(ConfigurationManagerLoader configurationManagerLoader)
         {
-            return new SqlServerAdmikaConfigurationFacade();
+            this.configurationManagerLoader= configurationManagerLoader;
+        }
+
+        public ZoningSharedSourceManager()
+        {
+            this.configurationManagerLoader = new ConfigurationManagerLoader();
+        }
+
+        public AdminkaStorageConfiguration GetConfiguration()
+        {
+            return new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration();
+        }
+
+        public IConfigurationFactory GetConfigurationFactory()
+        {
+            return new ConfigurationFactory(configurationManagerLoader);
         }
     }
 }

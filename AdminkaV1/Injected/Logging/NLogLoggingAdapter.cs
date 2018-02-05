@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using System.Threading;
 using NLog;
+using NLog.Common;
+
 using DashboardCode.Routines;
-using DashboardCode.AdminkaV1.Injected.Configuration;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Injected;
-using NLog.Common;
-using System.Threading;
+using DashboardCode.AdminkaV1.Injected.Performance;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {

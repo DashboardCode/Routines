@@ -6,15 +6,11 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     public class AuditVisitor : IAuditVisitor
     {
         UserContext userContext;
-        public AuditVisitor(UserContext userContext)
-        {
+        public AuditVisitor(UserContext userContext) =>
             this.userContext = userContext;
-        }
         
-        public bool HasAuditProperties(object o)
-        {
-            return o is IVersioned;
-        }
+        public bool HasAuditProperties(object o) =>
+            o is IVersioned;
 
         public void SetAuditProperties(object o)
         {

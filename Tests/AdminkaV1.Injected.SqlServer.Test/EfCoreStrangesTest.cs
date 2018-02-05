@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.TestDom;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
@@ -16,8 +17,17 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             TestIsland.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
-            var applicationConfiugration = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, applicationConfiugration, new { input = "Input text" });
+            var zoningSharedSourceManager = new ZoningSharedSourceManager();
+
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
+            var routine = new AdminkaRoutineHandler(
+                zoningSharedSourceManager.GetConfiguration(),
+                zoningSharedSourceManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                new MemberTag(this), userContext, 
+                new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
@@ -60,11 +70,19 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void EfCoreTestStoreUpdateRelationsErrorTracking()
         {
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
             TestIsland.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
-            var co = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext, co, new { input = "Input text" });
+            var zoningSharedSourceManager = new ZoningSharedSourceManager();
+            var routine = new AdminkaRoutineHandler(
+                zoningSharedSourceManager.GetConfiguration(),
+                zoningSharedSourceManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                new MemberTag(this), userContext, 
+                new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)

@@ -6,7 +6,7 @@ using System.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
-    public class ConfigurationManagerLoader : IConfigurationManagerLoader
+    public class ConfigurationManagerLoader : IConfigurationManagerLoader, IConnectionStringAccess
     {
         const string key = "routinesConfiguration";
         public IEnumerable<IRoutineConfigurationRecord> RoutineResolvables { get; private set;}

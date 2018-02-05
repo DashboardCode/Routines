@@ -1,7 +1,7 @@
 ﻿using NLog;
 using DashboardCode.Routines;
 
-namespace DashboardCode.AdminkaV1.Injected
+namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     static class NLogExtensions
     {

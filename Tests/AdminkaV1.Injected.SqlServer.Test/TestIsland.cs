@@ -1,6 +1,7 @@
 ﻿using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
@@ -10,8 +11,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         {
             Clear(databaseName);
 
-            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), admikaConfigurationFacade, new { input = "Input text" });
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
+            var zoningSharedSourceManager = new ZoningSharedSourceManager();
+            var routine = new AdminkaRoutineHandler(
+                zoningSharedSourceManager.GetConfiguration(),
+                zoningSharedSourceManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), new { input = "Input text" });
             routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var typeRecord1 = new TypeRecord()
@@ -143,8 +151,17 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 
         public static void Clear(string databaseName = "AdminkaV1")
         {
-            var admikaConfigurationFacade = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), admikaConfigurationFacade, new { input = "Input text" });
+            var zoningSharedSourceManager = new ZoningSharedSourceManager();
+
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
+            var routine = new AdminkaRoutineHandler(
+                zoningSharedSourceManager.GetConfiguration(),
+                zoningSharedSourceManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"),
+                new { input = "Input text" });
             routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 ormHandlerFactory.Create<ChildRecord>().Handle((repository, storage) =>

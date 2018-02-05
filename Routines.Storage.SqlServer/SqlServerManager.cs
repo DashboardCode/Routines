@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Data.SqlClient;
 
 namespace DashboardCode.Routines.Storage.SqlServer
 {
@@ -63,7 +63,6 @@ namespace DashboardCode.Routines.Storage.SqlServer
                     errorBuilder.AddTruncationError();
                     return;
                 }
-
             };
 
             {

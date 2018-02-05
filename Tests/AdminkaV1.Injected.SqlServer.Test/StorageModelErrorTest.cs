@@ -2,12 +2,15 @@
 using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
     [TestClass]
     public class StorageModelErrorTest
     {
+        ZoningSharedSourceManager zoningSharedSourceManager = new ZoningSharedSourceManager();
+
         public StorageModelErrorTest()
         {
             TestIsland.Clear();
@@ -17,8 +20,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public void TestDatabaseFieldRequiredError() 
         {
             var userContext = new UserContext("UnitTest");
-            var applicaitonFactory = ZoningSharedSourceManager.GetConfiguration();
-            var routine = new AdminkaRoutineHandler(new MemberTag(this), userContext,  applicaitonFactory, new { input = "Input text" });
+
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+
+            var routine = new AdminkaRoutineHandler(
+                 zoningSharedSourceManager.GetConfiguration(),
+                 zoningSharedSourceManager.GetConfigurationFactory(),
+                 loggingTransientsFactory,
+                 new MemberTag(this), userContext, new { input = "Input text" });
             routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
