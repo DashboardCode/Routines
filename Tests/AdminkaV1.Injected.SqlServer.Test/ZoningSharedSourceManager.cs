@@ -13,24 +13,17 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
     public class ZoningSharedSourceManager
     {
         ConfigurationManagerLoader configurationManagerLoader;
-        public ZoningSharedSourceManager(ConfigurationManagerLoader configurationManagerLoader)
-        {
+
+        public ZoningSharedSourceManager(ConfigurationManagerLoader configurationManagerLoader) =>
             this.configurationManagerLoader= configurationManagerLoader;
-        }
 
-        public ZoningSharedSourceManager()
-        {
+        public ZoningSharedSourceManager() =>
             this.configurationManagerLoader = new ConfigurationManagerLoader();
-        }
 
-        public AdminkaStorageConfiguration GetConfiguration()
-        {
-            return new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration();
-        }
+        public AdminkaStorageConfiguration GetConfiguration() =>
+            new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration();
 
-        public IConfigurationFactory GetConfigurationFactory()
-        {
-            return new ConfigurationFactory(configurationManagerLoader);
-        }
+        public IConfigurationFactory GetConfigurationFactory() =>
+            new ConfigurationFactory(configurationManagerLoader);
     }
 }

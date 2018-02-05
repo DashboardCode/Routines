@@ -11,7 +11,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
     [TestClass]
     public class RoutineMeasureTest
     {
-        public RoutineMeasureTest()
+        public RoutineMeasureTest() 
         {
             TestIsland.Clear(); // main reason is to cache ef core db context
         }
