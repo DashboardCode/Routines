@@ -1,5 +1,4 @@
-﻿
-using DashboardCode.Routines.Configuration;
+﻿using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected
