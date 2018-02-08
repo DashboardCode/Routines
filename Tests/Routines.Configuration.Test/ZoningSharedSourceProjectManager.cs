@@ -1,8 +1,8 @@
 ﻿namespace DashboardCode.Routines.Configuration.Test
 {
-    public static class ZoningSharedSourceManager
+    public static class ZoningSharedSourceProjectManager
     {
-#if NETCOREAPP1_1 || NETCOREAPP2_0
+#if NETCOREAPP2_0
         public static IConfigurationManagerLoader GetLoader()
         {
             var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();

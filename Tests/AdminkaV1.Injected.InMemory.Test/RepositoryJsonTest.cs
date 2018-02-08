@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
+using DashboardCode.AdminkaV1.TestDom;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     [TestClass]
-    public class RepoistoryJsonTest : RepositoryBaseTest
+    public class RepoistoryJsonTest : RepositoryTestBase
     {
         [TestMethod]
         public void TestStorageJson()

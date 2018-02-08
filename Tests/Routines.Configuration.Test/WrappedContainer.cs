@@ -7,7 +7,7 @@ namespace DashboardCode.Routines.Configuration.Test
         ConfigurationContainer configurationContainer;
         public WrappedContainer(string type, string member, string @for=null)
         {
-            var loader = ZoningSharedSourceManager.GetLoader();
+            var loader = ZoningSharedSourceProjectManager.GetLoader();
             if (string.IsNullOrWhiteSpace(@for))
                 configurationContainer = new ConfigurationContainer(loader, new MemberTag(type, member));
             else

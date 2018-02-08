@@ -6,22 +6,19 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.AdminkaV1.TestDom;
-using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
     [TestClass]
     public class StorageTest
     {
-        ZoningSharedSourceManager zoningSharedSourceManager = new ZoningSharedSourceManager();
-
-        public StorageTest()
+        public StorageTest() 
         {
             TestIsland.Reset();
         }
 
         [TestMethod]
-        public void TestStore()
+        public void TestStoreManyToMany()
         {
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
@@ -29,64 +26,80 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var userContext = new UserContext("UnitTest");
             
             var routine = new AdminkaRoutineHandler(
-                zoningSharedSourceManager.GetConfiguration(),
-                zoningSharedSourceManager.GetConfigurationFactory(),
+                ZoningSharedSourceProjectManager.GetConfiguration(),
+                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, new { input = "Input text" });
-            int newGroupId = 0;
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            int newParentRecordId = 0;
+            byte[] newRowVersion = null;
+            routine.HandleOrmFactory( ormHandlerFactory =>
             {
-                var group = new Group{
-                    GroupName = "TestStore",
-                    GroupAdName = "TestStore\\TestStore"
+                var parentRecord = new ParentRecord{
+                    FieldA  = "MMTA",
+                    FieldB1 = "MMTB1",
+                    FieldB2 = "MMTB2",
+                    FieldCA = "MMTCA",
+                    FieldCB1 = "MMTCB1",
+                    FieldCB2 = "MMTCB2",
+                    FieldNotNull = 0
                 };
 
-                var repositoryHandler = ormHandlerFactory.Create<Group>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 // Create
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var privilegesList = repository.Clone<Privilege>().List();
-                    var selectedPrivileges = new List<GroupPrivilege>();
-                    var privilegesIdsText = "CFGS,VLOG";
+                    var privilegesList = repository.Clone<HierarchyRecord>().List();
+                    var selectedPrivileges = new List<ParentRecordHierarchyRecord>();
+                    var privilegesIdsText = "1,2";
                     if (!string.IsNullOrEmpty(privilegesIdsText))
                     {
-                        var ids = privilegesIdsText.Split(',');
-                        privilegesList.Where(e => ids.Any(e2 => e2 == e.PrivilegeId))
+                        var ids = privilegesIdsText.Split(',').Select(e=> int.Parse(e)).ToList();
+                        privilegesList.Where(e => ids.Any(e2 => e2 == e.HierarchyRecordId))
                             .ToList()
-                            .ForEach(e => selectedPrivileges.Add(new GroupPrivilege() { Group = group, PrivilegeId = e.PrivilegeId }));
+                            .ForEach(e => selectedPrivileges.Add(new ParentRecordHierarchyRecord() { ParentRecord = parentRecord, HierarchyRecordId = e.HierarchyRecordId }));
                     }
 
                     storage.Handle(
                         batch =>
                         {
-                            batch.Add(group);
+                            batch.Add(parentRecord);
                             batch.ModifyRelated(
-                                group,
-                                e => e.GroupPrivilegeMap,
+                                parentRecord,
+                                e => e.ParentRecordHierarchyRecordMap,
                                 selectedPrivileges, 
-                                (e1, e2) => e1.GroupId == e2.GroupId
+                                (e1, e2) => e1.ParentRecordId == e2.ParentRecordId
                             );
                         }).ThrowIfFailed("Test failed");
-                    newGroupId = group.GroupId;
+                    newParentRecordId = parentRecord.ParentRecordId;
+                    newRowVersion = parentRecord.RowVersion;
                 });
             });
 
             routine.HandleOrmFactory((ormHandlerFactory) =>
             {
-                var repositoryHandler = ormHandlerFactory.Create<Group>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 // Update
-                var entity = new Group() { GroupId = newGroupId, GroupName = "TestStore2", GroupAdName = "TestStore\\TestStore2" };
+                var entity = new ParentRecord() { ParentRecordId = newParentRecordId,
+                    FieldA = "MMTA",
+                    FieldB1 = "MMTB1",
+                    FieldB2 = "MMTB2",
+                    FieldCA = "MMTCA",
+                    FieldCB1 = "MMTCB1",
+                    FieldCB2 = "MMTCB2",
+                    FieldNotNull = 0,
+                    RowVersion = newRowVersion,
+                };
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var privilegesList = repository.Clone<Privilege>().List();
-                    var selectedPrivileges = new List<GroupPrivilege>();
-                    var privilegesIdsText = "CFGS";
+                    var privilegesList = repository.Clone<HierarchyRecord>().List();
+                    var selectedPrivileges = new List<ParentRecordHierarchyRecord>();
+                    var privilegesIdsText = "2,3";
                     if (!string.IsNullOrEmpty(privilegesIdsText))
                     {
-                        var ids = privilegesIdsText.Split(',');
-                        privilegesList.Where(e => ids.Any(e2 => e2 == e.PrivilegeId))
+                        var ids = privilegesIdsText.Split(',').Select(e => int.Parse(e)).ToList();
+                        privilegesList.Where(e => ids.Any(e2 => e2 == e.HierarchyRecordId))
                             .ToList()
-                            .ForEach(e => selectedPrivileges.Add(new GroupPrivilege() { GroupId = entity.GroupId, PrivilegeId = e.PrivilegeId }));
+                            .ForEach(e => selectedPrivileges.Add(new ParentRecordHierarchyRecord() { ParentRecordId = entity.ParentRecordId, HierarchyRecordId = e.HierarchyRecordId }));
                     }
                     
                     var storageResult = storage.Handle(
@@ -95,9 +108,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                             batch.Modify(entity);
                             batch.ModifyRelated(
                                 entity,
-                                (e => e.GroupPrivilegeMap),
+                                (e => e.ParentRecordHierarchyRecordMap),
                                 selectedPrivileges,
-                                (e1, e2) => e1.GroupId == e2.GroupId);
+                                (e1, e2) => e1.ParentRecordId == e2.ParentRecordId);
                         });
                     if (!storageResult.IsOk())
                         throw new Exception("Test failed");
@@ -106,29 +119,13 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             // Remove
             routine.HandleOrmFactory((ormHandlerFactory) =>
             {
-                var repositoryHandler = ormHandlerFactory.Create<Group>();
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var group = repository.Find(e => e.GroupId == newGroupId);
+                    var group = repository.Find(e => e.ParentRecordId == newParentRecordId);
                     var storageResult = storage.Handle(batch =>
                         batch.Remove(group)
                     );
-                    if (!storageResult.IsOk())
-                        throw new Exception("Test failed: includes");
-                });
-            });
-            // Remove 
-            routine.HandleOrmFactory((ormHandlerFactory) =>
-            {
-                var repositoryHandler = ormHandlerFactory.Create<Group>();
-                repositoryHandler.Handle((repository, storage) =>
-                {
-                    var groups = repository.List(e => e.GroupName == "TestStore");
-                    var storageResult = storage.Handle(batch =>
-                    {
-                        foreach (var group in groups)
-                            batch.Remove(group);
-                    });
                     if (!storageResult.IsOk())
                         throw new Exception("Test failed: includes");
                 });
@@ -143,8 +140,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(
-                zoningSharedSourceManager.GetConfiguration(),
-                zoningSharedSourceManager.GetConfigurationFactory(),
+                ZoningSharedSourceProjectManager.GetConfiguration(),
+                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, new { input = "Input text" });
             Include<ParentRecord> includes

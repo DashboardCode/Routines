@@ -18,7 +18,7 @@ namespace DashboardCode.Routines.Configuration.Test
 #endif
         public void CreateConfigurationSmokeTest()
         {
-            var loader = ZoningSharedSourceManager.GetLoader();
+            var loader = ZoningSharedSourceProjectManager.GetLoader();
             var container = new ConfigurationContainer(loader, new MemberTag("Namespace1", "Class1", "Member1"));
         }
 
@@ -52,7 +52,7 @@ namespace DashboardCode.Routines.Configuration.Test
 
         public void TestConfigruationContainer()
         {
-            var loader = ZoningSharedSourceManager.GetLoader();
+            var loader = ZoningSharedSourceProjectManager.GetLoader();
             var basicConfigContainer1 =
                 new ConfigurationContainer(loader, new MemberTag("theNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
 

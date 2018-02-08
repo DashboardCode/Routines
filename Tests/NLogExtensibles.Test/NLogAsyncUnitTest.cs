@@ -52,7 +52,6 @@ namespace DashboardCode.NLogExtensibles.Test
                                 var at = DateTime.Now;
                                 foreach (var verbose in verboseMessages)
                                 {
-
                                     var logEventInfo = new LogEventInfo()
                                     {
                                         Level = LogLevel.Info,

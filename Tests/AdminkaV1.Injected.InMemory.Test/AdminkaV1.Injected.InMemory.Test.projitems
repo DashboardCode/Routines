@@ -9,11 +9,13 @@
     <Import_RootNamespace>AdminkaV1.Injected.InMemory.Test</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AdminkaInMemoryTestRoutine.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RepositoryBaseTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InjectedStreamSerializationsTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NLogTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RepositoryJsonTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RepositoryTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestIsland.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ZoningSharedSourceManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ZoningSharedSourceProjectManager.cs" />
   </ItemGroup>
 </Project>

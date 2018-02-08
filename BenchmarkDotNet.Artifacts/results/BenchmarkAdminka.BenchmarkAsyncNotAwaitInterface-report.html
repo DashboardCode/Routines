@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkAsyncNotAwaitInterface</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.12, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.192)
+Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical cores and 4 physical cores
+Frequency=3233537 Hz, Resolution=309.2589 ns, Timer=TSC
+.NET Core SDK=2.1.4
+  [Host] : .NET Core 2.0.5 (Framework 4.6.26020.03), 64bit RyuJIT
+  Clr    : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2600.0
+  Core   : .NET Core 2.0.5 (Framework 4.6.26020.03), 64bit RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>  Method</th><th>Job</th><th>Runtime</th><th>  Mean</th><th>Error</th><th>StdDev</th><th>   Min</th><th>  Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>CompletedAwait</td><td>Clr</td><td>Clr</td><td>96.866 ns</td><td>0.5636 ns</td><td>0.4996 ns</td><td>96.170 ns</td><td>97.95 ns</td><td>96.828 ns</td><td>7</td><td>0.0075</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>Completed</td><td>Clr</td><td>Clr</td><td>13.151 ns</td><td>0.1578 ns</td><td>0.1399 ns</td><td>12.912 ns</td><td>13.42 ns</td><td>13.140 ns</td><td>2</td><td>0.0076</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>Pragma</td><td>Clr</td><td>Clr</td><td>90.477 ns</td><td>0.4267 ns</td><td>0.3991 ns</td><td>89.891 ns</td><td>91.39 ns</td><td>90.448 ns</td><td>6</td><td>0.0075</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>FromResult</td><td>Clr</td><td>Clr</td><td>115.587 ns</td><td>1.6394 ns</td><td>1.5335 ns</td><td>113.595 ns</td><td>118.42 ns</td><td>115.469 ns</td><td>8</td><td>0.0584</td><td>-</td><td>-</td><td>184 B</td>
+</tr><tr><td>Yield</td><td>Clr</td><td>Clr</td><td>1,864.915 ns</td><td>36.2738 ns</td><td>38.8126 ns</td><td>1,799.799 ns</td><td>1,937.75 ns</td><td>1,858.878 ns</td><td>9</td><td>0.0877</td><td>0.0038</td><td>0.0019</td><td>320 B</td>
+</tr><tr><td>CompletedAwait</td><td>Core</td><td>Core</td><td>37.822 ns</td><td>0.3416 ns</td><td>0.3195 ns</td><td>37.341 ns</td><td>38.39 ns</td><td>37.811 ns</td><td>3</td><td>0.0076</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>Completed</td><td>Core</td><td>Core</td><td>9.965 ns</td><td>0.1787 ns</td><td>0.1584 ns</td><td>9.741 ns</td><td>10.35 ns</td><td>9.942 ns</td><td>1</td><td>0.0076</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>Pragma</td><td>Core</td><td>Core</td><td>46.747 ns</td><td>0.9722 ns</td><td>2.8360 ns</td><td>40.697 ns</td><td>54.07 ns</td><td>46.743 ns</td><td>4</td><td>0.0076</td><td>-</td><td>-</td><td>24 B</td>
+</tr><tr><td>FromResult</td><td>Core</td><td>Core</td><td>52.795 ns</td><td>0.5847 ns</td><td>0.5183 ns</td><td>52.139 ns</td><td>53.86 ns</td><td>52.734 ns</td><td>5</td><td>0.0533</td><td>-</td><td>-</td><td>168 B</td>
+</tr><tr><td>Yield</td><td>Core</td><td>Core</td><td>2,826.584 ns</td><td>117.3361 ns</td><td>336.6593 ns</td><td>2,257.315 ns</td><td>3,710.08 ns</td><td>2,776.808 ns</td><td>10</td><td>0.0916</td><td>-</td><td>-</td><td>296 B</td>
+</tr></tbody></table>
+</body>
+</html>

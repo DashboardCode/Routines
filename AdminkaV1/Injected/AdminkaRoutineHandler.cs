@@ -125,7 +125,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         // Used as stage to prepare containerFactory, routineGuid and usercontext
-        private protected AdminkaRoutineHandler(
+        protected AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             ContainerFactory<UserContext> containerFactory,

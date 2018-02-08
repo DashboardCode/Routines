@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     {
         readonly Dictionary<string, IOrmEntitySchemaAdapter> entityMetas;
         readonly IMutableModel mutableModel;
-        Func<Exception, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
+        Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
 
         private class RelationDbSchemaAdapter : IOrmEntitySchemaAdapter
         {
@@ -56,9 +56,36 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                          Constraints.Add(c.Name, (c.Fields, c.Message));
                 // ----------------------------------------------------------------------------------------------------------
                 Uniques = new Dictionary<string, string[]>();
-                foreach (var index in entityType.GetIndexes())
+                var indexes = entityType.GetIndexes();
+                foreach (var index in indexes) 
                     if (index.IsUnique)
-                        Uniques.Add(index.SqlServer().Name, index.Properties.Select(e => e.Name).ToArray());
+                    {
+                        var sqlServerAnnotations = index.SqlServer();
+                        var indexName = sqlServerAnnotations.Name;
+                        var fields = index.Properties.Select(e => e.Name).ToArray();
+                        Uniques.Add(indexName, fields);
+                    }
+                // table.UniqueConstraint("AK_ParentRecords_FieldCA", x => x.FieldCA);
+                // table.UniqueConstraint("AK_ParentRecords_FieldCB1_FieldCB2", x => new { x.FieldCB1, x.FieldCB2 });
+                var annotations = entityType.GetAnnotations();
+                var entitySqlServerAnnotations = entityType.SqlServer();
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (!property.IsNullable)
+                        requireds.Add(property.Name);
+                    if (property.IsKey())
+                        keys.Add(property.Name);
+                    if (property.ClrType == typeof(byte[]))
+                        binaries.Add(property.Name);
+                };
+                var entityKeys = entityType.GetKeys();
+                foreach (var entityKey in entityKeys)
+                {
+                    var entityKeySqlServer = entityKey.SqlServer();
+                    var uniqueConstraintName = entityKeySqlServer.Name;
+                    var fields = entityKey.Properties.Select(e => e.Name).ToArray();
+                    Uniques.Add(uniqueConstraintName, fields);
+                }
             }
 
             public string[] GetBinaries()
@@ -96,7 +123,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             }
         }
 
-        public StorageMetaService(Func<Exception, IOrmEntitySchemaAdapter, string, StorageResult> analyze)
+        public StorageMetaService(Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze)
         {
             this.analyze = analyze;
             this.entityMetas = new Dictionary<string, IOrmEntitySchemaAdapter>();
@@ -123,8 +150,9 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
         public StorageResult Analyze<TEntity>(Exception ex)
         {
-            var entityMeta =  entityMetas[typeof(TEntity).FullName];
-            return analyze(ex, entityMeta, "");
+            var type = typeof(TEntity);
+            var entityMeta =  entityMetas[type.FullName];
+            return analyze(ex, type, entityMeta, "");
         }
 
         public IOrmEntitySchemaAdapter<TEntity> GetOrmEntitySchemaAdapter<TEntity>() where TEntity : class

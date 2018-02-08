@@ -1,11 +1,43 @@
-﻿using DashboardCode.Routines;
+﻿using System;
+using System.Collections.Generic;
+
+using DashboardCode.Routines;
+using DashboardCode.Routines.Configuration;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.AdminkaV1.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     public class AdminkaInMemoryTestRoutine : AdminkaRoutineHandler
     {
-        public AdminkaInMemoryTestRoutine(RoutineGuid routineGuid, object input, string name = "adminka")
-            : base(routineGuid, new UserContext("UnitTest"), ZoningSharedSourceManager.GetConfiguration(name), input)
+        public AdminkaInMemoryTestRoutine(List<string> logger, MemberTag memberTag, object input, string name = "adminka")
+            : this(
+                  InjectedManager.ComposeListLoggingTransients(logger),
+                  memberTag,
+                  input)
+        {
+        }
+
+        public AdminkaInMemoryTestRoutine(Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory, MemberTag memberTag, object input, string name = "adminka")
+            : this(memberTag, new UserContext("UnitTest"), ZoningSharedSourceProjectManager.GetConfiguration(name), ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                  loggingTransientsFactory,
+                  input)
+        {
+        }
+
+        public AdminkaInMemoryTestRoutine(Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory, MemberTag memberTag, string name = "adminka")
+            : this(memberTag, new UserContext("UnitTest"), ZoningSharedSourceProjectManager.GetConfiguration(name), ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                  loggingTransientsFactory,
+                  new { })
+        {
+        }
+
+        public AdminkaInMemoryTestRoutine(MemberTag memberTag, UserContext userContext,
+            AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IConfigurationFactory configurationFactory,
+            Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+          object input)
+           : base(adminkaStorageConfiguration, configurationFactory, loggingTransientsFactory, memberTag, userContext, input)
         {
         }
     }

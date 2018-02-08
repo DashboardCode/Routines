@@ -12,11 +12,12 @@ namespace DashboardCode.Ef6.Sandbox
     {
         static readonly List<IOrmEntitySchemaAdapter> storageModel = new StorageMetaService().GetStorageModels();
 
-        public static StorageResult Analyze(Exception exception, IOrmEntitySchemaAdapter storageModel)
+        public static StorageResult Analyze(Exception exception, Type entityType, IOrmEntitySchemaAdapter ormEntitySchemaAdapter)
         {
             var storageResult = StorageResultBuilder.AnalyzeExceptionRecursive(
                 exception,
-                storageModel, 
+                entityType,
+                ormEntitySchemaAdapter, 
                 "",
                 (ex, errorBuilder) => {
                     

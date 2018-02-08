@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
-    class InjectedStreamSerializationsTest : RepositoryBaseTest
+    class InjectedStreamSerializationsTest : RepositoryTestBase
     {
         [TestMethod]
         public virtual void TestSerializtionRecursion()

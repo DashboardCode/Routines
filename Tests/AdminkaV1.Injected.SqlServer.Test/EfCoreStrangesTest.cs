@@ -17,14 +17,13 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             TestIsland.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
-            var zoningSharedSourceManager = new ZoningSharedSourceManager();
 
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
 
             var routine = new AdminkaRoutineHandler(
-                zoningSharedSourceManager.GetConfiguration(),
-                zoningSharedSourceManager.GetConfigurationFactory(),
+                ZoningSharedSourceProjectManager.GetConfiguration(),
+                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, 
                 new { input = "Input text" });
@@ -76,10 +75,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             TestIsland.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
-            var zoningSharedSourceManager = new ZoningSharedSourceManager();
             var routine = new AdminkaRoutineHandler(
-                zoningSharedSourceManager.GetConfiguration(),
-                zoningSharedSourceManager.GetConfigurationFactory(),
+                ZoningSharedSourceProjectManager.GetConfiguration(),
+                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, 
                 new { input = "Input text" });
@@ -87,9 +85,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.HandleOrmFactory(ormHandlerFactory =>
             {
-                var rh = ormHandlerFactory.Create<ParentRecord>(true);
+                var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(
                     (repository,batch) =>
                     {

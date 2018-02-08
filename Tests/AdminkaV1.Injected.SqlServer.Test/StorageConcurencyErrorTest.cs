@@ -12,8 +12,6 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
     [TestClass]
     public class StorageConcurencyErrorTest
     {
-        ZoningSharedSourceManager zoningSharedSourceManager = new ZoningSharedSourceManager();
-
         public StorageConcurencyErrorTest()
         {
             TestIsland.Clear();
@@ -28,8 +26,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
 
             var routine = new AdminkaRoutineHandler(
-                zoningSharedSourceManager.GetConfiguration(),
-                zoningSharedSourceManager.GetConfigurationFactory(),
+                ZoningSharedSourceProjectManager.GetConfiguration(),
+                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(this), userContext,  new { input = "Input text" });
             // check constraint on UPDATE

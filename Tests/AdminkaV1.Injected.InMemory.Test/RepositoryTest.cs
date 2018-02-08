@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
+using DashboardCode.AdminkaV1.TestDom;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     [TestClass]
-    class RepositoryTest : RepositoryBaseTest
+    class RepositoryTest : RepositoryTestBase
     {
         [TestMethod]
         public void TestRepositoryInMemory()

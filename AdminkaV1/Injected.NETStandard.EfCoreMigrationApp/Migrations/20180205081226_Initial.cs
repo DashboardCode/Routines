@@ -165,7 +165,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     table.PrimaryKey("PK_ParentRecords", x => x.ParentRecordId);
                     table.UniqueConstraint("AK_ParentRecords_FieldCA", x => x.FieldCA);
-                    table.UniqueConstraint("AK_ParentRecords_FieldCB1_FieldCB2", x => new { x.FieldCB1, x.FieldCB2 });
+                    table.UniqueConstraint("AK_ParentRecords_FieldCB1_FieldCB2", x => new { x.FieldCB1, x.FieldCB2 }); 
                 });
 
             migrationBuilder.CreateTable(

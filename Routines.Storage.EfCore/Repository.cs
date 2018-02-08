@@ -9,19 +9,19 @@ namespace DashboardCode.Routines.Storage.EfCore
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly DbContext context;
-        private readonly bool asNoTracking;
+        private readonly bool noTracking;
 
-        public Repository(DbContext context, bool asNoTracking)
+        public Repository(DbContext context, bool noTracking)
         {
             this.context = context;
-            this.asNoTracking = asNoTracking;
+            this.noTracking = noTracking;
         }
 
         public IQueryable<TEntity> MakeQueryable(Include<TEntity> include)
         {
             var dbSet = context.Set<TEntity>();
             IQueryable<TEntity> query;
-            if (asNoTracking)
+            if (noTracking)
                 query = dbSet.AsNoTracking();
             else
                 query = dbSet.AsQueryable();
@@ -51,7 +51,7 @@ namespace DashboardCode.Routines.Storage.EfCore
         }
 
         public IRepository<TNewBaseEntity> Clone<TNewBaseEntity>() where TNewBaseEntity : class =>
-            new Repository<TNewBaseEntity>(this.context, asNoTracking);
+            new Repository<TNewBaseEntity>(this.context, noTracking);
 
         public void Detach(TEntity entity, Include<TEntity> include = null) =>
             context.Detach(entity, include);

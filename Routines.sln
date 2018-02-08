@@ -1,13 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{52BA4719-F064-4388-A426-1E1174D3A0EB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}"
 	ProjectSection(SolutionItems) = preProject
 		Benchmark.ps1 = Benchmark.ps1
+		BenchmarkAdminka.ps1 = BenchmarkAdminka.ps1
 		BenchmarkClassic.ps1 = BenchmarkClassic.ps1
 		OpenCover.ps1 = OpenCover.ps1
 	EndProjectSection
@@ -152,6 +153,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Sandbox", "Tests\ConsoleApps\Routines.AspNetCore.Sandbox\Routines.AspNetCore.Sandbox.csproj", "{1F6B776C-CD8A-4087-A4C3-C18E30997299}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Mvc.Sandbox", "Tests\ConsoleApps\Routines.AspNetCore.Mvc.Sandbox\Routines.AspNetCore.Mvc.Sandbox.csproj", "{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkAdminka", "Tests\BenchmarkAdminka\BenchmarkAdminka.csproj", "{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -1696,6 +1699,38 @@ Global
 		{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005}.Release|x64.Build.0 = Release|Any CPU
 		{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005}.Release|x86.ActiveCfg = Release|Any CPU
 		{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005}.Release|x86.Build.0 = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Android.Build.0 = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|iOS.Build.0 = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|x64.Build.0 = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Debug|x86.Build.0 = Debug|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Android.ActiveCfg = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Android.Build.0 = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|iOS.ActiveCfg = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|iOS.Build.0 = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|x64.ActiveCfg = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|x64.Build.0 = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|x86.ActiveCfg = Release|Any CPU
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1748,6 +1783,7 @@ Global
 		{C29284E1-6331-4D20-905F-322FA0321B49} = {0A13BD11-5233-4DFE-8ADD-88CBC4F597DD}
 		{1F6B776C-CD8A-4087-A4C3-C18E30997299} = {0A13BD11-5233-4DFE-8ADD-88CBC4F597DD}
 		{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005} = {0A13BD11-5233-4DFE-8ADD-88CBC4F597DD}
+		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D} = {68C4C8C2-2A78-4998-9D36-4A3B139B41FE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14B58345-1A5E-4882-9F6F-DC259439D43A}

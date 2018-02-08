@@ -1,12 +1,13 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DashboardCode.Routines;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     [TestClass]
-    public class NLogTest : RepositoryBaseTest
+    public class NLogTest : RepositoryTestBase
     {
         [TestMethod]
         public virtual void TestNLogSuccess() // 161 ms

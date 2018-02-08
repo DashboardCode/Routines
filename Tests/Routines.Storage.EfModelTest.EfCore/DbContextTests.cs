@@ -199,7 +199,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             {
                 
                 var storage = new OrmStorage<ParentRecord>(dbContext,
-                    (ex) => ExceptionExtensions.Analyze(ex, null));
+                    (ex) => ExceptionExtensions.Analyze(ex, null, null));
                 var parentRecord = new ParentRecord { ParentRecordId = id };
 
                 storage.Handle((b) =>

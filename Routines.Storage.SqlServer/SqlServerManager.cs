@@ -82,7 +82,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                 {
                     var column = matchCollection[0].Groups["column"].Value;
                     var table = matchCollection[0].Groups["table"].Value;
-                    errorBuilder.AddPkDuplicateError(column, table);
+                    errorBuilder.AddNullError(column, table);
                     return;
                 }
             }
@@ -124,7 +124,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                     var statementType = matchCollection[0].Groups["statementType"].Value;
                     var database = matchCollection[0].Groups["database"].Value;
                     var column = matchCollection[0].Groups["column"].Value;
-                    errorBuilder.AddUniqueConstraintViolations(constraint, table);
+                    errorBuilder.AddCheckConstraintViolations(constraint, table);
                 }
             }
         }

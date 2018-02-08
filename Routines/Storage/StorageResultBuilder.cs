@@ -9,24 +9,26 @@ namespace DashboardCode.Routines.Storage
         List<FieldMessage> fieldMessages;
         IOrmEntitySchemaAdapter relationalEntitySchemaAdapter;
         string genericErrorField;
+        Type entityType;
         Exception exception;
-        public StorageResultBuilder(Exception exception, IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, string genericErrorField)
+        public StorageResultBuilder(Exception exception, Type entityType, IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, string genericErrorField)
         {
+            this.entityType = entityType;
             this.exception = exception;
             this.fieldMessages = new List<FieldMessage>(); ;
             this.relationalEntitySchemaAdapter = relationalEntitySchemaAdapter;
             this.genericErrorField = genericErrorField;
         }
 
-        public virtual void AddNullPrimaryOrAlternateKey(string entity)
+        public virtual void AddNullPrimaryOrAlternateKey(string entityName)
         {
-            if (relationalEntitySchemaAdapter.GetTableName().TableName == entity)
+            if (this.entityType.Name == entityName)
                 fieldMessages.Add(genericErrorField, "ID or alternate id has no value");
         }
 
-        public virtual void AddNullPrimaryOrAlternateKey(string entity, string field)
+        public virtual void AddNullPrimaryOrAlternateKey(string entityName, string field)
         {
-            if (relationalEntitySchemaAdapter.GetTableName().TableName == entity)
+            if (this.entityType.Name == entityName)
                 fieldMessages.Add(field, "ID or alternate id has no value");
         }
 
@@ -142,14 +144,16 @@ namespace DashboardCode.Routines.Storage
             }
         }
 
-        public static StorageResult AnalyzeExceptionRecursive(Exception exception, IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, string genericErrorField, Action<Exception, IStorageResultBuilder> parser = null)
+        public static StorageResult AnalyzeExceptionRecursive(
+            Exception exception, Type entityType, IOrmEntitySchemaAdapter ormEntitySchemaAdapter, 
+            string genericErrorField, Action<Exception, IStorageResultBuilder> parser = null)
         {
             return StorageResultExtensions.AnalyzeExceptionRecursive(
                 exception,
                 (recursiveParse) =>
                 {
                     
-                    var storageResultBuilder = new StorageResultBuilder(exception, relationalEntitySchemaAdapter, genericErrorField);
+                    var storageResultBuilder = new StorageResultBuilder(exception, entityType, ormEntitySchemaAdapter, genericErrorField);
                     recursiveParse(storageResultBuilder);
                     return storageResultBuilder.Build();
                 },

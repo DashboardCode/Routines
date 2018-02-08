@@ -9,8 +9,6 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
     [TestClass]
     public class StorageModelErrorTest
     {
-        ZoningSharedSourceManager zoningSharedSourceManager = new ZoningSharedSourceManager();
-
         public StorageModelErrorTest()
         {
             TestIsland.Clear();
@@ -25,8 +23,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
 
             var routine = new AdminkaRoutineHandler(
-                 zoningSharedSourceManager.GetConfiguration(),
-                 zoningSharedSourceManager.GetConfigurationFactory(),
+                 ZoningSharedSourceProjectManager.GetConfiguration(),
+                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                  loggingTransientsFactory,
                  new MemberTag(this), userContext, new { input = "Input text" });
             routine.HandleOrmFactory((ormHandlerFactory) =>
@@ -36,7 +34,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 {
                     var t0 = new ParentRecord() { };
                     var storageResult = storage.Handle(batch => batch.Add(t0));
-                    storageResult.Assert(1, "FieldCA", "ID or alternate id has no value", "Case 1"); // NOTE: for ef core v1 - returns generic error (can't say which field is errored)
+                    storageResult.Assert(1, "FieldCA", "ID or alternate id has no value", "Case ID absent");
+                    // NOTE 1 : for ef core v1 - returns generic error (can't say which field is errored)
+                    // NOTE 2 : id is incremented int (so there are no error that it was not setuped)
                 });
             });
 
@@ -45,11 +45,23 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t0 = new ParentRecord() { FieldCA="1", FieldCB1 = "2", FieldCB2 = "3" };
+                    var t0 = new ParentRecord() { FieldA=null, FieldCA ="1", FieldCB1 = "2", FieldCB2 = "3" };
                     var storageError = storage.Handle(batch =>batch.Add(t0));
-                    storageError.Assert(1, "FieldA", "Is required!", "Case 2");
+                    storageError.Assert(1, "FieldA", "Is required!", "Case isRequired string is null");
                 });
             });
+
+            routine.HandleOrmFactory((ormHandlerFactory) =>
+            {
+                var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
+                repositoryHandler.Handle((repository, storage) =>
+                {
+                    var t0 = new ParentRecord() { FieldA = "100500", FieldCA = "1", FieldCB1 = "2", FieldCB2 = null };
+                    var storageError = storage.Handle(batch => batch.Add(t0));
+                    storageError.Assert(1, "FieldCB2", "ID or alternate id has no value", "Case alternate key (part of complex alternate key) absent");
+                });
+            });
+
 
             var parentRecord = new ParentRecord()
             {

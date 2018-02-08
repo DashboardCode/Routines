@@ -30,17 +30,40 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public static class InjectedManager
     {
+        static InjectedManager()
+        {
+            ForceEarlyFail();
+        }
+
+        /// <summary>
+        /// Force early fails of application in case of missed assemblies (FileNotFoundException, Could not load file or assembly..)
+        /// Those problems are quite common since transition and collection of references doesn't work well.
+        /// </summary>
+        private static void ForceEarlyFail()
+        {
+#if !NETSTANDARD2_0
+            /* 
+              System.ServiceModel.Primitives, 4.4.1 case. Can be diagnosed by unit case: AdminkaV1.Injected.SqlServer.NETFramework.Test 
+              Important: when NUGET informs that System.ServiceModel.Primitives 4.4.1 version installed, actually 4.2.0.0 specified 
+              as version number, therefore app.config bindingRedirect should be adjusted - pointed to 4.2.0.0 (or just deleted, sicne default 
+              bindingRedirect "no bindingRedirect" works well in such cases) 
+            */
+              
+              WcfClientManager.AppendWcfClientFaultException(new StringBuilder(), new Exception());
+#endif
+        }
+
         #region Meta
         public readonly static IStorageMetaService StorageMetaService = new StorageMetaService(
-            (exception, storageModel, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(
-                  exception, storageModel, genericErrorField,
+            (exception, entityType, ormEntitySchemaAdapter, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(
+                  exception, entityType, ormEntitySchemaAdapter, genericErrorField,
                   (ex, storageResultBuilder) => {
                       DataAccessEfCoreManager.Analyze(ex, storageResultBuilder);
                       SqlServerManager.Analyze(ex, storageResultBuilder);
                   }
             )
         );
-        #endregion
+#endregion
 
         public static IIdentity GetDefaultIdentity()
         {
@@ -49,12 +72,12 @@ namespace DashboardCode.AdminkaV1.Injected
             // there we will need update this code to get roles similar to WindowsIdentity.GetCurrent().
 
             return new GenericIdentity(Environment.UserDomainName + "\\" + Environment.UserName, "Anonymous");
-#else 
+#else
             return WindowsIdentity.GetCurrent(); 
-#endif 
+#endif
         }
 
-        #region Exception
+#region Exception
         public static string ToHtml(this Exception exception)
         {
             string text = Markdown(exception);
@@ -82,7 +105,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     WcfClientManager.AppendWcfClientFaultException(sb, ex);
                     DataAccessEfCoreManager.Append(sb, ex);
                     SqlServerManager.Append(sb, ex);
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
+#if !(NETSTANDARD2_0)
                     ActiveDirectoryManager.Append(sb, ex);
 #endif
                     appender?.Invoke(sb, ex);
@@ -97,9 +120,9 @@ namespace DashboardCode.AdminkaV1.Injected
             stringBuilder.AppendMarkdownLine(nameof(AdminkaException) + " specific:");
             stringBuilder.Append("   ").AppendMarkdownProperty("Code", userContextException.Code);
         }
-        #endregion
+#endregion
 
-        #region Serialize
+#region Serialize
         public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class
         {
             var knownTypes = include.ListLeafTypes();
@@ -146,9 +169,9 @@ namespace DashboardCode.AdminkaV1.Injected
             var html = m.Transform(text);
             return html;
         }
-        #endregion
+#endregion
 
-        #region Logging
+#region Logging
         public static Exception DefaultRoutineTagTransformException(Exception exception, RoutineGuid routineGuid, Func<Exception, string> markdownException)
         {
             exception.Data[nameof(RoutineGuid.CorrelationToken)] = routineGuid.CorrelationToken;
@@ -205,7 +228,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     ex => DefaultRoutineTagTransformException(ex, t, markdownException));
             };
         }
-        #endregion
+#endregion
 
         public static AdminkaDbContext CreateAdminkaDbContext(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
