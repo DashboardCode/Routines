@@ -9,14 +9,9 @@ namespace DashboardCode.Routines.Configuration.NETStandard
         internal readonly List<RoutineResolvable> routineResolvables;
         readonly IConfigurationRoot configurationRoot;
 
-        public ConfigurationManagerLoader(string sectionName = defaultSectionName)
+        public ConfigurationManagerLoader(string sectionName = defaultSectionName):
+            this(ConfigurationManager.ResolveConfigurationRoot(), sectionName)
         {
-            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
-            this.configurationRoot = configurationBuilder.Build();
-            var section = configurationRoot.GetSection(sectionName);
-            routineResolvables = new List<RoutineResolvable>();
-            section.Bind(routineResolvables);
         }
 
         public ConfigurationManagerLoader(IConfigurationRoot configurationRoot, string sectionName = defaultSectionName)
