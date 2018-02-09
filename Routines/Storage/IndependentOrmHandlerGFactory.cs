@@ -23,7 +23,7 @@ namespace DashboardCode.Routines.Storage
             this.dbContextFactoryForStorage = dbContextFactoryForStorage;
         }
 
-        public IIndependentOrmHandler<TUserContext, TEntity> Create<TEntity>(RoutineClosure<TUserContext> closure, bool noTracking = true) where TEntity : class
+        public IOrmHandler<TEntity> Create<TEntity>(RoutineClosure<TUserContext> closure, bool noTracking = true) where TEntity : class
         {
             var entityStorageMetaService = entityMetaServiceContainer.Resolve<TEntity>();
             IOrmEntitySchemaAdapter ormEntitySchemaAdapter  = entityStorageMetaService.GetOrmEntitySchemaAdapter();

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Storage
 {
-    public class ReliantOrmHandler<TEntity> : IReliantOrmHandler<TEntity>
+    public class ReliantOrmHandler<TEntity> : IOrmHandler<TEntity>
     where TEntity : class
     {
         readonly IOrmStorage<TEntity> ormStorage;

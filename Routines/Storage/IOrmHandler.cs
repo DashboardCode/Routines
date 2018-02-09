@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Storage
 {
-    public interface IReliantOrmHandler<TEntity> where TEntity : class
+    public interface IOrmHandler<TEntity> where TEntity : class
     {
         void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action);
         TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func);

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Storage
 {
-    public class IndependentOrmHandler<TUserContext, TDataAccess, TEntity> : IIndependentOrmHandler<TUserContext, TEntity> where TDataAccess : IDisposable
+    public class IndependentOrmHandler<TUserContext, TDataAccess, TEntity> : IOrmHandler<TEntity> where TDataAccess : IDisposable
         where TEntity : class
     {
         readonly IOrmEntitySchemaAdapter ormEntitySchemaAdapter;
