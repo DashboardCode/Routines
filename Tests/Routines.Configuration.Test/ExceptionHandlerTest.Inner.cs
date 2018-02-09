@@ -1,7 +1,8 @@
-﻿using DashboardCode.Routines.Injected;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
+using System.Collections.Generic;
+
+using DashboardCode.Routines.Injected;
 
 namespace DashboardCode.Routines.Configuration.Test
 {

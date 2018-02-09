@@ -1,4 +1,7 @@
-﻿//using System;
+﻿// MOVED TO BenchmarkAdminka
+// delete it with new BenchmarkAdminka version that will support multitargeting
+
+//using System;
 //using System.Collections.Generic;
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 

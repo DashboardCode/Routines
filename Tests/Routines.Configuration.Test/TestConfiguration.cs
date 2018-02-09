@@ -1,5 +1,4 @@
-﻿
-namespace DashboardCode.Routines.Configuration.Test
+﻿namespace DashboardCode.Routines.Configuration.Test
 {
     public class MyTestConfiguration
     {

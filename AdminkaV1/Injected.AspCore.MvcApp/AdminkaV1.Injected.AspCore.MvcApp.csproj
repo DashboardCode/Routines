@@ -17,6 +17,10 @@
     <DebugSymbols>True</DebugSymbols>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="NLog.config" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
@@ -46,5 +50,11 @@
   <ItemGroup>
     <Folder Include="Areas\Forms\" />
     <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

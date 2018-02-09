@@ -36,5 +36,10 @@
     <ProjectReference Include="..\..\AdminkaV1\Injected.NETFramework\AdminkaV1.Injected.NETFramework.csproj" />
 	<ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

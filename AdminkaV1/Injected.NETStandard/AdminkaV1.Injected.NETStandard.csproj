@@ -28,6 +28,7 @@
   <ItemGroup>
     <PackageReference Include="Markdown" Version="2.2.1" />
     <PackageReference Include="NLog" Version="5.0.0-beta11" />
+    <PackageReference Include="NLog.MailKit" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,12 +1,10 @@
-﻿using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Jobs;
-using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Toolchains.CsProj;
+﻿using BenchmarkDotNet.Running;
 
 namespace BenchmarkAdminka
 {
     class Program
     {
+        // TODO: adjust number of tests to avoid gygabyte logs
         static void Main(string[] args)
         {
             BenchmarkRunner.Run<BenchmarkAdminkaRoutine>();

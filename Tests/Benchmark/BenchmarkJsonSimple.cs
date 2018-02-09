@@ -7,6 +7,7 @@ using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 using BenchmarkDotNet.Attributes.Jobs;
 using Newtonsoft.Json;
+
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
 
