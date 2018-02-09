@@ -180,12 +180,13 @@ namespace DashboardCode.AdminkaV1.Injected
             exception.Data[nameof(MemberTag.Member)] = routineGuid.MemberTag.Member;
             return exception;
         }
+
         internal static NLogAuthenticationLogging GetNLogAuthenticationLogging()
         {
             return new NLogAuthenticationLogging();
         }
+
         public static Func<RoutineGuid, IContainer, RoutineLoggingTransients> ComposeNLogTransients(
-                Func<Exception, string> markdownException,
                 Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException
             )
         {
@@ -195,14 +196,14 @@ namespace DashboardCode.AdminkaV1.Injected
                 var loggingVerboseConfiguration = r.Resolve<LoggingVerboseConfiguration>();
                 var adminkaLogging = new NLogLoggingAdapter(
                         t,
-                        markdownException,
+                        Markdown,
                         SerializeToJson,
                         loggingConfiguration,
                         loggingVerboseConfiguration,
                         loggingPerformanceConfiguration
                     );
                 var authenticationLogging = GetNLogAuthenticationLogging();
-                return new RoutineLoggingTransients(adminkaLogging, authenticationLogging, (ex) => routineTransformException(ex, t, markdownException));
+                return new RoutineLoggingTransients(adminkaLogging, authenticationLogging, (ex) => routineTransformException(ex, t, Markdown));
             };
         }
         public static Func<RoutineGuid, IContainer, RoutineLoggingTransients> ComposeListLoggingTransients(
@@ -246,7 +247,7 @@ namespace DashboardCode.AdminkaV1.Injected
             if (hasVerbose && verbose == null)
             {
                 Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory =
-                    ComposeNLogTransients(Markdown, DefaultRoutineTagTransformException);
+                    ComposeNLogTransients(DefaultRoutineTagTransformException);
                 var routineLoggingTransients = loggingTransientsFactory(routineGuid, container);
                 var basicLogging = routineLoggingTransients.BasicRoutineLoggingAdapter;
                 var bufferedVerboseLoggingAdapter = new Routines.Injected.BufferedVerboseLogging(

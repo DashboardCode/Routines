@@ -98,7 +98,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
             ) : this(
                 adminkaStorageConfiguration,
-                InjectedManager.ComposeNLogTransients(InjectedManager.Markdown, InjectedManager.DefaultRoutineTagTransformException),
+                InjectedManager.ComposeNLogTransients(InjectedManager.DefaultRoutineTagTransformException),
                 InjectedManager.CreateContainerFactory(configurationFactory),
                 new RoutineGuid(Guid.NewGuid(), memberTag),
                 userContext,
@@ -116,7 +116,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
             ) : this(
                 adminkaStorageConfiguration,
-                InjectedManager.ComposeNLogTransients(InjectedManager.Markdown, routineTransformException),
+                InjectedManager.ComposeNLogTransients(routineTransformException),
                 routineGuid,
                 userContext,
                 InjectedManager.CreateContainer(configurationFactory, routineGuid, userContext),

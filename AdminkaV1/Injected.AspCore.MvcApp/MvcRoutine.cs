@@ -53,10 +53,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  new ConfigurationFactory(configurationManagerLoader),
                  controller,
                  routineGuid,
-                 InjectedManager.ComposeNLogTransients(
-                       InjectedManager.Markdown,
-                       InjectedManager.DefaultRoutineTagTransformException
-                     ),
+                 InjectedManager.ComposeNLogTransients(InjectedManager.DefaultRoutineTagTransformException),
                  input)
         {
             controller.HttpContext.Items["routineGuid"] = routineGuid;
