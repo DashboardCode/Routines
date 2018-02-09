@@ -88,7 +88,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-757
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AdminkaV1.Injected.SqlServer.Test", "Tests\AdminkaV1.Injected.SqlServer.Test\AdminkaV1.Injected.SqlServer.Test.shproj", "{B9077909-87F9-494B-9D6B-5E4F18A7325B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogExtensibles.Test", "Tests\NLogExtensibles.Test\NLogExtensibles.Test.csproj", "{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogExtensibles.NETFramework.Test", "Tests\NLogExtensibles.NETFramework.Test\NLogExtensibles.NETFramework.Test.csproj", "{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Tests\Benchmark\Benchmark.csproj", "{C30762B6-E02B-4FA8-9A51-3B4FAFD86B0A}"
 EndProject
@@ -154,15 +154,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Sandbox
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Mvc.Sandbox", "Tests\ConsoleApps\Routines.AspNetCore.Mvc.Sandbox\Routines.AspNetCore.Mvc.Sandbox.csproj", "{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenchmarkAdminka", "Tests\BenchmarkAdminka\BenchmarkAdminka.csproj", "{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkAdminka", "Tests\BenchmarkAdminka\BenchmarkAdminka.csproj", "{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogExtensibles.NETCore.Test", "Tests\NLogExtensibles.NETCore.Test\NLogExtensibles.NETCore.Test.csproj", "{44E79AB5-9494-4E83-863F-65D5765B34F5}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NLogExtensibles.Test", "Tests\NLogExtensibles.Test\NLogExtensibles.Test.shproj", "{8ECD6861-42B4-447D-9EC9-412A22AB0F3E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		AdminkaV1\Injected\AdminakV1.Injected.Shared.projitems*{02666e1b-53c7-42db-ac39-a16127dd5c81}*SharedItemsImports = 4
 		Tests\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems*{0ff86a9d-f8de-4029-843f-5029519e0b92}*SharedItemsImports = 13
+		Tests\NLogExtensibles.Test\NLogExtensibles.Test.projitems*{27cc69a4-c721-48d7-b2df-21a02f9c7b4c}*SharedItemsImports = 4
 		Tests\AdminkaV1.LoggingDom.WcfClient.Test\AdminkaV1.LoggingDom.WcfClient.Test.projitems*{47cde2e7-aa42-4bc1-bb0b-27acb7ffaed6}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems*{724e7146-c083-4e3f-9759-5bda6c78fa01}*SharedItemsImports = 13
 		AdminkaV1\Injected\AdminakV1.Injected.Shared.projitems*{89394319-e1fb-4e00-8138-1478fed390ee}*SharedItemsImports = 13
+		Tests\NLogExtensibles.Test\NLogExtensibles.Test.projitems*{8ecd6861-42b4-447d-9ec9-412a22ab0f3e}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{9176634f-e2be-45e3-ac2e-e268887c9989}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems*{ac5c1c59-1611-4a6b-9e88-9e85bc4d22d8}*SharedItemsImports = 4
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{ac5c1c59-1611-4a6b-9e88-9e85bc4d22d8}*SharedItemsImports = 4
@@ -1731,6 +1737,38 @@ Global
 		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|x64.Build.0 = Release|Any CPU
 		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|x86.ActiveCfg = Release|Any CPU
 		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}.Release|x86.Build.0 = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Android.Build.0 = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|iOS.Build.0 = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|x64.Build.0 = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Debug|x86.Build.0 = Debug|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Android.ActiveCfg = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Android.Build.0 = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|iOS.ActiveCfg = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|iOS.Build.0 = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|x64.ActiveCfg = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|x64.Build.0 = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|x86.ActiveCfg = Release|Any CPU
+		{44E79AB5-9494-4E83-863F-65D5765B34F5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1784,6 +1822,8 @@ Global
 		{1F6B776C-CD8A-4087-A4C3-C18E30997299} = {0A13BD11-5233-4DFE-8ADD-88CBC4F597DD}
 		{8153D6E1-F71A-4BF6-A5E8-BB8B6B4D8005} = {0A13BD11-5233-4DFE-8ADD-88CBC4F597DD}
 		{E5A4E800-DA66-4192-9B5A-92EE89E73C2D} = {68C4C8C2-2A78-4998-9D36-4A3B139B41FE}
+		{44E79AB5-9494-4E83-863F-65D5765B34F5} = {FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}
+		{8ECD6861-42B4-447D-9EC9-412A22AB0F3E} = {FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14B58345-1A5E-4882-9F6F-DC259439D43A}

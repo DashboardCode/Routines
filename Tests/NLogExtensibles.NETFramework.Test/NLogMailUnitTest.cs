@@ -7,8 +7,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NLog;
 using netDumbster.smtp;
+using DashboardCode.NLogExtensibles.Test;
 
-namespace DashboardCode.NLogExtensibles.Test
+namespace DashboardCode.NLogExtensibles.NETFramework.Test
 {
     // TODO: do it more realistic N users authenticate and trace activities, verbose episodically, 
     // when 1 user verbose constantly.
@@ -27,7 +28,7 @@ namespace DashboardCode.NLogExtensibles.Test
         {
             var verboseLogger = NLog.LogManager.GetLogger("MailTest:"+nameof(NLogMailUnitTest));
             var c = 0;
-            var verboseMessages = LogManager.Generate(20);
+            var verboseMessages = LogTestManager.Generate(20);
             var at = DateTime.Now;
             foreach (var verbose in verboseMessages)
             {
@@ -64,7 +65,7 @@ namespace DashboardCode.NLogExtensibles.Test
                         {
                             for (var o = 0; o <= operations; o++)
                             {
-                                var verboseMessages = LogManager.Generate();
+                                var verboseMessages = LogTestManager.Generate();
                                 var count = verboseMessages.Count();
                                 //var i = 0;
                                 var at = DateTime.Now;

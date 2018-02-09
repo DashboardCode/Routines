@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DashboardCode.NLogExtensibles.Test
 {
-    static class LogManager
+    static class LogTestManager
     {
         const int bufferedMessageCountForOperation = 40;
         private static Random random = new Random();

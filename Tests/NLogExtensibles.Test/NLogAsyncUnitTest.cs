@@ -3,7 +3,6 @@ using System.Threading;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NLog;
@@ -34,7 +33,7 @@ namespace DashboardCode.NLogExtensibles.Test
         }
 
         [TestMethod]
-        public void NlogBufferingWrapper()
+        public void NlogBufferingWrapperCore()
         {
             for (var r = 0; r <= repeats; r++)
             {
@@ -46,7 +45,7 @@ namespace DashboardCode.NLogExtensibles.Test
                         {
                             for (var o = 0; o <= operations; o++)
                             {
-                                var verboseMessages = LogManager.Generate();
+                                var verboseMessages = LogTestManager.Generate();
                                 var count = verboseMessages.Count();
                                 var i = 0;
                                 var at = DateTime.Now;
@@ -80,7 +79,7 @@ namespace DashboardCode.NLogExtensibles.Test
         }
 
         [TestMethod]
-        public void NlogAsyncWrapper()
+        public void NlogAsyncWrapperCore()
         {
             for (var r = 0; r <= repeats; r++)
             {
@@ -92,7 +91,7 @@ namespace DashboardCode.NLogExtensibles.Test
                         {
                             for (var o = 0; o <= operations; o++)
                             {
-                                var verboseMessages = LogManager.Generate();
+                                var verboseMessages = LogTestManager.Generate();
                                 var count = verboseMessages.Count();
                                 var i = 0;
                                 var at = DateTime.Now;
@@ -126,7 +125,7 @@ namespace DashboardCode.NLogExtensibles.Test
         }
 
         [TestMethod]
-        public void NlogWriteAsyncLogEvents()
+        public void NlogWriteAsyncLogEventsCore()
         {
             for (var r = 0; r <= repeats; r++)
             {
@@ -138,7 +137,7 @@ namespace DashboardCode.NLogExtensibles.Test
                         {
                             for (var o = 0; o <= operations; o++)
                             {
-                                var verboseMessages = LogManager.Generate();
+                                var verboseMessages = LogTestManager.Generate();
                                 var count = verboseMessages.Count();
                                 var i = 0;
                                 var list = new List<AsyncLogEventInfo>();
