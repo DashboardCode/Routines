@@ -8,7 +8,8 @@ namespace DashboardCode.Routines.Storage.EfCore
     public class EfCoreStorageRoutineHandler<TUserContext, TDbContext> : StorageRoutineHandler<TUserContext, TDbContext>
         where TDbContext : DbContext
     {
-        static readonly EfCoreEntityOrmStorageGFactory<TDbContext> gFactory = new EfCoreEntityOrmStorageGFactory<TDbContext>();
+        static readonly RepositoryContainer<TDbContext> repositoryContainer = new RepositoryContainer<TDbContext>();
+        static readonly OrmContainer<TDbContext> ormContainer = new OrmContainer<TDbContext>();
 
         public EfCoreStorageRoutineHandler(
             TUserContext userContext,
@@ -20,7 +21,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             Func<Action<DateTime, string>, 
             RoutineClosure<TUserContext>> createRoutineState, object input) : 
             
-            base(userContext, entityMetaServiceContainer, createDbContext, createDbContextForStorage, gFactory, gFactory, basicLogging, transformException, createRoutineState, input)
+            base(userContext, entityMetaServiceContainer, createDbContext, createDbContextForStorage, repositoryContainer, ormContainer, basicLogging, transformException, createRoutineState, input)
         {
         }
     }

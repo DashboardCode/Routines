@@ -6,10 +6,10 @@ namespace DashboardCode.Routines.Storage
         where TDbContext : IDisposable
     {
         TDbContext dbContext;
-        IRepositoryGFactory<TDbContext> repositoryGFactory;
+        IRepositoryContainer<TDbContext> repositoryGFactory;
 
         public ReliantRepositoryHandlerGFactory(
-                IRepositoryGFactory<TDbContext> repositoryGFactory,
+                IRepositoryContainer<TDbContext> repositoryGFactory,
                 TDbContext dbContext
             )
         {
@@ -19,7 +19,7 @@ namespace DashboardCode.Routines.Storage
 
         public ReliantRepositoryHandler<TEntity> Create<TEntity>(bool noTracking = true) where TEntity : class
         {
-            Func<TDbContext, bool, IRepository<TEntity>> createRepository = repositoryGFactory.ComposeCreateRepository<TEntity>();
+            Func<TDbContext, bool, IRepository<TEntity>> createRepository = repositoryGFactory.ResolveCreateRepository<TEntity>();
             var repository = createRepository(dbContext, noTracking);
             var repositoryHandler = new ReliantRepositoryHandler<TEntity>(repository);
             return repositoryHandler;

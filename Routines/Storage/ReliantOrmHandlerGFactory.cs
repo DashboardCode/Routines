@@ -8,12 +8,12 @@ namespace DashboardCode.Routines.Storage
         TDbContext dbContext;
         IAuditVisitor auditVisitor;
 
-        IRepositoryGFactory<TDbContext> repositoryGFactory;
-        IOrmGFactory<TDbContext> ormGFactory;
+        IRepositoryContainer<TDbContext> repositoryGFactory;
+        IOrmContainer<TDbContext> ormGFactory;
         IEntityMetaServiceContainer entityMetaServiceContainer;
         public ReliantOrmHandlerGFactory(
-                IRepositoryGFactory<TDbContext> repositoryGFactory,
-                IOrmGFactory<TDbContext> ormGFactory,
+                IRepositoryContainer<TDbContext> repositoryGFactory,
+                IOrmContainer<TDbContext> ormGFactory,
                 IEntityMetaServiceContainer entityMetaServiceContainer,
                 IAuditVisitor auditVisitor,
                 TDbContext dbContext
@@ -28,13 +28,13 @@ namespace DashboardCode.Routines.Storage
 
         public ReliantOrmHandler<TEntity> Create<TEntity>(bool noTracking = false) where TEntity : class
         {
-            Func<TDbContext, bool, IRepository<TEntity>> createRepository = repositoryGFactory.ComposeCreateRepository<TEntity>();
+            Func<TDbContext, bool, IRepository<TEntity>> createRepository = repositoryGFactory.ResolveCreateRepository<TEntity>();
             Func<TDbContext,
                 Func<Exception, StorageResult>,
                 IAuditVisitor,
                 IOrmStorage<TEntity>
-                > createOrmStorage = ormGFactory.ComposeCreateOrmStorage<TEntity>();
-            Func<TDbContext, IOrmEntitySchemaAdapter, IOrmEntitySchemaAdapter<TEntity>> createOrmMetaAdapter = ormGFactory.ComposeCreateOrmMetaAdapter<TEntity>();
+                > createOrmStorage = ormGFactory.ResolveCreateOrmStorage<TEntity>();
+            Func<TDbContext, IOrmEntitySchemaAdapter, IOrmEntitySchemaAdapter<TEntity>> createOrmMetaAdapter = ormGFactory.ResolveCreateOrmMetaAdapter<TEntity>();
 
             var repository = createRepository(dbContext, noTracking);
             var entityStorageMetaService = entityMetaServiceContainer.Resolve<TEntity>();

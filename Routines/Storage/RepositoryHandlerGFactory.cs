@@ -5,11 +5,11 @@ namespace DashboardCode.Routines.Storage
     public class IndependentRepositoryHandlerGFactory<TUserContext, TDbContext> : IRepositoryHandlerGFactory<TUserContext>
         where TDbContext : IDisposable
     {
-        IRepositoryGFactory<TDbContext> repositoryGFactory;
+        IRepositoryContainer<TDbContext> repositoryGFactory;
         Func<RoutineClosure<TUserContext>, TDbContext> dbContextFactory;
 
         public IndependentRepositoryHandlerGFactory(
-                IRepositoryGFactory<TDbContext> repositoryGFactory,
+                IRepositoryContainer<TDbContext> repositoryGFactory,
                 Func<RoutineClosure<TUserContext>, TDbContext> dbContextFactory
             )
         {
@@ -19,7 +19,7 @@ namespace DashboardCode.Routines.Storage
 
         public IIndependentRepositoryHandler<TUserContext, TEntity> Create<TEntity>(RoutineClosure<TUserContext> closure, bool noTracking) where TEntity : class
         {
-            var createRepository = repositoryGFactory.ComposeCreateRepository<TEntity>();
+            var createRepository = repositoryGFactory.ResolveCreateRepository<TEntity>();
             var repositoryHandler = new IndependentRepositoryHandler<TUserContext, TDbContext, TEntity>(closure, dbContextFactory, (dbContext)=>createRepository(dbContext, noTracking) );
             return repositoryHandler;
         }

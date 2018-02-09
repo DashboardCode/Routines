@@ -11,8 +11,8 @@ namespace DashboardCode.Routines.Storage
         readonly IEntityMetaServiceContainer entityMetaServiceContainer;
         readonly Func<RoutineClosure<TUserContext>, TDbContext> createDbContext;
         readonly Func<RoutineClosure<TUserContext>, (TDbContext, IAuditVisitor)> createDbContextForStorage;
-        readonly IRepositoryGFactory<TDbContext> repositoryGFactory;
-        readonly IOrmGFactory<TDbContext> ormGFactory;
+        readonly IRepositoryContainer<TDbContext> repositoryGFactory;
+        readonly IOrmContainer<TDbContext> ormGFactory;
 
         protected readonly TUserContext userContext;
 
@@ -22,8 +22,8 @@ namespace DashboardCode.Routines.Storage
             IEntityMetaServiceContainer entityMetaServiceContainer,
             Func<RoutineClosure<TUserContext>, TDbContext> createDbContext,
             Func<RoutineClosure<TUserContext>, (TDbContext, IAuditVisitor)> createDbContextForStorage,
-            IRepositoryGFactory<TDbContext> repositoryGFactory,
-            IOrmGFactory<TDbContext> ormGFactory,
+            IRepositoryContainer<TDbContext> repositoryGFactory,
+            IOrmContainer<TDbContext> ormGFactory,
 
             IBasicLogging basicLogging,
             Func<Exception, Exception> transformException,
@@ -57,7 +57,7 @@ namespace DashboardCode.Routines.Storage
 
         private IndependentRepositoryHandler<TUserContext, TDbContext, TEntity> CreateRespositoryHandler<TEntity>(RoutineClosure<TUserContext> closure, bool noTracking = false) where TEntity : class
         {
-            Func<TDbContext, bool, IRepository<TEntity>> createRepository = repositoryGFactory.ComposeCreateRepository<TEntity>();
+            Func<TDbContext, bool, IRepository<TEntity>> createRepository = repositoryGFactory.ResolveCreateRepository<TEntity>();
             var repositoryHandler = new IndependentRepositoryHandler<TUserContext, TDbContext, TEntity>(closure, createDbContext, dbContext => createRepository(dbContext, noTracking));
             return repositoryHandler;
         }
