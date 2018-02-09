@@ -15,18 +15,16 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
         {
             return dbContextHandler.Handle<Trace>(
                 (dbContext,closure) =>
-                {
-                    throw new AdminkaDataAccessEfCoreException($"User exception from '{nameof(GetTrace)}'", closure,  "TEST");
-                });
+                    throw new AdminkaDataAccessEfCoreException($"User exception from '{nameof(GetTrace)}'", closure,  "TEST")
+                );
         }
 
         public void ResetTrace(Guid correlationToken)
         {
             dbContextHandler.Handle(
                 (dbContext, closure) =>
-                {
-                    throw new AdminkaDataAccessEfCoreException($"User exception from '{nameof(ResetTrace)}'", closure, "TEST");
-                });
+                    throw new AdminkaDataAccessEfCoreException($"User exception from '{nameof(ResetTrace)}'", closure, "TEST")
+                );
         }
     }
 }

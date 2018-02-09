@@ -8,7 +8,7 @@ namespace DashboardCode.Routines.Storage
     public class StorageRoutineHandler<TUserContext, TDbContext> : UserRoutineHandler<TUserContext>
         where TDbContext : IDisposable
     {
-        readonly IStorageMetaService storageMetaService;
+        readonly IEntityMetaServiceContainer entityMetaServiceContainer;
         readonly Func<RoutineClosure<TUserContext>, TDbContext> createDbContext;
         readonly Func<RoutineClosure<TUserContext>, (TDbContext, IAuditVisitor)> createDbContextForStorage;
         readonly IRepositoryGFactory<TDbContext> repositoryGFactory;
@@ -18,8 +18,8 @@ namespace DashboardCode.Routines.Storage
 
         public StorageRoutineHandler(
             TUserContext userContext,
-            
-            IStorageMetaService storageMetaService,
+
+            IEntityMetaServiceContainer entityMetaServiceContainer,
             Func<RoutineClosure<TUserContext>, TDbContext> createDbContext,
             Func<RoutineClosure<TUserContext>, (TDbContext, IAuditVisitor)> createDbContextForStorage,
             IRepositoryGFactory<TDbContext> repositoryGFactory,
@@ -36,12 +36,12 @@ namespace DashboardCode.Routines.Storage
                 new IndependentRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, createDbContext), 
                 new IndependentOrmHandlerGFactory<TUserContext, TDbContext>(
                         repositoryGFactory, ormGFactory,
-                        storageMetaService, createDbContextForStorage), 
+                        entityMetaServiceContainer, createDbContextForStorage), 
                 input)
         {
             this.userContext = userContext;
 
-            this.storageMetaService = storageMetaService;
+            this.entityMetaServiceContainer = entityMetaServiceContainer;
 
             this.createDbContext    = createDbContext;
             this.createDbContextForStorage = createDbContextForStorage;
@@ -64,8 +64,9 @@ namespace DashboardCode.Routines.Storage
 
         private IndependentOrmHandler<TUserContext, TDbContext, TEntity> CreateOrmHandler<TEntity>(RoutineClosure<TUserContext> closure, bool noTracking = false) where TEntity : class
         {
-            IOrmEntitySchemaAdapter ormEntitySchemaAdapter  = storageMetaService.GetOrmEntitySchemaAdapter<TEntity>();
-            Func<Exception, StorageResult> analyzeException = storageMetaService.Analyze<TEntity>;
+            var entityStorageMetaService = entityMetaServiceContainer.Resolve<TEntity>();
+            IOrmEntitySchemaAdapter ormEntitySchemaAdapter  = entityStorageMetaService.GetOrmEntitySchemaAdapter();
+            Func<Exception, StorageResult> analyzeException = entityStorageMetaService.Analyze;
             Func<TDbContext, bool, IRepository<TEntity>> createRepository = null;
             Func<TDbContext,
                  Func<Exception, StorageResult>,
@@ -122,7 +123,7 @@ namespace DashboardCode.Routines.Storage
             {
                 var (dbContext, auditVisitor) = createDbContextForStorage(closure);
                 using (dbContext)
-                    action(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, storageMetaService, auditVisitor, dbContext), closure);
+                    action(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, entityMetaServiceContainer, auditVisitor, dbContext), closure);
             };
         }
 
@@ -132,7 +133,7 @@ namespace DashboardCode.Routines.Storage
             {
                 var (dbContext, auditVisitor) = createDbContextForStorage(closure);
                 using (dbContext)
-                    return func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, storageMetaService, auditVisitor, dbContext), closure);
+                    return func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, entityMetaServiceContainer, auditVisitor, dbContext), closure);
             };
         }
 
@@ -160,7 +161,7 @@ namespace DashboardCode.Routines.Storage
             {
                 var (dbContext, auditVisitor) = createDbContextForStorage(closure);
                 using (dbContext)
-                    action(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, storageMetaService, auditVisitor, dbContext));
+                    action(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, entityMetaServiceContainer, auditVisitor, dbContext));
             };
         }
 
@@ -170,7 +171,7 @@ namespace DashboardCode.Routines.Storage
             {
                 var (dbContext, auditVisitor) = createDbContextForStorage(closure);
                 using (dbContext)
-                    return func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, storageMetaService, auditVisitor, dbContext));
+                    return func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, entityMetaServiceContainer, auditVisitor, dbContext));
             };
         }
 

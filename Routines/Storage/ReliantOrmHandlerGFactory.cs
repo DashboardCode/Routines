@@ -10,11 +10,11 @@ namespace DashboardCode.Routines.Storage
 
         IRepositoryGFactory<TDbContext> repositoryGFactory;
         IOrmGFactory<TDbContext> ormGFactory;
-        IStorageMetaService storageMetaService;
+        IEntityMetaServiceContainer entityMetaServiceContainer;
         public ReliantOrmHandlerGFactory(
                 IRepositoryGFactory<TDbContext> repositoryGFactory,
                 IOrmGFactory<TDbContext> ormGFactory,
-                IStorageMetaService storageMetaService,
+                IEntityMetaServiceContainer entityMetaServiceContainer,
                 IAuditVisitor auditVisitor,
                 TDbContext dbContext
             )
@@ -23,7 +23,7 @@ namespace DashboardCode.Routines.Storage
             this.auditVisitor = auditVisitor;
             this.repositoryGFactory = repositoryGFactory;
             this.ormGFactory = ormGFactory;
-            this.storageMetaService = storageMetaService;
+            this.entityMetaServiceContainer = entityMetaServiceContainer;
         }
 
         public ReliantOrmHandler<TEntity> Create<TEntity>(bool noTracking = false) where TEntity : class
@@ -37,8 +37,9 @@ namespace DashboardCode.Routines.Storage
             Func<TDbContext, IOrmEntitySchemaAdapter, IOrmEntitySchemaAdapter<TEntity>> createOrmMetaAdapter = ormGFactory.ComposeCreateOrmMetaAdapter<TEntity>();
 
             var repository = createRepository(dbContext, noTracking);
-            var ormStorage = createOrmStorage(dbContext, storageMetaService.Analyze<TEntity>, auditVisitor);
-            var ormEntitySchemaAdapter = createOrmMetaAdapter(dbContext, storageMetaService.GetOrmEntitySchemaAdapter<TEntity>());
+            var entityStorageMetaService = entityMetaServiceContainer.Resolve<TEntity>();
+            var ormStorage = createOrmStorage(dbContext, entityStorageMetaService.Analyze, auditVisitor);
+            var ormEntitySchemaAdapter = createOrmMetaAdapter(dbContext, entityStorageMetaService.GetOrmEntitySchemaAdapter());
 
             var ormHandler = new ReliantOrmHandler<TEntity>(repository, ormStorage, ormEntitySchemaAdapter);
             return ormHandler;

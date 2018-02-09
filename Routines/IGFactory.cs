@@ -1,7 +1,7 @@
 ﻿namespace DashboardCode.Routines
 {
-    public interface IGFactory<TParam>
+    public interface IGFactory<T>
     {
-        TResult Create<TResult>(TParam param);
+        TOutput Create<TOutput>(T input);
     }
 }

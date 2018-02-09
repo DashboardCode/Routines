@@ -54,7 +54,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         #region Meta
-        public readonly static IStorageMetaService StorageMetaService = new StorageMetaService(
+        public readonly static IEntityMetaServiceContainer EntityMetaServiceContainer = new EntityMetaServiceContainer(
             (exception, entityType, ormEntitySchemaAdapter, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(
                   exception, entityType, ormEntitySchemaAdapter, genericErrorField,
                   (ex, storageResultBuilder) => {
@@ -62,8 +62,8 @@ namespace DashboardCode.AdminkaV1.Injected
                       SqlServerManager.Analyze(ex, storageResultBuilder);
                   }
             )
-        );
-#endregion
+        ); 
+        #endregion
 
         public static IIdentity GetDefaultIdentity()
         {

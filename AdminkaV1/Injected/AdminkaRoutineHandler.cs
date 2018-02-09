@@ -172,7 +172,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
         ) : base(
                 adminkaStorageConfiguration,
-                InjectedManager.StorageMetaService,
+                InjectedManager.EntityMetaServiceContainer,
                 routineGuid,
                 userContext,
                 container,

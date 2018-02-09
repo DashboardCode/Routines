@@ -10,13 +10,78 @@ using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
-    public class StorageMetaService : IStorageMetaService
+    public class EntityMetaServiceContainer : IEntityMetaServiceContainer
     {
-        readonly Dictionary<string, IOrmEntitySchemaAdapter> entityMetas;
+        readonly Dictionary<string, OrmEntitySchemaAdapter> relationDbSchemaAdapters;
         readonly IMutableModel mutableModel;
-        Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
+        readonly Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
 
-        private class RelationDbSchemaAdapter : IOrmEntitySchemaAdapter
+        public EntityMetaServiceContainer(Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze)
+        {
+            this.analyze = analyze;
+            this.relationDbSchemaAdapters = new Dictionary<string, OrmEntitySchemaAdapter>();
+
+            //TODO:  constraints and unique indexes list should be integrated with configuration files or get from db directly
+
+            //var serviceCollection = new ServiceCollection();
+            //var serviceProvider = serviceCollection.BuildServiceProvider();
+            //var conventionSet2 = serviceProvider.GetService<ConventionSet>();
+
+            var conventionSet = new ConventionSet();
+            var modelBuilder = new ModelBuilder(conventionSet);
+            AdminkaDbContext.BuildModel(modelBuilder);
+            mutableModel = modelBuilder.Model;
+
+            var entityTypes = mutableModel.GetEntityTypes();
+            foreach (var entityType in entityTypes)
+            {
+                var lastIndexOfPoint = entityType.Name.LastIndexOf('.');
+                var relationDbSchemaAdapter = new OrmEntitySchemaAdapter(entityType);
+                relationDbSchemaAdapters.Add(entityType.Name, relationDbSchemaAdapter);
+            }
+        }
+
+        public IEntityMetaService<TEntity> Resolve<TEntity>() where TEntity : class
+        {
+            var type = typeof(TEntity);
+            var ormEntitySchemaAdapter = relationDbSchemaAdapters[type.FullName];
+            var ormMetaAdapter = new OrmMetaAdapter<TEntity>(mutableModel, ormEntitySchemaAdapter);
+            var entityStorageMetaService = new EntityStorageMetaService<TEntity>(ormMetaAdapter, type, mutableModel, analyze);
+            return entityStorageMetaService;
+        }
+
+        class EntityStorageMetaService<TEntity> : IEntityMetaService<TEntity> where TEntity : class
+        {
+            readonly OrmMetaAdapter<TEntity> ormMetaAdapter;
+            readonly Type type;
+            readonly IMutableModel mutableModel;
+            readonly Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
+            public EntityStorageMetaService(
+                OrmMetaAdapter<TEntity> ormMetaAdapter,
+                Type type,
+                IMutableModel mutableModel,
+                Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze)
+            {
+                this.ormMetaAdapter = ormMetaAdapter;
+                this.type = type;
+                this.analyze = analyze;
+                this.mutableModel = mutableModel;
+            }
+
+            public StorageResult Analyze(Exception ex)
+            {
+                var storageResult = analyze(ex, type, ormMetaAdapter, "");
+                return storageResult;
+            }
+
+            public IOrmEntitySchemaAdapter<TEntity> GetOrmEntitySchemaAdapter()
+            {
+                var @output = new OrmMetaAdapter<TEntity>(mutableModel, ormMetaAdapter);
+                return @output;
+            }
+        }
+
+        class OrmEntitySchemaAdapter : IOrmEntitySchemaAdapter
         {
             string[] Binaries;
             string[] Keys;
@@ -25,7 +90,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             string TableName;
             Dictionary<string, (string[], string)> Constraints;
             Dictionary<string, string[]> Uniques;
-            public RelationDbSchemaAdapter(IEntityType entityType)
+            public OrmEntitySchemaAdapter(IEntityType entityType)
             {
                 SchemaName = entityType.Relational().Schema;
                 TableName = entityType.Relational().TableName;
@@ -52,12 +117,12 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 Constraints = new Dictionary<string, (string[], string)>();
                 var constraintsAnnotation = entityType.FindAnnotation(Constraint.AnnotationName);
                 if (constraintsAnnotation != null && constraintsAnnotation.Value is Constraint[] constraints)
-                    foreach(var c in constraints)
-                         Constraints.Add(c.Name, (c.Fields, c.Message));
+                    foreach (var c in constraints)
+                        Constraints.Add(c.Name, (c.Fields, c.Message));
                 // ----------------------------------------------------------------------------------------------------------
                 Uniques = new Dictionary<string, string[]>();
                 var indexes = entityType.GetIndexes();
-                foreach (var index in indexes) 
+                foreach (var index in indexes)
                     if (index.IsUnique)
                     {
                         var sqlServerAnnotations = index.SqlServer();
@@ -117,49 +182,10 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             public (string[] Attributes, string Message) GetConstraint(string name)
             {
-                if (Constraints.TryGetValue(name, out (string[],string) properties))
+                if (Constraints.TryGetValue(name, out (string[], string) properties))
                     return properties;
                 return default((string[], string));
             }
-        }
-
-        public StorageMetaService(Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze)
-        {
-            this.analyze = analyze;
-            this.entityMetas = new Dictionary<string, IOrmEntitySchemaAdapter>();
-
-            //TODO:  constraints and unique indexes list should be integrated with configuration files or get from db directly
-
-            //var serviceCollection = new ServiceCollection();
-            //var serviceProvider = serviceCollection.BuildServiceProvider();
-            //var conventionSet2 = serviceProvider.GetService<ConventionSet>();
-
-            var conventionSet = new ConventionSet();
-            var modelBuilder = new ModelBuilder(conventionSet);
-            AdminkaDbContext.BuildModel(modelBuilder);
-            mutableModel = modelBuilder.Model;
-
-            var entityTypes = mutableModel.GetEntityTypes();
-            foreach (var entityType in entityTypes)
-            {
-                var lastIndexOfPoint = entityType.Name.LastIndexOf('.');
-                var storageModel = new RelationDbSchemaAdapter(entityType);
-                entityMetas.Add(entityType.Name, storageModel);
-            }
-        }
-
-        public StorageResult Analyze<TEntity>(Exception ex)
-        {
-            var type = typeof(TEntity);
-            var entityMeta =  entityMetas[type.FullName];
-            return analyze(ex, type, entityMeta, "");
-        }
-
-        public IOrmEntitySchemaAdapter<TEntity> GetOrmEntitySchemaAdapter<TEntity>() where TEntity : class
-        {
-            var entityMeta = entityMetas[typeof(TEntity).FullName];
-            var @output = new OrmMetaAdapter<TEntity>(mutableModel, entityMeta);
-            return @output;
         }
     }
 }

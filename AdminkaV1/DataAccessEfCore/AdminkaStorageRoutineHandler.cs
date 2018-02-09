@@ -10,14 +10,14 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     {
         public AdminkaStorageRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IStorageMetaService storageMetaService,
+            IEntityMetaServiceContainer entityMetaServiceContainer,
             RoutineGuid routineGuid,
             UserContext userContext,
             IContainer container,
             IBasicLogging basicLogging,
             Func<Exception, Exception> transformException,
             object input) :
-            base(userContext, storageMetaService,
+            base(userContext, entityMetaServiceContainer,
                 closure => new AdminkaDbContextFactory(adminkaStorageConfiguration).Create(closure),
                 closure => new ValueTuple<AdminkaDbContext, IAuditVisitor>(
                         new AdminkaDbContextFactory(adminkaStorageConfiguration).Create(closure),

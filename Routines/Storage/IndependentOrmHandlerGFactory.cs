@@ -5,29 +5,29 @@ namespace DashboardCode.Routines.Storage
     public class IndependentOrmHandlerGFactory<TUserContext, TDataAccess> : IOrmHandlerGFactory<TUserContext>
         where TDataAccess : IDisposable
     {
-        Func<RoutineClosure<TUserContext>, (TDataAccess, IAuditVisitor)> dbContextFactoryForStorage;
-
         IRepositoryGFactory<TDataAccess> repositoryGFactory;
         IOrmGFactory<TDataAccess> ormGFactory;
-        IStorageMetaService storageMetaService;
+        IEntityMetaServiceContainer entityMetaServiceContainer;
+        Func<RoutineClosure<TUserContext>, (TDataAccess, IAuditVisitor)> dbContextFactoryForStorage;
 
         public IndependentOrmHandlerGFactory(
                 IRepositoryGFactory<TDataAccess> repositoryGFactory,
                 IOrmGFactory<TDataAccess> ormGFactory,
-                IStorageMetaService storageMetaService,
+                IEntityMetaServiceContainer entityMetaServiceContainer,
                 Func<RoutineClosure<TUserContext>, (TDataAccess, IAuditVisitor)> dbContextFactoryForStorage
             )
         {
-            this.dbContextFactoryForStorage = dbContextFactoryForStorage;
             this.repositoryGFactory = repositoryGFactory;
             this.ormGFactory = ormGFactory;
-            this.storageMetaService = storageMetaService;
+            this.entityMetaServiceContainer = entityMetaServiceContainer;
+            this.dbContextFactoryForStorage = dbContextFactoryForStorage;
         }
 
         public IIndependentOrmHandler<TUserContext, TEntity> Create<TEntity>(RoutineClosure<TUserContext> closure, bool noTracking = true) where TEntity : class
         {
-            IOrmEntitySchemaAdapter ormEntitySchemaAdapter  = storageMetaService.GetOrmEntitySchemaAdapter<TEntity>();
-            Func<Exception, StorageResult> analyzeException = storageMetaService.Analyze<TEntity> ;
+            var entityStorageMetaService = entityMetaServiceContainer.Resolve<TEntity>();
+            IOrmEntitySchemaAdapter ormEntitySchemaAdapter  = entityStorageMetaService.GetOrmEntitySchemaAdapter();
+            Func<Exception, StorageResult> analyzeException = entityStorageMetaService.Analyze;
             Func< TDataAccess, bool, IRepository< TEntity >> createRepository = repositoryGFactory.ComposeCreateRepository<TEntity>();
             Func< TDataAccess,
                  Func<Exception, StorageResult>,
