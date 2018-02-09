@@ -3,18 +3,7 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Storage
 {
-    public interface IIndependentOrmHandler<TUserContext, TEntity> where TEntity : class
-    {
-        void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action);
-        TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task<TOutput>> func);
-
-        void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>> action);
-        TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task<TOutput>> func);
-    }
-
-    public class IndependentOrmHandler<TUserContext, TDataAccess, TEntity>: IIndependentOrmHandler<TUserContext, TEntity> where TDataAccess : IDisposable
+    public class IndependentOrmHandler<TUserContext, TDataAccess, TEntity> : IIndependentOrmHandler<TUserContext, TEntity> where TDataAccess : IDisposable
         where TEntity : class
     {
         readonly IOrmEntitySchemaAdapter ormEntitySchemaAdapter;
@@ -115,67 +104,6 @@ namespace DashboardCode.Routines.Storage
                 createOrmStorage(dbContext, analyzeException, auditVisitor),
                 createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
                 );
-        }
-    }
-
-    public interface IReliantOrmHandler<TEntity> where TEntity : class
-    {
-        void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action);
-        TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task<TOutput>> func);
-
-        void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>> action);
-        TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task<TOutput>> func);
-    }
-
-    public class ReliantOrmHandler<TEntity> : IReliantOrmHandler<TEntity>
-    where TEntity : class
-    {
-        readonly IOrmStorage<TEntity> ormStorage;
-        readonly IRepository<TEntity> repository;
-        readonly IOrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter;
-
-        public ReliantOrmHandler(
-            IRepository<TEntity> repository,
-            IOrmStorage<TEntity> ormStorage,
-            IOrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter
-            )
-        {
-            this.repository = repository;
-            this.ormStorage = ormStorage;
-            this.ormEntitySchemaAdapter = ormEntitySchemaAdapter;
-        }
-
-        public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action)
-        {
-            action(repository, ormStorage);
-        }
-
-        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func)
-        {
-            return func(repository, ormStorage);
-        }
-
-        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task<TOutput>> func)
-        {
-            return func(repository, ormStorage);
-        }
-
-        public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>> action)
-        {
-            action(repository, ormStorage, ormEntitySchemaAdapter);
-        }
-
-        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, TOutput> func)
-        {
-            return func(repository, ormStorage, ormEntitySchemaAdapter
-                );
-        }
-
-        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task<TOutput>> func)
-        {
-            return func(repository, ormStorage, ormEntitySchemaAdapter);
         }
     }
 }

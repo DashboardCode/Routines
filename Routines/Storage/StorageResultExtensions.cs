@@ -112,39 +112,6 @@ namespace DashboardCode.Routines.Storage
             fieldErrors.Add(new FieldMessage(field, message));
         }
 
-        //public static StorageResult AnalyzeExceptionRecursive(Exception exception, IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, string genericErrorField, Action<Exception, IStorageResultBuilder> parser = null)
-        //{
-        //    return StorageResultExtensions.AnalyzeExceptionRecursive(
-        //        exception,
-        //        (recursiveParse) =>
-        //        {
-
-        //            var errorBuilder = new StorageResultBuilder(exception, relationalEntitySchemaAdapter, genericErrorField);
-        //            recursiveParse(errorBuilder);
-        //            return errorBuilder.Build();
-        //        },
-        //        parser
-        //    );
-        //}
-
-        //public static StorageResult AnalyzeExceptionRecursive2(
-        //    Exception exception,
-        //    IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, 
-        //    string genericErrorField,
-        //    Func<Action<IStorageResultBuilder>, StorageResult> analyzeException, Action<Exception, IStorageResultBuilder> parser = null)
-        //{
-        //    var storageResultBuilder = new StorageResultBuilder(exception, relationalEntitySchemaAdapter, genericErrorField);
-
-        //    var ex = exception;
-        //    do
-        //    {
-        //        parser?.Invoke(ex, storageResultBuilder);
-        //        ex = ex.InnerException;
-        //    } while (ex != null);
-
-        //    return storageResultBuilder.Build();
-        //}
-
         public static StorageResult AnalyzeExceptionRecursive(Exception exception, Func<Action<IStorageResultBuilder>, StorageResult> analyzeException,  Action<Exception, IStorageResultBuilder> parser = null)
         {
             return analyzeException(
@@ -160,27 +127,4 @@ namespace DashboardCode.Routines.Storage
                 );
         }
     }
-
-
-    //public interface IStorageResultBuilderEntityFactory
-    //{
-    //    IStorageResultBuilder CreateStorageResultBuilder(Exception exception);
-    //}
-
-    //public class StorageResultBuilderEntityFactory<TEntity> : IStorageResultBuilderEntityFactory where TEntity : class
-    //{
-    //    IOrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter;
-    //    string genericErrorFieldName;
-    //    public StorageResultBuilderEntityFactory(IOrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter, string genericErrorFieldName)
-    //    {
-    //        this.ormEntitySchemaAdapter = ormEntitySchemaAdapter;
-    //        this.genericErrorFieldName = genericErrorFieldName;
-    //    }
-
-    //    public IStorageResultBuilder CreateStorageResultBuilder(Exception exception)
-    //    {
-    //        var storageResultBuilder = new StorageResultBuilder(exception, ormEntitySchemaAdapter, genericErrorFieldName);
-    //        return storageResultBuilder;
-    //    }
-    //}
 }
