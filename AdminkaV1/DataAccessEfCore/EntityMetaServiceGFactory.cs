@@ -45,24 +45,25 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         {
             var type = typeof(TEntity);
             var ormEntitySchemaAdapter = relationDbSchemaAdapters[type.FullName];
-            var ormMetaAdapter = new OrmMetaAdapter<TEntity>(mutableModel, ormEntitySchemaAdapter);
-            var entityStorageMetaService = new EntityStorageMetaService<TEntity>(ormMetaAdapter, type, mutableModel, analyze);
+
+            var ormEntitySchemaAdapter2 = new OrmEntitySchemaAdapter<TEntity>(mutableModel, ormEntitySchemaAdapter);
+            var entityStorageMetaService = new EntityStorageMetaService<TEntity>(ormEntitySchemaAdapter2, type, mutableModel, analyze);
             return entityStorageMetaService;
         }
 
         class EntityStorageMetaService<TEntity> : IEntityMetaService<TEntity> where TEntity : class
         {
-            readonly OrmMetaAdapter<TEntity> ormMetaAdapter;
+            readonly OrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter;
             readonly Type type;
             readonly IMutableModel mutableModel;
             readonly Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
             public EntityStorageMetaService(
-                OrmMetaAdapter<TEntity> ormMetaAdapter,
+                OrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter,
                 Type type,
                 IMutableModel mutableModel,
                 Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze)
             {
-                this.ormMetaAdapter = ormMetaAdapter;
+                this.ormEntitySchemaAdapter = ormEntitySchemaAdapter;
                 this.type = type;
                 this.analyze = analyze;
                 this.mutableModel = mutableModel;
@@ -70,13 +71,13 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             public StorageResult Analyze(Exception ex)
             {
-                var storageResult = analyze(ex, type, ormMetaAdapter, "");
+                var storageResult = analyze(ex, type, ormEntitySchemaAdapter, "");
                 return storageResult;
             }
 
             public IOrmEntitySchemaAdapter<TEntity> GetOrmEntitySchemaAdapter()
             {
-                var @output = new OrmMetaAdapter<TEntity>(mutableModel, ormMetaAdapter);
+                var @output = new OrmEntitySchemaAdapter<TEntity>(mutableModel, ormEntitySchemaAdapter);
                 return @output;
             }
         }

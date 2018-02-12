@@ -2,12 +2,12 @@
 
 namespace DashboardCode.Routines.Storage.EfCore
 {
-    public class OrmMetaAdapter<TEntity> : IOrmEntitySchemaAdapter<TEntity> where TEntity : class
+    public class OrmEntitySchemaAdapter<TEntity> : IOrmEntitySchemaAdapter<TEntity> where TEntity : class
     {
         private readonly IModel model;
         private readonly IOrmEntitySchemaAdapter ormEntitySchemaAdapter;
 
-        public OrmMetaAdapter(IModel model, IOrmEntitySchemaAdapter ormEntitySchemaAdapter)
+        public OrmEntitySchemaAdapter(IModel model, IOrmEntitySchemaAdapter ormEntitySchemaAdapter)
         {
             this.model = model;
             this.ormEntitySchemaAdapter = ormEntitySchemaAdapter;
@@ -25,6 +25,7 @@ namespace DashboardCode.Routines.Storage.EfCore
         public Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include) =>
             EfCoreExtensions.ExtractNavigationsAppendKeyLeafs(include, model);
 
+        #region IOrmEntitySchemaAdapter
         public string[] GetBinaries()
         {
             return ormEntitySchemaAdapter.GetBinaries();
@@ -54,5 +55,6 @@ namespace DashboardCode.Routines.Storage.EfCore
         {
             return ormEntitySchemaAdapter.GetRequireds();
         }
+        #endregion
     }
 }

@@ -18,11 +18,11 @@ namespace DashboardCode.Routines.Storage
                  IOrmStorage<TEntity>
                  > createOrmStorage;
         readonly Func<TDataAccess, IOrmEntitySchemaAdapter, IOrmEntitySchemaAdapter<TEntity>> createOrmMetaAdapter;
-        readonly Func<RoutineClosure<TUserContext>, (TDataAccess, IAuditVisitor)> dbContextFactoryForStorage;
+        readonly Func<(TDataAccess, IAuditVisitor)> dbContextFactoryForStorage;
 
         public IndependentOrmHandler(
             RoutineClosure<TUserContext> closure,
-            Func<RoutineClosure<TUserContext>, (TDataAccess, IAuditVisitor)> dbContextFactoryForStorage,
+            Func<(TDataAccess, IAuditVisitor)> dbContextFactoryForStorage,
             IOrmEntitySchemaAdapter ormEntitySchemaAdapter,
             Func<Exception, StorageResult> analyzeException,
             Func<TDataAccess, bool, IRepository<TEntity>> createRepository,
@@ -47,7 +47,7 @@ namespace DashboardCode.Routines.Storage
 
         public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action)
         {
-            var (dbContext, auditVisitor) = dbContextFactoryForStorage(closure);
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 action(createRepository(dbContext, noTracking),
                 createOrmStorage(dbContext, analyzeException, auditVisitor)
@@ -56,7 +56,7 @@ namespace DashboardCode.Routines.Storage
 
         public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, TOutput> func)
         {
-            var (dbContext, auditVisitor) = dbContextFactoryForStorage(closure);
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return func(
                 createRepository(dbContext, noTracking),
@@ -66,7 +66,7 @@ namespace DashboardCode.Routines.Storage
 
         public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task<TOutput>> func)
         {
-            var (dbContext, auditVisitor) = dbContextFactoryForStorage(closure);
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return func(
                 createRepository(dbContext, noTracking),
@@ -76,7 +76,7 @@ namespace DashboardCode.Routines.Storage
 
         public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>> action)
         {
-            var (dbContext, auditVisitor) = dbContextFactoryForStorage(closure);
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 action(createRepository(dbContext, noTracking),
                 createOrmStorage(dbContext, analyzeException, auditVisitor),
@@ -86,7 +86,7 @@ namespace DashboardCode.Routines.Storage
 
         public TOutput Handle<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, TOutput> func)
         {
-            var (dbContext, auditVisitor) = dbContextFactoryForStorage(closure);
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return func(
                 createRepository(dbContext, noTracking),
@@ -97,7 +97,7 @@ namespace DashboardCode.Routines.Storage
 
         public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task<TOutput>> func)
         {
-            var (dbContext, auditVisitor) = dbContextFactoryForStorage(closure);
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return func(
                 createRepository(dbContext, noTracking),

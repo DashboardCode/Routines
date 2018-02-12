@@ -170,8 +170,6 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 
                 DbContextTests.TestHierarchy(dbContext);
             }
-
-            
         }
 
         internal static void Try(string connectionString)

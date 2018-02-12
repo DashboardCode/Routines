@@ -14,14 +14,15 @@ namespace DashboardCode.Routines.Storage.EfCore
         public EfCoreStorageRoutineHandler(
             TUserContext userContext,
             IEntityMetaServiceContainer entityMetaServiceContainer, 
-            Func<RoutineClosure<TUserContext>, TDbContext> createDbContext, 
-            Func<RoutineClosure<TUserContext>, (TDbContext, IAuditVisitor)> createDbContextForStorage,
-            IBasicLogging basicLogging, 
-            Func<Exception, Exception> transformException, 
-            Func<Action<DateTime, string>, 
-            RoutineClosure<TUserContext>> createRoutineState, object input) : 
-            
-            base(userContext, entityMetaServiceContainer, createDbContext, createDbContextForStorage, repositoryContainer, ormContainer, basicLogging, transformException, createRoutineState, input)
+            Func<TDbContext> createDbContext, 
+            Func<(TDbContext, IAuditVisitor)> createDbContextForStorage,
+
+            IExceptionHandler exceptionHandler,
+            IRoutineLogging routineLogging,
+            RoutineClosure<TUserContext> closure,
+            object input) : 
+                base(userContext, entityMetaServiceContainer, createDbContext, createDbContextForStorage, repositoryContainer, ormContainer,
+                    exceptionHandler, routineLogging, closure, input)
         {
         }
     }

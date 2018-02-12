@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Text;
+
+using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
+using DashboardCode.AdminkaV1.DataAccessEfCore.InMemory;
+using DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
@@ -15,5 +19,21 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         public static void Append(StringBuilder sb, Exception ex)
            => EfCoreManager.Append(sb, ex);
 
+        public static AdminkaDbContext CreateAdminkaDbContext(
+            AdminkaStorageConfiguration adminkaStorageConfiguration, RoutineClosure<UserContext> closure ) {
+            var loggerProviderConfiguration = closure.Resolve<LoggerProviderConfiguration>();
+            var verbose = (loggerProviderConfiguration.Enabled) ? closure.Verbose : null;
+            IDbContextOptionsFactory optionsFactory;
+            if (adminkaStorageConfiguration.StorageType == StorageType.INMEMORY)
+                optionsFactory = new InMemoryAdminkaOptionsFactory("AdminkaV1_InMemmory");
+            else
+            {
+                var connectionString = adminkaStorageConfiguration.ConnectionString;
+                var migrationAssembly = adminkaStorageConfiguration.MigrationAssembly;
+                optionsFactory = new SqlServerAdminkaOptionsFactory(connectionString, migrationAssembly);
+            }
+            var adminkaDbContext = new AdminkaDbContext((b) => optionsFactory.Create(b), verbose);
+            return adminkaDbContext;
+        }
     }
 }

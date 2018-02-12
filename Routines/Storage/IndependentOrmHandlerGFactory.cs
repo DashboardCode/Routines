@@ -8,13 +8,13 @@ namespace DashboardCode.Routines.Storage
         IRepositoryContainer<TDataAccess> repositoryGFactory;
         IOrmContainer<TDataAccess> ormGFactory;
         IEntityMetaServiceContainer entityMetaServiceContainer;
-        Func<RoutineClosure<TUserContext>, (TDataAccess, IAuditVisitor)> dbContextFactoryForStorage;
+        Func<(TDataAccess, IAuditVisitor)> dbContextFactoryForStorage;
 
         public IndependentOrmHandlerGFactory(
                 IRepositoryContainer<TDataAccess> repositoryGFactory,
                 IOrmContainer<TDataAccess> ormGFactory,
                 IEntityMetaServiceContainer entityMetaServiceContainer,
-                Func<RoutineClosure<TUserContext>, (TDataAccess, IAuditVisitor)> dbContextFactoryForStorage
+                Func<(TDataAccess, IAuditVisitor)> dbContextFactoryForStorage
             )
         {
             this.repositoryGFactory = repositoryGFactory;

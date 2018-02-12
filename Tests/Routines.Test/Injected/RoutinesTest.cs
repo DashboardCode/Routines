@@ -16,14 +16,24 @@ namespace DashboardCode.Routines.Injected.Test
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(routineGuid, log);
 
-            var routineContainer = new BasicRoutineTransients<StateService>(
-                loggingTransients.BasicRoutineLoggingAdapter,
-                loggingTransients.TransformException,
-                (verbose) => new StateService(routineGuid.CorrelationToken, verbose)
-                );
+            var factory = new BasicRoutineTransientsFactory<StateService>(
+                loggingTransients.ShouldBufferVerbose,
+                loggingTransients.ShouldVerboseWithStackTrace,
+                new RoutineLogger(routineGuid),
+                loggingTransients.BasicRoutineLoggingAdapter
+            );
 
+            var routineLogging = factory.Create();
+            var exceptionHandler = new ExceptionHandler(new ExceptionAdapter(
+                loggingTransients.BasicRoutineLoggingAdapter.LogException,
+                loggingTransients.TransformException
+            ), null/*monitorRoutineDurationTicks*/);
+
+            var closure = new StateService(routineGuid.CorrelationToken, loggingTransients.BasicRoutineLoggingAdapter.LogVerbose); 
             string result = null;
-            var routine = new RoutineHandler<StateService>(routineContainer, new { });
+
+
+            var routine = new RoutineHandler<StateService>(exceptionHandler, routineLogging,  closure, new { });
             routine.Handle((c) =>
                 {
                     result = "success";
@@ -57,23 +67,32 @@ namespace DashboardCode.Routines.Injected.Test
             var log = new List<string>();
             var routineGuid = new RoutineGuid(correlationToken, "RoutinesTest", "RoutinesInjectedHandle2");
             var loggingTransients = new LoggingTransients(routineGuid, log);
+            bool shouldBufferVerbose = loggingTransients.ShouldBufferVerbose;
+            bool shouldVerboseWithStackTrace = loggingTransients.ShouldVerboseWithStackTrace;
 
-            var routineTransients = new BasicRoutineTransients<StateService>(
-                loggingTransients.BasicRoutineLoggingAdapter,
-                loggingTransients.TransformException,
-                (verbose) => new StateService(correlationToken, verbose)
-                );
+            
             IOrmHandlerGFactory<UserContext> testOrmHandlerFactory = null; // new TestOrmHandlerFactory();
             IRepositoryHandlerGFactory<UserContext> testRepositoryHandlerFactory = null; // new TestRepositoryHandlerFactory();
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
             Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
                 (verbose)=>new RoutineClosure<UserContext>(userContext, routineGuid, verbose, null);
             string result = null;
-            
+            var routineLogger = new RoutineLogger(routineGuid);
+            var factory = new BasicRoutineTransientsFactory<RoutineClosure<UserContext>>(
+               loggingTransients.ShouldBufferVerbose,
+               loggingTransients.ShouldVerboseWithStackTrace,
+               routineLogger,
+               loggingTransients.BasicRoutineLoggingAdapter
+            );
+            var routineLogging = factory.Create();
+            var exceptionHandler = new ExceptionHandler(new ExceptionAdapter(
+                loggingTransients.BasicRoutineLoggingAdapter.LogException,
+                loggingTransients.TransformException
+            ), null/*monitorRoutineDurationTicks*/);
+            var closure = new RoutineClosure<UserContext>(userContext, routineGuid, loggingTransients.BasicRoutineLoggingAdapter.LogVerbose, null);
+
             var routine = new UserRoutineHandler<UserContext>(
-                loggingTransients.BasicRoutineLoggingAdapter,
-                loggingTransients.TransformException,
-                createRoutineState, 
+                exceptionHandler, routineLogging, closure,
                 testRepositoryHandlerFactory,
                 testOrmHandlerFactory,
                 new { });
@@ -98,14 +117,22 @@ namespace DashboardCode.Routines.Injected.Test
             var routineGuid = new RoutineGuid(Guid.NewGuid(), new MemberTag(this));
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(routineGuid, log);
-            var routineContainer = new BasicRoutineTransients<StateService>(
-                loggingTransients.BasicRoutineLoggingAdapter,
-                loggingTransients.TransformException,
-                (verbose)=>new StateService(routineGuid.CorrelationToken, verbose)
-                );
+            var routineLogger = new RoutineLogger(routineGuid);
+            var factory = new BasicRoutineTransientsFactory<StateService>(
+                loggingTransients.ShouldBufferVerbose,
+                loggingTransients.ShouldVerboseWithStackTrace,
+                routineLogger,
+                loggingTransients.BasicRoutineLoggingAdapter
+            );
+            var routineLogging = factory.Create();
+            var exceptionHandler = new ExceptionHandler(new ExceptionAdapter(
+                loggingTransients.BasicRoutineLoggingAdapter.LogException,
+                loggingTransients.TransformException
+            ), null/*monitorRoutineDurationTicks*/);
+            var closure = new StateService(routineGuid.CorrelationToken, loggingTransients.BasicRoutineLoggingAdapter.LogVerbose);
             try
             {
-                var routine = new RoutineHandler<StateService>(routineContainer, new { });
+                var routine = new RoutineHandler<StateService>(exceptionHandler, routineLogging, closure, new { });
 
                 routine.Handle((c) =>
                 {
@@ -126,23 +153,37 @@ namespace DashboardCode.Routines.Injected.Test
         [TestMethod]
         public void RoutinesInjectedExceptionHandle2()
         {
-            var tag = new RoutineGuid(Guid.NewGuid(), "RoutinesTest", "RoutinesInjectedExceptionHandle2");
+            var routineGuid = new RoutineGuid(Guid.NewGuid(), "RoutinesTest", "RoutinesInjectedExceptionHandle2");
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
 
             var log = new List<string>();
-            var loggingTransients = new LoggingTransients(tag, log);
+            var loggingTransients = new LoggingTransients(routineGuid, log);
             IOrmHandlerGFactory<UserContext> testOrmHandlerFactory = null; // new TestOrmHandlerFactory();
             IRepositoryHandlerGFactory<UserContext> testRepositoryHandlerFactory = null; // new TestRepositoryHandlerFactory();
             //var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory(); // stub
             //var testOrmHandlerFactory = new TestOrmHandlerFactory(); // stub
             Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
-                (verbose) => new RoutineClosure<UserContext>(userContext, tag, null/*no verbose logging for this routineGuid */, null); 
+                (verbose) => new RoutineClosure<UserContext>(userContext, routineGuid, null/*no verbose logging for this routineGuid */, null); 
             try
             {
+                var routineLogger = new RoutineLogger(routineGuid);
+                var factory = new BasicRoutineTransientsFactory<RoutineClosure<UserContext>>(
+                    loggingTransients.ShouldBufferVerbose,
+                    loggingTransients.ShouldVerboseWithStackTrace,
+                    routineLogger,
+                    loggingTransients.BasicRoutineLoggingAdapter
+                );
+                var routineLogging = factory.Create();
+
+                var exceptionHandler = new ExceptionHandler(new ExceptionAdapter(
+                    loggingTransients.BasicRoutineLoggingAdapter.LogException,
+                    loggingTransients.TransformException
+                ), null/*monitorRoutineDurationTicks*/);
+
+
+                var closure = new RoutineClosure<UserContext>(userContext, routineGuid, null/*no verbose logging for this routineGuid */, null);
                 var routine = new UserRoutineHandler<UserContext>(
-                    loggingTransients.BasicRoutineLoggingAdapter,
-                    loggingTransients.TransformException,
-                    createRoutineState,
+                    exceptionHandler, routineLogging, closure,
                     testRepositoryHandlerFactory,
                     testOrmHandlerFactory,
                     new { }

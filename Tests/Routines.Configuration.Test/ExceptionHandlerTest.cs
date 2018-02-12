@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using DashboardCode.Routines.Injected;
-using System.Collections.Generic;
-
-namespace DashboardCode.Routines.Configuration.Test
+﻿namespace DashboardCode.Routines.Configuration.Test
 {
 #if !(NETCOREAPP1_1 || NETCOREAPP2_0)
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]

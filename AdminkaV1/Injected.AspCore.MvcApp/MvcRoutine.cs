@@ -13,6 +13,7 @@ using DashboardCode.AdminkaV1.Injected.NETStandard;
 using DashboardCode.Routines.Configuration.NETStandard;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
+using DashboardCode.Routines.Injected;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -20,21 +21,23 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     {
         public readonly SessionState SessionState;
         public readonly ConfigurableController Controller;
-        public MvcRoutine(ConfigurableController controller, [CallerMemberName] string action = "") :
-            this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), controller.HttpContext.Request.ToLog(), action)
+        public MvcRoutine(ConfigurableController controller) :
+            this(controller, controller.HttpContext.Request.ToLog())
         {
         }
-        public MvcRoutine(ConfigurableController controller, object input, [CallerMemberName] string action = "") :
-            this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), input, action)
+        public MvcRoutine(ConfigurableController controller, object input) :
+            this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), input)
         {
         }
-        private MvcRoutine(ConfigurableController controller, Guid correlationToken, object input, string action) :
+        private MvcRoutine(ConfigurableController controller, Guid correlationToken, object input) :
             this(controller,
-                new RoutineGuid(correlationToken, controller.GetType().Namespace, controller.GetType().Name, action),
+                new RoutineGuid(correlationToken,
+                    controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.Namespace,
+                    controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.Name,
+                    controller.ControllerContext.ActionDescriptor.ActionName),
                 input)
         {
         }
-
         public MvcRoutine(ConfigurableController controller, RoutineGuid routineGuid, object input) :
             this(controller,
                  routineGuid,
@@ -70,7 +73,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             AdminkaStorageConfiguration admikaConfigurationFacade,
             IConfigurationFactory configurationFactory,
             ConfigurableController controller, RoutineGuid routineGuid,
-            Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             object input) :
             base(
                 admikaConfigurationFacade,

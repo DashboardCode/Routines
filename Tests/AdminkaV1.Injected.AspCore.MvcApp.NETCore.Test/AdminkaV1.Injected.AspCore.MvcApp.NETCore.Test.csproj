@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test</AssemblyName>
+
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\Injected.AspCore.MvcApp\AdminkaV1.Injected.AspCore.MvcApp.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj" />
+    <ProjectReference Include="..\..\Routines\Routines.csproj" />
+  </ItemGroup>
+
+</Project>

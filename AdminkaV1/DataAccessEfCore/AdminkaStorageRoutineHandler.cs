@@ -11,22 +11,37 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
         public AdminkaStorageRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IEntityMetaServiceContainer entityMetaServiceContainer,
-            RoutineGuid routineGuid,
             UserContext userContext,
-            IContainer container,
-            IBasicLogging basicLogging,
-            Func<Exception, Exception> transformException,
+            IExceptionHandler exceptionHandler,
+            IRoutineLogging routineLogging,
+            RoutineClosure<UserContext> closure, 
             object input) :
-            base(userContext, entityMetaServiceContainer,
-                closure => new AdminkaDbContextFactory(adminkaStorageConfiguration).Create(closure),
-                closure => new ValueTuple<AdminkaDbContext, IAuditVisitor>(
-                        new AdminkaDbContextFactory(adminkaStorageConfiguration).Create(closure),
-                        new AuditVisitor(closure.UserContext)
-                        ),
-                basicLogging, 
-                transformException,
-                verbose => new RoutineClosure<UserContext>(userContext, routineGuid, verbose, container),
-                //createRoutineClosure, 
+            this(
+                userContext,
+                entityMetaServiceContainer,
+                () => DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration, closure),
+                exceptionHandler, routineLogging, closure,
+                input)
+        {
+        }
+
+        private AdminkaStorageRoutineHandler(
+            UserContext userContext,
+            IEntityMetaServiceContainer entityMetaServiceContainer,
+            Func<AdminkaDbContext> createDbContext,
+            IExceptionHandler exceptionHandler,
+            IRoutineLogging routineLogging,
+            RoutineClosure<UserContext> closure,
+            object input) :
+            base(
+                userContext,
+                entityMetaServiceContainer,
+                createDbContext,
+                () => new ValueTuple<AdminkaDbContext, IAuditVisitor>(
+                    createDbContext(),
+                    new AuditVisitor(closure.UserContext)
+                ),
+                exceptionHandler, routineLogging, closure,
                 input)
         {
         }

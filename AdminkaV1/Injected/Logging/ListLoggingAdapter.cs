@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using DashboardCode.Routines.Storage;
+using System.Collections.Generic;
+
 using DashboardCode.Routines;
+using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Injected;
 using DashboardCode.AdminkaV1.Injected.Performance;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
-    public class LoggingToListAdapter : IBasicLogging, IAuthenticationLogging
+    public class ListLoggingAdapter : IBasicLogging, IAuthenticationLogging
     {
         readonly List<string> logger = new List<string>();
         readonly RoutineGuid routineGuid;
@@ -16,16 +17,13 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
         readonly Func<Exception, string> markdownException;
         readonly Func<object, string> serializeObject;
-        public bool ShouldBufferVerbose { get; private set; }
-        public bool ShouldVerboseWithStackTrace { get; private set; }
 
-        public LoggingToListAdapter(
+        public ListLoggingAdapter(
             List<string> logger,
-            RoutineGuid routineGuid,
+            RoutineGuid  routineGuid,
             Func<Exception, string> markdownException,
             Func<object, int, bool, string> serializeObject,
             LoggingConfiguration loggingConfiguration,
-            LoggingVerboseConfiguration loggingVerboseConfiguration,
             LoggingPerformanceConfiguration loggingPerformanceConfiguration
             )
         {
@@ -40,14 +38,11 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 catch (Exception ex)
                 {
                     LogException(DateTime.Now, ex);
-                    //return null;
-                    throw;
+                    return null;
                 }
             };
             this.loggingConfiguration = loggingConfiguration;
             this.loggingPerformanceConfiguration = loggingPerformanceConfiguration;
-            this.ShouldBufferVerbose = loggingVerboseConfiguration.ShouldBufferVerbose;
-            this.ShouldVerboseWithStackTrace = loggingVerboseConfiguration.ShouldVerboseWithStackTrace;
         }
 
 

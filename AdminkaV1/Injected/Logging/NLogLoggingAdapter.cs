@@ -21,18 +21,11 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         readonly Func<object, string> serializeObject;
         readonly Logger logger;
         
-        // TODO: mailLogger is not tested yet, better for performance this functionality provide through NLog API
-        //static readonly PerDayСounter counter = new PerDayСounter();
-        //readonly Logger mailLogger;
-
-        public bool ShouldBufferVerbose { get; private set; }
-        public bool ShouldVerboseWithStackTrace { get; private set; }
         public NLogLoggingAdapter(
             RoutineGuid routineGuid,
             Func<Exception, string> markdownException,
             Func<object, int, bool, string> serializeObject,
             LoggingConfiguration loggingConfiguration,
-            LoggingVerboseConfiguration loggingVerboseConfiguration,
             LoggingPerformanceConfiguration loggingPerformanceConfiguration
             )
         {
@@ -51,40 +44,43 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             };
             this.loggingConfiguration = loggingConfiguration;
             this.loggingPerformanceConfiguration = loggingPerformanceConfiguration;
-            ShouldBufferVerbose = loggingVerboseConfiguration.ShouldBufferVerbose;
-            ShouldVerboseWithStackTrace = loggingVerboseConfiguration.ShouldVerboseWithStackTrace;
             var loggerName = "Routine:"+ routineGuid.GetCategory();
             logger = LogManager.GetLogger(loggerName); // ~0.5 ms
-            //mailLogger = LogManager.GetLogger("Mail":loggerName);
         }
 
         public void LogActivityStart(DateTime dateTime)
         {
-            var logEventInfo = new LogEventInfo()
+            if (loggingConfiguration.StartActivity)
             {
-                Level = LogLevel.Trace,
-                TimeStamp = dateTime,
-                Message = "Started"
-            };
-            logEventInfo.AppendRoutineTag(routineGuid);
-            logEventInfo.Properties["Description"] = $"Start;";
-            logger.Log(logEventInfo);
+                var logEventInfo = new LogEventInfo()
+                {
+                    Level = LogLevel.Trace,
+                    TimeStamp = dateTime,
+                    Message = "Started"
+                };
+                logEventInfo.AppendRoutineTag(routineGuid);
+                logEventInfo.Properties["Description"] = $"Start;";
+                logger.Log(logEventInfo);
+            }
         }
 
         public void LogActivityFinish(DateTime dateTime, TimeSpan timeSpan, bool isSuccess)
         {
-            var message = (isSuccess ? "Finished" : "FAILURE") + "; " +
+            if (loggingConfiguration.FinishActivity)
+            {
+                var message = (isSuccess ? "Finished" : "FAILURE") + "; " +
                 Math.Round(timeSpan.TotalMilliseconds) + "ms";
 
-            var logEventInfo = new LogEventInfo()
-            {
-                Level = LogLevel.Trace,
-                TimeStamp = dateTime,
-                Message = message
-            };
-            logEventInfo.AppendRoutineTag(routineGuid);
-            logEventInfo.Properties["Description"] = $"Finish";
-            logger.Log(logEventInfo);
+                var logEventInfo = new LogEventInfo()
+                {
+                    Level = LogLevel.Trace,
+                    TimeStamp = dateTime,
+                    Message = message
+                };
+                logEventInfo.AppendRoutineTag(routineGuid);
+                logEventInfo.Properties["Description"] = $"Finish";
+                logger.Log(logEventInfo);
+            }
         }
 
         public void LogVerbose(DateTime dateTime, string message)
@@ -135,8 +131,6 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logEventInfo.AppendRoutineTag(routineGuid);
             logEventInfo.Properties["Description"] = $"Exception";
             logger.Log(logEventInfo);
-            //if (counter.Increment())
-            //    mailLogger.Log(logEventInfo);
         }
 
         public void Input(DateTime dateTime, object input)

@@ -1,134 +1,132 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class BufferedVerboseLogging : IVerboseLogging
+    public class RoutineLogger
     {
-        private readonly IVerboseLogging loggingAdapter;
+        internal readonly VerboseBuffer buffer = new VerboseBuffer();
+        private readonly RoutineGuid RoutineGuid;
+        public RoutineLogger(RoutineGuid routineGuid) =>
+            RoutineGuid = routineGuid;
+    }
+
+    internal class VerboseBuffer
+    {
+        private readonly ConcurrentQueue<VerboseBufferItem> buffer= new ConcurrentQueue<VerboseBufferItem>();
+        //private readonly List<VerboseBufferItem> inputBuffer = new List<VerboseBufferItem>(1);
+        //private readonly List<VerboseBufferItem> outputBuffer = new List<VerboseBufferItem>(1);
+
+        public void Input(DateTime dateTime, object o) =>
+            Add(dateTime, VerboseBufferItemType.Input, null, o, null);
+
+        public void Output(DateTime dateTime, object o) =>
+            Add(dateTime, VerboseBufferItemType.Output, null, o, null);
+
+        public void LogVerbose(DateTime dateTime, string message, bool verboseWithStackTrace)
+        {
+            StackTraceProvider stackTraceProvider = null;
+            if (verboseWithStackTrace)
+                stackTraceProvider = new StackTraceProvider(new System.Diagnostics.StackTrace(2, true));
+            Add(dateTime, VerboseBufferItemType.Verbose, message, null, stackTraceProvider);
+        }
+
+        private void Add(DateTime dateTime, VerboseBufferItemType itemType, string verboseMessage, object inputOutput, StackTraceProvider stackTraceProvider) =>
+            buffer.Enqueue(new VerboseBufferItem(dateTime, itemType, verboseMessage, inputOutput, stackTraceProvider));
+
+        public void Flash(IDataLogger verboseLogging, Action<List<VerboseMessage>> logBufferedVerbose)
+        {
+            var list = new List<VerboseMessage>();
+            while (buffer.TryDequeue(out VerboseBufferItem message))
+            {
+                switch (message.ItemType)
+                {
+                    case VerboseBufferItemType.Input:
+                        verboseLogging.Input(message.DateTime, message.InputOutput);
+                        break;
+                    case VerboseBufferItemType.Output:
+                        verboseLogging.Output(message.DateTime, message.InputOutput);
+                        break;
+                    default:
+                        list.Add(new VerboseMessage(message.DateTime, message.VerboseMessage, message.StackTrace));
+                        break;
+                }
+            }
+            logBufferedVerbose(list);
+        }
+    }
+
+    public class BufferedVerboseLogging : IDataLogger
+    {
+        private readonly IDataLogger verboseLogging;
         private readonly bool verboseWithStackTrace;
         private readonly Action<List<VerboseMessage>> logBufferedVerbose;
 
-        // Note: I can't imagine verbose logging so heavy that it will requre parallel ConcurentBag.Add
-        private readonly List<VerboseBufferItem> buffer = new List<VerboseBufferItem>();
+        private readonly RoutineLogger routineLogger;
         private readonly object lockKey= new object();
         public BufferedVerboseLogging(
-            IVerboseLogging loggingAdapter,
+            IDataLogger verboseLogging,
             Action<List<VerboseMessage>> logBufferedVerbose,
-            bool verboseWithStackTrace)
+            bool verboseWithStackTrace,
+            RoutineLogger routineLogger)
         {
-            this.loggingAdapter = loggingAdapter;
+            this.verboseLogging = verboseLogging;
             this.logBufferedVerbose = logBufferedVerbose;
             this.verboseWithStackTrace = verboseWithStackTrace;
+            this.routineLogger = routineLogger;
         }
 
         public void Input(DateTime dateTime, object o) =>
-            Add(dateTime, ItemType.Input, null, o, null);
+            routineLogger.buffer.Input(dateTime, o);
 
         public void Output(DateTime dateTime, object o) =>
-            Add(dateTime, ItemType.Output, null, o, null);
+            routineLogger.buffer.Output(dateTime, o);
 
-        public void LogVerbose(DateTime dateTime, string message)
-        {
-            IStackTraceProvider stackTrace = null;
-            if (verboseWithStackTrace)
-#if NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0
-                stackTrace = new StdStackTraceProvider(Environment.StackTrace);
-#else
-                stackTrace = new NfStackTraceProvider(new System.Diagnostics.StackTrace(1, true));
-#endif
-            Add(dateTime, ItemType.Verbose, message, null, stackTrace);
-        }
+        public void LogVerbose(DateTime dateTime, string message) =>
+            routineLogger.buffer.LogVerbose(dateTime, message, verboseWithStackTrace);
 
-        private void Add(DateTime dateTime, ItemType itemType, string verboseMessage, object inputOutput, IStackTraceProvider stackTrace)
-        {
-            lock (lockKey)
-            {
-                buffer.Add(new VerboseBufferItem(dateTime, itemType, verboseMessage, inputOutput, stackTrace));
-            }
-        }
-
-        public void Flash()
-        {
-            var list = new List<VerboseMessage>();
-            lock (lockKey)
-            {
-                foreach (var message in buffer)
-                {
-                    switch (message.ItemType)
-                    {
-                        case ItemType.Input:
-                            loggingAdapter.Input(message.DateTime, message.InputOutput);
-                            break;
-                        case ItemType.Output:
-                            loggingAdapter.Output(message.DateTime, message.InputOutput);
-                            break;
-                        default:
-                            list.Add(new VerboseMessage(message.DateTime, message.VerboseMessage, message.StackTrace));
-                            break;
-                    }
-                }
-                logBufferedVerbose(list);
-                buffer.Clear();
-            }
-        }
-
-        private enum ItemType { Verbose=0, Input=1, Output=2};
-        class VerboseBufferItem
-        {
-            public readonly DateTime DateTime;
-            public readonly string VerboseMessage;
-            public readonly object InputOutput;
-            public readonly ItemType ItemType;
-            public readonly IStackTraceProvider StackTrace;
-            public VerboseBufferItem(DateTime dateTime, ItemType itemType, string verboseMessage, object inputOutput, IStackTraceProvider stackTrace)
-            {
-                DateTime = dateTime;
-                ItemType = itemType;
-                VerboseMessage = verboseMessage;
-                InputOutput = inputOutput;
-                StackTrace = stackTrace;
-            }
-        }
+        public void Flash() =>
+            routineLogger.buffer.Flash(verboseLogging, logBufferedVerbose);
     }
 
-    /// <summary>
-    /// Wait for .NET Standard 2.0 there should be 
-    /// </summary>
-    public interface IStackTraceProvider
+
+    enum VerboseBufferItemType { Verbose = 0, Input = 1, Output = 2 };
+    class VerboseBufferItem
     {
-        string GetText();
+        public readonly DateTime DateTime;
+        public readonly string VerboseMessage;
+        public readonly object InputOutput;
+        public readonly VerboseBufferItemType ItemType;
+        public readonly StackTraceProvider StackTrace;
+        public VerboseBufferItem(DateTime dateTime, VerboseBufferItemType itemType, string verboseMessage, object inputOutput, StackTraceProvider stackTrace)
+        {
+            DateTime = dateTime;
+            ItemType = itemType;
+            VerboseMessage = verboseMessage;
+            InputOutput = inputOutput;
+            StackTrace = stackTrace;
+        }
     }
 
-#if NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0
-    public class StdStackTraceProvider : IStackTraceProvider
-    {
-        readonly string stackTrace;
-
-        public StdStackTraceProvider(string stackTrace) =>
-            this.stackTrace = stackTrace;
-
-        public string GetText() =>
-           stackTrace;
-    }
-#else
-    public class NfStackTraceProvider : IStackTraceProvider
+    public class StackTraceProvider 
     {
         readonly System.Diagnostics.StackTrace stackTrace;
-        public NfStackTraceProvider(System.Diagnostics.StackTrace StackTrace) =>
+
+        public StackTraceProvider(System.Diagnostics.StackTrace stackTrace) =>
             this.stackTrace = stackTrace;
 
         public string GetText() =>
            stackTrace.ToString();
     }
-#endif
+
     public class VerboseMessage
     {
         public readonly DateTime   DateTime;
         public readonly string     Message;
-        public readonly IStackTraceProvider StackTrace;
+        public readonly StackTraceProvider StackTrace;
 
-        public VerboseMessage(DateTime dateTime, string text, IStackTraceProvider stackTrace)
+        public VerboseMessage(DateTime dateTime, string text, StackTraceProvider stackTrace)
         {
             DateTime = dateTime;
             Message = text;

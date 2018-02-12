@@ -3,62 +3,63 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class RoutineHandler<TRoutine>
+    public class RoutineHandler<TClosure>
     {
-        private readonly IRoutineTransients<TRoutine> routineTransients;
         private readonly IExceptionHandler exceptionHandler;
-        private readonly IRoutineLogging routineLoggingFacade;
         private readonly object input;
+        private readonly TClosure closure;
+        private readonly IRoutineLogging routineLogging;
 
-        public RoutineHandler(IRoutineTransients<TRoutine> routineTransients, object input)
+        public RoutineHandler(
+            IExceptionHandler exceptionHandler,
+            IRoutineLogging routineLogging,
+            TClosure closure,
+            object input)
         {
-            this.routineTransients = routineTransients;
             this.input = input;
-            routineLoggingFacade = routineTransients.ResolveRoutineLogging();
-            exceptionHandler = routineTransients.ResolveExceptionHandler();
+            this.closure = closure;
+            this.exceptionHandler = exceptionHandler;
+            this.routineLogging = routineLogging;
         }
-        public void Handle(Action<TRoutine> action)
+        public void Handle(Action<TClosure> action)
         {
+            var (logOnSuccess, logOnFailure) = routineLogging.LogStart(input);
             exceptionHandler.Handle(
                 () =>
                 {
-                    routineLoggingFacade.LogStart(input);
-                    var context = routineTransients.ResolveStateService();
-                    action(context);
-                    routineLoggingFacade.LogFinish(true, null);
+                    action(closure);
+                    logOnSuccess(null);
                 },
-                () => routineLoggingFacade.LogFinish(false, null)
+                logOnFailure
             );
         }
-        public TOutput Handle<TOutput>(Func<TRoutine, TOutput> func)
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
         {
             var @value = default(TOutput);
+            var (logOnSuccess, logOnFailure) = routineLogging.LogStart(input);
             exceptionHandler.Handle(
                 () =>
                 {
-                    routineLoggingFacade.LogStart(input);
-                    var currentWorkflowContext = routineTransients.ResolveStateService();
-                    @value = func(currentWorkflowContext);
-                    routineLoggingFacade.LogFinish(true, @value);
+                    @value = func(closure);
+                    logOnSuccess(@value);
                 },
-                ()=> routineLoggingFacade.LogFinish(false, null)
+                logOnFailure
             );
             return @value;
         }
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TRoutine, TOutput> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TOutput> func)
         {
             var @value = Task.Run(() =>
             {
                 var output = default(TOutput);
+                var (logOnSuccess, logOnFailure) = routineLogging.LogStart(input);
                 exceptionHandler.Handle(
                     () =>
                     {
-                        routineLoggingFacade.LogStart(input);
-                        var container = routineTransients.ResolveStateService();
-                        output = func(container);
-                        routineLoggingFacade.LogFinish(true, output);
+                        output = func(closure);
+                        logOnSuccess(output);
                     },
-                    () => routineLoggingFacade.LogFinish(false, null)
+                    logOnFailure
                 );
                 return output;
             });

@@ -4,25 +4,27 @@ namespace DashboardCode.Routines.Injected
 {
     public class RoutineLogging : IRoutineLogging
     {
-        private readonly IVerboseLogging verboseLoggingAdapter;
-        private readonly ActivityStateLogger activityLoggingFacade;
+        private readonly IDataLogger dataLogging;
+        private readonly ActivityState activityState;
         public RoutineLogging(
-            IActivityLogging activityLoggingAdapter,
-            IVerboseLogging verboseLoggingAdapter
+            ActivityState activityState,
+            IDataLogger dataLogging
             )
         {
-            this.verboseLoggingAdapter = verboseLoggingAdapter;
-            activityLoggingFacade = new ActivityStateLogger(activityLoggingAdapter);
+            this.activityState = activityState;
+            this.dataLogging = dataLogging;
         }
-        public void LogStart(object input)
+        public (Action<object>, Action) LogStart(object input)
         {
-            activityLoggingFacade.LogStart();
-            verboseLoggingAdapter.Input(DateTime.Now, input);
-        }
-        public void LogFinish(bool isSuccess, object output)
-        {
-            verboseLoggingAdapter.Output(DateTime.Now, output);
-            activityLoggingFacade.LogFinish(isSuccess);
+            var onFinish = activityState.LogStart();
+            dataLogging.Input(DateTime.Now, input);
+            Action<object> onSuccess = (object output) =>
+            {
+                dataLogging.Output(DateTime.Now, output);
+                onFinish(true);
+            };
+            Action onFailure = () => onFinish(false);
+            return (onSuccess, onFailure);
         }
     }
 }

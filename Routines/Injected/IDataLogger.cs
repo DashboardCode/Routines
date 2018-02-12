@@ -2,7 +2,7 @@
 
 namespace DashboardCode.Routines.Injected
 {
-    public interface IVerboseLogging
+    public interface IDataLogger
     {
         void Input(DateTime dt, object input);
         void Output(DateTime dt, object output);

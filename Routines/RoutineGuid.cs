@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace DashboardCode.Routines
 {
+    [DebuggerDisplay("{MemberTag.Namespace} {MemberTag.Type} {MemberTag.Member} {CorrelationToken}")]
     public struct RoutineGuid
     {
         public readonly Guid CorrelationToken;

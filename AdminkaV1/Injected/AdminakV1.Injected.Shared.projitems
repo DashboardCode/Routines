@@ -18,11 +18,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingVerboseConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InjectedManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\IAuthenticationLogging.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingToListAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\ListLoggingAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogAuthenticationLogging.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogLoggingAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Logging\PerDayСounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\RoutineLoggingTransients.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SqlServerAdmikaConfigurationFacade.cs" />
   </ItemGroup>

@@ -14,8 +14,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     class CrudRoutineControllerConsumer<TEntity, TKey> where TEntity: class, new()
     {
-        readonly ControllerMeta<TEntity, TKey> meta;
         readonly ConfigurableController controller;
+        readonly ControllerMeta<TEntity, TKey> meta;
         readonly Func<string, UserContext, bool> authorize;
         public CrudRoutineControllerConsumer(
             ConfigurableController controller,
@@ -29,13 +29,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
 
         #region Compose
-        public static Func<ConfigurableController, Task<IActionResult>> Compose(string actionName, Func<MvcRoutine, Task<IActionResult>> func) 
-            => controller => func(new MvcRoutine(controller, actionName));
+        public static Func<ConfigurableController, Task<IActionResult>> Compose(Func<MvcRoutine, Task<IActionResult>> func) 
+            => controller => func(new MvcRoutine(controller));
 
-
-
-        public static Func<ConfigurableController, Task<IActionResult>> ComposeAsync(string actionName, Func<IRepository<TEntity>, IActionResult> func)
-            => Compose(actionName,
+        public static Func<ConfigurableController, Task<IActionResult>> ComposeAsync(Func<IRepository<TEntity>, IActionResult> func)
+            => Compose(
                 async routine =>
                     await routine.HandleStorageAsync<IActionResult, TEntity>(
                         repository => func(repository)
@@ -43,7 +41,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
 
         public static Func<ConfigurableController, Task<IActionResult>> ComposeMvcSaveAsync(
-            string actionName, 
             string viewName,
             Func<
                 IRepository<TEntity>,
@@ -58,7 +55,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     IActionResult
                     >
                 > action)
-            => Compose(actionName,
+            => Compose(
                 async routine =>
                     await routine.HandleMvcSaveAsync(
                         viewName,
@@ -67,7 +64,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
 
         public static Func<ConfigurableController, Task<IActionResult>> ComposeMvcSaveAsync(
-            string actionName,
             string viewName,
             Func<
                 IRepository<TEntity>,
@@ -81,7 +77,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     IActionResult
                     >
                 > action)
-            => Compose(actionName,
+            => Compose(
                 async routine =>
                     await routine.HandleMvcSaveAsync(
                         viewName,
@@ -90,7 +86,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
 
         public static Func<ConfigurableController, Task<IActionResult>> ComposeMvcRequestAsync(
-            string actionName, 
             string viewName,
             Func<
                 IRepository<TEntity>,
@@ -103,7 +98,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 IActionResult
                 >
             > action)
-            => Compose(actionName,
+            => Compose(
                 async routine =>
                     await routine.HandleMvcRequestAsync(
                         viewName,
@@ -112,7 +107,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
 
         public static Func<ConfigurableController, Task<IActionResult>> ComposeMvcRequestAsync(
-            string actionName,
             string viewName,
             Func<
                 IRepository<TEntity>,
@@ -124,7 +118,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 IActionResult
                 >
             > action)
-            => Compose(actionName,
+            => Compose(
                 async routine =>
                     await routine.HandleMvcRequestAsync(
                         viewName,
@@ -132,7 +126,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     )
             );
 
-        public static Func<ConfigurableController, Task<IActionResult>> ComposeMvcCreateAsync(string actionName, string viewName,
+        public static Func<ConfigurableController, Task<IActionResult>> ComposeMvcCreateAsync(string viewName,
                  Func<
                     IRepository<TEntity>,
                     Func<
@@ -142,7 +136,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                             IActionResult>,
                         IActionResult>
                     > action)
-            => Compose(actionName,
+            => Compose(
                 async routine =>
                     await routine.HandleMvcCreateAsync(
                         viewName,
@@ -150,7 +144,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     )
             );
 
-        public static Func<ConfigurableController, Task<IActionResult>> ComposeMvcCreateAsync(string actionName, string viewName,
+        public static Func<ConfigurableController, Task<IActionResult>> ComposeMvcCreateAsync(string viewName,
                  Func<
                     IRepository<TEntity>,
                     Func<
@@ -159,7 +153,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                             IActionResult>,
                         IActionResult>
                     > action)
-            => Compose(actionName,
+            => Compose(
                 async routine =>
                     await routine.HandleMvcCreateAsync(
                         viewName,
@@ -168,8 +162,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
 
         public static Func<Func<object, IActionResult>, Func<ConfigurableController, Task<IActionResult>>> ComposeAsync(
-            string action, Func<Func<object, IActionResult>,  Func<IRepository<TEntity>, IActionResult>> func)
-            => view => ComposeAsync(action, func(view));
+            Func<Func<object, IActionResult>,  Func<IRepository<TEntity>, IActionResult>> func)
+            => view => ComposeAsync(func(view));
 
         #endregion
 
@@ -221,7 +215,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         #region Compose MVC Controlelr methods
         public static Func<Task<IActionResult>> ComposeIndex(ConfigurableController controller, Include<TEntity> indexIncludes) =>
-             () => ComposeAsync("Index",  view => repository => {
+             () => ComposeAsync( view => repository => {
                 var entities = repository.List(indexIncludes);
                 return view(entities);
              })(o=>controller.View("Index",o))(controller);
@@ -233,7 +227,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate
             ) =>
                () => ComposeMvcRequestAsync(
-                   "Edit", "Edit",
+                   "Edit",
                     repository => steps =>
                         steps(
                             keyConverter,
@@ -246,7 +240,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Action<Action<string, object>, IRepository<TEntity>> prepareEmptyOptions
             ) =>
                 () => ComposeMvcCreateAsync(
-                    "Create", "Create",
+                    "Create",
                     repository => steps =>
                         steps(
                             ()=>default(TEntity),
@@ -262,7 +256,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Dictionary<string, Func<TEntity, Action<StringValues>>> hiddenFormFields,
             Func<Action<string, object>, HttpRequest, IRepository<TEntity>, TEntity, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>> parseRelated
             ) =>
-                () => ComposeMvcSaveAsync("CreateConfirmed", "Create",
+                () => ComposeMvcSaveAsync("Create",
                 (repository, state) => steps =>
                     steps(
                          () => authorize(nameof(Create), state.UserContext),
@@ -279,7 +273,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Include<TEntity> editIncludes,
             Func<Action<string, object>, IRepository<TEntity>, Action<TEntity>> prepareOptions
             ) =>
-                () => ComposeMvcRequestAsync("Edit", "Edit",
+                () => ComposeMvcRequestAsync("Edit",
                     repository => steps =>
                         steps(
                             keyConverter,
@@ -297,7 +291,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Include<TEntity> disabledFormFields,
             Func<Action<string, object>, HttpRequest, IRepository<TEntity>, TEntity, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>> parseRelated
             ) =>
-                () => ComposeMvcSaveAsync("EditConfirmed", "Edit",
+                () => ComposeMvcSaveAsync( "Edit",
                     (repository, state) => steps =>
                         steps(
                             () => authorize(nameof(Edit), state.UserContext),
@@ -313,7 +307,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate
             ) =>
-                () => ComposeMvcRequestAsync("Delete", "Delete",
+                () => ComposeMvcRequestAsync("Delete",
                     repository => steps =>
                         steps(
                             keyConverter,
@@ -327,7 +321,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Func<TEntity> constructor,
             Dictionary<string, Func<TEntity, Action<StringValues>>> hiddenFormFields
             ) =>
-                () => ComposeMvcSaveAsync("DeleteConfirmed", "Delete",
+                () => ComposeMvcSaveAsync("Delete",
                     (repository, state) => steps =>
                         steps(
                             () => authorize(nameof(Delete), state.UserContext),
@@ -341,7 +335,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public async Task<IActionResult> Index()
         {
-            var routine = new MvcRoutine(controller, null);
+            var routine = new MvcRoutine(controller);
             return await routine.HandleStorageAsync<IActionResult, TEntity>(
                 repository => {
                     var entities = repository.List(meta.IndexIncludes);

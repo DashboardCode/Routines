@@ -4,15 +4,15 @@ namespace DashboardCode.Routines.Injected
 {
     public class BufferedRoutineLogging : IRoutineLogging
     {
-        private readonly IVerboseLogging verboseLoggingAdapter;
+        private readonly IDataLogger verboseLoggingAdapter;
         private readonly Action flashBuffer;
         private readonly Predicate<object> testInput;
         private readonly Predicate<object> testOutput;
-        private readonly ActivityStateLogger activityLogger;
+        private readonly ActivityState activityLogger;
 
         public BufferedRoutineLogging(
-            IActivityLogging activityLoggingAdapter,
-            IVerboseLogging verboseLoggingAdapter,
+            IActivityLogger activityLoggingAdapter,
+            IDataLogger verboseLoggingAdapter,
             Action flashBuffer,
             Predicate<object> testInput,
             Predicate<object> testOutput
@@ -23,25 +23,28 @@ namespace DashboardCode.Routines.Injected
             this.testInput = testInput;
             this.testOutput = testOutput;
 
-            activityLogger = new ActivityStateLogger(
+            activityLogger = new ActivityState(
                 activityLoggingAdapter
             );
         }
 
-        public void LogStart(object input)
+        public (Action<object>, Action) LogStart(object input)
         {
-            activityLogger.LogStart();
+            var logOnFinish = activityLogger.LogStart();
             verboseLoggingAdapter.Input(DateTime.Now, input);
-        }
-
-        public void LogFinish(bool isSuccess, object output)
-        {
-            verboseLoggingAdapter.Output(DateTime.Now, output);
-            if (!isSuccess || !testOutput(output) )
+            Action<object> logOnSuccess = (output) =>
+            {
+                verboseLoggingAdapter.Output(DateTime.Now, output);
+                if (!testOutput(output))
+                    flashBuffer();
+                logOnFinish(true);
+            };
+            Action logOnFailure = () =>
             {
                 flashBuffer();
-            }
-            activityLogger.LogFinish(isSuccess);
+                logOnFinish(false);
+            };
+            return (logOnSuccess, logOnFailure);
         }
     }
 }

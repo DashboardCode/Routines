@@ -44,19 +44,5 @@ namespace DashboardCode.Routines.Injected.Test
         {
             logger.Add($"{routineGuid.GetCategory()} output " + output?.ToString());
         }
-        public bool ShouldBufferVerbose
-        {
-            get
-            {
-                return true;
-            }
-        }
-        public bool ShouldVerboseWithStackTrace
-        {
-            get
-            {
-                return false;
-            }
-        }
     }
 }

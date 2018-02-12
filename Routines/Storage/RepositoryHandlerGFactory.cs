@@ -6,11 +6,11 @@ namespace DashboardCode.Routines.Storage
         where TDbContext : IDisposable
     {
         IRepositoryContainer<TDbContext> repositoryGFactory;
-        Func<RoutineClosure<TUserContext>, TDbContext> dbContextFactory;
+        Func<TDbContext> dbContextFactory;
 
         public IndependentRepositoryHandlerGFactory(
                 IRepositoryContainer<TDbContext> repositoryGFactory,
-                Func<RoutineClosure<TUserContext>, TDbContext> dbContextFactory
+                Func<TDbContext> dbContextFactory
             )
         {
             this.repositoryGFactory = repositoryGFactory;

@@ -5,6 +5,7 @@ using System.Security.Principal;
 using Microsoft.AspNetCore.Http;
 
 using DashboardCode.Routines;
+using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
@@ -35,12 +36,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public static UserContext GetUserContext(
             HttpContext httpContext,
             RoutineGuid routineGuid,
-            IIdentity identity,
+            IIdentity   identity,
             CultureInfo cultureInfo,
             string connectionString,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            //IAdminkaConfigurationFacade adminkaConfigurationFacade,
-            Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+            RoutineLogger routineLogger,
+            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
             ContainerFactory<UserContext> configurationContainerFactory
             )
         {
@@ -63,7 +64,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 //    configurationContainerFactory);
                 //userContext = authenticationSerivce.Create(routineTag, identity, cultureInfo);
 
-                userContext = InjectedManager.GetUserContext(loggingTransientsFactory,
+                userContext = InjectedManager.GetUserContext(
+                    routineLogger,
+                    loggingTransientsFactory,
                     adminkaStorageConfiguration,
                     configurationContainerFactory,
                     routineGuid, identity, CultureInfo.CurrentCulture

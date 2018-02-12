@@ -105,7 +105,6 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             #region ParentRecordHierarchyRecord
 
-
             modelBuilder.Entity<ParentRecordHierarchyRecord>()
                 .ToTable(GetMapTableName(nameof(ParentRecordHierarchyRecord)), schema: testIslandSchema)
                 .HasKey(e => new { e.ParentRecordId, e.HierarchyRecordId });

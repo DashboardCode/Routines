@@ -2,62 +2,63 @@
 
 namespace DashboardCode.Routines.Injected
 {
-    public class BasicRoutineTransients<TStateService> : IRoutineTransients<TStateService>
+    public class BasicRoutineTransientsFactory<TClosure>
     {
-        readonly IExceptionHandler exceptionHandler;
-        readonly IRoutineLogging routineLogging;
-        readonly TStateService stateService;
+        bool shouldBufferVerbose;
+        bool shouldVerboseWithStackTrace;
+        RoutineLogger routineLogger;
+        IBasicLogging basicLogging;
+        Predicate<object> testInput = null;
+        Predicate<object> testOutput = null;
 
-        public BasicRoutineTransients(
+        public BasicRoutineTransientsFactory(
+            bool shouldBufferVerbose,
+            bool shouldVerboseWithStackTrace,
+            RoutineLogger routineLogger,
             IBasicLogging basicLogging,
-            Func<Exception, Exception> transformException,
-            Func<Action<DateTime, string>, TStateService> createStateService,
-            Action<long> monitorRoutineDurationTicks = null,
             Predicate<object> testInput = null,
             Predicate<object> testOutput = null
             )
+        {
+            this.shouldBufferVerbose = shouldBufferVerbose;
+            this.shouldVerboseWithStackTrace = shouldVerboseWithStackTrace;
+            this.routineLogger = routineLogger;
+            this.basicLogging = basicLogging;
+
+            this.testInput = testInput;
+            this.testOutput = testOutput;
+        }
+
+        public IRoutineLogging Create()
         {
             if (testInput == null)
                 testInput = (o) => false;
             if (testOutput == null)
                 testOutput = (o) => false;
 
-            var defaultExceptionAdapter = new ExceptionAdapter(
-                    basicLogging.LogException, 
-                    transformException?? ((e)=> e)
-                );
-
-            exceptionHandler = new ExceptionHandler(defaultExceptionAdapter, monitorRoutineDurationTicks);
-            if (basicLogging.ShouldBufferVerbose)
+            IRoutineLogging routineLogging = null;
+            if (shouldBufferVerbose)
             {
                 var bufferedVerboseLoggingAdapter = new BufferedVerboseLogging(
                     basicLogging,
                     basicLogging.LogBufferedVerbose,
-                    basicLogging.ShouldVerboseWithStackTrace
+                    shouldVerboseWithStackTrace,
+                    routineLogger
                     );
                 routineLogging = new BufferedRoutineLogging(
-                    basicLogging, 
-                    bufferedVerboseLoggingAdapter, 
+                    basicLogging,
+                    bufferedVerboseLoggingAdapter,
                     bufferedVerboseLoggingAdapter.Flash,
                     testInput,
                     testOutput
                     );
-                stateService = createStateService(bufferedVerboseLoggingAdapter.LogVerbose);
             }
             else
             {
-                routineLogging = new RoutineLogging(basicLogging, basicLogging);
-                stateService = createStateService(basicLogging.LogVerbose);
+                var activityStateLogger = new ActivityState(basicLogging);
+                routineLogging = new RoutineLogging(activityStateLogger, basicLogging);
             }
+            return routineLogging;
         }
-
-        public TStateService ResolveStateService() => 
-            stateService;
-
-        public IExceptionHandler ResolveExceptionHandler() =>
-            exceptionHandler;
-
-        public IRoutineLogging ResolveRoutineLogging() =>
-            routineLogging;
     }
 }

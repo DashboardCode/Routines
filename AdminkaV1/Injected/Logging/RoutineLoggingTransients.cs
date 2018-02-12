@@ -5,18 +5,22 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public class RoutineLoggingTransients
     {
-        public IBasicLogging              BasicRoutineLoggingAdapter   { get; private set; }
-        public IAuthenticationLogging     AuthenticationLoggingAdapter { get; private set; }
-        public Func<Exception, Exception> TransformException           { get; private set; }
+        public IAuthenticationLogging     AuthenticationLogging { get; private set; }
+        public readonly ExceptionHandler ExceptionHandler;
+        public readonly IRoutineLogging RoutineLogging;
+        public readonly Action<DateTime, string> LogVerbose;
+
         public RoutineLoggingTransients(
-            IBasicLogging adminkaLogging,
-            IAuthenticationLogging specialLoggingAdapter,
-            Func<Exception, Exception> transformException
+            IAuthenticationLogging authenticationLogging,
+            ExceptionHandler exceptionHandler,
+            IRoutineLogging routineLogging,
+            Action<DateTime, string> logVerbose
             )
         {
-            BasicRoutineLoggingAdapter = adminkaLogging;
-            AuthenticationLoggingAdapter = specialLoggingAdapter;
-            TransformException = transformException;
+            AuthenticationLogging = authenticationLogging;
+            ExceptionHandler = exceptionHandler;
+            RoutineLogging = routineLogging;
+            LogVerbose = logVerbose;
         }
     }
 }

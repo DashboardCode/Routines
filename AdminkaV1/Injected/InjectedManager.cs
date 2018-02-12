@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 
 using DashboardCode.Routines;
+using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.Routines.Configuration;
@@ -186,47 +187,86 @@ namespace DashboardCode.AdminkaV1.Injected
             return new NLogAuthenticationLogging();
         }
 
-        public static Func<RoutineGuid, IContainer, RoutineLoggingTransients> ComposeNLogTransients(
+        public static Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> ComposeNLogTransients(
                 Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException
             )
         {
-            return (t, r) => {
-                var loggingConfiguration = r.Resolve<LoggingConfiguration>();
-                var loggingPerformanceConfiguration = r.Resolve<LoggingPerformanceConfiguration>();
-                var loggingVerboseConfiguration = r.Resolve<LoggingVerboseConfiguration>();
-                var adminkaLogging = new NLogLoggingAdapter(
-                        t,
+            return (routineLogger, routineGuid, container) => {
+                var loggingConfiguration = container.Resolve<LoggingConfiguration>();
+                var loggingPerformanceConfiguration = container.Resolve<LoggingPerformanceConfiguration>();
+                var loggingVerboseConfiguration = container.Resolve<LoggingVerboseConfiguration>();
+                var nlogLoggingAdapter = new NLogLoggingAdapter(
+                        routineGuid,
                         Markdown,
                         SerializeToJson,
                         loggingConfiguration,
-                        loggingVerboseConfiguration,
                         loggingPerformanceConfiguration
                     );
                 var authenticationLogging = GetNLogAuthenticationLogging();
-                return new RoutineLoggingTransients(adminkaLogging, authenticationLogging, (ex) => routineTransformException(ex, t, Markdown));
+
+                var routineLogging = new BasicRoutineTransientsFactory<RoutineClosure<UserContext>>(
+                        loggingVerboseConfiguration.ShouldBufferVerbose,
+                        loggingVerboseConfiguration.ShouldVerboseWithStackTrace,
+                        routineLogger,
+                        nlogLoggingAdapter
+                    ).Create();
+
+                var exceptionHandler = new ExceptionHandler(new ExceptionAdapter(
+                    nlogLoggingAdapter.LogException,
+                    (ex) => routineTransformException(ex, routineGuid, Markdown)
+                ), null/*monitorRoutineDurationTicks*/);
+
+                var routineLoggingTransients = new RoutineLoggingTransients(
+                    //loggingVerboseConfiguration.ShouldBufferVerbose,
+                    //loggingVerboseConfiguration.ShouldVerboseWithStackTrace,
+                    //adminkaLogging, 
+                    authenticationLogging
+                    //(ex) => routineTransformException(ex, routineGuid, Markdown)
+                    , exceptionHandler, routineLogging
+                    , nlogLoggingAdapter.LogVerbose
+                    );
+
+                return routineLoggingTransients;
             };
         }
-        public static Func<RoutineGuid, IContainer, RoutineLoggingTransients> ComposeListLoggingTransients(
+
+        public static Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> ComposeListLoggingTransients(
             List<string> logger,
             LoggingConfiguration loggingConfiguration = null,
             LoggingVerboseConfiguration loggingVerboseConfiguration = null,
             LoggingPerformanceConfiguration loggingPerformanceConfiguration = null
             )
         {
-            return (t, r) =>
+            return (routineLogger, routineGuid, container) =>
             {
-                Func<Exception, string> markdownException = Markdown;
-                var adminkaLogging = new LoggingToListAdapter(
+                var listLoggingAdapter = new ListLoggingAdapter(
                     logger,
-                    t,
-                    markdownException,
+                    routineGuid,
+                    Markdown,
                     SerializeToJson,
                     loggingConfiguration ?? new LoggingConfiguration(),
-                    loggingVerboseConfiguration ?? new LoggingVerboseConfiguration(),
                     loggingPerformanceConfiguration ?? new LoggingPerformanceConfiguration()
+                );
+
+                var loggingVerboseConfiguration2 = loggingVerboseConfiguration ?? new LoggingVerboseConfiguration();
+                var routineLogging = new BasicRoutineTransientsFactory<RoutineClosure<UserContext>>(
+                        loggingVerboseConfiguration2.ShouldBufferVerbose,
+                        loggingVerboseConfiguration2.ShouldVerboseWithStackTrace,
+                        routineLogger,
+                        listLoggingAdapter
+                ).Create();
+
+                var exceptionHandler = new ExceptionHandler(new ExceptionAdapter(
+                    listLoggingAdapter.LogException,
+                    (ex) => DefaultRoutineTagTransformException(ex, routineGuid, Markdown)
+                ), null/*monitorRoutineDurationTicks*/);
+
+                return new RoutineLoggingTransients(
+                    listLoggingAdapter,
+                    exceptionHandler, 
+                    routineLogging, 
+                    listLoggingAdapter.LogVerbose
                     );
-                return new RoutineLoggingTransients(adminkaLogging, adminkaLogging,
-                    ex => DefaultRoutineTagTransformException(ex, t, markdownException));
             };
         }
 #endregion
@@ -241,26 +281,20 @@ namespace DashboardCode.AdminkaV1.Injected
             )
         {
             var routineGuid = new RoutineGuid(memberTag);
+            var routineLogger = new RoutineLogger(routineGuid);
             var configurationContainerFactory = InjectedManager.CreateContainerFactory(configurationFactory);
             var container = configurationContainerFactory.CreateContainer(routineGuid, userContext);
 
             if (hasVerbose && verbose == null)
             {
-                Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory =
+                Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory =
                     ComposeNLogTransients(DefaultRoutineTagTransformException);
-                var routineLoggingTransients = loggingTransientsFactory(routineGuid, container);
-                var basicLogging = routineLoggingTransients.BasicRoutineLoggingAdapter;
-                var bufferedVerboseLoggingAdapter = new Routines.Injected.BufferedVerboseLogging(
-                    basicLogging,
-                    basicLogging.LogBufferedVerbose,
-                    basicLogging.ShouldVerboseWithStackTrace
-                    );
-                verbose = bufferedVerboseLoggingAdapter.LogVerbose;
+                var routineLoggingTransients = loggingTransientsFactory(routineLogger, routineGuid, container);
+                verbose = routineLoggingTransients.LogVerbose;
             }
 
             var closure = new RoutineClosure<UserContext>(userContext, routineGuid, hasVerbose ? verbose : null, container);
-            var adminkaDbContextFactory = new AdminkaDbContextFactory(adminkaStorageConfiguration);
-            var adminkaDbContext = adminkaDbContextFactory.Create(closure);
+            var adminkaDbContext = DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration, closure);
             return adminkaDbContext;
         }
 
@@ -288,7 +322,8 @@ namespace DashboardCode.AdminkaV1.Injected
                  jsonDeserializer).CreateContainer(routineGuid, userContext);
 
         public static UserContext GetUserContext(
-                Func<RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+                RoutineLogger routineLogger,
+                Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
                 AdminkaStorageConfiguration adminkaStorageConfiguration,
                 ContainerFactory<UserContext> containerFactory,
                 RoutineGuid routineGuid,
@@ -298,13 +333,14 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             var systemUserContext = new UserContext("Authentication");
             var newRoutineGuid = new RoutineGuid(routineGuid.CorrelationToken, new MemberTag("InjectedManager", "GetUserContext"));
-            var container = containerFactory.CreateContainer(routineGuid, systemUserContext);
+            var container = containerFactory.CreateContainer(newRoutineGuid, systemUserContext);
 
             /// 1) it writes activity and verbose messages to log with its own MemberTag but with the parent's CorrelationToken, Guid.
             /// 2) subroutine uses the same configuration as parent routine but can "use different @for specification", means configuration can be overrided for "user"
             
             var newRoutine = new AdminkaRoutineHandler(
                 adminkaStorageConfiguration,
+                routineLogger,
                 loggingTransientsFactory,
                 newRoutineGuid,
                 systemUserContext,

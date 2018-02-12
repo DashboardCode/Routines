@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\NLogExtensibles\NLogExtensibles.csproj" />
     <ProjectReference Include="..\..\Routines.Configuration.NETStandard\Routines.Configuration.NETStandard.csproj" />
     <ProjectReference Include="..\..\Routines.Serialization.NETStandard\Routines.Serialization.NETStandard.csproj" />
     <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />

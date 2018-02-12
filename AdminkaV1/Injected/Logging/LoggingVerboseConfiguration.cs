@@ -13,11 +13,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             {
                 var dictionary = InjectedManager.DeserializeJson<Dictionary<string, string>>(json);
                 ShouldBufferVerbose = bool.Parse(dictionary["ShouldBufferVerbose"]);
-                string verboseWithStackTrace;
-                if (dictionary.TryGetValue("ShouldVerboseWithStackTrace", out verboseWithStackTrace))
-                {
+                if (dictionary.TryGetValue("ShouldVerboseWithStackTrace", out string verboseWithStackTrace))
                     ShouldVerboseWithStackTrace = bool.Parse(verboseWithStackTrace);
-                }
             }
         }
     }

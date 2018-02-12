@@ -10,20 +10,17 @@ namespace DashboardCode.Routines.Injected
         readonly IRepositoryHandlerGFactory<TUserContext> repositoryHandlerGFactory;
 
         public UserRoutineHandler(
-            IBasicLogging basicLogging,
-            Func<Exception, Exception> transformException,
-            Func<Action<DateTime, string>, RoutineClosure<TUserContext>> createRoutineState,
+            IExceptionHandler exceptionHandler,
+            IRoutineLogging routineLogging,
+            RoutineClosure<TUserContext> closure,
 
             IRepositoryHandlerGFactory<TUserContext> repositoryHandlerFactory,
             IOrmHandlerGFactory<TUserContext> ormHandlerGFactory,
-
             object input
             ) : base(
-                new BasicRoutineTransients<RoutineClosure<TUserContext>>(
-                    basicLogging,
-                    transformException,
-                    (verbose) => createRoutineState(verbose)
-                    ),
+                exceptionHandler, 
+                routineLogging, 
+                closure,
                 input)
         {
             this.repositoryHandlerGFactory = repositoryHandlerFactory;

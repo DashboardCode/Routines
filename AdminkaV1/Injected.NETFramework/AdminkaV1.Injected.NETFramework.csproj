@@ -123,6 +123,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\NLogExtensibles\NLogExtensibles.csproj">
+      <Project>{0a46eac2-a602-4840-a0f8-b5d82b05fa2a}</Project>
+      <Name>NLogExtensibles</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj">
       <Project>{5cec7388-fba6-4542-a23a-5c6a5ba607b9}</Project>
       <Name>Routines.Configuration.NETFramework</Name>
