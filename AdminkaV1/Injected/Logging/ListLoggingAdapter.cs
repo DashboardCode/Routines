@@ -9,10 +9,11 @@ using DashboardCode.AdminkaV1.Injected.Performance;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
-    public class ListLoggingAdapter : IBasicLogging, IAuthenticationLogging
+    public class ListLoggingAdapter : IRoutineLogger, IAuthenticationLogging
     {
         readonly List<string> logger = new List<string>();
-        readonly RoutineGuid routineGuid;
+        readonly Guid correlationToken;
+        readonly MemberTag memberTag;
         readonly LoggingConfiguration loggingConfiguration;
         readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
         readonly Func<Exception, string> markdownException;
@@ -20,7 +21,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 
         public ListLoggingAdapter(
             List<string> logger,
-            RoutineGuid  routineGuid,
+            Guid correlationToken,
+            MemberTag memberTag, 
             Func<Exception, string> markdownException,
             Func<object, int, bool, string> serializeObject,
             LoggingConfiguration loggingConfiguration,
@@ -28,7 +30,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             )
         {
             this.logger = logger;
-            this.routineGuid = routineGuid;
+            this.correlationToken = correlationToken;
+            this.memberTag=memberTag;
             this.markdownException = markdownException;
             this.serializeObject = (o) => {
                 try
@@ -48,20 +51,20 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 
         public void LogActivityStart(DateTime dateTime)
         {
-            var text = "LogActivityStart, " + dateTime +" "+ routineGuid.ToText();
+            var text = "LogActivityStart, " + dateTime +" "+ memberTag.ToText(correlationToken);
             //System.Diagnostics.Trace.WriteLine(text);
             logger.Add(text);
         }
         public void LogActivityFinish(DateTime dateTime, TimeSpan timeSpan, bool isSuccess)
         {
-            var text = "LogActivityFinish, " + dateTime + " " + routineGuid.ToText()
+            var text = "LogActivityFinish, " + dateTime + " " + memberTag.ToText(correlationToken)
                 + " duration:"+((Math.Round(timeSpan.TotalMilliseconds) + "ms")) +(isSuccess ? "" : "; #ERROR");
             //System.Diagnostics.Trace.WriteLine(text);
             logger.Add(text);
         }
         public void LogVerbose(DateTime dateTime, string message)
         {
-            var text = "LogVerbose, " + dateTime + " " + routineGuid.ToText() + " message:" + message;
+            var text = "LogVerbose, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + message;
             //System.Diagnostics.Trace.WriteLine(text);
             logger.Add(text);
         }
@@ -71,7 +74,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             var i = 1;
             foreach (var verbose in verboseMessages)
             {
-                var text = "LogBufferedVerbose,"+ $"{i++}/{count} " + verbose.DateTime + " " + routineGuid.ToText() + " message:" + verbose.Message;
+                var text = "LogBufferedVerbose,"+ $"{i++}/{count} " + verbose.DateTime + " " + memberTag.ToText(correlationToken) + " message:" + verbose.Message;
                 
                 if (verbose.StackTrace!=null)
                     text+=Environment.NewLine+ "StackTrace: " + verbose.StackTrace;
@@ -83,7 +86,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         public void LogException(DateTime dateTime, Exception excepion)
         {
             var message = markdownException(excepion);
-            var text = "LogException, " + dateTime + " " + routineGuid.ToText() + " message:" + Environment.NewLine + message;
+            var text = "LogException, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + Environment.NewLine + message;
             //System.Diagnostics.Trace.WriteLine(text);
             logger.Add(text);
         }
@@ -93,7 +96,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             if (loggingConfiguration.Input)
             {
                 var message = serializeObject(input);
-                var text = "Input, " + dateTime + " " + routineGuid.ToText() + " message:" + message;
+                var text = "Input, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + message;
                 //System.Diagnostics.Trace.WriteLine(text);
                 logger.Add(text);
             }
@@ -104,15 +107,15 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             if (loggingConfiguration.Output)
             {
                 var message = serializeObject(output);
-                var text = "Output, " + dateTime + " " + routineGuid.ToText() + " message:" + message;
+                var text = "Output, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + message;
                 //System.Diagnostics.Trace.WriteLine(text);
                 logger.Add(text);
             }
         }
 
-        public void TraceAuthentication(RoutineGuid routineGuid, string message)
+        public void TraceAuthentication(Guid correlationToken, MemberTag memberTag, string message)
         {
-            logger.Add($"{routineGuid.CorrelationToken} {RoutineGuidExtensions.ToText(routineGuid)} {message}");
+            logger.Add($"{correlationToken} {memberTag.ToText(correlationToken)} {message}");
         }
     }
 }

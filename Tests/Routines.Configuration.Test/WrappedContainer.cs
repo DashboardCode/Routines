@@ -9,15 +9,15 @@ namespace DashboardCode.Routines.Configuration.Test
         {
             var loader = ZoningSharedSourceProjectManager.GetLoader();
             if (string.IsNullOrWhiteSpace(@for))
-                configurationContainer = new ConfigurationContainer(loader, new MemberTag(type, member));
+                configurationContainer = new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag(type, member));
             else
-                configurationContainer = new ConfigurationContainer(loader, new MemberTag(type, member), @for);
+                configurationContainer = new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag(type, member), @for);
         }
 
         public T Resolve<T>() where T: new()
         {
             var t = new T();
-            var serialized = configurationContainer.ResolveSerialized<T>();
+            var serialized = configurationContainer.ResolveString<T>();
             if (t is IProgress<string>)
             {
                 ((IProgress<string>)t).Report(serialized);

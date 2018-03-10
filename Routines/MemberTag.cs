@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace DashboardCode.Routines
 {
+    [DebuggerDisplay("{Namespace} {Type} {Member}")]
     public struct MemberTag
     {
         public readonly string Namespace;

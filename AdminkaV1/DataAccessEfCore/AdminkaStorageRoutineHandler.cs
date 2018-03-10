@@ -12,37 +12,30 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IEntityMetaServiceContainer entityMetaServiceContainer,
             UserContext userContext,
-            IExceptionHandler exceptionHandler,
-            IRoutineLogging routineLogging,
-            RoutineClosure<UserContext> closure, 
-            object input) :
+            Action<string> efDbContextVerbose,
+            IRoutineHandler<RoutineClosure<UserContext>> routineHandler) :
             this(
-                userContext,
                 entityMetaServiceContainer,
-                () => DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration, closure),
-                exceptionHandler, routineLogging, closure,
-                input)
+                () => DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration, efDbContextVerbose),
+                userContext,
+                routineHandler)
         {
         }
 
         private AdminkaStorageRoutineHandler(
-            UserContext userContext,
             IEntityMetaServiceContainer entityMetaServiceContainer,
             Func<AdminkaDbContext> createDbContext,
-            IExceptionHandler exceptionHandler,
-            IRoutineLogging routineLogging,
-            RoutineClosure<UserContext> closure,
-            object input) :
+            UserContext userContext,
+            IRoutineHandler<RoutineClosure<UserContext>> routineHandler) :
             base(
                 userContext,
                 entityMetaServiceContainer,
                 createDbContext,
                 () => new ValueTuple<AdminkaDbContext, IAuditVisitor>(
                     createDbContext(),
-                    new AuditVisitor(closure.UserContext)
+                    new AuditVisitor(userContext)
                 ),
-                exceptionHandler, routineLogging, closure,
-                input)
+                routineHandler)
         {
         }
     }

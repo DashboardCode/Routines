@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public static AdminkaStorageConfiguration GetConfiguration(string databaseName) =>
             new InMemoryAdmikaConfigurationFacade(databaseName).ResolveAdminkaStorageConfiguration();
 
-        public static IConfigurationFactory GetConfigurationFactory() =>
-            new ConfigurationFactory();
+        public static IConfigurationContainerFactory GetConfigurationFactory() =>
+            new ConfigurationContainerFactory();
     }
 }

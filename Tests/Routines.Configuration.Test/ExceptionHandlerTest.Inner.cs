@@ -11,17 +11,19 @@ namespace DashboardCode.Routines.Configuration.Test
         private static void TestMethod()
         {
             var list = new List<string>();
-            var exceptionHandler = new ExceptionHandler(new ExceptionAdapter(list), null);
+            var exceptionAdapter = new ExceptionAdapter(list);
+            var exceptionHandler = new ExceptionHandler(
+                ex=>exceptionAdapter.LogException(DateTime.Now, ex), 
+                exceptionAdapter.TransformException);
             try
             {
                 exceptionHandler.Handle(
                     () => {
                         var source = File.OpenText("notexisted");
-                    }
-                    , () => {
-
-                    }
-                    );
+                        Action onSuccess = () => { };
+                        Action<bool> onFinally = (isSuccess) => { };
+                        return (onSuccess, onFinally);
+                    });
             }
             catch (Exception ex)
             {
@@ -33,7 +35,7 @@ namespace DashboardCode.Routines.Configuration.Test
             }
         }
 
-        class ExceptionAdapter : IExceptionAdapter
+        class ExceptionAdapter 
         {
             readonly List<string> list;
             public ExceptionAdapter(List<string> list)

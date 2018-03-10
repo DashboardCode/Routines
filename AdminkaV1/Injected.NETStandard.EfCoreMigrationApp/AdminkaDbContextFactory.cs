@@ -18,10 +18,11 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
             var configurationManagerLoader = new ConfigurationManagerLoader();
             var sqlServerAdmikaConfigurationFacade = new SqlServerAdmikaConfigurationFacade(configurationManagerLoader, Program.MigrationAssembly);
             var adminkaStorageConfiguration = sqlServerAdmikaConfigurationFacade.ResolveAdminkaStorageConfiguration();
-            var configurationFactory = new ConfigurationFactory(configurationManagerLoader);
+            var configurationFactory = new ConfigurationContainerFactory(configurationManagerLoader);
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
             var tag = new MemberTag(this);
-            var adminkaDbContext = InjectedManager.CreateAdminkaDbContext(adminkaStorageConfiguration, configurationFactory, tag, userContext);
+            var adminkaDbContext =
+                DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration);
             return adminkaDbContext;
         }
     }

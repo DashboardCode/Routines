@@ -36,6 +36,6 @@ namespace DashboardCode.Routines.Configuration.NETCore.Test
         }
 
         public ConfigurationContainer Create(MemberTag memberTag) =>
-            new ConfigurationContainer(configurationManagerLoader, memberTag);
+            new ConfigurationContainer(configurationManagerLoader.GetGetRoutineConfigurationRecords(), memberTag);
     }
 }

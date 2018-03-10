@@ -18,7 +18,7 @@ namespace BenchmarkAdminka
         public static AdminkaStorageConfiguration GetConfiguration() =>
             new SqlServerAdmikaConfigurationFacade(ConfigurationManagerLoader).ResolveAdminkaStorageConfiguration();
 
-        public static IConfigurationFactory GetConfigurationFactory() =>
-            new ConfigurationFactory(ConfigurationManagerLoader);
+        public static IConfigurationContainerFactory GetConfigurationFactory() =>
+            new ConfigurationContainerFactory(ConfigurationManagerLoader);
     }
 }

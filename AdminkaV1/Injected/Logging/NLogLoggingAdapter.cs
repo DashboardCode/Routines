@@ -8,29 +8,32 @@ using NLog.Common;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Injected;
-using DashboardCode.AdminkaV1.Injected.Performance;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
-    class NLogLoggingAdapter : IBasicLogging
+    class NLogLoggingAdapter : IRoutineLogger
     {
-        readonly RoutineGuid routineGuid;
+        readonly Guid correlationToken;
+        readonly MemberTag memberTag;
         readonly LoggingConfiguration loggingConfiguration;
-        readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
+        //readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
         readonly Func<Exception, string> markdownException;
         readonly Func<object, string> serializeObject;
         readonly Logger logger;
         
         public NLogLoggingAdapter(
-            RoutineGuid routineGuid,
+            Guid correlationToken,
+            MemberTag memberTag,
             Func<Exception, string> markdownException,
             Func<object, int, bool, string> serializeObject,
-            LoggingConfiguration loggingConfiguration,
-            LoggingPerformanceConfiguration loggingPerformanceConfiguration
+            LoggingConfiguration loggingConfiguration//,
+            //LoggingPerformanceConfiguration loggingPerformanceConfiguration
             )
         {
-            this.routineGuid = routineGuid;
+            this.correlationToken = correlationToken;
+            this.memberTag = memberTag;
             this.markdownException = markdownException;
+
             this.serializeObject = (o)=> {
                 try
                 {
@@ -43,8 +46,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 }
             };
             this.loggingConfiguration = loggingConfiguration;
-            this.loggingPerformanceConfiguration = loggingPerformanceConfiguration;
-            var loggerName = "Routine:"+ routineGuid.GetCategory();
+            //this.loggingPerformanceConfiguration = loggingPerformanceConfiguration;
+            var loggerName = "Routine:"+ memberTag.GetCategory();
             logger = LogManager.GetLogger(loggerName); // ~0.5 ms
         }
 
@@ -58,7 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = dateTime,
                     Message = "Started"
                 };
-                logEventInfo.AppendRoutineTag(routineGuid);
+                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"Start;";
                 logger.Log(logEventInfo);
             }
@@ -77,7 +80,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = dateTime,
                     Message = message
                 };
-                logEventInfo.AppendRoutineTag(routineGuid);
+                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"Finish";
                 logger.Log(logEventInfo);
             }
@@ -91,7 +94,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = message
             };
-            logEventInfo.AppendRoutineTag(routineGuid);
+            logEventInfo.AppendRoutineTag(correlationToken, memberTag);
             logEventInfo.Properties["Description"] = $"Verbose";
             logger.Log(logEventInfo);
         }
@@ -110,7 +113,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = verbose.DateTime,
                     Message = verbose.Message,
                 };
-                logEventInfo.AppendRoutineTag(routineGuid);
+                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"BufferedVerbose";
                 logEventInfo.Properties["Buffered"] = $"{i++}/{count}";
                 if (verbose.StackTrace!=null)
@@ -128,7 +131,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = message
             };
-            logEventInfo.AppendRoutineTag(routineGuid);
+            logEventInfo.AppendRoutineTag(correlationToken, memberTag);
             logEventInfo.Properties["Description"] = $"Exception";
             logger.Log(logEventInfo);
         }
@@ -144,7 +147,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = dateTime,
                     Message = message
                 };
-                logEventInfo.AppendRoutineTag(routineGuid);
+                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"Input";
                 logger.Log(logEventInfo);
             }
@@ -161,7 +164,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = dateTime,
                     Message = message
                 };
-                logEventInfo.AppendRoutineTag(routineGuid);
+                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"Output";
                 logger.Log(logEventInfo);
             }

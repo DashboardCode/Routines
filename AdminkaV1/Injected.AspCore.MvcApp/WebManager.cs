@@ -35,13 +35,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         // in db and reset sessions if there are changes
         public static UserContext GetUserContext(
             HttpContext httpContext,
-            RoutineGuid routineGuid,
+            MemberTag   memberTag,
             IIdentity   identity,
             CultureInfo cultureInfo,
             string connectionString,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             RoutineLogger routineLogger,
-            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
             ContainerFactory<UserContext> configurationContainerFactory
             )
         {
@@ -69,7 +69,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     loggingTransientsFactory,
                     adminkaStorageConfiguration,
                     configurationContainerFactory,
-                    routineGuid, identity, CultureInfo.CurrentCulture
+                    memberTag, 
+                    identity, CultureInfo.CurrentCulture
                     );
 
                 userJson = InjectedManager.SerializeToJson(userContext.User, 1, false);

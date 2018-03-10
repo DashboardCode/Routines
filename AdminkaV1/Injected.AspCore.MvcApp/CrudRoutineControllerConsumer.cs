@@ -29,13 +29,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
 
         #region Compose
-        public static Func<ConfigurableController, Task<IActionResult>> Compose(Func<MvcRoutine, Task<IActionResult>> func) 
-            => controller => func(new MvcRoutine(controller));
+        public static Func<ConfigurableController, Task<IActionResult>> Compose(Func<MvcRoutineHandler, Task<IActionResult>> func)
+            => controller => func(new MvcRoutineHandler(controller));
 
-        public static Func<ConfigurableController, Task<IActionResult>> ComposeAsync(Func<IRepository<TEntity>, IActionResult> func)
+        public static Func<ConfigurableController, Task<IActionResult>> ComposeAsync(Func<IRepository<TEntity>, Task<IActionResult>> func)
             => Compose(
-                async routine =>
-                    await routine.HandleStorageAsync<IActionResult, TEntity>(
+                 routine =>
+                     routine.HandleStorageAsync<IActionResult, TEntity>(
                         repository => func(repository)
                     )
             );
@@ -162,7 +162,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
 
         public static Func<Func<object, IActionResult>, Func<ConfigurableController, Task<IActionResult>>> ComposeAsync(
-            Func<Func<object, IActionResult>,  Func<IRepository<TEntity>, IActionResult>> func)
+            Func<Func<object, IActionResult>,  Func<IRepository<TEntity>, Task<IActionResult>>> func)
             => view => ComposeAsync(func(view));
 
         #endregion
@@ -215,8 +215,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         #region Compose MVC Controlelr methods
         public static Func<Task<IActionResult>> ComposeIndex(ConfigurableController controller, Include<TEntity> indexIncludes) =>
-             () => ComposeAsync( view => repository => {
-                var entities = repository.List(indexIncludes);
+             () => ComposeAsync( view => async repository => {
+                var entities = await repository.ListAsync(indexIncludes);
                 return view(entities);
              })(o=>controller.View("Index",o))(controller);
 
@@ -333,19 +333,19 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         
         
 
-        public async Task<IActionResult> Index()
+        public  Task<IActionResult> Index()
         {
-            var routine = new MvcRoutine(controller);
-            return await routine.HandleStorageAsync<IActionResult, TEntity>(
-                repository => {
-                    var entities = repository.List(meta.IndexIncludes);
+            var routine = new MvcRoutineHandler(controller);
+            return routine.HandleStorageAsync<IActionResult, TEntity>(
+                async repository => {
+                    var entities = await repository.ListAsync(meta.IndexIncludes);
                     return controller.View(nameof(Index), entities);
                 });
         }
 
         public async Task<IActionResult> Details()
         {
-            var routine = new MvcRoutine(controller);
+            var routine = new MvcRoutineHandler(controller);
             return await routine.HandleMvcRequestAsync<TKey, TEntity>(
                 "Details",
                 repository => steps =>
@@ -357,7 +357,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public async Task<IActionResult> Create()
         {
-            var routine = new MvcRoutine(controller);
+            var routine = new MvcRoutineHandler(controller);
             return await routine.HandleMvcCreateAsync<TEntity>(
                 "Create",
                  repository => steps =>
@@ -370,7 +370,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public async Task<IActionResult> CreateConfirmed()
         {
-            var routine = new MvcRoutine(controller);
+            var routine = new MvcRoutineHandler(controller);
             return await routine.HandleMvcSaveAsync<TEntity>(
                 "Create",
                 (repository, state) => steps =>
@@ -385,7 +385,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public async Task<IActionResult> Edit()
         {
-            var routine = new MvcRoutine(controller);
+            var routine = new MvcRoutineHandler(controller);
             return await routine.HandleMvcRequestAsync<TKey, TEntity>(
                 "Edit",
                  repository => steps =>
@@ -398,7 +398,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public async Task<IActionResult> EditConfirmed()
         {
-            var routine = new MvcRoutine(controller);
+            var routine = new MvcRoutineHandler(controller);
             return await routine.HandleMvcSaveAsync<TEntity>(
                 "Edit",
                 (repository, state) => steps =>
@@ -413,7 +413,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public async Task<IActionResult> Delete()
         {
-            var routine = new MvcRoutine(controller);
+            var routine = new MvcRoutineHandler(controller);
             return await routine.HandleMvcRequestAsync<TKey, TEntity>(
                 "Delete",
                 repository => steps =>
@@ -426,7 +426,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public async Task<IActionResult> DeleteConfirmed()
         {
-            var routine = new MvcRoutine(controller);
+            var routine = new MvcRoutineHandler(controller);
             return await routine.HandleMvcSaveAsync<TEntity>(
                 "Delete",
                 (repository, state) => steps =>

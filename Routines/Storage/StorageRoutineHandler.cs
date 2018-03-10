@@ -27,28 +27,21 @@ namespace DashboardCode.Routines.Storage
             IRepositoryContainer<TDbContext> repositoryGFactory,
             IOrmContainer<TDbContext> ormGFactory,
 
-            IExceptionHandler exceptionHandler,
-            IRoutineLogging routineLogging,
-            RoutineClosure<TUserContext> closure,
-            object input
+            IRoutineHandler<RoutineClosure<TUserContext>> routineHandler
+            
             ) : base(
-                exceptionHandler,
-                routineLogging,
-                closure,
                 new IndependentRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, createDbContext), 
                 new IndependentOrmHandlerGFactory<TUserContext, TDbContext>(
                         repositoryGFactory, ormGFactory,
-                        entityMetaServiceContainer, createDbContextForStorage), 
-                input)
+                        entityMetaServiceContainer, createDbContextForStorage),
+                routineHandler)
         {
             this.userContext = userContext;
-
             this.entityMetaServiceContainer = entityMetaServiceContainer;
-
-            this.createDbContext    = createDbContext;
-            this.createDbContextForStorage = createDbContextForStorage;
-            this.repositoryGFactory        = repositoryGFactory;
-            this.ormGFactory               = ormGFactory;
+            this.createDbContext            = createDbContext;
+            this.createDbContextForStorage  = createDbContextForStorage;
+            this.repositoryGFactory         = repositoryGFactory;
+            this.ormGFactory                = ormGFactory;
         }
 
         protected IndependentDbContextHandler<TUserContext, TDbContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
@@ -203,8 +196,8 @@ namespace DashboardCode.Routines.Storage
         public TOutput HandleDbContext<TOutput>(Func<TDbContext, TOutput> func) =>
             Handle(ComposeDbContextHandled(func));
 
-        public async Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, TOutput> func) =>
-            await HandleAsync(ComposeDbContextHandled(func));
+        public Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, Task<TOutput>> func) =>
+            HandleAsync(ComposeDbContextHandled(func));
 
 
         public void HandleDbContext(Action<TDbContext, RoutineClosure<TUserContext>> action) =>
@@ -213,8 +206,8 @@ namespace DashboardCode.Routines.Storage
         public TOutput HandleDbContext<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, TOutput> func) =>
             Handle(ComposeDbContextFuncHandled(func));
 
-        public async Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, TOutput> func) =>
-            await HandleAsync(ComposeDbContextFuncHandled(func));
+        public Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            HandleAsync(ComposeDbContextFuncHandled(func));
 
         #endregion
 
@@ -225,8 +218,8 @@ namespace DashboardCode.Routines.Storage
         public TOutput HandleOrmFactory<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func) =>
             Handle(ComposeOrmFactoryHandled(func));
 
-        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func) =>
-            await HandleAsync(ComposeOrmFactoryHandled(func));
+        public Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            HandleAsync(ComposeOrmFactoryHandled(func));
 
         public void HandleRepositoryFactory(Action<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>> action) =>
             Handle(ComposeRepositoryFactoryHandled(action));
@@ -234,8 +227,8 @@ namespace DashboardCode.Routines.Storage
         public TOutput HandleRepositoryFactory<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func) =>
             Handle(ComposeRepositoryFactoryHandled(func));
 
-        public async Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, TOutput> func) =>
-            await HandleAsync(ComposeRepositoryFactoryHandled(func));
+        public Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            HandleAsync(ComposeRepositoryFactoryHandled(func));
 
         public void HandleOrmFactory(Action<ReliantOrmHandlerGFactory<TUserContext, TDbContext>> action) =>
             Handle(ComposeOrmFactoryHandled(action));
@@ -243,8 +236,8 @@ namespace DashboardCode.Routines.Storage
         public TOutput HandleOrmFactory<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
             Handle(ComposeOrmFactoryHandled(func));
 
-        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
-            await HandleAsync(ComposeOrmFactoryHandled(func));
+        public Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, Task<TOutput>> func) =>
+            HandleAsync(ComposeOrmFactoryHandled(func));
 
         public void HandleRepositoryFactory(Action<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>> action) =>
             Handle(ComposeRepositoryFactoryHandled(action));
@@ -252,8 +245,8 @@ namespace DashboardCode.Routines.Storage
         public TOutput HandleRepositoryFactory<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
             Handle(ComposeRepositoryFactoryHandled(func));
 
-        public async Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
-            await HandleAsync(ComposeRepositoryFactoryHandled(func));
+        public Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, Task<TOutput>> func) =>
+            HandleAsync(ComposeRepositoryFactoryHandled(func));
         #endregion
     }
 }

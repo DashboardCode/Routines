@@ -2,29 +2,32 @@
 
 namespace DashboardCode.Routines.Injected
 {
-    public class RoutineLogging : IRoutineLogging
+    public class RoutineLogging 
     {
         private readonly IDataLogger dataLogging;
-        private readonly ActivityState activityState;
+        private readonly Func<(DateTime, Action<bool>)> startSilent;
         public RoutineLogging(
-            ActivityState activityState,
+            Func<(DateTime, Action<bool>)> startSilent,
             IDataLogger dataLogging
             )
         {
-            this.activityState = activityState;
-            this.dataLogging = dataLogging;
+            this.startSilent = startSilent;
+            this.dataLogging   = dataLogging;
         }
-        public (Action<object>, Action) LogStart(object input)
+
+        public Func<(Action, Action)> Compose(object input)
         {
-            var onFinish = activityState.LogStart();
-            dataLogging.Input(DateTime.Now, input);
-            Action<object> onSuccess = (object output) =>
+            return () =>
             {
-                dataLogging.Output(DateTime.Now, output);
-                onFinish(true);
+                var (startDateTime, onFinish) = startSilent();
+                Action onOutput = () =>
+                    onFinish(true); 
+                Action onFailure = () => {
+                    dataLogging.Input(startDateTime, input);
+                    onFinish(false);
+                };
+                return (onOutput, onFailure);
             };
-            Action onFailure = () => onFinish(false);
-            return (onSuccess, onFailure);
         }
     }
 }

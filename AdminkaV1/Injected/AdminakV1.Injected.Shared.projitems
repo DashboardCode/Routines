@@ -13,6 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ActiveDirectoryServices\AdConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ActiveDirectoryServices\FakeAdConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InMemoryAdmikaConfigurationFacade.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggerProviderConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Performance\LoggingPerformanceConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingVerboseConfiguration.cs" />

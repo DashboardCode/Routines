@@ -1,26 +1,27 @@
 ﻿using System;
+using DashboardCode.Routines;
 using DashboardCode.Routines.Injected;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public class RoutineLoggingTransients
     {
-        public IAuthenticationLogging     AuthenticationLogging { get; private set; }
-        public readonly ExceptionHandler ExceptionHandler;
-        public readonly IRoutineLogging RoutineLogging;
-        public readonly Action<DateTime, string> LogVerbose;
+        public IAuthenticationLogging AuthenticationLogging { get; private set; }
+        public readonly IRoutineHandler<RoutineClosure<UserContext>> RoutineHandler;
+        public readonly Action<string> Verbose;
 
         public RoutineLoggingTransients(
             IAuthenticationLogging authenticationLogging,
-            ExceptionHandler exceptionHandler,
-            IRoutineLogging routineLogging,
-            Action<DateTime, string> logVerbose
+            IRoutineHandler<RoutineClosure<UserContext>> routineHandler,
+            Action<string> verbose
             )
         {
             AuthenticationLogging = authenticationLogging;
-            ExceptionHandler = exceptionHandler;
-            RoutineLogging = routineLogging;
-            LogVerbose = logVerbose;
+            RoutineHandler = routineHandler;
+            Verbose = verbose;
+
+                //var loggerProviderConfiguration = closure.Resolve<LoggerProviderConfiguration>();
+                //var verbose = (loggerProviderConfiguration.Enabled) ? closure.Verbose : null;
         }
     }
 }

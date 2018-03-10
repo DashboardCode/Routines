@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace DashboardCode.Routines.Storage.EfCore
@@ -34,11 +35,20 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public StorageResult Handle(Action<IBatch<TEntity>> action)
         {
-            return HandleAnalyzableException(() => {
-                HandleSave((batch) => {
-                    action(batch);
-                });
-            });
+            return HandleAnalyzableException(() => 
+                HandleSave(batch => 
+                    action(batch)
+                )
+            );
+        }
+
+        public Task<StorageResult> HandleAsync(Action<IBatch<TEntity>> action)
+        {
+            return HandleAnalyzableExceptionAsync(() => 
+                HandleSaveAsync(batch => 
+                    action(batch)
+                )
+            );
         }
 
         public StorageResult HandleAnalyzableException(Action action)
@@ -57,6 +67,23 @@ namespace DashboardCode.Routines.Storage.EfCore
             return new StorageResult();
         }
 
+        public async Task<StorageResult> HandleAnalyzableExceptionAsync(Func<Task> func)
+        {
+            try
+            {
+                await func();
+            }
+            catch (Exception exception)
+            {
+                var storageResult = analyzeException(exception);
+                if (!storageResult.IsOk())
+                    return storageResult;
+                throw;
+            }
+            return new StorageResult();
+        }
+
+
         public void HandleCommit(Action action)
         {
             using (var transaction = dbContext.Database.BeginTransaction())
@@ -66,11 +93,27 @@ namespace DashboardCode.Routines.Storage.EfCore
             }
         }
 
+        public async Task HandleCommitAsync(Func<Task> func)
+        {
+            using (var transaction = dbContext.Database.BeginTransaction())
+            {
+                await func();
+                transaction.Commit();
+            }
+        }
+
         public void HandleSave(Action<IBatch<TEntity>> action)
         {
             action(new Batch<TEntity>(dbContext, auditVisitor));
             dbContext.SaveChanges();
         }
+
+        public async Task HandleSaveAsync(Action<IBatch<TEntity>> action)
+        {
+            action(new Batch<TEntity>(dbContext, auditVisitor));
+            await dbContext.SaveChangesAsync();
+        }
+
     }
 
     public class OrmStorage : IOrmStorage

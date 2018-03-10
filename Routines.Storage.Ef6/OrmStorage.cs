@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Storage.Ef6
 {
@@ -24,6 +25,15 @@ namespace DashboardCode.Routines.Storage.Ef6
         {
             return HandleAnalyzableException(()=> {
                 HandleSave((batch) => {
+                    action(batch);
+                });
+            });
+        }
+
+        public StorageResult HandleAsync(Action<IBatch<TEntity>> action)
+        {
+            return HandleAnalyzableException(() => {
+                HandleSaveAsync((batch) => {
                     action(batch);
                 });
             });
@@ -58,6 +68,32 @@ namespace DashboardCode.Routines.Storage.Ef6
         {
             action(new Batch<TEntity>(dbContext, setAuditProperties));
             dbContext.SaveChanges();
+        }
+
+        public async void HandleSaveAsync(Action<IBatch<TEntity>> action)
+        {
+            action(new Batch<TEntity>(dbContext, setAuditProperties));
+            await dbContext.SaveChangesAsync();
+        }
+
+        Task<StorageResult> IOrmStorage<TEntity>.HandleAsync(Action<IBatch<TEntity>> action)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<StorageResult> HandleAnalyzableExceptionAsync(Func<Task> func)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task HandleCommitAsync(Func<Task> func)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IOrmStorage<TEntity>.HandleSaveAsync(Action<IBatch<TEntity>> action)
+        {
+            throw new NotImplementedException();
         }
     }
 

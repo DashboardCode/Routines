@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
 
             var routine = new AdminkaInMemoryTestRoutine(
-                loggingTransientsFactory,
+                logger,
                 new MemberTag(typeof(TestIsland)),
                 new { input = "Input text" }, databaseName);
             routine.HandleOrmFactory(( ormHandlerFactory) =>

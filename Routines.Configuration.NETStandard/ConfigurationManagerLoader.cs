@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETStandard
 {
-    public class ConfigurationManagerLoader: IConfigurationManagerLoader, IConnectionStringAccess
+    public class ConfigurationManagerLoader: IConfigurationManagerLoader, IConnectionStringMap
     {
         const string defaultSectionName = "Routines";
         internal readonly List<RoutineResolvable> routineResolvables;
@@ -22,8 +22,10 @@ namespace DashboardCode.Routines.Configuration.NETStandard
             section.Bind(routineResolvables);
         }
 
-        public IEnumerable<IRoutineConfigurationRecord> RoutineResolvables => 
-            routineResolvables;
+        public IEnumerable<IRoutineConfigurationRecord> GetGetRoutineConfigurationRecords()
+        {
+            return routineResolvables;
+        }
 
         public string GetConnectionString(string name = "ConnectionString")
         {

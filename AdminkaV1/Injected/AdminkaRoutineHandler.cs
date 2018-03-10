@@ -20,15 +20,32 @@ namespace DashboardCode.AdminkaV1.Injected
         #region constructors without usercontext
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationFactory       configurationFactory,
-            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+            IConfigurationContainerFactory configurationFactory,
+            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
+            MemberTag memberTag,
+            object input
+        ) : this(
+                adminkaStorageConfiguration,
+                loggingTransientsFactory,
+                InjectedManager.CreateContainerFactory(configurationFactory),
+                Guid.NewGuid(),
+                memberTag,
+                InjectedManager.GetDefaultIdentity(),
+                input)
+        {
+        }
+        public AdminkaRoutineHandler(
+            AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IConfigurationContainerFactory       configurationFactory,
+            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
             string @namespace, string controller, string action,
             object input
         ) : this(
                 adminkaStorageConfiguration,
                 loggingTransientsFactory,
                 InjectedManager.CreateContainerFactory(configurationFactory),
-                new RoutineGuid(Guid.NewGuid(), @namespace, controller, action),
+                Guid.NewGuid(),
+                new MemberTag(@namespace, controller, action),
                 InjectedManager.GetDefaultIdentity(),
                 input)
         {
@@ -36,35 +53,39 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used in mvc app (identity get from request context)
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationFactory configurationFactory,
-            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory, // TODO
-            RoutineGuid routineGuid,
+            IConfigurationContainerFactory configurationFactory,
+            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
+            Guid correlationToken,
+            MemberTag memberTag,
             IIdentity identity,
             object input
         ) : this(
                 adminkaStorageConfiguration,
                 loggingTransientsFactory,
                 InjectedManager.CreateContainerFactory(configurationFactory),
-                routineGuid,
+                correlationToken,
+                memberTag,
                 identity,
                 input)
         {
         }
-        // Used as stage to prepare containerFactory, routineGuid
+        // Used as stage to prepare containerFactory, memberTag
         private AdminkaRoutineHandler(
              AdminkaStorageConfiguration adminkaStorageConfiguration,
-             Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+             Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
              ContainerFactory<UserContext> containerFactory,
-             RoutineGuid routineGuid,
+             Guid correlationToken,
+             MemberTag memberTag,
              IIdentity identity,
              object input
         ) : this(
                 adminkaStorageConfiguration,
                 loggingTransientsFactory,
                 containerFactory,
-                routineGuid,
-                InjectedManager.GetUserContext(new RoutineLogger(routineGuid), loggingTransientsFactory, adminkaStorageConfiguration, containerFactory,
-                    routineGuid, identity, CultureInfo.CurrentCulture),
+                correlationToken,
+                memberTag,
+                InjectedManager.GetUserContext(new RoutineLogger(correlationToken), loggingTransientsFactory, adminkaStorageConfiguration, containerFactory,
+                    memberTag, identity, CultureInfo.CurrentCulture),
                 input)
         {
         }
@@ -75,8 +96,8 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used in tests: predefined UserContext with custom logging to list
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationFactory configurationFactory,
-            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+            IConfigurationContainerFactory configurationFactory,
+            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
             MemberTag memberTag,
             UserContext userContext,
             object input
@@ -84,7 +105,8 @@ namespace DashboardCode.AdminkaV1.Injected
                 adminkaStorageConfiguration,
                 loggingTransientsFactory,
                 InjectedManager.CreateContainerFactory(configurationFactory),
-                new RoutineGuid(Guid.NewGuid(), memberTag),
+                Guid.NewGuid(),
+                memberTag,
                 userContext,
                 input)
         {
@@ -93,7 +115,7 @@ namespace DashboardCode.AdminkaV1.Injected
         //  Used in apps: predefined UserContext and default NLOG logger
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationFactory configurationFactory,
+            IConfigurationContainerFactory configurationFactory,
             MemberTag memberTag,
             UserContext userContext,
             object input
@@ -101,7 +123,8 @@ namespace DashboardCode.AdminkaV1.Injected
                 adminkaStorageConfiguration,
                 InjectedManager.ComposeNLogTransients(InjectedManager.DefaultRoutineTagTransformException),
                 InjectedManager.CreateContainerFactory(configurationFactory),
-                new RoutineGuid(Guid.NewGuid(), memberTag),
+                Guid.NewGuid(),
+                memberTag,
                 userContext,
                 input)
         {
@@ -110,37 +133,39 @@ namespace DashboardCode.AdminkaV1.Injected
         // used by wcf (predefined UserContext with its own transformException)
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationFactory configurationFactory,
-            Func<Exception, RoutineGuid, Func<Exception, string>, Exception> routineTransformException,
-            RoutineGuid routineGuid,
+            IConfigurationContainerFactory configurationFactory,
+            Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
+            Guid correlationToken,
+            MemberTag memberTag,
             UserContext userContext,
             object input
             ) : this(
                 adminkaStorageConfiguration,
-                new RoutineLogger(routineGuid),
+                new RoutineLogger(correlationToken),
                 InjectedManager.ComposeNLogTransients(routineTransformException),
-                routineGuid,
+                InjectedManager.CreateContainerFactory(configurationFactory),
+                memberTag,
                 userContext,
-                InjectedManager.CreateContainer(configurationFactory, routineGuid, userContext),
                 input)
         {
         }
 
-        // Used as stage to prepare containerFactory, routineGuid and usercontext
+        // Used as stage to prepare containerFactory, memberTag and usercontext
         private AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
             ContainerFactory<UserContext> containerFactory,
-            RoutineGuid routineGuid,
+            Guid correaltionToken,
+            MemberTag memberTag,
             UserContext userContext,
             object input
         ) : this(
                 adminkaStorageConfiguration,
-                new RoutineLogger(routineGuid),
+                new RoutineLogger(correaltionToken),
                 loggingTransientsFactory,
-                routineGuid, 
+                containerFactory,
+                memberTag, 
                 userContext,
-                containerFactory.CreateContainer(routineGuid, userContext),
                 input)
         {
         }
@@ -150,45 +175,33 @@ namespace DashboardCode.AdminkaV1.Injected
         internal AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             RoutineLogger routineLogger,
-            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
-            RoutineGuid routineGuid,
+            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
+            ContainerFactory<UserContext> containerFactory,
+            MemberTag memberTag,
             UserContext userContext,
-            IContainer container,
             object input) :
             this(
                 adminkaStorageConfiguration,
-                routineGuid,
                 userContext,
-                container,
-                routineLogger,
-                loggingTransientsFactory(routineLogger, routineGuid, container),
-                input)
+                loggingTransientsFactory(routineLogger, memberTag, containerFactory, userContext, input)
+                )
         {
         }
 
-        RoutineLoggingTransients routineLoggingTransients;
+
+        IAuthenticationLogging authenticationLogging;
         internal protected AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            RoutineGuid routineGuid,
             UserContext userContext,
-            IContainer container,
-            RoutineLogger routineLogger,
-            RoutineLoggingTransients routineLoggingTransients,
-            object input
+            RoutineLoggingTransients routineLoggingTransients
         ) : base(
                 adminkaStorageConfiguration,
                 InjectedManager.EntityMetaServiceContainer,
-                userContext,
-                routineLoggingTransients.ExceptionHandler,
-                routineLoggingTransients.RoutineLogging,
-                new RoutineClosure<UserContext>(
-                    userContext, 
-                    routineGuid,
-                    routineLoggingTransients.LogVerbose, 
-                    container),
-                input)
+                userContext,  // need usercontext for setting audit properties 
+                routineLoggingTransients.Verbose,
+                routineLoggingTransients.RoutineHandler)
         {
-            this.routineLoggingTransients = routineLoggingTransients;
+            this.authenticationLogging = routineLoggingTransients.AuthenticationLogging;
         }
 
         public void HandleServicesContainer(Action<ITraceService> action) =>
@@ -197,13 +210,12 @@ namespace DashboardCode.AdminkaV1.Injected
         public TOutput HandleServicesContainer<TOutput>(Func<ITraceService, TOutput> func) =>
             Handle(closure => func(new TraceService(CreateDbContextHandler(closure))));
 
-        public async Task<TOutput> HandleServicesContainerAsync<TOutput>(Func<ITraceService, TOutput> func) =>
-            await HandleAsync(closure => func(new TraceService(CreateDbContextHandler(closure))));
-
+        public Task<TOutput> HandleServicesContainerAsync<TOutput>(Func<ITraceService, Task<TOutput>> func) =>
+            HandleAsync(closure => func(new TraceService(CreateDbContextHandler(closure))));
 
         public TOutput HandleServicesContainer<TOutput>(
-            Func<IAuthenticationService, RoutineClosure<UserContext>, Action<RoutineGuid, string>, TOutput> func) =>
-            Handle(closure => func(new AuthenticationService(CreateDbContextHandler(closure)), closure, routineLoggingTransients.AuthenticationLogging.TraceAuthentication));
+            Func<IAuthenticationService, RoutineClosure<UserContext>, Action<Guid, MemberTag, string>, TOutput> func) =>
+            Handle(closure => func(new AuthenticationService(CreateDbContextHandler(closure)), closure, authenticationLogging.TraceAuthentication));
 
         #region Handle Remote Services
         public void HandleRemoteServicesContainer(Action<ITraceService> action) =>
@@ -212,8 +224,8 @@ namespace DashboardCode.AdminkaV1.Injected
         public TOutput HandleRemoteServicesContainer<TOutput>(Func<ITraceService, TOutput> func) =>
             Handle(closure => func(new LoggingDom.WcfClient.TraceServiceProxy()));
 
-        public async Task<TOutput> HandleRemoteServicesContainerAsync<TOutput>(Func<ITraceService, TOutput> func) =>
-            await HandleAsync(closure => func(new LoggingDom.WcfClient.TraceServiceProxy())); // TODO: use TraceServiceAsyncProxy
+        public Task<TOutput> HandleRemoteServicesContainerAsync<TOutput>(Func<ITraceServiceAsync, Task<TOutput>> func) =>
+            HandleAsync(closure => func(new LoggingDom.WcfClient.TraceServiceAsyncProxy())); 
         #endregion
     }
 }

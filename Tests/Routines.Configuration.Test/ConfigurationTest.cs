@@ -19,7 +19,7 @@ namespace DashboardCode.Routines.Configuration.Test
         public void CreateConfigurationSmokeTest()
         {
             var loader = ZoningSharedSourceProjectManager.GetLoader();
-            var container = new ConfigurationContainer(loader, new MemberTag("Namespace1", "Class1", "Member1"));
+            var container = new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag("Namespace1", "Class1", "Member1"));
         }
 
 
@@ -54,23 +54,28 @@ namespace DashboardCode.Routines.Configuration.Test
         {
             var loader = ZoningSharedSourceProjectManager.GetLoader();
             var basicConfigContainer1 =
-                new ConfigurationContainer(loader, new MemberTag("theNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
+                new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag("theNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
 
-            var t1 = basicConfigContainer1.ResolveAlt<LoggingPerformanceConfiguration>();
+            var t1t = basicConfigContainer1.ResolveString<LoggingPerformanceConfiguration>();
+            var t1 = new LoggingPerformanceConfiguration();
+            t1.Report(t1t);
             if (!(t1.ThresholdSec == 2))
                 throw new Exception("Test fails. Case 1");
 
-            var basicConfigContainer2 = new ConfigurationContainer(loader, new MemberTag("wrongNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
-            var t2 = basicConfigContainer2.ResolveAlt<LoggingPerformanceConfiguration>();
+            var basicConfigContainer2 = new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag("wrongNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
+            var t2t = basicConfigContainer2.ResolveString<LoggingPerformanceConfiguration>();
+            var t2 = new LoggingPerformanceConfiguration();
+            t2.Report(t2t);
+            
             if (!(t2.ThresholdSec == 0)) // default value, it means configuration was not found because of wrong Namespace
                 throw new Exception("Test fails. Case 2");
 
-            var basicConfigContainer3 = new ConfigurationContainer(loader, new MemberTag("theNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
-            var basicConfigContainer3s = new ConfigurationContainer(loader, new MemberTag("theNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)), "testuser");
-            var t3 = basicConfigContainer3.ResolveSerialized(null, "MyTestConfigurationZZZ");
+            var basicConfigContainer3 = new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag("theNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
+            var basicConfigContainer3s = new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag("theNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)), "testuser");
+            var t3 = basicConfigContainer3.ResolveString(null, "MyTestConfigurationZZZ");
             if (t3 != null)
                 throw new Exception("Test fails. Case 3");
-            var t4 = basicConfigContainer3s.ResolveSerialized(null, "MyTestConfigurationZZZ");
+            var t4 = basicConfigContainer3s.ResolveString(null, "MyTestConfigurationZZZ");
             if (t4 == null)
                 throw new Exception("Test fails. Case 4");
         }

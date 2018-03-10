@@ -2,49 +2,52 @@
 
 namespace DashboardCode.Routines.Injected
 {
-    public class BufferedRoutineLogging : IRoutineLogging
+    public class BufferedRoutineLogging 
     {
-        private readonly IDataLogger verboseLoggingAdapter;
-        private readonly Action flashBuffer;
-        private readonly Predicate<object> testInput;
-        private readonly Predicate<object> testOutput;
-        private readonly ActivityState activityLogger;
+        private readonly IDataLogger dataLogger;
+        private readonly Action<DateTime, string> logVerbose;
+        private readonly Func<object, object, TimeSpan, bool> testInputOutput;
+        private readonly Func<(DateTime, Func<bool, TimeSpan>)> start;
+        private readonly Action flash;
 
         public BufferedRoutineLogging(
-            IActivityLogger activityLoggingAdapter,
-            IDataLogger verboseLoggingAdapter,
-            Action flashBuffer,
-            Predicate<object> testInput,
-            Predicate<object> testOutput
+            Func<(DateTime, Func<bool, TimeSpan>)> start,
+            IDataLogger dataLogger,
+            Action<DateTime, string> logVerbose,
+            Action flash,
+            Func<object, object, TimeSpan, bool> testInputOutput
             )
         {
-            this.verboseLoggingAdapter = verboseLoggingAdapter;
-            this.flashBuffer = flashBuffer;
-            this.testInput = testInput;
-            this.testOutput = testOutput;
-
-            activityLogger = new ActivityState(
-                activityLoggingAdapter
-            );
+            this.start = start;
+            this.dataLogger = dataLogger;
+            this.logVerbose = logVerbose;
+            this.flash = flash;
+            this.testInputOutput = testInputOutput;
         }
 
-        public (Action<object>, Action) LogStart(object input)
+        public Func<(Action<object>, Action)> Compose(object input)
         {
-            var logOnFinish = activityLogger.LogStart();
-            verboseLoggingAdapter.Input(DateTime.Now, input);
-            Action<object> logOnSuccess = (output) =>
+            return () =>
             {
-                verboseLoggingAdapter.Output(DateTime.Now, output);
-                if (!testOutput(output))
-                    flashBuffer();
-                logOnFinish(true);
+                var (startDateTime, onFinish) = start();
+                Action<object> onOutput = (output) =>
+                {
+                    var duration = onFinish(true);
+                    if (testInputOutput(input, output, duration)) 
+                    {
+                        dataLogger.Input(startDateTime, input);
+                        dataLogger.Output(DateTime.Now, output);
+                        flash();
+                    }
+                };
+                Action onFailure = () =>
+                {
+                    onFinish(false);
+                    dataLogger.Input(startDateTime, input);
+                    flash();
+                };
+                return (onOutput, onFailure);
             };
-            Action logOnFailure = () =>
-            {
-                flashBuffer();
-                logOnFinish(false);
-            };
-            return (logOnSuccess, logOnFailure);
         }
     }
 }

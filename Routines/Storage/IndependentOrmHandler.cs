@@ -50,7 +50,7 @@ namespace DashboardCode.Routines.Storage
             var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 action(createRepository(dbContext, noTracking),
-                createOrmStorage(dbContext, analyzeException, auditVisitor)
+                    createOrmStorage(dbContext, analyzeException, auditVisitor)
                 );
         }
 
@@ -59,8 +59,8 @@ namespace DashboardCode.Routines.Storage
             var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return func(
-                createRepository(dbContext, noTracking),
-                createOrmStorage(dbContext, analyzeException, auditVisitor)
+                    createRepository(dbContext, noTracking),
+                    createOrmStorage(dbContext, analyzeException, auditVisitor)
                 );
         }
 
@@ -69,8 +69,8 @@ namespace DashboardCode.Routines.Storage
             var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return func(
-                createRepository(dbContext, noTracking),
-                createOrmStorage(dbContext, analyzeException, auditVisitor)
+                    createRepository(dbContext, noTracking),
+                    createOrmStorage(dbContext, analyzeException, auditVisitor)
                 );
         }
 
@@ -79,8 +79,8 @@ namespace DashboardCode.Routines.Storage
             var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 action(createRepository(dbContext, noTracking),
-                createOrmStorage(dbContext, analyzeException, auditVisitor),
-                createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
+                    createOrmStorage(dbContext, analyzeException, auditVisitor),
+                    createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
                 );
         }
 
@@ -89,9 +89,9 @@ namespace DashboardCode.Routines.Storage
             var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return func(
-                createRepository(dbContext, noTracking),
-                createOrmStorage(dbContext, analyzeException, auditVisitor),
-                createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
+                    createRepository(dbContext, noTracking),
+                    createOrmStorage(dbContext, analyzeException, auditVisitor),
+                    createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
                 );
         }
 
@@ -100,9 +100,9 @@ namespace DashboardCode.Routines.Storage
             var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return func(
-                createRepository(dbContext, noTracking),
-                createOrmStorage(dbContext, analyzeException, auditVisitor),
-                createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
+                    createRepository(dbContext, noTracking),
+                    createOrmStorage(dbContext, analyzeException, auditVisitor),
+                    createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
                 );
         }
     }

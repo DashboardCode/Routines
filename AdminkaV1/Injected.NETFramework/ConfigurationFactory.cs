@@ -1,16 +1,20 @@
-﻿using DashboardCode.Routines;
+﻿using System.Collections.Generic;
+using DashboardCode.Routines;
 using DashboardCode.Routines.Configuration;
 
 namespace DashboardCode.AdminkaV1.Injected.NETFramework
 {
-    public class ConfigurationFactory : IConfigurationFactory
+    public class ConfigurationContainerFactory : IConfigurationContainerFactory
     {
-        readonly IConfigurationManagerLoader configurationManagerLoader;
+        readonly IEnumerable<IRoutineConfigurationRecord> routineConfigurationRecords;
 
-        public ConfigurationFactory(IConfigurationManagerLoader configurationManagerLoader) =>
-            this.configurationManagerLoader = configurationManagerLoader;
+        public ConfigurationContainerFactory(IConfigurationManagerLoader configurationManagerLoader) =>
+            this.routineConfigurationRecords = configurationManagerLoader.GetGetRoutineConfigurationRecords();
 
-        public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
-          new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
+        public ConfigurationContainerFactory(IEnumerable<IRoutineConfigurationRecord> routineConfigurationRecords) =>
+            this.routineConfigurationRecords = routineConfigurationRecords;
+
+        public ConfigurationContainer Create(MemberTag memberTag, string @for) =>
+          new ConfigurationContainer(routineConfigurationRecords, memberTag, @for);
     }
 }

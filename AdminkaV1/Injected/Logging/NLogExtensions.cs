@@ -1,17 +1,18 @@
 ﻿using NLog;
 using DashboardCode.Routines;
+using System;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     static class NLogExtensions
     {
-        public static void AppendRoutineTag(this LogEventInfo logEventInfo, RoutineGuid routineGuid)
+        public static void AppendRoutineTag(this LogEventInfo logEventInfo, Guid correlationToken, MemberTag memberTag)
         {
-            logEventInfo.Properties[nameof(RoutineGuid.CorrelationToken)] = routineGuid.CorrelationToken;
-            logEventInfo.Properties[nameof(MemberTag.Namespace)] = routineGuid.MemberTag.Namespace;
-            logEventInfo.Properties[nameof(MemberTag.Type)] = routineGuid.MemberTag.Type;
-            logEventInfo.Properties[nameof(MemberTag.Member)] = routineGuid.MemberTag.Member;
-            logEventInfo.Properties["Title"] = $"{routineGuid.MemberTag.Type}.{routineGuid.MemberTag.Member}; {routineGuid.MemberTag.Namespace}; {routineGuid.CorrelationToken}";
+            logEventInfo.Properties["CorrelationToken"] = correlationToken;
+            logEventInfo.Properties[nameof(MemberTag.Namespace)] = memberTag.Namespace;
+            logEventInfo.Properties[nameof(MemberTag.Type)] = memberTag.Type;
+            logEventInfo.Properties[nameof(MemberTag.Member)] = memberTag.Member;
+            logEventInfo.Properties["Title"] = $"{memberTag.Type}.{memberTag.Member}; {memberTag.Namespace}; {correlationToken}";
         }
     }
 }

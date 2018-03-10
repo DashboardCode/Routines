@@ -5,11 +5,11 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public class SqlServerAdmikaConfigurationFacade 
     {
-        readonly IConnectionStringAccess connectionStringAccess;
+        readonly IConnectionStringMap connectionStringAccess;
         readonly string connectionStringName;
         readonly string migrationAssembly;
         public SqlServerAdmikaConfigurationFacade(
-            IConnectionStringAccess connectionStringAccess, 
+            IConnectionStringMap connectionStringAccess, 
             string connectionStringName = "AdminkaConnectionString",
             string migrationAssembly = null)
         {

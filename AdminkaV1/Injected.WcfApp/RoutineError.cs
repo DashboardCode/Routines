@@ -6,7 +6,7 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
     static class RoutineErrorDataContractConstants
     {
-        public const string RoutineGuidNamespace         = DataContractConstants.BaseNamespace;
+        public const string MemberTagNamespace           = DataContractConstants.BaseNamespace;
         public const string RoutineErrorNamespace        = DataContractConstants.BaseNamespace;
         public const string AuthenticationFaultNamespace = DataContractConstants.BaseNamespace;
         public const string FaultCodeNamespace           = DataContractConstants.BaseNamespace;
@@ -16,7 +16,9 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
     public class RoutineError
     {
         [DataMember]
-        public RoutineGuid RoutineGuid         { get; set; }
+        public Guid CorrelationToken           { get; set; }
+        [DataMember]
+        public MemberTag MemberTag             { get; set; }
         [DataMember]
         public string Message                  { get; set; }
         [DataMember]
@@ -37,11 +39,9 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
         public string Message { get; set; }
     }
 
-    [DataContract(Namespace = RoutineErrorDataContractConstants.RoutineGuidNamespace)]
-    public class RoutineGuid
+    [DataContract(Namespace = RoutineErrorDataContractConstants.MemberTagNamespace)]
+    public class MemberTag
     {
-        [DataMember]
-        public Guid CorrelationToken { get; set; }
         [DataMember]
         public string Namespace      { get; set; }
         [DataMember]

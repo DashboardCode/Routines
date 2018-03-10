@@ -3,67 +3,198 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class RoutineHandler<TClosure>
+    public interface IRoutineHandler<TClosure>
     {
-        private readonly IExceptionHandler exceptionHandler;
-        private readonly object input;
-        private readonly TClosure closure;
-        private readonly IRoutineLogging routineLogging;
+        void Handle(Action<TClosure> action);
+        TOutput Handle<TOutput>(Func<TClosure, TOutput> func);
+        Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func);
+    }
 
-        public RoutineHandler(
-            IExceptionHandler exceptionHandler,
-            IRoutineLogging routineLogging,
+    public class RoutineHandlerSilent<TClosure> : IRoutineHandler<TClosure>
+    {
+        private readonly TClosure closure;
+        private readonly ExceptionHandler exceptionHandler;
+        private readonly Func<(Action, Action)> start;  // var (logOnSuccess, logOnFailure) = routineLogging.Compose(input);
+        //private readonly Action<object> logOnSuccess;
+        //private readonly Action onFailure;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closure"></param>
+        /// <param name="exceptionHandler"></param>
+        /// <param name="start">returns logOnSuccess and onFailure (Used for: a. finish activity record b. trigger buffer flash)</param>
+        public RoutineHandlerSilent(
             TClosure closure,
-            object input)
+            ExceptionHandler exceptionHandler,
+            Func<(Action, Action)> start)
         {
-            this.input = input;
             this.closure = closure;
             this.exceptionHandler = exceptionHandler;
-            this.routineLogging = routineLogging;
+            this.start = start;
         }
+
         public void Handle(Action<TClosure> action)
         {
-            var (logOnSuccess, logOnFailure) = routineLogging.LogStart(input);
             exceptionHandler.Handle(
                 () =>
                 {
-                    action(closure);
-                    logOnSuccess(null);
-                },
-                logOnFailure
+                    var (onSuccess, onFailure) = start();
+                    return (
+                        () => {
+                            action(closure);
+                            onSuccess();
+                        },
+                        isSuccess =>
+                        {
+                            if (!isSuccess)
+                                onFailure();
+                        }
+                    );
+                }
             );
         }
+
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
         {
             var @value = default(TOutput);
-            var (logOnSuccess, logOnFailure) = routineLogging.LogStart(input);
             exceptionHandler.Handle(
                 () =>
                 {
-                    @value = func(closure);
-                    logOnSuccess(@value);
-                },
-                logOnFailure
+                    var (onSuccess, onFailure) = start();
+                    return (
+                        () => {
+                            @value = func(closure);
+                            onSuccess();
+                        },
+                        isSuccess =>
+                        {
+                            if (!isSuccess)
+                                onFailure();
+                        }
+                    );
+                }
             );
             return @value;
         }
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TOutput> func)
+
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
-            var @value = Task.Run(() =>
-            {
-                var output = default(TOutput);
-                var (logOnSuccess, logOnFailure) = routineLogging.LogStart(input);
-                exceptionHandler.Handle(
-                    () =>
-                    {
-                        output = func(closure);
-                        logOnSuccess(output);
-                    },
-                    logOnFailure
-                );
-                return output;
-            });
-            return await @value;
+            var successTask = default(Task<TOutput>);
+            exceptionHandler.Handle(
+                () =>
+                {
+                    var (onSuccess, onFailure) = start();
+                    return (
+                        () => {
+                            successTask = func(closure);
+                            successTask.ContinueWith(
+                                t =>
+                                    onSuccess()
+                                );
+                        },
+                        isSuccess =>
+                        {
+                            if (!isSuccess)
+                                onFailure();
+                        }
+                    );
+                }
+            );
+            return successTask;
+        }
+    }
+
+    public class RoutineHandler<TClosure> : IRoutineHandler<TClosure>
+    {
+        private readonly TClosure closure;
+        private readonly ExceptionHandler exceptionHandler;
+        private readonly Func<(Action<object>, Action)> start;  // var (logOnSuccess, logOnFailure) = routineLogging.Compose(input);
+        //private readonly Action<object> logOnSuccess;
+        //private readonly Action onFailure;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="closure"></param>
+        /// <param name="exceptionHandler"></param>
+        /// <param name="start">returns logOnSuccess and onFailure (Used for: a. finish activity record b. trigger buffer flash)</param>
+        public RoutineHandler(
+            TClosure closure,
+            ExceptionHandler exceptionHandler,
+            Func<(Action<object>, Action)> start)
+        {
+            this.closure = closure;
+            this.exceptionHandler = exceptionHandler;
+            this.start = start;
+        }
+
+        public void Handle(Action<TClosure> action)
+        {
+            exceptionHandler.Handle(
+                () =>
+                {
+                    var (onSuccess, onFailure) = start();
+                    return (
+                        () => {
+                            action(closure);
+                            onSuccess(null);
+                        },
+                        isSuccess =>
+                        {
+                            if (!isSuccess)
+                                onFailure();
+                        }
+                    );
+                }
+            );
+        }
+
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
+        {
+            var @value = default(TOutput);
+            exceptionHandler.Handle(
+                () =>
+                {
+                    var (onSuccess, onFailure) = start();
+                    return (
+                        () => {
+                            @value = func(closure);
+                            onSuccess(@value);
+                        },
+                        isSuccess =>
+                        {
+                            if (!isSuccess)
+                                onFailure();
+                        }
+                    );
+                }
+            );
+            return @value;
+        }
+
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        {
+            var successTask = default(Task<TOutput>);
+            exceptionHandler.Handle(
+                () =>
+                {
+                    var (onSuccess, onFailure) = start();
+                    return (
+                        () => {
+                            successTask = func(closure);
+                            successTask.ContinueWith(
+                                t =>
+                                    onSuccess(t.Result)
+                                );
+                        },
+                        isSuccess =>
+                        {
+                            if (!isSuccess)
+                                onFailure();
+                        }
+                    );
+                }
+            );
+            return successTask;
         }
     }
 }

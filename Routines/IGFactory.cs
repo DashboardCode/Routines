@@ -1,7 +1,7 @@
 ﻿namespace DashboardCode.Routines
 {
-    public interface IGFactory<T>
+    public interface IGFactory<TInput>
     {
-        TOutput Create<TOutput>(T input);
+        TOutput Create<TOutput>(TInput input);
     }
 }

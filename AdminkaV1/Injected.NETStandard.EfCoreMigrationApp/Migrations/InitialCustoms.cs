@@ -19,7 +19,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
             var configurationLoader = new ConfigurationManagerLoader();
             var sqlServerAdmikaConfigurationFacade = new SqlServerAdmikaConfigurationFacade(configurationLoader);
-            var configurationFactory = new ConfigurationFactory(configurationLoader); 
+            var configurationFactory = new ConfigurationContainerFactory(configurationLoader); 
             var routine = new AdminkaRoutineHandler(
                 sqlServerAdmikaConfigurationFacade.ResolveAdminkaStorageConfiguration(),
                 configurationFactory,

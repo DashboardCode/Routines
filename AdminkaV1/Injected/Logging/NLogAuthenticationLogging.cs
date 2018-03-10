@@ -8,7 +8,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
     {
         private readonly Logger authenticationLogger = LogManager.GetLogger("Authentication");
         
-        public void TraceAuthentication(RoutineGuid routineGuid, string message)
+        public void TraceAuthentication(Guid correlationToken, MemberTag memberTag, string message)
         {
             var logEventInfo = new LogEventInfo()
             {
@@ -16,7 +16,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 Level = LogLevel.Info,
                 TimeStamp = DateTime.Now
             };
-            logEventInfo.AppendRoutineTag(routineGuid);
+            logEventInfo.AppendRoutineTag(correlationToken, memberTag);
             authenticationLogger.Log(logEventInfo);
         }
     }

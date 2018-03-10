@@ -5,14 +5,12 @@ namespace DashboardCode.Routines
     public class RoutineClosure<TUserContext>
     {
         public readonly Action<string> Verbose;
-        public readonly RoutineGuid RoutineGuid;
         public readonly TUserContext UserContext;
         readonly IContainer container;
 
-        public RoutineClosure(TUserContext userContext, RoutineGuid routineGuid, Action<DateTime, string> verbose, IContainer container)
+        public RoutineClosure(TUserContext userContext, Action<DateTime, string> verbose, IContainer container)
         {
             UserContext = userContext;
-            RoutineGuid = routineGuid;
             this.container = container;
             if (verbose != null)
                 Verbose = (message) => verbose(DateTime.Now, message);

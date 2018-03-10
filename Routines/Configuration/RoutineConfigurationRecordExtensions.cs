@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Configuration
 {
     public static class RoutineConfigurationRecordExtensions
     {
-        public static SortedDictionary<int, IRoutineConfigurationRecord> RangedRoutines(this IEnumerable<IRoutineConfigurationRecord> routines, MemberTag memberTag)
+        public static List<IRoutineConfigurationRecord> LimitRoutineConfigurationRecords(this IEnumerable<IRoutineConfigurationRecord> routines, MemberTag memberTag)
         {
             var rangedRoutines = new Dictionary<int, IRoutineConfigurationRecord>();
             int rA = 0, rB = 1000, rC = 2000;
@@ -41,7 +42,8 @@ namespace DashboardCode.Routines.Configuration
                         rangedRoutines.Add(2999, routine);
                 }
             }
-            return new SortedDictionary<int, IRoutineConfigurationRecord>(rangedRoutines);
+            var ordered = rangedRoutines.OrderBy(x => x.Key).Select(e=>e.Value).ToList();
+            return ordered;
         }
     }
 }

@@ -1,48 +1,48 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Runtime.ExceptionServices;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class ExceptionHandler : IExceptionHandler
+    public class ExceptionHandler 
     {
-        private readonly IExceptionAdapter exceptionAdapter;
-        private readonly Action<long> monitorDurationTicks;
+        private readonly Action<Exception> logException;
+        private readonly Func<Exception, Exception>  transformException;
+
         public ExceptionHandler(
-            IExceptionAdapter exceptionAdapter,
-            Action<long> monitorDurationTicks
+            Action<Exception> logException, 
+            Func<Exception, Exception>  transformException
             )
         {
-            this.exceptionAdapter = exceptionAdapter;
-            this.monitorDurationTicks = monitorDurationTicks;
+            this.logException = logException;
+            this.transformException = transformException;
         }
 
-        public void Handle(Action action, Action onFailure)
+        public void Handle(Func<(Action, Action<bool>)> start)
         {
-            var stopWatch = Stopwatch.StartNew();
+            (Action action, Action<bool> onFinish) = start();
+            bool isSuccess = false;
             try
             {
                 action();
+                isSuccess = true;
             }
             catch (Exception exception)
             {
-                var dateTime = DateTime.Now;
-                exceptionAdapter.LogException(dateTime, exception);
-                var transformedException = exception;
-                try
-                {
-                    transformedException = exceptionAdapter.TransformException(exception);
-                }
-                catch(Exception exceptionOnExceptionTransformation)
-                {
-                    var message = new Exception("Excepion on exception transformation", exceptionOnExceptionTransformation);
-                    exceptionAdapter.LogException(dateTime, message);
-                }
-
-                onFailure();
-
+                logException(exception);
+                var transformedException = transformException(exception);
+                //  NOTE: may be there is a sensce to create alternative handler ExceptionHandler2 that will log transformException
+                //  try
+                //  {
+                //  }
+                //  catch(Exception exceptionOnExceptionTransformation)
+                //  {
+                //     logExceptionOnTransformation(dateTime, exceptionOnExceptionTransformation);
+                //     var exceptionAsMessage = new Exception("Excepion on exception transformation", exceptionOnExceptionTransformation);
+                //     logException(dateTime, exceptionAsMessage);
+                //  }
                 if (exception == transformedException)
                 {
+                    // NOTE: https://connect.microsoft.com/VisualStudio/feedback/details/689516/exceptiondispatchinfo-api-modifications
                     // Preserve stack trace: after this catched exception's StackTrace will contains two logical parts
                     // Compare those two ways two rethrow of the exception (actual error in 'ExceptionHandlerTest.Inner.cs:line 18')
 
@@ -60,17 +60,17 @@ namespace DashboardCode.Routines.Injected
                     // at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
                     // at DashboardCode.Routines.Injected.ExceptionHandler.Handle(Action action, Action onFailure) in D:\..\ExceptionHandler.cs:line 50
                     // at DashboardCode.Routines.Configuration.Test.ExceptionHandlerTest.TestMethod() in D:\..\ExceptionHandlerTest.Inner.cs:line 16
-                    // NOTE: https://connect.microsoft.com/VisualStudio/feedback/details/689516/exceptiondispatchinfo-api-modifications
                     var exceptionDispatchInfo = ExceptionDispatchInfo.Capture(exception);
+
                     exceptionDispatchInfo.Throw();
                 }
                 throw transformedException;
             }
             finally
             {
-                stopWatch.Stop();
-                monitorDurationTicks?.Invoke(stopWatch.ElapsedTicks);
+                onFinish(isSuccess);
+                //stopWatch.Stop(); 
             }
         }
     }
-}
+} 

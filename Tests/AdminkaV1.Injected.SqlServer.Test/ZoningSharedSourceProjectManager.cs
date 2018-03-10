@@ -12,12 +12,12 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
     public static class ZoningSharedSourceProjectManager
     {
-        static readonly ConfigurationManagerLoader ConfigurationManagerLoader = new ConfigurationManagerLoader();
+        static readonly ConfigurationManagerLoader configurationManagerLoader = new ConfigurationManagerLoader();
 
         public static AdminkaStorageConfiguration GetConfiguration() =>
-            new SqlServerAdmikaConfigurationFacade(ConfigurationManagerLoader).ResolveAdminkaStorageConfiguration();
+            new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration();
 
-        public static IConfigurationFactory GetConfigurationFactory() =>
-            new ConfigurationFactory(ConfigurationManagerLoader);
+        public static IConfigurationContainerFactory GetConfigurationFactory() =>
+            new ConfigurationContainerFactory(configurationManagerLoader);
     }
 }

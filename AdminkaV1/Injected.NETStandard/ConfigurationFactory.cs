@@ -6,13 +6,13 @@ using DashboardCode.Routines.Configuration.NETStandard;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard
 {
-    public class ConfigurationFactory : IConfigurationFactory
+    public class ConfigurationContainerFactory : IConfigurationContainerFactory
     {
         readonly IConfigurationManagerLoader configurationManagerLoader;
-        public ConfigurationFactory(IConfigurationManagerLoader configurationManagerLoader) =>
+        public ConfigurationContainerFactory(IConfigurationManagerLoader configurationManagerLoader) =>
             this.configurationManagerLoader = configurationManagerLoader;
 
-        public ConfigurationFactory()
+        public ConfigurationContainerFactory()
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             // false indicates that file is not optional, true force reload on change
@@ -20,7 +20,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard
             var configurationRoot = configurationBuilder.Build();
             configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot);
         }
-        public ConfigurationContainer ComposeSpecify(MemberTag memberTag, string @for) =>
-            new ConfigurationContainer(configurationManagerLoader, memberTag, @for);
+        public ConfigurationContainer Create(MemberTag memberTag, string @for) =>
+            new ConfigurationContainer(configurationManagerLoader.GetGetRoutineConfigurationRecords(), memberTag, @for);
     }
 }

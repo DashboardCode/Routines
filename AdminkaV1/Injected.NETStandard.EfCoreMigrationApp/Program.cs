@@ -19,7 +19,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                 configurationManagerLoader,
                 migrationAssembly: MigrationAssembly
                 );
-            var configurationFactory = new ConfigurationFactory(configurationManagerLoader);
+            var configurationFactory = new ConfigurationContainerFactory(configurationManagerLoader);
             var routine = new AdminkaRoutineHandler(
                 sqlServerAdmikaConfigurationFacade.ResolveAdminkaStorageConfiguration(),
                 configurationFactory,

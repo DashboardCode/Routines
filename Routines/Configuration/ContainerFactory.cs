@@ -4,23 +4,25 @@ namespace DashboardCode.Routines.Configuration
 {
     public class ContainerFactory<TUserContext>
     {
-        IConfigurationFactory configurationFactory;
+        IConfigurationContainerFactory configurationContainerFactory;
         Func<TUserContext, string> getVerboseLoggingFlag;
         IGFactory<string> deserializer;
         public ContainerFactory(
-            IConfigurationFactory configurationFactory,
+            IConfigurationContainerFactory configurationContainerFactory,
             Func<TUserContext, string> getVerboseLoggingFlag,
             IGFactory<string> deserializer)
         {
-            this.configurationFactory = configurationFactory;
+            this.configurationContainerFactory = configurationContainerFactory;
             this.getVerboseLoggingFlag = getVerboseLoggingFlag;
             this.deserializer = deserializer;
         }
 
-        public IContainer CreateContainer(RoutineGuid routineGuid, TUserContext userContext)
+        public IContainer CreateContainer(MemberTag memberTag, TUserContext userContext)
         {
             var @for = getVerboseLoggingFlag(userContext);
-            var configurationContainer = configurationFactory.ComposeSpecify(routineGuid.MemberTag, @for);
+            var configurationContainer = configurationContainerFactory
+                .Create(memberTag, @for);
+            
             return new Container(configurationContainer, deserializer);
         }
     }

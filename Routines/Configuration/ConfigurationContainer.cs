@@ -1,81 +1,58 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Configuration
 {
     public class ConfigurationContainer 
     {
-        private readonly List<IResolvableConfigurationRecord> elements;
-        public ConfigurationContainer(IConfigurationManagerLoader loader, MemberTag memberTag)
+        private readonly List<IResolvableConfigurationRecord> elements = new List<IResolvableConfigurationRecord>();
+        public ConfigurationContainer(IEnumerable<IRoutineConfigurationRecord> routineConfigurationRecords, MemberTag memberTag)
         {
-            var rangedRoutines = loader.RoutineResolvables.RangedRoutines(memberTag);
-            elements = new List<IResolvableConfigurationRecord>();
-            foreach (var pair in rangedRoutines)
+            var memberRoutineConfigurationRecords = routineConfigurationRecords.LimitRoutineConfigurationRecords(memberTag);
+            foreach (var routineConfigurationRecord in memberRoutineConfigurationRecords)
             {
-                var routineElement = pair.Value;
-                if (routineElement.For.IsNullOrWhiteSpaceOrAsterix())
+                if (routineConfigurationRecord.For.IsNullOrWhiteSpaceOrAsterix())
                 {
-                    foreach (var r in routineElement.Resolvables)
+                    foreach (var resolvableConfigurationRecord in routineConfigurationRecord.Resolvables)
                     {
-                        if (!elements.Any(e => e.Type == r.Type && e.Namespace == r.Namespace))
-                            elements.Add(r);
+                        if (!elements.Any(e => e.Type == resolvableConfigurationRecord.Type && e.Namespace == resolvableConfigurationRecord.Namespace))
+                            elements.Add(resolvableConfigurationRecord);
                     }
                 }
             }
         }
 
-        public ConfigurationContainer(IConfigurationManagerLoader loader, MemberTag memberTag, string @for)
+        public ConfigurationContainer(IEnumerable<IRoutineConfigurationRecord> routineConfigurationRecords, MemberTag memberTag, string @for)
         {
-            var rangedRoutines = loader.RoutineResolvables.RangedRoutines(memberTag);
-            elements = new List<IResolvableConfigurationRecord>();
-            foreach (var pair in rangedRoutines)
+            var memberRoutineConfigurationRecords = routineConfigurationRecords.LimitRoutineConfigurationRecords(memberTag);
+            foreach (var routineConfigurationRecord in memberRoutineConfigurationRecords)
             {
-                var routineElement = pair.Value;
-                if (routineElement.For.IsNullOrWhiteSpaceOrAsterix() || routineElement.For == @for)
+                if (routineConfigurationRecord.For.IsNullOrWhiteSpaceOrAsterix() || routineConfigurationRecord.For == @for)
                 {
-                    foreach (var r in routineElement.Resolvables)
+                    foreach (var resolvableConfigurationRecord in routineConfigurationRecord.Resolvables)
                     {
-                        if (!elements.Any(e => e.Type == r.Type && e.Namespace == r.Namespace))
-                            elements.Add(r);
+                        if (!elements.Any(e => e.Type == resolvableConfigurationRecord.Type && e.Namespace == resolvableConfigurationRecord.Namespace))
+                            elements.Add(resolvableConfigurationRecord);
                     }
                 }
             }
         }
 
-        public string ResolveSerialized<T>()
+        public string ResolveString<T>()
         {
             var type = typeof(T);
             var typeName = type.Name;
             var typeNamespace = type.Namespace;
-            var @value = ResolveSerialized(typeNamespace, typeName);
+            var @value = ResolveString(typeNamespace, typeName);
             return @value;
         }
 
-        public string ResolveSerialized(string typeNamespace, string typeName)
+        public string ResolveString(string typeNamespace, string typeName)
         {
             var @value = default(string);
             var config = elements.FirstOrDefault(e => (e.Namespace == typeNamespace || string.IsNullOrEmpty(e.Namespace)) && e.Type == typeName);
             if (config != null)
                 @value = config.Value;
-            return @value;
-        }
-
-        public T Resolve<T>() where T : IBuilder<string>, new()
-        {
-            var @value = new T();
-            var serialized = ResolveSerialized<T>();
-            if (serialized != null)
-                @value.Build(serialized);
-            return @value;
-        }
-
-        public T ResolveAlt<T>() where T : IProgress<string>, new()
-        {
-            var @value = new T();
-            var serialized = ResolveSerialized<T>();
-            if (serialized != null)
-                @value.Report(serialized);
             return @value;
         }
     }

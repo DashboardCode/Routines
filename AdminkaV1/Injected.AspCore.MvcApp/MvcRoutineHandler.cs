@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,69 +16,80 @@ using DashboardCode.Routines.Injected;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
-    public class MvcRoutine : AdminkaRoutineHandler
+    public class MvcRoutineHandler : AdminkaRoutineHandler
     {
         public readonly SessionState SessionState;
         public readonly ConfigurableController Controller;
-        public MvcRoutine(ConfigurableController controller) :
+        public MvcRoutineHandler(ConfigurableController controller) :
             this(controller, controller.HttpContext.Request.ToLog())
         {
         }
-        public MvcRoutine(ConfigurableController controller, object input) :
+        public MvcRoutineHandler(ConfigurableController controller, object input) :
             this(controller, WebManager.SetupCorrelationToken(controller.HttpContext), input)
         {
         }
-        private MvcRoutine(ConfigurableController controller, Guid correlationToken, object input) :
+        private MvcRoutineHandler(ConfigurableController controller, Guid correlationToken, object input) :
             this(controller,
-                new RoutineGuid(correlationToken,
+                correlationToken,
+                new MemberTag(
                     controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.Namespace,
                     controller.ControllerContext.ActionDescriptor.ControllerTypeInfo.Name,
                     controller.ControllerContext.ActionDescriptor.ActionName),
                 input)
         {
         }
-        public MvcRoutine(ConfigurableController controller, RoutineGuid routineGuid, object input) :
+        public MvcRoutineHandler(
+            ConfigurableController controller,
+            Guid correlationToken,
+            MemberTag memberTag, 
+            object input) :
             this(controller,
-                 routineGuid,
+                 correlationToken,
+                 memberTag,
                  new ConfigurationManagerLoader(controller.ConfigurationRoot),
                  input)
         {
         }
 
-        public MvcRoutine(
-                ConfigurableController controller, 
-                RoutineGuid routineGuid,
+        public MvcRoutineHandler(
+                ConfigurableController controller,
+                Guid correlationToken,
+                MemberTag memberTag,
                 ConfigurationManagerLoader configurationManagerLoader,
                 object input) :
             this(
                  new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration(),
-                 new ConfigurationFactory(configurationManagerLoader),
+                 new ConfigurationContainerFactory(configurationManagerLoader),
                  controller,
-                 routineGuid,
+                 correlationToken,
+                 memberTag,
                  InjectedManager.ComposeNLogTransients(InjectedManager.DefaultRoutineTagTransformException),
                  input)
         {
-            controller.HttpContext.Items["routineGuid"] = routineGuid;
+            controller.HttpContext.Items["CorrelationToken"] = correlationToken;
             var headers = controller.HttpContext.Response.Headers;
-            if (headers["X-RoutineGuid-CorrelationToken"].Count() == 0)
+            if (headers["X-CorrelationToken"].Count() == 0)
             {
-                headers.Add("X-RoutineGuid-CorrelationToken",    routineGuid.CorrelationToken.ToString());
-                headers.Add("X-RoutineGuid-MemberTag-Namespace", routineGuid.MemberTag.Namespace);
-                headers.Add("X-RoutineGuid-MemberTag-Type",      routineGuid.MemberTag.Type);
-                headers.Add("X-RoutineGuid-MemberTag-Member",    routineGuid.MemberTag.Member);
+                headers.Add("X-CorrelationToken",    correlationToken.ToString());
+                headers.Add("X-MemberTag-Namespace", memberTag.Namespace);
+                headers.Add("X-MemberTag-Type",      memberTag.Type);
+                headers.Add("X-MemberTag-Member",    memberTag.Member);
             }
         }
-        private MvcRoutine(
-            AdminkaStorageConfiguration admikaConfigurationFacade,
-            IConfigurationFactory configurationFactory,
-            ConfigurableController controller, RoutineGuid routineGuid,
-            Func<RoutineLogger, RoutineGuid, IContainer, RoutineLoggingTransients> loggingTransientsFactory,
+        private MvcRoutineHandler(
+            AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IConfigurationContainerFactory configurationFactory,
+            ConfigurableController controller, 
+            Guid correlationToken,
+            MemberTag memberTag,
+            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
             object input) :
             base(
-                admikaConfigurationFacade,
+                adminkaStorageConfiguration,
                 configurationFactory,
                 loggingTransientsFactory,
-                routineGuid,
+                correlationToken,
+                memberTag,
                 controller.User.Identity,
                 input)
         {
@@ -90,7 +100,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
 
         #region MVC
-        public async Task<IActionResult> HandleMvcRequestAsync<TKey, TEntity>(
+        public Task<IActionResult> HandleMvcRequestAsync<TKey, TEntity>(
                  string viewName,
                  Func<
                     IRepository<TEntity>,
@@ -103,18 +113,20 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                    await HandleStorageAsync<IActionResult, TEntity>( repository =>
-                        MvcHandler.MakeActionResultOnRequest(
-                                repository,
-                                (n,v) => Controller.ViewData[n]=v,
-                                Controller.HttpContext.Request,
-                                o => Controller.View(viewName, o),
-                                Controller.NotFound,
-                                action
-                             )
+                    HandleStorageAsync<IActionResult, TEntity>( repository =>
+                        Task.Run(() =>
+                            MvcHandler.MakeActionResultOnRequest(
+                                    repository,
+                                    (n,v) => Controller.ViewData[n]=v,
+                                    Controller.HttpContext.Request,
+                                    o => Controller.View(viewName, o),
+                                    Controller.NotFound,
+                                    action
+                                 )
+                            )
                     );
 
-        public async Task<IActionResult> HandleMvcRequestAsync<TKey, TEntity>(
+        public Task<IActionResult> HandleMvcRequestAsync<TKey, TEntity>(
                  string viewName,
                  Func<
                     IRepository<TEntity>,
@@ -126,17 +138,19 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                    await HandleStorageAsync<IActionResult, TEntity>(repository =>
-                       MvcHandler.MakeActionResultOnRequest(
+                    HandleStorageAsync<IActionResult, TEntity>(repository =>
+                    Task.Run(() =>
+                      MvcHandler.MakeActionResultOnRequest(
                                repository,
                                Controller.HttpContext.Request,
                                o => Controller.View(viewName, o),
                                Controller.NotFound,
                                action
                             )
-                    );
+                    )
+                );
 
-        public async Task<IActionResult> HandleMvcCreateAsync<TEntity>(
+        public Task<IActionResult> HandleMvcCreateAsync<TEntity>(
                  string viewName,
                  Func<
                     IRepository<TEntity>,
@@ -148,7 +162,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                        await HandleStorageAsync<IActionResult, TEntity>(repository =>
+                        HandleStorageAsync<IActionResult, TEntity>(repository =>
+                           Task.Run( () =>
                            MvcHandler.MakeActionResultOnCreate(
                                    repository,
                                    (n, v) => Controller.ViewData[n] = v,
@@ -156,9 +171,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                                    o => Controller.View(viewName, o),
                                    action
                                 )
+                           )
                         );
 
-        public async Task<IActionResult> HandleMvcCreateAsync<TEntity>(
+        public Task<IActionResult> HandleMvcCreateAsync<TEntity>(
                  string viewName,
                  Func<
                     IRepository<TEntity>,
@@ -170,16 +186,18 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                        await HandleStorageAsync<IActionResult, TEntity>(repository =>
-                           MvcHandler.MakeActionResultOnCreate(
+                        HandleStorageAsync<IActionResult, TEntity>(repository =>
+                        Task.Run(
+                           () => MvcHandler.MakeActionResultOnCreate(
                                    repository,
                                    Controller.HttpContext.Request,
                                    o => Controller.View(viewName, o),
                                    action
                                 )
+                            )
                         );
 
-        public async Task<IActionResult> HandleMvcSaveAsync<TEntity>(
+        public Task<IActionResult> HandleMvcSaveAsync<TEntity>(
                  string viewName,
                  Func<
                     IRepository<TEntity>,
@@ -195,22 +213,24 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     >
                  > action
                 ) where TEntity : class =>
-                    await HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
-                       MvcHandler.MakeActionResultOnSave(
-                           repository,
-                           storage,
-                           state,
-                           () => Controller.Unauthorized(),
-                           Controller.HttpContext.Request,
-                           (n, v) => Controller.ViewData[n] = v,
-                           (n, v) => Controller.ModelState.AddModelError(n, v),
-                           () => Controller.RedirectToAction("Index"),
-                           (e) => Controller.View(viewName, e),
-                           action
-                       )
+                    HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                       Task.Run(
+                            () => MvcHandler.MakeActionResultOnSave(
+                                repository,
+                                storage,
+                                state,
+                                () => Controller.Unauthorized(),
+                                Controller.HttpContext.Request,
+                                (n, v) => Controller.ViewData[n] = v,
+                                (n, v) => Controller.ModelState.AddModelError(n, v),
+                                () => Controller.RedirectToAction("Index"),
+                                (e) => Controller.View(viewName, e),
+                                action
+                            )
+                         )
                     );
 
-        public async Task<IActionResult> HandleMvcSaveAsync<TEntity>(
+        public Task<IActionResult> HandleMvcSaveAsync<TEntity>(
                  string viewName,
                  Func<
                     IRepository<TEntity>,
@@ -226,19 +246,21 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     >
                  > action
                 ) where TEntity : class =>
-                    await HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
-                       MvcHandler.MakeActionResultOnSave(
-                           repository,
-                           storage,
-                           state,
-                           () => Controller.Unauthorized(),
-                           Controller.HttpContext.Request,
-                           (n, v) => Controller.ViewData[n] = v,
-                           (n, v) => Controller.ModelState.AddModelError(n, v),
-                           () => Controller.RedirectToAction("Index"),
-                           (e) => Controller.View(viewName, e),
-                           action
-                       )
+                    HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                                Task.Run(
+                                    () => MvcHandler.MakeActionResultOnSave(
+                                    repository,
+                                    storage,
+                                    state,
+                                    () => Controller.Unauthorized(),
+                                    Controller.HttpContext.Request,
+                                    (n, v) => Controller.ViewData[n] = v,
+                                    (n, v) => Controller.ModelState.AddModelError(n, v),
+                                    () => Controller.RedirectToAction("Index"),
+                                    (e) => Controller.View(viewName, e),
+                                    action
+                                )
+                           )
                     );
         #endregion
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace DashboardCode.Routines.Storage.EfCore
@@ -17,7 +18,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             this.noTracking = noTracking;
         }
 
-        public IQueryable<TEntity> MakeQueryable(Include<TEntity> include)
+        public IQueryable<TEntity> Query(Include<TEntity> include)
         {
             var dbSet = context.Set<TEntity>();
             IQueryable<TEntity> query;
@@ -31,21 +32,28 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public IReadOnlyCollection<TEntity> List(Include<TEntity> include = null)
         {
-            var queryable = MakeQueryable(include);
+            var queryable = Query(include);
             var list = queryable.ToList();
+            return list;
+        }
+
+        public Task<List<TEntity>> ListAsync(Include<TEntity> include = null)
+        {
+            var queryable = Query(include);
+            var list = queryable.ToListAsync();
             return list;
         }
 
         public IReadOnlyCollection<TEntity> List(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
         {
-            var queryable = MakeQueryable(include);
+            var queryable = Query(include);
             var list = queryable.Where(predicate).ToList();
             return list;
         }
 
         public TEntity Find(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
         {
-            var queryable = MakeQueryable(include);
+            var queryable = Query(include);
             var list = queryable.Where(predicate).SingleOrDefault();
             return list;
         }

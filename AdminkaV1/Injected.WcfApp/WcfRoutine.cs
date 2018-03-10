@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using DashboardCode.Routines;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETFramework;
 
@@ -12,28 +11,34 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
     public class WcfRoutine : AdminkaRoutineHandler
     {
-        public WcfRoutine(MemberTag memberTag, string faultCodeNamespace, object input) 
-            : this(new Routines.RoutineGuid(memberTag), GetUserContext(), faultCodeNamespace,
+        public WcfRoutine(Routines.MemberTag memberTag, string faultCodeNamespace, object input) 
+            : this(Guid.NewGuid(), memberTag, GetUserContext(), faultCodeNamespace,
                   new ConfigurationManagerLoader(), input)
         {
         }
 
-        protected WcfRoutine(Routines.RoutineGuid routineGuid, UserContext userContext, string faultCodeNamespace,
+        protected WcfRoutine(Guid correlationToken, Routines.MemberTag memberTag, UserContext userContext, string faultCodeNamespace,
             ConfigurationManagerLoader configurationManagerLoader, object input)
-            : this(routineGuid, GetUserContext(), faultCodeNamespace,
+            : this(correlationToken, memberTag, GetUserContext(), faultCodeNamespace,
                   new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration(),
-                  new ConfigurationFactory(configurationManagerLoader),  input)
+                  new ConfigurationContainerFactory(configurationManagerLoader),  input)
         {
         }
 
-        protected WcfRoutine(Routines.RoutineGuid routineGuid, UserContext userContext, string faultCodeNamespace,
+        protected WcfRoutine(
+            Guid correlationToken,
+            Routines.MemberTag memberTag, 
+            UserContext userContext, 
+            string faultCodeNamespace,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationFactory configurationFactory, object input)
+            IConfigurationContainerFactory configurationFactory, object input)
             : base(
                   adminkaStorageConfiguration,
                   configurationFactory,
-                  (ex, rg, md) => TransformException(ex, rg, faultCodeNamespace, md),
-                  routineGuid, userContext,
+                  (ex, g, mt, md) => TransformException(ex, g, mt, faultCodeNamespace, md),
+                  correlationToken,
+                  memberTag,
+                  userContext,
                   input)
         {
         }
@@ -41,7 +46,9 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
         private static UserContext GetUserContext() =>
             new UserContext("Anonymous");
 
-        public static Exception TransformException(Exception exception, Routines.RoutineGuid routineGuid, string faultCodeNamespace, Func<Exception, string> markdownException)
+        public static Exception TransformException(
+            Exception exception, 
+            Guid correlationToken, Routines.MemberTag memberTag, string faultCodeNamespace, Func<Exception, string> markdownException)
         {
             var message = default(string);
             var code = default(string);
@@ -59,12 +66,12 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 
             var routineError = new RoutineError()
             {
-                RoutineGuid = new RoutineGuid()
+                CorrelationToken = correlationToken,
+                MemberTag = new MemberTag()
                 {
-                    CorrelationToken = routineGuid.CorrelationToken,
-                    Namespace = routineGuid.MemberTag.Namespace,
-                    Type = routineGuid.MemberTag.Type,
-                    Member = routineGuid.MemberTag.Member
+                    Namespace = memberTag.Namespace,
+                    Type = memberTag.Type,
+                    Member = memberTag.Member
                 },
                 Message = message,
                 AdminkaExceptionCode = code,

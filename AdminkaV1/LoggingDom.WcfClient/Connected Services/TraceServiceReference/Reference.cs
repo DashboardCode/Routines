@@ -24,7 +24,7 @@ namespace TraceServiceReference
         
         private string MessageField;
         
-        private TraceServiceReference.RoutineGuid RoutineGuidField;
+        private TraceServiceReference.MemberTag MemberTagField;
         
         private string AdminkaExceptionCodeField;
         
@@ -66,17 +66,32 @@ namespace TraceServiceReference
                 this.MessageField = value;
             }
         }
-        
+
+
+        private System.Guid CorrelationTokenField;
         [System.Runtime.Serialization.DataMemberAttribute()]
-        internal TraceServiceReference.RoutineGuid RoutineGuid
+        internal System.Guid CorrelationToken
         {
             get
             {
-                return this.RoutineGuidField;
+                return this.CorrelationTokenField;
             }
             set
             {
-                this.RoutineGuidField = value;
+                this.CorrelationTokenField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        internal TraceServiceReference.MemberTag MemberTag
+        {
+            get
+            {
+                return this.MemberTagField;
+            }
+            set
+            {
+                this.MemberTagField = value;
             }
         }
         
@@ -96,31 +111,17 @@ namespace TraceServiceReference
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="RoutineGuid", Namespace="https://adminka-v1.dashboardcode.com")]
-    internal partial class RoutineGuid : object
+    [System.Runtime.Serialization.DataContractAttribute(Name= "MemberTag", Namespace="https://adminka-v1.dashboardcode.com")]
+    internal partial class MemberTag : object
     {
-        
-        private System.Guid CorrelationTokenField;
-        
+       
         private string MemberField;
         
         private string NamespaceField;
         
         private string TypeField;
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        internal System.Guid CorrelationToken
-        {
-            get
-            {
-                return this.CorrelationTokenField;
-            }
-            set
-            {
-                this.CorrelationTokenField = value;
-            }
-        }
-        
+
+       
         [System.Runtime.Serialization.DataMemberAttribute()]
         internal string Member
         {

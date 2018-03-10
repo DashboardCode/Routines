@@ -66,7 +66,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var parent = repository.MakeQueryable(include).First(e => e.FieldA == "1_A");
+                    var parent = repository.Query(include).First(e => e.FieldA == "1_A");
                     repository.Detach(parent, include);
                     InjectedManager.SerializeToJson(parent);
                 });
