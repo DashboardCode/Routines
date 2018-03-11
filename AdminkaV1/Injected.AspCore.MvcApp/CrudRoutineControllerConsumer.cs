@@ -227,7 +227,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate
             ) =>
                () => ComposeMvcRequestAsync(
-                   "Edit",
+                   "Details",
                     repository => steps =>
                         steps(
                             keyConverter,
@@ -268,17 +268,17 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public static Func<Task<IActionResult>> ComposeEdit(
             ConfigurableController controller,
+            Include<TEntity> editIncludes,
             Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate,
-            Include<TEntity> editIncludes,
-            Func<Action<string, object>, IRepository<TEntity>, Action<TEntity>> prepareOptions
+            Func<Action<string, object>, IRepository<TEntity>, Action<TEntity>> parseRelated
             ) =>
                 () => ComposeMvcRequestAsync("Edit",
                     repository => steps =>
                         steps(
                             keyConverter,
                             key => repository.Find(findPredicate(key), editIncludes),
-                            (entity, addViewData) => prepareOptions(addViewData, repository)(entity)
+                            (entity, addViewData) => parseRelated(addViewData, repository)(entity)
                         )
                 )(controller);
 
@@ -330,8 +330,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     )
                 )(controller);
         #endregion
-        
-        
 
         public  Task<IActionResult> Index()
         {

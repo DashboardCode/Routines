@@ -186,35 +186,9 @@ namespace DashboardCode.AdminkaV1.Injected
             return exception;
         }
 
-        //private static (IActivityGFactory, Action<DateTime, string>) ProxyLogger(
-        //    bool shouldBufferVerbose, bool shouldVerboseWithStackTrace, ActivityState activityState, IRoutineLogger rawRoutineLogger,
-        //    RoutineLogger routineLogger, Predicate<object> testInput, Predicate<object> testOutput)
-        //{
-        //    IActivityGFactory activityGFactory = null;
-        //    Action<DateTime, string> logVerbose = null;
-        //    if (!shouldBufferVerbose/*loggingVerboseConfiguration.ShouldBufferVerbose*/)
-        //    {
-        //        activityGFactory = new RoutineLogging(activityState, rawRoutineLogger);
-        //        logVerbose = rawRoutineLogger.LogVerbose;
-        //    }
-        //    else
-        //    {
-        //        var buffered = new BufferedVerboseLogging(
-        //                routineLogger,
-        //                rawRoutineLogger,
-        //                rawRoutineLogger.LogBufferedVerbose,
-        //                shouldVerboseWithStackTrace //loggingVerboseConfiguration.ShouldVerboseWithStackTrace
-        //            );
-        //        activityGFactory = new BufferedRoutineLogging(
-        //            activityState,
-        //            buffered,
-        //            testInput,
-        //            testOutput);
-        //        logVerbose = buffered.LogVerbose;
-        //    };
-        //    return (activityGFactory, logVerbose);
-        //}
-        
+        private static readonly RoutineHandlerFactory<RoutineClosure<UserContext>> RoutineHandlerFactory = new RoutineHandlerFactory<RoutineClosure<UserContext>>(
+            (ticks) => {; });
+
         public static Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> ComposeNLogTransients(
                 Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException
             )
@@ -237,8 +211,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 var dataLogger = (IDataLogger)nlogLoggingAdapter;
                 var bufferedVerboseLogger = (IBufferedVerboseLogger)nlogLoggingAdapter;
 
-                Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
-                Action<long> performanceCounter = (ticks) => {; };
+                Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true; // get from container
 
                 var loggingVerboseConfiguration = container.Resolve<LoggingVerboseConfiguration>();
                 var shouldBufferVerbose = loggingVerboseConfiguration.ShouldBufferVerbose;
@@ -246,14 +219,17 @@ namespace DashboardCode.AdminkaV1.Injected
                    ex => exceptionLogger.LogException(DateTime.Now, ex),
                    ex => DefaultRoutineTagTransformException(ex, routineLogger.CorrelationToken, memberTag, Markdown)
                 );
-                var (routineHandler, closure) = RoutineHandlerManager.CreateRoutineHandler(
+
+                var (routineHandler, closure) = RoutineHandlerFactory.CreateRoutineHandler(
+                    shouldBufferVerbose,
+                    (verbose) => new RoutineClosure<UserContext>(userContext, verbose, container),
                     exceptionHandler,
-                    (verbose)=> new RoutineClosure<UserContext>(userContext, verbose, container),
-                    shouldBufferVerbose, loggingConfiguration.FinishActivity,
-                    testInputOutput, performanceCounter, activityLogger,
-                    dataLogger, input, 
-                    exceptionLogger, routineLogger.buffer, loggingVerboseConfiguration.ShouldVerboseWithStackTrace,
-                    bufferedVerboseLogger
+                    loggingConfiguration.FinishActivity,
+                    input, 
+                    activityLogger, dataLogger,
+                    bufferedVerboseLogger, 
+                    routineLogger.buffer, 
+                    loggingVerboseConfiguration.ShouldVerboseWithStackTrace, testInputOutput
                     );
 
                 Action<string> efDbContextVerbose=null;
@@ -283,13 +259,15 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             return (routineLogger, memberTag, containerFactory, userContext, input) =>
             {
+                var loggingConfiguration2 = loggingConfiguration ?? new LoggingConfiguration();
+                var loggingVerboseConfiguration2 = loggingVerboseConfiguration ?? new LoggingVerboseConfiguration();
                 var listLoggingAdapter = new ListLoggingAdapter(
                     logger,
                     routineLogger.CorrelationToken,
                     memberTag,
                     Markdown,
                     SerializeToJson,
-                    loggingConfiguration ?? new LoggingConfiguration(),
+                    loggingConfiguration2,
                     loggingPerformanceConfiguration ?? new LoggingPerformanceConfiguration()
                 );
 
@@ -300,27 +278,31 @@ namespace DashboardCode.AdminkaV1.Injected
                 var bufferedVerboseLogger = (IBufferedVerboseLogger)listLoggingAdapter;
                 var authenticationLogging = (IAuthenticationLogging)listLoggingAdapter;
 
-                Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
-                Action<long> performanceCounter = (ticks) => {; };
+                
 
-                var loggingVerboseConfiguration2 = loggingVerboseConfiguration ?? new LoggingVerboseConfiguration();
-                var shouldBufferVerbose = loggingVerboseConfiguration2.ShouldBufferVerbose;
                 var container = containerFactory.CreateContainer(memberTag, userContext);
+                Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true; // get from container
+
                 var exceptionHandler = new ExceptionHandler(
                    ex => exceptionLogger.LogException(DateTime.Now, ex),
                    ex => DefaultRoutineTagTransformException(ex, routineLogger.CorrelationToken, memberTag, Markdown)
                 );
-                var (routineHandler, closure) = RoutineHandlerManager.CreateRoutineHandler(
-                    exceptionHandler,
+                var shouldBufferVerbose = loggingVerboseConfiguration2.ShouldBufferVerbose;
+                var (routineHandler, closure) = RoutineHandlerFactory.CreateRoutineHandler(
+                    loggingVerboseConfiguration2.ShouldBufferVerbose,
                     (verbose) => new RoutineClosure<UserContext>(userContext, verbose, container),
-                    shouldBufferVerbose, loggingConfiguration.FinishActivity,
-                    testInputOutput, performanceCounter, activityLogger,
-                    dataLogger, input,  exceptionLogger, routineLogger.buffer, loggingVerboseConfiguration2.ShouldVerboseWithStackTrace,
-                    bufferedVerboseLogger
+                    exceptionHandler,
+                    loggingConfiguration2.FinishActivity,
+                    input, 
+                    activityLogger, dataLogger,
+                    bufferedVerboseLogger,
+                    routineLogger.buffer, 
+                    loggingVerboseConfiguration2.ShouldVerboseWithStackTrace, testInputOutput
                     );
 
                 Action<string> efDbContextVerbose = null;
-                if (shouldBufferVerbose) {
+                if (shouldBufferVerbose)
+                {
                     var loggerProviderConfiguration = closure.Resolve<LoggerProviderConfiguration>();
                     efDbContextVerbose = (loggerProviderConfiguration.Enabled) ? closure.Verbose : null;
                 }

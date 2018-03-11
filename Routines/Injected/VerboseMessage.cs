@@ -9,10 +9,10 @@ namespace DashboardCode.Routines.Injected
         public readonly string Message;
         public readonly StackTrace StackTrace;
 
-        public VerboseMessage(DateTime dateTime, string text, StackTrace stackTrace)
+        public VerboseMessage(DateTime dateTime, string message, StackTrace stackTrace)
         {
             DateTime = dateTime;
-            Message = text;
+            Message = message;
             StackTrace = stackTrace;
         }
     }

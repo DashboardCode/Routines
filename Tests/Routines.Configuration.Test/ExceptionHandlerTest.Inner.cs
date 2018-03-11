@@ -28,7 +28,7 @@ namespace DashboardCode.Routines.Configuration.Test
             catch (Exception ex)
             {
                 var st = ex.StackTrace;
-                if (!st.Contains("ExceptionHandlerTest.Inner.cs:line 19"))
+                if (!st.Contains("ExceptionHandlerTest.Inner.cs:line 22"))
                 {
                     throw;
                 }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers;
+using System.Threading.Tasks;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
 {
@@ -25,7 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
         }
 
         [TestMethod]
-        public async void RolesIndex()
+        public async Task RolesIndex()
         {
             var httpRequestMessage = new HttpRequestMessage();
             var response = await client.SendAsync(httpRequestMessage);

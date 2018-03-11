@@ -71,39 +71,37 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         );
         #endregion
 
-        CrudRoutineControllerConsumer<User, int> consumer;
         Func<Task<IActionResult>> index;
         Func<Task<IActionResult>> details;
+        Func<Task<IActionResult>> edit;
+        Func<Task<IActionResult>> editConfirmed;
         public UsersController(IConfigurationRoot configurationRoot) :base(configurationRoot)
         {
-            consumer = new CrudRoutineControllerConsumer<User, int>(this, meta, (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem));
-            this.index   = CrudRoutineControllerConsumer<User, int>.ComposeIndex(this, meta.IndexIncludes);
-            //this.details = consumer.ComposeDetails();
+            Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
+            index   = CrudRoutineControllerConsumer<User, int>.ComposeIndex(this, meta.IndexIncludes);
+            details = CrudRoutineControllerConsumer<User, int>.ComposeDetails(
+                this, meta.DetailsIncludes, meta.KeyConverter, meta.FindPredicate);
+            edit = CrudRoutineControllerConsumer<User, int>.ComposeEdit(
+                this, meta.EditIncludes, meta.KeyConverter, meta.FindPredicate, meta.ReferencesCollection.PrepareOptions);
+            editConfirmed = CrudRoutineControllerConsumer<User, int>.ComposeEditConfirmed(
+                this, authorize, meta.Constructor, meta.FormFields, meta.HiddenFormFields, meta.DisabledFormFields, meta.ReferencesCollection.ParseRelated);
         }
 
         #region Details / Index
         public async Task<IActionResult> Details()
-        {
-            return await details();
-        }
+            => await details();
 
         public async Task<IActionResult> Index()
-        {
-            return await index();
-        }
+            => await index();
         #endregion
 
         #region Edit
         public async Task<IActionResult> Edit()
-        {
-            return await consumer.Edit();
-        }
-
+            => await edit();
+ 
         [HttpPost, ActionName(nameof(Edit)), ValidateAntiForgeryToken]
         public async Task<IActionResult> EditFormData()
-        {
-            return await consumer.EditConfirmed();
-        }
+            => await editConfirmed();
         #endregion
     }
 }

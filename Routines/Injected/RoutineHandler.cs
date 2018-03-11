@@ -14,9 +14,7 @@ namespace DashboardCode.Routines.Injected
     {
         private readonly TClosure closure;
         private readonly ExceptionHandler exceptionHandler;
-        private readonly Func<(Action, Action)> start;  // var (logOnSuccess, logOnFailure) = routineLogging.Compose(input);
-        //private readonly Action<object> logOnSuccess;
-        //private readonly Action onFailure;
+        private readonly Func<(Action, Action)> start;
         /// <summary>
         /// 
         /// </summary>
@@ -104,20 +102,18 @@ namespace DashboardCode.Routines.Injected
         }
     }
 
-    public class RoutineHandler<TClosure> : IRoutineHandler<TClosure>
+    public class RoutineHandlerVerbose<TClosure> : IRoutineHandler<TClosure>
     {
         private readonly TClosure closure;
         private readonly ExceptionHandler exceptionHandler;
-        private readonly Func<(Action<object>, Action)> start;  // var (logOnSuccess, logOnFailure) = routineLogging.Compose(input);
-        //private readonly Action<object> logOnSuccess;
-        //private readonly Action onFailure;
+        private readonly Func<(Action<object>, Action)> start; 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="closure"></param>
         /// <param name="exceptionHandler"></param>
         /// <param name="start">returns logOnSuccess and onFailure (Used for: a. finish activity record b. trigger buffer flash)</param>
-        public RoutineHandler(
+        public RoutineHandlerVerbose(
             TClosure closure,
             ExceptionHandler exceptionHandler,
             Func<(Action<object>, Action)> start)

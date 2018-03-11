@@ -136,14 +136,14 @@ namespace DashboardCode.Routines.AspNetCore
                         return new StatusCodeResult((int)HttpStatusCode.BadRequest);
                     if (getEntityResult.IsOk())
                     {
-                        void publishException(Exception ex) { addViewData("Exception", ex); }
+                        Action<Exception> publishException = (ex) => addViewData("Exception", ex);
                         try
                         {
                             var storageResult = storage.Handle(
                                 batch => save(entity, batch)
                             );
                             if (storageResult.IsOk())
-                                successView();
+                                return successView();
                             publishException(storageResult.Exception);
                             PublishResult(storageResult.Message, publishStorageError);
                         }

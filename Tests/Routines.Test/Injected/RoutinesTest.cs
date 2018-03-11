@@ -26,14 +26,19 @@ namespace DashboardCode.Routines.Injected.Test
                 loggingTransients.TransformException);
             var input = new { };
 
-            var (routineHandler, closure) = RoutineHandlerManager.CreateRoutineHandler(
-                    exceptionHandler,
+            var routineHandlerFactory = new RoutineHandlerFactory<CustomRoutineClosure>( ticks => {; });
+            var (routineHandler, closure) = routineHandlerFactory.CreateRoutineHandler(
+                    loggingTransients.ShouldBufferVerbose,
                     (verbose) => new CustomRoutineClosure(correlationToken, verbose),
-                    loggingTransients.ShouldBufferVerbose, finishActivity: true,
-                    testInputOutput, ticks => {; }, loggingTransients.BasicRoutineLoggingAdapter,
-                    loggingTransients.BasicRoutineLoggingAdapter, input,
-                    loggingTransients.BasicRoutineLoggingAdapter, routineLogger.buffer, shouldVerboseWithStackTrace:false,
-                    loggingTransients.BasicRoutineLoggingAdapter
+                    exceptionHandler,
+                    finishActivity: true,
+                    input,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    routineLogger.buffer, 
+                    shouldVerboseWithStackTrace: false,
+                    testInputOutput
                     );
 
             string result = null;
@@ -64,7 +69,6 @@ namespace DashboardCode.Routines.Injected.Test
             Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
                 (verbose)=>new RoutineClosure<UserContext>(userContext, verbose, null);
 
-            var activityState = new ActivityState(loggingTransients.BasicRoutineLoggingAdapter.LogActivityStart, loggingTransients.BasicRoutineLoggingAdapter.LogActivityFinish, ticks => {; });
             Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
             var routineLogger = new RoutineLogger(correlationToken);
             var exceptionHandler = new ExceptionHandler(
@@ -72,14 +76,19 @@ namespace DashboardCode.Routines.Injected.Test
                 loggingTransients.TransformException);
             var input = new { };
 
-            var (routineHandler, closure) = RoutineHandlerManager.CreateRoutineHandler(
-                    exceptionHandler,
+            var routineHandlerFactory = new RoutineHandlerFactory<RoutineClosure<UserContext>>(ticks => {; });
+            var (routineHandler, closure) = routineHandlerFactory.CreateRoutineHandler(
+                    loggingTransients.ShouldBufferVerbose,
                     (verbose) => new RoutineClosure<UserContext>(userContext, verbose, null),
-                    loggingTransients.ShouldBufferVerbose, finishActivity: true,
-                    testInputOutput, ticks => {; }, loggingTransients.BasicRoutineLoggingAdapter,
-                    loggingTransients.BasicRoutineLoggingAdapter, input,
-                    loggingTransients.BasicRoutineLoggingAdapter, routineLogger.buffer, shouldVerboseWithStackTrace: false,
-                    loggingTransients.BasicRoutineLoggingAdapter
+                    exceptionHandler,
+                    finishActivity: true,
+                    input,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    routineLogger.buffer, 
+                    shouldVerboseWithStackTrace: false,
+                    testInputOutput
                     );
 
             var userRoutineHandler = new UserRoutineHandler<UserContext>(
@@ -110,7 +119,6 @@ namespace DashboardCode.Routines.Injected.Test
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(memberTag, log);
 
-            var activityState = new ActivityState(loggingTransients.BasicRoutineLoggingAdapter.LogActivityStart, loggingTransients.BasicRoutineLoggingAdapter.LogActivityFinish, ticks => {; });
             Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
             var routineLogger = new RoutineLogger(correlationToken);
             var exceptionHandler = new ExceptionHandler(
@@ -118,21 +126,25 @@ namespace DashboardCode.Routines.Injected.Test
                 loggingTransients.TransformException
             );
             var input = new { };
-            var (routineHandler, closure) = RoutineHandlerManager.CreateRoutineHandler(
-                    exceptionHandler,
+            var routineHandlerFactory = new RoutineHandlerFactory<CustomRoutineClosure>(ticks => {; });
+            var (routineHandler, closure) = routineHandlerFactory.CreateRoutineHandler(
+                    loggingTransients.ShouldBufferVerbose,
                     (verbose) => new CustomRoutineClosure(correlationToken, verbose),
-                    loggingTransients.ShouldBufferVerbose, finishActivity: true,
-                    testInputOutput, ticks => {; }, loggingTransients.BasicRoutineLoggingAdapter,
-                    loggingTransients.BasicRoutineLoggingAdapter, input,
-                    loggingTransients.BasicRoutineLoggingAdapter, routineLogger.buffer, shouldVerboseWithStackTrace: false,
-                    loggingTransients.BasicRoutineLoggingAdapter
+                    exceptionHandler,
+                    finishActivity: true,
+                    input,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    routineLogger.buffer, 
+                    shouldVerboseWithStackTrace: false,
+                    testInputOutput
                     );
 
             try
             {
-                
                 routineHandler.Handle( c => {
-                        c.Verbose("verbose over custom container");
+                        c.Verbose("- test verbose");
                         throw new ApplicationException("failure");
                     }
                 );
@@ -141,7 +153,7 @@ namespace DashboardCode.Routines.Injected.Test
             {
                 if (ex.Message!="failure")
                     throw new ApplicationException("handle logging not working properly");
-                if (log.Count != 6)
+                if (log.Count != 5) /* start + exception + finish + input + test verbose */
                     throw new ApplicationException("handle logging not working properly");
             }
         }
@@ -164,8 +176,6 @@ namespace DashboardCode.Routines.Injected.Test
             var input = new { };
             try
             {
-                var activityState = new ActivityState(
-                    loggingTransients.BasicRoutineLoggingAdapter.LogActivityStart, loggingTransients.BasicRoutineLoggingAdapter.LogActivityFinish, ticks => {; });
                 Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
                 var routineLogger = new RoutineLogger(correlationToken);
                 var exceptionHandler = new ExceptionHandler(
@@ -173,45 +183,21 @@ namespace DashboardCode.Routines.Injected.Test
                     loggingTransients.TransformException
                 );
 
-                var (routineHandler, closure) = RoutineHandlerManager.CreateRoutineHandler(
-                    exceptionHandler,
+                var routineHandlerFactory = new RoutineHandlerFactory<RoutineClosure<UserContext>>(ticks => {; });
+
+                var (routineHandler, closure) = routineHandlerFactory.CreateRoutineHandler(
+                    loggingTransients.ShouldBufferVerbose,
                     (verbose) => new RoutineClosure<UserContext>(userContext, null/*no verbose logging for this test */, null),
-                    loggingTransients.ShouldBufferVerbose, finishActivity: true,
-                    testInputOutput, ticks => {; }, loggingTransients.BasicRoutineLoggingAdapter,
-                    loggingTransients.BasicRoutineLoggingAdapter, input,
-                    loggingTransients.BasicRoutineLoggingAdapter, routineLogger.buffer, shouldVerboseWithStackTrace: false,
-                    loggingTransients.BasicRoutineLoggingAdapter
+                    exceptionHandler,
+                    finishActivity: true,
+                    input,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    loggingTransients.BasicRoutineLoggingAdapter,
+                    routineLogger.buffer, 
+                    shouldVerboseWithStackTrace: false,
+                    testInputOutput
                     );
-
-                //IActivityGFactory activityGFactory;
-                //if (!loggingTransients.ShouldBufferVerbose)
-                //{
-                //    activityGFactory = new RoutineLogging(activityState, loggingTransients.BasicRoutineLoggingAdapter);
-                //}
-                //else
-                //{
-                //    var buffer =
-                //        new BufferedVerboseLogging(
-                //            routineLogger.buffer,
-                //            loggingTransients.BasicRoutineLoggingAdapter,
-                //            loggingTransients.BasicRoutineLoggingAdapter.LogBufferedVerbose,
-                //            loggingTransients.ShouldVerboseWithStackTrace
-                //        );
-                //    activityGFactory =
-                //     new BufferedRoutineLogging(
-                //        activityState,
-                //        buffer,
-                //        buffer.LogVerbose,
-                //        buffer.Flash,
-                //        testInputOutput);
-                //}
-
-
-                //var closure = new RoutineClosure<UserContext>(userContext, null/*no verbose logging for this memberTag */, null);
-
-                //var logOnStart = activityGFactory.Compose(input);
-
-                //var routineHandler = new RoutineHandler<RoutineClosure<UserContext>>(closure, exceptionHandler, logOnStart);
 
                 var userRoutineHandler = new UserRoutineHandler<UserContext>(
                     testRepositoryHandlerFactory,
@@ -231,7 +217,7 @@ namespace DashboardCode.Routines.Injected.Test
             {
                 if (ex.Message != "failure")
                     throw new ApplicationException("handle logging not working properly");
-                if (log.Count != 5)
+                if (log.Count != 4) /* start + exception + finish + input  */
                     throw new ApplicationException("handle logging not working properly");
             }
         }

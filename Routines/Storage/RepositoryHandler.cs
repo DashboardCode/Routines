@@ -73,10 +73,10 @@ namespace DashboardCode.Routines.Storage
                 return func(createRepository(dbContext));
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, Task<TOutput>> func)
         {
             using (var dbContext = dbContextFactory())
-                return func(createRepository(dbContext));
+                return await func(createRepository(dbContext));
         }
 
         public void Handle(Action<IRepository<TEntity>, RoutineClosure<TUserContext>> action)
@@ -91,10 +91,10 @@ namespace DashboardCode.Routines.Storage
                 return func(createRepository(dbContext), closure);
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task<TOutput>> func)
         {
             using (var dbContext = dbContextFactory())
-                return func(createRepository(dbContext), closure);
+                return await func(createRepository(dbContext), closure);
         }
     }
 
@@ -124,10 +124,10 @@ namespace DashboardCode.Routines.Storage
                 return func(dbContext);
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<TDbContext, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TDbContext, Task<TOutput>> func)
         {
             using (var dbContext = dbContextFactory())
-                return func(dbContext);
+                return await func(dbContext);
         }
 
         public void Handle(Action<TDbContext, RoutineClosure<TUserContext>> action)
@@ -142,10 +142,10 @@ namespace DashboardCode.Routines.Storage
                 return func(dbContext, closure);
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, Task<TOutput>> func)
         {
             using (var dbContext = dbContextFactory())
-                return func(dbContext, closure);
+                return await func(dbContext, closure);
         }
     }
 }

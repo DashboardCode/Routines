@@ -24,11 +24,12 @@ namespace DashboardCode.Routines.AspNetCore
             var watch = new Stopwatch();
             watch.Start();
 
+            // just before responce will be send to the client
             context.Response.OnStarting(state => {
                 var httpContext = (HttpContext)state;
                 var duration = watch.ElapsedMilliseconds.ToString();
                 httpContext.Response.Headers.Add(headerName, new[] { duration });
-                return Task.CompletedTask; // TODO: what is difference between .FromResult(0);  ?
+                return Task.CompletedTask; 
             }, context);
             await next(context);
         }
