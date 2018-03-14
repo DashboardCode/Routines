@@ -32,9 +32,9 @@ namespace DashboardCode.Routines.AspNetCore
                         {
                             sb.Append("[");
                             foreach (var v in value)
-                                sb.Append("\"").AppendJsonEscaped(value).Append("\"").Append(",");
+                                sb.Append("\"").AppendJsonEscaped(v).Append("\"").Append(",");
                             sb.Length--;
-                            sb.Append("]");
+                            sb.Append("],");
                         }
                     }
                     sb.Length--;

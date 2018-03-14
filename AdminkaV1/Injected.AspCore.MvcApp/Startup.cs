@@ -11,16 +11,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IHostingEnvironment hostingEnvironment)
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
+                .SetBasePath(hostingEnvironment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             ConfigurationRoot = builder.Build();
 
-            if (env.IsDevelopment())
+            if (hostingEnvironment.IsDevelopment())
                 builder.AddUserSecrets<Startup>();
         }
 
@@ -30,7 +30,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
-
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
@@ -48,8 +47,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceCollection services)
         {
-            loggerFactory.AddConsole(ConfigurationRoot.GetSection("Logging"));
+            var configurationSection = ConfigurationRoot.GetSection("Logging");
+            loggerFactory.AddConsole(configurationSection);
             loggerFactory.AddDebug();
+
+            // TODO: experiment with ETW 
+            // https://docs.microsoft.com/en-us/dotnet/framework/wcf/samples/etw-tracing
+            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?tabs=aspnetcore2x
+            // logging.AddEventSourceLogger(); //  Microsoft.Extensions.Logging.EventSource 
 
             if (env.IsDevelopment())
             {
@@ -60,23 +65,15 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            
             app.UseStaticFiles();
 
             app.UseSession();
 
             app.UseMiddleware<DurationMiddleware>("X-AdminkaV1-Duration-MSec");
 
-            // TODO: next is easy way to add the header, unerstand how it works and why middleware is better
-            // Is use depricated ? 
-            // app.Use((context, next) => {
-            //    context.Response.Headers.Add("X-AdminakV1-Duration-MSec", new[] { "value" });
-            //    return next.Invoke();
-            // });
-
             app.UseMvc(routes =>
             {
-
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
@@ -85,8 +82,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                  name: "forms",
-                  template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                    name: "forms",
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
                 );
             });
         }
