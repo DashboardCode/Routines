@@ -19,9 +19,6 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             AuthenticationLogging = authenticationLogging;
             RoutineHandler = routineHandler;
             Verbose = verbose;
-
-                //var loggerProviderConfiguration = closure.Resolve<LoggerProviderConfiguration>();
-                //var verbose = (loggerProviderConfiguration.Enabled) ? closure.Verbose : null;
         }
     }
 }

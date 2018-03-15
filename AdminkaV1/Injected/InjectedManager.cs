@@ -217,7 +217,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 var shouldBufferVerbose = loggingVerboseConfiguration.ShouldBufferVerbose;
                 var exceptionHandler = new ExceptionHandler(
                    ex => exceptionLogger.LogException(DateTime.Now, ex),
-                   ex => DefaultRoutineTagTransformException(ex, routineLogger.CorrelationToken, memberTag, Markdown)
+                   ex => routineTransformException(ex, routineLogger.CorrelationToken, memberTag, Markdown)
                 );
 
                 var (routineHandler, closure) = RoutineHandlerFactory.CreateRoutineHandler(

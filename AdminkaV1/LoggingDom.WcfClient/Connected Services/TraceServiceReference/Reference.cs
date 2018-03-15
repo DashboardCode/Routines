@@ -18,15 +18,43 @@ namespace TraceServiceReference
     internal partial class RoutineError : object
     {
         
+        private string AdminkaExceptionCodeField;
+        
+        private System.Guid CorrelationTokenField;
+        
         private System.Collections.Generic.Dictionary<string, string> DataField;
         
         private string DetailsField;
         
-        private string MessageField;
-        
         private TraceServiceReference.MemberTag MemberTagField;
         
-        private string AdminkaExceptionCodeField;
+        private string MessageField;
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        internal string AdminkaExceptionCode
+        {
+            get
+            {
+                return this.AdminkaExceptionCodeField;
+            }
+            set
+            {
+                this.AdminkaExceptionCodeField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        internal System.Guid CorrelationToken
+        {
+            get
+            {
+                return this.CorrelationTokenField;
+            }
+            set
+            {
+                this.CorrelationTokenField = value;
+            }
+        }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
         internal System.Collections.Generic.Dictionary<string, string> Data
@@ -55,34 +83,6 @@ namespace TraceServiceReference
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        internal string Message
-        {
-            get
-            {
-                return this.MessageField;
-            }
-            set
-            {
-                this.MessageField = value;
-            }
-        }
-
-
-        private System.Guid CorrelationTokenField;
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        internal System.Guid CorrelationToken
-        {
-            get
-            {
-                return this.CorrelationTokenField;
-            }
-            set
-            {
-                this.CorrelationTokenField = value;
-            }
-        }
-
-        [System.Runtime.Serialization.DataMemberAttribute()]
         internal TraceServiceReference.MemberTag MemberTag
         {
             get
@@ -96,32 +96,31 @@ namespace TraceServiceReference
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        internal string AdminkaExceptionCode
+        internal string Message
         {
             get
             {
-                return this.AdminkaExceptionCodeField;
+                return this.MessageField;
             }
             set
             {
-                this.AdminkaExceptionCodeField = value;
+                this.MessageField = value;
             }
         }
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("dotnet-svcutil", "0.5.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name= "MemberTag", Namespace="https://adminka-v1.dashboardcode.com")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="MemberTag", Namespace="https://adminka-v1.dashboardcode.com")]
     internal partial class MemberTag : object
     {
-       
+        
         private string MemberField;
         
         private string NamespaceField;
         
         private string TypeField;
-
-       
+        
         [System.Runtime.Serialization.DataMemberAttribute()]
         internal string Member
         {

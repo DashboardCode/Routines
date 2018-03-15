@@ -16,7 +16,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
             var client = new TraceServiceClient();
             try
             {
-                return await client.GetTraceAsync(correlationToken); 
+                return await client.GetTraceAsync(correlationToken);
             }
             catch (FaultException<RoutineError> ex)
             {
