@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Jobs;
 
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1;
@@ -36,7 +35,8 @@ namespace BenchmarkAdminka
                 ZoningSharedSourceProjectManager.GetConfiguration(),
                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineLogList), new { });
+                "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineLogList), 
+                new { });
             routine.Handle(container =>
             {
 
@@ -72,9 +72,10 @@ namespace BenchmarkAdminka
                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryLogList), new { });
-            routine.HandleRepository<ParentRecord>(repository =>
+            routine.HandleRepository<ParentRecord>((repository, closure) =>
             {
                 var parentRecords = repository.List();
+                closure.Verbose?.Invoke("sample");
             });
         }
 
@@ -96,9 +97,11 @@ namespace BenchmarkAdminka
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryExceptionLogList), new { });
             try
             {
-                routine.HandleRepository<ParentRecord>(repository =>
+                IReadOnlyCollection<ParentRecord> parentRecords;
+                routine.HandleRepository<ParentRecord>( (repository,closure) =>
                 {
-                    var parentRecords = repository.List();
+                    parentRecords = repository.List();
+                    closure.Verbose?.Invoke("sample");
                     throw new Exception("Test exception");
                 });
             }

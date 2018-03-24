@@ -7,7 +7,8 @@ namespace BenchmarkAdminka
         static void Main(string[] args)
         {
             var b = new BenchmarkAdminkaRoutineNLogLogger();
-            //b.MeasureRoutineRepositoryExceptionNLog();
+            //b.MeasureRoutineRepositoryNLog();
+            b.MeasureRoutineRepositoryExceptionMailNLog();
             //b.MeasureRoutineNLog();
             //b.MeasureRoutineNoAuthorizationNLog();
             //BenchmarkRunner.Run<BenchmarkAdminkaRoutineListLogger>();

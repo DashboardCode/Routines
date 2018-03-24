@@ -21,28 +21,12 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IConfigurationContainerFactory configurationFactory,
-            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
-            MemberTag memberTag,
-            object input
-        ) : this(
-                adminkaStorageConfiguration,
-                loggingTransientsFactory,
-                InjectedManager.CreateContainerFactory(configurationFactory),
-                Guid.NewGuid(),
-                memberTag,
-                InjectedManager.GetDefaultIdentity(),
-                input)
-        {
-        }
-        public AdminkaRoutineHandler(
-            AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory,
-            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             string @namespace, string controller, string action,
             object input
         ) : this(
                 adminkaStorageConfiguration,
-                loggingTransientsFactory,
+                composeLoggers,
                 InjectedManager.CreateContainerFactory(configurationFactory),
                 Guid.NewGuid(),
                 new MemberTag(@namespace, controller, action),
@@ -54,14 +38,14 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IConfigurationContainerFactory configurationFactory,
-            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             Guid correlationToken,
             MemberTag memberTag,
             IIdentity identity,
             object input
         ) : this(
                 adminkaStorageConfiguration,
-                loggingTransientsFactory,
+                composeLoggers,
                 InjectedManager.CreateContainerFactory(configurationFactory),
                 correlationToken,
                 memberTag,
@@ -69,10 +53,10 @@ namespace DashboardCode.AdminkaV1.Injected
                 input)
         {
         }
-        // Used as stage to prepare containerFactory, memberTag
+        // Used as stage to prepare containerFactory, userContest
         private AdminkaRoutineHandler(
              AdminkaStorageConfiguration adminkaStorageConfiguration,
-             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
+             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
              ContainerFactory<UserContext> containerFactory,
              Guid correlationToken,
              MemberTag memberTag,
@@ -81,14 +65,14 @@ namespace DashboardCode.AdminkaV1.Injected
         ) : this(
                 adminkaStorageConfiguration,
                 InjectedManager.DefaultRoutineTagTransformException,
-                loggingTransientsFactory,
+                composeLoggers,
                 containerFactory,
                 correlationToken,
                 memberTag,
                 InjectedManager.GetUserContext(
                     new AdminkaRoutineLogger(
-                        correlationToken, InjectedManager.DefaultRoutineTagTransformException, loggingTransientsFactory), 
-                    loggingTransientsFactory, adminkaStorageConfiguration, 
+                        correlationToken, InjectedManager.DefaultRoutineTagTransformException, composeLoggers, InjectedManager.CountDuration), 
+                    composeLoggers, adminkaStorageConfiguration, 
                     containerFactory,
                     memberTag, identity, CultureInfo.CurrentCulture),
                 input)
@@ -102,14 +86,14 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IConfigurationContainerFactory configurationFactory,
-            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             MemberTag memberTag,
             UserContext userContext,
             object input
             ) : this(
                 adminkaStorageConfiguration,
                 InjectedManager.DefaultRoutineTagTransformException,
-                loggingTransientsFactory,
+                composeLoggers,
                 InjectedManager.CreateContainerFactory(configurationFactory),
                 Guid.NewGuid(),
                 memberTag,
@@ -162,7 +146,7 @@ namespace DashboardCode.AdminkaV1.Injected
         private AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
-            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             ContainerFactory<UserContext> containerFactory,
             Guid correaltionToken,
             MemberTag memberTag,
@@ -170,7 +154,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
         ) : this(
                 adminkaStorageConfiguration,
-                new AdminkaRoutineLogger(correaltionToken, routineTransformException, loggingTransientsFactory),
+                new AdminkaRoutineLogger(correaltionToken, routineTransformException, composeLoggers, InjectedManager.CountDuration),
                 containerFactory,
                 memberTag, 
                 userContext,
@@ -194,7 +178,6 @@ namespace DashboardCode.AdminkaV1.Injected
                 )
         {
         }
-
 
         IAuthenticationLogging authenticationLogging;
         internal protected AdminkaRoutineHandler(

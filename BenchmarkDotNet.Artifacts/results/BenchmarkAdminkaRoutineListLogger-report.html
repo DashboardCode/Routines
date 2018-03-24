@@ -16,19 +16,23 @@
 BenchmarkDotNet=v0.10.13, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.309)
 Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical cores and 4 physical cores
 Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
-  [Host] : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
-  Clr    : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+  [Host]     : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+  Job-GGHVXY : .NET Core 2.0.5 (CoreCLR 4.6.26020.03, CoreFX 4.6.26018.01), 64bit RyuJIT
+  Clr        : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
 </code></pre>
-<pre><code>Job=Clr  Runtime=Clr  
-</code></pre>
+<pre><code></code></pre>
 
 <table>
-<thead><tr><th>                            Method</th><th> Mean</th><th>Error</th><th>StdDev</th><th>  Min</th><th>  Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
+<thead><tr><th>                            Method</th><th>Job</th><th>Runtime</th><th>Toolchain</th><th> Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>  Min</th><th>  Max</th><th>Rank</th><th>Gen 0</th><th>Allocated</th>
 </tr>
-</thead><tbody><tr><td>MeasureRoutineLogList</td><td>5,772.98 us</td><td>139.1975 us</td><td>116.2362 us</td><td>5,625.90 us</td><td>6,085.68 us</td><td>5,737.06 us</td><td>2</td><td>164.0625</td><td>527.62 KB</td>
-</tr><tr><td>MeasureRoutineNoAuthorizationLogList</td><td>39.23 us</td><td>0.7598 us</td><td>0.8130 us</td><td>38.19 us</td><td>40.90 us</td><td>39.03 us</td><td>1</td><td>5.5542</td><td>17.19 KB</td>
-</tr><tr><td>MeasureRoutineRepositoryLogList</td><td>6,384.86 us</td><td>125.3799 us</td><td>272.5656 us</td><td>5,827.29 us</td><td>7,002.67 us</td><td>6,389.52 us</td><td>3</td><td>187.5000</td><td>598.62 KB</td>
-</tr><tr><td>MeasureRoutineRepositoryExceptionLogList</td><td>7,177.40 us</td><td>122.0751 us</td><td>108.2164 us</td><td>7,008.69 us</td><td>7,407.82 us</td><td>7,177.67 us</td><td>4</td><td>195.3125</td><td>618.71 KB</td>
+</thead><tbody><tr><td>MeasureRoutineLogList</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>5,211.88 us</td><td>134.5184 us</td><td>377.2040 us</td><td>5,214.65 us</td><td>4,639.13 us</td><td>6,376.98 us</td><td>4</td><td>85.9375</td><td>287.59 KB</td>
+</tr><tr><td>MeasureRoutineNoAuthorizationLogList</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>13.71 us</td><td>0.2588 us</td><td>0.2542 us</td><td>13.70 us</td><td>13.39 us</td><td>14.36 us</td><td>1</td><td>2.2583</td><td>6.94 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryLogList</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>5,749.37 us</td><td>155.5720 us</td><td>443.8556 us</td><td>5,641.79 us</td><td>5,166.67 us</td><td>6,907.78 us</td><td>5</td><td>101.5625</td><td>323.23 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionLogList</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>8,243.15 us</td><td>169.1563 us</td><td>427.4796 us</td><td>8,076.62 us</td><td>7,730.21 us</td><td>9,576.97 us</td><td>7</td><td>140.6250</td><td>440.65 KB</td>
+</tr><tr><td>MeasureRoutineLogList</td><td>Clr</td><td>Clr</td><td>Default</td><td>4,761.33 us</td><td>93.3273 us</td><td>111.0995 us</td><td>4,738.47 us</td><td>4,557.32 us</td><td>5,003.88 us</td><td>3</td><td>93.7500</td><td>288.88 KB</td>
+</tr><tr><td>MeasureRoutineNoAuthorizationLogList</td><td>Clr</td><td>Clr</td><td>Default</td><td>21.97 us</td><td>0.1534 us</td><td>0.1360 us</td><td>21.94 us</td><td>21.77 us</td><td>22.27 us</td><td>2</td><td>2.8687</td><td>8.9 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryLogList</td><td>Clr</td><td>Clr</td><td>Default</td><td>5,267.90 us</td><td>100.9269 us</td><td>116.2276 us</td><td>5,264.39 us</td><td>4,997.40 us</td><td>5,501.40 us</td><td>4</td><td>93.7500</td><td>327.01 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionLogList</td><td>Clr</td><td>Clr</td><td>Default</td><td>6,202.20 us</td><td>123.9406 us</td><td>169.6513 us</td><td>6,164.96 us</td><td>5,947.54 us</td><td>6,549.13 us</td><td>6</td><td>125.0000</td><td>396.54 KB</td>
 </tr></tbody></table>
 </body>
 </html>

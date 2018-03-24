@@ -23,16 +23,18 @@ Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>                         Method</th><th>Job</th><th>Runtime</th><th>Toolchain</th><th>  Mean</th><th>Error</th><th> StdDev</th><th>   Min</th><th>   Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Allocated</th>
+<thead><tr><th>                             Method</th><th>Job</th><th>Runtime</th><th>Toolchain</th><th> Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>  Min</th><th>  Max</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Allocated</th>
 </tr>
-</thead><tbody><tr><td>MeasureRoutineNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>N/A</td><td>N/A</td><td>N/A</td>
-</tr><tr><td>MeasureRoutineNoAuthorizationNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>29.10 us</td><td>0.5776 us</td><td>0.6180 us</td><td>28.22 us</td><td>30.67 us</td><td>28.95 us</td><td>1</td><td>3.8147</td><td>-</td><td>12089 B</td>
-</tr><tr><td>MeasureRoutineRepositoryNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>6,533.13 us</td><td>127.7631 us</td><td>131.2033 us</td><td>6,278.30 us</td><td>6,828.75 us</td><td>6,505.27 us</td><td>5</td><td>179.6875</td><td>-</td><td>587770 B</td>
-</tr><tr><td>MeasureRoutineRepositoryExceptionNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>9,071.48 us</td><td>180.0266 us</td><td>184.8740 us</td><td>8,776.26 us</td><td>9,459.24 us</td><td>9,059.94 us</td><td>6</td><td>203.1250</td><td>-</td><td>665821 B</td>
-</tr><tr><td>MeasureRoutineNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>25,964.08 us</td><td>518.0102 us</td><td>1,241.1193 us</td><td>23,859.87 us</td><td>29,295.83 us</td><td>25,701.05 us</td><td>7</td><td>406.2500</td><td>156.2500</td><td>2015429 B</td>
-</tr><tr><td>MeasureRoutineNoAuthorizationNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>38.53 us</td><td>0.3485 us</td><td>0.2910 us</td><td>38.08 us</td><td>39.06 us</td><td>38.60 us</td><td>2</td><td>5.5542</td><td>-</td><td>17567 B</td>
-</tr><tr><td>MeasureRoutineRepositoryNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>6,132.10 us</td><td>63.5267 us</td><td>53.0477 us</td><td>6,043.90 us</td><td>6,237.45 us</td><td>6,130.68 us</td><td>3</td><td>187.5000</td><td>7.8125</td><td>612070 B</td>
-</tr><tr><td>MeasureRoutineRepositoryExceptionNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>6,232.87 us</td><td>123.7313 us</td><td>96.6013 us</td><td>6,107.25 us</td><td>6,339.87 us</td><td>6,263.40 us</td><td>4</td><td>195.3125</td><td>-</td><td>633272 B</td>
+</thead><tbody><tr><td>MeasureRoutineNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>6,604.9 us</td><td>137.43 us</td><td>321.24 us</td><td>6,468.3 us</td><td>6,175.1 us</td><td>7,461.8 us</td><td>3</td><td>109.3750</td><td>-</td><td>355.04 KB</td>
+</tr><tr><td>MeasureRoutineNoAuthorizationNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>522.6 us</td><td>24.83 us</td><td>73.20 us</td><td>487.9 us</td><td>439.8 us</td><td>719.0 us</td><td>1</td><td>12.6953</td><td>-</td><td>40.71 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>7,501.3 us</td><td>165.74 us</td><td>403.45 us</td><td>7,346.5 us</td><td>7,009.6 us</td><td>8,642.7 us</td><td>4</td><td>125.0000</td><td>-</td><td>390.2 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>12,332.4 us</td><td>243.75 us</td><td>407.25 us</td><td>12,276.6 us</td><td>11,621.4 us</td><td>13,435.9 us</td><td>5</td><td>187.5000</td><td>62.5000</td><td>939.45 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionMailNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>41,304.1 us</td><td>818.61 us</td><td>1,762.15 us</td><td>40,919.7 us</td><td>38,778.5 us</td><td>46,315.1 us</td><td>9</td><td>250.0000</td><td>-</td><td>778.65 KB</td>
+</tr><tr><td>MeasureRoutineNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>14,350.0 us</td><td>273.71 us</td><td>417.98 us</td><td>14,319.1 us</td><td>13,713.3 us</td><td>15,633.5 us</td><td>6</td><td>109.3750</td><td>-</td><td>356.53 KB</td>
+</tr><tr><td>MeasureRoutineNoAuthorizationNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>4,518.4 us</td><td>85.95 us</td><td>105.55 us</td><td>4,504.6 us</td><td>4,332.2 us</td><td>4,766.4 us</td><td>2</td><td>7.8125</td><td>-</td><td>42.3 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>15,726.6 us</td><td>340.56 us</td><td>605.35 us</td><td>15,607.6 us</td><td>14,862.0 us</td><td>17,456.0 us</td><td>7</td><td>125.0000</td><td>-</td><td>394.01 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>17,368.6 us</td><td>341.45 us</td><td>689.74 us</td><td>17,215.8 us</td><td>16,472.3 us</td><td>19,646.1 us</td><td>8</td><td>250.0000</td><td>62.5000</td><td>878.01 KB</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionMailNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>45,682.7 us</td><td>1,021.34 us</td><td>1,291.67 us</td><td>45,709.5 us</td><td>42,803.5 us</td><td>48,991.7 us</td><td>10</td><td>187.5000</td><td>-</td><td>752.15 KB</td>
 </tr></tbody></table>
 </body>
 </html>

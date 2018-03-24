@@ -35,13 +35,13 @@ namespace DashboardCode.Routines.Configuration.Test
             var t1 = container.Resolve<LoggingConfiguration>();
             var t2 = container.Resolve<LoggingThresholdConfiguration>();
             if (!(t1.Output == false && t2.ThresholdSec == (decimal)0.1  ))
-                throw new Exception("Test fails");
+                throw new Exception("Test fails 1");
 
             var containerS = new WrappedContainer(nameof(ConfigurationTest), nameof(TestContainerResolve), "superuser");
             var t1s = containerS.Resolve<LoggingConfiguration>();
             var t2s = containerS.Resolve<LoggingThresholdConfiguration>();
             if (!(t1s.Output == true && t2s.ThresholdSec == (decimal)0.5))
-                throw new Exception("Test fails");
+                throw new Exception("Test fails 2");
         }
 
 #if NETCOREAPP1_1 || NETCOREAPP2_0

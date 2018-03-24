@@ -149,6 +149,13 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             return SerializationManager.DeserializeJson<T>(json);
         }
+        class JsonDeserializerGFactory : IGFactory<string>
+        {
+            public T Create<T>(string json) =>
+                DeserializeJson<T>(json);
+        }
+        static readonly JsonDeserializerGFactory jsonDeserializerGFactory = new JsonDeserializerGFactory();
+
         public static string SerializeToJson(object o)
         {
             return SerializationManager.SerializeToJson(o);
@@ -186,8 +193,13 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
         // TODO: Performance counters
-        public static readonly RoutineHandlerFactory<RoutineClosure<UserContext>> RoutineHandlerFactory = 
-            new RoutineHandlerFactory<RoutineClosure<UserContext>>((ticks) => {; });
+        // public static readonly RoutineHandlerFactory<RoutineClosure<UserContext>> RoutineHandlerFactory = 
+        //    new RoutineHandlerFactory<RoutineClosure<UserContext>>((ticks) => {;});
+
+        public static void CountDuration(long ticks)
+        {
+
+        }
 
         public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeNLogMemberLogger()
         {
@@ -207,30 +219,20 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         #endregion
 
-
-
-        class JsonDeserializer : IGFactory<string>
-        {
-            public T Create<T>(string json) =>
-                DeserializeJson<T>(json);
-        }
-        static readonly JsonDeserializer jsonDeserializer = new JsonDeserializer();
-
         public static string GetVerboseLoggingFlag(UserContext userContext) =>
             (userContext?.User?.HasPrivilege(Privilege.VerboseLogging) ?? false) ? Privilege.VerboseLogging : null;
-        
 
         public static ContainerFactory<UserContext> CreateContainerFactory(IConfigurationContainerFactory configurationFactory) =>
             new ContainerFactory<UserContext>(
                 configurationFactory,
                 GetVerboseLoggingFlag,
-                jsonDeserializer);
+                jsonDeserializerGFactory);
 
         public static IContainer CreateContainer(IConfigurationContainerFactory configurationFactory, MemberTag memberTag, UserContext userContext) =>
              new ContainerFactory<UserContext>(
                  configurationFactory,
                  GetVerboseLoggingFlag,
-                 jsonDeserializer).CreateContainer(memberTag, userContext);
+                 jsonDeserializerGFactory).CreateContainer(memberTag, userContext);
 
         public static UserContext GetUserContext(
                 AdminkaRoutineLogger routineLogger,
@@ -267,7 +269,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 {
                     var adConfiguration = closure.Resolve<AdConfiguration>();
                     bool useAdAuthorization = adConfiguration.UseAdAuthorization;
-                    closure?.Verbose($"useAdAuthorization={useAdAuthorization}");
+                    closure.Verbose?.Invoke($"useAdAuthorization={useAdAuthorization}");
                     User @value;
                     if (useAdAuthorization)
                     {

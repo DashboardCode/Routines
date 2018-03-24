@@ -12,12 +12,15 @@ namespace DashboardCode.AdminkaV1.Injected
     {
         readonly Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers;
         readonly Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException;
+        readonly Action<long> countDuration;
         public AdminkaRoutineLogger(
             Guid correlationToken,
             Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
-            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
+            Action<long> countDuration
             ) : base(correlationToken)
         {
+            this.countDuration = countDuration;
             this.composeLoggers = composeLoggers;
             this.routineTransformException = routineTransformException;
         }
@@ -34,8 +37,8 @@ namespace DashboardCode.AdminkaV1.Injected
 
             Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) =>
             {
-                string flashBufferRuleText = loggingVerboseConfiguration.FlashBufferRule;
-                if (string.IsNullOrEmpty(flashBufferRuleText))
+                string flashRuleText = loggingVerboseConfiguration.FlashRule;
+                if (string.IsNullOrEmpty(flashRuleText))
                     return false;
                 if (!loggingVerboseConfiguration.Input && !loggingVerboseConfiguration.Output && !loggingVerboseConfiguration.Verbose)
                     return false;
@@ -44,7 +47,9 @@ namespace DashboardCode.AdminkaV1.Injected
             };
 
             var (memberLogger, authenticationLogging) = composeLoggers(base.CorrelationToken, memberTag);
-            var bufferedMemberLogger = base.CreateMemberLogger(memberLogger, loggingVerboseConfiguration.ShouldVerboseWithStackTrace);
+            var bufferedMemberLogger = base.CreateMemberLogger(memberLogger, 
+                loggingVerboseConfiguration.ShouldVerboseWithStackTrace,
+                loggingConfiguration.StartActivity);
 
             var activityLogger = (IActivityLogger)bufferedMemberLogger;
             var dataLogger = (IDataLogger)bufferedMemberLogger;
@@ -56,7 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected
                ex => routineTransformException(ex, base.CorrelationToken, memberTag, InjectedManager.Markdown)
             );
 
-            var (routineHandler, closure) = InjectedManager.RoutineHandlerFactory.CreateRoutineHandler(
+            var (routineHandler, closure) = CreateRoutineHandler(
                 enableVerbose,
                 logVerbose => new RoutineClosure<UserContext>(userContext, logVerbose, container),
                 exceptionHandler,
@@ -67,9 +72,9 @@ namespace DashboardCode.AdminkaV1.Injected
                 (dateTime, o) => dataLogger.Output(dateTime, o),
                 memberTag,
                 bufferedMemberLogger.LogVerbose,
-                base.Flash,
                 loggingVerboseConfiguration.ShouldVerboseWithStackTrace,
-                testInputOutput
+                testInputOutput, 
+                countDuration
             );
 
             Action<string> efDbContextVerbose = null;

@@ -6,8 +6,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
     public class LoggingVerboseConfiguration :IProgress<string>
     {
         public bool Verbose { get; private set; } = false;
-        public string FlashBufferRuleLang        { get; private set; } = null;
-        public string FlashBufferRule            { get; private set; } = null;
+        public string FlashRuleLang        { get; private set; } = null;
+        public string FlashRule            { get; private set; } = null;
         public bool ShouldVerboseWithStackTrace { get; private set; } = false;
         public bool Input   { get; private set; } = true;
         public bool Output  { get; private set; } = false;
@@ -21,10 +21,10 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 if (dictionary.TryGetValue("ShouldVerboseWithStackTrace", out string verboseWithStackTrace))
                     ShouldVerboseWithStackTrace = bool.Parse(verboseWithStackTrace);
 
-                if (dictionary.TryGetValue("FlashBufferRuleLang", out string flashBufferRuleLang))
-                    FlashBufferRuleLang = flashBufferRuleLang;
-                if (dictionary.TryGetValue("FlashBufferRule", out string flashBufferRule))
-                    FlashBufferRule = flashBufferRule;
+                if (dictionary.TryGetValue("FlashRuleLang", out string flashRuleLang))
+                    FlashRuleLang = flashRuleLang;
+                if (dictionary.TryGetValue("FlashRule", out string flashRule))
+                    FlashRule = flashRule;
 
                 if (dictionary.TryGetValue("Input", out string input))
                     Input = bool.Parse(input);

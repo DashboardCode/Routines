@@ -9,16 +9,15 @@ Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
 
 
 ```
-|                                Method |     Job | Runtime |     Toolchain |         Mean |       Error |        StdDev |          Min |          Max |       Median | Rank |    Gen 0 |    Gen 1 | Allocated |
-|-------------------------------------- |-------- |-------- |-------------- |-------------:|------------:|--------------:|-------------:|-------------:|-------------:|-----:|---------:|---------:|----------:|
-|                    MeasureRoutineNLog | Default |    Core | .NET Core 2.0 |           NA |          NA |            NA |           NA |           NA |           NA |    ? |      N/A |      N/A |       N/A |
-|     MeasureRoutineNoAuthorizationNLog | Default |    Core | .NET Core 2.0 |     29.10 us |   0.5776 us |     0.6180 us |     28.22 us |     30.67 us |     28.95 us |    1 |   3.8147 |        - |   12089 B |
-|          MeasureRoutineRepositoryNLog | Default |    Core | .NET Core 2.0 |  6,533.13 us | 127.7631 us |   131.2033 us |  6,278.30 us |  6,828.75 us |  6,505.27 us |    5 | 179.6875 |        - |  587770 B |
-| MeasureRoutineRepositoryExceptionNLog | Default |    Core | .NET Core 2.0 |  9,071.48 us | 180.0266 us |   184.8740 us |  8,776.26 us |  9,459.24 us |  9,059.94 us |    6 | 203.1250 |        - |  665821 B |
-|                    MeasureRoutineNLog |     Clr |     Clr |       Default | 25,964.08 us | 518.0102 us | 1,241.1193 us | 23,859.87 us | 29,295.83 us | 25,701.05 us |    7 | 406.2500 | 156.2500 | 2015429 B |
-|     MeasureRoutineNoAuthorizationNLog |     Clr |     Clr |       Default |     38.53 us |   0.3485 us |     0.2910 us |     38.08 us |     39.06 us |     38.60 us |    2 |   5.5542 |        - |   17567 B |
-|          MeasureRoutineRepositoryNLog |     Clr |     Clr |       Default |  6,132.10 us |  63.5267 us |    53.0477 us |  6,043.90 us |  6,237.45 us |  6,130.68 us |    3 | 187.5000 |   7.8125 |  612070 B |
-| MeasureRoutineRepositoryExceptionNLog |     Clr |     Clr |       Default |  6,232.87 us | 123.7313 us |    96.6013 us |  6,107.25 us |  6,339.87 us |  6,263.40 us |    4 | 195.3125 |        - |  633272 B |
-
-Benchmarks with issues:
-  BenchmarkAdminkaRoutineNLogLogger.MeasureRoutineNLog: Job-GGHVXY(Runtime=Core, Toolchain=.NET Core 2.0)
+|                                    Method |     Job | Runtime |     Toolchain |        Mean |       Error |      StdDev |      Median |         Min |         Max | Rank |    Gen 0 |   Gen 1 | Allocated |
+|------------------------------------------ |-------- |-------- |-------------- |------------:|------------:|------------:|------------:|------------:|------------:|-----:|---------:|--------:|----------:|
+|                        MeasureRoutineNLog | Default |    Core | .NET Core 2.0 |  6,604.9 us |   137.43 us |   321.24 us |  6,468.3 us |  6,175.1 us |  7,461.8 us |    3 | 109.3750 |       - | 355.04 KB |
+|         MeasureRoutineNoAuthorizationNLog | Default |    Core | .NET Core 2.0 |    522.6 us |    24.83 us |    73.20 us |    487.9 us |    439.8 us |    719.0 us |    1 |  12.6953 |       - |  40.71 KB |
+|              MeasureRoutineRepositoryNLog | Default |    Core | .NET Core 2.0 |  7,501.3 us |   165.74 us |   403.45 us |  7,346.5 us |  7,009.6 us |  8,642.7 us |    4 | 125.0000 |       - |  390.2 KB |
+|     MeasureRoutineRepositoryExceptionNLog | Default |    Core | .NET Core 2.0 | 12,332.4 us |   243.75 us |   407.25 us | 12,276.6 us | 11,621.4 us | 13,435.9 us |    5 | 187.5000 | 62.5000 | 939.45 KB |
+| MeasureRoutineRepositoryExceptionMailNLog | Default |    Core | .NET Core 2.0 | 41,304.1 us |   818.61 us | 1,762.15 us | 40,919.7 us | 38,778.5 us | 46,315.1 us |    9 | 250.0000 |       - | 778.65 KB |
+|                        MeasureRoutineNLog |     Clr |     Clr |       Default | 14,350.0 us |   273.71 us |   417.98 us | 14,319.1 us | 13,713.3 us | 15,633.5 us |    6 | 109.3750 |       - | 356.53 KB |
+|         MeasureRoutineNoAuthorizationNLog |     Clr |     Clr |       Default |  4,518.4 us |    85.95 us |   105.55 us |  4,504.6 us |  4,332.2 us |  4,766.4 us |    2 |   7.8125 |       - |   42.3 KB |
+|              MeasureRoutineRepositoryNLog |     Clr |     Clr |       Default | 15,726.6 us |   340.56 us |   605.35 us | 15,607.6 us | 14,862.0 us | 17,456.0 us |    7 | 125.0000 |       - | 394.01 KB |
+|     MeasureRoutineRepositoryExceptionNLog |     Clr |     Clr |       Default | 17,368.6 us |   341.45 us |   689.74 us | 17,215.8 us | 16,472.3 us | 19,646.1 us |    8 | 250.0000 | 62.5000 | 878.01 KB |
+| MeasureRoutineRepositoryExceptionMailNLog |     Clr |     Clr |       Default | 45,682.7 us | 1,021.34 us | 1,291.67 us | 45,709.5 us | 42,803.5 us | 48,991.7 us |   10 | 187.5000 |       - | 752.15 KB |

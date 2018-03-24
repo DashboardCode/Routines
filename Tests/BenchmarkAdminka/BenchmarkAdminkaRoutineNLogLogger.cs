@@ -74,7 +74,7 @@ namespace BenchmarkAdminka
             routine.HandleRepository<ParentRecord>((repository, closure) =>
             {
                 parentRecords = repository.List();
-                closure.Verbose("sample");
+                closure.Verbose?.Invoke("sample");
             });
         }
 
@@ -97,7 +97,37 @@ namespace BenchmarkAdminka
                 routine.HandleRepository<ParentRecord>((repository, closure) =>
                 {
                     parentRecords = repository.List();
-                    closure.Verbose("sample");
+                    closure.Verbose?.Invoke("sample");
+                    throw new Exception("Test exception");
+                });
+            }
+            catch (Exception ex)
+            {
+                if (!ex.Message.Contains("Test exception"))
+                    throw new Exception("Not expected exception", ex);
+            }
+        }
+
+        /// <summary>
+        /// Measure speed of empty routine and exception handler
+        /// </summary>
+        [Benchmark]
+        public void MeasureRoutineRepositoryExceptionMailNLog()
+        {
+            //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
+            var routine = new AdminkaRoutineHandler(
+                ZoningSharedSourceProjectManager.GetConfiguration(),
+                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionMailNLog), new { });
+            try
+            {
+                IReadOnlyCollection<ParentRecord> parentRecords;
+                routine.HandleRepository<ParentRecord>((repository, closure) =>
+                {
+                    parentRecords = repository.List();
+                    closure.Verbose?.Invoke("sample");
                     throw new Exception("Test exception");
                 });
             }
