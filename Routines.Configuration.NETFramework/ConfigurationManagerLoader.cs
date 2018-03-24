@@ -13,6 +13,8 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         public ConfigurationManagerLoader(string sectionName = key)
         {
             var section = ConfigurationManager.GetSection(sectionName);
+            if (section == null)
+                throw new System.Exception($"Configuration section '{sectionName}' was not found");
             var routinesConfigurationSection = (RoutinesConfigurationSection)section;
             SetGetRoutineConfigurationRecords(((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineConfigurationRecord>());
         }

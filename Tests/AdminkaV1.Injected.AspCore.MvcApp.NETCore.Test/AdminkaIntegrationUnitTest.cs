@@ -89,7 +89,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var roleName = "TestIslandRole1";
 
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var configurationManagerLoader = new ConfigurationManagerLoader();
             var routine = new AdminkaRoutineHandler(
@@ -105,14 +105,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                     var res = storage.Handle(batch =>
                      {
                          var r = repository.Find(e => e.RoleName == roleName);
-                         if (r!=null)
-                            batch.Remove(r);
+                         if (r != null)
+                             batch.Remove(r);
                      });
                     if (!res.IsOk())
                         throw new Exception("Can't prepare role");
                 });
             });
-            
+
             var detailsHttpResponseMessage = httpClient.GetAsync("/Roles/Details/1").Result;
             detailsHttpResponseMessage.EnsureSuccessStatusCode();
             var contentDetails = await detailsHttpResponseMessage.Content.ReadAsStringAsync();
@@ -124,7 +124,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var createHtmlDocument = await createHttpResponseMessage.GetDocument();
 
             var (tokenkKey1, token1) = createHtmlDocument.GetRequestVerificationToken();
-            
+
             var formData1 = new Dictionary<string, string>
             {
                 {tokenkKey1, token1},
@@ -134,7 +134,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             };
 
             var formUrlEncodedContentC = new FormUrlEncodedContent(formData1);
-            var postRequest1 = new HttpRequestMessage(HttpMethod.Post, "/Roles/Create") {Content = formUrlEncodedContentC};
+            var postRequest1 = new HttpRequestMessage(HttpMethod.Post, "/Roles/Create") { Content = formUrlEncodedContentC };
 
             var createConfirmHttpResponseMessage = await httpClient.SendAsync(postRequest1);
             Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
@@ -144,9 +144,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             listHttpResponseMessage.EnsureSuccessStatusCode();
             var listHtmlDocument = await listHttpResponseMessage.GetDocument();
 
-            var id = listHtmlDocument.GetTableCell("adminka-roles-table", 2, cell=>cell==roleName, 1);
+            var id = listHtmlDocument.GetTableCell("adminka-roles-table", 2, cell => cell == roleName, 1);
 
-            var editHttpResponseMessage = httpClient.GetAsync("/Roles/Edit/"+id).Result;
+            var editHttpResponseMessage = httpClient.GetAsync("/Roles/Edit/" + id).Result;
             editHttpResponseMessage.EnsureSuccessStatusCode();
             var editHtmlDocument = await editHttpResponseMessage.GetDocument();
 
@@ -195,7 +195,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var roleName = "TestIslandRole1";
 
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var configurationManagerLoader = new ConfigurationManagerLoader();
             var routine = new AdminkaRoutineHandler(

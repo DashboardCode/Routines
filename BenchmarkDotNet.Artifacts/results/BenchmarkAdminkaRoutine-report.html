@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkAdminkaRoutine</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.13, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.309)
+Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical cores and 4 physical cores
+Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
+  [Host]     : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+  Job-GGHVXY : .NET Core 2.0.5 (CoreCLR 4.6.26020.03, CoreFX 4.6.26018.01), 64bit RyuJIT
+  Clr        : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>                            Method</th><th>Job</th><th>Runtime</th><th>Toolchain</th><th> Mean</th><th>Error</th><th>StdDev</th><th>  Min</th><th>   Max</th><th>Median</th><th>Rank</th>
+</tr>
+</thead><tbody><tr><td>MeasureRoutineLogList</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>5,108.77 us</td><td>74.9288 us</td><td>66.4224 us</td><td>4,984.59 us</td><td>5,211.27 us</td><td>5,095.07 us</td><td>3</td>
+</tr><tr><td>MeasureRoutineNoAuthorizationLogList</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>27.24 us</td><td>0.2750 us</td><td>0.2297 us</td><td>26.77 us</td><td>27.58 us</td><td>27.25 us</td><td>1</td>
+</tr><tr><td>MeasureRoutineRepositoryLogList</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>5,138.93 us</td><td>32.5367 us</td><td>28.8429 us</td><td>5,082.82 us</td><td>5,194.55 us</td><td>5,134.23 us</td><td>3</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionLogList</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>9,294.92 us</td><td>194.7855 us</td><td>451.4450 us</td><td>8,345.45 us</td><td>10,653.93 us</td><td>9,307.33 us</td><td>6</td>
+</tr><tr><td>MeasureRoutineLogList</td><td>Clr</td><td>Clr</td><td>Default</td><td>5,961.78 us</td><td>114.3685 us</td><td>122.3730 us</td><td>5,801.58 us</td><td>6,242.60 us</td><td>5,974.48 us</td><td>4</td>
+</tr><tr><td>MeasureRoutineNoAuthorizationLogList</td><td>Clr</td><td>Clr</td><td>Default</td><td>38.26 us</td><td>0.4310 us</td><td>0.4032 us</td><td>37.74 us</td><td>39.08 us</td><td>38.23 us</td><td>2</td>
+</tr><tr><td>MeasureRoutineRepositoryLogList</td><td>Clr</td><td>Clr</td><td>Default</td><td>6,004.13 us</td><td>119.7606 us</td><td>167.8876 us</td><td>5,751.06 us</td><td>6,364.04 us</td><td>5,988.05 us</td><td>4</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionLogList</td><td>Clr</td><td>Clr</td><td>Default</td><td>7,156.54 us</td><td>140.6980 us</td><td>206.2332 us</td><td>6,912.33 us</td><td>7,750.69 us</td><td>7,059.30 us</td><td>5</td>
+</tr></tbody></table>
+</body>
+</html>

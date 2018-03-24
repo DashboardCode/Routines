@@ -16,12 +16,12 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         }
 
         [TestMethod]
-        public void TestDatabaseFieldRequiredError() 
+        public void TestDatabaseFieldRequiredError()
         {
             var userContext = new UserContext("UnitTest");
 
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var routine = new AdminkaRoutineHandler(
                  ZoningSharedSourceProjectManager.GetConfiguration(),
@@ -46,8 +46,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t0 = new ParentRecord() { FieldA=null, FieldCA ="1", FieldCB1 = "2", FieldCB2 = "3" };
-                    var storageError = storage.Handle(batch =>batch.Add(t0));
+                    var t0 = new ParentRecord() { FieldA = null, FieldCA = "1", FieldCB1 = "2", FieldCB2 = "3" };
+                    var storageError = storage.Handle(batch => batch.Add(t0));
                     storageError.Assert(1, "FieldA", "Is required!", "Case isRequired string is null");
                 });
             });
@@ -89,7 +89,11 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t2 = new ParentRecord() { FieldA = "A", FieldB1 = "Ba", FieldB2 = "Ca",
+                    var t2 = new ParentRecord()
+                    {
+                        FieldA = "A",
+                        FieldB1 = "Ba",
+                        FieldB2 = "Ca",
                         FieldCA = "1a",
                         FieldCB1 = "2a",
                         FieldCB2 = "3a"
@@ -106,10 +110,10 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 {
                     var t2 = new ParentRecord()
                     {
-                        FieldA =  "Aa",
+                        FieldA = "Aa",
                         FieldB1 = "Ba",
                         FieldB2 = "Ca",
-                        FieldCA =  "1a",
+                        FieldCA = "1a",
                         FieldCB1 = "2",
                         FieldCB2 = "3"
                     };
@@ -123,7 +127,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t2 = new ParentRecord() {
+                    var t2 = new ParentRecord()
+                    {
                         FieldA = "Aa",
                         FieldB1 = "B",
                         FieldB2 = "C",
@@ -141,7 +146,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    var t2 = new ParentRecord() {
+                    var t2 = new ParentRecord()
+                    {
                         FieldA = "Aa",
                         FieldB1 = "Ba",
                         FieldB2 = "Ca",
@@ -156,8 +162,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 
             var typeRecord = new TypeRecord()
             {
-                TestTypeRecordId="0000",
-                TypeRecordName="TestType"
+                TestTypeRecordId = "0000",
+                TypeRecordName = "TestType"
             };
 
             routine.HandleOrmFactory((ormHandlerFactory) =>
@@ -165,7 +171,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
-                    storage.Handle(batch => batch.Add(typeRecord)).ThrowIfFailed("Can't add TestTypeRecord"); 
+                    storage.Handle(batch => batch.Add(typeRecord)).ThrowIfFailed("Can't add TestTypeRecord");
                 });
             });
 
@@ -175,7 +181,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 TypeRecordId = typeRecord.TestTypeRecordId,
                 XmlField1 = "notxml",
                 XmlField2 = "notxml"
-            }; 
+            };
 
             routine.HandleOrmFactory((ormHandlerFactory) =>
             {

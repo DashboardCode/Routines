@@ -11,50 +11,31 @@ using DashboardCode.Routines.Injected;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
-    class NLogLoggingAdapter : IRoutineLogger
+    class NLogLoggingAdapter : IMemberLogger
     {
         readonly Guid correlationToken;
-        readonly MemberTag memberTag;
-        readonly LoggingConfiguration loggingConfiguration;
-        //readonly LoggingPerformanceConfiguration loggingPerformanceConfiguration;
-        readonly Func<Exception, string> markdownException;
-        readonly Func<object, string> serializeObject;
         readonly Logger logger;
-        
+        readonly MemberTag memberTag;
+        readonly Func<Exception, string> markdownException;
+        readonly Func<object, int, bool, string> serializeObject;
+
         public NLogLoggingAdapter(
             Guid correlationToken,
             MemberTag memberTag,
             Func<Exception, string> markdownException,
-            Func<object, int, bool, string> serializeObject,
-            LoggingConfiguration loggingConfiguration//,
-            //LoggingPerformanceConfiguration loggingPerformanceConfiguration
+            Func<object, int, bool, string> serializeObject
             )
         {
             this.correlationToken = correlationToken;
             this.memberTag = memberTag;
-            this.markdownException = markdownException;
-
-            this.serializeObject = (o)=> {
-                try
-                {
-                    return serializeObject(o,1,true);
-                }
-                catch (Exception ex)
-                {
-                    LogException(DateTime.Now, ex);
-                    return null;
-                }
-            };
-            this.loggingConfiguration = loggingConfiguration;
-            //this.loggingPerformanceConfiguration = loggingPerformanceConfiguration;
             var loggerName = "Routine:"+ memberTag.GetCategory();
             logger = LogManager.GetLogger(loggerName); // ~0.5 ms
+            this.serializeObject = serializeObject;
+            this.markdownException = markdownException;
         }
 
         public void LogActivityStart(DateTime dateTime)
         {
-            if (loggingConfiguration.StartActivity)
-            {
                 var logEventInfo = new LogEventInfo()
                 {
                     Level = LogLevel.Trace,
@@ -65,12 +46,9 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 logEventInfo.Properties["Description"] = $"Start;";
                 logger.Log(logEventInfo);
             }
-        }
 
         public void LogActivityFinish(DateTime dateTime, TimeSpan timeSpan, bool isSuccess)
         {
-            if (loggingConfiguration.FinishActivity)
-            {
                 var message = (isSuccess ? "Finished" : "FAILURE") + "; " +
                 Math.Round(timeSpan.TotalMilliseconds) + "ms";
 
@@ -83,7 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 logEventInfo.AppendRoutineTag(correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"Finish";
                 logger.Log(logEventInfo);
-            }
+            
         }
 
         public void LogVerbose(DateTime dateTime, string message)
@@ -99,7 +77,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logger.Log(logEventInfo);
         }
 
-        public void LogBufferedVerbose(List<VerboseMessage> verboseMessages)
+        public void LogBufferedVerbose(IEnumerable<VerboseMessage> verboseMessages)
         {
             var count = verboseMessages.Count();
             var i = 1;
@@ -116,11 +94,12 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 logEventInfo.AppendRoutineTag(correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"BufferedVerbose";
                 logEventInfo.Properties["Buffered"] = $"{i++}/{count}";
-                if (verbose.StackTrace!=null)
+                if (verbose.StackTrace != null)
                     logEventInfo.Properties["StackTrace"] = verbose.StackTrace;
                 logger.Log(logEventInfo);
             }
         }
+            
 
         public void LogException(DateTime dateTime, Exception excepion)
         {
@@ -138,9 +117,9 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 
         public void Input(DateTime dateTime, object input)
         {
-            if (loggingConfiguration.Input)
+            try
             {
-                var message = serializeObject(input);
+                var message = serializeObject(input, 1, true);
                 var logEventInfo = new LogEventInfo()
                 {
                     Level = LogLevel.Info,
@@ -151,13 +130,17 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 logEventInfo.Properties["Description"] = $"Input";
                 logger.Log(logEventInfo);
             }
+            catch (Exception ex)
+            {
+                LogException(DateTime.Now, ex);
+            }
         }
 
         public void Output(DateTime dateTime, object output)
         {
-            if (loggingConfiguration.Output)
+            try
             {
-                var message = serializeObject(output);
+                var message = serializeObject(output, 1, true);
                 var logEventInfo = new LogEventInfo()
                 {
                     Level = LogLevel.Info,
@@ -167,6 +150,10 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 logEventInfo.AppendRoutineTag(correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"Output";
                 logger.Log(logEventInfo);
+            }
+            catch (Exception ex)
+            {
+                LogException(DateTime.Now, ex);
             }
         }
     }

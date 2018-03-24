@@ -15,12 +15,9 @@ $BenchmarkStartPath = $SolutionFolderPath
 $BenchmarkReportPath = "$SolutionFolderPath\BenchmarkDotNet.Artifacts\results"
 cd "$BenchmarkStartPath"
 
-# $dotnetPath = 'C:\Program Files\dotnet\dotnet.exe'
-# & $dotnetPath "$SolutionFolderPath\Tests\Benchmark\bin\Debug\netcoreapp1.1\Benchmark.dll"
-$snap1 = Get-ChildItem *.html -path "$BenchmarkReportPath"
-
 & "$BenchmarkProjectOutputPath\BenchmarkClassic.exe"
 
+$snap1 = Get-ChildItem *.html -path "$BenchmarkReportPath"
 $snap2 = Get-ChildItem *.html -path "$BenchmarkReportPath"
 if ($snap1 -eq $null -and $snap2 -ne $null){
 	Invoke-Item "$SolutionFolderPath\BenchmarkDotNet.Artifacts\results\*.html"

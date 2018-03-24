@@ -9,32 +9,33 @@ using DashboardCode.AdminkaV1;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.TestDom;
+using BenchmarkDotNet.Attributes.Exporters;
 
 namespace BenchmarkAdminka
 {
-    //[RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
-    [ClrJob(isBaseline: true), CoreJob]
-    //[HtmlExporter, MarkdownExporter]
-    //[MemoryDiagnoser]
-    [RankColumn]
-    public class BenchmarkAdminkaRoutine
+
+    [Config(typeof(MultipleRuntimesManualConfig))]
+    [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
+    [MemoryDiagnoser]
+    //[ClrJob(isBaseline: true), CoreJob]
+    [HtmlExporter, MarkdownExporter]
+    public class BenchmarkAdminkaRoutineNLogLogger
     {
-        
-        static BenchmarkAdminkaRoutine()
+
+        static BenchmarkAdminkaRoutineNLogLogger()
         {
             //TestIsland.Clear(); // main reason is to cache ef core db context
         }
 
         [Benchmark]
-        public void MeasureRoutineLogList()
+        public void MeasureRoutineNLog()
         {
-            var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var routine = new AdminkaRoutineHandler(
                 ZoningSharedSourceProjectManager.GetConfiguration(),
                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutine), nameof(MeasureRoutineLogList), new { });
+                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNLog), new { });
             routine.Handle(container =>
             {
 
@@ -42,16 +43,15 @@ namespace BenchmarkAdminka
         }
 
         [Benchmark]
-        public void MeasureRoutineNoAuthorizationLogList()
+        public void MeasureRoutineNoAuthorizationNLog()
         {
-            var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(
                 ZoningSharedSourceProjectManager.GetConfiguration(),
                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
-                new MemberTag("Test", nameof(BenchmarkAdminkaRoutine), nameof(MeasureRoutineNoAuthorizationLogList)), userContext, new { });
+                new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNoAuthorizationNLog)), userContext, new { });
             routine.Handle(container =>
             {
 
@@ -61,18 +61,20 @@ namespace BenchmarkAdminka
         /// Measure speed of empty routine
         /// </summary>
         [Benchmark]
-        public void MeasureRoutineRepositoryLogList()
+        public void MeasureRoutineRepositoryNLog()
         {
-            var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+            //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var routine = new AdminkaRoutineHandler(
                 ZoningSharedSourceProjectManager.GetConfiguration(),
                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutine), nameof(MeasureRoutineRepositoryLogList), new { });
-            routine.HandleRepository<ParentRecord>(repository =>
+                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryNLog), new { });
+            IReadOnlyCollection<ParentRecord> parentRecords;
+            routine.HandleRepository<ParentRecord>((repository, closure) =>
             {
-
+                parentRecords = repository.List();
+                closure.Verbose("sample");
             });
         }
 
@@ -80,29 +82,29 @@ namespace BenchmarkAdminka
         /// Measure speed of empty routine and exception handler
         /// </summary>
         [Benchmark]
-        public void MeasureRoutineRepositoryExceptionLogList()
+        public void MeasureRoutineRepositoryExceptionNLog()
         {
-            var logger = new List<string>();
-            var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger, loggingConfiguration);
-
+            //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var routine = new AdminkaRoutineHandler(
                 ZoningSharedSourceProjectManager.GetConfiguration(),
                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutine), nameof(MeasureRoutineRepositoryExceptionLogList), new { });
+                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionNLog), new { });
             try
             {
-                routine.HandleRepository<ParentRecord>(repository =>
+                IReadOnlyCollection<ParentRecord> parentRecords;
+                routine.HandleRepository<ParentRecord>((repository, closure) =>
                 {
-                    var parentRecords = repository.List();
+                    parentRecords = repository.List();
+                    closure.Verbose("sample");
                     throw new Exception("Test exception");
                 });
             }
             catch (Exception ex)
             {
-                if (logger.Count == 0)
-                    throw new Exception("no log entries?", ex);
+                if (!ex.Message.Contains("Test exception"))
+                    throw new Exception("Not expected exception", ex);
             }
         }
     }

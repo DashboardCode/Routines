@@ -13,7 +13,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public virtual void TestNLogSuccess() // 161 ms
         {
             var logger = new List<string>();
-            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input="Input text" }, readonlyDatabaseName);
+            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
             var x = routine.Handle(container =>
             {
                 container.Verbose("Test message");
@@ -27,7 +27,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
             try
-            { 
+            {
                 var x = routine.Handle<string>(container =>
                 {
                     container.Verbose("Test message");

@@ -11,13 +11,13 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public static void Reset(string databaseName)
         {
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var routine = new AdminkaInMemoryTestRoutine(
                 logger,
                 new MemberTag(typeof(TestIsland)),
                 new { input = "Input text" }, databaseName);
-            routine.HandleOrmFactory(( ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var typeRecord1 = new TypeRecord()
                 {
@@ -33,30 +33,30 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 
                 var parentRecord1 = new ParentRecord()
                 {
-                    FieldA   = "1_A",
-                    FieldB1  = "1_B",
-                    FieldB2  = "1_C",
-                    FieldCA  = "1_1",
+                    FieldA = "1_A",
+                    FieldB1 = "1_B",
+                    FieldB2 = "1_C",
+                    FieldCA = "1_1",
                     FieldCB1 = "1_2",
                     FieldCB2 = "1_3"
                 };
 
                 var parentRecord2 = new ParentRecord()
                 {
-                    FieldA   = "2_A",
-                    FieldB1  = "2_B",
-                    FieldB2  = "2_C",
-                    FieldCA  = "2_1",
+                    FieldA = "2_A",
+                    FieldB1 = "2_B",
+                    FieldB2 = "2_C",
+                    FieldCA = "2_1",
                     FieldCB1 = "2_2",
                     FieldCB2 = "2_3"
                 };
 
                 var parentRecord3 = new ParentRecord()
                 {
-                    FieldA   = "3_A",
-                    FieldB1  = "3_B",
-                    FieldB2  = "3_C",
-                    FieldCA  = "3_1",
+                    FieldA = "3_A",
+                    FieldB1 = "3_B",
+                    FieldB2 = "3_C",
+                    FieldCA = "3_1",
                     FieldCB1 = "3_2",
                     FieldCB2 = "3_3"
                 };
@@ -137,7 +137,8 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                 var parentRecordHierarchyRecord5 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord5.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
                 var manyManyHandler = ormHandlerFactory.Create<ParentRecordHierarchyRecord>();
                 manyManyHandler.Handle((repository, storage) =>
-                    storage.Handle(batch => {
+                    storage.Handle(batch =>
+                    {
                         batch.Add(parentRecordHierarchyRecord1); batch.Add(parentRecordHierarchyRecord2);
                         batch.Add(parentRecordHierarchyRecord3); batch.Add(parentRecordHierarchyRecord4);
                         batch.Add(parentRecordHierarchyRecord5);

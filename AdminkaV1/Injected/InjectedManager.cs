@@ -16,7 +16,6 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
-using DashboardCode.AdminkaV1.Injected.Performance;
 
 #if !NETSTANDARD2_0
     using System.Security.Principal;
@@ -186,139 +185,27 @@ namespace DashboardCode.AdminkaV1.Injected
             return exception;
         }
 
-        private static readonly RoutineHandlerFactory<RoutineClosure<UserContext>> RoutineHandlerFactory = new RoutineHandlerFactory<RoutineClosure<UserContext>>(
-            (ticks) => {; });
+        // TODO: Performance counters
+        public static readonly RoutineHandlerFactory<RoutineClosure<UserContext>> RoutineHandlerFactory = 
+            new RoutineHandlerFactory<RoutineClosure<UserContext>>((ticks) => {; });
 
-        public static Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> ComposeNLogTransients(
-                Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException
-            )
+        public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeNLogMemberLogger()
         {
-            return (routineLogger, memberTag, containerFactory, userContext, input) => {
-                var container = containerFactory.CreateContainer(memberTag, userContext);
-                var loggingConfiguration = container.Resolve<LoggingConfiguration>();
-
-                var nlogLoggingAdapter = new NLogLoggingAdapter(
-                        routineLogger.CorrelationToken,
-                        memberTag,
-                        Markdown,
-                        SerializeToJson,
-                        loggingConfiguration
-                    );
-
-                var activityLogger = (IActivityLogger)nlogLoggingAdapter;
-                var exceptionLogger = (IExceptionLogger)nlogLoggingAdapter;
-                var verboseLogger = (IVerboseLogger)nlogLoggingAdapter;
-                var dataLogger = (IDataLogger)nlogLoggingAdapter;
-                var bufferedVerboseLogger = (IBufferedVerboseLogger)nlogLoggingAdapter;
-
-                Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true; // get from container
-
-                var loggingVerboseConfiguration = container.Resolve<LoggingVerboseConfiguration>();
-                var shouldBufferVerbose = loggingVerboseConfiguration.ShouldBufferVerbose;
-                var exceptionHandler = new ExceptionHandler(
-                   ex => exceptionLogger.LogException(DateTime.Now, ex),
-                   ex => routineTransformException(ex, routineLogger.CorrelationToken, memberTag, Markdown)
-                );
-
-                var (routineHandler, closure) = RoutineHandlerFactory.CreateRoutineHandler(
-                    shouldBufferVerbose,
-                    (verbose) => new RoutineClosure<UserContext>(userContext, verbose, container),
-                    exceptionHandler,
-                    loggingConfiguration.FinishActivity,
-                    input, 
-                    activityLogger, dataLogger,
-                    bufferedVerboseLogger, 
-                    routineLogger.buffer, 
-                    loggingVerboseConfiguration.ShouldVerboseWithStackTrace, testInputOutput
-                    );
-
-                Action<string> efDbContextVerbose=null;
-                if (shouldBufferVerbose)
-                {
-                    var loggerProviderConfiguration = closure.Resolve<LoggerProviderConfiguration>();
-                    efDbContextVerbose = (loggerProviderConfiguration.Enabled) ? closure.Verbose : null;
-                }
-
+            return (correlationToken, memberTag) => {
+                var nLogLoggingAdapter = new NLogLoggingAdapter(correlationToken, memberTag, Markdown, SerializeToJson);
                 var authenticationLogging = new NLogAuthenticationLogging();
-                var routineLoggingTransients = new RoutineLoggingTransients(
-                    authenticationLogging,
-                    routineHandler,
-                    efDbContextVerbose
-                );
-
-                return routineLoggingTransients;
+                return (nLogLoggingAdapter, authenticationLogging);
             };
         }
 
-        public static Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> ComposeListLoggingTransients(
-            List<string> logger,
-            LoggingConfiguration loggingConfiguration = null,
-            LoggingVerboseConfiguration loggingVerboseConfiguration = null,
-            LoggingPerformanceConfiguration loggingPerformanceConfiguration = null
-            )
+        public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeListMemberLogger(List<string> logger)
         {
-            return (routineLogger, memberTag, containerFactory, userContext, input) =>
-            {
-                var loggingConfiguration2 = loggingConfiguration ?? new LoggingConfiguration();
-                var loggingVerboseConfiguration2 = loggingVerboseConfiguration ?? new LoggingVerboseConfiguration();
-                var listLoggingAdapter = new ListLoggingAdapter(
-                    logger,
-                    routineLogger.CorrelationToken,
-                    memberTag,
-                    Markdown,
-                    SerializeToJson,
-                    loggingConfiguration2,
-                    loggingPerformanceConfiguration ?? new LoggingPerformanceConfiguration()
-                );
-
-                var activityLogger = (IActivityLogger)listLoggingAdapter;
-                var exceptionLogger = (IExceptionLogger)listLoggingAdapter;
-                var verboseLogger = (IVerboseLogger)listLoggingAdapter;
-                var dataLogger = (IDataLogger)listLoggingAdapter;
-                var bufferedVerboseLogger = (IBufferedVerboseLogger)listLoggingAdapter;
-                var authenticationLogging = (IAuthenticationLogging)listLoggingAdapter;
-
-                
-
-                var container = containerFactory.CreateContainer(memberTag, userContext);
-                Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true; // get from container
-
-                var exceptionHandler = new ExceptionHandler(
-                   ex => exceptionLogger.LogException(DateTime.Now, ex),
-                   ex => DefaultRoutineTagTransformException(ex, routineLogger.CorrelationToken, memberTag, Markdown)
-                );
-                var shouldBufferVerbose = loggingVerboseConfiguration2.ShouldBufferVerbose;
-                var (routineHandler, closure) = RoutineHandlerFactory.CreateRoutineHandler(
-                    loggingVerboseConfiguration2.ShouldBufferVerbose,
-                    (verbose) => new RoutineClosure<UserContext>(userContext, verbose, container),
-                    exceptionHandler,
-                    loggingConfiguration2.FinishActivity,
-                    input, 
-                    activityLogger, dataLogger,
-                    bufferedVerboseLogger,
-                    routineLogger.buffer, 
-                    loggingVerboseConfiguration2.ShouldVerboseWithStackTrace, testInputOutput
-                    );
-
-                Action<string> efDbContextVerbose = null;
-                if (shouldBufferVerbose)
-                {
-                    var loggerProviderConfiguration = closure.Resolve<LoggerProviderConfiguration>();
-                    efDbContextVerbose = (loggerProviderConfiguration.Enabled) ? closure.Verbose : null;
-                }
-
-                var routineLoggingTransients = new RoutineLoggingTransients(
-                    authenticationLogging,
-                    routineHandler,
-                    efDbContextVerbose
-                );
-
-                return routineLoggingTransients;
+            return (correlationToken, memberTag) => {
+                var listLoggingAdapter = new ListLoggingAdapter(logger, correlationToken, memberTag, Markdown, SerializeToJson);
+                return (listLoggingAdapter, listLoggingAdapter);
             };
         }
-
-
-#endregion
+        #endregion
 
 
 
@@ -346,8 +233,8 @@ namespace DashboardCode.AdminkaV1.Injected
                  jsonDeserializer).CreateContainer(memberTag, userContext);
 
         public static UserContext GetUserContext(
-                RoutineLogger routineLogger,
-                Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext , object, RoutineLoggingTransients> loggingTransientsFactory,
+                AdminkaRoutineLogger routineLogger,
+                Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
                 AdminkaStorageConfiguration adminkaStorageConfiguration,
                 ContainerFactory<UserContext> containerFactory,
                 MemberTag memberTag,
@@ -360,11 +247,10 @@ namespace DashboardCode.AdminkaV1.Injected
 
             /// 1) it writes activity and verbose messages to log with its own MemberTag but with the parent's CorrelationToken, Guid.
             /// 2) subroutine uses the same configuration as parent routine but can "use different @for specification", means configuration can be overrided for "user"
-            
+
             var routine = new AdminkaRoutineHandler(
                 adminkaStorageConfiguration,
                 routineLogger,
-                loggingTransientsFactory,
                 containerFactory,
                 memberTag2,
                 systemUserContext,

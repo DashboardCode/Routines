@@ -12,16 +12,12 @@
     <Description />
     <RootNamespace>DashboardCode.Routines</RootNamespace>
     <AssemblyName>DashboardCode.Routines</AssemblyName>
+	<LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>default</LangVersion>
   </PropertyGroup>
 </Project>

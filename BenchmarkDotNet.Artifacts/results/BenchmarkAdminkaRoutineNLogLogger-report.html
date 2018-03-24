@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkAdminkaRoutineNLogLogger</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.13, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.309)
+Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical cores and 4 physical cores
+Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
+  [Host]     : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+  Job-GGHVXY : .NET Core 2.0.5 (CoreCLR 4.6.26020.03, CoreFX 4.6.26018.01), 64bit RyuJIT
+  Clr        : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>                         Method</th><th>Job</th><th>Runtime</th><th>Toolchain</th><th>  Mean</th><th>Error</th><th> StdDev</th><th>   Min</th><th>   Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>MeasureRoutineNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>N/A</td><td>N/A</td><td>N/A</td>
+</tr><tr><td>MeasureRoutineNoAuthorizationNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>29.10 us</td><td>0.5776 us</td><td>0.6180 us</td><td>28.22 us</td><td>30.67 us</td><td>28.95 us</td><td>1</td><td>3.8147</td><td>-</td><td>12089 B</td>
+</tr><tr><td>MeasureRoutineRepositoryNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>6,533.13 us</td><td>127.7631 us</td><td>131.2033 us</td><td>6,278.30 us</td><td>6,828.75 us</td><td>6,505.27 us</td><td>5</td><td>179.6875</td><td>-</td><td>587770 B</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionNLog</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>9,071.48 us</td><td>180.0266 us</td><td>184.8740 us</td><td>8,776.26 us</td><td>9,459.24 us</td><td>9,059.94 us</td><td>6</td><td>203.1250</td><td>-</td><td>665821 B</td>
+</tr><tr><td>MeasureRoutineNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>25,964.08 us</td><td>518.0102 us</td><td>1,241.1193 us</td><td>23,859.87 us</td><td>29,295.83 us</td><td>25,701.05 us</td><td>7</td><td>406.2500</td><td>156.2500</td><td>2015429 B</td>
+</tr><tr><td>MeasureRoutineNoAuthorizationNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>38.53 us</td><td>0.3485 us</td><td>0.2910 us</td><td>38.08 us</td><td>39.06 us</td><td>38.60 us</td><td>2</td><td>5.5542</td><td>-</td><td>17567 B</td>
+</tr><tr><td>MeasureRoutineRepositoryNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>6,132.10 us</td><td>63.5267 us</td><td>53.0477 us</td><td>6,043.90 us</td><td>6,237.45 us</td><td>6,130.68 us</td><td>3</td><td>187.5000</td><td>7.8125</td><td>612070 B</td>
+</tr><tr><td>MeasureRoutineRepositoryExceptionNLog</td><td>Clr</td><td>Clr</td><td>Default</td><td>6,232.87 us</td><td>123.7313 us</td><td>96.6013 us</td><td>6,107.25 us</td><td>6,339.87 us</td><td>6,263.40 us</td><td>4</td><td>195.3125</td><td>-</td><td>633272 B</td>
+</tr></tbody></table>
+</body>
+</html>

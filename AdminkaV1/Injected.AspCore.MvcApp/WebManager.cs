@@ -40,8 +40,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             CultureInfo cultureInfo,
             string connectionString,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            RoutineLogger routineLogger,
-            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
+            AdminkaRoutineLogger routineLogger,
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
             ContainerFactory<UserContext> configurationContainerFactory
             )
         {

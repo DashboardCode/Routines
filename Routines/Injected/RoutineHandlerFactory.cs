@@ -9,32 +9,38 @@ namespace DashboardCode.Routines.Injected
             this.performanceCounter = performanceCounter;
 
         public (IRoutineHandler<TClosure>, TClosure) CreateRoutineHandler(
-                bool shouldBufferVerbose,
+                bool veroseEnabled,
                 Func<Action<DateTime, string>, TClosure> createClosure,
                 ExceptionHandler exceptionHandler,
-                bool finishActivity, 
+                bool finishActivity,
                 object input,
                 IActivityLogger activityLogger,
-                IDataLogger dataLogger,
-                IBufferedVerboseLogger bufferedVerboseLogger,
-                VerboseBuffer buffer,
+                Action<DateTime, object> logInput,
+                Action<DateTime, object> logOutput,
+                //IBufferedVerboseLogger bufferedVerboseLogger,
+                MemberTag memberTag,
+                Action<DateTime, string> logVerbose,
+                Action flash,
                 bool shouldVerboseWithStackTrace,
                 Func<object, object, TimeSpan, bool> testInputOutput
             )
         {
             IRoutineHandler<TClosure> routineHandler = null;
             TClosure closure = default;
-            if (shouldBufferVerbose)
+            if (veroseEnabled)
             {
-                var (start, logVerbose) = CreateRoutineHandlerVerbose(
+                var start = CreateRoutineHandlerVerbose(
                     createClosure,
                     finishActivity,
                     performanceCounter,
                     input,
                     activityLogger,
-                    dataLogger,
-                    bufferedVerboseLogger,
-                    buffer,
+                    logInput,
+                    logOutput,
+                    //bufferedVerboseLogger,
+                    memberTag,
+                    logVerbose,
+                    flash,
                     shouldVerboseWithStackTrace,
                     testInputOutput
                 );
@@ -49,7 +55,7 @@ namespace DashboardCode.Routines.Injected
                     performanceCounter,
                     input,
                     activityLogger,
-                    dataLogger
+                    logInput
                 );
                 closure = createClosure(null/*logVerbose*/);
                 routineHandler = new RoutineHandlerSilent<TClosure>(closure, exceptionHandler, silentStart);
@@ -57,25 +63,22 @@ namespace DashboardCode.Routines.Injected
             return (routineHandler, closure);
         }
 
-        private static (Func<(Action<object>, Action)>, Action<DateTime, string>) CreateRoutineHandlerVerbose(
+        private static Func<(Action<object>, Action)> CreateRoutineHandlerVerbose(
                 Func<Action<DateTime, string>, TClosure> createClosure,
                 bool finishActivity,
                 Action<long> performanceCounter,
                 object input,
                 IActivityLogger activityLogger,
-                IDataLogger dataLogger,
-                IBufferedVerboseLogger bufferedVerboseLogger,
-                VerboseBuffer buffer,
+                Action<DateTime, object> logInput,
+                Action<DateTime, object> logOutput,
+                //IBufferedVerboseLogger bufferedVerboseLogger,
+                MemberTag memberTag,
+                Action<DateTime, string> logVerbose,
+                Action flash,
                 bool shouldVerboseWithStackTrace,
                 Func<object, object, TimeSpan, bool> testInputOutput
             )
         {
-            var buffered = new BufferedVerboseLogging(
-                    buffer,
-                    dataLogger,
-                    bufferedVerboseLogger.LogBufferedVerbose,
-                    shouldVerboseWithStackTrace
-                );
             Func<(Action<object>, Action)> logOnStart;
             if (finishActivity == false)
             {
@@ -94,16 +97,16 @@ namespace DashboardCode.Routines.Injected
                         var duration = onFinish();
                         if (testInputOutput(input, output, duration))
                         {
-                            dataLogger.Input(startDateTime, input);
-                            dataLogger.Output(DateTime.Now, output);
-                            buffered.Flash();
+                            logInput(startDateTime, input);
+                            logOutput(DateTime.Now, output);
+                            flash();
                         }
                     };
                     Action onFailure = () =>
                     {
                         onFinish();
-                        dataLogger.Input(startDateTime, input);
-                        buffered.Flash();
+                        logInput(startDateTime, input);
+                        flash();
                     };
                     return (onSuccess, onFailure);
                 };
@@ -128,21 +131,21 @@ namespace DashboardCode.Routines.Injected
                         var duration = onFinish(true);
                         if (testInputOutput(input, output, duration))
                         {
-                            dataLogger.Input(startDateTime, input);
-                            dataLogger.Output(DateTime.Now, output);
-                            buffered.Flash();
+                            logInput(startDateTime, input);
+                            logOutput(DateTime.Now, output);
+                            flash();
                         }
                     };
                     Action onFailure = () =>
                     {
                         onFinish(false);
-                        dataLogger.Input(startDateTime, input);
-                        buffered.Flash();
+                        logInput(startDateTime, input);
+                        flash();
                     };
                     return (onSuccess, onFailure);
                 };
             }
-            return (logOnStart, buffered.LogVerbose);
+            return logOnStart;
         }
 
         private static Func<(Action, Action)> CreateRoutineHandlerSilent(
@@ -151,7 +154,7 @@ namespace DashboardCode.Routines.Injected
                 Action<long> performanceCounter,
                 object input,
                 IActivityLogger activityLogger,
-                IDataLogger dataLogger
+                Action<DateTime, object> logInput
             )
         {
             Func<(Action, Action)> logOnStart;
@@ -167,7 +170,7 @@ namespace DashboardCode.Routines.Injected
                     };
                     Action onFailure = () =>
                     {
-                        dataLogger.Input(startDateTime, input);
+                        logInput(startDateTime, input);
                         onFinish();
                     };
                     return (onFinish, onFailure);
@@ -189,7 +192,7 @@ namespace DashboardCode.Routines.Injected
                     };
                     Action onFailure = () =>
                     {
-                        dataLogger.Input(startDateTime, input);
+                        logInput(startDateTime, input);
                         onFinish(false);
                     };
                     return (() => onFinish(true), onFailure);

@@ -10,9 +10,8 @@ using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 namespace BenchmarkClassic
 {
-    //[Config(typeof(Config))]
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
-    [ClrJob/*, CoreJob*/]
+    [ClrJob]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser, InliningDiagnoser]
     public class BenchmarkCallSimple

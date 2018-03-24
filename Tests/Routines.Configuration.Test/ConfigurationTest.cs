@@ -29,17 +29,17 @@ namespace DashboardCode.Routines.Configuration.Test
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
 #endif
 
-        public void TestState()
+        public void TestContainerResolve()
         {
-            var state = new WrappedContainer(nameof(ConfigurationTest), nameof(TestState));
-            var t1 = state.Resolve<LoggingConfiguration>();
-            var t2 = state.Resolve<LoggingPerformanceConfiguration>();
-            if (!(t1.Output == false && t2.ThresholdSec == (decimal)0.1))
+            var container = new WrappedContainer(nameof(ConfigurationTest), nameof(TestContainerResolve));
+            var t1 = container.Resolve<LoggingConfiguration>();
+            var t2 = container.Resolve<LoggingThresholdConfiguration>();
+            if (!(t1.Output == false && t2.ThresholdSec == (decimal)0.1  ))
                 throw new Exception("Test fails");
 
-            var containerS = new WrappedContainer(nameof(ConfigurationTest), nameof(TestState), "superuser");
+            var containerS = new WrappedContainer(nameof(ConfigurationTest), nameof(TestContainerResolve), "superuser");
             var t1s = containerS.Resolve<LoggingConfiguration>();
-            var t2s = containerS.Resolve<LoggingPerformanceConfiguration>();
+            var t2s = containerS.Resolve<LoggingThresholdConfiguration>();
             if (!(t1s.Output == true && t2s.ThresholdSec == (decimal)0.5))
                 throw new Exception("Test fails");
         }
@@ -56,15 +56,15 @@ namespace DashboardCode.Routines.Configuration.Test
             var basicConfigContainer1 =
                 new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag("theNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
 
-            var t1t = basicConfigContainer1.ResolveString<LoggingPerformanceConfiguration>();
-            var t1 = new LoggingPerformanceConfiguration();
+            var t1t = basicConfigContainer1.ResolveString<LoggingThresholdConfiguration>();
+            var t1 = new LoggingThresholdConfiguration();
             t1.Report(t1t);
             if (!(t1.ThresholdSec == 2))
                 throw new Exception("Test fails. Case 1");
 
             var basicConfigContainer2 = new ConfigurationContainer(loader.GetGetRoutineConfigurationRecords(), new MemberTag("wrongNamespace", nameof(ConfigurationTest), nameof(TestConfigruationContainer)));
-            var t2t = basicConfigContainer2.ResolveString<LoggingPerformanceConfiguration>();
-            var t2 = new LoggingPerformanceConfiguration();
+            var t2t = basicConfigContainer2.ResolveString<LoggingThresholdConfiguration>();
+            var t2 = new LoggingThresholdConfiguration();
             t2.Report(t2t);
             
             if (!(t2.ThresholdSec == 0)) // default value, it means configuration was not found because of wrong Namespace

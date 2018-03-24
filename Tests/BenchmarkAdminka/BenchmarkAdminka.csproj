@@ -7,10 +7,14 @@
   </PropertyGroup>
   
    <ItemGroup>
+     <None Remove="app.config" />
      <None Remove="appsettings.json" />
    </ItemGroup>
   
    <ItemGroup>
+     <Content Include="app.config">
+       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+     </Content>
      <Content Include="appsettings.json">
        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
@@ -20,6 +24,7 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.13" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="NLog.MailKit" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>

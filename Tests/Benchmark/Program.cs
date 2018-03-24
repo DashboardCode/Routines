@@ -39,8 +39,8 @@ namespace Benchmark
     {
         public MyManualConfig()
         {
-            Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp20)); 
-            Add(Job.Default.With(CsProjClassicNetToolchain.Net47));
+            Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp21)); 
+            Add(Job.Default.With(CsProjClassicNetToolchain.Net471));
         }
     }
 }

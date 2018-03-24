@@ -6,37 +6,23 @@ If ($SolutionFolderPath -eq '') {
     # throw "Rut it as script from the VS solution's root folder, this will point the location of the solution."
 }
 
+$BenchmarkReportPath = "$SolutionFolderPath\BenchmarkDotNet.Artifacts\results"
 $BenchmarkProjectPath = "$SolutionFolderPath\Tests\BenchmarkAdminka"
-
+ 
+# this recompiles all target versions. dotnet run is not enough for it. but I'm not sure that this is obligated.
+# NOTE: script doesn't work after project's Clear - it is still need to compile all from VS at first time. 
 & $dotnetPath build $BenchmarkProjectPath -c Release
 
-$BenchmarkProjectOutputPath = "$BenchmarkProjectPath\bin\Release\net47"
+$snapshotBefore = Get-ChildItem *.html -path "$BenchmarkReportPath"
 
+#& dotnet run -c Release -f netcoreapp2.0 -p "$BenchmarkProjectPath"
+& dotnet run -c Release -f net47 -p "$BenchmarkProjectPath"
 
-
-#$BenchmarkStartPath = $SolutionFolderPath
-$BenchmarkReportPath = "$SolutionFolderPath\BenchmarkDotNet.Artifacts\results"
-cd "$BenchmarkStartPath"
-
-# $dotnetPath = 'C:\Program Files\dotnet\dotnet.exe'
-# & $dotnetPath "$SolutionFolderPath\Tests\Benchmark\bin\Debug\netcoreapp1.1\Benchmark.dll"
-$snap1 = Get-ChildItem *.html -path "$BenchmarkReportPath"
-
-& dotnet run -c Release -f netcoreapp2.0 -p "$BenchmarkProjectPath"
-
-# & "$BenchmarkProjectOutputPath\Benchmark.exe"
-
-# [console]::beep(900,100) 
-# [console]::beep(1000,100) 
-# [console]::beep(800,100) 
-# [console]::beep(400,100) 
-# [console]::beep(600,400)
-
-$snap2 = Get-ChildItem *.html -path "$BenchmarkReportPath"
-if ($snap1 -eq $null -and $snap2 -ne $null){
+$snapshotAfter = Get-ChildItem *.html -path "$BenchmarkReportPath"
+if ($snapshotBefore -eq $null -and $snapshotAfter -ne $null){
      Invoke-Item "BenchmarkReportPath\*.html"
- }else{
-     $list = Compare-Object -ReferenceObject $snap1 -DifferenceObject $snap2
+}else{
+     $list = Compare-Object -ReferenceObject $snapshotBefore -DifferenceObject $snapshotAfter
      if ($list -ne $null){
          foreach ($c in $list) {
              $c.InputObject.FullName

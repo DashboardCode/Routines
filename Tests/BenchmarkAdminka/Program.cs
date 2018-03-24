@@ -4,19 +4,14 @@ namespace BenchmarkAdminka
 {
     class Program
     {
-        // TODO: adjust number of tests to avoid gygabyte logs
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<BenchmarkAdminkaRoutine>();
+            var b = new BenchmarkAdminkaRoutineNLogLogger();
+            //b.MeasureRoutineRepositoryExceptionNLog();
+            //b.MeasureRoutineNLog();
+            //b.MeasureRoutineNoAuthorizationNLog();
+            //BenchmarkRunner.Run<BenchmarkAdminkaRoutineListLogger>();
+            //BenchmarkRunner.Run<BenchmarkAdminkaRoutineNLogLogger>();
         }
     }
-
-    //public class MyManualConfig : ManualConfig
-    //{
-    //    public MyManualConfig()
-    //    {
-    //        Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp20));
-    //        Add(Job.Default.With(CsProjClassicNetToolchain.Net47));
-    //    }
-    //}
 }

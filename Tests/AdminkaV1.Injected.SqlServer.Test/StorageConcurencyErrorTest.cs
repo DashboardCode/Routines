@@ -23,15 +23,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var userContext = new UserContext("UnitTest");
 
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListLoggingTransients(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var routine = new AdminkaRoutineHandler(
                 ZoningSharedSourceProjectManager.GetConfiguration(),
                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
-                new MemberTag(this), userContext,  new { input = "Input text" });
+                new MemberTag(this), userContext, new { input = "Input text" });
             // check constraint on UPDATE
-            routine.HandleOrmFactory(( ormHandlerFactory) =>
+            routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -50,7 +50,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             {
                 var t1 = new TypeRecord()
                 {
-                    TestTypeRecordId   = "0000",
+                    TestTypeRecordId = "0000",
                     TypeRecordName = "TestType2"
                 };
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();

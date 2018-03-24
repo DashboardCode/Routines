@@ -63,7 +63,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  controller,
                  correlationToken,
                  memberTag,
-                 InjectedManager.ComposeNLogTransients(InjectedManager.DefaultRoutineTagTransformException),
+                 InjectedManager.ComposeNLogMemberLogger(),
                  input)
         {
             controller.HttpContext.Items["CorrelationToken"] = correlationToken;
@@ -82,7 +82,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             ConfigurableController controller, 
             Guid correlationToken,
             MemberTag memberTag,
-            Func<RoutineLogger, MemberTag, ContainerFactory<UserContext>, UserContext, object, RoutineLoggingTransients> loggingTransientsFactory,
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
             object input) :
             base(
                 adminkaStorageConfiguration,
