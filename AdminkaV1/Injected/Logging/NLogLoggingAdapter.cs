@@ -115,6 +115,19 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logger.Log(logEventInfo);
         }
 
+        public void LogError(DateTime dateTime, string message)
+        {
+            var logEventInfo = new LogEventInfo()
+            {
+                Level = LogLevel.Error,
+                TimeStamp = dateTime,
+                Message = message
+            };
+            logEventInfo.AppendRoutineTag(correlationToken, memberTag);
+            logEventInfo.Properties["Description"] = $"Error";
+            logger.Log(logEventInfo);
+        }
+
         public void Input(DateTime dateTime, object input)
         {
             try

@@ -35,17 +35,6 @@ namespace DashboardCode.AdminkaV1.Injected
             var loggingConfiguration = container.Resolve<LoggingConfiguration>();
             var loggingVerboseConfiguration = container.Resolve<LoggingVerboseConfiguration>();
 
-            Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) =>
-            {
-                string flashRuleText = loggingVerboseConfiguration.FlashRule;
-                if (string.IsNullOrEmpty(flashRuleText))
-                    return false;
-                if (!loggingVerboseConfiguration.Input && !loggingVerboseConfiguration.Output && !loggingVerboseConfiguration.Verbose)
-                    return false;
-                //if ()
-                return false;
-            };
-
             var (memberLogger, authenticationLogging) = composeLoggers(base.CorrelationToken, memberTag);
             var bufferedMemberLogger = base.CreateMemberLogger(memberLogger, 
                 loggingVerboseConfiguration.ShouldVerboseWithStackTrace,
@@ -54,6 +43,16 @@ namespace DashboardCode.AdminkaV1.Injected
             var activityLogger = (IActivityLogger)bufferedMemberLogger;
             var dataLogger = (IDataLogger)bufferedMemberLogger;
             var exceptionLogger = (IExceptionLogger)bufferedMemberLogger;
+            var errorLogger = (IErrorLogger)bufferedMemberLogger;
+
+            Func<object, object, TimeSpan, bool> testInputOutput;
+            if (!loggingVerboseConfiguration.Input && !loggingVerboseConfiguration.Output && !loggingVerboseConfiguration.Verbose)
+                testInputOutput = (i, o, d) => false;
+            else
+                testInputOutput = InjectedManager.ComposeTestInputOutput(
+                    loggingVerboseConfiguration.FlashRuleLang, 
+                    loggingVerboseConfiguration.FlashRule, 
+                    (d,m)=> errorLogger.LogError(d,m));
 
             var enableVerbose = loggingVerboseConfiguration.Verbose;
             var exceptionHandler = new ExceptionHandler(

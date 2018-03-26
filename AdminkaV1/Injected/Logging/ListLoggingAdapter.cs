@@ -41,8 +41,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 }
             };
         }
-
-
+        
         public void LogActivityStart(DateTime dateTime)
         {
             var text = "LogActivityStart, " + dateTime + " " + memberTag.ToText(correlationToken);
@@ -85,6 +84,13 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logger.Add(text);
         }
 
+        public void LogError(DateTime dateTime, string message)
+        {
+            var text = "LogError, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + Environment.NewLine + message;
+            //System.Diagnostics.Trace.WriteLine(text);
+            logger.Add(text);
+        }
+
         public void Input(DateTime dateTime, object input)
         {
                 var message = serializeObject(input);
@@ -105,5 +111,6 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         {
             logger.Add($"{correlationToken} {memberTag.ToText(correlationToken)} {message}");
         }
+
     }
 }

@@ -9,7 +9,9 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            //var b = new BenchmarkAsyncNotAwaitInterface();
+            var b = new BenchmarkDynamicExpresso();
+            var x1 = b.TestAdminkaStyle();
+            //var x2 = b.TestEvalCompile();
             //var i1 = b.Completed();
             //var i2 = b.CompletedAwait();
             //var i3 = b.Pragma();
@@ -31,7 +33,7 @@ namespace Benchmark
             //var jO = b.TestFuncDynamicInvoke();
             //var jA = b.TestFunc();
             //var jB = b.TestFuncBuilded();
-            BenchmarkRunner.Run<BenchmarkAsyncNotAwaitInterface>();
+            BenchmarkRunner.Run<BenchmarkDynamicExpresso>();
         }
     }
 
@@ -39,8 +41,8 @@ namespace Benchmark
     {
         public MyManualConfig()
         {
-            Add(Job.Default.With(CsProjCoreToolchain.NetCoreApp21)); 
-            Add(Job.Default.With(CsProjClassicNetToolchain.Net471));
+            Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp20));
+            Add(Job.Clr);
         }
     }
 }

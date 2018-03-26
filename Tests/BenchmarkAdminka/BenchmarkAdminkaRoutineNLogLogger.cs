@@ -137,5 +137,24 @@ namespace BenchmarkAdminka
                     throw new Exception("Not expected exception", ex);
             }
         }
+
+        [Benchmark]
+        public void MeasureRoutineRepositoryErrorNLog()
+        {
+            //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
+            var routine = new AdminkaRoutineHandler(
+                ZoningSharedSourceProjectManager.GetConfiguration(),
+                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryErrorNLog), new { });
+            IReadOnlyCollection<ParentRecord> parentRecords=
+                routine.HandleRepository< IReadOnlyCollection<ParentRecord> , ParentRecord >((repository, closure) =>
+                {
+                    var output = repository.List();
+                    closure.Verbose?.Invoke("sample");
+                    return output;
+                });
+        }
     }
 }

@@ -234,6 +234,44 @@ namespace DashboardCode.AdminkaV1.Injected
                  GetVerboseLoggingFlag,
                  jsonDeserializerGFactory).CreateContainer(memberTag, userContext);
 
+        public static Func<object, object, TimeSpan, bool> ComposeTestInputOutput(string flashRuleLang, string flashRule, Action<DateTime, string> logError)
+        {
+            if (string.IsNullOrEmpty(flashRuleLang) || string.IsNullOrEmpty(flashRule))
+                return (input, output, TimeSpan) =>false;
+
+            return (input, output, timeSpan) =>
+            {
+                var isAssert = false;
+                try
+                {
+                    if (flashRuleLang == "DynamicExpresso")
+                    {
+                        var interpreter = new DynamicExpresso.Interpreter();
+                        var result = interpreter.Eval(flashRule, new[] {
+                            new DynamicExpresso.Parameter("input", input),
+                            new DynamicExpresso.Parameter("output", output),
+                            new DynamicExpresso.Parameter("timeSpan", timeSpan)
+                        });
+                        if (result is bool)
+                            isAssert = (bool)result;
+                        else
+                        {
+                            isAssert = true;
+                            logError(DateTime.Now, $"Rule lang '{flashRuleLang}', rule '{flashRule}' has returned not boolean result");
+                        }
+                    }
+                    if (!isAssert)
+                        logError(DateTime.Now, $"[{flashRuleLang}] {flashRule}");
+                }
+                catch(Exception ex)
+                {
+                    isAssert = true;
+                    logError(DateTime.Now, Markdown(ex));
+                }
+                return isAssert;
+            };
+        }
+
         public static UserContext GetUserContext(
                 AdminkaRoutineLogger routineLogger,
                 Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,

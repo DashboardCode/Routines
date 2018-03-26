@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DynamicExpresso.Core, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DynamicExpresso.Core.2.0.0\lib\net461\DynamicExpresso.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Markdown, Version=2.0.0.0, Culture=neutral, PublicKeyToken=1b320cc08ad5aa89, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Markdown.2.2.1\lib\net451\Markdown.dll</HintPath>
     </Reference>

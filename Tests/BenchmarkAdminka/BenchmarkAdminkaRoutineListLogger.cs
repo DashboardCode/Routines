@@ -35,7 +35,7 @@ namespace BenchmarkAdminka
                 ZoningSharedSourceProjectManager.GetConfiguration(),
                 ZoningSharedSourceProjectManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineLogList), 
+                "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineLogList),
                 new { });
             routine.Handle(container =>
             {
@@ -98,18 +98,39 @@ namespace BenchmarkAdminka
             try
             {
                 IReadOnlyCollection<ParentRecord> parentRecords;
-                routine.HandleRepository<ParentRecord>( (repository,closure) =>
-                {
-                    parentRecords = repository.List();
-                    closure.Verbose?.Invoke("sample");
-                    throw new Exception("Test exception");
-                });
+                routine.HandleRepository<ParentRecord>((repository, closure) =>
+               {
+                   parentRecords = repository.List();
+                   closure.Verbose?.Invoke("sample");
+                   throw new Exception("Test exception");
+               });
             }
             catch (Exception ex)
             {
                 if (logger.Count == 0)
                     throw new Exception("no log entries?", ex);
             }
+        }
+
+        [Benchmark]
+        public void MeasureRoutineRepositoryErrorLogList()
+        {
+            var logger = new List<string>();
+            var loggingConfiguration = new LoggingConfiguration();
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
+
+            var routine = new AdminkaRoutineHandler(
+                ZoningSharedSourceProjectManager.GetConfiguration(),
+                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                loggingTransientsFactory,
+                "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryErrorLogList), new { });
+             IReadOnlyCollection<ParentRecord> parentRecords =
+                 routine.HandleRepository<IReadOnlyCollection<ParentRecord>, ParentRecord >((repository, closure) =>
+                 {
+                     var output = repository.List();
+                     closure.Verbose?.Invoke("sample");
+                     return output;
+                 });
         }
     }
 }

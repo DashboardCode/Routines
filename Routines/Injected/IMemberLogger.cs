@@ -30,7 +30,12 @@ namespace DashboardCode.Routines.Injected
         void LogException(DateTime dateTime, Exception exception);
     }
 
-    public interface IMemberLogger: IActivityLogger, IVerboseLogger, IBufferedVerboseLogger, IDataLogger, IExceptionLogger
+    public interface IErrorLogger
+    {
+        void LogError(DateTime dateTime, string message);
+    }
+
+    public interface IMemberLogger: IActivityLogger, IVerboseLogger, IBufferedVerboseLogger, IDataLogger, IExceptionLogger, IErrorLogger
     {
     }
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>BenchmarkDynamicExpresso</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.10.13, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.309)
+Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical cores and 4 physical cores
+Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
+.NET Core SDK=2.1.100
+  [Host]     : .NET Core 2.0.5 (CoreCLR 4.6.26020.03, CoreFX 4.6.26018.01), 64bit RyuJIT
+  Job-VVJUHZ : .NET Core 2.0.5 (CoreCLR 4.6.26020.03, CoreFX 4.6.26018.01), 64bit RyuJIT
+  Clr        : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>       Method</th><th>Job</th><th>Runtime</th><th>Toolchain</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>TestEvalArithmetics</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>404.9 us</td><td>2.460 us</td><td>2.181 us</td><td>402.3 us</td><td>410.7 us</td><td>404.8 us</td><td>3</td><td>16.6016</td><td>-</td><td>51.7 KB</td>
+</tr><tr><td>TestEvalCompile</td><td>Default</td><td>Core</td><td>.NET Core 2.0</td><td>482.7 us</td><td>8.711 us</td><td>8.148 us</td><td>473.2 us</td><td>501.3 us</td><td>480.0 us</td><td>4</td><td>12.6953</td><td>0.4883</td><td>40.36 KB</td>
+</tr><tr><td>TestEvalArithmetics</td><td>Clr</td><td>Clr</td><td>Default</td><td>354.9 us</td><td>7.071 us</td><td>7.261 us</td><td>346.5 us</td><td>370.8 us</td><td>351.6 us</td><td>1</td><td>18.5547</td><td>-</td><td>57.86 KB</td>
+</tr><tr><td>TestEvalCompile</td><td>Clr</td><td>Clr</td><td>Default</td><td>392.3 us</td><td>7.711 us</td><td>10.294 us</td><td>378.4 us</td><td>409.5 us</td><td>388.9 us</td><td>2</td><td>14.1602</td><td>0.4883</td><td>43.92 KB</td>
+</tr></tbody></table>
+</body>
+</html>

@@ -254,6 +254,11 @@ namespace DashboardCode.Routines.Injected
                 memberLogger.LogBufferedVerbose(verboseMessages);
             }
 
+            public void LogError(DateTime dateTime, string message)
+            {
+                memberLogger.LogError(dateTime, message);
+            }
+
             public void LogException(DateTime dateTime, Exception exception)
             {
                 memberLogger.LogException(dateTime, exception);
