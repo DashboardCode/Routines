@@ -234,9 +234,9 @@ namespace DashboardCode.AdminkaV1.Injected
                  GetVerboseLoggingFlag,
                  jsonDeserializerGFactory).CreateContainer(memberTag, userContext);
 
-        public static Func<object, object, TimeSpan, bool> ComposeTestInputOutput(string flashRuleLang, string flashRule, Action<DateTime, string> logError)
+        public static Func<object, object, TimeSpan, bool> ComposeTestInputOutput(string errorRuleLang, string errorRule, Action<DateTime, string> logError)
         {
-            if (string.IsNullOrEmpty(flashRuleLang) || string.IsNullOrEmpty(flashRule))
+            if (string.IsNullOrEmpty(errorRuleLang) || string.IsNullOrEmpty(errorRule))
                 return (input, output, TimeSpan) =>false;
 
             return (input, output, timeSpan) =>
@@ -244,10 +244,10 @@ namespace DashboardCode.AdminkaV1.Injected
                 var isAssert = false;
                 try
                 {
-                    if (flashRuleLang == "DynamicExpresso")
+                    if (errorRuleLang == "DynamicExpresso")
                     {
                         var interpreter = new DynamicExpresso.Interpreter();
-                        var result = interpreter.Eval(flashRule, new[] {
+                        var result = interpreter.Eval(errorRule, new[] {
                             new DynamicExpresso.Parameter("input", input),
                             new DynamicExpresso.Parameter("output", output),
                             new DynamicExpresso.Parameter("timeSpan", timeSpan)
@@ -257,11 +257,11 @@ namespace DashboardCode.AdminkaV1.Injected
                         else
                         {
                             isAssert = true;
-                            logError(DateTime.Now, $"Rule lang '{flashRuleLang}', rule '{flashRule}' has returned not boolean result");
+                            logError(DateTime.Now, $"Rule lang '{errorRuleLang}', rule '{errorRule}' has returned not boolean result");
                         }
                     }
                     if (!isAssert)
-                        logError(DateTime.Now, $"[{flashRuleLang}] {flashRule}");
+                        logError(DateTime.Now, $"[{errorRuleLang}] {errorRule}");
                 }
                 catch(Exception ex)
                 {

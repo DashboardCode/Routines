@@ -50,8 +50,8 @@ namespace DashboardCode.AdminkaV1.Injected
                 testInputOutput = (i, o, d) => false;
             else
                 testInputOutput = InjectedManager.ComposeTestInputOutput(
-                    loggingVerboseConfiguration.FlashRuleLang, 
-                    loggingVerboseConfiguration.FlashRule, 
+                    loggingVerboseConfiguration.ErrorRuleLang, 
+                    loggingVerboseConfiguration.ErrorRule, 
                     (d,m)=> errorLogger.LogError(d,m));
 
             var enableVerbose = loggingVerboseConfiguration.Verbose;
