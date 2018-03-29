@@ -9,6 +9,7 @@ using DashboardCode.Routines.Configuration.NETStandard;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
+using DashboardCode.Routines.Configuration;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
@@ -17,11 +18,18 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
         public static void Up(MigrationBuilder migrationBuilder, IModel targetModel)
         {
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
-            var configurationLoader = new ConfigurationManagerLoader();
-            var sqlServerAdmikaConfigurationFacade = new SqlServerAdmikaConfigurationFacade(configurationLoader);
-            var configurationFactory = new ConfigurationContainerFactory(configurationLoader); 
+#if NETCOREAPP2_0
+            var root = InjectedManager.ResolveConfigurationRoot();
+            var configurationManagerLoader = new ConfigurationManagerLoader(root);
+            var connectionStringMap = new ConnectionStringMap(root);
+#else
+            var configurationManagerLoader = new ConfigurationManagerLoader();
+            var connectionStringMap = new ConnectionStringMap();
+#endif
+            var adminkaStorageConfiguration = InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap);
+            var configurationFactory = new ConfigurationContainerFactory(configurationManagerLoader); 
             var routine = new AdminkaRoutineHandler(
-                sqlServerAdmikaConfigurationFacade.ResolveAdminkaStorageConfiguration(),
+                adminkaStorageConfiguration,
                 configurationFactory,
                 new MemberTag(typeof(InitialCustoms).Namespace, nameof(InitialCustoms), nameof(Up)), userContext,
                 new { });

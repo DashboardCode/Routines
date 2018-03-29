@@ -243,7 +243,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     "Create",
                     repository => steps =>
                         steps(
-                            ()=>default(TEntity),
+                            ()=>default,
                             (entity, addViewData) => prepareEmptyOptions(addViewData, repository)
                             )
                     )(controller);

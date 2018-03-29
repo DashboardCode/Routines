@@ -8,7 +8,6 @@ using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
-using DashboardCode.AdminkaV1.Injected.NETStandard;
 using DashboardCode.Routines.Configuration.NETStandard;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
@@ -47,6 +46,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  correlationToken,
                  memberTag,
                  new ConfigurationManagerLoader(controller.ConfigurationRoot),
+                 new ConnectionStringMap(controller.ConfigurationRoot),
                  input)
         {
         }
@@ -56,9 +56,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 Guid correlationToken,
                 MemberTag memberTag,
                 ConfigurationManagerLoader configurationManagerLoader,
+                ConnectionStringMap connectionStringMap,
                 object input) :
             this(
-                 new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration(),
+                 InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap),
                  new ConfigurationContainerFactory(configurationManagerLoader),
                  controller,
                  correlationToken,
@@ -78,7 +79,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
         private MvcRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationFactory,
             ConfigurableController controller, 
             Guid correlationToken,
             MemberTag memberTag,

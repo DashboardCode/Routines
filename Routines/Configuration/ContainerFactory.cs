@@ -4,11 +4,11 @@ namespace DashboardCode.Routines.Configuration
 {
     public class ContainerFactory<TUserContext>
     {
-        IConfigurationContainerFactory configurationContainerFactory;
+        ConfigurationContainerFactory configurationContainerFactory;
         Func<TUserContext, string> getVerboseLoggingFlag;
         IGFactory<string> deserializer;
         public ContainerFactory(
-            IConfigurationContainerFactory configurationContainerFactory,
+            ConfigurationContainerFactory configurationContainerFactory,
             Func<TUserContext, string> getVerboseLoggingFlag,
             IGFactory<string> deserializer)
         {

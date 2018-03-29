@@ -32,8 +32,8 @@ namespace BenchmarkAdminka
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineLogList),
                 new { });
@@ -50,8 +50,8 @@ namespace BenchmarkAdminka
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineNoAuthorizationLogList)), userContext, new { });
             routine.Handle(container =>
@@ -68,8 +68,8 @@ namespace BenchmarkAdminka
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryLogList), new { });
             routine.HandleRepository<ParentRecord>((repository, closure) =>
@@ -91,8 +91,8 @@ namespace BenchmarkAdminka
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger/*, loggingConfiguration*/);
 
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryExceptionLogList), new { });
             try
@@ -120,8 +120,8 @@ namespace BenchmarkAdminka
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryErrorLogList), new { });
              IReadOnlyCollection<ParentRecord> parentRecords =

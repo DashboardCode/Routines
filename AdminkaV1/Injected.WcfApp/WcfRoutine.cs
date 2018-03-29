@@ -5,7 +5,6 @@ using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETFramework;
 
 using DashboardCode.AdminkaV1.DataAccessEfCore;
-using DashboardCode.AdminkaV1.Injected.NETFramework;
 
 namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
@@ -13,14 +12,14 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
     {
         public WcfRoutine(Routines.MemberTag memberTag, string faultCodeNamespace, object input) 
             : this(Guid.NewGuid(), memberTag, GetUserContext(), faultCodeNamespace,
-                  new ConfigurationManagerLoader(), input)
+                  new ConfigurationManagerLoader(), new ConnectionStringMap(), input)
         {
         }
 
         protected WcfRoutine(Guid correlationToken, Routines.MemberTag memberTag, UserContext userContext, string faultCodeNamespace,
-            ConfigurationManagerLoader configurationManagerLoader, object input)
+            ConfigurationManagerLoader configurationManagerLoader, IConnectionStringMap connectionStringMap, object input)
             : this(correlationToken, memberTag, GetUserContext(), faultCodeNamespace,
-                  new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration(),
+                  InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap),
                   new ConfigurationContainerFactory(configurationManagerLoader),  input)
         {
         }
@@ -31,7 +30,7 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
             UserContext userContext, 
             string faultCodeNamespace,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory, object input)
+            ConfigurationContainerFactory configurationFactory, object input)
             : base(
                   adminkaStorageConfiguration,
                   configurationFactory,

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace DashboardCode.Routines.Configuration.NETStandard
+namespace DashboardCode.Routines.Configuration.NETCore.Test
 {
-    internal static class ConfigurationManager
+    public static class ConfigurationManager
     {
-        internal static IConfigurationRoot ResolveConfigurationRoot()
+        public static IConfigurationRoot ResolveConfigurationRoot()
         {
             ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional

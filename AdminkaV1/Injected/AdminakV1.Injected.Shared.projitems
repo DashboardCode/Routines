@@ -13,10 +13,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)ActiveDirectoryServices\AdConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ActiveDirectoryServices\FakeAdConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdminkaRoutineLogger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)InMemoryAdmikaConfigurationFacade.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\IPerformanceCounters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\PerformanceCounters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggerProviderConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingConfiguration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Performance\LoggingPerformanceConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticsConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingVerboseConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InjectedManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\IAuthenticationLogging.cs" />
@@ -25,9 +26,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogLoggingAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\RoutineLoggingTransients.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SqlServerAdmikaConfigurationFacade.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Performance\" />
   </ItemGroup>
 </Project>

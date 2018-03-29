@@ -16,8 +16,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"), new { input = "Input text" });
             routine.HandleOrmFactory((ormHandlerFactory) =>
@@ -156,8 +156,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(typeof(TestIsland)), new UserContext("UnitTest"),
                 new { input = "Input text" });

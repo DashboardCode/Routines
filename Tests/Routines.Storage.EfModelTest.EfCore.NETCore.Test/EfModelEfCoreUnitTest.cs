@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Test
@@ -9,9 +8,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Test
         string connectionString;
         public EfModelEfCoreUnitTest()
         {
-            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
-            var configurationRoot = configurationBuilder.Build();
+            var configurationRoot = ConfigurationManager.ResolveConfigurationRoot();
             connectionString = configurationRoot.GetSection("ConnectionString").Value;
         }
 

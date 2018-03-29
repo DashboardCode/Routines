@@ -6,9 +6,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox
     {
         static void Main(string[] args)
         {
-            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
-            var configurationRoot = configurationBuilder.Build();
+            var configurationRoot = ConfigurationManager.ResolveConfigurationRoot();
             var connectionString = configurationRoot.GetSection("ConnectionString").Value;
 
             DbContextTests.ParallelTest(connectionString);

@@ -12,6 +12,7 @@ using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.AdminkaV1.Injected.Diagnostics;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -20,7 +21,7 @@ namespace DashboardCode.AdminkaV1.Injected
         #region constructors without usercontext
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             string @namespace, string controller, string action,
             object input
@@ -37,7 +38,7 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used in mvc app (identity get from request context)
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             Guid correlationToken,
             MemberTag memberTag,
@@ -85,7 +86,7 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used in tests: predefined UserContext with custom logging to list
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             MemberTag memberTag,
             UserContext userContext,
@@ -105,7 +106,7 @@ namespace DashboardCode.AdminkaV1.Injected
         //  Used in apps: predefined UserContext and default NLOG logger
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationFactory,
             MemberTag memberTag,
             UserContext userContext,
             object input
@@ -124,7 +125,7 @@ namespace DashboardCode.AdminkaV1.Injected
         // used by wcf (predefined UserContext with its own transformException)
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationFactory,
             Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
             Guid correlationToken,
             MemberTag memberTag,

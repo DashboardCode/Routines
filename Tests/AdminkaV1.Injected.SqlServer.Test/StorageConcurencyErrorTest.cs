@@ -26,8 +26,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, new { input = "Input text" });
             // check constraint on UPDATE

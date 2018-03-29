@@ -25,13 +25,10 @@ namespace DashboardCode.Routines.Configuration.NETCore.Test
                         reader.BaseStream.CopyTo(fileStream);
         }
 
-        readonly IConfigurationRoot configurationRoot;
         readonly ConfigurationManagerLoader configurationManagerLoader;
         public ConfigurationNETStandard()
         {
-            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
-            configurationRoot = configurationBuilder.Build();
+            var configurationRoot = ConfigurationManager.ResolveConfigurationRoot();
             configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot);
         }
 

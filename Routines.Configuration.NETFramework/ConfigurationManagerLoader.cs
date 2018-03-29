@@ -6,7 +6,25 @@ using System.Configuration;
 
 namespace DashboardCode.Routines.Configuration.NETFramework
 {
-    public class ConfigurationManagerLoader : IConfigurationManagerLoader, IConnectionStringMap
+    public class AppSettings : IAppSettings
+    {
+        public string GetValue(string key)
+        {
+            var value = ConfigurationManager.AppSettings[key];
+            return value;
+        }
+    }
+
+    public class ConnectionStringMap : IConnectionStringMap
+    {
+        public string GetConnectionString(string name = "ConnectionString")
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            return connectionString;
+        }
+    }
+
+    public class ConfigurationManagerLoader : IConfigurationManagerLoader
     {
         const string key = "routinesConfiguration";
 
@@ -29,12 +47,6 @@ namespace DashboardCode.Routines.Configuration.NETFramework
         private void SetGetRoutineConfigurationRecords(IEnumerable<IRoutineConfigurationRecord> value)
         {
             getRoutineConfigurationRecords = value;
-        }
-
-        public string GetConnectionString(string name)
-        {
-            var connectionString = ConfigurationManager.ConnectionStrings[name].ConnectionString;
-            return connectionString;
         }
 
         #region Experimental: update and save configuration

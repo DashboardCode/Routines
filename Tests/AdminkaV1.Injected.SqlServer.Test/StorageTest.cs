@@ -26,8 +26,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var userContext = new UserContext("UnitTest");
 
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, new { input = "Input text" });
             int newParentRecordId = 0;
@@ -143,8 +143,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, new { input = "Input text" });
             Include<ParentRecord> includes

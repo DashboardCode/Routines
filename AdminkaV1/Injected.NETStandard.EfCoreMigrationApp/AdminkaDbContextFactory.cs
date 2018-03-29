@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
@@ -15,9 +16,15 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
         // TOSTU: how args can be used to configure e.g. current culture.
         public AdminkaDbContext CreateDbContext(string[] args)
         {
+#if NETCOREAPP2_0
+            var root = InjectedManager.ResolveConfigurationRoot();
+            var configurationManagerLoader = new ConfigurationManagerLoader(root);
+            var connectionStringMap = new ConnectionStringMap(root);
+#else
             var configurationManagerLoader = new ConfigurationManagerLoader();
-            var sqlServerAdmikaConfigurationFacade = new SqlServerAdmikaConfigurationFacade(configurationManagerLoader, Program.MigrationAssembly);
-            var adminkaStorageConfiguration = sqlServerAdmikaConfigurationFacade.ResolveAdminkaStorageConfiguration();
+            var connectionStringMap = new ConnectionStringMap();
+#endif
+            var adminkaStorageConfiguration = InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap, migrationAssembly: Program.MigrationAssembly);
             var configurationFactory = new ConfigurationContainerFactory(configurationManagerLoader);
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
             var tag = new MemberTag(this);

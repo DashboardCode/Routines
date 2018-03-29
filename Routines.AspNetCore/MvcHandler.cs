@@ -282,7 +282,7 @@ namespace DashboardCode.Routines.AspNetCore
                 if (value = !string.IsNullOrEmpty(idText))
                     return converter(idText);
             }
-            return new ValuableResult<T>(default(T),false);
+            return new ValuableResult<T>(default,false);
         }
 
         public static IComplexBinderResult<T> Bind<T>(

@@ -16,6 +16,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)RepositoryJsonTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RepositoryTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TestIsland.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ZoningSharedSourceProjectManager.cs" />
   </ItemGroup>
 </Project>

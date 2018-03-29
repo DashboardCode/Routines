@@ -4,8 +4,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.AdminkaV1.Injected.NETStandard;
 using DashboardCode.Routines;
+using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.NETStandard;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -91,9 +91,17 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
+#if NETCOREAPP2_0
+            var root = InjectedManager.ResolveConfigurationRoot();
+            var configurationManagerLoader = new ConfigurationManagerLoader(root);
+            var connectionStringMap = new ConnectionStringMap(root);
+#else
             var configurationManagerLoader = new ConfigurationManagerLoader();
+            var connectionStringMap = new ConnectionStringMap();
+#endif
+
             var routine = new AdminkaRoutineHandler(
-                new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration(),
+                InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap),
                 new ConfigurationContainerFactory(configurationManagerLoader),
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
@@ -197,9 +205,17 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
 
+#if NETCOREAPP2_0
+            var root = InjectedManager.ResolveConfigurationRoot();
+            var configurationManagerLoader = new ConfigurationManagerLoader(root);
+            var connectionStringMap = new ConnectionStringMap(root);
+#else
             var configurationManagerLoader = new ConfigurationManagerLoader();
+            var connectionStringMap = new ConnectionStringMap();
+#endif
+
             var routine = new AdminkaRoutineHandler(
-                new SqlServerAdmikaConfigurationFacade(configurationManagerLoader).ResolveAdminkaStorageConfiguration(),
+                InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap),
                 new ConfigurationContainerFactory(configurationManagerLoader),
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),

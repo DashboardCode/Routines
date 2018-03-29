@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 
 using DashboardCode.Routines;
+using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Configuration;
+
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
-using DashboardCode.Routines.Injected;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
@@ -20,14 +21,14 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         }
 
         public AdminkaInMemoryTestRoutine(Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory, MemberTag memberTag, object input, string name = "adminka")
-            : this(memberTag, new UserContext("UnitTest"), ZoningSharedSourceProjectManager.GetConfiguration(name), ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+            : this(memberTag, new UserContext("UnitTest"), new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY), InjectedManager.GetConfigurationFactory(),
                   loggingTransientsFactory,
                   input)
         {
         }
 
         public AdminkaInMemoryTestRoutine(Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory, MemberTag memberTag, string name = "adminka")
-            : this(memberTag, new UserContext("UnitTest"), ZoningSharedSourceProjectManager.GetConfiguration(name), ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+            : this(memberTag, new UserContext("UnitTest"), new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY), InjectedManager.GetConfigurationFactory(),
                   loggingTransientsFactory,
                   new { })
         {
@@ -35,7 +36,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 
         public AdminkaInMemoryTestRoutine(MemberTag memberTag, UserContext userContext,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
           object input)
            : base(adminkaStorageConfiguration, configurationFactory, loggingTransientsFactory, memberTag, userContext, input)

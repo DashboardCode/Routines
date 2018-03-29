@@ -16,24 +16,64 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
+using System.Security.Principal;
 
-#if !NETSTANDARD2_0
-    using System.Security.Principal;
+#if NETSTANDARD2_0
+    using DashboardCode.Routines.Configuration.NETStandard;
+    using Microsoft.Extensions.Configuration;
+    using DashboardCode.Routines.Serialization.NETStandard;
+#else
     using DashboardCode.Routines.Serialization.NETFramework;
     using DashboardCode.Routines.ActiveDirectory.NETFramework;
-#else
-    using System.Security.Principal;
-    using DashboardCode.Routines.Serialization.NETStandard;
+    using DashboardCode.Routines.Configuration.NETFramework;
 #endif
 
 namespace DashboardCode.AdminkaV1.Injected
 {
     public static class InjectedManager
     {
+        static readonly ConfigurationManagerLoader configurationManagerLoader;
+        static readonly IConnectionStringMap connectionStringMap;
         static InjectedManager()
         {
             ForceEarlyFail();
+#if NETSTANDARD2_0
+            var root = InjectedManager.ResolveConfigurationRoot();
+            configurationManagerLoader = new ConfigurationManagerLoader(root);
+            connectionStringMap = new ConnectionStringMap(root);
+#else
+            configurationManagerLoader = new ConfigurationManagerLoader();
+            connectionStringMap = new ConnectionStringMap();
+#endif
         }
+
+        public static AdminkaStorageConfiguration GetConfiguration() =>
+            InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap);
+
+        public static ConfigurationContainerFactory GetConfigurationFactory() =>
+            new ConfigurationContainerFactory(configurationManagerLoader);
+
+
+#if NETSTANDARD2_0
+        public static IConfigurationRoot ResolveConfigurationRoot()
+        {
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
+            var configurationRoot = configurationBuilder.Build();
+            return configurationRoot;
+        }
+        #endif
+
+        public static AdminkaStorageConfiguration ResolveSqlServerAdminkaStorageConfiguration(
+            IConnectionStringMap connectionStringAccess,
+            string connectionStringName = "AdminkaConnectionString",
+            string migrationAssembly = null
+            )
+        {
+            var connectionString = connectionStringAccess.GetConnectionString(connectionStringName);
+            return new AdminkaStorageConfiguration(connectionString, migrationAssembly, StorageType.SQLSERVER);
+        }
+
 
         /// <summary>
         /// Force early fails of application in case of missed assemblies (FileNotFoundException, Could not load file or assembly..)
@@ -53,7 +93,7 @@ namespace DashboardCode.AdminkaV1.Injected
 #endif
         }
 
-        #region Meta
+#region Meta
         public readonly static IEntityMetaServiceContainer EntityMetaServiceContainer = new EntityMetaServiceContainer(
             (exception, entityType, ormEntitySchemaAdapter, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(
                   exception, entityType, ormEntitySchemaAdapter, genericErrorField,
@@ -63,7 +103,7 @@ namespace DashboardCode.AdminkaV1.Injected
                   }
             )
         ); 
-        #endregion
+#endregion
 
         public static IIdentity GetDefaultIdentity()
         {
@@ -217,22 +257,16 @@ namespace DashboardCode.AdminkaV1.Injected
                 return (listLoggingAdapter, listLoggingAdapter);
             };
         }
-        #endregion
+#endregion
 
         public static string GetVerboseLoggingFlag(UserContext userContext) =>
             (userContext?.User?.HasPrivilege(Privilege.VerboseLogging) ?? false) ? Privilege.VerboseLogging : null;
 
-        public static ContainerFactory<UserContext> CreateContainerFactory(IConfigurationContainerFactory configurationFactory) =>
+        public static ContainerFactory<UserContext> CreateContainerFactory(ConfigurationContainerFactory configurationFactory) =>
             new ContainerFactory<UserContext>(
                 configurationFactory,
                 GetVerboseLoggingFlag,
                 jsonDeserializerGFactory);
-
-        public static IContainer CreateContainer(IConfigurationContainerFactory configurationFactory, MemberTag memberTag, UserContext userContext) =>
-             new ContainerFactory<UserContext>(
-                 configurationFactory,
-                 GetVerboseLoggingFlag,
-                 jsonDeserializerGFactory).CreateContainer(memberTag, userContext);
 
         public static Func<object, object, TimeSpan, bool> ComposeTestInputOutput(string errorRuleLang, string errorRule, Action<DateTime, string> logError)
         {

@@ -32,8 +32,8 @@ namespace BenchmarkAdminka
         {
             var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNLog), new { });
             routine.Handle(container =>
@@ -48,8 +48,8 @@ namespace BenchmarkAdminka
             var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNoAuthorizationNLog)), userContext, new { });
             routine.Handle(container =>
@@ -66,8 +66,8 @@ namespace BenchmarkAdminka
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
             var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryNLog), new { });
             IReadOnlyCollection<ParentRecord> parentRecords;
@@ -87,8 +87,8 @@ namespace BenchmarkAdminka
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
             var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionNLog), new { });
             try
@@ -117,8 +117,8 @@ namespace BenchmarkAdminka
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
             var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionMailNLog), new { });
             try
@@ -144,8 +144,8 @@ namespace BenchmarkAdminka
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
             var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
             var routine = new AdminkaRoutineHandler(
-                ZoningSharedSourceProjectManager.GetConfiguration(),
-                ZoningSharedSourceProjectManager.GetConfigurationFactory(),
+                InjectedManager.GetConfiguration(),
+                InjectedManager.GetConfigurationFactory(),
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryErrorNLog), new { });
             IReadOnlyCollection<ParentRecord> parentRecords=
