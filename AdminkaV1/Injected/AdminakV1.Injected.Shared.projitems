@@ -13,11 +13,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)ActiveDirectoryServices\AdConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ActiveDirectoryServices\FakeAdConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)AdminkaRoutineLogger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ApplicationSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\PerformanceCountersStub.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\IPerformanceCounters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\PerformanceCounters.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggerProviderConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingConfiguration.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticsConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\LoggingVerboseConfiguration.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)InjectedManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\IAuthenticationLogging.cs" />

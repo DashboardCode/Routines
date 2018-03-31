@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.Routines;
-using DashboardCode.Routines.Configuration;
-using DashboardCode.Routines.Configuration.NETStandard;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using DashboardCode.Routines;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
 {
@@ -89,20 +89,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var roleName = "TestIslandRole1";
 
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
-
-#if NETCOREAPP2_0
-            var root = InjectedManager.ResolveConfigurationRoot();
-            var configurationManagerLoader = new ConfigurationManagerLoader(root);
-            var connectionStringMap = new ConnectionStringMap(root);
-#else
-            var configurationManagerLoader = new ConfigurationManagerLoader();
-            var connectionStringMap = new ConnectionStringMap();
-#endif
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap),
-                new ConfigurationContainerFactory(configurationManagerLoader),
+                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
+                TestManager.ApplicationSettings.PerformanceCounters,
+                TestManager.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });
@@ -203,20 +195,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var roleName = "TestIslandRole1";
 
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
-
-#if NETCOREAPP2_0
-            var root = InjectedManager.ResolveConfigurationRoot();
-            var configurationManagerLoader = new ConfigurationManagerLoader(root);
-            var connectionStringMap = new ConnectionStringMap(root);
-#else
-            var configurationManagerLoader = new ConfigurationManagerLoader();
-            var connectionStringMap = new ConnectionStringMap();
-#endif
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap),
-                new ConfigurationContainerFactory(configurationManagerLoader),
+                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
+                TestManager.ApplicationSettings.PerformanceCounters,
+                TestManager.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });

@@ -1,11 +1,13 @@
-﻿using NLog;
-using System;
+﻿using System;
+using NLog;
+
 using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public class NLogAuthenticationLogging : IAuthenticationLogging
     {
+        // NLOG logger is thread safe
         private readonly Logger authenticationLogger = LogManager.GetLogger("Authentication");
         
         public void TraceAuthentication(Guid correlationToken, MemberTag memberTag, string message)

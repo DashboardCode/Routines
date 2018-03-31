@@ -7,11 +7,11 @@ using DashboardCode.Routines;
 using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Configuration;
 
-using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Diagnostics;
 
 namespace DashboardCode.AdminkaV1.Injected
@@ -21,12 +21,14 @@ namespace DashboardCode.AdminkaV1.Injected
         #region constructors without usercontext
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IPerformanceCounters performanceCounters,
             ConfigurationContainerFactory configurationFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             string @namespace, string controller, string action,
             object input
         ) : this(
                 adminkaStorageConfiguration,
+                performanceCounters,
                 composeLoggers,
                 InjectedManager.CreateContainerFactory(configurationFactory),
                 Guid.NewGuid(),
@@ -38,6 +40,7 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used in mvc app (identity get from request context)
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IPerformanceCounters performanceCounters,
             ConfigurationContainerFactory configurationFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             Guid correlationToken,
@@ -46,6 +49,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
         ) : this(
                 adminkaStorageConfiguration,
+                performanceCounters,
                 composeLoggers,
                 InjectedManager.CreateContainerFactory(configurationFactory),
                 correlationToken,
@@ -57,6 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used as stage to prepare containerFactory, userContest
         private AdminkaRoutineHandler(
              AdminkaStorageConfiguration adminkaStorageConfiguration,
+             IPerformanceCounters performanceCounters,
              Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
              ContainerFactory<UserContext> containerFactory,
              Guid correlationToken,
@@ -65,6 +70,7 @@ namespace DashboardCode.AdminkaV1.Injected
              object input
         ) : this(
                 adminkaStorageConfiguration,
+                performanceCounters,
                 InjectedManager.DefaultRoutineTagTransformException,
                 composeLoggers,
                 containerFactory,
@@ -72,7 +78,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 memberTag,
                 InjectedManager.GetUserContext(
                     new AdminkaRoutineLogger(
-                        correlationToken, InjectedManager.DefaultRoutineTagTransformException, composeLoggers, InjectedManager.CountDuration), 
+                        correlationToken, InjectedManager.DefaultRoutineTagTransformException, composeLoggers, performanceCounters), 
                     composeLoggers, adminkaStorageConfiguration, 
                     containerFactory,
                     memberTag, identity, CultureInfo.CurrentCulture),
@@ -86,6 +92,7 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used in tests: predefined UserContext with custom logging to list
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IPerformanceCounters performanceCounters,
             ConfigurationContainerFactory configurationFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             MemberTag memberTag,
@@ -93,6 +100,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
             ) : this(
                 adminkaStorageConfiguration,
+                performanceCounters,
                 InjectedManager.DefaultRoutineTagTransformException,
                 composeLoggers,
                 InjectedManager.CreateContainerFactory(configurationFactory),
@@ -106,14 +114,17 @@ namespace DashboardCode.AdminkaV1.Injected
         //  Used in apps: predefined UserContext and default NLOG logger
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IPerformanceCounters performanceCounters,
+            IAuthenticationLogging authenticationLogging,
             ConfigurationContainerFactory configurationFactory,
             MemberTag memberTag,
             UserContext userContext,
             object input
             ) : this(
                 adminkaStorageConfiguration,
+                performanceCounters,
                 InjectedManager.DefaultRoutineTagTransformException,
-                InjectedManager.ComposeNLogMemberLogger(),
+                InjectedManager.ComposeNLogMemberLoggerFactory(authenticationLogging),
                 InjectedManager.CreateContainerFactory(configurationFactory),
                 Guid.NewGuid(),
                 memberTag,
@@ -125,6 +136,8 @@ namespace DashboardCode.AdminkaV1.Injected
         // used by wcf (predefined UserContext with its own transformException)
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IPerformanceCounters performanceCounters,
+            IAuthenticationLogging authenticationLogging,
             ConfigurationContainerFactory configurationFactory,
             Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
             Guid correlationToken,
@@ -133,8 +146,9 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
             ) : this(
                 adminkaStorageConfiguration,
+                performanceCounters,
                 routineTransformException,
-                InjectedManager.ComposeNLogMemberLogger(),
+                InjectedManager.ComposeNLogMemberLoggerFactory(authenticationLogging),
                 InjectedManager.CreateContainerFactory(configurationFactory),
                 correlationToken,
                 memberTag,
@@ -146,6 +160,7 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used as stage to prepare containerFactory, memberTag and usercontext
         private AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IPerformanceCounters performanceCounters,
             Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             ContainerFactory<UserContext> containerFactory,
@@ -155,7 +170,7 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
         ) : this(
                 adminkaStorageConfiguration,
-                new AdminkaRoutineLogger(correaltionToken, routineTransformException, composeLoggers, InjectedManager.CountDuration),
+                new AdminkaRoutineLogger(correaltionToken, routineTransformException, composeLoggers, performanceCounters),
                 containerFactory,
                 memberTag, 
                 userContext,

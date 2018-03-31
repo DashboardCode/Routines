@@ -15,6 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)NLogTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RepositoryJsonTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RepositoryTest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TestIsland.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestManager.cs" />
   </ItemGroup>
 </Project>

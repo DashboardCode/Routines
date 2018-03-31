@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox
+﻿namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox
 {
     class Program
     {

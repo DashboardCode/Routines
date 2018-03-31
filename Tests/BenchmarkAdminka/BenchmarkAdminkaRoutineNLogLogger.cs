@@ -2,22 +2,18 @@
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Jobs;
+using BenchmarkDotNet.Attributes.Exporters;
 
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1;
 using DashboardCode.AdminkaV1.Injected;
-using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.TestDom;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace BenchmarkAdminka
 {
-
     [Config(typeof(MultipleRuntimesManualConfig))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [MemoryDiagnoser]
-    //[ClrJob(isBaseline: true), CoreJob]
     [HtmlExporter, MarkdownExporter]
     public class BenchmarkAdminkaRoutineNLogLogger
     {
@@ -30,10 +26,11 @@ namespace BenchmarkAdminka
         [Benchmark]
         public void MeasureRoutineNLog()
         {
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.GetConfiguration(),
-                InjectedManager.GetConfigurationFactory(),
+                Program.ApplicationSettings.AdminkaStorageConfiguration,
+                Program.ApplicationSettings.PerformanceCounters,
+                Program.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNLog), new { });
             routine.Handle(container =>
@@ -45,11 +42,12 @@ namespace BenchmarkAdminka
         [Benchmark]
         public void MeasureRoutineNoAuthorizationNLog()
         {
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.GetConfiguration(),
-                InjectedManager.GetConfigurationFactory(),
+                Program.ApplicationSettings.AdminkaStorageConfiguration,
+                Program.ApplicationSettings.PerformanceCounters,
+                Program.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNoAuthorizationNLog)), userContext, new { });
             routine.Handle(container =>
@@ -64,10 +62,11 @@ namespace BenchmarkAdminka
         public void MeasureRoutineRepositoryNLog()
         {
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.GetConfiguration(),
-                InjectedManager.GetConfigurationFactory(),
+                Program.ApplicationSettings.AdminkaStorageConfiguration,
+                Program.ApplicationSettings.PerformanceCounters,
+                Program.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryNLog), new { });
             IReadOnlyCollection<ParentRecord> parentRecords;
@@ -85,10 +84,11 @@ namespace BenchmarkAdminka
         public void MeasureRoutineRepositoryExceptionNLog()
         {
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.GetConfiguration(),
-                InjectedManager.GetConfigurationFactory(),
+                Program.ApplicationSettings.AdminkaStorageConfiguration,
+                Program.ApplicationSettings.PerformanceCounters,
+                Program.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionNLog), new { });
             try
@@ -115,10 +115,11 @@ namespace BenchmarkAdminka
         public void MeasureRoutineRepositoryExceptionMailNLog()
         {
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.GetConfiguration(),
-                InjectedManager.GetConfigurationFactory(),
+                Program.ApplicationSettings.AdminkaStorageConfiguration,
+                Program.ApplicationSettings.PerformanceCounters,
+                Program.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionMailNLog), new { });
             try
@@ -142,10 +143,11 @@ namespace BenchmarkAdminka
         public void MeasureRoutineRepositoryErrorNLog()
         {
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLogger();
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.GetConfiguration(),
-                InjectedManager.GetConfigurationFactory(),
+                Program.ApplicationSettings.AdminkaStorageConfiguration,
+                Program.ApplicationSettings.PerformanceCounters,
+                Program.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryErrorNLog), new { });
             IReadOnlyCollection<ParentRecord> parentRecords=

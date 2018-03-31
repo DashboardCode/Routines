@@ -29,7 +29,7 @@
     <PackageReference Include="DynamicExpresso.Core" Version="2.0.0" />
     <PackageReference Include="Markdown" Version="2.2.1" />
     <PackageReference Include="NLog" Version="5.0.0-beta11" />
-    <PackageReference Include="NLog.MailKit" Version="2.1.1" />
+    <PackageReference Include="NLog.MailKit" Version="2.2.0" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.5.0-preview1-26216-02" />
   </ItemGroup>
 

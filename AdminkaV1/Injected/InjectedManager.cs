@@ -3,6 +3,7 @@ using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Security.Principal;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Injected;
@@ -16,11 +17,9 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
-using System.Security.Principal;
+//using DashboardCode.AdminkaV1.Injected.Diagnostics;
 
 #if NETSTANDARD2_0
-    using DashboardCode.Routines.Configuration.NETStandard;
-    using Microsoft.Extensions.Configuration;
     using DashboardCode.Routines.Serialization.NETStandard;
 #else
     using DashboardCode.Routines.Serialization.NETFramework;
@@ -30,50 +29,13 @@ using System.Security.Principal;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
+
     public static class InjectedManager
     {
-        static readonly ConfigurationManagerLoader configurationManagerLoader;
-        static readonly IConnectionStringMap connectionStringMap;
         static InjectedManager()
         {
             ForceEarlyFail();
-#if NETSTANDARD2_0
-            var root = InjectedManager.ResolveConfigurationRoot();
-            configurationManagerLoader = new ConfigurationManagerLoader(root);
-            connectionStringMap = new ConnectionStringMap(root);
-#else
-            configurationManagerLoader = new ConfigurationManagerLoader();
-            connectionStringMap = new ConnectionStringMap();
-#endif
         }
-
-        public static AdminkaStorageConfiguration GetConfiguration() =>
-            InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap);
-
-        public static ConfigurationContainerFactory GetConfigurationFactory() =>
-            new ConfigurationContainerFactory(configurationManagerLoader);
-
-
-#if NETSTANDARD2_0
-        public static IConfigurationRoot ResolveConfigurationRoot()
-        {
-            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddJsonFile("appsettings.json", false, true); // false indicates file is not optional
-            var configurationRoot = configurationBuilder.Build();
-            return configurationRoot;
-        }
-        #endif
-
-        public static AdminkaStorageConfiguration ResolveSqlServerAdminkaStorageConfiguration(
-            IConnectionStringMap connectionStringAccess,
-            string connectionStringName = "AdminkaConnectionString",
-            string migrationAssembly = null
-            )
-        {
-            var connectionString = connectionStringAccess.GetConnectionString(connectionStringName);
-            return new AdminkaStorageConfiguration(connectionString, migrationAssembly, StorageType.SQLSERVER);
-        }
-
 
         /// <summary>
         /// Force early fails of application in case of missed assemblies (FileNotFoundException, Could not load file or assembly..)
@@ -93,7 +55,7 @@ namespace DashboardCode.AdminkaV1.Injected
 #endif
         }
 
-#region Meta
+        #region Meta
         public readonly static IEntityMetaServiceContainer EntityMetaServiceContainer = new EntityMetaServiceContainer(
             (exception, entityType, ormEntitySchemaAdapter, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(
                   exception, entityType, ormEntitySchemaAdapter, genericErrorField,
@@ -232,25 +194,15 @@ namespace DashboardCode.AdminkaV1.Injected
             return exception;
         }
 
-        // TODO: Performance counters
-        // public static readonly RoutineHandlerFactory<RoutineClosure<UserContext>> RoutineHandlerFactory = 
-        //    new RoutineHandlerFactory<RoutineClosure<UserContext>>((ticks) => {;});
-
-        public static void CountDuration(long ticks)
-        {
-
-        }
-
-        public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeNLogMemberLogger()
+        public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeNLogMemberLoggerFactory(IAuthenticationLogging authenticationLogging)
         {
             return (correlationToken, memberTag) => {
                 var nLogLoggingAdapter = new NLogLoggingAdapter(correlationToken, memberTag, Markdown, SerializeToJson);
-                var authenticationLogging = new NLogAuthenticationLogging();
                 return (nLogLoggingAdapter, authenticationLogging);
             };
         }
 
-        public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeListMemberLogger(List<string> logger)
+        public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeListMemberLoggerFactory(List<string> logger)
         {
             return (correlationToken, memberTag) => {
                 var listLoggingAdapter = new ListLoggingAdapter(logger, correlationToken, memberTag, Markdown, SerializeToJson);
@@ -363,7 +315,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 }
                 catch (Exception ex)
                 {
-                    throw new AdminkaException("User authetication and authorization service generates an error because of configuration or      network connection problems", ex);
+                    throw new AdminkaException("User authetication and authorization service generates an error because of configuration or network connection problems", ex);
                 }
             });
             return new UserContext(user, cultureInfo);

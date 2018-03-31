@@ -15,16 +15,17 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void EfCoreTestStoreUpdateRelationsErrorNoTracking()
         {
-            TestIsland.Reset(Guid.NewGuid().ToString());
+            TestManager.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
 
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.GetConfiguration(),
-                InjectedManager.GetConfigurationFactory(),
+                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
+                TestManager.ApplicationSettings.PerformanceCounters,
+                TestManager.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 new MemberTag(this), userContext,
                 new { input = "Input text" });
@@ -71,14 +72,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public void EfCoreTestStoreUpdateRelationsErrorTracking()
         {
             var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            TestIsland.Reset(Guid.NewGuid().ToString());
+            TestManager.Reset(Guid.NewGuid().ToString());
 
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(
-                InjectedManager.GetConfiguration(),
-                InjectedManager.GetConfigurationFactory(),
+                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
+                TestManager.ApplicationSettings.PerformanceCounters,
+                TestManager.ApplicationSettings.ConfigurationContainerFactory,
                 loggingTransientsFactory,
                 new MemberTag(this), userContext,
                 new { input = "Input text" });

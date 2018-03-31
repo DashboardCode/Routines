@@ -1,9 +1,12 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.AspNetCore;
+using DashboardCode.Routines.Configuration.NETStandard;
+
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
@@ -67,7 +70,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         #endregion
 
         CrudRoutineControllerConsumer<Privilege, string> consumer;
-        public PrivilegesController(IConfigurationRoot configurationRoot) :base(configurationRoot)
+        public PrivilegesController(ApplicationSettings applicationSettings, IOptionsSnapshot<List<RoutineResolvable>> routineResolvablesOption) :base(applicationSettings, routineResolvablesOption.Value)
         {
             consumer = new CrudRoutineControllerConsumer<Privilege, string>(this, meta, (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem));
         }

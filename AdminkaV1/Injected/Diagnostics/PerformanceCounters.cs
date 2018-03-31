@@ -9,7 +9,7 @@ namespace DashboardCode.AdminkaV1.Injected.Diagnostics
         PerformanceCounter numberOfActionsCounter;
         PerformanceCounter errorCounter;
 
-        public PerformanceCounters(string instanceName, string categoryName = "AdminkaV1")
+        public PerformanceCounters(string categoryName, string instanceName)
         {
             averageActionCounter = new PerformanceCounter(categoryName, "Avg. sec/action", instanceName, false);
             averageActionBaseCounter = new PerformanceCounter(categoryName, "Avg. sec/action base", instanceName, false);
@@ -27,16 +27,6 @@ namespace DashboardCode.AdminkaV1.Injected.Diagnostics
         public void CountError()
         {
             errorCounter.Increment();
-        }
-    }
-
-    public class PerformanceCountersStub : IPerformanceCounters
-    {
-        public void CountDurationTicks(long ticks)
-        {
-        }
-        public void CountError()
-        {
         }
     }
 }

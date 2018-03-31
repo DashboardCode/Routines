@@ -9,6 +9,9 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using System.Collections.Generic;
+using DashboardCode.Routines.Configuration.NETStandard;
+using Microsoft.Extensions.Options;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
 {
@@ -101,7 +104,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         #endregion
 
         CrudRoutineControllerConsumer<Group, int> consumer;
-        public GroupsController(IConfigurationRoot  configurationRoot/*, ConventionSet conventionSet*/) :base(configurationRoot)
+        public GroupsController(ApplicationSettings applicationSettings, IOptionsSnapshot<List<RoutineResolvable>> routineResolvablesOption) :base(applicationSettings, routineResolvablesOption.Value)
         {
             consumer = new CrudRoutineControllerConsumer<Group, int>(this, meta, (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem));
         }

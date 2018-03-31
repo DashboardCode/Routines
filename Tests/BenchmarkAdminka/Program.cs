@@ -1,9 +1,11 @@
 ﻿using BenchmarkDotNet.Running;
+using DashboardCode.AdminkaV1.Injected;
 
 namespace BenchmarkAdminka
 {
     class Program
     {
+        public readonly static ApplicationSettings ApplicationSettings = new ApplicationSettings();
         static void Main(string[] args)
         {
             //var b = new BenchmarkAdminkaRoutineListLogger();

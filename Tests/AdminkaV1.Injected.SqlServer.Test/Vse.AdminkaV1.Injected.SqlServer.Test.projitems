@@ -14,6 +14,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)StorageConcurencyErrorTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StorageModelErrorTest.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StorageTest.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TestIsland.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TestManager.cs" />
   </ItemGroup>
 </Project>

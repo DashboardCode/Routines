@@ -27,26 +27,21 @@ namespace DashboardCode.Routines.Configuration.NETFramework
     public class ConfigurationManagerLoader : IConfigurationManagerLoader
     {
         const string key = "routinesConfiguration";
+        readonly string sectionName;
 
         public ConfigurationManagerLoader(string sectionName = key)
+        {
+            this.sectionName = sectionName;
+        }
+
+        public IEnumerable<IRoutineConfigurationRecord> GetGetRoutineConfigurationRecords()
         {
             var section = ConfigurationManager.GetSection(sectionName);
             if (section == null)
                 throw new System.Exception($"Configuration section '{sectionName}' was not found");
             var routinesConfigurationSection = (RoutinesConfigurationSection)section;
-            SetGetRoutineConfigurationRecords(((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineConfigurationRecord>());
-        }
-
-        private IEnumerable<IRoutineConfigurationRecord> getRoutineConfigurationRecords;
-
-        public IEnumerable<IRoutineConfigurationRecord> GetGetRoutineConfigurationRecords()
-        {
-            return getRoutineConfigurationRecords;
-        }
-
-        private void SetGetRoutineConfigurationRecords(IEnumerable<IRoutineConfigurationRecord> value)
-        {
-            getRoutineConfigurationRecords = value;
+            var routineConfigurationRecords = ((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineConfigurationRecord>();
+            return routineConfigurationRecords;
         }
 
         #region Experimental: update and save configuration

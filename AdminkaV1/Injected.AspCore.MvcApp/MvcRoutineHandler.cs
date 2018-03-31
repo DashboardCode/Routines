@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.AspNetCore;
-using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Configuration.NETStandard;
 using DashboardCode.Routines.Configuration;
+
+using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
-using DashboardCode.Routines.Injected;
+using DashboardCode.AdminkaV1.Injected.Diagnostics;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -45,8 +47,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             this(controller,
                  correlationToken,
                  memberTag,
-                 new ConfigurationManagerLoader(controller.ConfigurationRoot),
-                 new ConnectionStringMap(controller.ConfigurationRoot),
+                 // MVC is configured to reload configuration data (and share one instance between all processes)
+                 // that is why I do not use InjectedManager.ConfigurationManagerLoader
+                 new ConfigurationManagerLoader(controller.RoutineResolvables),
                  input)
         {
         }
@@ -56,15 +59,15 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 Guid correlationToken,
                 MemberTag memberTag,
                 ConfigurationManagerLoader configurationManagerLoader,
-                ConnectionStringMap connectionStringMap,
                 object input) :
             this(
-                 InjectedManager.ResolveSqlServerAdminkaStorageConfiguration(connectionStringMap),
+                 controller.ApplicationSettings.AdminkaStorageConfiguration,
+                 controller.ApplicationSettings.PerformanceCounters,
                  new ConfigurationContainerFactory(configurationManagerLoader),
                  controller,
                  correlationToken,
                  memberTag,
-                 InjectedManager.ComposeNLogMemberLogger(),
+                 InjectedManager.ComposeNLogMemberLoggerFactory(controller.ApplicationSettings.AuthenticationLogging),
                  input)
         {
             controller.HttpContext.Items["CorrelationToken"] = correlationToken;
@@ -79,6 +82,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
         private MvcRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
+            IPerformanceCounters performanceCounters,
             ConfigurationContainerFactory configurationFactory,
             ConfigurableController controller, 
             Guid correlationToken,
@@ -87,6 +91,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             object input) :
             base(
                 adminkaStorageConfiguration,
+                performanceCounters,
                 configurationFactory,
                 loggingTransientsFactory,
                 correlationToken,

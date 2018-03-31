@@ -4,16 +4,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AdminkaV1", "AdminkaV1", "{52BA4719-F064-4388-A426-1E1174D3A0EB}"
+	ProjectSection(SolutionItems) = preProject
+		AdminkaV1\create performance counters.ps1 = AdminkaV1\create performance counters.ps1
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FFB752D8-5E1E-4FFA-AC1D-2EEBA4622B20}"
 	ProjectSection(SolutionItems) = preProject
 		Benchmark.ps1 = Benchmark.ps1
-		BenchmarkAdminka.ps1 = BenchmarkAdminka.ps1
 		BenchmarkClassic.ps1 = BenchmarkClassic.ps1
 		OpenCover.ps1 = OpenCover.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{68C4C8C2-2A78-4998-9D36-4A3B139B41FE}"
+	ProjectSection(SolutionItems) = preProject
+		BenchmarkAdminka.ps1 = BenchmarkAdminka.ps1
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines", "Routines\Routines.csproj", "{7F19BF12-3F67-4185-A8F1-48BDC6129915}"
 EndProject
@@ -162,7 +167,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NLogExtensibles.Test", "Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test\AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test.csproj", "{5E79C527-3337-4F7C-9AA3-D71E75E3915B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test\AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test.csproj", "{69AF60A9-17D7-4A77-AF3A-DBFB4CABAFF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test\AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test.csproj", "{69AF60A9-17D7-4A77-AF3A-DBFB4CABAFF0}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

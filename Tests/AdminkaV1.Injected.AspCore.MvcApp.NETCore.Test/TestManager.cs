@@ -16,6 +16,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
 {
     public static class TestManager
     {
+        public readonly static ApplicationSettings ApplicationSettings = new ApplicationSettings();
         /// <summary>
         ///   D:\cot\DashboardCode\Routines\Tests\AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test\bin\Debug\netcoreapp2.0\
         ///   to

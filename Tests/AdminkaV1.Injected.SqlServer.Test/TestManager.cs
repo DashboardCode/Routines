@@ -4,19 +4,25 @@ using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.AdminkaV1.TestDom;
 
-namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
+namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
-    public static class TestIsland
+    public static class TestManager
     {
-        public static void Reset(string databaseName)
-        {
-            var logger = new List<string>();
-            var loggingTransientsFactory = InjectedManager.ComposeListMemberLogger(logger);
+        public readonly static ApplicationSettings ApplicationSettings = new ApplicationSettings();
 
-            var routine = new AdminkaInMemoryTestRoutine(
-                logger,
-                new MemberTag(typeof(TestIsland)),
-                new { input = "Input text" }, databaseName);
+        public static void Reset(string databaseName = "AdminkaV1")
+        {
+            Clear(databaseName);
+
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
+
+            var routine = new AdminkaRoutineHandler(
+                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
+                TestManager.ApplicationSettings.PerformanceCounters,
+                TestManager.ApplicationSettings.ConfigurationContainerFactory,
+                loggingTransientsFactory,
+                new MemberTag(typeof(TestManager)), new UserContext("UnitTest"), new { input = "Input text" });
             routine.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var typeRecord1 = new TypeRecord()
@@ -144,6 +150,68 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                         batch.Add(parentRecordHierarchyRecord5);
                     }).ThrowIfFailed("Can't add ParentRecordHierarchyRecord")
                 );
+            });
+        }
+
+        public static void Clear(string databaseName = "AdminkaV1")
+        {
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
+
+            var routine = new AdminkaRoutineHandler(
+                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
+                TestManager.ApplicationSettings.PerformanceCounters,
+                TestManager.ApplicationSettings.ConfigurationContainerFactory,
+                loggingTransientsFactory,
+                new MemberTag(typeof(TestManager)), new UserContext("UnitTest"),
+                new { input = "Input text" });
+            routine.HandleOrmFactory((ormHandlerFactory) =>
+            {
+                ormHandlerFactory.Create<ChildRecord>().Handle((repository, storage) =>
+                {
+                    storage.Handle(batch =>
+                    {
+                        var list = repository.List();
+                        foreach (var e in list)
+                            batch.Remove(e);
+                    }).ThrowIfFailed();
+                });
+                ormHandlerFactory.Create<ParentRecordHierarchyRecord>().Handle((repository, storage) =>
+                {
+                    storage.Handle(batch =>
+                    {
+                        var list = repository.List();
+                        foreach (var e in list)
+                            batch.Remove(e);
+                    }).ThrowIfFailed();
+                });
+                ormHandlerFactory.Create<ParentRecord>().Handle((repository, storage) =>
+                {
+                    storage.Handle(batch =>
+                    {
+                        var list = repository.List();
+                        foreach (var e in list)
+                            batch.Remove(e);
+                    }).ThrowIfFailed();
+                });
+                ormHandlerFactory.Create<TypeRecord>().Handle((repository, storage) =>
+                {
+                    storage.Handle(batch =>
+                    {
+                        var list = repository.List();
+                        foreach (var e in list)
+                            batch.Remove(e);
+                    }).ThrowIfFailed();
+                });
+                ormHandlerFactory.Create<ParentRecordHierarchyRecord>().Handle((repository, storage) =>
+                {
+                    storage.Handle(batch =>
+                    {
+                        var list = repository.List();
+                        foreach (var e in list)
+                            batch.Remove(e);
+                    }).ThrowIfFailed();
+                });
             });
         }
     }

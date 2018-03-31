@@ -5,20 +5,15 @@ namespace DashboardCode.Routines.Configuration.NETStandard
 {
     public class AppSettings : IAppSettings
     {
-        const string defaultSectionName = "AppSettings";
         readonly IConfigurationRoot configurationRoot;
-        readonly Dictionary<string, string> appSettings;
-        public AppSettings(IConfigurationRoot configurationRoot, string sectionName = defaultSectionName)
-        {
+        public AppSettings(IConfigurationRoot configurationRoot) =>
             this.configurationRoot = configurationRoot;
-            var section = configurationRoot.GetSection(sectionName);
-            appSettings = new Dictionary<string,string>();
-            section.Bind(appSettings);
-        }
 
         public string GetValue(string key)
         {
-            return appSettings[key];
+            var section = configurationRoot.GetSection(key);
+            var value = section.Value;
+            return value;
         }
     }
 
@@ -30,9 +25,10 @@ namespace DashboardCode.Routines.Configuration.NETStandard
 
         public string GetConnectionString(string name = "ConnectionString")
         {
-            var connectionString = configurationRoot.GetSection(name).Value;
-            var password = configurationRoot["AdminkaPassword"];
-            var loginName = configurationRoot["AdminkaUserName"];
+            var section = configurationRoot.GetSection(name);
+            var connectionString = section.Value;
+            //var password = configurationRoot["AdminkaPassword"];
+            //var loginName = configurationRoot["AdminkaUserName"];
             return connectionString;
         }
     }
@@ -51,9 +47,10 @@ namespace DashboardCode.Routines.Configuration.NETStandard
             section.Bind(routineResolvables);
         }
 
-        public IEnumerable<IRoutineConfigurationRecord> GetGetRoutineConfigurationRecords()
-        {
-            return routineResolvables;
-        }
+        public ConfigurationManagerLoader(List<RoutineResolvable> routineResolvables) =>
+            this.routineResolvables = routineResolvables;
+
+        public IEnumerable<IRoutineConfigurationRecord> GetGetRoutineConfigurationRecords() =>
+            routineResolvables;
     }
 }

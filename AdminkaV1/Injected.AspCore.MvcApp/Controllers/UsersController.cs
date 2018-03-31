@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks; // assync actions
 using Microsoft.AspNetCore.Mvc; // controler
-using Microsoft.Extensions.Configuration;
 
 using DashboardCode.AdminkaV1.AuthenticationDom; // entity
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using DashboardCode.Routines.Configuration.NETStandard;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
 {
@@ -75,7 +77,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         Func<Task<IActionResult>> details;
         Func<Task<IActionResult>> edit;
         Func<Task<IActionResult>> editConfirmed;
-        public UsersController(IConfigurationRoot configurationRoot) :base(configurationRoot)
+        public UsersController(ApplicationSettings applicationSettings, IOptionsSnapshot<List<RoutineResolvable>> routineResolvablesOption) :base(applicationSettings, routineResolvablesOption.Value)
         {
             Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
             index   = CrudRoutineControllerConsumer<User, int>.ComposeIndex(this, meta.IndexIncludes);

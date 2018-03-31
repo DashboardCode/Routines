@@ -8,7 +8,7 @@ namespace DashboardCode.Routines.Injected
         public readonly Guid CorrelationToken;
         private readonly List<VerboseBuffer> buffers = new List<VerboseBuffer>();
         //private readonly Func<Guid, MemberTag, IMemberLogger> createMemberLogger;
-        public RoutineLogger(Guid correlationToken/*, Func<Guid, MemberTag,  IMemberLogger> createMemberLogger*/)
+        public RoutineLogger(Guid correlationToken /*, Func<Guid, MemberTag,  IMemberLogger> createMemberLogger*/)
         {
             CorrelationToken = correlationToken;
             //this.createMemberLogger = createMemberLogger;

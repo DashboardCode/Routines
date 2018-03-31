@@ -8,7 +8,7 @@ If ($SolutionFolderPath -eq '') {
 
 $BenchmarkReportPath = "$SolutionFolderPath\BenchmarkDotNet.Artifacts\results"
 $BenchmarkProjectPath = "$SolutionFolderPath\Tests\BenchmarkAdminka"
- 
+
 # this recompiles all target versions. dotnet run is not enough for it. but I'm not sure that this is obligated.
 # NOTE: script doesn't work after project's Clear - it is still need to compile all from VS at first time. 
 & $dotnetPath build $BenchmarkProjectPath -c Release

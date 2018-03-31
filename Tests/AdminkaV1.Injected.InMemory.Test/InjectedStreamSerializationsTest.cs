@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using DashboardCode.AdminkaV1.TestDom;
-using DashboardCode.Routines;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using DashboardCode.Routines;
+using DashboardCode.AdminkaV1.TestDom;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {

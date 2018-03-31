@@ -14,21 +14,21 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
     {
         public AdminkaInMemoryTestRoutine(List<string> logger, MemberTag memberTag, object input, string name = "adminka")
             : this(
-                  InjectedManager.ComposeListMemberLogger(logger),
+                  InjectedManager.ComposeListMemberLoggerFactory(logger),
                   memberTag,
                   input)
         {
         }
 
         public AdminkaInMemoryTestRoutine(Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory, MemberTag memberTag, object input, string name = "adminka")
-            : this(memberTag, new UserContext("UnitTest"), new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY), InjectedManager.GetConfigurationFactory(),
+            : this(memberTag, new UserContext("UnitTest"), new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY), TestManager.ApplicationSettings.ConfigurationContainerFactory,
                   loggingTransientsFactory,
                   input)
         {
         }
 
         public AdminkaInMemoryTestRoutine(Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory, MemberTag memberTag, string name = "adminka")
-            : this(memberTag, new UserContext("UnitTest"), new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY), InjectedManager.GetConfigurationFactory(),
+            : this(memberTag, new UserContext("UnitTest"), new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY), TestManager.ApplicationSettings.ConfigurationContainerFactory,
                   loggingTransientsFactory,
                   new { })
         {
@@ -39,7 +39,9 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             ConfigurationContainerFactory configurationFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
           object input)
-           : base(adminkaStorageConfiguration, configurationFactory, loggingTransientsFactory, memberTag, userContext, input)
+           : base(adminkaStorageConfiguration,
+                 TestManager.ApplicationSettings.PerformanceCounters,
+                 configurationFactory, loggingTransientsFactory, memberTag, userContext, input)
         {
         }
     }

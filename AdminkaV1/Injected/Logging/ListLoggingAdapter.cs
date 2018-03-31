@@ -15,6 +15,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         readonly MemberTag memberTag;
         readonly Func<Exception, string> markdownException;
         readonly Func<object, string> serializeObject;
+        readonly string routineTag;
 
         public ListLoggingAdapter(
             List<string> logger,
@@ -27,6 +28,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             this.logger = logger;
             this.correlationToken = correlationToken;
             this.memberTag = memberTag;
+            this.routineTag = memberTag.ToText(correlationToken);
             this.markdownException = markdownException;
             this.serializeObject = (o) =>
             {
@@ -44,21 +46,17 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         
         public void LogActivityStart(DateTime dateTime)
         {
-            var text = "LogActivityStart, " + dateTime + " " + memberTag.ToText(correlationToken);
-            //System.Diagnostics.Trace.WriteLine(text);
+            var text = $"LogActivityStart, {dateTime} {routineTag}";
             logger.Add(text);
         }
         public void LogActivityFinish(DateTime dateTime, TimeSpan timeSpan, bool isSuccess)
         {
-            var text = "LogActivityFinish, " + dateTime + " " + memberTag.ToText(correlationToken)
-                + " duration:" + ((Math.Round(timeSpan.TotalMilliseconds) + "ms")) + (isSuccess ? "" : "; #ERROR");
-            //System.Diagnostics.Trace.WriteLine(text);
+            var text = $"LogActivityFinish, {dateTime} {routineTag} duration: {Math.Round(timeSpan.TotalMilliseconds)}ms{(isSuccess ? "" : ", #ERROR")}";
             logger.Add(text);
         }
         public void LogVerbose(DateTime dateTime, string message)
         {
-            var text = "LogVerbose, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + message;
-            //System.Diagnostics.Trace.WriteLine(text);
+            var text = $"LogVerbose, {dateTime} {routineTag} message: {message}";
             logger.Add(text);
         }
         public void LogBufferedVerbose(IEnumerable<VerboseMessage> verboseMessages)
@@ -67,11 +65,9 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             var i = 1;
             foreach (var verbose in verboseMessages)
             {
-                var text = "LogBufferedVerbose," + $"{i++}/{count} " + verbose.DateTime + " " + memberTag.ToText(correlationToken) + " message:" + verbose.Message;
-
+                var text = $"LogBufferedVerbose {i++}/{count}, {verbose.DateTime} {routineTag} message: {verbose.Message}";
                 if (verbose.StackTrace != null)
                     text += Environment.NewLine + "StackTrace: " + verbose.StackTrace;
-                //System.Diagnostics.Trace.WriteLine(text);
                 logger.Add(text);
             }
         }
@@ -79,38 +75,33 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         public void LogException(DateTime dateTime, Exception excepion)
         {
             var message = markdownException(excepion);
-            var text = "LogException, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + Environment.NewLine + message;
-            //System.Diagnostics.Trace.WriteLine(text);
+            var text = $"LogException, {dateTime} {routineTag} message:{Environment.NewLine}{message}";
             logger.Add(text);
         }
 
         public void LogError(DateTime dateTime, string message)
         {
-            var text = "LogError, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + Environment.NewLine + message;
-            //System.Diagnostics.Trace.WriteLine(text);
+            var text = $"LogError, {dateTime} {routineTag} message:{Environment.NewLine}{message}";
             logger.Add(text);
         }
 
         public void Input(DateTime dateTime, object input)
         {
-                var message = serializeObject(input);
-                var text = "Input, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + message;
-                //System.Diagnostics.Trace.WriteLine(text);
-                logger.Add(text);
+            var message = serializeObject(input);
+            var text = $"Input, {dateTime} {routineTag} message: {message}";
+            logger.Add(text);
         }
 
         public void Output(DateTime dateTime, object output)
         {
-                var message = serializeObject(output);
-                var text = "Output, " + dateTime + " " + memberTag.ToText(correlationToken) + " message:" + message;
-                //System.Diagnostics.Trace.WriteLine(text);
-                logger.Add(text);
+            var message = serializeObject(output);
+            var text = $"Output, {dateTime} {routineTag} message: {message}";
+            logger.Add(text);
         }
 
         public void TraceAuthentication(Guid correlationToken, MemberTag memberTag, string message)
         {
             logger.Add($"{correlationToken} {memberTag.ToText(correlationToken)} {message}");
         }
-
     }
 }

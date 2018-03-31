@@ -57,16 +57,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AsyncUnitTest.cs" />
+    <Compile Include="Injected\LoggingTransients.cs" />
     <Compile Include="JsonSubsetTest.cs" />
     <Compile Include="MemberExpressionTest.cs" />
     <Compile Include="TreeTest.cs" />
     <Compile Include="JsonTest.cs" />
     <Compile Include="CoverTest.cs" />
-    <Compile Include="Includes2\Includables.cs" />
     <Compile Include="IncludesTest.cs" />
     <Compile Include="Injected\LoggingAdapter.cs" />
     <Compile Include="Injected\StateService.cs" />
-    <Compile Include="Injected\LoggingTransients.cs" />
     <Compile Include="Injected\LoggingConfiguration.cs" />
     <Compile Include="Injected\RoutinesTest.cs" />
     <Compile Include="Injected\UserContext.cs" />
@@ -82,6 +81,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

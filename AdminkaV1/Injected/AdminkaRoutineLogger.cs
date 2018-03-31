@@ -5,6 +5,7 @@ using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.AdminkaV1.Injected.Diagnostics;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -12,17 +13,17 @@ namespace DashboardCode.AdminkaV1.Injected
     {
         readonly Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers;
         readonly Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException;
-        readonly Action<long> countDuration;
+        readonly IPerformanceCounters performanceCounters;
         public AdminkaRoutineLogger(
             Guid correlationToken,
             Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
-            Action<long> countDuration
+            IPerformanceCounters performanceCounters
             ) : base(correlationToken)
         {
-            this.countDuration = countDuration;
             this.composeLoggers = composeLoggers;
             this.routineTransformException = routineTransformException;
+            this.performanceCounters = performanceCounters;
         }
 
         public RoutineLoggingTransients CreateTransients(
@@ -56,7 +57,11 @@ namespace DashboardCode.AdminkaV1.Injected
 
             var enableVerbose = loggingVerboseConfiguration.Verbose;
             var exceptionHandler = new ExceptionHandler(
-               ex => exceptionLogger.LogException(DateTime.Now, ex),
+               ex =>
+               {
+                   performanceCounters.CountError();
+                   exceptionLogger.LogException(DateTime.Now, ex);
+               },
                ex => routineTransformException(ex, base.CorrelationToken, memberTag, InjectedManager.Markdown)
             );
 
@@ -72,8 +77,8 @@ namespace DashboardCode.AdminkaV1.Injected
                 memberTag,
                 bufferedMemberLogger.LogVerbose,
                 loggingVerboseConfiguration.ShouldVerboseWithStackTrace,
-                testInputOutput, 
-                countDuration
+                testInputOutput,
+                performanceCounters.CountDurationTicks
             );
 
             Action<string> efDbContextVerbose = null;
