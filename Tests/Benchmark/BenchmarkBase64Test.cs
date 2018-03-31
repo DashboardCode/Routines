@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Attributes.Jobs;
+
 using DashboardCode.Routines.Json;
 
 namespace Benchmark
 {
     [Config(typeof(MyManualConfig))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
-    [ClrJob, CoreJob]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
     public class BenchmarkBase64Test

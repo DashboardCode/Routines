@@ -1,17 +1,16 @@
 ﻿using System;
+using System.Text;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
+
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Attributes.Jobs;
 
 namespace Benchmark
 {
     [Config(typeof(MyManualConfig))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
-    [ClrJob, CoreJob]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser /*, InliningDiagnoser*/]
     public class BenchmarkCallSimple

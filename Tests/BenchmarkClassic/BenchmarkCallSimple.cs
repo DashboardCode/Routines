@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
+using System.Reflection;
+using System.Linq.Expressions;
+
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;

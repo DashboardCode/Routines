@@ -24,9 +24,7 @@ namespace DashboardCode.AdminkaV1.Injected.Diagnostics
             numberOfActionsCounter.Increment();
         }
 
-        public void CountError()
-        {
+        public void CountError() =>
             errorCounter.Increment();
-        }
     }
 }

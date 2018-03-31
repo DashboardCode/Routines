@@ -27,7 +27,6 @@ using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
-
     public static class InjectedManager
     {
         static InjectedManager()

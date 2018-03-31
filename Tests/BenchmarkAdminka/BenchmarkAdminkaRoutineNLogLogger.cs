@@ -5,6 +5,7 @@ using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
 
 using DashboardCode.Routines;
+
 using DashboardCode.AdminkaV1;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.AdminkaV1.TestDom;
