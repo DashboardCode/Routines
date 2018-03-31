@@ -104,7 +104,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     WcfClientManager.AppendWcfClientFaultException(sb, ex);
                     DataAccessEfCoreManager.Append(sb, ex);
                     SqlServerManager.Append(sb, ex);
-#if !(NETSTANDARD2_0)
+#if !NETSTANDARD2_0
                     ActiveDirectoryManager.Append(sb, ex);
 #endif
                     appender?.Invoke(sb, ex);
@@ -293,11 +293,11 @@ namespace DashboardCode.AdminkaV1.Injected
                     User @value;
                     if (useAdAuthorization)
                     {
-#if !NETSTANDARD2_0
+#if NETSTANDARD2_0
+                        throw new NotImplementedException("LDAP is not supported for NETStandard");
+#else
                         var groups = ActiveDirectoryManager.ListGroups(identity, out string loginName, out string firstName, out string secondName);
                         @value = authenticationService.GetUser(loginName, firstName, secondName, groups);
-#else
-                        throw new NotImplementedException("LDAP is not supported for NETStandard");
 #endif
                     }
                     else
