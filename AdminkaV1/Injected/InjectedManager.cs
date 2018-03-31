@@ -17,14 +17,12 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
-//using DashboardCode.AdminkaV1.Injected.Diagnostics;
 
 #if NETSTANDARD2_0
     using DashboardCode.Routines.Serialization.NETStandard;
 #else
     using DashboardCode.Routines.Serialization.NETFramework;
     using DashboardCode.Routines.ActiveDirectory.NETFramework;
-    using DashboardCode.Routines.Configuration.NETFramework;
 #endif
 
 namespace DashboardCode.AdminkaV1.Injected
@@ -72,7 +70,6 @@ namespace DashboardCode.AdminkaV1.Injected
 #if NETSTANDARD2_0
             // TODO: Core 2.1 will contains AD functionality https://github.com/dotnet/corefx/issues/2089 and 
             // there we will need update this code to get roles similar to WindowsIdentity.GetCurrent().
-
             return new GenericIdentity(Environment.UserDomainName + "\\" + Environment.UserName, "Anonymous");
 #else
             return WindowsIdentity.GetCurrent(); 
@@ -164,13 +161,12 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public static string SerializeToJson(object o, int depth, bool ignoreDuplicates)
         {
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
-            var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
-                return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
-#else
+#if NETSTANDARD2_0
             var types = typeof(UserContext).GetTypeInfo().Assembly.GetTypes();
-            return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
+#else
+            var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
 #endif
+            return SerializationManager.SerializeToJson(o, depth, ignoreDuplicates, types);
         }
         public static string Markdown(string text)
         {
