@@ -8,15 +8,16 @@ namespace BenchmarkClassic
     class Program
     {
         static void Main(string[] args) =>
-            BenchmarkRunner.Run<BenchmarkJson>();
+            BenchmarkRunner.Run<BenchmarkConverAll>();
     }
 
     public class MyManualConfig : ManualConfig
     {
         public MyManualConfig()
         {
+            
             Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp20));
-            Add(Job.Clr);
+            //Add(Job.Clr);
         }
     }
 }

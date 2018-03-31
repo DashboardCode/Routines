@@ -1,13 +1,16 @@
 
-BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 2 (10.0.15063)
-Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
-Frequency=3233542 Hz, Resolution=309.2584 ns, Timer=TSC
-  [Host] : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
-  Clr    : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
+BenchmarkDotNet=v0.10.13, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.309)
+Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical cores and 4 physical cores
+Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
+.NET Core SDK=2.1.100
+  [Host]     : .NET Core 2.0.5 (CoreCLR 4.6.26020.03, CoreFX 4.6.26018.01), 64bit RyuJIT
+  Job-AVYIXW : .NET Core 2.0.5 (CoreCLR 4.6.26020.03, CoreFX 4.6.26018.01), 64bit RyuJIT
 
-Job=Clr  Runtime=Clr  
 
-        Method |     Mean |     Error |    StdDev |      Min |      Max |   Median | Rank |   Gen 0 |  Gen 1 | Allocated |
--------------- |---------:|----------:|----------:|---------:|---------:|---------:|-----:|--------:|-------:|----------:|
- TestConverAll | 192.7 us | 1.6772 us | 1.5689 us | 190.3 us | 195.4 us | 192.4 us |    2 | 17.5781 | 0.2441 |  54.72 KB |
-    TestSelect | 191.8 us | 0.7062 us | 0.6606 us | 190.3 us | 192.6 us | 191.9 us |    1 | 17.5781 | 0.2441 |  54.72 KB |
+        Method |     Job | Runtime |     Toolchain |     Mean |     Error |    StdDev |      Min |      Max |   Median | Rank |   Gen 0 |  Gen 1 | Allocated |
+-------------- |-------- |-------- |-------------- |---------:|----------:|----------:|---------:|---------:|---------:|-----:|--------:|-------:|----------:|
+ TestConverAll | Default |    Core | .NET Core 2.0 | 167.0 us | 0.6699 us | 0.6266 us | 166.3 us | 168.6 us | 167.0 us |    1 | 22.7051 | 0.2441 |   72064 B |
+ TestConverAll |     Clr |     Clr |       Default |       NA |        NA |        NA |       NA |       NA |       NA |    ? |     N/A |    N/A |       N/A |
+
+Benchmarks with issues:
+  BenchmarkConverAll.TestConverAll: Clr(Runtime=Clr)

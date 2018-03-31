@@ -8,9 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.10.13" />
+    
     <PackageReference Include="DynamicExpresso.Core" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
+  
+    <ItemGroup Condition="'$(TargetFramework)' == 'net47'">
+		<PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.10.13" />
+	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Routines\Routines.csproj" />

@@ -2,14 +2,22 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
+//#if !NETCOREAPP2_0
+//using BenchmarkDotNet.Diagnostics.Windows.Configs;
+//#endif
 
-namespace BenchmarkClassic
+namespace Benchmark
 {
-    [Config(typeof(MyManualConfig))]
-    [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
-    [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser, InliningDiagnoser]
+    //[Config(typeof(ManualWindowsDiagnosersConfig))]
+    //[MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
+    //[HtmlExporter, MarkdownExporter]
+    //[MemoryDiagnoser]
+#if !NETCOREAPP2_0
+    //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
+    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [BenchmarkDotNet.Attributes.Jobs.RyuJitX64Job]
+    //[BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
+#endif
     public class BenchmarkConverAll
     {
         IReadOnlyCollection<string[]> testCol;

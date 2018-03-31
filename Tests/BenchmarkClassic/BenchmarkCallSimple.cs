@@ -6,13 +6,12 @@ using System.Linq.Expressions;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Attributes.Jobs;
 using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 namespace BenchmarkClassic
 {
+    [Config(typeof(MyManualConfig))]
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
-    [ClrJob]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser, InliningDiagnoser]
     public class BenchmarkCallSimple

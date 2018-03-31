@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FFB752D8
 	ProjectSection(SolutionItems) = preProject
 		Benchmark.ps1 = Benchmark.ps1
 		BenchmarkClassic.ps1 = BenchmarkClassic.ps1
+		BenchmarkWindows.ps1 = BenchmarkWindows.ps1
 		OpenCover.ps1 = OpenCover.ps1
 	EndProjectSection
 EndProject

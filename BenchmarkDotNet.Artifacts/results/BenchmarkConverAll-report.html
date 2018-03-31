@@ -13,20 +13,18 @@
 </head>
 <body>
 <pre><code>
-BenchmarkDotNet=v0.10.8, OS=Windows 10 Redstone 2 (10.0.15063)
-Processor=Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), ProcessorCount=4
-Frequency=3233542 Hz, Resolution=309.2584 ns, Timer=TSC
-  [Host] : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
-  Clr    : Clr 4.0.30319.42000, 32bit LegacyJIT-v4.7.2101.1
+BenchmarkDotNet=v0.10.13, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.309)
+Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical cores and 4 physical cores
+Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
+  [Host]     : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+  DefaultJob : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
 </code></pre>
-<pre><code>Job=Clr  Runtime=Clr  
-</code></pre>
+<pre><code></code></pre>
 
 <table>
-<thead><tr><th> Method</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Min</th><th>Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Allocated</th>
+<thead><tr><th> Method</th><th>Mean</th><th>Error</th><th>StdDev</th>
 </tr>
-</thead><tbody><tr><td>TestConverAll</td><td>192.7 us</td><td>1.6772 us</td><td>1.5689 us</td><td>190.3 us</td><td>195.4 us</td><td>192.4 us</td><td>2</td><td>17.5781</td><td>0.2441</td><td>54.72 KB</td>
-</tr><tr><td>TestSelect</td><td>191.8 us</td><td>0.7062 us</td><td>0.6606 us</td><td>190.3 us</td><td>192.6 us</td><td>191.9 us</td><td>1</td><td>17.5781</td><td>0.2441</td><td>54.72 KB</td>
+</thead><tbody><tr><td>TestConverAll</td><td>189.3 us</td><td>3.664 us</td><td>3.598 us</td>
 </tr></tbody></table>
 </body>
 </html>

@@ -9,8 +9,8 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            var b = new BenchmarkDynamicExpresso();
-            var x1 = b.TestAdminkaStyle();
+            //var b = new BenchmarkDynamicExpresso();
+            //var x1 = b.TestAdminkaStyle();
             //var x2 = b.TestEvalCompile();
             //var i1 = b.Completed();
             //var i2 = b.CompletedAwait();
@@ -33,7 +33,7 @@ namespace Benchmark
             //var jO = b.TestFuncDynamicInvoke();
             //var jA = b.TestFunc();
             //var jB = b.TestFuncBuilded();
-            BenchmarkRunner.Run<BenchmarkDynamicExpresso>();
+            BenchmarkRunner.Run<BenchmarkConverAll>();
         }
     }
 
@@ -43,6 +43,24 @@ namespace Benchmark
         {
             Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp20));
             Add(Job.Clr);
+        }
+    }
+
+    public class ManualWindowsDiagnosersConfig : ManualConfig
+    {
+        public ManualWindowsDiagnosersConfig()
+        {
+            // RyuJit for .NET Core 2.0
+
+
+            //Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp20));
+            //Add(Job.Clr);
+#if !NETCOREAPP2_0
+            //Add(Job.ShortRun.With(Jit.RyuJit).With(Platform.X64).With(Runtime.Core).With(CsProjCoreToolchain.NetCoreApp20));
+            //Add(DisassemblyDiagnoser.Create(new DisassemblyDiagnoserConfig(printAsm: true, printPrologAndEpilog: true, recursiveDepth: 3)));
+            //Add(new BenchmarkDotNet.Diagnostics.Windows.InliningDiagnoser());
+#endif
+
         }
     }
 }
