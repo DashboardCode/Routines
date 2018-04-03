@@ -21,7 +21,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                 ormHandler.Handle(
                     (repository, storage, schemaAdapter) =>
                     {
-                        Include<ParentRecord> include = chain => chain
+                        void include(Chain<ParentRecord> chain) => chain
                             .IncludeAll(e => e.ParentRecordHierarchyRecordMap)
                             .ThenInclude(e => e.HierarchyRecordId);
 

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>DisassemblyDiagnoser Output BenchmarkConverAll</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<table>
+<thead>
+<tr><th colspan="1">BenchmarkConverAll</th></tr>
+<tr>
+<th>TestConverAll .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="vertical-align:top;"><pre><code>
+00007ffe`ca2b8640 Benchmark.BenchmarkConverAll.TestConverAll()
+            var x = testArray.ConvertAll(e => string.Join(",",e));
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+00007ffe`ca2b8646 488b7110        mov     rsi,qword ptr [rcx+10h]
+00007ffe`ca2b864a 4c8b0425d094ed15 mov     r8,qword ptr [15ED94D0h]
+00007ffe`ca2b8652 4d85c0          test    r8,r8
+00007ffe`ca2b8655 7546            jne     00007ffe`ca2b869d
+00007ffe`ca2b8657 48b9406718cafe7f0000 mov rcx,7FFECA186740h
+00007ffe`ca2b8661 e8da9e5f5f      call    clr+0x2540 (00007fff`298b2540)
+00007ffe`ca2b8666 488bf8          mov     rdi,rax
+00007ffe`ca2b8669 488b1425c894ed15 mov     rdx,qword ptr [15ED94C8h]
+00007ffe`ca2b8671 4885d2          test    rdx,rdx
+00007ffe`ca2b8674 7443            je      00007ffe`ca2b86b9
+00007ffe`ca2b8676 488d4f08        lea     rcx,[rdi+8]
+00007ffe`ca2b867a e871b75f5f      call    clr+0x3df0 (00007fff`298b3df0)
+00007ffe`ca2b867f 48ba88702bcafe7f0000 mov rdx,7FFECA2B7088h
+00007ffe`ca2b8689 48895718        mov     qword ptr [rdi+18h],rdx
+            return x;
+            ^^^^^^^^^
+00007ffe`ca2b868d b9d094ed15      mov     ecx,15ED94D0h
+00007ffe`ca2b8692 488bd7          mov     rdx,rdi
+00007ffe`ca2b8695 e826b75f5f      call    clr+0x3dc0 (00007fff`298b3dc0)
+00007ffe`ca2b869a 4c8bc7          mov     r8,rdi
+00007ffe`ca2b869d 488bce          mov     rcx,rsi
+00007ffe`ca2b86a0 48ba986818cafe7f0000 mov rdx,7FFECA186898h
+00007ffe`ca2b86aa 3909            cmp     dword ptr [rcx],ecx
+00007ffe`ca2b86ac e84f91b758      call    mscorlib_ni+0x511800 (00007fff`22e31800)
+00007ffe`ca2b86b1 90              nop
+
+00007fff`22e31800 System.Collections.Generic.List`1[[System.__Canon, mscorlib]].ConvertAll[[System.__Canon, mscorlib]](System.Converter`2<System.__Canon,System.__Canon>)
+00007fff`22e31817 4885ff          test    rdi,rdi
+00007fff`22e3181a 0f84d89ddd00    je      mscorlib_ni+0x12eb5f8 (00007fff`23c0b5f8)
+00007fff`22e31820 8b5e18          mov     ebx,dword ptr [rsi+18h]
+00007fff`22e31823 488b4a10        mov     rcx,qword ptr [rdx+10h]
+00007fff`22e31827 488b4908        mov     rcx,qword ptr [rcx+8]
+00007fff`22e3182b 4885c9          test    rcx,rcx
+00007fff`22e3182e 7512            jne     mscorlib_ni+0x511842 (00007fff`22e31842)
+00007fff`22e31830 488bca          mov     rcx,rdx
+00007fff`22e31833 488d1557721700  lea     rdx,[mscorlib_ni+0x688a91 (00007fff`22fa8a91)]
+00007fff`22e3183a e81979f2ff      call    mscorlib_ni+0x439158 (00007fff`22d59158)
+00007fff`22e3183f 488bc8          mov     rcx,rax
+00007fff`22e31842 e8c177f2ff      call    mscorlib_ni+0x439008 (00007fff`22d59008)
+00007fff`22e31847 488be8          mov     rbp,rax
+00007fff`22e3184a 488bcd          mov     rcx,rbp
+00007fff`22e3184d 8bd3            mov     edx,ebx
+00007fff`22e3184f e8ac54feff      call    mscorlib_ni+0x4f6d00 (00007fff`22e16d00)
+00007fff`22e31854 33db            xor     ebx,ebx
+00007fff`22e31856 837e1800        cmp     dword ptr [rsi+18h],0
+00007fff`22e3185a 7e3b            jle     mscorlib_ni+0x511897 (00007fff`22e31897)
+00007fff`22e3185c 4c8b7508        mov     r14,qword ptr [rbp+8]
+00007fff`22e31860 448bfb          mov     r15d,ebx
+00007fff`22e31863 488b4e08        mov     rcx,qword ptr [rsi+8]
+00007fff`22e31867 3b5908          cmp     ebx,dword ptr [rcx+8]
+00007fff`22e3186a 0f83939ddd00    jae     mscorlib_ni+0x12eb603 (00007fff`23c0b603)
+00007fff`22e31870 4863d3          movsxd  rdx,ebx
+00007fff`22e31873 488b54d110      mov     rdx,qword ptr [rcx+rdx*8+10h]
+00007fff`22e31878 488bc7          mov     rax,rdi
+00007fff`22e3187b 488b4808        mov     rcx,qword ptr [rax+8]
+00007fff`22e3187f ff5018          call    qword ptr [rax+18h]
+00007fff`22e31882 4c8bc0          mov     r8,rax
+00007fff`22e31885 418bd7          mov     edx,r15d
+00007fff`22e31888 498bce          mov     rcx,r14
+00007fff`22e3188b e8b877f2ff      call    mscorlib_ni+0x439048 (00007fff`22d59048)
+00007fff`22e31890 ffc3            inc     ebx
+00007fff`22e31892 3b5e18          cmp     ebx,dword ptr [rsi+18h]
+00007fff`22e31895 7cc5            jl      mscorlib_ni+0x51185c (00007fff`22e3185c)
+00007fff`22e31897 8b4618          mov     eax,dword ptr [rsi+18h]
+00007fff`22e3189a 894518          mov     dword ptr [rbp+18h],eax
+00007fff`22e3189d 488bc5          mov     rax,rbp
+00007fff`22e318a0 4883c438        add     rsp,38h
+00007fff`22e318a4 5b              pop     rbx
+00007fff`22e318a5 5d              pop     rbp
+00007fff`22e318a6 5e              pop     rsi
+00007fff`22e318a7 5f              pop     rdi
+00007fff`22e318a8 415e            pop     r14
+00007fff`22e318aa 415f            pop     r15
+00007fff`22e318ac c3              ret
+00007fff`22e318ad cc              int     3
+00007fff`22e318ae cc              int     3
+00007fff`22e318af cc              int     3
+00007fff`22e318b0 56              push    rsi
+00007fff`22e318b1 4883ec20        sub     rsp,20h
+00007fff`22e318b5 488bf1          mov     rsi,rcx
+00007fff`22e318b8 48837e1000      cmp     qword ptr [rsi+10h],0
+
+00007ffe`ca2b86e0 Benchmark.BenchmarkConverAll+<>c.<TestConverAll>b__3_0(System.String[])
+            var x = testArray.ConvertAll(e => string.Join(",",e));
+                                              ^^^^^^^^^^^^^^^^^^
+00007ffe`ca2b86e0 488b0c25e038ed15 mov     rcx,qword ptr [15ED38E0h]
+00007ffe`ca2b86e8 48b8c0c2df22ff7f0000 mov rax,offset mscorlib_ni+0x4dc2c0 (00007fff`22dfc2c0)
+
+</code></pre></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

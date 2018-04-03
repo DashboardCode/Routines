@@ -2,19 +2,24 @@
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
-namespace BenchmarkClassic
+namespace Benchmark
 {
-    [Config(typeof(MyManualConfig))]
+    //[Config(typeof(ManualWindowsDiagnosersConfig))]
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser, InliningDiagnoser]
-    public class BenchmarkConverAll
+    [MemoryDiagnoser]
+#if !NETCOREAPP2_0
+    //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
+    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [BenchmarkDotNet.Attributes.Jobs.RyuJitX64Job]
+    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
+#endif
+    public class BenchmarkConverAllDisasm
     {
         IReadOnlyCollection<string[]> testCol;
         List<string[]> testArray;
-        public BenchmarkConverAll()
+        public BenchmarkConverAllDisasm()
         {
             var testData = new List<string[]>();
             for (int i=0;i<1000;i++)
@@ -33,11 +38,11 @@ namespace BenchmarkClassic
             var x = testArray.ConvertAll(e => string.Join(",",e));
             return x;
         }
-        //[Benchmark]
-        //public IEnumerable<string> TestSelect()
-        //{
-        //    var x = testArray.ConvertAll(e => string.Join(",", e));
-        //    return x;
-        //}
+        [Benchmark]
+        public IEnumerable<string> TestSelect()
+        {
+            var x = testArray.ConvertAll(e => string.Join(",", e));
+            return x;
+        }
     }
 }

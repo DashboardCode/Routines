@@ -6,15 +6,21 @@ using System.Linq.Expressions;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
-namespace BenchmarkClassic
+
+namespace Benchmark
 {
-    [Config(typeof(MyManualConfig))]
+    //[Config(typeof(ManualWindowsDiagnosersConfig))]
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser, InliningDiagnoser]
-    public class BenchmarkCallSimple
+    [MemoryDiagnoser]
+#if !NETCOREAPP2_0
+    //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
+    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [BenchmarkDotNet.Attributes.Jobs.RyuJitX64Job]
+    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
+#endif
+    public class BenchmarkCallSimpleDisasm
     {
         static Func<StringBuilder, int, int, bool> callLambda;
         static Func<StringBuilder, int, int, bool> callLambdaConst;
@@ -36,7 +42,7 @@ namespace BenchmarkClassic
             return a + b;
         }
 
-        static BenchmarkCallSimple()
+        static BenchmarkCallSimpleDisasm()
         {
             var x = Expression.Parameter(typeof(int));
             var y = Expression.Parameter(typeof(int));
@@ -63,7 +69,7 @@ namespace BenchmarkClassic
             var sb1 = Expression.Parameter(typeof(StringBuilder), "sb");
             var i1 = Expression.Parameter(typeof(int), "i1");
             var i2 = Expression.Parameter(typeof(int), "i2");
-            var appendMethodInfo = typeof(BenchmarkCallSimple).GetTypeInfo().GetDeclaredMethod(nameof(BenchmarkCallSimple.Append));
+            var appendMethodInfo = typeof(BenchmarkCallSimple).GetTypeInfo().GetDeclaredMethod(nameof(BenchmarkCallSimpleDisasm.Append));
             var appendMethodInfoGeneric = appendMethodInfo.MakeGenericMethod(typeof(int));
             var appendCallExpression = Expression.Call(appendMethodInfoGeneric,
                     new Expression[] { sb1, i1, i2, operationExpressionConst }
@@ -73,6 +79,8 @@ namespace BenchmarkClassic
             #endregion
 
             #region Save Lambda
+#if NET47
+            // some 
             var assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("testLambda"),System.Reflection.Emit.AssemblyBuilderAccess.Save);
             var modelBuilder = assemblyBuilder.DefineDynamicModule("testLambda_module", "testLambda.dll");
             var typeBuilder = modelBuilder.DefineType("testLambda_type");
@@ -81,10 +89,23 @@ namespace BenchmarkClassic
             appendLambda.CompileToMethod(method);
             typeBuilder.CreateType();
             assemblyBuilder.Save("testLambda.dll");
+#else
+            //var assemblyBuilder = System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(new AssemblyName("testLambda"),
+            //System.Reflection.Emit.AssemblyBuilderAccess.Run);
+
+            //var modelBuilder = assemblyBuilder.DefineDynamicModule("testLambda_module");
+            //var typeBuilder = modelBuilder.DefineType("testLambda_type");
+            //var method = typeBuilder.DefineMethod("testLambda_method", MethodAttributes.Public | MethodAttributes.Static, typeof(bool),
+            //    new[] { typeof(StringBuilder), typeof(int), typeof(int) });
+
+            //// Core doesn't containt CompileToMethod and Save
+            //appendLambda.CompileToMethod(method);
+            //assemblyBuilder.Save("testLambda.dll");
+#endif
             #endregion
         }
 
-        #region Call lambda
+#region Call lambda
         [Benchmark]
         public string CallBuildedReal()
         {
@@ -116,9 +137,9 @@ namespace BenchmarkClassic
             var b = callLambdaConst(sb, 1, 2);
             return sb.ToString();
         }
-        #endregion
+#endregion
 
-        #region Add
+#region Add lambda
         static Func<int, int, int> addLambda;
         static Func<int, int, int> addLambdaConst;
         static Func<int, int, int> addBuilded;
@@ -140,6 +161,6 @@ namespace BenchmarkClassic
         {
             return addLambdaConst(1, 2);
         }
-        #endregion
+#endregion
     }
 }

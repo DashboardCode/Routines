@@ -1,4 +1,5 @@
 {
+  //"compileOnSave": false,
   "compilerOptions": {
     "target": "es5",
     "module": "es2015",
@@ -10,16 +11,25 @@
     "baseUrl": ".",
     "removeComments": false,
 
-    "outDir": "./wwwroot/dist/",
+    "outDir": "./wwwroot/dist",
+    //"noEmit": true,
     "noEmitOnError": true,
     "noImplicitAny": false,
     "skipDefaultLibCheck": true,
-    "lib": [ "es6", "dom" ]
+    "lib": [ "es2015", "es2017", "dom" ], // es6, es8
+    //"lib": [ "es6", "dom" ],
     //,
     //"types": [ "webpack-env" ]
+    "allowJs": true
   },
   "exclude": [
     "bin",
-    "node_modules"
+    "node_modules",
+    "wwwroot",
+    "gulpfile.js",
+    "webpack.config.js"
   ]
 }
+// ----------------------------------
+
+

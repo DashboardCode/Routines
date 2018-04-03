@@ -33,7 +33,7 @@ namespace Benchmark
             //var jO = b.TestFuncDynamicInvoke();
             //var jA = b.TestFunc();
             //var jB = b.TestFuncBuilded();
-            BenchmarkRunner.Run<BenchmarkConverAll>();
+            BenchmarkRunner.Run<BenchmarkConverAllDisasm>();
         }
     }
 
@@ -46,6 +46,14 @@ namespace Benchmark
         }
     }
 
+    /// <summary>
+    /// Use this to utilize "Windows Only" BenchmarkDotNet diagnosers
+    /// JIT Inlining Events(InliningDiagnoser);
+    /// JIT Tail Call Events(TailCallDiagnoser);
+    /// Hardware Counter Diagnoser;
+    /// Disassembly Diagnoser(it can be utilized in BenchmarkDotNet core project but can be used only on Windows)
+    /// So do not use it for performance comparisions with Core. [ClrJob] only!
+    /// </summary>
     public class ManualWindowsDiagnosersConfig : ManualConfig
     {
         public ManualWindowsDiagnosersConfig()

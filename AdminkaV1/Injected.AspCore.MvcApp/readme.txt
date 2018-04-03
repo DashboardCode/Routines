@@ -1,4 +1,33 @@
-﻿1. ASP HTML
+﻿# From bower to webpack
+if npm is not working from PM put C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Web\External to path variable
+
+npm init -y // in pr.folder creates package.json
+npm install npm@latest
+npm install webpack --save-dev
+
+# Update node.js
+PM> Node -v
+v7.3.0
+download "recommended" https://nodejs.org/en/ install to C:\Program Files\nodejs
+Check `PM> node -v` again; this folder should be just first in a path env.var. I'm not sure that VS utilize use the same node (there 
+is also legacy C:\Program Files (x86)\Microsoft Visual Studio 14.0\Web\External). 
+May be that VS options is responcible for: Tools>Options>Projects and Solutions>Web Package Management>External Web Tools but I left it unchanged.
+
+# Update NPM:
+npm -v
+5.8.0
+npm install npm@latest -g  
+
+# Update packages
+check for 
+npm outdated
+edit package.json and SE/pakcage.json/CM/
+be carefull with bettas, you should update them manually checking new versions with
+> npm view bootstrap versions 
+
+
+
+1. ASP HTML
 To calculate subresource integrity (SRI) with https://www.srihash.org/ 
 
 2. CDN priorities
@@ -9,24 +38,6 @@ https://cdnjs.com
 3. Migrate bootstrap
 http://upgrade-bootstrap.bootply.com/
 
-4. from bower to webpack
-if nom is not working put C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Web\External to path variable
-
-npm init -y // in pr.folder creates package.json
-npm install npm@latest
-npm install webpack --save-dev
-
-
-npm outdated
-npm view bootstrap versions 
-npm view popper.js versions
-
-3.node.js
-there are two node.js installations
-C:\Program Files\nodejs
-C:\Program Files (x86)\Microsoft Visual Studio 14.0\Web\External
-
-how to configure: through %path% and VS options: Tools>Options>Projects and Solutions>Web Package Management>External Web Tools
 
 5. tsconfig.js
 

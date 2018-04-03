@@ -30,8 +30,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 loggingTransientsFactory,
                 new MemberTag(this), userContext,
                 new { input = "Input text" });
-            Include<ParentRecord> includes
-                = includable => includable
+            void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
             routine.HandleOrmFactory((ormHandlerFactory) =>
@@ -85,8 +84,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 loggingTransientsFactory,
                 new MemberTag(this), userContext,
                 new { input = "Input text" });
-            Include<ParentRecord> includes
-                = includable => includable
+            void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
             routine.HandleOrmFactory(ormHandlerFactory =>

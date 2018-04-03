@@ -7,18 +7,23 @@ using Newtonsoft.Json;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Attributes.Columns;
 using BenchmarkDotNet.Attributes.Exporters;
-using BenchmarkDotNet.Diagnostics.Windows.Configs;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
 
-namespace BenchmarkClassic
+namespace Benchmark
 {
-    [Config(typeof(MyManualConfig))]
-    [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
+    //[Config(typeof(ManualWindowsDiagnosersConfig))]
+    [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser, InliningDiagnoser]
-    public class BenchmarkJson
+    [MemoryDiagnoser]
+#if !NETCOREAPP2_0
+    //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
+    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [BenchmarkDotNet.Attributes.Jobs.RyuJitX64Job]
+    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
+#endif
+    public class BenchmarkJsonDisasm
     {
         static Box box;
         static List<Row> testData = new List<Row>();
@@ -26,7 +31,7 @@ namespace BenchmarkClassic
         static Func<StringBuilder, Box, bool> serializer2;
         static Func<StringBuilder, Box, bool> serializer4;
 
-        static BenchmarkJson()
+        static BenchmarkJsonDisasm()
         {
             for(int i=0;i<600;i++)
             {
@@ -112,7 +117,7 @@ namespace BenchmarkClassic
                     );
             serializer2 = serializer2Exp.Compile();
 
-            Include < Box> includeAlt = (i) => i.IncludeAll(e => e.Rows);
+            
         }
 
         [Benchmark]

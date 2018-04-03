@@ -1,0 +1,228 @@
+<!DOCTYPE html><html lang='en'><head><meta charset='utf-8' /><head>
+<title>Pretty Output of DisassemblyDiagnoser for BenchmarkConverAll.TestConverAll: RyuJitX64(Jit=RyuJit, Platform=X64)</title>
+
+<style type="text/css">
+    pre { margin: 0px; }
+    table { border-collapse:collapse; }
+    td.perMethod { border-top: 1px black solid; }
+    tr.evenMap td { background-color: #F5F5F5; }  
+</style>
+
+<style type='text/css'>
+    td.label:hover { cursor: pointer; background-color: yellow !important; }
+    td.highlighted { background-color: yellow !important; }
+</style>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+<script>$(document).ready(function () {
+    var selectedIndex = 0;
+
+    function highlight() {
+        $('td.reference.highlighted').removeClass('highlighted');
+
+        var selectedLabel = $(this).attr('data-label');
+        if (selectedLabel) {
+            $('td.reference[data-reference=' + selectedLabel + ']').addClass('highlighted');
+        }
+        selectedIndex = 0;
+    }
+
+    function selectNext() {
+        var $highlighted = $('td.reference.highlighted');
+        var selected = $highlighted[selectedIndex++ % $highlighted.length];
+
+        if (selected) {
+            var selectedReference = $(selected).attr('id');
+            if (selectedReference) {
+                window.location.hash = '#' + selectedReference;
+            }
+        }
+    }
+
+    $('td.label').on('click', highlight);
+
+    $(document).on('keydown', function (event) {
+        if (event.keyCode == 114) { // F3
+            event.preventDefault();
+            // Remap F3 to some other key that the browser doesn't care about
+            selectNext();
+        }
+    });
+});</script>
+</head><body><table><tbody>
+<tr><th colspan="2" style="text-align: left;">Benchmark.BenchmarkConverAll.TestConverAll()</th><th></th></tr>
+<tr class="">
+<td></td><td ><pre><code>            var x = testArray.ConvertAll(e => string.Join(",",e));
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8646 488b7110        mov     rsi,qword ptr [rcx+10h]"><pre><code>mov     rsi,qword ptr [rcx+10h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b864a 4c8b0425d094ed15 mov     r8,qword ptr [15ED94D0h]"><pre><code>mov     r8,qword ptr [15ED94D0h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8652 4d85c0          test    r8,r8"><pre><code>test    r8,r8</pre></code></td>
+</tr><tr class="">
+<td></td><td id="0" class="reference" data-reference="M00_L00" title="00007ffe`ca2b8655 7546            jne     00007ffe`ca2b869d"><a href="#M00_L00"><pre><code>jne     M00_L00</pre></code></a></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8657 48b9406718cafe7f0000 mov rcx,7FFECA186740h"><pre><code>mov     rcx,7FFECA186740h</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8661 e8da9e5f5f      call    clr+0x2540 (00007fff`298b2540)"><pre><code>call    clr+0x2540</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8666 488bf8          mov     rdi,rax"><pre><code>mov     rdi,rax</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8669 488b1425c894ed15 mov     rdx,qword ptr [15ED94C8h]"><pre><code>mov     rdx,qword ptr [15ED94C8h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8671 4885d2          test    rdx,rdx"><pre><code>test    rdx,rdx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8674 7443            je      00007ffe`ca2b86b9"><pre><code>je      00007ffe`ca2b86b9</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8676 488d4f08        lea     rcx,[rdi+8]"><pre><code>lea     rcx,[rdi+8]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b867a e871b75f5f      call    clr+0x3df0 (00007fff`298b3df0)"><pre><code>call    clr+0x3df0</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b867f 48ba88702bcafe7f0000 mov rdx,7FFECA2B7088h"><pre><code>mov     rdx,7FFECA2B7088h</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8689 48895718        mov     qword ptr [rdi+18h],rdx"><pre><code>mov     qword ptr [rdi+18h],rdx</pre></code></td>
+</tr><tr class="">
+<td></td><td ><pre><code>            return x;
+            ^^^^^^^^^</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b868d b9d094ed15      mov     ecx,15ED94D0h"><pre><code>mov     ecx,15ED94D0h</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8692 488bd7          mov     rdx,rdi"><pre><code>mov     rdx,rdi</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b8695 e826b75f5f      call    clr+0x3dc0 (00007fff`298b3dc0)"><pre><code>call    clr+0x3dc0</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b869a 4c8bc7          mov     r8,rdi"><pre><code>mov     r8,rdi</pre></code></td>
+</tr><tr class="evenMap">
+<td id="M00_L00" class="label" data-label="M00_L00"><pre><code>M00_L00</pre></code></td>
+<td>&nbsp;</td></tr>
+<tr class="evenMap">
+<td></td><td title="00007ffe`ca2b869d 488bce          mov     rcx,rsi"><pre><code>mov     rcx,rsi</pre></code></td>
+</tr><tr class="evenMap">
+<td></td><td title="00007ffe`ca2b86a0 48ba986818cafe7f0000 mov rdx,7FFECA186898h"><pre><code>mov     rdx,7FFECA186898h</pre></code></td>
+</tr><tr class="evenMap">
+<td></td><td title="00007ffe`ca2b86aa 3909            cmp     dword ptr [rcx],ecx"><pre><code>cmp     dword ptr [rcx],ecx</pre></code></td>
+</tr><tr class="evenMap">
+<td></td><td title="00007ffe`ca2b86ac e84f91b758      call    mscorlib_ni+0x511800 (00007fff`22e31800)"><pre><code>call    System.Collections.Generic.List`1[[System.__Canon, mscorlib]].ConvertAll[[System.__Canon, mscorlib]](System.Converter`2<System.__Canon,System.__Canon>)</pre></code></td>
+</tr><tr class="evenMap">
+<td></td><td title="00007ffe`ca2b86b1 90              nop"><pre><code>nop</pre></code></td>
+</tr><tr><td colspan="{2}">&nbsp;</td></tr>
+<tr><th colspan="2" style="text-align: left;">System.Collections.Generic.List`1[[System.__Canon, mscorlib]].ConvertAll[[System.__Canon, mscorlib]](System.Converter`2<System.__Canon,System.__Canon>)</th><th></th></tr>
+<tr class="">
+<td></td><td title="00007fff`22e31817 4885ff          test    rdi,rdi"><pre><code>test    rdi,rdi</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3181a 0f84d89ddd00    je      mscorlib_ni+0x12eb5f8 (00007fff`23c0b5f8)"><pre><code>je      mscorlib_ni+0x12eb5f8</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31820 8b5e18          mov     ebx,dword ptr [rsi+18h]"><pre><code>mov     ebx,dword ptr [rsi+18h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31823 488b4a10        mov     rcx,qword ptr [rdx+10h]"><pre><code>mov     rcx,qword ptr [rdx+10h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31827 488b4908        mov     rcx,qword ptr [rcx+8]"><pre><code>mov     rcx,qword ptr [rcx+8]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3182b 4885c9          test    rcx,rcx"><pre><code>test    rcx,rcx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3182e 7512            jne     mscorlib_ni+0x511842 (00007fff`22e31842)"><pre><code>jne     mscorlib_ni+0x511842</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31830 488bca          mov     rcx,rdx"><pre><code>mov     rcx,rdx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31833 488d1557721700  lea     rdx,[mscorlib_ni+0x688a91 (00007fff`22fa8a91)]"><pre><code>lea     rdx,[mscorlib_ni+0x688a91</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3183a e81979f2ff      call    mscorlib_ni+0x439158 (00007fff`22d59158)"><pre><code>call    mscorlib_ni+0x439158</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3183f 488bc8          mov     rcx,rax"><pre><code>mov     rcx,rax</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31842 e8c177f2ff      call    mscorlib_ni+0x439008 (00007fff`22d59008)"><pre><code>call    mscorlib_ni+0x439008</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31847 488be8          mov     rbp,rax"><pre><code>mov     rbp,rax</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3184a 488bcd          mov     rcx,rbp"><pre><code>mov     rcx,rbp</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3184d 8bd3            mov     edx,ebx"><pre><code>mov     edx,ebx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3184f e8ac54feff      call    mscorlib_ni+0x4f6d00 (00007fff`22e16d00)"><pre><code>call    System.Collections.Generic.List`1[[System.__Canon, mscorlib]]..ctor(Int32)</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31854 33db            xor     ebx,ebx"><pre><code>xor     ebx,ebx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31856 837e1800        cmp     dword ptr [rsi+18h],0"><pre><code>cmp     dword ptr [rsi+18h],0</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3185a 7e3b            jle     mscorlib_ni+0x511897 (00007fff`22e31897)"><pre><code>jle     mscorlib_ni+0x511897</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3185c 4c8b7508        mov     r14,qword ptr [rbp+8]"><pre><code>mov     r14,qword ptr [rbp+8]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31860 448bfb          mov     r15d,ebx"><pre><code>mov     r15d,ebx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31863 488b4e08        mov     rcx,qword ptr [rsi+8]"><pre><code>mov     rcx,qword ptr [rsi+8]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31867 3b5908          cmp     ebx,dword ptr [rcx+8]"><pre><code>cmp     ebx,dword ptr [rcx+8]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3186a 0f83939ddd00    jae     mscorlib_ni+0x12eb603 (00007fff`23c0b603)"><pre><code>jae     mscorlib_ni+0x12eb603</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31870 4863d3          movsxd  rdx,ebx"><pre><code>movsxd  rdx,ebx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31873 488b54d110      mov     rdx,qword ptr [rcx+rdx*8+10h]"><pre><code>mov     rdx,qword ptr [rcx+rdx*8+10h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31878 488bc7          mov     rax,rdi"><pre><code>mov     rax,rdi</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3187b 488b4808        mov     rcx,qword ptr [rax+8]"><pre><code>mov     rcx,qword ptr [rax+8]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3187f ff5018          call    qword ptr [rax+18h]"><pre><code>call    qword ptr [rax+18h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31882 4c8bc0          mov     r8,rax"><pre><code>mov     r8,rax</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31885 418bd7          mov     edx,r15d"><pre><code>mov     edx,r15d</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31888 498bce          mov     rcx,r14"><pre><code>mov     rcx,r14</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3188b e8b877f2ff      call    mscorlib_ni+0x439048 (00007fff`22d59048)"><pre><code>call    mscorlib_ni+0x439048</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31890 ffc3            inc     ebx"><pre><code>inc     ebx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31892 3b5e18          cmp     ebx,dword ptr [rsi+18h]"><pre><code>cmp     ebx,dword ptr [rsi+18h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31895 7cc5            jl      mscorlib_ni+0x51185c (00007fff`22e3185c)"><pre><code>jl      mscorlib_ni+0x51185c</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e31897 8b4618          mov     eax,dword ptr [rsi+18h]"><pre><code>mov     eax,dword ptr [rsi+18h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3189a 894518          mov     dword ptr [rbp+18h],eax"><pre><code>mov     dword ptr [rbp+18h],eax</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e3189d 488bc5          mov     rax,rbp"><pre><code>mov     rax,rbp</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318a0 4883c438        add     rsp,38h"><pre><code>add     rsp,38h</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318a4 5b              pop     rbx"><pre><code>pop     rbx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318a5 5d              pop     rbp"><pre><code>pop     rbp</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318a6 5e              pop     rsi"><pre><code>pop     rsi</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318a7 5f              pop     rdi"><pre><code>pop     rdi</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318a8 415e            pop     r14"><pre><code>pop     r14</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318aa 415f            pop     r15"><pre><code>pop     r15</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318ac c3              ret"><pre><code>ret</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318ad cc              int     3"><pre><code>int     3</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318ae cc              int     3"><pre><code>int     3</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318af cc              int     3"><pre><code>int     3</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318b0 56              push    rsi"><pre><code>push    rsi</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318b1 4883ec20        sub     rsp,20h"><pre><code>sub     rsp,20h</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318b5 488bf1          mov     rsi,rcx"><pre><code>mov     rsi,rcx</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007fff`22e318b8 48837e1000      cmp     qword ptr [rsi+10h],0"><pre><code>cmp     qword ptr [rsi+10h],0</pre></code></td>
+</tr><tr><td colspan="{2}">&nbsp;</td></tr>
+<tr><th colspan="2" style="text-align: left;">Benchmark.BenchmarkConverAll+<>c.<TestConverAll>b__3_0(System.String[])</th><th></th></tr>
+<tr class="">
+<td></td><td ><pre><code>            var x = testArray.ConvertAll(e => string.Join(",",e));
+                                              ^^^^^^^^^^^^^^^^^^</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b86e0 488b0c25e038ed15 mov     rcx,qword ptr [15ED38E0h]"><pre><code>mov     rcx,qword ptr [15ED38E0h]</pre></code></td>
+</tr><tr class="">
+<td></td><td title="00007ffe`ca2b86e8 48b8c0c2df22ff7f0000 mov rax,offset mscorlib_ni+0x4dc2c0 (00007fff`22dfc2c0)"><pre><code>mov     rax,offset mscorlib_ni+0x4dc2c0</pre></code></td>
+</tr><tr><td colspan="{2}">&nbsp;</td></tr>
+</tbody></table></body></html>

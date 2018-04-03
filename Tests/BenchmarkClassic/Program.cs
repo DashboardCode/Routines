@@ -8,7 +8,7 @@ namespace BenchmarkClassic
     class Program
     {
         static void Main(string[] args) =>
-            BenchmarkRunner.Run<BenchmarkConverAll>();
+            BenchmarkRunner.Run<BenchmarkConverAllDisasm>();
     }
 
     public class MyManualConfig : ManualConfig

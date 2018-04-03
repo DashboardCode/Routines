@@ -20,6 +20,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+            // TODO:
+            // updatable configuration https://stackoverflow.com/questions/40970944/how-to-update-values-into-appsetting-json
             ConfigurationRoot = builder.Build();
 
             if (hostingEnvironment.IsDevelopment())

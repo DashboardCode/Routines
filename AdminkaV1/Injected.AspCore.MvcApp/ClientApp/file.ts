@@ -1,9 +1,9 @@
 ﻿//// <reference path="typings/jquery/jquery.d.ts" />
 
-declare var usaprl2_showErrorDialog: any;
-declare var usaprl2_showErrorDialogJs: any;
-declare var usaprl2_notify_error: any;
-module Usaprl2 {
+declare var dc_showErrorDialog: any;
+declare var dc_showErrorDialogJs: any;
+declare var dc_notify_error: any;
+module DashboardCode {
 
     export interface VoidAction {
         (WorkflowManager: Workflow): void;
@@ -11,7 +11,7 @@ module Usaprl2 {
 
     export interface Action<T> {
         (WorkflowManager: Workflow): T;
-    }
+    } 
 
     export interface AjaxCallback<T> {
         (ajaxData: T, textStatus: string, xhr: XMLHttpRequest): void;
@@ -505,7 +505,7 @@ module Usaprl2 {
         }
 
         private ShowErrorNotify(title: string) {
-            $(document).ready(function () { usaprl2_notify_error(title) });
+            $(document).ready(function () { dc_notify_error(title) });
         }
 
         */

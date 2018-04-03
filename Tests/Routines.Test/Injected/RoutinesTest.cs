@@ -18,7 +18,7 @@ namespace DashboardCode.Routines.Injected.Test
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(memberTag, log);
 
-            Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
+            bool testInputOutput(object input2, object output, TimeSpan duration) => true;
             var routineLogger = new RoutineLogger(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
@@ -66,10 +66,8 @@ namespace DashboardCode.Routines.Injected.Test
             IOrmHandlerGFactory<UserContext> testOrmHandlerFactory = null;
             IRepositoryHandlerGFactory<UserContext> testRepositoryHandlerFactory = null;
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
-            Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
-                (verbose) => new RoutineClosure<UserContext>(userContext, verbose, null);
 
-            Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
+            bool testInputOutput(object input2, object output, TimeSpan duration) => true;
             var routineLogger = new RoutineLogger(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
@@ -121,7 +119,7 @@ namespace DashboardCode.Routines.Injected.Test
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(memberTag, log);
 
-            Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
+            bool testInputOutput(object input2, object output, TimeSpan duration) => true;
             var routineLogger = new RoutineLogger(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
@@ -175,12 +173,10 @@ namespace DashboardCode.Routines.Injected.Test
             IRepositoryHandlerGFactory<UserContext> testRepositoryHandlerFactory = null; // new TestRepositoryHandlerFactory();
             //var testRepositoryHandlerFactory = new TestRepositoryHandlerFactory(); // stub
             //var testOrmHandlerFactory = new TestOrmHandlerFactory(); // stub
-            Func<Action<DateTime, string>, RoutineClosure<UserContext>> createRoutineState =
-                (verbose) => new RoutineClosure<UserContext>(userContext, null/*no verbose logging for this memberTag */, null);
             var input = new { };
             try
             {
-                Func<object, object, TimeSpan, bool> testInputOutput = (input2, output, duration) => true;
+                bool testInputOutput(object input2, object output, TimeSpan duration) => true;
                 var routineLogger = new RoutineLogger(correlationToken);
                 var exceptionHandler = new ExceptionHandler(
                     ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),

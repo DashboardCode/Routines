@@ -1,7 +1,7 @@
 "use strict";
 //// <reference path="typings/jquery/jquery.d.ts" />
-var Usaprl2;
-(function (Usaprl2) {
+var DashboardCode;
+(function (DashboardCode) {
     var WorkflowManager = /** @class */ (function () {
         function WorkflowManager(operationName) {
             this.logBuffer = [];
@@ -46,7 +46,7 @@ var Usaprl2;
         };
         return WorkflowManager;
     }());
-    Usaprl2.WorkflowManager = WorkflowManager;
+    DashboardCode.WorkflowManager = WorkflowManager;
     //class WorkflowDeferredManager<T>{
     //    constructor() {
     //    }
@@ -421,6 +421,6 @@ var Usaprl2;
         };
         return Workflow;
     }());
-    Usaprl2.Workflow = Workflow;
-})(Usaprl2 || (Usaprl2 = {}));
+    DashboardCode.Workflow = Workflow;
+})(DashboardCode || (DashboardCode = {}));
 //# sourceMappingURL=file.js.map

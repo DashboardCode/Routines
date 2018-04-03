@@ -16,15 +16,16 @@
 BenchmarkDotNet=v0.10.13, OS=Windows 10 Redstone 3 [1709, Fall Creators Update] (10.0.16299.309)
 Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical cores and 4 physical cores
 Frequency=3233540 Hz, Resolution=309.2586 ns, Timer=TSC
-  [Host]     : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
-  DefaultJob : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+  [Host]    : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
+  RyuJitX64 : .NET Framework 4.7 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.2633.0
 </code></pre>
-<pre><code></code></pre>
+<pre><code>Job=RyuJitX64  Jit=RyuJit  Platform=X64  
+</code></pre>
 
 <table>
 <thead><tr><th> Method</th><th>Mean</th><th>Error</th><th>StdDev</th>
 </tr>
-</thead><tbody><tr><td>TestConverAll</td><td>189.3 us</td><td>3.664 us</td><td>3.598 us</td>
+</thead><tbody><tr><td>TestConverAll</td><td>187.0 us</td><td>0.6524 us</td><td>0.5448 us</td>
 </tr></tbody></table>
 </body>
 </html>

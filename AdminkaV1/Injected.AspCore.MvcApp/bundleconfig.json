@@ -1,5 +1,10 @@
 ﻿// Configure bundling and minification for the project.
 // More info at https://go.microsoft.com/fwlink/?LinkId=808241
+
+// RP: this is MVC Razor Pages run time bundling
+// https://docs.microsoft.com/en-us/aspnet/core/client-side/bundling-and-minification?tabs=visual-studio%2Caspnetcore2x
+// webpack is opposite - design-tume bundling
+
 [
   {
     "outputFileName": "wwwroot/css/site.min.css",
