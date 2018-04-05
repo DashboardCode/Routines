@@ -10,20 +10,21 @@
     <title>@ViewData["Title"] - DashboardCode.AdminkaV1.Web.MvcCoreClient</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="~/lib/material-design-icons/iconfont/material-icons.css" />
+
+        @*<link rel="stylesheet" href="~/lib/material-design-icons/iconfont/material-icons.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-reboot.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.css" />
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
 
-        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/site.css" />*@
     </environment>
-    <environment names="Staging,Production">
+    @*<environment names="Staging,Production">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
               integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
+    </environment>*@
     @*
         TODO: ApplicationInsights
         @Html.Raw(JavaScriptSnippet.FullScript)
@@ -79,16 +80,17 @@
     </div>
 
     <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/js/main.js"></script>
+        @*<script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/popper.js/dist/umd/popper.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>*@
     </environment>
     <environment names="Staging,Production">
-        <script src="~/dist/main.js" asp-append-version="true"></script>
+        @*<script src="~/js/main.js" asp-append-version="true"></script>*@
 
         @* TODO: asp-fallback-test for all *@
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.min.js"
+        @*<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.min.js"
                 asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
                 asp-fallback-test="window.jQuery"
                 crossorigin="anonymous"
@@ -107,7 +109,7 @@
                 crossorigin="anonymous"
                 integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl">
         </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>*@
     </environment>
 
     @RenderSection("Scripts", required: false)

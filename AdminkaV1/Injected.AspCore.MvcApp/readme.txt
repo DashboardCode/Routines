@@ -72,3 +72,13 @@ File location (secrets.json):
 
 8. Material Design Icons https://material.io/icons/
    alternatives: https://tagliala.github.io/vectoriconsroundup/ , https://octicons.github.com/
+
+
+# check the proj file, control folder includes,
+ideally it should point only bundle located in dist
+ <ItemGroup>
+    <Folder Include="wwwroot\dist\" />
+  </ItemGroup>
+
+# webpack
+webpack     : default values means webpack --mode development ./src/index.js --output ./dist/main.js

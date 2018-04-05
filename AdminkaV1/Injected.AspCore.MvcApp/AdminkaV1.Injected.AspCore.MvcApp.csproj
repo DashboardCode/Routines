@@ -49,8 +49,10 @@
   
   <ItemGroup>
     <Folder Include="Areas\Forms\" />
-    <Folder Include="wwwroot\dist\" />
-    <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
   
   <ItemGroup>
