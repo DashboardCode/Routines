@@ -4,6 +4,13 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.AspNetCore</AssemblyName>
     <RootNamespace>DashboardCode.Routines.AspNetCore</RootNamespace>
+    <Version>2.0.0-beta1</Version>
+    <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
+    <Product>DashboardCode.Routines</Product>
+    <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DashboardCode.NLogExtensibles
+namespace DashboardCode.NLogTools
 {
     public class PerDayСounter
     {

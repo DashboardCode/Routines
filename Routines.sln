@@ -127,7 +127,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCore.NETFramework.Sandbox
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.LoggingDom.WcfClient", "AdminkaV1\LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj", "{932B5777-027D-42B9-AA43-57E182F6D08D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogExtensibles", "NLogExtensibles\NLogExtensibles.csproj", "{0A46EAC2-A602-4840-A0F8-B5D82B05FA2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogTools", "NLogExtensibles\NLogTools.csproj", "{0A46EAC2-A602-4840-A0F8-B5D82B05FA2A}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AdminkaV1.LoggingDom.WcfClient.Test", "Tests\AdminkaV1.LoggingDom.WcfClient.Test\AdminkaV1.LoggingDom.WcfClient.Test.shproj", "{47CDE2E7-AA42-4BC1-BB0B-27ACB7FFAED6}"
 EndProject

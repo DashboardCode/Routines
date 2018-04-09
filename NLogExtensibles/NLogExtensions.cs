@@ -1,6 +1,6 @@
 ﻿using NLog.Conditions;
 
-namespace DashboardCode.NLogExtensibles
+namespace DashboardCode.NLogTools
 {
     [ConditionMethods]
     public static class NLogExtensions

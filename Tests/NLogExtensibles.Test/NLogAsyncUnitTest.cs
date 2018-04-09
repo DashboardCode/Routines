@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NLog;
 using NLog.Common;
 
-namespace DashboardCode.NLogExtensibles.Test
+namespace DashboardCode.NLogTools.Test
 {
     // TODO: do it more realistic N users authenticate and trace activities, verbose episodically, 
     // when 1 user verbose constantly.

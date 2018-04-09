@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace DashboardCode.NLogExtensibles.Test
+namespace DashboardCode.NLogTools.Test
 {
     static class LogTestManager
     {

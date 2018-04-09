@@ -3,16 +3,22 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
-    <Product>Vse.Routines</Product>
-    <Copyright>Copyright ©  2016</Copyright>
-    <PackageId>Vse.Routines</PackageId>
+    <Product>DashboardCode.Routines</Product>
+    <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
+    <PackageId>DashboardCode.Routines</PackageId>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
-    <AssemblyVersion>1.0.12.0</AssemblyVersion>
-    <FileVersion>1.0.12.0</FileVersion>
-    <Description />
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
+    <Description>Middle layer framework to compose functions such as "clone", "compare", "serialize" etc using "navigation expressions" and provide some abstractions missed in standard framework ("repository",  "buffered conditional logging", etc.).</Description>
     <RootNamespace>DashboardCode.Routines</RootNamespace>
     <AssemblyName>DashboardCode.Routines</AssemblyName>
 	<LangVersion>latest</LangVersion>
+	<Version>2.0.0-beta1</Version>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
+	<PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
+	<PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
+	<PackageTags>Include Repository Trace Configure</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

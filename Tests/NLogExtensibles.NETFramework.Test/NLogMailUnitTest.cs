@@ -7,9 +7,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NLog;
 using netDumbster.smtp;
-using DashboardCode.NLogExtensibles.Test;
+using DashboardCode.NLogTools.Test;
 
-namespace DashboardCode.NLogExtensibles.NETFramework.Test
+namespace DashboardCode.NLogTools.NETFramework.Test
 {
     // TODO: do it more realistic N users authenticate and trace activities, verbose episodically, 
     // when 1 user verbose constantly.
