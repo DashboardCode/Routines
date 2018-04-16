@@ -7,7 +7,7 @@ npm install webpack --save-dev
 
 # Update node.js
 PM> Node -v
-v7.3.0
+v8.11.1
 download "recommended" https://nodejs.org/en/ install to C:\Program Files\nodejs
 Check `PM> node -v` again; this folder should be just first in a path env.var. I'm not sure that VS utilize use the same node (there 
 is also legacy C:\Program Files (x86)\Microsoft Visual Studio 14.0\Web\External). 
@@ -18,12 +18,27 @@ npm -v
 5.8.0
 npm install npm@latest -g  
 
+> Get-Command npm
+C:\Program Files\nodejs\npm.cmd
+
 # Update packages
-check for 
-npm outdated
-edit package.json and SE/pakcage.json/CM/
+check for updates
+> npm outdated
+
+> npm install --save-dev package
+> npm rebuild --save-dev package
+
 be carefull with bettas, you should update them manually checking new versions with
-> npm view bootstrap versions 
+> npm view package versions 
+
+those warnings should be ignored 
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.1.3 (node_modules\fsevents):
+
+# node updates 
+Something like this problem you will meet every time you update node
+"Module build failed: Error: Missing binding D:\cot\DashboardCode\Routines\AdminkaV1\Injected.AspCore.MvcApp\node_modules\node-sass\vendor\win32-x64-57\binding.node"
+First try 'npm rebuild node-sass'
+If doesn't help do the same manually: go to https://github.com/sass/node-sass/releases/tag/v4.8.3 (put your version there) and get the file that is pointed in message, in case of "win32-x64-57\binding.node" that is win32-x64-57_binding.node rename it to the binding.node and put to the  \node_modules\node-sass\vendor\win32-x64-57 folder
 
 
 
@@ -37,7 +52,6 @@ https://cdnjs.com
 
 3. Migrate bootstrap
 http://upgrade-bootstrap.bootply.com/
-
 
 5. tsconfig.js
 
@@ -82,3 +96,6 @@ ideally it should point only bundle located in dist
 
 # webpack
 webpack     : default values means webpack --mode development ./src/index.js --output ./dist/main.js
+
+TODO hot reloading 
+https://markus.oberlehner.net/blog/setting-up-a-vue-project-with-webpack-4-and-babel-7/

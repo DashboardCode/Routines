@@ -89,93 +89,7 @@ module DashboardCode {
             this.TechInfo = TechInfo;
         }
     }
-    //class WorkflowDeferredManager<T>{
 
-    //    constructor() {
-    //    }
-
-    //    public when<T>(...deferreds: Array<T | JQueryPromise<T>/* as JQueryDeferred<T> */>): JQueryPromise<T> {
-    //        var dfd = new WorkflowDeferred<T>();
-    //        return dfd;
-    //    }
-    //}
-
-    //class WorkflowDeferred<T, TJ, TN> implements JQuery.Deferred<T, TJ , TN>{
-    //    catch<ARF = never, AJF = never, ANF = never, BRF = never, BJF = never, BNF = never, CRF = never, CJF = never, CNF = never, RRF = never, RJF = never, RNF = never>
-    //        (failFilter?: (...t: any[]) => ARF | JQuery.PromiseBase<ARF, AJF, ANF, BRF, BJF, BNF, CRF, CJF, CNF, RRF, RJF, RNF> | JQuery.Thenable<ARF>):
-    //        JQuery.PromiseBase<ARF, AJF, ANF, BRF, BJF, BNF, CRF, CJF, CNF, RRF, RJF, RNF> {
-    //        throw new Error("Method not implemented.");
-    //    }
-    //    private deffered: JQuery.Deferred<T, TJ, TN>;
-    //    private defferedPrototype;
-    //    constructor() {
-    //        this.deffered = <JQuery.Deferred<T, TJ, TN>>new (<any>$).Deferred();
-    //        var defferedPrototype = Object.getPrototypeOf(this.deffered);
-    //    }
-    //    public notify(...args: TN[]): JQuery.Deferred<T, TJ, TN> {
-    //        var x = this.deffered.notify(...args);
-    //        return x;
-    //    }
-
-    //    public then<T>(doneFilter: (value?: T, ...values: any[]) =>
-    //        T | JQuery.Promise<T>, failFilter?: (...reasons: any[]) => any, progressFilter?: (...progression: any[]) => any);
-
-    //    public then(doneFilter: (value?: T, ...values: any[]) => void,
-    //        failFilter?: (...reasons: any[]) => any,
-    //        progressFilter?: (...progression: any[]) => any): JQuery.Promise<void> {
-    //        return this.defferedPrototype.then.apply(this, doneFilter, failFilter, progressFilter);
-    //        //return this.deffered.then(doneFilter, failFilter, progressFilter);
-    //    }
-
-    //     public always(alwaysCallback: JQuery.TypeOrArray<JQuery.Deferred.Callback<T | TJ>>,
-    //         ...alwaysCallbacks: Array<JQuery.TypeOrArray<JQuery.Deferred.Callback<T | TJ>>>): JQuery.Deferred<T, TJ, TN> {
-    //         return this.deffered.always(alwaysCallback, ...alwaysCallbacks);
-    //    }
-    //     public done(doneCallback: JQuery.TypeOrArray<JQuery.Deferred.Callback<T>>,
-    //         ...doneCallbacks: Array<JQuery.TypeOrArray<JQuery.Deferred.Callback<T>>>): JQuery.Deferred<T, TJ, TN> {
-    //         var d = this.deffered.done(doneCallback, ...doneCallbacks);
-    //        return d;
-    //    }
-    //     public fail(failCallback: JQuery.TypeOrArray<JQuery.Deferred.Callback<TJ>>,
-    //         ...failCallbacks: Array<JQuery.TypeOrArray<JQuery.Deferred.Callback<TJ>>>): JQuery.Deferred<T, TJ, TN> {
-    //         return this.deffered.fail(failCallback, ...failCallbacks);
-    //    }
-
-    //    public state(): string {
-    //        return this.deffered.state();
-    //    }
-
-    //    public progress(progressCallback: JQuery.TypeOrArray<JQuery.Deferred.Callback<TN>>,
-    //        ...progressCallbacks: Array<JQuery.TypeOrArray<JQuery.Deferred.Callback<TN>>>): JQuery.Deferred<T, TJ, TN> {
-    //         return this.deffered.progress(progressCallback, ...progressCallbacks);
-    //    }
-    //    public notifyWith(context: any, value?: any[]): JQuery.Deferred<T, TJ, TN> {
-    //        return this.deffered.notifyWith(context, value);
-    //    }
-    //    public reject(value?: any, ...args: any[]): JQuery.Deferred<T, TJ, TN> {
-    //        return this.deffered.reject(value, args);
-    //    }
-
-    //     // resolve(...args: TR[]): this;
-    //    public resolve(...args: T[]): JQuery.Deferred<T> {
-    //        return this.deffered.resolve(...args);
-    //        //return this.deffered.resolve(value, args);
-    //    }
-
-    //    public rejectWith(context: any, value?: any[]): JQuery.Deferred<T, TJ, TN> {
-    //        return this.deffered.rejectWith(context, value);
-    //    }
-    //    public resolveWith(context: any, value?: T[]): JQuery.Deferred<T, TJ, TN> {
-    //        return this.deffered.rejectWith(context, value);
-    //    }
-    //    public promise(target?: any): JQuery.Promise<T> {
-    //        return this.deffered.promise(target);
-    //    }
-    //    public pipe(doneFilter?: (x: any) => any, failFilter?: (x: any) => any, progressFilter?: (x: any) => any): JQuery.Promise<any> {
-    //        return this.deffered.pipe(doneFilter, failFilter, progressFilter);
-    //    }
-    //}
-    
     
     export class Workflow {
         public OperationName: string;
@@ -258,7 +172,6 @@ module DashboardCode {
 
         public LogPerf(counterName, value) {
             if (counterName == null) return;
-
             var logPerfUrl = this.logPerfUrl;
             var correlationToken = this.CorrelationToken;
             var operationName = this.OperationName;
@@ -497,7 +410,7 @@ module DashboardCode {
             var defered = $.Deferred();
             var x = (result) => defered.resolve(result);
 
-            $('#myModal').modal('show');
+            $('#errorDialogModal').modal('show');
             //var dialog = BootstrapDialog.alert({
             //    type: BootstrapDialog.TYPE_DANGER,
             //    closable: true,

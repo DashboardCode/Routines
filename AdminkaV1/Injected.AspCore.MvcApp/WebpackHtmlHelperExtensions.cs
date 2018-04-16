@@ -1,55 +1,48 @@
 ﻿using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     public static class WebpackHtmlHelperExtensions
     {
-        //private static string _aspnetCoreEnvironment = null;
-
-        /// <summary>
-        /// Return the generated partial view that contains the script tags for the Webpack bundle
-        /// indicated by <see cref="bundleName"/>.
-        /// </summary>
-        /// <param name="helper">The HTML helper instance.</param>
-        /// <param name="bundleName">The Webpack bundle name.</param>
-        /// <returns>The partial content.</returns>
-        public static Task<IHtmlContent> WebpackScriptsAsync(this IHtmlHelper helper, string bundleName)
-        {
-            return helper.PartialAsync("Assets/_Gen_" + bundleName + "_Scripts");
-        }
-
-        /// <summary>
-        /// Return the generated partial view that contains the style (link) tags for the Webpack bundle
-        /// indicated by <see cref="bundleName"/>.
-        /// </summary>
-        /// <param name="helper">The HTML helper instance.</param>
-        /// <param name="bundleName">The Webpack bundle name.</param>
-        /// <returns>The partial content.</returns>
-        public static Task<IHtmlContent> WebpackStylesAsync(this IHtmlHelper helper, string bundleName)
-        {
-            return helper.PartialAsync("Assets/_Gen_" + bundleName + "_Styles");
-        }
-
-        /// <summary>
-        /// Emits a script tag with type application/json that Webpack scripts can then load to
-        /// retrieve data from the page.
-        /// </summary>
-        /// <param name="id">The ID that webpack will load the data block by.</param>
-        /// <param name="data">The data object that will be serialized to JSON.</param>
-        /// <returns></returns>
-        public static IHtmlContent JsonDataBlock(this IHtmlHelper helper, string id, object data)
+        public static IHtmlContent MainScript(this IHtmlHelper helper, string fileName)
         {
             return new HtmlFormattableString(
-                "<script type=\"application/json\" id=\"{0}\">{1}</script>",
-                id,
-                new HtmlString(JsonConvert.SerializeObject(data, new JsonSerializerSettings
-                {
-                    StringEscapeHandling = StringEscapeHandling.EscapeHtml
-                })));
+                $"<script type='application/json' src='/js/{fileName}' />");
+        }
+
+        private static string GetWebpackAssetsJson(string applicationBasePath)
+        {
+            string json = @"{""main.js"":""main.90966be3ccbf7991d500.js""}";
+            var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+            return values["main.js"];
+
+            //JObject webpackAssetsJson = null;
+            //string packageJsonFilePath = $"{applicationBasePath}\\js\\{"manifest.json"}";
+
+            //using (StreamReader packageJsonFile = File.OpenText(packageJsonFilePath))
+            //{
+            //    using (JsonTextReader packageJsonReader = new JsonTextReader(packageJsonFile))
+            //    {
+            //        JObject packageJson = (JObject)JToken.ReadFrom(packageJsonReader);
+            //        JObject webpackConfigJson = (JObject)packageJson["customConfig"]["webpackConfig"];
+            //        string webpackAssetsFileName = webpackConfigJson["assetsFileName"].Value<string>();
+            //        string webpackBuildDirectory = webpackConfigJson["buildDirectory"].Value<string>();
+            //        string webpackAssetsFilePath = $"{applicationBasePath}\\{webpackBuildDirectory}\\{webpackAssetsFileName}";
+
+            //        using (StreamReader webpackAssetsFile = File.OpenText(webpackAssetsFilePath))
+            //        {
+            //            using (JsonTextReader webpackAssetsReader = new JsonTextReader(webpackAssetsFile))
+            //            {
+            //                webpackAssetsJson = (JObject)JToken.ReadFrom(webpackAssetsReader);
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return webpackAssetsJson;
         }
     }
 }

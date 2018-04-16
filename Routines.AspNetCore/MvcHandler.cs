@@ -77,6 +77,7 @@ namespace DashboardCode.Routines.AspNetCore
                             var storageResult = storage.Handle(
                             batch =>
                             {
+                                throw new ApplicationException("AAAAAAAAAAA");
                                 save(entity, batch);
                                 modifyRelated(batch);
                             });
@@ -139,6 +140,7 @@ namespace DashboardCode.Routines.AspNetCore
                         Action<Exception> publishException = (ex) => addViewData("Exception", ex);
                         try
                         {
+                            throw new ApplicationException("AAAAAAAAAAA");
                             var storageResult = storage.Handle(
                                 batch => save(entity, batch)
                             );

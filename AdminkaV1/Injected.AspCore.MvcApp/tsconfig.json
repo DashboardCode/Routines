@@ -1,5 +1,5 @@
 {
-  //"compileOnSave": false,
+  "compileOnSave": true,
   "compilerOptions": {
     "sourceRoot": "./src",
     "target": "es5",
@@ -12,8 +12,8 @@
     "baseUrl": ".",
     "removeComments": false,
 
-    "outDir": "./wwwroot/distx",
-    //"noEmit": true,
+    //"outDir": "./wwwroot",
+    "noEmit": true,
     "noEmitOnError": true,
     "noImplicitAny": false,
     "skipDefaultLibCheck": true,

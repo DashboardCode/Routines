@@ -15,10 +15,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     {
         public Startup(IHostingEnvironment hostingEnvironment)
         {
+            // monitor configuration on changes
+            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/primitives/change-tokens?view=aspnetcore-2.1
             var builder = new ConfigurationBuilder()
                 .SetBasePath(hostingEnvironment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", optional: true)
+                .AddJsonFile($"./wwwroot/dist/manifest.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
             // TODO:
             // updatable configuration https://stackoverflow.com/questions/40970944/how-to-update-values-into-appsetting-json

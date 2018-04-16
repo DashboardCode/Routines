@@ -10,7 +10,7 @@
     <title>@ViewData["Title"] - DashboardCode.AdminkaV1.Web.MvcCoreClient</title>
 
     <environment names="Development">
-
+        <link rel="stylesheet" href="~/dist/main.css"  asp-append-version="true"/>
         @*<link rel="stylesheet" href="~/css/main.css" />*@
 
         @*<link rel="stylesheet" href="~/lib/material-design-icons/iconfont/material-icons.css" />
@@ -45,11 +45,11 @@
                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home @*<span class="sr-only">(current)</span>*@</a>
                 </li>
                 @*<li class="nav-item">
-                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
-                </li>*@
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
+                    </li>*@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Security
@@ -70,11 +70,35 @@
         </div>
     </nav>
     <div class="container body-content">
-        @if (ViewData.ContainsKey("Exception"))
-        {
-            Html.RenderPartial("~/Views/Shared/ExceptionPartialView.cshtml", (Exception)ViewBag.Exception);
-        }
+
+        <div class="modal fade" id="exceptionModal" tabindex="-1" role="dialog" aria-labelledby="exceptionModalTitle" aria-hidden="true">
+            <div class="modal-dialog  modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exceptionModalTitle">Unhandled Error Message</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @if (ViewData.ContainsKey("Exception"))
+                        {
+                            @Html.MarkdownException((Exception)ViewBag.Exception)
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        @* SEND with email additional information *@
+                        @*<button type="button" class="btn btn-secondary">Save changes</button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
         @RenderBody()
+        @*TODO error should be minimized to some kind of icon in corner *@
+        @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exceptionModal">
+                Show error
+            </button>*@
         <hr />
         <footer>
             <p>&copy; 2018 - DashboardCode.AdminkaV1.Web.MvcCoreClient</p>
@@ -82,14 +106,18 @@
     </div>
 
     <environment names="Development">
-        <script src="~/js/main.js"></script>
+        @*<script asp-src-include="~/js/main.*.js"></script>*@
+        <script src="~/dist/main.js" asp-append-version="true"></script>
+
         @*<script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/popper.js/dist/umd/popper.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>*@
     </environment>
     <environment names="Staging,Production">
-        @*<script src="~/js/main.js" asp-append-version="true"></script>*@
+        @*<script asp-src-include="~/js/main.*.js"></script>*@
+        <script src="~/dist/main.js" asp-append-version="true"></script>
+
 
         @* TODO: asp-fallback-test for all *@
         @*<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.min.js"
@@ -115,5 +143,23 @@
     </environment>
 
     @RenderSection("Scripts", required: false)
+    <script>
+        // asserts. test webpack work
+        if (typeof $ !== 'function') {
+            alert('$ is undefined')
+        }
+
+        if (typeof jQuery !== 'function') {
+            alert('jquery is undefined')
+        }
+    </script>
+    @if (ViewData.ContainsKey("Exception"))
+    {
+        <script>
+            (function () {
+                ShowExceptionModal();
+            })();
+        </script>
+    }
 </body>
 </html>
