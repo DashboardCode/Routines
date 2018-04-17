@@ -2,24 +2,24 @@
 @{
     var UserContext = (UserContext)ViewBag.UserContext;
 }
-<h3>Users</h3>
+<h3 class="px-4">Users</h3>
 
 <table id="adminka-users-table" class="table table-hover table-bordered mainTable">
     <thead>
         <tr>
-            <th>
+            <th width="1rem">
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.UserId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LoginName)
+                Login
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                First Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SecondName)
+                Second Name
             </th>
             <th>
                 Roles
@@ -40,10 +40,12 @@
 
             <tr>
                 <td class="tableActionColumn">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@urlDetailsAction'"><span class="material-icons">insert_drive_file</span></button>
+                    <button type="button" class="dashboardcode-btn-table btn-sm" onclick="location.href='@urlDetailsAction'"><span class="material-icons">insert_drive_file</span></button>
                     @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                     {
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='@urlEditAction'"><span class="material-icons">edit</span></button>
+                        <div class="dashboardcode-modify-buttons-panel">
+                            <button type="button" class="dashboardcode-btn-table btn-xsm" onclick="location.href='@urlEditAction'"><span class="material-icons">edit</span></button>
+                        </div>
                     }
                 </td>
                 <td>
@@ -62,7 +64,7 @@
                     @{  var roles = item.GetRoles();
                         @foreach (var r in roles)
                         {
-                            <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Roles", new { id = r.RoleId })">@r.RoleName</a></div>
+                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId" >@r.RoleName</a></div>
                         }
                     }
                 </td>
@@ -70,7 +72,7 @@
                     @{  var privileges = item.GetPrivileges();
                         foreach (var p in privileges)
                         {
-                            <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Privileges", new { id = p.PrivilegeId })">@p.PrivilegeName</a></div>
+                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId" >@p.PrivilegeName</a></div>
                         }
                      }
                 </td>
@@ -78,7 +80,7 @@
                     @{  var groups = item.GetGroups();
                         foreach (var g in groups)
                         {
-                            <div><a class="dashboardcode-adminka-item" href="@Url.Action("Details", "Groups", new { id = g.GroupId })">@g.GroupName</a></div>
+                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId" >@g.GroupName</a></div>
                         }
                     }
                 </td>

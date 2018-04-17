@@ -421,7 +421,7 @@ samp {
 
 code {
   font-size: 87.5%;
-  color: #e83e8c;
+  color: #555555;
   word-break: break-word; }
   a > code {
     color: inherit; }
@@ -6267,9 +6267,9 @@ a.text-dark:hover, a.text-dark:focus {
   .table-bordered td {
     border: 1px solid #dee2e6 !important; } }
 
-body {
-  background-color: red !important; }
-
+/*body {
+    background-color: red !important;
+}*/
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;
@@ -6299,23 +6299,23 @@ body {
   font-feature-settings: 'liga'; }
 
 /* Carousel */
-.carousel-caption p {
-  font-size: 20px;
-  line-height: 1.4; }
-
+/*.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}*/
 /* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"] {
-  width: 100%; }
-
+/*.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}*/
 /* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-  /* Hide captions */
-  .carousel-caption {
-    display: none; } }
-
+/*@media screen and (max-width: 767px) {
+    .carousel-caption {
+        display: none;
+    }
+}*/
 .dc-exception {
   cursor: pointer;
-  background-color: mistyrose;
+  background-color: lightgray;
   color: darkred;
   width: 100%;
   max-width: 100%;
@@ -6323,7 +6323,52 @@ body {
   padding: 0.5em; }
 
 .dc-exception p code {
-  background-color: mistyrose; }
+  background-color: lightgray; }
 
 .dc-exception p {
   margin-left: 0.2em; }
+
+.dashboardcode-btn-table {
+  color: #000000;
+  border-color: transparent;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 0.2rem; }
+
+.dashboardcode-btn-table-th {
+  margin-bottom: -1.1rem; }
+
+.dashboardcode-modify-buttons-panel {
+  margin-left: 1.8rem;
+  margin-top: -0.8rem;
+  white-space: nowrap; }
+
+.btn-xsm {
+  padding: 0 0;
+  margin: 0 0 !important;
+  border-width: 0;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  border-radius: 0.16rem; }
+
+.btn-xsm:active {
+  color: #007bff;
+  border: 0px none black !important; }
+
+.dashboardcode-btn-table:active {
+  color: #007bff;
+  border: 0px none black !important; }
+
+.btn-xsm .material-icons {
+  font-size: 0.98rem;
+  padding: 0 0;
+  margin: 0 0; }
+
+.table, .table th, .table td {
+  border-left: 0px none black;
+  border-right: 0px none black; }
+
+/*h3 {
+
+    margin-left: 1.5rem;
+}*/

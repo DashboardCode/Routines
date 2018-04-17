@@ -12,7 +12,7 @@
         @Html.HiddenFor(model => model.RowVersion)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.PrivilegeName, htmlAttributes: new { @class = "control-label col-lg-2" })
+            <label class="control-label col-lg-2">Name</label>
             <div class="col-lg-10">
                 @Html.EditorFor(model => model.PrivilegeName, new { htmlAttributes = new { @class = "form-control" , @readonly = "readonly", @disabled = "disabled" } })
                 @Html.ValidationMessageFor(model => model.PrivilegeName, "", new { @class = "text-danger" })

@@ -11,148 +11,88 @@
 
     <environment names="Development">
         <link rel="stylesheet" href="~/dist/main.css"  asp-append-version="true"/>
-        @*<link rel="stylesheet" href="~/css/main.css" />*@
-
-        @*<link rel="stylesheet" href="~/lib/material-design-icons/iconfont/material-icons.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-reboot.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-
-        <link rel="stylesheet" href="~/css/site.css" />*@
     </environment>
-    @*<environment names="Staging,Production">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
-              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>*@
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true" />
+    </environment>
     @*
         TODO: ApplicationInsights
         @Html.Raw(JavaScriptSnippet.FullScript)
     *@
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark fixed-top navbar-expand-lg">
-        @*<a class="navbar-brand" href="#">Hello, @User.Identity.Name!</a>*@
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home @*<span class="sr-only">(current)</span>*@</a>
-                </li>
-                @*<li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
-                    </li>*@
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Security
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" asp-area="" asp-controller="Groups" asp-action="Index">Groups</a>
-                        <a class="dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
-                        <a class="dropdown-item" asp-area="" asp-controller="Privileges" asp-action="Index">Privileges</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
-                    </div>
-                </li>
-            </ul>
-            @*<form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>*@
-        </div>
-    </nav>
-    <div class="container body-content">
-
-        <div class="modal fade" id="exceptionModal" tabindex="-1" role="dialog" aria-labelledby="exceptionModalTitle" aria-hidden="true">
-            <div class="modal-dialog  modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exceptionModalTitle">Unhandled Error Message</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        @if (ViewData.ContainsKey("Exception"))
-                        {
-                            @Html.MarkdownException((Exception)ViewBag.Exception)
-                        }
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                        @* SEND with email additional information *@
-                        @*<button type="button" class="btn btn-secondary">Save changes</button>*@
-                    </div>
+    <nav class="py-2">
+        <div class="container d-flex flex-column flex-md-row justify-content-between">
+            <a href="/">
+                <img src="~/images/logo.svg" height="144" alt="Logo" />
+            </a>
+            <div class="nav-item dropdown py-1 d-none d-md-inline-block">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Security
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" asp-area="" asp-controller="Privileges" asp-action="Index">Privileges</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Groups" asp-action="Index">Groups</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
                 </div>
             </div>
         </div>
-        @RenderBody()
-        @*TODO error should be minimized to some kind of icon in corner *@
-        @*<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exceptionModal">
-                Show error
-            </button>*@
-        <hr />
-        <footer>
-            <p>&copy; 2018 - DashboardCode.AdminkaV1.Web.MvcCoreClient</p>
-        </footer>
+    </nav>
+
+    @* TODO: error should be minimized to some kind of icon in there corner *@
+    @* <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exceptionModal">Show error</button> *@
+    <div class="modal fade" id="exceptionModal" tabindex="-1" role="dialog" aria-labelledby="exceptionModalTitle" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exceptionModalTitle">Unhandled Error Message</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @if (ViewData.ContainsKey("Exception"))
+                    {
+                        @Html.MarkdownException((Exception)ViewBag.Exception)
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    @* TODO: add SEND email button  *@
+                    @* <button type="button" class="btn btn-secondary">Save changes</button> *@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="starter-template">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2018 - DashboardCode</p>
+            </footer>
+        </div>
     </div>
 
     <environment names="Development">
-        @*<script asp-src-include="~/js/main.*.js"></script>*@
         <script src="~/dist/main.js" asp-append-version="true"></script>
-
-        @*<script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/popper.js/dist/umd/popper.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>*@
     </environment>
     <environment names="Staging,Production">
-        @*<script asp-src-include="~/js/main.*.js"></script>*@
         <script src="~/dist/main.js" asp-append-version="true"></script>
-
-
-        @* TODO: asp-fallback-test for all *@
-        @*<script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.2.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-xBuQ/xzmlsLoJpyjoggmTEz8OWUFM0/RC5BsqQBDX2v5cMvDHcMakNTNrHIW2I5f">
-        </script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-                asp-fallback-src="~/lib/popper.js/dist/umd/popper.min.js"
-                crossorigin="anonymous"
-                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q">
-        </script>
-
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>*@
     </environment>
 
     @RenderSection("Scripts", required: false)
-    <script>
-        // asserts. test webpack work
-        if (typeof $ !== 'function') {
-            alert('$ is undefined')
-        }
 
-        if (typeof jQuery !== 'function') {
-            alert('jquery is undefined')
-        }
-    </script>
+    <environment names="Development">
+        <script>
+            if (typeof $ !== 'function' || typeof jQuery !== 'function') {
+                alert('jquery is not defined on global level when it is expected')
+            }
+        </script>
+    </environment>
     @if (ViewData.ContainsKey("Exception"))
     {
         <script>

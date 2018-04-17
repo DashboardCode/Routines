@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Content Remove="NLog.config" />
+    <Content Remove="wwwroot\images\logo.svg" />
   </ItemGroup>
   
   <ItemGroup>
@@ -55,6 +56,7 @@
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="wwwroot\images\logo.svg" />
   </ItemGroup>
   
   <ItemGroup>
