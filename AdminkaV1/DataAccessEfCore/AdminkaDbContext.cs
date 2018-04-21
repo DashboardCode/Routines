@@ -171,7 +171,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             modelBuilder.Entity<Group>()
                 .ToTable(GetEntityTableName(nameof(Group)), schema: securityIslandSchema)
                 .HasKey(e => e.GroupId);
-            modelBuilder.Entity<Group>().Property(e => e.GroupName).IsRequired().HasMaxLength(LengthConstants.GoodForTitle);
+            modelBuilder.Entity<Group>().Property(e => e.GroupName).IsRequired().HasMaxLength(LengthConstants.GoodForName);
             modelBuilder.Entity<Group>().Property(e => e.GroupAdName).IsRequired().HasMaxLength(LengthConstants.AdName);
             modelBuilder.Entity<Group>().HasIndex(e => e.GroupName).HasName("IX_scr_Groups_GroupName").IsUnique();
             modelBuilder.Entity<Group>().HasIndex(e => e.GroupAdName).HasName("IX_scr_Groups_GroupAdName").IsUnique();
@@ -289,7 +289,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             modelBuilder.Entity<Group>().HasAnnotation("Constraints",
                 new[]
                     {
-                        new Constraint { Name="CK_scr_Groups_GroupName",  Message=@"Only letters, numbers and space",   Fields = new[] { "GroupName" }, Body=@"CHECK (GroupName NOT LIKE '%[^a-z0-9 ]%')" },
+                        new Constraint { Name="CK_scr_Groups_GroupName",  Message=@"Only letters, numbers, space and .-_@:",   Fields = new[] { "GroupName" }, Body=@"CHECK (GroupName NOT LIKE '%[^a-z0-9!:!.!-!_!\!@! ]%' ESCAPE '!')"  },
                         new Constraint { Name="CK_scr_Groups_GroupAdName", Message=@"Only letters, numbers and .-_@", Fields = new[] { "GroupAdName" }, Body=@"CHECK (GroupAdName NOT LIKE '%[^a-z0-9!.!-!_!\!@]%' ESCAPE '!')"  }
                     }
                 );

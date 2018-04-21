@@ -10,7 +10,7 @@
     <title>@ViewData["Title"] - DashboardCode.AdminkaV1.Web.MvcCoreClient</title>
 
     <environment names="Development">
-        <link rel="stylesheet" href="~/dist/main.css"  asp-append-version="true"/>
+        <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true" />
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="~/dist/main.css" asp-append-version="true" />
@@ -20,16 +20,57 @@
         @Html.Raw(JavaScriptSnippet.FullScript)
     *@
 </head>
+
+@{
+    // ViewBag.UserContext
+
+    var userName = "Anonymous";
+
+    var userContext = ViewBag.UserContext as UserContext;
+    if (userContext != null)
+    {
+        userName = userContext.User.LoginName;
+    }
+    else
+    {
+        var identity1 = @ViewContext.HttpContext.User.Identity;
+        if (identity1.Name != null)
+        {
+            userName = identity1.Name + " " + (identity1.IsAuthenticated ? "(Authenticated)" : "(NotAuthenticated)");
+        }
+        else
+        {
+            var identity2 = System.Threading.Thread.CurrentPrincipal?.Identity;
+            if (identity2?.Name != null)
+            {
+                userName = identity2.Name + " " + (identity2.IsAuthenticated ? "(Authenticated)" : "(NotAuthenticated)");
+
+            }
+            else
+            {
+                userName = "(NotAuthenticated)";
+            }
+        }
+    }
+}
+
 <body>
-    <nav class="py-2">
-        <div class="container d-flex flex-column flex-md-row justify-content-between">
-            <a href="/">
-                <img src="~/images/logo.svg" height="144" alt="Logo" />
-            </a>
-            <div class="nav-item dropdown py-1 d-none d-md-inline-block">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Security
-                </a>
+
+    <nav class="py-2 container d-flex flex-row justify-content-between align-self">
+        <a class="btn-logo" href="/">
+            <svg id="svg"  alt="Logo"  height="126" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" x="0px" y="0px" viewBox="0 0 100 125" enable-background="new 0 0 100 100" xml:space="preserve"><path d="M40.83,90c-6.892,0-12.497-5.608-12.497-12.5c0-6.888,5.605-12.497,12.5-12.5h5.834V53.333H22.5  c-6.895,0-12.5-5.605-12.5-12.5s5.605-12.5,12.5-12.5h24.167V22.5c0-6.888,5.605-12.5,12.5-12.5c6.891,0,12.5,5.605,12.5,12.5  S66.058,35,59.167,35h-5.834v11.667H77.5c6.892,0,12.5,5.605,12.5,12.5c0,6.891-5.608,12.5-12.5,12.5H53.333V77.5  C53.333,84.392,47.725,90,40.83,90z M40.833,71.667C37.617,71.67,35,74.287,35,77.5c0,3.216,2.614,5.833,5.83,5.833  c3.22,0,5.837-2.617,5.837-5.833v-5.833H40.833z M53.333,65H77.5c3.216,0,5.833-2.617,5.833-5.833c0-3.217-2.617-5.834-5.833-5.834  H53.333V65z M22.5,35c-3.216,0-5.833,2.617-5.833,5.833c0,3.217,2.617,5.834,5.833,5.834h24.167V35H22.5z M53.333,28.333h5.834  c3.216,0,5.833-2.617,5.833-5.833s-2.617-5.833-5.833-5.833c-3.217,0-5.834,2.617-5.834,5.833V28.333z" /></svg>
+        </a>
+        <div class="nav-item d-flex flex-row  my-1">
+            <div id="dashboardcode-account-box-id"
+                 class="align-self-start"
+                 style="font-size:1rem; margin-top:-0rem;">
+                <span class="material-icons" style="font-size: 1rem; padding-bottom:0.18rem; vertical-align:middle">account_box</span>
+                <span class="d-inline-block">@userName</span>
+            </div>
+            <div class="nav-item dropdown mx-4">
+                <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="material-icons" style="text-decoration:none; font-size: 1rem; padding-bottom:0.18rem; margin-right:0.2rem; vertical-align:middle">security</span><span class="d-inline-block">Security</span>
+</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" asp-area="" asp-controller="Privileges" asp-action="Index">Privileges</a>
                     <a class="dropdown-item" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
@@ -70,9 +111,9 @@
     <div class="container">
         <div class="starter-template">
             @RenderBody()
-            <hr />
-            <footer>
-                <p>&copy; 2018 - DashboardCode</p>
+            <hr style="margin-top:1rem; margin-bottom:0.4rem; "/>
+            <footer class="d-flex flex-column flex-md-row justify-content-between" style=" float:right">
+                <div style="font-size:60%; margin-top:0px; padding-top:0px; margin-bottom:2rem;">&copy; 2018 - DashboardCode</div>
             </footer>
         </div>
     </div>
@@ -93,6 +134,49 @@
             }
         </script>
     </environment>
+    @*<script>
+            (function () {
+                $('#dashboardcode-account-box-id').tooltip
+                    ({
+                        html: true,
+                        title: 'Hey there 2',
+                        trigger: "hover focus",
+                        template: '<div class="tooltip" role="tooltip" style="opacity: 0.9;"><div class="arrow" style="color:black; opacity: 0.9;"></div><div class="tooltip-inner" style="background-color:white; color:black; border:1px solid black; opacity: 0.9;"></div></div>'
+                        //template: '<div class="popover" style="opacity: 0.9;"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>',
+                    });
+            })();
+        </script>*@
+
+    <div id="dashboardcode-account-box-id-tooltip" class="d-none">
+        @if (userContext != null && userContext.User != null)
+        {
+            var user = userContext.User;
+            var privileges = user.GetAllPrivileges();
+            if (privileges.Count > 0)
+            {
+                <div style="text-align:left ">
+                    <div>Privileges:</div>
+                    @foreach (var p in privileges)
+                    {
+                        <div style="white-space:nowrap; font-size:x-small">@p.PrivilegeName</div>
+                    }
+                </div>
+            }
+        }
+    </div>
+    <script>
+        (function () {
+            var title = $('#dashboardcode-account-box-id-tooltip').removeClass('d-none').remove().html();
+            $('#dashboardcode-account-box-id').tooltip
+                ({
+                    html: true,
+                    title: title,
+                    trigger: "hover focus",
+                    template: '<div class="tooltip" role="tooltip"><div class="tooltip-inner" style="background-color:#EEEEEE; opacity:0.9; color:black; border:0px solid red; "></div></div>'
+                });
+        })();
+    </script>
+
     @if (ViewData.ContainsKey("Exception"))
     {
         <script>

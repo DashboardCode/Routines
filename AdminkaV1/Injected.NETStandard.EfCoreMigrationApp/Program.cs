@@ -5,6 +5,12 @@ using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
+    public class AdminkaDbInstallGroup
+    {
+        public string Name { get; set; }
+        public string[] Priveleges { get; set; }
+    }
+
     public class Program
     {
         public readonly static ApplicationSettings ApplicationSettings = new ApplicationSettings();

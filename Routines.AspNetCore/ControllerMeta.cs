@@ -423,7 +423,7 @@ namespace DashboardCode.Routines.AspNetCore
             this.ReferencesCollection = new ReferencesCollection<TEntity>(oneToManyBinders, manyToManyBinders);
 
             this.FormFields = new Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>>();
-            addFieldBinders(new FormFieldsScorer(FormFields));
+            addFieldBinders?.Invoke(new FormFieldsScorer(FormFields));
 
             this.HiddenFormFields = new Dictionary<string, Func<TEntity, Action<StringValues>>> ();
             addFieldSetters(new HiddenFormFieldsScorer(HiddenFormFields));

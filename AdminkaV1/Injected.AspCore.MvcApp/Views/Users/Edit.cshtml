@@ -1,13 +1,13 @@
 ﻿@model User
 
-<h3>Edit User (@Model.UserId)</h3>
+<h3 class="px-3">Edit User (@Model.UserId)</h3>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.UserId)
     @Html.HiddenFor(model => model.RowVersion)
-
+    
     <div class="form-horizontal">
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -67,5 +67,3 @@
         </div>
     </div>
 }
-
-

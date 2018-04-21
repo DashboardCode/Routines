@@ -1,5 +1,5 @@
-﻿using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Jobs;
+﻿using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.CsProj;
 
@@ -9,40 +9,16 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            //var b = new BenchmarkDynamicExpresso();
-            //var x1 = b.TestAdminkaStyle();
-            //var x2 = b.TestEvalCompile();
-            //var i1 = b.Completed();
-            //var i2 = b.CompletedAwait();
-            //var i3 = b.Pragma();
-            //var i4 = b.Yield();
-            //b.ConcurrentBagAdd();
-            //var x1 = b.DelegateBuilded();
-            //var x2 = b.Expression();
-            //var s1 = b.();
-            //var s2 = b.StringFloat();
-
-            //var j1 = b.RoutineConstructed();
-            //var j2 = b.RoutineExpressionCompiled();
-            //var j3 = b.RoutineFunc();
-            //var j4 = b.JsonNet();
-
-            //var j5 = b.RoutineSerializerFunc();
-            //var j6 = b.RoutineSerializerBuilded();
-
-            //var jO = b.TestFuncDynamicInvoke();
-            //var jA = b.TestFunc();
-            //var jB = b.TestFuncBuilded();
-            BenchmarkRunner.Run<BenchmarkConverAllDisasm>();
+            BenchmarkRunner.Run<BenchmarkForEach>();
         }
     }
 
-    public class MyManualConfig : ManualConfig
+    public class CoreToolchain2JobConfig : ManualConfig
     {
-        public MyManualConfig()
+        public CoreToolchain2JobConfig()
         {
             Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp20));
-            Add(Job.Clr);
+            Add(Job.Clr.With(CsProjCoreToolchain.NetCoreApp20));
         }
     }
 
@@ -58,17 +34,11 @@ namespace Benchmark
     {
         public ManualWindowsDiagnosersConfig()
         {
-            // RyuJit for .NET Core 2.0
-
-
-            //Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp20));
-            //Add(Job.Clr);
 #if !NETCOREAPP2_0
             //Add(Job.ShortRun.With(Jit.RyuJit).With(Platform.X64).With(Runtime.Core).With(CsProjCoreToolchain.NetCoreApp20));
             //Add(DisassemblyDiagnoser.Create(new DisassemblyDiagnoserConfig(printAsm: true, printPrologAndEpilog: true, recursiveDepth: 3)));
             //Add(new BenchmarkDotNet.Diagnostics.Windows.InliningDiagnoser());
 #endif
-
         }
     }
 }

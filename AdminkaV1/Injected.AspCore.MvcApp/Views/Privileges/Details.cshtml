@@ -17,12 +17,10 @@
         </dt>
 
         <dd>
-            @{  var roles = Model.GetRoles();
-                foreach (var r in roles)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(r.RoleName, "Details", "Roles", new { id = r.RoleId }, null)</span>
-                }
-            }
+        @foreach (var r in Model.GetRoles())
+        {
+            <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
+        }
         </dd>
 
         <dt>
@@ -30,12 +28,10 @@
         </dt>
 
         <dd>
-            @{  var users = Model.GetUsers();
-                foreach (var u in users)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(u.LoginName, "Details", "Users", new { id = u.UserId }, null)</span>
-                }
-            }
+        @foreach (var u in Model.GetUsers())
+        {
+            <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+        }
         </dd>
 
         <dt>
@@ -43,12 +39,10 @@
         </dt>
 
         <dd>
-            @{  var groups = Model.GetGroups();
-                foreach (var r in groups)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(r.GroupName, "Details", "Groups", new { id = r.GroupId }, null)</span>
-                }
-            }
+        @foreach (var g in Model.GetGroups())
+        {
+            <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
+        }
         </dd>
     </dl>
 </div>

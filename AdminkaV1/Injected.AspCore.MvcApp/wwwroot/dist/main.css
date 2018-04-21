@@ -6267,6 +6267,25 @@ a.text-dark:hover, a.text-dark:focus {
   .table-bordered td {
     border: 1px solid #dee2e6 !important; } }
 
+.dropdown-item:hover {
+  color: #007bff; }
+
+.dropdown-item:active {
+  color: white; }
+
+.dropdown-toggle:hover {
+  text-decoration: none; }
+
+a.badge {
+  color: black;
+  font-size: 72%;
+  padding-left: 0px;
+  padding-right: 0.3rem; }
+
+a.badge:hover {
+  color: #007bff;
+  text-decoration: none; }
+
 /*body {
     background-color: red !important;
 }*/
@@ -6298,21 +6317,6 @@ a.text-dark:hover, a.text-dark:focus {
   /* Support for IE. */
   font-feature-settings: 'liga'; }
 
-/* Carousel */
-/*.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}*/
-/* Make .svg files in the carousel display properly in older browsers */
-/*.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}*/
-/* Hide/rearrange for smaller screens */
-/*@media screen and (max-width: 767px) {
-    .carousel-caption {
-        display: none;
-    }
-}*/
 .dc-exception {
   cursor: pointer;
   background-color: lightgray;
@@ -6328,21 +6332,6 @@ a.text-dark:hover, a.text-dark:focus {
 .dc-exception p {
   margin-left: 0.2em; }
 
-.dashboardcode-btn-table {
-  color: #000000;
-  border-color: transparent;
-  background-color: transparent;
-  cursor: pointer;
-  border-radius: 0.2rem; }
-
-.dashboardcode-btn-table-th {
-  margin-bottom: -1.1rem; }
-
-.dashboardcode-modify-buttons-panel {
-  margin-left: 1.8rem;
-  margin-top: -0.8rem;
-  white-space: nowrap; }
-
 .btn-xsm {
   padding: 0 0;
   margin: 0 0 !important;
@@ -6353,9 +6342,36 @@ a.text-dark:hover, a.text-dark:focus {
 
 .btn-xsm:active {
   color: #007bff;
-  border: 0px none black !important; }
+  border: 0px none black !important;
+  font-size: smaller; }
 
-.dashboardcode-btn-table:active {
+.adminka-action-button-group .btn-sm, .adminka-action-button-group .btn-group-sm > .btn {
+  padding-left: 0px;
+  padding-right: 0px;
+  color: black; }
+
+.adminka-action-button-group .btn-xsm {
+  padding-left: 0px;
+  padding-right: 0px;
+  color: black; }
+
+.adminka-action-button-group .btn-sm:hover, .adminka-action-button-group .btn-group-sm > .btn:hover {
+  color: #007bff; }
+
+.adminka-action-button-group .btn-xsm:hover {
+  color: #007bff; }
+
+.adminka-action-button-group .material-icons {
+  vertical-align: bottom;
+  padding-bottom: 0px;
+  margin-bottom: 0px; }
+
+.btn-logo {
+  padding: 0 0;
+  margin: 0 0 !important;
+  border-width: 0; }
+
+.btn-logo:active {
   color: #007bff;
   border: 0px none black !important; }
 
@@ -6364,11 +6380,65 @@ a.text-dark:hover, a.text-dark:focus {
   padding: 0 0;
   margin: 0 0; }
 
+a.badge::before {
+  font-family: 'Material Icons';
+  font-size: 0.7rem;
+  vertical-align: top;
+  margin-right: 0.2rem;
+  vertical-align: bottom;
+  content: 'insert_drive_file';
+  font-feature-settings: 'liga' 1; }
+
 .table, .table th, .table td {
   border-left: 0px none black;
   border-right: 0px none black; }
 
-/*h3 {
+#svg:hover {
+  fill: #007bff; }
 
-    margin-left: 1.5rem;
-}*/
+.badge .material-icons {
+  font-size: 0.7rem;
+  vertical-align: bottom;
+  margin-right: 0.2rem; }
+
+.dropdown-toggle {
+  color: black; }
+
+.adminka-navigation {
+  color: black; }
+
+.adminka-navigation:hover {
+  color: #007bff;
+  text-decoration: none; }
+
+a.adminka-navigation-list::before {
+  font-family: 'Material Icons';
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: 'view_list';
+  font-feature-settings: 'liga' 1; }
+
+a.adminka-navigation-edit::before {
+  font-family: 'Material Icons';
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: 'edit';
+  font-feature-settings: 'liga' 1; }
+
+a.adminka-navigation-delete::before {
+  font-family: 'Material Icons';
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: 'delete';
+  font-feature-settings: 'liga' 1; }
+
+a.adminka-navigation-details::before {
+  font-family: 'Material Icons';
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: 'insert_drive_file';
+  font-feature-settings: 'liga' 1; }

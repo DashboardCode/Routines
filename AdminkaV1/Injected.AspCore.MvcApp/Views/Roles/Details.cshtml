@@ -1,6 +1,11 @@
 ﻿@model Role
 
-<h3>Role Details (@Model.RoleId)</h3>
+<div class="d-flex flex-row justify-content-between align-self">
+    <h3>Role (@Model.RoleId)</h3>
+    @*<a class="adminka-navigation adminka-navigation-list" asp-area="" asp-controller="Roles" asp-action="Index">to List</a>
+    <a class="adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@Model.RoleId">Edit</a>
+    <a class="adminka-navigation adminka-navigation-delete" asp-area="" asp-controller="Roles" asp-action="Delete" asp-route-id="@Model.RoleId">Delete</a>*@
+</div>
 
 <div>
     <hr/>
@@ -18,24 +23,20 @@
         </dt>
 
         <dd>
-            @{  var privileges = Model.GetPrivileges();
-                foreach (var p in privileges)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(p.PrivilegeName, "Details", "Privileges", new { id = p.PrivilegeId }, null)</span>
-                }
+            @foreach (var p in Model.GetPrivileges())
+            {
+                <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeId</a>
             }
         </dd>
 
         <dt>
-            Gruops
+            Groups
         </dt>
 
         <dd>
-            @{  var groups = Model.GetGroups();
-                foreach (var g in groups)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(g.GroupName, "Details", "Groups", new { id = g.GroupId }, null)</span>
-                }
+            @foreach (var g in Model.GetGroups())
+            {
+                <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
             }
         </dd>
 
@@ -44,15 +45,16 @@
         </dt>
 
         <dd>
-            @{  var users = Model.GetUsers();
-                foreach (var u in users)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(u.LoginName, "Details", "Users", new { id = u.UserId }, null)</span>
-                }
+            @foreach (var u in Model.GetUsers())
+            {
+                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
             }
         </dd>
     </dl>
+
+    <div class="d-flex flex-row align-self" style="margin-top:2rem">
+        <a style="margin-right:3rem" class="adminka-navigation adminka-navigation-list" asp-area="" asp-controller="Roles" asp-action="Index">to List</a>
+        <a style="margin-right:3rem" class="adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@Model.RoleId">Edit</a>
+        <a style="margin-right:3rem" class="adminka-navigation adminka-navigation-delete" asp-area="" asp-controller="Roles" asp-action="Delete" asp-route-id="@Model.RoleId">Delete</a>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Back to List", "Index")
-</p>

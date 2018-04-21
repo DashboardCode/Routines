@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Benchmark
 {
-    //[Config(typeof(MyManualConfig))]
+    [Config(typeof(CoreToolchain2JobConfig))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]

@@ -66,8 +66,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?tabs=aspnetcore2x
             // logging.AddEventSourceLogger(); //  Microsoft.Extensions.Logging.EventSource 
 
-            if (env.IsDevelopment())
+            if (true /*env.IsDevelopment()*/)
             {
+
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }

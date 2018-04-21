@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Globalization;
+using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -16,6 +19,13 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
     {
         public static void Up(MigrationBuilder migrationBuilder, IModel targetModel)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+            var config = builder.Build();
+            var adminkaDbInstallGroups = new List<AdminkaDbInstallGroup>();
+            config.GetSection("AdminkaDbInstallGroups").Bind(adminkaDbInstallGroups);
+
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
 
             var routine = new AdminkaRoutineHandler(
@@ -29,7 +39,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
             routine.Handle(
                 closure => {
                     string loginName = null;
-                    string groupAdName = "FakeDomain\\Testers";
+                    // string groupAdName = "FakeDomain\\Testers";
                     var adConfiguration = closure.Resolve<AdConfiguration>();
                     if (adConfiguration.UseAdAuthorization)
                     {
@@ -72,18 +82,29 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                             }
                         }
                     }
-
-                    migrationBuilder.Sql(
-                          $"INSERT INTO scr.Users (LoginName) VALUES ('{loginName}');" + Environment.NewLine
-                        + $"INSERT INTO scr.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.ConfigureSystem}','Configure System');" + Environment.NewLine
-                        + $"INSERT INTO scr.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.VerboseLogging}','Verbose Logging');" + Environment.NewLine
-                        + $"INSERT INTO scr.UserPrivilegeMap (UserId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Users'),'{Privilege.ConfigureSystem}');" + Environment.NewLine
-                        + $"INSERT INTO scr.Groups (GroupName, GroupAdName) VALUES ('Sample','{groupAdName}');" + Environment.NewLine
-                        + $"INSERT INTO scr.GroupPrivilegeMap (GroupId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Groups'),'{Privilege.VerboseLogging}');" + Environment.NewLine
-                        + $"INSERT INTO scr.UserGroupMap (UserId, GroupId) VALUES (IDENT_CURRENT('scr.Users'),IDENT_CURRENT('scr.Groups'));" + Environment.NewLine
-                        + $"INSERT INTO scr.Roles (RoleName) VALUES ('Administrator');" + Environment.NewLine
+                    // 'FakeDomain\\\\Administrators', 'FakeDomain\\\\Testers'
+                    // Create privileges
+                    var sql = 
+                        $"INSERT INTO scr.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.ConfigureSystem}','Configure System');" + Environment.NewLine
+                        + $"INSERT INTO scr.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.VerboseLogging}','Verbose Logging');" + Environment.NewLine;
+                    // Create roles for privileges
+                    sql += $"INSERT INTO scr.Roles (RoleName) VALUES ('Administrator');" + Environment.NewLine
                         + $"INSERT INTO scr.RolePrivilegeMap (RoleId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Roles'),'{Privilege.ConfigureSystem}');" + Environment.NewLine
-                    );
+                        + $"INSERT INTO scr.Roles (RoleName) VALUES ('Tester');" + Environment.NewLine
+                        + $"INSERT INTO scr.RolePrivilegeMap (RoleId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Roles'),'{Privilege.VerboseLogging}');" + Environment.NewLine;
+
+                    //  create current user, give him 'Configuration' privilege
+                    sql += $"INSERT INTO scr.Users (LoginName) VALUES ('{loginName}');" + Environment.NewLine
+                        + $"INSERT INTO scr.UserPrivilegeMap (UserId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Users'),'{Privilege.ConfigureSystem}');" + Environment.NewLine;
+
+                    // create groups (add priveleges)
+                    foreach (var g in adminkaDbInstallGroups)
+                    {
+                        sql += $"INSERT INTO scr.Groups (GroupName, GroupAdName) VALUES ('{g.Name}','{g.Name}');" + Environment.NewLine;
+                        foreach (var privilegeId in g.Priveleges)
+                            sql += $"INSERT INTO scr.GroupPrivilegeMap (GroupId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Groups'),'{privilegeId}');" + Environment.NewLine;
+                    }
+                    migrationBuilder.Sql(sql);
                 });
         }
     }

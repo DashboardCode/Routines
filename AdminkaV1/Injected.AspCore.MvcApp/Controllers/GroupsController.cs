@@ -45,7 +45,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
             //var roleNameLength = metaBrowser.GetLength<Role>(en => en.RoleName);
             formFields =>
                 formFields.Add(e => e.GroupName,   Binder.ConvertToString)
-                          .Add(e => e.GroupAdName, Binder.ConvertToString, asserts => asserts.Add(v => v.Length <= 18, "Too big!"))
+                          .Add(e => e.GroupAdName, Binder.ConvertToString, asserts => asserts.Add(v => v.Length <= 126, "Too big!"))
                           //.Add(e => e.GroupAdName, setter => sv => Binder.TryStringValidateLength(sv, v => setter(v), 100))
                           //.Add(e => e.GroupId,  Binder.ConvertToInt, asserts => asserts.Add(v => v < 100, "Too big!"))
                           //.Add(e => e.GroupId,  Binder.ConvertToInt, v=>new BinderResult(v<100? null: new[] { "Too big!" }), converter => setter => validator => validator(setter(converter())))

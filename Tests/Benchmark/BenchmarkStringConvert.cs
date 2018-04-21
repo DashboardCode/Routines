@@ -6,10 +6,10 @@ using BenchmarkDotNet.Attributes.Exporters;
 
 namespace Benchmark
 {
-    [Config(typeof(MyManualConfig))]
+    [Config(typeof(CoreToolchain2JobConfig))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser /*, InliningDiagnoser*/]
+    [MemoryDiagnoser]
     public class BenchmarkStringConvert
     {
         decimal d = ((decimal)1)/3;

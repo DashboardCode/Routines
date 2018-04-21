@@ -22,6 +22,10 @@
     <Content Remove="NLog.config" />
     <Content Remove="wwwroot\images\logo.svg" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Roles\Index.cshtml~RF2c37f6e3.TMP" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.2.1" />

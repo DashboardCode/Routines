@@ -9,10 +9,10 @@ using BenchmarkDotNet.Attributes.Exporters;
 
 namespace Benchmark
 {
-    [Config(typeof(MyManualConfig))]
+    [Config(typeof(CoreToolchain2JobConfig))]
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [HtmlExporter, MarkdownExporter]
-    [MemoryDiagnoser /*, InliningDiagnoser*/]
+    [MemoryDiagnoser]
     public class BenchmarkCallSimple
     {
         static Func<StringBuilder, int, int, bool> callLambda;

@@ -1,5 +1,4 @@
-@import "custom";
-@import "../node_modules/bootstrap/scss/bootstrap";
+@import "customBootstrap";
 @import "old";
 
 @font-face {
@@ -31,24 +30,6 @@
     font-feature-settings: 'liga';
 }
 
-/* Carousel */
-/*.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}*/
-
-/* Make .svg files in the carousel display properly in older browsers */
-/*.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}*/
-
-/* Hide/rearrange for smaller screens */
-/*@media screen and (max-width: 767px) {
-    .carousel-caption {
-        display: none;
-    }
-}*/
-
 .dc-exception {
     cursor: pointer;
     background-color: lightgray;
@@ -67,24 +48,6 @@
     margin-left: 0.2em;
 }
 
-.dashboardcode-btn-table {
-    color: #000000;
-    border-color: transparent;
-    background-color: transparent;
-    cursor: pointer;
-    border-radius: $btn-border-radius-sm;
-}
-
-.dashboardcode-btn-table-th {
-    margin-bottom: -1.1rem;
-}
-
-.dashboardcode-modify-buttons-panel {
-    margin-left: 1.8rem;
-    margin-top: -0.8rem;
-    white-space: nowrap;
-}
-
 $btn-padding-y-xsm: $btn-padding-y-sm*0.8;
 $btn-padding-x-xsm: $btn-padding-x-sm*0.8;
 $font-size-xsm: $font-size-sm*0.8;
@@ -100,16 +63,49 @@ $btn-border-radius-xsm: $btn-border-radius-sm*0.8;
     border-radius: $btn-border-radius-xsm;
 }
 
+
 .btn-xsm:active {
-    color:$primary;
-    border:0px none black !important;
+    color: $primary;
+    border: 0px none black !important;
+    font-size: smaller;
 }
 
-.dashboardcode-btn-table:active {
+.adminka-action-button-group .btn-sm {
+    padding-left: 0px;
+    padding-right: 0px;
+    color: black;
+}
+
+.adminka-action-button-group .btn-xsm {
+    padding-left: 0px;
+    padding-right: 0px;
+    color: black;
+}
+
+.adminka-action-button-group .btn-sm:hover {
+    color: $primary;
+}
+
+.adminka-action-button-group .btn-xsm:hover {
+    color: $primary;
+}
+
+.adminka-action-button-group .material-icons {
+    vertical-align: bottom;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.btn-logo {
+    padding: 0 0; //$btn-padding-y-xsm $btn-padding-x-xsm;
+    margin: 0 0 !important;
+    border-width: 0;
+}
+
+.btn-logo:active {
     color: $primary;
     border: 0px none black !important;
 }
-
 
 .btn-xsm .material-icons {
     font-size: $font-size-xsm*1.4;
@@ -117,12 +113,86 @@ $btn-border-radius-xsm: $btn-border-radius-sm*0.8;
     margin: 0 0;
 }
 
+a.badge::before {
+    font-family: 'Material Icons';
+    font-size: 0.7rem;
+    vertical-align: top;
+    margin-right: 0.2rem;
+    vertical-align: bottom;
+    content: 'insert_drive_file';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
+}
+
 .table, .table th, .table td {
     border-left: 0px none black;
     border-right: 0px none black;
 }
 
-/*h3 {
+#svg:hover {
+    fill: $primary;
+}
 
-    margin-left: 1.5rem;
-}*/
+.badge .material-icons{
+    font-size:0.7rem; 
+    vertical-align:bottom; 
+    margin-right:0.2rem;
+}
+
+.dropdown-toggle {
+    color: black;
+}
+
+.adminka-navigation {
+    color: black;
+}
+
+.adminka-navigation:hover {
+    color: $primary;
+    text-decoration: none;
+}
+
+a.adminka-navigation-list::before {
+    font-family: 'Material Icons';
+    font-size: 170%;
+    vertical-align: middle;
+    margin-right: 0.2rem;
+    content: 'view_list';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
+}
+
+a.adminka-navigation-edit::before {
+    font-family: 'Material Icons';
+    font-size: 170%;
+    vertical-align: middle;
+    margin-right: 0.2rem;
+    content: 'edit';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
+}
+
+a.adminka-navigation-delete::before {
+    font-family: 'Material Icons';
+    font-size: 170%;
+    vertical-align: middle;
+    margin-right: 0.2rem;
+    content: 'delete';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
+}
+
+a.adminka-navigation-details::before {
+    font-family: 'Material Icons';
+    font-size: 170%;
+    vertical-align: middle;
+    margin-right: 0.2rem;
+    content: 'insert_drive_file';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
+}

@@ -1,0 +1,26 @@
+@import "custom";
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+.dropdown-item:hover {
+    color: $primary;
+}
+
+.dropdown-item:active {
+    color: white;
+}
+
+.dropdown-toggle:hover {
+    text-decoration: none;
+}
+
+a.badge {
+    color: black;
+    font-size: 72%;
+    padding-left: 0px;
+    padding-right: 0.3rem;
+}
+
+a.badge:hover {
+    color: $primary;
+    text-decoration: none;
+}

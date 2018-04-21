@@ -61,6 +61,15 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
             }
             return @value;
         }
+        public IReadOnlyCollection<Group> GetGroups()
+        {
+            IReadOnlyCollection<Group> @value = null;
+            if (UserGroupMap != null)
+            {
+                @value = UserGroupMap.Select(e => e.Group).ToList();
+            }
+            return @value;
+        }
         public IReadOnlyCollection<Privilege> GetPrivileges()
         {
             IReadOnlyCollection<Privilege> @value = null;
@@ -70,14 +79,38 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
             }
             return @value;
         }
-        public IReadOnlyCollection<Group> GetGroups()
+        public IReadOnlyCollection<Privilege> GetRolesPrivileges()
         {
-            IReadOnlyCollection<Group> @value = null;
-            if (UserGroupMap != null)
+            IReadOnlyCollection<Privilege> @value = null;
+            if (UserRoleMap != null)
             {
-                @value = UserGroupMap.Select(e => e.Group).ToList();
+                @value = UserRoleMap.SelectMany(e => e.Role.RolePrivilegeMap).Select(e => e.Privilege).Distinct().ToList();
             }
             return @value;
+        }
+        public IReadOnlyCollection<Privilege> GetGroupsPrivileges()
+        {
+            IReadOnlyCollection<Privilege> @value = null;
+            if (UserGroupMap != null)
+            {
+                @value = UserGroupMap
+                    .SelectMany(e => e.Group.GroupRoleMap).SelectMany(e=>e.Role.RolePrivilegeMap).Select(e=>e.Privilege).Distinct().ToList();
+            }
+            return @value;
+        }
+        public IReadOnlyCollection<Privilege> GetAllPrivileges()
+        {
+            IReadOnlyCollection<Privilege> priveleges1 = GetPrivileges();
+            IReadOnlyCollection<Privilege> priveleges2 = GetRolesPrivileges();
+            IReadOnlyCollection<Privilege> priveleges3 = GetGroupsPrivileges();
+            var priveleges = new List<Privilege>();
+            if (priveleges1 != null)
+                priveleges.AddRange(priveleges1);
+            if (priveleges2 != null)
+                priveleges.AddRange(priveleges2);
+            if (priveleges3 != null)
+                priveleges.AddRange(priveleges3);
+            return priveleges.Distinct().ToList();
         }
         #endregion
     }

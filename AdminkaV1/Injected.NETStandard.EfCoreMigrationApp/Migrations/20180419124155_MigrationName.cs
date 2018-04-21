@@ -1,10 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrations
 {
-    public partial class Initial : Migration
+    public partial class MigrationName : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -63,7 +64,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                     GroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     GroupAdName = table.Column<string>(maxLength: 126, nullable: false),
-                    GroupName = table.Column<string>(maxLength: 64, nullable: false),
+                    GroupName = table.Column<string>(maxLength: 32, nullable: false),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
                     RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
@@ -165,7 +166,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     table.PrimaryKey("PK_ParentRecords", x => x.ParentRecordId);
                     table.UniqueConstraint("AK_ParentRecords_FieldCA", x => x.FieldCA);
-                    table.UniqueConstraint("AK_ParentRecords_FieldCB1_FieldCB2", x => new { x.FieldCB1, x.FieldCB2 }); 
+                    table.UniqueConstraint("AK_ParentRecords_FieldCB1_FieldCB2", x => new { x.FieldCB1, x.FieldCB2 });
                 });
 
             migrationBuilder.CreateTable(

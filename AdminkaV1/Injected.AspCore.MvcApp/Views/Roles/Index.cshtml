@@ -2,16 +2,15 @@
 @{
     var UserContext = (UserContext)ViewBag.UserContext;
 }
-<h3 class="px-4">Roles</h3>
+<h3 class="px-3">Roles</h3>
 
 <table id="adminka-roles-table" class="table table-hover table-bordered mainTable">
     <thead>
         <tr>
-            <th width="1rem">
+            <th class="adminka-action-button-group" width="1rem">
             @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
             {
-                var urlCreateAction = @Url.Action("Create", "Roles");
-                <button type="button" class="btn-sm dashboardcode-btn-table dashboardcode-btn-table-th" onclick="location.href='@urlCreateAction'"><span class="material-icons">note_add</span></button>
+                <a class="btn-sm" asp-area="" asp-controller="Roles" asp-action="Create"><span class="material-icons">note_add</span></a>
             }
             </th>
             <th>
@@ -34,19 +33,18 @@
     <tbody>
         @foreach (var item in Model)
         {
-            var urlDetailsAction = @Url.Action("Details", "Roles", new { id = item.RoleId });
-            var urlEditAction    = @Url.Action("Edit", "Roles", new { id = item.RoleId });
-            var urlDeleteAction  = @Url.Action("Delete", "Roles", new { id = item.RoleId });
             <tr>
-                <td class="tableActionColumn">
-                    <button type="button" class="dashboardcode-btn-table btn-sm" onclick="location.href='@urlDetailsAction'"><span class="material-icons">insert_drive_file</span></button>
-                    @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
-                    {
-                        <div class="dashboardcode-modify-buttons-panel">
-                            <button type="button" class="dashboardcode-btn-table btn-xsm" onclick="location.href='@urlEditAction'"><span class="material-icons">edit</span></button>
-                            <button type="button" class="dashboardcode-btn-table btn-xsm" onclick="location.href='@urlDeleteAction'"><span class="material-icons">delete</span></button>
-                        </div>
-                    }
+                <td class="adminka-action-button-group">
+                    <div class="d-flex flex-row" >
+                        <a class="btn-sm" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@item.RoleId"><span class="material-icons">insert_drive_file</span></a>
+                        @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
+                        {
+                            <div class="d-flex flex-column">
+                                <a class="btn-xsm" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@item.RoleId"><span class="material-icons">edit</span></a>
+                                <a class="btn-xsm" asp-area="" asp-controller="Roles" asp-action="Delete" asp-route-id="@item.RoleId"><span class="material-icons">delete</span></a>
+                            </div>
+                        }
+                    </div>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.RoleId)
@@ -55,27 +53,21 @@
                     @Html.DisplayFor(modelItem => item.RoleName)
                 </td>
                 <td>
-                    @{  var privileges = item.GetPrivileges();
-                        foreach (var p in privileges)
-                        {
-                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeName</a></div>
-                        }
+                    @foreach (var p in item.GetPrivileges())
+                    {
+                        <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeName</a>
                     }
                 </td>
                 <td>
-                    @{  var groups = item.GetGroups();
-                        foreach (var g in groups)
-                        {
-                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a></div>
-                        }
-                     }
+                    @foreach (var g in item.GetGroups())
+                    {
+                        <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
+                    }
                 </td>
                 <td>
-                    @{  var users = item.GetUsers();
-                        @foreach (var u in users)
-                        {
-                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a></div>
-                        }
+                    @foreach (var u in item.GetUsers())
+                    {
+                        <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
                     }
                 </td>
             </tr>

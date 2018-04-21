@@ -15,33 +15,30 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
     {
         #region Meta
         static ControllerMeta<User, int> meta = new ControllerMeta<User, int>(
-            id => e => e.UserId == id,
-            Converters.TryParseInt,
-            chain => chain
+            findByIdExpression: id => e => e.UserId == id,
+            keyConverter: Converters.TryParseInt,
+            indexIncludes: chain => chain
                        .IncludeAll(e => e.UserPrivilegeMap)
                        .ThenInclude(e => e.Privilege)
                        .IncludeAll(e => e.UserRoleMap)
                        .ThenInclude(e => e.Role)
                        .IncludeAll(e => e.UserGroupMap)
                        .ThenInclude(e => e.Group),
-            chain => chain.IncludeAll(e => e.UserPrivilegeMap)
+            editIncludes: chain => chain.IncludeAll(e => e.UserPrivilegeMap)
                        .ThenInclude(e => e.Privilege)
                        .IncludeAll(e => e.UserRoleMap)
                        .ThenInclude(e => e.Role)
                        .IncludeAll(e => e.UserGroupMap)
                        .ThenInclude(e => e.Group),
-            null,
-            editables => 
-                editables
-                    .Add(e=>e.LoginName,  Binder.ConvertToString)
-                    .Add(e=>e.FirstName,  Binder.ConvertToString)
-                    .Add(e=>e.SecondName, Binder.ConvertToString),
-            notEditables => 
+            disabledProperties: editables =>
+                editables.Include(e=>e.FirstName).Include(e=>e.SecondName).Include(e => e.LoginName),
+            addEditableBinders: null,
+            addNotEditableBinders: notEditables => 
                 notEditables
                     .Add(e => e.UserId)
                     .Add(e => e.RowVersion),
-            null,
-            manyToMany => manyToMany
+            oneToMany: null,
+            manyToMany: manyToMany => manyToMany
                 .Add("Privileges", "PrivilegesMultiSelectList",
                     repository => repository.Clone<Privilege>().List(),
                     e => e.UserPrivilegeMap,

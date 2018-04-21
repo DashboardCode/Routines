@@ -24,11 +24,9 @@
         </dt>
 
         <dd>
-            @{ var privileges = Model.GetPrivileges();
-                foreach (var p in privileges)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(p.PrivilegeName, "Details", "Privileges", new { id = p.PrivilegeId }, null)</span>
-                }
+            @foreach (var p in Model.GetPrivileges())
+            {
+                <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeName</a>
             }
         </dd>
 
@@ -37,11 +35,9 @@
         </dt>
 
         <dd>
-            @{ var roles = Model.GetRoles();
-                foreach (var r in roles)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(r.RoleName, "Details", "Roles", new { id = r.RoleId }, null)</span>
-                }
+            @foreach (var r in Model.GetRoles())
+            {
+                <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
             }
         </dd>
 
@@ -50,11 +46,9 @@
         </dt>
 
         <dd>
-            @{ var users = Model.GetUsers();
-                foreach (var u in users)
-                {
-                    <span class="dashboardcode-adminka-item">@Html.ActionLink(u.LoginName, "Details", "Users", new { id = u.UserId }, null)</span>
-                }
+            @foreach (var u in Model.GetUsers())
+            {
+                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
             }
         </dd>
     </dl>

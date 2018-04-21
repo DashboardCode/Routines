@@ -9,9 +9,9 @@ namespace DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices
 
         public void Report(string json)
         {
-            var dictionary = InjectedManager.DeserializeJson<FakeAdConfiguration>(json);
-            FakeAdUser = dictionary.FakeAdUser;
-            FakeAdGroups = dictionary.FakeAdGroups;
+            var fakeAdConfiguration = InjectedManager.DeserializeJson<FakeAdConfiguration>(json);
+            FakeAdUser = fakeAdConfiguration.FakeAdUser;
+            FakeAdGroups = fakeAdConfiguration.FakeAdGroups;
         }
     }
 }

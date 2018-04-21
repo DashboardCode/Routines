@@ -2,8 +2,7 @@
 @{
     var UserContext = (UserContext)ViewBag.UserContext;
 }
-<h3 class="px-4">Privileges</h3>
-
+<h3 class="px-3">Privileges</h3>
 <table id="adminka-privileges-table" class="table table-hover table-bordered mainTable">
     <thead>
         <tr>
@@ -29,18 +28,17 @@
     <tbody>
         @foreach (var item in Model)
         {
-            var urlDetailsAction = @Url.Action("Details", "Privileges", new { id = item.PrivilegeId });
-            var urlEditAction = @Url.Action("Edit", "Privileges", new { id = item.PrivilegeId });
-
             <tr>
-                <td class="tableActionColumn">
-                    <button type="button" class=" dashboardcode-btn-table btn-sm" onclick="location.href='@urlDetailsAction'"><span class="material-icons">insert_drive_file</span></button>
-                    @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
-                    {
-                        <div class="dashboardcode-modify-buttons-panel">
-                            <button type="button" class=" dashboardcode-btn-table btn-xsm" onclick="location.href='@urlEditAction'"><span class="material-icons">edit</span></button>
-                        </div>
-                    }
+                <td class="adminka-action-button-group">
+                    <div class="d-flex flex-row">
+                        <a class="btn-sm" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@item.PrivilegeId"><span class="material-icons">insert_drive_file</span></a>
+                        @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
+                        {
+                            <div class="d-flex flex-column">
+                                <a class="btn-xsm" asp-area="" asp-controller="Privileges" asp-action="Edit" asp-route-id="@item.PrivilegeId"><span class="material-icons">edit</span></a>
+                            </div>
+                        }
+                    </div>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PrivilegeId)
@@ -49,27 +47,21 @@
                     @Html.DisplayFor(modelItem => item.PrivilegeName)
                 </td>
                 <td>
-                    @{  var roles = item.GetRoles();
-                        @foreach (var r in roles)
-                        {
-                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a></div>
-                        }
+                    @foreach (var r in item.GetRoles())
+                    {
+                        <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
                     }
                 </td>
                 <td>
-                    @{  var users = item.GetUsers();
-                        foreach (var u in users)
-                        {
-                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a></div>
-                        }
-                     }
+                    @foreach (var u in item.GetUsers())
+                    {
+                        <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+                    }
                 </td>
                 <td>
-                    @{  var groups = item.GetGroups();
-                        foreach (var g in groups)
-                        {
-                            <div><a class="dashboardcode-adminka-item" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a></div>
-                        }
+                    @foreach (var g in item.GetGroups())
+                    {
+                        <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
                     }
                 </td>
             </tr>
