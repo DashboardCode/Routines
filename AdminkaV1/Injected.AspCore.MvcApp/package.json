@@ -12,6 +12,8 @@
     "jquery-validation": "1.17.0",
     "jquery-validation-unobtrusive": "3.2.9",
     "popper.js": "1.14.3",
+    "chosen-js": "1.8.5",
+    "bootstrap-select": "1.13.0",
     "@babel/polyfill": "7.0.0-beta.44"
   },
   "devDependencies": {
@@ -53,7 +55,7 @@
   "scripts": {
     "report": "echo.cd & cd & echo. & where node & echo.node -v & node -v & echo. & where npm & echo.npm -version & npm -version & echo. & echo.webpack -version & node ./node_modules/webpack/bin/webpack -version & echo. & echo.sass --version & node ./node_modules/sass/sass --version & echo. & echo.node-sass --version & node ./node_modules/node-sass/bin/node-sass --version & echo. & echo.babel -version & node ./node_modules/@babel/cli/bin/babel --version & echo. & echo.tsc --version & node ./node_modules/typescript/lib/tsc --version ",
     "build": "node ./node_modules/webpack/bin/webpack --mode development",
-    "buildcss": "node ./node_modules/sass/sass ./src/site.scss ./wwwroot/main.css",
+    "buildcss": "node ./node_modules/sass/sass ./src/site.scss ./wwwroot/dist/main.css",
     "buildcssnode": "node ./node_modules/node-sass/bin/node-sass -q ./src/site.scss ./wwwroot/main.css",
     "start:wds": "cross-env NODE_ENV=development webpack-dev-server --env=dev --progress --profile --colors",
     "start:wds:withPublicPath": "cross-env PUBLIC_PATH=/public/ npm run start:wds",

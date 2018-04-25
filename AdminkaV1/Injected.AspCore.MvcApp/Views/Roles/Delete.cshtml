@@ -2,48 +2,47 @@
 
 <div class="d-flex flex-row justify-content-between align-self">
     <h3>Role (@Model.RoleId)</h3>
-    @*<a class="adminka-navigation adminka-navigation-details" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@Model.RoleId">Details</a>
-    <a class="adminka-navigation adminka-navigation-list" asp-area="" asp-controller="Roles" asp-action="Index">to List</a>
-    <a class="adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@Model.RoleId">Edit</a>*@
+    <a class="adminka-navigation adminka-navigation-clear" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@Model.RoleId"></a>
 </div>
 
 <div>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
+    <dl class="row">
+        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
             Name
         </dt>
-        <dd>
+
+        <dd class="col-sm-10 mb-sm-4" >
             @Html.DisplayFor(model => model.RoleName)
         </dd>
 
-        <dt>
+        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
             Privileges
         </dt>
 
-        <dd>
+        <dd class="col-sm-10 mb-sm-4">
             @foreach (var p in Model.GetPrivileges())
             {
                 <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeId</a>
             }
         </dd>
 
-        <dt>
+        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
             Groups
         </dt>
 
-        <dd>
+        <dd class="col-sm-9 mb-sm-4" >
             @foreach (var g in Model.GetGroups())
             {
                 <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
             }
         </dd>
 
-        <dt>
+        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
             Users
         </dt>
 
-        <dd>
+        <dd class="col-sm-10 mb-sm-2">
             @foreach (var u in Model.GetUsers())
             {
                 <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
@@ -58,8 +57,11 @@
         @Html.HiddenFor(model => model.RoleId)
         @Html.HiddenFor(model => model.RowVersion)
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-secondary" />
+        <div class="form-group">
+            <div class="d-flex flex-row align-self">
+                <input type="submit" value="Delete" class="btn adminka-btn-ok" />
+                <a class="adminka-btn adminka-navigation-list mx-3" asp-area="" asp-controller="Roles" asp-action="Index">Back to List</a>
+            </div>
         </div>
     }
 </div>

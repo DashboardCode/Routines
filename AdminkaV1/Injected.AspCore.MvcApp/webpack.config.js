@@ -122,7 +122,7 @@ module.exports = {
             },
 
             {
-                test: /\.(woff2|woff|ttf|svg)$/,
+                test: /\.(woff2|woff|ttf|svg|png)$/,
                 use: 'url-loader'
             },
 

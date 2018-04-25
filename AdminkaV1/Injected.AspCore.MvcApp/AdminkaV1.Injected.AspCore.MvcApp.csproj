@@ -24,7 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="src\chosen-sprite.png" />
+    <None Remove="src\chosen-sprite@2x.png" />
     <None Remove="Views\Roles\Index.cshtml~RF2c37f6e3.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="src\chosen-sprite.png">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="src\chosen-sprite@2x.png" />
   </ItemGroup>
   
   <ItemGroup>
@@ -54,6 +63,9 @@
   
   <ItemGroup>
     <Folder Include="Areas\Forms\" />
+    <Folder Include="Content\" />
+    <Folder Include="dist\css\" />
+    <Folder Include="dist\js\" />
   </ItemGroup>
   
   <ItemGroup>
@@ -64,6 +76,9 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Content Update="src\chosen-sprite%402x.png">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="web.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

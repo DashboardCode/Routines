@@ -1,5 +1,6 @@
 @import "customBootstrap";
-@import "old";
+@import "./multiselect/BootstrapMultiSelect.scss";
+@import "./old.css";
 
 @font-face {
     font-family: 'Material Icons';
@@ -94,6 +95,30 @@ $btn-border-radius-xsm: $btn-border-radius-sm*0.8;
     vertical-align: bottom;
     padding-bottom: 0px;
     margin-bottom: 0px;
+}
+
+a.adminka-btn {
+    color: #333333;
+    border: 1px solid #DDDDDD;
+    background-color: #DDDDDD;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    border-radius: 3px;
+    text-decoration: none;
+}
+
+a.adminka-btn:hover {
+    color: $primary;
+}
+
+.adminka-btn-ok {
+    color: white;
+    background-color: black;
+}
+
+.adminka-btn-ok:hover {
+    color: white;
+    background-color: $primary;
 }
 
 .btn-logo {
@@ -196,3 +221,15 @@ a.adminka-navigation-details::before {
     -moz-font-feature-settings: 'liga' 1;
     font-feature-settings: 'liga' 1;
 }
+
+a.adminka-navigation-clear::before {
+    font-family: 'Material Icons';
+    font-size: 170%;
+    vertical-align: middle;
+    margin-right: 0.2rem;
+    content: 'clear';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
+}
+

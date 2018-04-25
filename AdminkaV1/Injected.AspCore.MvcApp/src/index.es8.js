@@ -1,6 +1,10 @@
 ﻿import '@babel/polyfill';
 import 'bootstrap';
+//import 'bootstrap-select';
+//import 'chosen';
 import 'datatables.net-bs';
+import './multiselect/BootstrapMultiSelect.js';
+
 import Popper from 'popper.js';
 //import $ from 'jquery';
 

@@ -1,0 +1,183 @@
+.http{
+    position: relative;
+    padding: 2px 80px 2px 2px;
+}
+
+.bootstrap-multiselect-container > .selected-items > .placeholder {
+    display: inline-block;
+    padding: 6.5px;
+}
+
+.bootstrap-multiselect-container > .selected-items > button {
+    position: absolute;
+    height: 28px;
+    width: 28px;
+    background-color: transparent;
+    top: 7px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.bootstrap-multiselect-container > .selected-items > button:hover {
+    transform: scale(1.2);
+}
+
+.bootstrap-multiselect-container > .selected-items > button:nth-child(2) {
+    //background: url("../images/select-all.jpg") no-repeat center center;
+    background-color: red;
+    background-size: contain;
+    right: 7px;
+}
+
+.bootstrap-multiselect-container > .selected-items > button:nth-child(3) {
+    //background: url("../images/deselect-all.jpg") no-repeat center center;
+    background-color: blue;
+    background-size: contain;
+    right: 40px;
+}
+
+.bootstrap-multiselect-container > .selected-items > .item {
+    display: inline-block;
+    background-color: #2a345a;
+    padding: 2px 5px 5px;
+    border-radius: 5px;
+    color: #fff;
+    margin: 2px;
+}
+
+.bootstrap-multiselect-container > .selected-items > .item > button {
+    background-color: transparent;
+    color: #fff;
+    border: 0;
+    font-weight: 900;
+    cursor: pointer;
+    vertical-align: bottom;
+}
+
+.bootstrap-multiselect-container > .selected-items > .item > button:hover {
+    color: #ccc;
+}
+
+.bootstrap-multiselect-container > .selected-items.expand {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.bootstrap-multiselect-container > .dropdown {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    max-height: 0;
+    -webkit-transition: .75s;
+    -moz-transition: .75s;
+    -ms-transition: .75s;
+    -o-transition: .75s;
+    transition: .75s;
+    overflow-y: hidden;
+    padding: 0;
+    border-top-width: 0;
+    border-color: transparent;
+}
+
+.bootstrap-multiselect-container > .dropdown.expand {
+    max-height: 250px;
+    border-color: #ced4da;
+}
+
+.bootstrap-multiselect-container > .dropdown > .filter {
+    position: relative;
+}
+
+.bootstrap-multiselect-container > .dropdown > .filter > input {
+    width: 97%;
+    margin: 5px auto 0;
+}
+
+.bootstrap-multiselect-container > .dropdown > .filter > button {
+    position: absolute;
+    border: 0;
+    background-color: transparent;
+    cursor: pointer;
+    font-weight: 900;
+    color: #ccc;
+    top: 5px;
+    right: 15px;
+}
+
+.bootstrap-multiselect-container > .dropdown > .filter > button:hover {
+    color: #aaa;
+}
+
+.bootstrap-multiselect-container > .dropdown > .items {
+    margin-top: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.bootstrap-multiselect-container > .dropdown > .items::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+    border-radius: 10px;
+}
+
+.bootstrap-multiselect-container > .dropdown > .items::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+.bootstrap-multiselect-container > .dropdown > .items::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #aaa;
+}
+
+.bootstrap-multiselect-container > .dropdown > .items > .item {
+    cursor: pointer;
+}
+
+.bootstrap-multiselect-container > .dropdown > .items > .item > .custom-checkbox > label {
+    padding: 5px 10px;
+    display: block;
+    cursor: pointer;
+}
+
+.bootstrap-multiselect-container > .dropdown > .items > .item > .custom-checkbox > label::before, .bootstrap-multiselect-container > .dropdown > .items > .item > .custom-checkbox > label::after {
+    margin: 5px 10px;
+}
+
+.bootstrap-multiselect-container > .dropdown > .items > .item:hover {
+    background-color: #005cbf;
+    color: #fff;
+}
+
+.bootstrap-multiselect-container.rtl {
+    //direction: rtl;
+    //text-align: right;
+}
+
+.bootstrap-multiselect-container.rtl > .selected-items {
+    padding: 2px 2px 2px 80px;
+}
+
+.bootstrap-multiselect-container > .selected-items > button:nth-child(2) {
+    right: auto;
+    left: 7px;
+}
+
+.bootstrap-multiselect-container > .selected-items > button:nth-child(3) {
+    right: auto;
+    left: 40px;
+}
+
+.bootstrap-multiselect-container.rtl > .dropdown > .filter > button {
+    right: auto;
+    left: 15px;
+}
+
+.bootstrap-multiselect-container.rtl > .dropdown > .items > .item > .custom-checkbox {
+    padding: 0 1.5rem 0 0;
+}
+
+.bootstrap-multiselect-container.rtl > .dropdown > .items > .item > .custom-checkbox > label::before, .paraia-multi-select.rtl > .dropdown > .items > .item > .custom-checkbox > label::after {
+    left: auto;
+    right: 0;
+}
