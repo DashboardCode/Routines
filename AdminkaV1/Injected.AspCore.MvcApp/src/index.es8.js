@@ -3,7 +3,7 @@ import 'bootstrap';
 //import 'bootstrap-select';
 //import 'chosen';
 import 'datatables.net-bs';
-import './multiselect/BootstrapMultiSelect.js';
+import './multiselect/DashboardCode.BsMultiSelect.es8.js';
 
 import Popper from 'popper.js';
 //import $ from 'jquery';

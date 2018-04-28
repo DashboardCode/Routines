@@ -1,5 +1,5 @@
 @import "customBootstrap";
-@import "./multiselect/BootstrapMultiSelect.scss";
+@import "./multiselect/DashboardCode.BsMultiSelect.scss";
 @import "./old.css";
 
 @font-face {
@@ -63,7 +63,6 @@ $btn-border-radius-xsm: $btn-border-radius-sm*0.8;
     line-height: $btn-line-height-xsm;
     border-radius: $btn-border-radius-xsm;
 }
-
 
 .btn-xsm:active {
     color: $primary;
@@ -232,4 +231,3 @@ a.adminka-navigation-clear::before {
     -moz-font-feature-settings: 'liga' 1;
     font-feature-settings: 'liga' 1;
 }
-

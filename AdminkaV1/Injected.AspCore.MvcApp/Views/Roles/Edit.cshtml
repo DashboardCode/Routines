@@ -458,6 +458,9 @@
             @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
         </div>
     </div>
+    <div class="form-group row">
+        <a class="btn btn-primary" onclick="var x = $('.bootstrap-multiselect').dashboardCodeBsMultiSelect('getChecked'); console.log(x); alert( $('.bootstrap-multiselect').dashboardCodeBsMultiSelect('getChecked') )">Test</a>
+    </div>
     <h4>Are you sure you want to save changes?</h4>
     <div class="form-group">
         <div class="d-flex flex-row align-self">
@@ -483,7 +486,7 @@
             { value: 20, text: 'Alcatel' }
         ];
 
-        var select = $('.bootstrap-multiselect').bootstrapMultiSelect({
+        var select = $('.bootstrap-multiselect').dashboardCodeBsMultiSelect({
                 multi_select: true,
                 items: items
         });
