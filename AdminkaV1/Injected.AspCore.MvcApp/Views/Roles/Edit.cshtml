@@ -18,6 +18,10 @@
   position: relative;
   vertical-align: middle;
 }
+
+.chosen-container > ul.chosen-choices >  li.search-field > input.chosen-search-input {
+        background-color: greenyellow !important;
+    }
 .chosen-container .chosen-drop {
   background: #ffffff;
   border: 1px solid #cccccc;
@@ -433,7 +437,7 @@
     <div class="form-group row">
         <label class="col-form-label col-sm-2" for="edit-privileges-id">Privileges</label>
         <div class="col-sm-10">
-            @Html.ListBox("Privileges", ViewBag.PrivilegesMultiSelectList as MultiSelectList, new { @id = "edit-privileges-id", @class = "form-control adminka-chosen" })
+            @Html.ListBox("Privileges", ViewBag.PrivilegesMultiSelectList as MultiSelectList, new { @id = "edit-privileges-id", @class = "form-control bootstrap-multiselect" })
             @Html.ValidationMessage("Privileges", "", new { @class = "text-danger" })
         </div>
     </div>
@@ -441,15 +445,14 @@
     <div class="form-group row">
         <label class="col-form-label col-sm-2" for="edit-groups-id">Groups</label>
         <div class="col-sm-10">
-            @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "edit-groups-id", @class = "form-control adminka-chosen" })
+            @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "edit-groups-id", @class = "form-control bootstrap-multiselect" })
             @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
         </div>
     </div>
 
-    <div class="form-group row">
+    @*<div class="form-group row">
         <label class="col-form-label col-sm-2" for="edit-groups-id">Test</label>
         <div class="col-sm-10">
-            @*@Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "edit-groups-id", @class = "form-control adminka-chosen" })*@
             <input type="text"
                    class="form-control bootstrap-multiselect"
                    name="brands"
@@ -457,7 +460,7 @@
                    placeholder="Select a brand">
             @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
         </div>
-    </div>
+    </div>*@
     <div class="form-group row">
         <a class="btn btn-primary" onclick="var x = $('.bootstrap-multiselect').dashboardCodeBsMultiSelect('getChecked'); console.log(x); alert( $('.bootstrap-multiselect').dashboardCodeBsMultiSelect('getChecked') )">Test</a>
     </div>
@@ -473,23 +476,7 @@
 
 @section scripts {
     <script type="text/javascript">
-        var items = [
-            { value: 11, text: 'Apple' },
-            { value: 12, text: 'Nokia' },
-            { value: 13, text: 'Sony' },
-            { value: 14, text: 'LG' },
-            { value: 15, text: 'HTC' },
-            { value: 16, text: 'Motorola' },
-            { value: 17, text: 'Samsung' },
-            { value: 18, text: 'ZTE' },
-            { value: 19, text: 'Asus' },
-            { value: 20, text: 'Alcatel' }
-        ];
-
-        var select = $('.bootstrap-multiselect').dashboardCodeBsMultiSelect({
-                multi_select: true,
-                items: items
-        });
+        var select = $('.bootstrap-multiselect').dashboardCodeBsMultiSelect();
 
 
         //$('#show_selected').click(function () {
@@ -506,7 +493,8 @@
         //        }
         //    }
         //};
-        //.chosen({ width: '100%', search_contains: true });
+
+        $(".adminka-chosen").chosen({ width: '100%', search_contains: true });
 
         //$(".adminka-chosen").selectpicker({
             

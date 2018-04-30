@@ -1,6 +1,5 @@
 @import "custom";
 @import "../node_modules/bootstrap/scss/bootstrap";
-@import "../node_modules/bootstrap-select/sass/bootstrap-select";
 
 .dropdown-item:hover {
     color: $primary;
@@ -25,3 +24,10 @@ a.badge:hover {
     color: $primary;
     text-decoration: none;
 }
+
+
+.h-input {
+    //min-height: #{$input-height};
+    min-height: calc(2.25rem + 2px);
+}
+
