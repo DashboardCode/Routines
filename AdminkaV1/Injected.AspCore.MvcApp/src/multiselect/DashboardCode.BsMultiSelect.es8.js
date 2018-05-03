@@ -17,10 +17,17 @@ const BsMultiSelect = (($, Popper) => {
         defaults: [],
         case_sensitive: false,
         containerClass: "dashboardcode-bs-multiselect", //  dropdown
-        selectedPanelClass: "form-control",
         dropDownMenuClass: "dropdown-menu pl-2",
         deleteBadgeButtonStyle: { "font-size": "inherit" },
-        usePopper: true
+        usePopper: true,
+        filterInputClass: "border-0",
+        filterInputStyle: { "outline": "none", "width": "2ch" },
+        selectedPanelClass: "form-control d-flex flex-row align-self",
+        selectedPanelStyle: { "flex-wrap": "wrap", "min-height": "calc(2.25rem + 2px)" },
+        filterInputItemClass: "badge pl-0 pt-1",
+        removeSelectedItemButtonStyle: { "font-size": "100%" },
+        removeSelectedItemButtonClass: "close",
+        selectedItemClass: "badge pl-0 pt-1"
     };
 
     class Plugin {
@@ -40,6 +47,7 @@ const BsMultiSelect = (($, Popper) => {
             this.popper = null;
             this.init();
         }
+
         createDropDown() {
             if (this.options.usePopper) {
                 this.popper = new Popper(this.filterInput, this.dropDownMenu, {
@@ -72,6 +80,7 @@ const BsMultiSelect = (($, Popper) => {
 
         hideDropDown() {
             if (this.options.usePopper) {
+                console.log("popper remove show");
                 $(this.dropDownMenu).removeClass('show')
             } else {
                 if ($(this.dropDownMenu).hasClass('show'))
@@ -82,6 +91,7 @@ const BsMultiSelect = (($, Popper) => {
         showDropDown() {
             this.updateDropDown();
             if (this.options.usePopper) {
+                console.log("popper add show");
                 $(this.dropDownMenu).addClass('show')
             } else {
                 if (!$(this.dropDownMenu).hasClass('show'))
@@ -111,7 +121,6 @@ const BsMultiSelect = (($, Popper) => {
         }
 
         close(event) {
-            console.log("mouseup");
             var $container = $(this.container);
             if (!$container.is(event.target) && $container.has(event.target).length === 0) {
                 console.log("mouseup ok");
@@ -170,11 +179,18 @@ const BsMultiSelect = (($, Popper) => {
         }
 
         appendToSelectedItems(checkBoxId, itemText) {
-            var $item = $(`<li class="badge pl-0 pt-1" data-option-id="${checkBoxId}">${itemText}</li>`).insertBefore($(this.filterInputItem)); // style="line-height: 1.5rem"
-            var $buttom = $("<button class='close' aria-label='Close' type='button' style='font-size: 100%'><span aria-hidden='true'>&times;</span></button>")
-                //.css(this.options.deleteBadgeButtonStyle)
-                .appendTo($item); //btn btn-sm bg-transparent
+            var $item = $(`<li data-option-id="${checkBoxId}">${itemText}</li>`)
+                .addClass(this.options.selectedItemClass) 
+                .insertBefore($(this.filterInputItem));
+            var $buttom = $("<button aria-label='Close' type='button'><span aria-hidden='true'>&times;</span></button>")
+                .css(this.options.removeSelectedItemButtonStyle)
+                .addClass(this.options.removeSelectedItemButtonClass)
+                .appendTo($item); 
             $buttom.click((event) => { this.removeItem($(event.currentTarget).parent().data('option-id')); });
+        }
+
+        adoptFilterInputLength() {
+            this.filterInput.style.width = this.filterInput.value.length + 2 + "ch";
         }
 
         init() {
@@ -182,19 +198,26 @@ const BsMultiSelect = (($, Popper) => {
             $input.hide();
 
             var $container = $("<div/>")
-                .addClass(this.options.containerClass).insertAfter($input);
+                .addClass(this.options.containerClass)
+                .insertAfter($input);
                 
             this.container = $container.get(0);
 
-            var $selectedPanel = $("<ul class='d-flex flex-row align-self h-input' data-toggle='dropdown' style='flex-wrap: wrap;' />")
+            var $selectedPanel = $("<ul/>")
                 .addClass(this.options.selectedPanelClass)
+                .css(this.options.selectedPanelStyle)
                 .appendTo($container);
             this.selectedPanel = $selectedPanel.get(0);
 
-            var $filterInputItem = $('<li class="badge pl-0 pt-1"/>').appendTo($selectedPanel);
+            var $filterInputItem = $('<li/>')
+                .addClass(this.options.filterInputItemClass)
+                .appendTo($selectedPanel);
             this.filterInputItem = $filterInputItem.get(0)
 
-            var $filterInput = $('<input class="border-0" autocomplete="off" style="outline: none; " type="text">').appendTo($filterInputItem);
+            var $filterInput = $('<input autocomplete="off" type="text">')
+                .css(this.options.filterInputStyle)
+                .addClass(this.options.filterInputClass)
+                .appendTo($filterInputItem);
             this.filterInput = $filterInput.get(0)
 
             var $dropDownMenu = $("<div/>")
@@ -222,31 +245,37 @@ const BsMultiSelect = (($, Popper) => {
                 );
             }
 
-            $(this.dropDownMenu).click( event => {
+            $dropDownMenu.click(event => {
+                console.log('dropDownMenu click - stopPropagation')
                 event.stopPropagation();
             });
 
             $(document).mouseup((event) => {
+                console.log('document mouseup')
                 this.close(event);
             });
 
 
-            $(this.dropDownMenu).find('.dropdown-item').click((event)=> {
+            $dropDownMenu.find('.dropdown-item').click((event)=> {
                 this.filter(event);
             });
 
-            $(this.selectedPanel).click((event) => {
-                console.log('selectedPanel click')
+            $selectedPanel.click((event) => {
+                console.log('selectedPanel click ' + event.target.nodeName);
                 $(this.selectedPanel).find('input').val('').focus();
-                //this.filter(event);
+                if ( !(event.target.nodeName == "BUTTON" || (event.target.nodeName == "SPAN" && event.target.parentElement.nodeName == "BUTTON")))
+                    this.showDropDown();
             });
 
-            $filterInput.on('click', (event) => {
+            $filterInput.click((event) => {
+                console.log('filterInput click')
                 this.showDropDown();
             });
 
             // Set on change for filter input
-            $filterInput.on('keyup focus', (event) => {
+            $filterInput.on('input', (event) => { // keyup focus
+                console.log('input');
+                this.adoptFilterInputLength();
                 this.find(event);
             });
         }
@@ -255,22 +284,24 @@ const BsMultiSelect = (($, Popper) => {
     var jQueryInterface = function (options) {
         return this.each(function () {
             let data = $(this).data(dataKey)
-            const _config = typeof options === 'object' && options
-
-            if (!data && /dispose|hide/.test(options)) {
-                return
-            }
 
             if (!data) {
-                data = new Plugin(this, _config);
-                $(this).data(dataKey, data)
+                if (/dispose|hide/.test(options)) {
+                    return;
+                }
+                else {
+                    const optionsObject = (typeof options === 'object')? options:null;
+                    data = new Plugin(this, optionsObject);
+                    $(this).data(dataKey, data);
+                }
             }
 
             if (typeof options === 'string') {
-                if (typeof data[options] === 'undefined') {
-                    throw new TypeError(`No method named "${options}"`)
+                var methodName = options;
+                if (typeof data[methodName] === 'undefined') {
+                    throw new TypeError(`No method named "${methodName}"`)
                 }
-                data[options]()
+                data[methodName]()
             }
         })
     }
