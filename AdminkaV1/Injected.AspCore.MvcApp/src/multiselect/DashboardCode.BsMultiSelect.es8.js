@@ -1,11 +1,10 @@
 import $ from 'jquery'
 import Popper from 'popper.js'
 
-
-// TODO: 1) setup form sended field
-// 2) auto shrinked text input (and better user expirience)
-// 3) menu item aligment
-// 4) in "using bs dropdwon" mode firs clicks doesn't work
+// TODO: 
+// 1) setup form sended field
+// 2) menu item aligment
+// 3) in "using bs dropdwon" mode firs clicks doesn't work
 
 // IIFE to declare private members
 const BsMultiSelect = (($, Popper) => {
@@ -16,7 +15,7 @@ const BsMultiSelect = (($, Popper) => {
         items: [],
         defaults: [],
         case_sensitive: false,
-        containerClass: "dashboardcode-bs-multiselect", //  dropdown
+        containerClass: "dashboardcode-bs-multiselect", 
         dropDownMenuClass: "dropdown-menu pl-2",
         deleteBadgeButtonStyle: { "font-size": "inherit" },
         usePopper: true,
@@ -101,18 +100,17 @@ const BsMultiSelect = (($, Popper) => {
 
         // Public methods
         removeItem(optionId) {
-            var $container = $(this.container);
-            $container.find('li[data-option-id="' + optionId + '"]').remove();
-            $container.find('input[id="' + optionId + '"]').prop('checked', false);
+            $(this.selectedPanel).find('li[data-option-id="' + optionId + '"]').remove();
+            $(this.dropDownMenu).find('input[id="' + optionId + '"]').prop('checked', false);
             this.updateDropDown();
         }
 
-         getChecked() {
+        getChecked() {
             var items = [];
             $(this.dropDownMenu).find('input[type="checkbox"]').each((index, checkBox) => {
-                var $checkBox = $(checkBox);
-                var checkBoxId = $checkBox.attr('id');
-                if ($checkBox.prop('checked')) {
+                var $checkbox = $(checkBox);
+                var checkBoxId = $checkbox.attr('id');
+                if ($checkbox.prop('checked')) {
                    items.push(checkBoxId/*.split('-')[2]*/);
                 }
             });
@@ -124,55 +122,76 @@ const BsMultiSelect = (($, Popper) => {
             var $container = $(this.container);
             if (!$container.is(event.target) && $container.has(event.target).length === 0) {
                 console.log("mouseup ok");
+                var success = this.analyzeInputText();
+                if (!success) {
+                    this.filterInput.value = '';
+                    this.resetDropDownMenu();
+                }
+                
                 this.hideDropDown();
-                this.updateDropDown();
             }
         }
 
         find(event) {
-            var $filter = $(event.currentTarget);
-            var text = $filter.val();
-            
-            $(this.dropDownMenu).find('.dropdown-item').each(function () {
-                var item = $(this);
-                var itemText = item.text();
-                if (itemText.toLowerCase().includes(text.toLowerCase())) {
-                    item.show();
-                } else {
-                    item.hide();
+            this.resetDropDownMenu();
+        }
+
+        resetDropDownMenu() {
+            var text = this.filterInput.value.trim();
+            $(this.dropDownMenu).find('li').each(function () {
+                var $item = $(this);
+                if (text == "") {
+                    $item.show();
+                }
+                else {
+                    var itemText = $item.text();
+                    var $checkbox = $item.find('input[type="checkbox"]');
+                    if (!$checkbox.prop('checked') && itemText.toLowerCase().includes(text.toLowerCase())) {
+                        $item.show();
+                    } else {
+                        $item.hide();
+                    }
                 }
             });
             this.updateDropDown()
         }
 
-        filter(event) {
+        clickDropDownItem(event) {
             console.log("filter & stopPropagation");
             event.stopPropagation();
             event.preventDefault();
 
-            var item = $(event.currentTarget);
-            var $checkbox = item.find('input[type="checkbox"]');
+            var $item = $(event.currentTarget);
+            var $checkbox = $item.find('input[type="checkbox"]');
             var checkBoxId = $checkbox.attr('id');
             
             if ($checkbox.prop('checked')) {
-                $(this.selectedPanel).find(`li[data-option-id="${checkBoxId}"]`).remove();
-                $checkbox.prop('checked', false);
-
+                this.deselectDownItem($checkbox, checkBoxId);
             } else {
-                var itemText = item.find('label').html();
-                this.appendToSelectedItems(checkBoxId, itemText);
-                $checkbox.prop('checked', true);
+                this.selectDownItem($item, $checkbox, checkBoxId);
             }
         }
+
+        deselectDownItem($checkbox, checkBoxId) {
+            $(this.selectedPanel).find(`li[data-option-id="${checkBoxId}"]`).remove();
+            $checkbox.prop('checked', false);
+        }
+
+        selectDownItem($item, $checkbox, checkBoxId) {
+            var itemText = $item.find('label').html();
+            this.appendToSelectedItems(checkBoxId, itemText);
+            $checkbox.prop('checked', true);
+        }
+        // clickDropDownItem
 
         appendDropDownItem(itemValue, itemText, isChecked) {
             var checkBoxId = 'item-value-' + itemValue;
             var checked = isChecked ? "checked" : "";
             var dropDownItem = $(
-                `<li class="dropdown-item custom-control custom-checkbox">
+                `<li data-option-id="${checkBoxId}" class="dropdown-item custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="${checkBoxId}" ${checked}>
-                        <label class="${checkBoxId} custom-control-label" for="${checkBoxId}">${itemText}</label>
-                 </li>`).appendTo($(this.dropDownMenu));
+                        <label class="custom-control-label" for="${checkBoxId}">${itemText}</label>
+                 </li>`).appendTo($(this.dropDownMenu)); 
             if (isChecked) {
                 this.appendToSelectedItems(checkBoxId, itemText);
             }
@@ -191,6 +210,24 @@ const BsMultiSelect = (($, Popper) => {
 
         adoptFilterInputLength() {
             this.filterInput.style.width = this.filterInput.value.length + 2 + "ch";
+        }
+
+        analyzeInputText() {
+            var text = this.filterInput.value.trim().toLowerCase();
+            var item = [...this.dropDownMenu.querySelectorAll("LI")]
+                .find(i => i.textContent.trim().toLowerCase() == text);
+            if (item != undefined) {
+                var $item = $(item);
+                var $checkbox = $item.find('input[type="checkbox"]');
+                if (!$checkbox.prop('checked')) {
+                    var checkBoxId = $checkbox.attr('id');
+                    this.selectDownItem($item, $checkbox, checkBoxId);
+                }
+                this.filterInput.value = '';
+                this.resetDropDownMenu();
+                return true;
+            }
+            return false;
         }
 
         init() {
@@ -232,7 +269,6 @@ const BsMultiSelect = (($, Popper) => {
                     var itemText = item['text'];
                     var isChecked = item['isChecked'];
                     this.appendDropDownItem(itemValue, itemText, isChecked);
-                    
                 });
             } else {
                 this.options.items = $input.find('option').each(
@@ -256,13 +292,14 @@ const BsMultiSelect = (($, Popper) => {
             });
 
 
-            $dropDownMenu.find('.dropdown-item').click((event)=> {
-                this.filter(event);
+            $dropDownMenu.find('li').click((event) => {
+                this.clickDropDownItem(event);
             });
 
             $selectedPanel.click((event) => {
                 console.log('selectedPanel click ' + event.target.nodeName);
                 $(this.selectedPanel).find('input').val('').focus();
+                //$(this.selectedPanel).find('input').val('').focus();
                 if ( !(event.target.nodeName == "BUTTON" || (event.target.nodeName == "SPAN" && event.target.parentElement.nodeName == "BUTTON")))
                     this.showDropDown();
             });
@@ -270,6 +307,37 @@ const BsMultiSelect = (($, Popper) => {
             $filterInput.click((event) => {
                 console.log('filterInput click')
                 this.showDropDown();
+            });
+
+            $filterInput.on("keydown", (event) => {
+                if (event.which == 13 || event.keyCode == 13 || event.which == 9 || event.keyCode == 9) {
+                    event.preventDefault();
+                } else if (event.which == 8) {
+                    this.backspaceAtStartPoint = (this.filterInput.selectionStart == 0 && this.filterInput.selectionEnd == 0);
+                }
+            });
+
+            $filterInput.on("keyup", (event) => {
+                if (event.which == 13 || event.keyCode == 13 || event.which == 9 || event.keyCode == 9) {
+                    this.analyzeInputText();
+                } else if (event.which == 8 ) {
+                    var startPosition = this.filterInput.selectionStart;
+                    var endPosition = this.filterInput.selectionEnd;
+                    if (endPosition == 0 && startPosition == 0 && this.backspaceAtStartPoint) {
+                        var array = [...this.selectedPanel.querySelectorAll("LI")];
+                        if (array.length >= 2) {
+                            var itemToDelete = array[array.length - 2];
+                            var $itemToDelete = $(itemToDelete);
+                            var optionId = $itemToDelete.data("option-id");
+                            var item = [...this.dropDownMenu.querySelectorAll("LI")]
+                                .find(i => i.dataset.optionId == optionId);
+                            var $item = $(item);
+                            var $checkbox = $item.find('input[type="checkbox"]');
+                            var checkBoxId = $checkbox.attr('id');
+                            this.deselectDownItem($checkbox, checkBoxId);
+                        }
+                    }
+                }
             });
 
             // Set on change for filter input
