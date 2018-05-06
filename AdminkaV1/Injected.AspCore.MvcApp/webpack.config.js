@@ -4,6 +4,7 @@ const CleanPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const PathModule = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+//const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
 
 const outputFolderPath = PathModule.resolve(__dirname, 'wwwroot/dist');
 
@@ -43,13 +44,29 @@ module.exports = {
     // one of HMR option is https://github.com/frankwallis/WebpackAspnetMiddleware 
     // TODO: build integration how is described with https://codeburst.io/how-to-use-webpack-in-asp-net-core-projects-a-basic-react-template-sample-25a3681a5fc2
     // IMPORTANT: only one js should be an entry point
+
+    // TRY: https://github.com/alexpalombaro/modernizr-webpack-plugin
+
     entry: './src/index.es8.js',
+
+    //entry: {
+    //    app: `webpack-polyfill-injector?${JSON.stringify({
+    //        modules: ['./src/index.es8.js'] 
+    //    })}!` // don't forget the trailing exclamation mark!
+    //},
     output: {
         path: outputFolderPath,
         filename: '[name].js'
+        //filename: '[name].js'
         //filename: '[name].[chunkhash].js',
     },
     plugins: [
+        //new PolyfillInjectorPlugin({
+        //    polyfills: [
+        //        'Element.prototype.closest',
+        //        'Element.prototype.classList'
+        //    ]
+        //}),
         new ManifestPlugin(),
         new CleanPlugin(outputFolderPath, { verbose: false }),
         extractCSS
@@ -64,6 +81,23 @@ module.exports = {
     ],
     module: {
         rules: [
+
+            //{
+            //    loader: 'webpack-modernizr-loader',
+            //    options: {
+            //        // Full list of supported options can be found in [config-all.json](https://github.com/Modernizr/Modernizr/blob/master/lib/config-all.json).
+            //        options: [
+            //            "setClasses",
+            //        ],
+            //        "feature-detects": [
+            //            "es6/contains"
+            //            //"test/css/flexbox",
+            //            //"test/es6/promises",
+            //            //"test/serviceworker"
+            //        ]
+            //    },
+            //    test: /AAAmodernizr\.js$/
+            //},
             // MANAGE DEPENDENCY. METHOD 1. Manage dependencies at run-time. Adds modules, require('whatever') calls, to concreate modules
             // https://github.com/webpack-contrib/imports-loader
             // add the require('whatever') calls, to those modules (not global) 
@@ -73,6 +107,8 @@ module.exports = {
             //     //use: "imports-loader?$=jquery"
             //     use: imports-loader?define=>false // disable AMD if you see that webpack include the same module two times: commonJS and AMD
             // },
+
+
             {
                 // MANAGE DEPENDENCY. METHOD 2. Manage dependencies at run-time. Adds modules to the global object
                 // https://github.com/webpack-contrib/expose-loader
@@ -150,8 +186,7 @@ module.exports = {
                         // plugins: ['@babel/plugin-transform-runtime']
                     }
                 }
-            }
-            ,
+            },
 
             {
                 include: /src/,

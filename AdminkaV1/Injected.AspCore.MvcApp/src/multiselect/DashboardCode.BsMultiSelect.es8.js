@@ -1,11 +1,13 @@
 import $ from 'jquery'
 import Popper from 'popper.js'
+//import modernizr from 'modernizr'
 
 // TODO: 
 // 1) support disabled
-// 1) setup form sended field
-// 2) menu item aligment
-// 3) in "using bs dropdwon" mode firs clicks doesn't work
+// 2) setup form sended field
+// 3) require  polifill Element.closest polyfill  IE 11
+// 4) require multiple classList.add polyfill IE 11
+// 5) report popper IE11 bug
 
 // IIFE to declare private members
 const BsMultiSelect = ((window, $, Popper) => {
