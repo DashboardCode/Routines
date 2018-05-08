@@ -2,11 +2,9 @@
 
 <div class="d-flex flex-row align-self justify-content-between">
     <h3>Role (@Model.RoleId)</h3>
-    @*<a class="adminka-navigation adminka-navigation-list" asp-area="" asp-controller="Roles" asp-action="Index">to List</a>*@
     <div>
         <a class="ml-4 adminka-navigation adminka-navigation-delete" asp-area="" asp-controller="Roles" asp-action="Delete" asp-route-id="@Model.RoleId">Delete</a>
         <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@Model.RoleId">Edit</a>
-
     </div>
 </div>
 
@@ -14,7 +12,7 @@
     <hr />
     
     <dl class="row">
-        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
+        <dt class="col-sm-2 mb-sm-4">
             Name
         </dt>
 
@@ -22,7 +20,7 @@
             @Html.DisplayFor(model => model.RoleName)
         </dd>
 
-        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
+        <dt class="col-sm-2 mb-sm-4">
             Privileges
         </dt>
 
@@ -33,7 +31,7 @@
             }
         </dd>
 
-        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
+        <dt class="col-sm-2 mb-sm-4">
             Groups
         </dt>
 
@@ -44,7 +42,7 @@
             }
         </dd>
 
-        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
+        <dt class="col-sm-2 mb-sm-4">
             Users
         </dt>
 
@@ -57,10 +55,6 @@
     </dl>
     <div class="d-flex flex-row align-self">
         <a class="adminka-btn adminka-navigation-list" asp-area="" asp-controller="Roles" asp-action="Index">Back to List</a>
-        @*<a style="margin-right:3rem" class="adminka-navigation adminka-navigation-list" asp-area="" asp-controller="Roles" asp-action="Index">to List</a>*@
-        @*<a style="margin-right:3rem" class="adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@Model.RoleId">Edit</a>
-            <a style="margin-right:3rem" class="adminka-navigation adminka-navigation-delete" asp-area="" asp-controller="Roles" asp-action="Delete" asp-route-id="@Model.RoleId">Delete</a>*@
     </div>
-
 </div>
 

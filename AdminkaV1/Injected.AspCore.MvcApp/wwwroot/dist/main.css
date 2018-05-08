@@ -6360,6 +6360,9 @@ a.badge:hover {
 .h-input {
   min-height: calc(2.25rem + 2px); }
 
+dl.row > dt {
+  font-weight: normal; }
+
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;

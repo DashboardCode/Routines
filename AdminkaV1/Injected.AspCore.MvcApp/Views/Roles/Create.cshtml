@@ -1,44 +1,55 @@
 ﻿@model Role
 
-<h3>Create Role</h3>
+<div class="d-flex flex-row justify-content-between align-self">
+    <h3>Create Role</h3>
+</div>
+
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    <div class="form-horizontal">
+    <div>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    
+
         <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="edit-role-name-id">Name</label>
+            <label class="col-form-label col-sm-2" for="create-role-name-id">Name</label>
             <div class="col-sm-10">
-                @Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @id = "edit-role-name-id", @class = "form-control" } })
+                @Html.EditorFor(model => model.RoleName, new { htmlAttributes = new { @id = "create-role-name-id", @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.RoleName, "", new { @class = "text-danger" })
             </div>
         </div>
-    
+
         <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="edit-privileges-id">Privileges</label>
+            <label class="col-form-label col-sm-2" for="create-privileges-id">Privileges</label>
             <div class="col-sm-10">
-                @Html.ListBox("Privileges", ViewBag.PrivilegesMultiSelectList as MultiSelectList, new { @id = "edit-privileges-id", @class = "form-control" })
+                @Html.ListBox("Privileges", ViewBag.PrivilegesMultiSelectList as MultiSelectList, new { @id = "create-privileges-id", @class = "form-control d-none bootstrap-multiselect" })
                 @Html.ValidationMessage("Privileges", "", new { @class = "text-danger" })
             </div>
         </div>
-    
+
         <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="edit-groups-id">Groups</label>
+            <label class="col-form-label col-sm-2" for="create-groups-id">Groups</label>
             <div class="col-sm-10">
-                @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "edit-groups-id", @class = "form-control" })
+                @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "create-groups-id", @class = "form-control d-none bootstrap-multiselect" })
                 @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
             </div>
         </div>
-    
+
         <h4>Are you sure you want to create this?</h4>
         <div class="form-group">
-                <div class="d-flex flex-row align-self">
-                    <input type="submit" value="Create" class="btn adminka-btn-ok" /> 
-                    <a class="adminka-btn adminka-navigation-list mx-3" asp-area="" asp-controller="Roles" asp-action="Index">Back to List</a>
-                </div>
+            <div class="d-flex flex-row align-self">
+                <input type="submit" value="Create" class="btn adminka-btn-ok" />
+                <a class="adminka-btn adminka-navigation-list mx-3" asp-area="" asp-controller="Roles" asp-action="Index">Back to List</a>
+            </div>
         </div>
     </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        (function () {
+            var select = $('.bootstrap-multiselect').dashboardCodeBsMultiSelect();
+        })();
+    </script>
 }

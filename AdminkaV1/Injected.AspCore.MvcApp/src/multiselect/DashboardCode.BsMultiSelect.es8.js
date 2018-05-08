@@ -1,13 +1,9 @@
 import $ from 'jquery'
 import Popper from 'popper.js'
-//import modernizr from 'modernizr'
 
 // TODO: 
-// 1) support disabled
-// 2) setup form sended field
-// 3) require  polifill Element.closest polyfill  IE 11
-// 4) require multiple classList.add polyfill IE 11
-// 5) report popper IE11 bug
+// 2) require polyfill Element.closest polyfill IE 11
+// 3) require multiple classList.add polyfill IE 11
 
 // IIFE to declare private members
 const BsMultiSelect = ((window, $, Popper) => {
@@ -19,12 +15,13 @@ const BsMultiSelect = ((window, $, Popper) => {
         defaults: [],
         usePopper: true,
 
-        containerClass: "dashboardcode-bs-multiselect", 
+        containerClass: "dashboardcode-bs-multiselect",
         dropDownMenuClass: "dropdown-menu",
         dropDownItemClass: "px-2",
         selectedPanelClass: "form-control btn border",
-        selectedPanelStyle: { "min-height": "calc(2.25rem + 2px)"}, 
-        selectedPanelStyleSys: { "cursor": "text", "display": "flex", "flex-wrap": "wrap", "align-items": "center" }, 
+        selectedPanelStyle: { "min-height": "calc(2.25rem + 2px)" },
+        selectedPanelReadonlyStyle: { "background-color":"#e9ecef"},
+        selectedPanelStyleSys: { "cursor": "text", "display": "flex", "flex-wrap": "wrap", "align-items": "center", "margin-bottom": "0px" }, 
         selectedItemClass: "badge", 
         selectedItemStyle: { "padding-left": "0px"},
         selectedItemStyleSys: { "display": "flex", "align-items": "center" },
@@ -65,27 +62,6 @@ const BsMultiSelect = ((window, $, Popper) => {
             this.init();
         }
 
-        createDropDown() {
-            if (this.options.usePopper) {
-                this.popper = new Popper(this.filterInput, this.dropDownMenu, {
-                    placement: 'bottom-start',
-                    modifiers: {
-                        flip: {
-                            behavior: ['left', 'right']
-                        },
-                    },
-                });
-            } else {
-                $(this.dropDownMenu).addClass("dropdown dropdown-menu")
-                $(this.dropDownMenu).data("","");
-                $(this.dropDownMenu).dropdown({
-                    placement: 'bottom-start',
-                    flip: false,
-                    reference: this.filterInput
-                });
-            }
-        }
-
         updateDropDownPosition() {
             //console.log("updateDropDownPosition");
             if (this.options.usePopper) {
@@ -117,24 +93,19 @@ const BsMultiSelect = ((window, $, Popper) => {
             }
         }
 
-        // Public methods
-        removeItem(optionId) {
-            $(this.selectedPanel).find('li[data-option-id="' + optionId + '"]').remove();
-            $(this.dropDownMenu).find('input[id="' + optionId + '"]').prop('checked', false);
-            this.updateDropDownPosition();
+        setCheck(optionId, isChecked) {
+            for (var i = 0; i < this.input.options.length; i += 1) {
+                var option = this.input.options[i];
+                if (option.value == optionId) {
+                    this.input.options[i].selected = isChecked;
+                    break;
+                }
+            }
         }
 
-        getChecked() {
-            var items = [];
-            $(this.dropDownMenu).find('input[type="checkbox"]').each((index, checkBox) => {
-                var $checkbox = $(checkBox);
-                var checkBoxId = $checkbox.attr('id');
-                if ($checkbox.prop('checked')) {
-                   items.push(checkBoxId/*.split('-')[2]*/);
-                }
-            });
-            //console.log(items);
-            return items;
+        // Public methods
+        getInputValue() {
+            return $(this.input).val();
         }
 
         closeDropDown() {
@@ -142,6 +113,7 @@ const BsMultiSelect = ((window, $, Popper) => {
             this.hideDropDown();
             this.updateDropDownPosition();
         }
+
 
         clearFilterInput() {
             if (this.filterInput.value != '') {
@@ -183,49 +155,43 @@ const BsMultiSelect = ((window, $, Popper) => {
             event.preventDefault();
             event.stopPropagation();
 
-            var $item = $(event.currentTarget);
-            var $checkbox = $item.find('input[type="checkbox"]');
-            var checkBoxId = $checkbox.attr('id');
-            
-            if ($checkbox.prop('checked')) {
-                this.deselectDownItem($checkbox, checkBoxId);
+            var menuItem = event.currentTarget.closest("LI");
+            var $menuItem = $(menuItem);
+            var optionId = $menuItem.data("option-id");
+            var $checkBox = $menuItem.find('input[type="checkbox"]');
+            if ($checkBox.prop('checked')) {
+                var $selectedItem = $(this.selectedPanel).find(`li[data-option-id="${optionId}"]`);
+                this.removeSelectedItem($selectedItem, optionId, $checkBox);
             } else {
-                this.selectDownItem($item, $checkbox, checkBoxId);
+                var itemText = $menuItem.find('label').text();
+                this.createAndAppendSelectedItem($checkBox, optionId, itemText);
+                $checkBox.prop('checked', true);
             }
             this.clearFilterInput();
             $(this.filterInput).focus();
         }
 
-        deselectDownItem($checkbox, checkBoxId) {
-            $(this.selectedPanel).find(`li[data-option-id="${checkBoxId}"]`).remove();
-            $checkbox.prop('checked', false);
-        }
-
-        selectDownItem($item, $checkbox, checkBoxId) {
-            var itemText = $item.find('label').html();
-            this.appendToSelectedItems(checkBoxId, itemText);
-            $checkbox.prop('checked', true);
-        }
-        // clickDropDownItem
         
         appendDropDownItem(itemValue, itemText, isChecked) {
-            var checkBoxId = 'item-value-' + itemValue;
+            var optionId = itemValue;
+            var checkBoxId = `dashboardcode-bs-multiselect-${this.input.name.toLowerCase()}-generated-id-${optionId.toLowerCase()}`;
             var checked = isChecked ? "checked" : "";
             var $dropDownItem = $(
-                `<li data-option-id="${checkBoxId}">
+                `<li data-option-id="${optionId}">
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="${checkBoxId}" ${checked}>
                         <label class="custom-control-label" for="${checkBoxId}">${itemText}</label>
                     </div>
                  </li>`).addClass(this.options.dropDownItemClass).appendTo($(this.dropDownMenu));
 
+            var $checkBox = $dropDownItem.find(`input[type="checkbox"]`);
             if (isChecked) {
-                this.appendToSelectedItems(checkBoxId, itemText);
+                this.createAndAppendSelectedItem($checkBox, optionId, itemText);
             }
         }
-
-        appendToSelectedItems(checkBoxId, itemText) {
-            var $item = $(`<li data-option-id="${checkBoxId}"><span>${itemText}</span></li>`)
+        
+        createAndAppendSelectedItem($checkBox, optionId, itemText) {
+            var $selectedItem = $(`<li data-option-id="${optionId}"><span>${itemText}</span></li>`)
                 .css(this.options.selectedItemStyleSys)
                 .css(this.options.selectedItemStyle)
                 .addClass(this.options.selectedItemClass) 
@@ -233,9 +199,12 @@ const BsMultiSelect = ((window, $, Popper) => {
             var $buttom = $("<button aria-label='Close' tabIndex='-1' type='button'><span aria-hidden='true'>&times;</span></button>")
                 .css(this.options.removeSelectedItemButtonStyle)
                 .addClass(this.options.removeSelectedItemButtonClass)
-                .appendTo($item); 
+                .appendTo($selectedItem); 
+            this.setCheck(optionId, true);
+
             $buttom.click((event) => {
-                this.removeItem($(event.currentTarget).parent().data('option-id'));
+                this.removeSelectedItem($selectedItem, optionId, $checkBox)
+                this.updateDropDownPosition();
                 $(this.filterInput).focus();
             });
         }
@@ -250,10 +219,13 @@ const BsMultiSelect = ((window, $, Popper) => {
                 .find(i => i.textContent.trim().toLowerCase() == text);
             if (item != undefined) {
                 var $item = $(item);
-                var $checkbox = $item.find('input[type="checkbox"]');
-                if (!$checkbox.prop('checked')) {
-                    var checkBoxId = $checkbox.attr('id');
-                    this.selectDownItem($item, $checkbox, checkBoxId);
+                var $checkBox = $item.find('input[type="checkbox"]');
+                if (!$checkBox.prop('checked')) {
+                    var optionId = $item.data('option-id');
+                    var itemText = $item.find('label').text();
+                    this.createAndAppendSelectedItem($checkBox, optionId, itemText);
+                    $checkBox.prop('checked', true);
+
                 }
                 this.clearFilterInput();
             }
@@ -297,9 +269,16 @@ const BsMultiSelect = ((window, $, Popper) => {
             }
         }
 
+        removeSelectedItem($selectedItem, optionId, $checkBox) {
+            $selectedItem.remove();
+            this.setCheck(optionId, false);
+            $checkBox.prop('checked', false);
+        }
+
         init() {
             var $input = $(this.input);
             $input.hide();
+            var disabled = this.input.disabled;
 
             var $container = $("<div/>")
                 .addClass(this.options.containerClass)
@@ -330,8 +309,26 @@ const BsMultiSelect = ((window, $, Popper) => {
 
             var $dropDownMenu = $("<ul/>").appendTo($container);
             this.dropDownMenu = $dropDownMenu.get(0);
+
             $dropDownMenu.addClass(this.options.dropDownMenuClass);
-            this.createDropDown();
+            if (this.options.usePopper) {
+                this.popper = new Popper(this.filterInput, this.dropDownMenu, {
+                    placement: 'bottom-start',
+                    modifiers: {
+                        flip: {
+                            behavior: ['left', 'right']
+                        },
+                    },
+                });
+            } else {
+                $(this.dropDownMenu).addClass("dropdown dropdown-menu")
+                $(this.dropDownMenu).data("", "");
+                $(this.dropDownMenu).dropdown({
+                    placement: 'bottom-start',
+                    flip: false,
+                    reference: this.filterInput
+                });
+            }
 
             if (this.options.items == null) {
                 this.options.items.forEach(item => {
@@ -353,136 +350,156 @@ const BsMultiSelect = ((window, $, Popper) => {
                 );
                 this.hasItems = selectOptions.length > 0;
             }
-            
-            this.updateDropDownPosition();
-
-            $dropDownMenu.click(event => {
-                //console.log('dropDownMenu click - stopPropagation')
-                event.stopPropagation();
-            });
-
-            $dropDownMenu.find('li').click((event) => {
-                this.clickDropDownItem(event);
-            });
-
-            $dropDownMenu.on("mouseover", (event) => {
-                this.resetSelectDropDownMenu();
-            });
-
-            $dropDownMenu.find("li").on("mouseover", (event) => {
-                event.target.closest("li").classList.add('text-primary');
-                event.target.closest("li").classList.add('bg-light');
-            });
-
-            $dropDownMenu.find("li").on("mouseout", (event) => {
-                event.target.closest("li").classList.remove('text-primary');
-                event.target.closest("li").classList.remove('bg-light');    
-            });
-
-            $selectedPanel.click((event) => {
-                //console.log('selectedPanel click ' + event.target.nodeName);
-                if (event.target.nodeName != "INPUT")
-                    $(this.filterInput).val('').focus();
-                if ( !(event.target.nodeName == "BUTTON" || (event.target.nodeName == "SPAN" && event.target.parentElement.nodeName == "BUTTON")))
-                    this.showDropDown();
-            });
-
-
-            $filterInput.on("keydown", (event) => {
-                if (event.which == 38 || event.keyCode == 38) {
-                    event.preventDefault();
-                    this.keydownArrow(false);
-                }
-                else if (event.which == 40 || event.keyCode == 40) {
-                    event.preventDefault()
-                    this.keydownArrow(true);
-                }
-                else if (event.which == 13 || event.keyCode == 13 || event.which == 9 || event.keyCode == 9) {
-                    event.preventDefault();
-                }
-                else {
-                    if (event.which == 8 || event.keyCode == 8) {
-                        // detect that backspace is at start of input field (this will be used at keydown)
-                        this.backspaceAtStartPoint = (this.filterInput.selectionStart == 0 && this.filterInput.selectionEnd == 0);
+            if (disabled) {
+                this.filterInput.style.display = "none";
+                $selectedPanel.css(this.options.selectedPanelReadonlyStyle);
+                $selectedPanel.find('button').prop("disabled", true);
+                $selectedPanel.addClass();
+            } else {
+                var inputId = this.input.id;
+                var formGroup = this.input.closest(".form-group");
+                if (formGroup != null) {
+                    var label = formGroup.querySelector(`label[for="${inputId}"]`);
+                    var f = $(label).attr("for");
+                    if ( f == this.input.id) {
+                        this.filterInput.id = "dashboardcode-bs-multiselect-generated-filter-id-" + this.input.id;
+                        label.setAttribute("for", this.filterInput.id);
                     }
+                }
+
+                this.updateDropDownPosition();
+
+                $dropDownMenu.click(event => {
+                    //console.log('dropDownMenu click - stopPropagation')
+                    event.stopPropagation();
+                });
+
+                $dropDownMenu.find('li').click((event) => {
+                    this.clickDropDownItem(event);
+                });
+
+                $dropDownMenu.on("mouseover", (event) => {
                     this.resetSelectDropDownMenu();
-                }
-            });
+                });
 
-            $filterInput.on("keyup", (event) => {
-                if (event.which == 13 || event.keyCode == 13 || event.which == 9 || event.keyCode == 9) {
-                    if (this.selectedDropDownItem != null) {
-                        var $item = $(this.selectedDropDownItem);
-                        var $checkbox = $item.find('input[type="checkbox"]');
-                        var checkBoxId = $checkbox.attr('id');
-                        if (!$checkbox.prop('checked')) {
-                            this.selectDownItem($item, $checkbox, checkBoxId);
-                            this.filterInput.value = "";
+                $dropDownMenu.find("li").on("mouseover", (event) => {
+                    event.target.closest("li").classList.add('text-primary');
+                    event.target.closest("li").classList.add('bg-light');
+                });
+
+                $dropDownMenu.find("li").on("mouseout", (event) => {
+                    event.target.closest("li").classList.remove('text-primary');
+                    event.target.closest("li").classList.remove('bg-light');
+                });
+
+                $selectedPanel.click((event) => {
+                    //console.log('selectedPanel click ' + event.target.nodeName);
+                    if (event.target.nodeName != "INPUT")
+                        $(this.filterInput).val('').focus();
+                    if (!(event.target.nodeName == "BUTTON" || (event.target.nodeName == "SPAN" && event.target.parentElement.nodeName == "BUTTON")))
+                        this.showDropDown();
+                });
+
+
+                $filterInput.on("keydown", (event) => {
+                    if (event.which == 38 || event.keyCode == 38) {
+                        event.preventDefault();
+                        this.keydownArrow(false);
+                    }
+                    else if (event.which == 40 || event.keyCode == 40) {
+                        event.preventDefault()
+                        this.keydownArrow(true);
+                    }
+                    else if (event.which == 13 || event.keyCode == 13 || event.which == 9 || event.keyCode == 9) {
+                        event.preventDefault();
+                    }
+                    else {
+                        if (event.which == 8 || event.keyCode == 8) {
+                            // detect that backspace is at start of input field (this will be used at keydown)
+                            this.backspaceAtStartPoint = (this.filterInput.selectionStart == 0 && this.filterInput.selectionEnd == 0);
+                        }
+                        this.resetSelectDropDownMenu();
+                    }
+                });
+
+                $filterInput.on("keyup", (event) => {
+                    if (event.which == 13 || event.keyCode == 13 || event.which == 9 || event.keyCode == 9) {
+                        if (this.selectedDropDownItem != null) {
+                            var $item = $(this.selectedDropDownItem);
+                            var $checkBox = $item.find('input[type="checkbox"]');
+                            var optionId = $item.data('option-id');
+                            if (!$checkBox.prop('checked')) {
+                                var itemText = $item.find('label').text();
+                                this.createAndAppendSelectedItem($checkBox, optionId, itemText);
+                                $checkBox.prop('checked', true);
+                                this.filterInput.value = "";
+                            } else {
+                                var $selectedItem = $(this.selectedPanel).find(`li[data-option-id="${optionId}"]`);
+                                this.removeSelectedItem($selectedItem, optionId, $checkBox);
+                            }
+                            //this.resetSelectDropDownMenu();
                         } else {
-                            this.deselectDownItem($checkbox, checkBoxId);
+                            this.analyzeInputText();
                         }
-                        //this.resetSelectDropDownMenu();
+                    } else if (event.which == 8 || event.keyCode == 8) {
+                        var startPosition = this.filterInput.selectionStart;
+                        var endPosition = this.filterInput.selectionEnd;
+                        if (endPosition == 0 && startPosition == 0 && this.backspaceAtStartPoint) {
+                            var array = [...this.selectedPanel.querySelectorAll("LI")];
+                            if (array.length >= 2) {
+                                var itemToDelete = array[array.length - 2];
+                                var $itemToDelete = $(itemToDelete);
+                                var optionId = $itemToDelete.data("option-id");
+                                var item = [...this.dropDownMenu.querySelectorAll("LI")]
+                                    .find(i => i.dataset.optionId == optionId);
+                                var $item = $(item);
+                                var $checkBox = $item.find('input[type="checkbox"]');
+                                var $selectedItem = $(this.selectedPanel).find(`li[data-option-id="${optionId}"]`);
+                                this.removeSelectedItem($selectedItem, optionId, $checkBox);
+                            }
+                        }
+                        this.backspaceAtStartPoint = null;
+                    } else if (event.which == 27 || event.keyCode == 27) { // escape
+                        this.closeDropDown();
+                    }
+
+                });
+
+                // Set on change for filter input
+                $filterInput.on('input', (event) => { // keyup focus
+                    //console.log('filterInput input');
+                    this.adoptFilterInputLength();
+                    this.filterDropDownMenu();
+                    if (this.hasItems) {
+                        this.updateDropDownPosition(); // support case when textbox can change its place because of line break (texbox grow with each key press)
+                        this.showDropDown();
                     } else {
-                        this.analyzeInputText();
+                        this.hideDropDown();
                     }
-                } else if (event.which == 8 || event.keyCode == 8) {
-                    var startPosition = this.filterInput.selectionStart;
-                    var endPosition = this.filterInput.selectionEnd;
-                    if (endPosition == 0 && startPosition == 0 && this.backspaceAtStartPoint) {
-                        var array = [...this.selectedPanel.querySelectorAll("LI")];
-                        if (array.length >= 2) {
-                            var itemToDelete = array[array.length - 2];
-                            var $itemToDelete = $(itemToDelete);
-                            var optionId = $itemToDelete.data("option-id");
-                            var item = [...this.dropDownMenu.querySelectorAll("LI")]
-                                .find(i => i.dataset.optionId == optionId);
-                            var $item = $(item);
-                            var $checkbox = $item.find('input[type="checkbox"]');
-                            var checkBoxId = $checkbox.attr('id');
-                            this.deselectDownItem($checkbox, checkBoxId);
-                        }
+                });
+
+                $filterInput.focusin((event) => {
+                    $(this.selectedPanel).addClass("focus");
+                });
+
+                $filterInput.focusout((event) => {
+                    if (!this.skipFocusout)
+                        $(this.selectedPanel).removeClass("focus");
+                });
+
+                $container.mousedown((event) => {
+                    this.skipFocusout = true;
+
+                });
+
+                $(window.document).mouseup((event) => {
+                    this.skipFocusout = false;
+                    if (!(this.container === event.target || this.container.contains(event.target))) {
+                        //console.log("document mouseup outside container");
+                        this.closeDropDown();
                     }
-                    this.backspaceAtStartPoint = null;
-                } else if (event.which == 27 || event.keyCode == 27) { // escape
-                    this.closeDropDown();
-                }
-                
-            });
-
-            // Set on change for filter input
-            $filterInput.on('input', (event) => { // keyup focus
-                //console.log('filterInput input');
-                this.adoptFilterInputLength();
-                this.filterDropDownMenu();
-                if (this.hasItems) {
-                    this.updateDropDownPosition(); // support case when textbox can change its place because of line break (texbox grow with each key press)
-                    this.showDropDown();
-                } else {
-                    this.hideDropDown();
-                }
-            });
-
-            $filterInput.focusin((event) => {
-                $(this.selectedPanel).addClass("focus");
-            });
-
-            $filterInput.focusout((event) => {
-                if (!this.skipFocusout)
-                    $(this.selectedPanel).removeClass("focus");
-            });
-
-            $container.mousedown((event) => {
-                this.skipFocusout = true;
-
-            });
-
-            $(window.document).mouseup((event) => {
-                this.skipFocusout = false; 
-                if (!(this.container === event.target || this.container.contains(event.target))) {
-                    //console.log("document mouseup outside container");
-                    this.closeDropDown();
-                }
-            });
+                });
+            }
         }
     }
 

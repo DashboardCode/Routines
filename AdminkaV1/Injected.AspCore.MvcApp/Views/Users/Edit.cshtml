@@ -1,69 +1,81 @@
 ﻿@model User
 
-<h3 class="px-3">Edit User (@Model.UserId)</h3>
+<div class="d-flex flex-row justify-content-between align-self">
+    <h3>User (@Model.UserId)</h3>
+    <a class="adminka-navigation adminka-navigation-clear" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@Model.UserId"></a>
+</div>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(model => model.UserId)
     @Html.HiddenFor(model => model.RowVersion)
-    
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            <label class="control-label col-lg-2">Login</label>
-            <div class="col-lg-10">
-                @Html.EditorFor(model => model.LoginName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
-                @Html.ValidationMessageFor(model => model.LoginName, "", new { @class = "text-danger" })
-            </div>
-        </div>
+<div>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-        <div class="form-group">
-            <label class="control-label col-lg-2">First Name</label>
-            <div class="col-lg-10">
-                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
-                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-lg-2">Second Name</label>
-            <div class="col-lg-10">
-                @Html.EditorFor(model => model.SecondName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
-                @Html.ValidationMessageFor(model => model.SecondName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Privileges", "Privileges", htmlAttributes: new { @class = "control-label col-lg-2" })
-            <div class="col-lg-10">
-                @Html.ListBox("Privileges", ViewBag.PrivilegesMultiSelectList as MultiSelectList, new { @class = "form-control" })
-                @Html.ValidationMessage("Privileges", "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Roles", "Roles", htmlAttributes: new { @class = "control-label col-lg-2" })
-            <div class="col-lg-10">
-                @Html.ListBox("Roles", ViewBag.RolesMultiSelectList as MultiSelectList, new { @class = "form-control" })
-                @Html.ValidationMessage("Roles", "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.Label("Groups", "Groups", htmlAttributes: new { @class = "control-label col-lg-2" })
-            <div class="col-lg-10">
-                @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @class = "form-control", @readonly = "readonly", @disabled = "disabled" })
-                @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-lg-auto col-lg-10">
-                <input type="submit" value="Save" class="btn btn-secondary" /> | @Html.ActionLink("Back to List", "Index")
-            </div>
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2" for="edit-user-login-id">Login</label>
+        <div class="col-sm-10">
+            @Html.EditorFor(model => model.LoginName, new { htmlAttributes = new { @id = "edit-user-login-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.LoginName, "", new { @class = "text-danger" })
         </div>
     </div>
+
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2" for="edit-user-first-name-id">First Name</label>
+        <div class="col-sm-10">
+            @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @id = "edit-user-first-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2" for="edit-user-second-name-id">Second Name</label>
+        <div class="col-sm-10">
+            @Html.EditorFor(model => model.SecondName, new { htmlAttributes = new { @id = "edit-user-second-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.SecondName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2" for="edit-user-privileges-id">Privileges</label>
+        <div class="col-sm-10">
+            @Html.ListBox("Privileges", ViewBag.PrivilegesMultiSelectList as MultiSelectList, new { @id = "edit-user-privileges-id", @class = "form-control d-none bootstrap-multiselect" })
+            @Html.ValidationMessage("Privileges", "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="control-label col-sm-2" for="edit-user-roles-id">Roles</label>
+        <div class="col-sm-10">
+            @Html.ListBox("Roles", ViewBag.RolesMultiSelectList as MultiSelectList, new { @id = "edit-user-roles-id", @class = "form-control d-none bootstrap-multiselect" })
+            @Html.ValidationMessage("Roles", "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="control-label col-sm-2" for="edit-user-groups-id">Groups</label>
+        <div class="col-sm-10">
+            @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "edit-user-groups-id", @class = "form-control d-none bootstrap-multiselect", @readonly = "readonly", @disabled = "disabled" })
+            @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <h4>Are you sure you want to save changes?</h4>
+    <div class="form-group">
+        <div class="d-flex flex-row align-self">
+            <input type="submit" value="Save" class="btn adminka-btn-ok" />
+            <a class="adminka-btn adminka-navigation-list mx-3" asp-area="" asp-controller="Users" asp-action="Index">Back to List</a>
+        </div>
+    </div>
+</div>
+}
+@section scripts {
+    <script type="text/javascript">
+        (function () {
+            var select = $('.bootstrap-multiselect').dashboardCodeBsMultiSelect();
+         })();
+    </script>
 }

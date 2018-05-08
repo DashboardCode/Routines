@@ -1,51 +1,56 @@
 ﻿@model Privilege
 
-<h3>Privilege Details (@Model.PrivilegeId)</h3>
+<div class="d-flex flex-row align-self justify-content-between">
+    <h3>Privilege (@Model.PrivilegeId)</h3>
+    <div>
+        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Privileges" asp-action="Edit" asp-route-id="@Model.PrivilegeId">Edit</a>
+    </div>
+</div>
 
 <div>
-    <hr/>
-    <dl class="dl-horizontal">
-        <dt>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2 mb-sm-4">
             Name
         </dt>
-        <dd>
+        <dd class="col-sm-10 mb-sm-4">
             @Html.DisplayFor(model => model.PrivilegeName)
         </dd>
 
-        <dt>
+        <dt class="col-sm-2 mb-sm-4">
             Roles
         </dt>
 
-        <dd>
-        @foreach (var r in Model.GetRoles())
-        {
-            <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
-        }
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var r in Model.GetRoles())
+            {
+                <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
+            }
         </dd>
 
-        <dt>
+        <dt class="col-sm-2 mb-sm-4">
             Users
         </dt>
 
-        <dd>
-        @foreach (var u in Model.GetUsers())
-        {
-            <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
-        }
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var u in Model.GetUsers())
+            {
+                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+            }
         </dd>
 
-        <dt>
+        <dt class="col-sm-2 mb-sm-4">
             Groups
         </dt>
 
-        <dd>
-        @foreach (var g in Model.GetGroups())
-        {
-            <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
-        }
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var g in Model.GetGroups())
+            {
+                <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
+            }
         </dd>
     </dl>
+    <div class="d-flex flex-row align-self">
+        <a class="adminka-btn adminka-navigation-list" asp-area="" asp-controller="Privileges" asp-action="Index">Back to List</a>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Back to List", "Index")
-</p>
