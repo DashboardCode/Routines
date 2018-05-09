@@ -1,17 +1,18 @@
 ﻿@model IEnumerable<Role>
 @{
     var UserContext = (UserContext)ViewBag.UserContext;
+    var tableId = "adminka-roles-table-id";
 }
 <h3 class="px-3">Roles</h3>
 
-<table id="adminka-roles-table" class="table table-hover table-bordered mainTable">
+<table id="@tableId" class="table table-hover table-bordered mainTable">
     <thead>
         <tr>
             <th class="adminka-action-button-group" width="1rem">
-            @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
-            {
-                <a class="btn-sm" asp-area="" asp-controller="Roles" asp-action="Create"><span class="material-icons">note_add</span></a>
-            }
+                @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
+                {
+                    <a class="btn-sm" asp-area="" asp-controller="Roles" asp-action="Create"><span class="material-icons">note_add</span></a>
+                }
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.RoleId)
@@ -35,7 +36,7 @@
         {
             <tr>
                 <td class="adminka-action-button-group">
-                    <div class="d-flex flex-row" >
+                    <div class="d-flex flex-row">
                         <a class="btn-sm" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@item.RoleId"><span class="material-icons">insert_drive_file</span></a>
                         @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                         {
@@ -74,3 +75,21 @@
         }
     </tbody>
 </table>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var tableId = '#' + '@tableId';
+            var $table = $(tableId).dataTable(
+                {
+                    language: { search: "", searchPlaceholder: "Filter", lengthMenu:"_MENU_" },
+                    stateSave: true,
+                    dom: '<"d-flex flex-row justify-content-end"f>rt<"d-flex flex-row justify-content-between"lp>',
+                    "columnDefs": [
+                        { "searchable": false, "targets": 0 },
+                        { "orderable": false, "targets": 0 }
+                    ]
+                }
+            );
+        });
+    </script>
+}

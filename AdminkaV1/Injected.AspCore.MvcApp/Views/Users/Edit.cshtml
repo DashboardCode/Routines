@@ -74,8 +74,8 @@
 }
 @section scripts {
     <script type="text/javascript">
-        (function () {
+        document.addEventListener("DOMContentLoaded", function (event) {
             var select = $('.bootstrap-multiselect').dashboardCodeBsMultiSelect();
-         })();
+        });   
     </script>
 }

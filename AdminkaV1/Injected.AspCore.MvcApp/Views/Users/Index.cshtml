@@ -1,10 +1,11 @@
 ﻿@model IEnumerable<User>
 @{
     var UserContext = (UserContext)ViewBag.UserContext;
+    var tableId = "adminka-users-table-id";
 }
 <h3 class="px-3">Users</h3>
 
-<table id="adminka-users-table" class="table table-hover table-bordered mainTable">
+<table id="@tableId" class="table table-hover table-bordered mainTable">
     <thead>
         <tr>
             <th width="1rem">
@@ -81,3 +82,21 @@
         }
     </tbody>
 </table>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var tableId = '#' + '@tableId';
+            var $table = $(tableId).dataTable(
+                {
+                    language: { search: "", searchPlaceholder: "Filter", lengthMenu:"_MENU_" },
+                    stateSave: true,
+                    dom: '<"d-flex flex-row justify-content-end"f>rt<"d-flex flex-row justify-content-between"lp>',
+                    "columnDefs": [
+                        { "searchable": false, "targets": 0 },
+                        { "orderable": false, "targets": 0 }
+                    ]
+                }
+            );
+        });
+    </script>
+}

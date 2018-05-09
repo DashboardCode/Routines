@@ -1,9 +1,10 @@
 ﻿@model IEnumerable<Privilege>
 @{
     var UserContext = (UserContext)ViewBag.UserContext;
+    var tableId = "adminka-privileges-table-id";
 }
 <h3 class="px-3">Privileges</h3>
-<table id="adminka-privileges-table" class="table table-hover table-bordered mainTable">
+<table id="@tableId" class="table table-hover table-bordered mainTable">
     <thead>
         <tr>
             <th width="1rem">
@@ -12,7 +13,7 @@
                 @Html.DisplayNameFor(model => model.PrivilegeId)
             </th>
             <th>
-               Name
+                Name
             </th>
             <th>
                 Roles
@@ -68,3 +69,21 @@
         }
     </tbody>
 </table>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var tableId = '#' + '@tableId';
+            var $table = $(tableId).dataTable(
+                {
+                    language: { search: "", searchPlaceholder: "Filter", lengthMenu:"_MENU_" },
+                    stateSave: true,
+                    dom: '<"d-flex flex-row justify-content-end"f>rt<"d-flex flex-row justify-content-between"lp>',
+                    "columnDefs": [
+                        { "searchable": false, "targets": 0 },
+                        { "orderable": false, "targets": 0 }
+                    ]
+                }
+            );
+        });
+    </script>
+}

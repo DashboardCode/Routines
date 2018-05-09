@@ -4,7 +4,7 @@ const CleanPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const PathModule = require('path');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-//const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
+const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
 
 const outputFolderPath = PathModule.resolve(__dirname, 'wwwroot/dist');
 
@@ -47,8 +47,8 @@ module.exports = {
 
     // TRY: https://github.com/alexpalombaro/modernizr-webpack-plugin
 
-    entry: './src/index.es8.js',
-
+    //entry: './src/index.es8.js',
+    entry: './src/loaders.js',
     //entry: {
     //    app: `webpack-polyfill-injector?${JSON.stringify({
     //        modules: ['./src/index.es8.js'] 
@@ -56,17 +56,19 @@ module.exports = {
     //},
     output: {
         path: outputFolderPath,
+        publicPath: '/dist/',
         filename: '[name].js'
         //filename: '[name].js'
         //filename: '[name].[chunkhash].js',
     },
     plugins: [
-        //new PolyfillInjectorPlugin({
-        //    polyfills: [
-        //        'Element.prototype.closest',
-        //        'Element.prototype.classList'
-        //    ]
-        //}),
+        new PolyfillInjectorPlugin({
+            singleFile: true,
+            polyfills: [
+                'Element.prototype.closest',
+                'Element.prototype.classList'
+            ]
+        }),
         new ManifestPlugin(),
         new CleanPlugin(outputFolderPath, { verbose: false }),
         extractCSS

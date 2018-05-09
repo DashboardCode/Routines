@@ -34,3 +34,18 @@ a.badge:hover {
 dl.row > dt {
     font-weight: normal;
 }
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: black;
+    border-color: black;
+}
+
+.page-link {
+    color: black;
+}
+
+.paginate_button {
+    font-size:small;
+}
