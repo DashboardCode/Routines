@@ -121,10 +121,10 @@
 
 
     <environment names="Development">
-        <script src="~/dist/app.js" asp-append-version="true"></script>
+        <script src="~/dist/main.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="~/dist/app.js" asp-append-version="true"></script>
+        <script src="~/dist/main.js" asp-append-version="true"></script>
     </environment>
 
     @RenderSection("Scripts", required: false)
@@ -167,7 +167,7 @@
         }
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function (event) {
+        //document.addEventListener("DOMContentLoaded", function (event) {
             var title = $('#dashboardcode-account-box-id-tooltip').removeClass('d-none').remove().html();
             $('#dashboardcode-account-box-id').tooltip
                 ({
@@ -176,7 +176,7 @@
                     trigger: "hover focus",
                     template: '<div class="tooltip" role="tooltip"><div class="tooltip-inner" style="background-color:#EEEEEE; opacity:0.9; color:black; border:0px solid red; "></div></div>'
                 });
-        });
+        //});
     </script>
 
     @if (ViewData.ContainsKey("Exception"))

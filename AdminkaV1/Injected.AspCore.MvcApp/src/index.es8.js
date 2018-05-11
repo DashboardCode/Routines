@@ -1,7 +1,5 @@
 ﻿import '@babel/polyfill';
 import 'bootstrap';
-//import 'bootstrap-select';
-import 'chosen-js';
 import 'datatables.net-bs4';
 import './multiselect/DashboardCode.BsMultiSelect.es8.js';
 

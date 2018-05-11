@@ -1,7 +1,4 @@
 {
   "main.js": "/dist/main.js",
-  "main.css": "/dist/main.css",
-  "0.js": "/dist/0.js",
-  "1.js": "/dist/1.js",
-  "2.js": "/dist/2.js"
+  "main.css": "/dist/main.css"
 }

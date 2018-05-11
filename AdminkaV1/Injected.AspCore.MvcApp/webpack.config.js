@@ -47,28 +47,34 @@ module.exports = {
 
     // TRY: https://github.com/alexpalombaro/modernizr-webpack-plugin
 
-    //entry: './src/index.es8.js',
-    entry: './src/loaders.js',
+    entry: './src/index.es8.js',
+    //entry: './src/loaders.js',
     //entry: {
     //    app: `webpack-polyfill-injector?${JSON.stringify({
     //        modules: ['./src/index.es8.js'] 
     //    })}!` // don't forget the trailing exclamation mark!
     //},
+    //entry: {
+    //    app: [
+            
+    //        `webpack-polyfill-injector?${JSON.stringify({ modules: ['./src/index.es8.js'] })}!`,
+    //        'jquery'
+    //    ]
+    //},
     output: {
         path: outputFolderPath,
         publicPath: '/dist/',
         filename: '[name].js'
-        //filename: '[name].js'
-        //filename: '[name].[chunkhash].js',
     },
     plugins: [
-        new PolyfillInjectorPlugin({
-            singleFile: true,
-            polyfills: [
-                'Element.prototype.closest',
-                'Element.prototype.classList'
-            ]
-        }),
+        //new PolyfillInjectorPlugin({
+        //    singleFile: true,
+        //    polyfills: [
+        //        'Element.prototype.matches',
+        //        'Element.prototype.closest',
+        //        'Element.prototype.classList'
+        //    ]
+        //}),
         new ManifestPlugin(),
         new CleanPlugin(outputFolderPath, { verbose: false }),
         extractCSS
