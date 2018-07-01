@@ -4,7 +4,7 @@ function ShowExceptionModal() {
     $("#exceptionModal").modal('toggle');
 }
 
-//// polifill Element.closest 
+//// polyfill Element.closest 
 
 if (!Element.prototype.matches)
     Element.prototype.matches = Element.prototype.msMatchesSelector ||
