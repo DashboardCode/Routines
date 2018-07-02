@@ -34,7 +34,7 @@ namespace Benchmark
     {
         public ManualWindowsDiagnosersConfig()
         {
-#if !NETCOREAPP2_0
+#if !(NETCOREAPP1_1  || NETCOREAPP2_0 || NETCOREAPP2_1)
             //Add(Job.ShortRun.With(Jit.RyuJit).With(Platform.X64).With(Runtime.Core).With(CsProjCoreToolchain.NetCoreApp20));
             //Add(DisassemblyDiagnoser.Create(new DisassemblyDiagnoserConfig(printAsm: true, printPrologAndEpilog: true, recursiveDepth: 3)));
             //Add(new BenchmarkDotNet.Diagnostics.Windows.InliningDiagnoser());

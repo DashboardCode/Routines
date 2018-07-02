@@ -17,7 +17,7 @@ namespace Benchmark
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
-#if !NETCOREAPP2_0
+#if !(NETCOREAPP1_1  || NETCOREAPP2_0 || NETCOREAPP2_1)
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(printAsm: true, printSource: true)]
     [BenchmarkDotNet.Attributes.Jobs.RyuJitX64Job]

@@ -17,7 +17,9 @@ namespace DashboardCode.Routines.Storage.EfCore.Relational
             var tableName = relationalEntityTypeAnnotations.TableName;
 
             var dml = string.IsNullOrEmpty(schema)? $"DELETE FROM {tableName}" : $"DELETE FROM {schema}.{tableName}";
+#pragma warning disable EF1000
             context.Database.ExecuteSqlCommand(dml);
+#pragma warning restore EF1000 
         }
     }
 }

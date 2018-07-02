@@ -1,7 +1,7 @@
 ﻿import '@babel/polyfill';
 import 'bootstrap';
 import 'datatables.net-bs4';
-import './multiselect/DashboardCode.BsMultiSelect.es8.js';
+import '@dashboardcode/bsmultiselect';
 
 import Popper from 'popper.js';
 //import $ from 'jquery';
