@@ -8,8 +8,6 @@
     "@dashboardcode/bsmultiselect": "0.2.15",
     "bootstrap": "4.1.1",
     "bootstrap-daterangepicker": "3.0.3",
-    "bootstrap-select": "1.13.1",
-    "chosen-js": "1.8.7",
     "datatables.net": "1.10.19",
     "datatables.net-bs4": "1.10.19",
     "jquery": "3.3.1",
