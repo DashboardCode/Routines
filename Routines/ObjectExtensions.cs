@@ -211,17 +211,22 @@ namespace DashboardCode.Routines
             return destination;
         }
 
-        public static TCol CloneAll<TCol, T>(TCol source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null)
+        public static TCol CloneAll<TCol, T>(TCol source, Include<T> include,
+            IReadOnlyCollection<Type> systemTypes = null)
             where TCol : class, IEnumerable<T>
         {
             if (source == null)
                 return null;
             if (systemTypes == default(IReadOnlyCollection<Type>))
                 systemTypes = SystemTypesExtensions.SystemTypes;
-            var constructor = source.GetType().GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
-            var destination = (TCol)constructor.Invoke(null);
+            var typeInfo = source.GetType().GetTypeInfo();
+            var constructorInfo = typeInfo.DeclaredConstructors.FirstOrDefault(e => e.GetParameters().Count() == 0);
+            if (constructorInfo == null)
+                 throw new NotImplementedException($"Can't clone collection '${typeInfo.Name}' because it doesn't have default constructor. Use CopyAll instead passing precreated collection as copy destination.");
+            var destination = (TCol)constructorInfo.Invoke(null);
             CopyAll(source, destination, include, systemTypes);
             return destination;
         }
+        
     }
 }

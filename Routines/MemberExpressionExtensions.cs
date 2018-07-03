@@ -33,12 +33,13 @@ namespace DashboardCode.Routines
             //return name;
         }
 
+
         public static object GetMemberValue(this MemberExpression memberExpression, object entity)
         {
             var popertyName = memberExpression.Member.Name;
             var type = entity.GetType();
             var typeInfo = type.GetTypeInfo();
-            var propertyInfo = typeInfo.GetDeclaredProperty(popertyName);
+            var propertyInfo = typeInfo.GetProperty(popertyName);
             Debug.Assert(propertyInfo!=null, "propertyInfo is null");
             Debug.Assert(propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0, "propertyInfo can't be read");
             var value = propertyInfo.GetValue(entity);
@@ -61,7 +62,7 @@ namespace DashboardCode.Routines
             var popertyName = memberExpression.Member.Name;
             var type = entity1.GetType();
             var typeInfo = type.GetTypeInfo();
-            var propertyInfo = typeInfo.GetDeclaredProperty(popertyName);
+            var propertyInfo = typeInfo.GetProperty(popertyName);
             Debug.Assert(propertyInfo != null, "propertyInfo is null");
             Debug.Assert(propertyInfo.CanRead && propertyInfo.GetIndexParameters().Length == 0, "propertyInfo can't be read");
             var value1 = propertyInfo.GetValue(entity1);
@@ -79,7 +80,7 @@ namespace DashboardCode.Routines
         {
             var type = entity.GetType();
             var popertyName = memberExpression.Member.Name;
-            var propertyInfo = type.GetTypeInfo().GetDeclaredProperty(popertyName);
+            var propertyInfo = type.GetTypeInfo().GetProperty(popertyName);
             Debug.Assert(propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0);
             propertyInfo.SetValue(entity, propertyValue);
         }

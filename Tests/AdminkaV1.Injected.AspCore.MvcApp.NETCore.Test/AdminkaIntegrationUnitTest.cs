@@ -92,9 +92,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
             var routine = new AdminkaRoutineHandler(
-                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
-                TestManager.ApplicationSettings.PerformanceCounters,
-                TestManager.ApplicationSettings.ConfigurationContainerFactory,
+                TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });
@@ -144,7 +142,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             listHttpResponseMessage.EnsureSuccessStatusCode();
             var listHtmlDocument = await listHttpResponseMessage.GetDocument();
 
-            var id = listHtmlDocument.GetTableCell("adminka-roles-table", 2, cell => cell == roleName, 1);
+            var id = listHtmlDocument.GetTableCell("adminka-roles-table-id", 2, cell => cell == roleName, 1);
 
             var editHttpResponseMessage = httpClient.GetAsync("/Roles/Edit/" + id).Result;
             editHttpResponseMessage.EnsureSuccessStatusCode();
@@ -198,9 +196,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
             var routine = new AdminkaRoutineHandler(
-                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
-                TestManager.ApplicationSettings.PerformanceCounters,
-                TestManager.ApplicationSettings.ConfigurationContainerFactory,
+                TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });
@@ -250,7 +246,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             listHttpResponseMessage.EnsureSuccessStatusCode();
             var listHtmlDocument = await listHttpResponseMessage.GetDocument();
 
-            var id = listHtmlDocument.GetTableCell("adminka-roles-table", 2, cell => cell == roleName, 1);
+            var id = listHtmlDocument.GetTableCell("adminka-roles-table-id", 2, cell => cell == roleName, 1);
 
             var editHttpResponseMessage = httpClient.GetAsync("/Roles/Edit/" + id).Result;
             editHttpResponseMessage.EnsureSuccessStatusCode();

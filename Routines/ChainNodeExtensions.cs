@@ -222,9 +222,9 @@ namespace DashboardCode.Routines
             {
                 CopyArray(sourceArray, (Array)destination, sourceItem => CloneItem(sourceItem, nodes, systemTypes));
             }
-            else if (source is IList sourceList)
+            else if (source is IEnumerable enumerable && destination is IList destinationList)
             {
-                CopyList(sourceList, (IList)destination, sourceItem => CloneItem(sourceItem, nodes, systemTypes));
+                CopyList(enumerable, destinationList, sourceItem => CloneItem(sourceItem, nodes, systemTypes));
             }
             else if (source is IEnumerable sourceEnumerable && source.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
                     t.GetTypeInfo().IsGenericType &&

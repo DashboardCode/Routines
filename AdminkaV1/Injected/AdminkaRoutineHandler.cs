@@ -20,9 +20,24 @@ namespace DashboardCode.AdminkaV1.Injected
     {
         #region constructors without usercontext
         public AdminkaRoutineHandler(
+            ApplicationSettingsBase applicationSettingsBase,
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
+            string @namespace, string controller, string action,
+            object input
+        ) : this(
+                applicationSettingsBase.AdminkaStorageConfiguration,
+                applicationSettingsBase.PerformanceCounters,
+                applicationSettingsBase.ConfigurationContainerFactory,
+                composeLoggers,
+                @namespace, controller, action,
+                input)
+        {
+        }
+
+        private AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
-            ConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationContainerFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             string @namespace, string controller, string action,
             object input
@@ -30,7 +45,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 adminkaStorageConfiguration,
                 performanceCounters,
                 composeLoggers,
-                InjectedManager.CreateContainerFactory(configurationFactory),
+                InjectedManager.CreateContainerFactory(configurationContainerFactory),
                 Guid.NewGuid(),
                 new MemberTag(@namespace, controller, action),
                 InjectedManager.GetDefaultIdentity(),
@@ -41,7 +56,7 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
-            ConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationContainerFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             Guid correlationToken,
             MemberTag memberTag,
@@ -51,7 +66,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 adminkaStorageConfiguration,
                 performanceCounters,
                 composeLoggers,
-                InjectedManager.CreateContainerFactory(configurationFactory),
+                InjectedManager.CreateContainerFactory(configurationContainerFactory),
                 correlationToken,
                 memberTag,
                 identity,
@@ -89,11 +104,30 @@ namespace DashboardCode.AdminkaV1.Injected
 
         #region constructors with usercontext
 
-        // Used in tests: predefined UserContext with custom logging to list
+        // Used in tests and benchmarks: predefined UserContext with custom logging to list, but with performance counters
+        // TODO: benchmark should be used with full authentication
+        public AdminkaRoutineHandler(
+            ApplicationSettingsBase applicationSettingsBase,
+            Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
+            MemberTag memberTag,
+            UserContext userContext,
+            object input
+            ) : this(
+                applicationSettingsBase.AdminkaStorageConfiguration,
+                applicationSettingsBase.PerformanceCounters,
+                applicationSettingsBase.ConfigurationContainerFactory,
+                composeLoggers,
+                memberTag,
+                userContext,
+                input)
+        {
+        }
+
+        // used in in memory routine - with in memory databases - "configuration string" can be different for every routine  
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
-            ConfigurationContainerFactory configurationFactory,
+            ConfigurationContainerFactory configurationContainerFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             MemberTag memberTag,
             UserContext userContext,
@@ -103,7 +137,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 performanceCounters,
                 InjectedManager.DefaultRoutineTagTransformException,
                 composeLoggers,
-                InjectedManager.CreateContainerFactory(configurationFactory),
+                InjectedManager.CreateContainerFactory(configurationContainerFactory),
                 Guid.NewGuid(),
                 memberTag,
                 userContext,

@@ -26,9 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var userContext = new UserContext("UnitTest");
 
             var routine = new AdminkaRoutineHandler(
-                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
-                TestManager.ApplicationSettings.PerformanceCounters,
-                TestManager.ApplicationSettings.ConfigurationContainerFactory,
+                TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, new { input = "Input text" });
             int newParentRecordId = 0;
@@ -144,9 +142,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 
             var userContext = new UserContext("UnitTest");
             var routine = new AdminkaRoutineHandler(
-                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
-                TestManager.ApplicationSettings.PerformanceCounters,
-                TestManager.ApplicationSettings.ConfigurationContainerFactory,
+                TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, new { input = "Input text" });
             Include<ParentRecord> includes
@@ -163,7 +159,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count();
                         var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2);
                         var count2 = only2.Count();
-                        repository.Clone<ParentRecordHierarchyRecord>().Detach(only2, (i) => i.Include(e => e.RowVersion));
+                        var detached = new List<ParentRecordHierarchyRecord>();
+                        ObjectExtensions.CopyAll<IEnumerable<ParentRecordHierarchyRecord>, ParentRecordHierarchyRecord>(only2, detached,
+                            (i) => i.Include(e => e.RowVersion).Include(e => e.HierarchyRecordId).Include(e => e.ParentRecordId));
 
                         batch.Handle(
                             (storage) =>
@@ -171,17 +169,31 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                                 storage.ModifyRelated(
                                     parentRecord,
                                     e => e.ParentRecordHierarchyRecordMap,
-                                    only2,
+                                    detached,
                                     (e1, e2) => e1.HierarchyRecordId == e2.HierarchyRecordId);
                             });
+
+                        var count1b = parentRecord.ParentRecordHierarchyRecordMap.Count();
+                        if (count1b != 2)
+                            throw new Exception("This is strange. Only two should be left");
+
+                        var parentRecordB = repository.Find(e => e.FieldA == "1_A", includes);
+                        var count1c = parentRecordB.ParentRecordHierarchyRecordMap.Count();
+                        if (count1c != 2)
+                            throw new Exception("This is strange. Only two should be left");
+
                     });
+
+
                 rh.Handle(
                     (repository, batch) =>
                     {
-                        var parentRecord2 = repository.Find(e => e.FieldA == "1_A", includes);
-                        var count3 = parentRecord2.ParentRecordHierarchyRecordMap.Count();
-                        var only1 = parentRecord2.ParentRecordHierarchyRecordMap.Take(1);
-                        repository.Clone<ParentRecordHierarchyRecord>().Detach(only1, (i) => i.Include(e => e.RowVersion));
+                        var parentRecordF = repository.Find(e => e.FieldA == "1_A", includes);
+                        var countF = parentRecordF.ParentRecordHierarchyRecordMap.Count();
+                        var only1 = parentRecordF.ParentRecordHierarchyRecordMap.Take(1);
+                        var detached = new List<ParentRecordHierarchyRecord>();
+                        ObjectExtensions.CopyAll<IEnumerable<ParentRecordHierarchyRecord>, ParentRecordHierarchyRecord>(only1, detached,
+                            (i) => i.Include(e => e.RowVersion).Include(e => e.HierarchyRecordId).Include(e => e.ParentRecordId));
 
                         try
                         {
@@ -189,9 +201,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                                 (storage) =>
                                 {
                                     storage.ModifyRelated(
-                                        parentRecord2,
+                                        parentRecordF,
                                         e => e.ParentRecordHierarchyRecordMap,
-                                        only1,
+                                        detached,
                                         (e1, e2) => e1.HierarchyRecordId == e2.HierarchyRecordId);
                                     throw new Exception("Break Transaction");
                                 });
@@ -201,17 +213,88 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                             if (ex.Message != "Break Transaction")
                                 throw;
 
+                            var postCount = parentRecordF.ParentRecordHierarchyRecordMap.Count();
+                            if(postCount != 1)
+                              throw new Exception("This is strange. I expect there value 1 number elements in the collection. When db contains 2 elements", ex);
+
+                            // this demonstrates EF Core problem and incorect behaviour after transaction not commited: count will be 2 (even if in db is 1)
                             rh.Handle(
                                 (repository2, batch2) =>
                                 {
-                                    var parentRecord3 = repository2.Find(e => e.FieldA == "1_A", includes);
-                                    var count2 = parentRecord3.ParentRecordHierarchyRecordMap.Count();
-                                    if (count2 != count3)
-                                        throw new Exception("This opperations should not be commited", ex);
+                                    var parentRecordF2 = repository2.Find(e => e.FieldA == "1_A", includes);
+                                    if (countF2 != 1)
+                                        throw new Exception("This is strange. I expect there value 1 number elements in the collection. When db contains 2 elements", ex);
+                                });
+
+                            // this demonstrates EF Core problem and incorect behaviour after transaction not commited: count will be 2 (even if in db is 1)
+                            var rhA = ormHandlerFactory.Create<ParentRecord>();
+                            rhA.Handle(
+                                (repository3, batch3) =>
+                                {
+                                    var parentRecordF3 = repository3.Find(e => e.FieldA == "1_A", includes);
+                                    var countF3 = parentRecordF3.ParentRecordHierarchyRecordMap.Count();
+                                    if (countF3 != 1)
+                                        throw new Exception("This is strange. I expect there value 1 number elements in the collection. When db contains 2 elements", ex);
                                 });
                         }
                     }
                );
+            });
+        }
+
+        [TestMethod]
+        public void TestToDemonstateDetachedProblems()
+        {
+            var logger = new List<string>();
+            var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
+
+            var userContext = new UserContext("UnitTest");
+            var routine = new AdminkaRoutineHandler(
+                TestManager.ApplicationSettings,
+                loggingTransientsFactory,
+                new MemberTag(this), userContext, new { input = "Input text" });
+            Include<ParentRecord> includes
+                = includable => includable
+                    .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
+                        .ThenInclude(y => y.HierarchyRecord);
+            routine.HandleOrmFactory((ormHandlerFactory) =>
+            {
+                var rh = ormHandlerFactory.Create<ParentRecord>();
+                rh.Handle(
+                    (repository, batch) =>
+                    {
+                        var parentRecord = repository.Find(e => e.FieldA == "1_A", includes);
+                        var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count();
+                        var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2);
+                        var count2 = only2.Count();
+                        // detach 2 elements with the goal "emulate" new collection
+                        // so I expect to have only two child elements in result
+                        repository.Clone<ParentRecordHierarchyRecord>().Detach(only2, 
+                            (i) => i.Include(e => e.RowVersion).Include(e => e.HierarchyRecordId).Include(e => e.ParentRecordId));
+                        
+                        batch.Handle(
+                            (storage) =>
+                            {
+                                storage.ModifyRelated(
+                                    parentRecord,
+                                    e => e.ParentRecordHierarchyRecordMap,
+                                    only2,
+                                    (e1, e2) => e1.HierarchyRecordId == e2.HierarchyRecordId);
+                            });
+
+                        var count1b = parentRecord.ParentRecordHierarchyRecordMap.Count();
+                        if (count1b != 2)
+                            throw new Exception("This is strange. Only two should be left");
+                        
+                        // now I "find" the same entity
+                        var parentRecordB = repository.Find(e => e.FieldA == "1_A", includes);
+                        var count1c = parentRecordB.ParentRecordHierarchyRecordMap.Count();
+                        // and I found there 4 elements (when should be 2, e.g. in db you will find two elements)
+                        // that is because elements that was detached was not fully removed from child collections trackers
+                        if (count1c != 4)
+                            throw new Exception("This is strange. EF Core have changed something");
+
+                    });
             });
         }
     }

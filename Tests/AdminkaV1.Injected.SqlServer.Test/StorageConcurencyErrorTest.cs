@@ -26,9 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
             var routine = new AdminkaRoutineHandler(
-                TestManager.ApplicationSettings.AdminkaStorageConfiguration,
-                TestManager.ApplicationSettings.PerformanceCounters,
-                TestManager.ApplicationSettings.ConfigurationContainerFactory,
+                TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag(this), userContext, new { input = "Input text" });
             // check constraint on UPDATE

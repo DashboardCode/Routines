@@ -56,9 +56,18 @@ namespace DashboardCode.Routines.Storage.EfCore
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class
         {
+            /*
+             var blog = context.Blogs.Single(b => b.BlogId == 1);
+
+             context.Entry(blog).Collection(b => b.Posts).Load();
+
+             context.Entry(blog).Reference(b => b.Owner).Load();
+             */
+
             auditVisitor.SetAuditProperties(entity); // TODO: test if ModifyWithRelated modifies entity ?
             Expression <Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable = getRelation.ContravarianceToIEnumerable();
             EntityEntry<TEntity> entry = context.Entry(entity);
+            
             //if (entry.State == EntityState.Detached)
             //    entry.State = EntityState.Unchanged;
             var col = entry.Collection(getRelationAsEnumerable);

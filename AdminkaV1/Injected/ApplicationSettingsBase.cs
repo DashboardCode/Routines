@@ -41,16 +41,23 @@ namespace DashboardCode.AdminkaV1.Injected
             CreateMigrationAdminkaStorageConfiguration = (migrationAssembly) =>
                  new AdminkaStorageConfiguration(connectionString, migrationAssembly, StorageType.SQLSERVER);
             ConfigurationContainerFactory = new ConfigurationContainerFactory(configurationManagerLoader);
+            AuthenticationLogging = new NLogAuthenticationLogging();
             var instanceName = appSettings.GetValue("InstanceName");
-            try
+            if (!string.IsNullOrEmpty(instanceName))
             {
-                PerformanceCounters = new PerformanceCounters("DashboardCode Adminka", instanceName);
+                try
+                {
+                    PerformanceCounters = new PerformanceCounters("DashboardCode Adminka", instanceName);
+                }
+                catch
+                {
+                    PerformanceCounters = new PerformanceCountersStub();
+                }
             }
-            catch
+            else
             {
                 PerformanceCounters = new PerformanceCountersStub();
             }
-            AuthenticationLogging = new NLogAuthenticationLogging();
         }
     }
 }
