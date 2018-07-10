@@ -4,9 +4,25 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.Storage.EfCore.Relational</AssemblyName>
     <RootNamespace>DashboardCode.Routines.Storage.EfCore.Relational</RootNamespace>
+    <PackageId>DashboardCode.Routines.Storage.EfCore.Relational</PackageId>
+    <Version>2.0.1-beta1</Version>
+    <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
+    <Product>DashboardCode.Routines</Product>
+    <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags></PackageTags>
+    <Description>DeleteAll generation for Microsoft.EntityFramework.Relational</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

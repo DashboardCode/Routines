@@ -4,18 +4,29 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.AspNetCore</AssemblyName>
     <RootNamespace>DashboardCode.Routines.AspNetCore</RootNamespace>
-    <Version>2.0.0-beta1</Version>
+    <Version>2.0.1-beta1</Version>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Product>DashboardCode.Routines</Product>
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
-    <AssemblyVersion>2.0.0.1</AssemblyVersion>
-    <FileVersion>2.0.0.1</FileVersion>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.1.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
+    <PackageTags></PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
+    <Description>Rouines MVC Controller generation from meta data</Description>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

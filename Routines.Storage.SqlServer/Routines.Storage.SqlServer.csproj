@@ -3,15 +3,22 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
-    <Product>Vse.Routines.Storage.SqlServer</Product>
-    <Copyright>Copyright ©  2016</Copyright>
-    <PackageId>Vse.Routines.Storage.SqlServer</PackageId>
+    <Product>DashboardCode.Routines</Product>
+    <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
+    <PackageId>DashboardCode.Routines.Storage.SqlServer</PackageId>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
-    <AssemblyVersion>1.0.12.0</AssemblyVersion>
-    <FileVersion>1.0.12.0</FileVersion>
-    <Description />
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.1.0</FileVersion>
+    <Description>Markdown SqlExpression for nice logging and error dialogs</Description>
     <RootNamespace>DashboardCode.Routines.Storage.SqlServer</RootNamespace>
     <AssemblyName>DashboardCode.Routines.Storage.SqlServer</AssemblyName>
+    <Version>2.0.1-beta1</Version>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags></PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,7 +29,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

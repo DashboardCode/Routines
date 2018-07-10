@@ -13,13 +13,15 @@
     <RootNamespace>DashboardCode.Routines</RootNamespace>
     <AssemblyName>DashboardCode.Routines</AssemblyName>
 	<LangVersion>latest</LangVersion>
-	<Version>2.0.1</Version>
+	<Version>2.0.1-beta1</Version>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
 	<PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
 	<PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
-	<PackageTags>Clone Copy Compare Entities Repository</PackageTags>
+	<PackageTags>Clone Copy Compare Serialize Entities Repository</PackageTags>
 	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	<RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
