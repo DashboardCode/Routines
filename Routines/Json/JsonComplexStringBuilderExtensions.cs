@@ -7,7 +7,7 @@ namespace DashboardCode.Routines.Json
     public static class JsonComplexStringBuilderExtensions
     {
         #region Object Serializers
-        public static bool SerializeObject<T>(StringBuilder stringBuilder, T t, params Func<StringBuilder, T, bool>[] propertySerializers)
+        public static bool SerializeAssociativeArray<T>(StringBuilder stringBuilder, T t, params Func<StringBuilder, T, bool>[] propertySerializers)
         {
             var @value = false;
             stringBuilder.Append('{');
@@ -27,7 +27,7 @@ namespace DashboardCode.Routines.Json
             return @value;
         }
 
-        public static bool SerializeObjectHandleEmpty<T>(StringBuilder stringBuilder, T t, params Func<StringBuilder, T, bool>[] propertySerializers)
+        public static bool SerializeAssociativeArrayHandleEmpty<T>(StringBuilder stringBuilder, T t, params Func<StringBuilder, T, bool>[] propertySerializers)
         {
             var @value = false;
             stringBuilder.Append('{');
@@ -97,7 +97,7 @@ namespace DashboardCode.Routines.Json
             return @value;
         }
 
-        public static bool SerializeStructArray<T>(StringBuilder stringBuilder, IEnumerable<T> enumerable, Func<StringBuilder, T, bool> itemSerializer) where T : struct
+        public static bool SerializeValueArray<T>(StringBuilder stringBuilder, IEnumerable<T> enumerable, Func<StringBuilder, T, bool> itemSerializer) where T : struct
         {
             var @value = false;
             stringBuilder.Append('[');
@@ -117,7 +117,7 @@ namespace DashboardCode.Routines.Json
             return @value;
         }
 
-        public static bool SerializeStructArrayHandleEmpty<T>(StringBuilder stringBuilder, IEnumerable<T> enumerable, Func<StringBuilder, T, bool> itemSerializer) where T : struct
+        public static bool SerializeValueArrayHandleEmpty<T>(StringBuilder stringBuilder, IEnumerable<T> enumerable, Func<StringBuilder, T, bool> itemSerializer) where T : struct
         {
             var @value = false;
             stringBuilder.Append('[');
@@ -137,7 +137,7 @@ namespace DashboardCode.Routines.Json
             return @value;
         }
 
-        public static bool SerializeNStructArray<T>(StringBuilder stringBuilder, IEnumerable<T?> enumerable, Func<StringBuilder, T, bool> itemSerializer, Func<StringBuilder, bool> nullSerializer) where T : struct
+        public static bool SerializeNValueArray<T>(StringBuilder stringBuilder, IEnumerable<T?> enumerable, Func<StringBuilder, T, bool> itemSerializer, Func<StringBuilder, bool> nullSerializer) where T : struct
         {
             var @value = false;
             stringBuilder.Append('[');
@@ -161,7 +161,7 @@ namespace DashboardCode.Routines.Json
             return @value;
         }
 
-        public static bool SerializeNStructArrayHandleEmpty<T>(StringBuilder stringBuilder, IEnumerable<T?> enumerable, Func<StringBuilder, T, bool> itemSerializer, Func<StringBuilder, bool> nullSerializer) where T : struct
+        public static bool SerializeNValueArrayHandleEmpty<T>(StringBuilder stringBuilder, IEnumerable<T?> enumerable, Func<StringBuilder, T, bool> itemSerializer, Func<StringBuilder, bool> nullSerializer) where T : struct
         {
             var @value = false;
             stringBuilder.Append('[');
@@ -202,7 +202,7 @@ namespace DashboardCode.Routines.Json
         
          var @delegate = Expression.Lambda<Func<StringBuilder, T, bool>>(block, stringParam).Compile();
          */
-        public static bool SerializeStructProperty<T, TProp>(StringBuilder stringBuilder,  T t, string propertyName,
+        public static bool SerializeValueProperty<T, TProp>(StringBuilder stringBuilder,  T t, string propertyName,
             Func<T, TProp> getter, Func<StringBuilder, TProp, bool> serializer) where TProp : struct
         {
             stringBuilder.Append('"').Append(propertyName).Append('"').Append(':');
@@ -213,7 +213,7 @@ namespace DashboardCode.Routines.Json
             return notEmpty;
         }
 
-        public static bool SerializeNStructPropertyHandleNull<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
+        public static bool SerializeNValuePropertyHandleNull<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
             Func<T, TProp?> getter, Func<StringBuilder, TProp, bool> serializer, Func<StringBuilder, bool> nullSerializer) where TProp : struct
         {
             stringBuilder.Append('"').Append(propertyName).Append('"').Append(':');
@@ -224,7 +224,7 @@ namespace DashboardCode.Routines.Json
             return notEmpty;
         }
 
-        public static bool SerializeNStructProperty<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
+        public static bool SerializeNValueProperty<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
             Func<T, TProp?> getter, Func<StringBuilder, TProp, bool> serializer) where TProp : struct
         {
             var notEmpty = false;

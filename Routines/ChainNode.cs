@@ -43,7 +43,6 @@ namespace DashboardCode.Routines
             (n1,n2) => n1.Type==n2.Type
         );
 
-
         public static string FindLinkedRootXPath(ChainPropertyNode node) =>
              TreeExtensions.FindLinkedRootXPath(meta, node);
 

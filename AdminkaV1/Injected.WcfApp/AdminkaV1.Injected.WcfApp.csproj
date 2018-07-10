@@ -178,7 +178,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\NLogExtensibles\NLogTools.csproj">
       <Project>{0a46eac2-a602-4840-a0f8-b5d82b05fa2a}</Project>
-      <Name>NLogExtensibles</Name>
+      <Name>NLogTools</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj">
       <Project>{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}</Project>

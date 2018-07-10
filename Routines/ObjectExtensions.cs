@@ -227,6 +227,5 @@ namespace DashboardCode.Routines
             CopyAll(source, destination, include, systemTypes);
             return destination;
         }
-        
     }
 }

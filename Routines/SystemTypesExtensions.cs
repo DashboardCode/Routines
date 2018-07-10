@@ -8,6 +8,12 @@ namespace DashboardCode.Routines
 {
     public static class SystemTypesExtensions
     {
+        public static bool IsAssociativeArrayType(this Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+            return (typeInfo.IsClass && !(typeof(string) == type || typeInfo.IsArray)) || (typeInfo.IsValueType && !typeInfo.IsEnum && !typeInfo.IsPrimitive);
+        }
+
         public static readonly IReadOnlyCollection<Type> DefaultSimpleTextTypes = new HashSet<Type>
         {
              typeof(DateTime), typeof(Guid), typeof(TimeSpan), typeof(DateTime?), typeof(Guid?),  typeof(TimeSpan?), typeof(DateTimeOffset), typeof(DateTimeOffset?)

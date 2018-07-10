@@ -253,7 +253,7 @@ namespace DashboardCode.Routines.Json
             stringBuilder.Append(b ? "true" : "false");
             return true;
         }
-        public static bool SerializeStruct<T>(StringBuilder stringBuilder, T t) where T : struct
+        public static bool SerializeValueToString<T>(StringBuilder stringBuilder, T t) where T : struct
         {
             stringBuilder.Append(t);
             return true;
@@ -265,7 +265,7 @@ namespace DashboardCode.Routines.Json
             return true;
         }
         
-        public static bool SerializeRefValue<T>(StringBuilder stringBuilder, T t) where T : class
+        public static bool SerializeRefToString<T>(StringBuilder stringBuilder, T t) where T : class
         {
             stringBuilder.Append(t);
             return true;

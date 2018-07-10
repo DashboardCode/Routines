@@ -20,11 +20,11 @@ namespace DashboardCode.Routines.Test
              
             Include<MyClass> include = chain => chain.Include(e=>e.Text1).Include(e => e.Text2);
 
-            var formatter1 = JsonChainManager.ComposeFormatter(
+            var formatter1 = JsonManager.ComposeFormatter(
                 include
             );
 
-            var formatter2 = JsonChainManager.ComposeFormatter(
+            var formatter2 = JsonManager.ComposeFormatter(
                 include,
                 rules => rules
                     .Subset(
@@ -33,7 +33,7 @@ namespace DashboardCode.Routines.Test
                     )
             );
 
-            var formatter3 = JsonChainManager.ComposeFormatter(
+            var formatter3 = JsonManager.ComposeFormatter(
                 include,
                 rules => rules
                     .Subset(

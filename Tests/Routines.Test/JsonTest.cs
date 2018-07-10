@@ -13,11 +13,11 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void JsonSerializeTestException()
         {
-            var source1  = TestTool.CreateTestModel();
+            var source1 = TestTool.CreateTestModel();
             var include1 = TestTool.CreateInclude();
             try
             {
-                var formatter = JsonChainManager.ComposeFormatter(include1, useToString: false);
+                var formatter = JsonManager.ComposeFormatter(include1, useToString: false);
                 var json = formatter(source1);
             }
             catch (NotConfiguredException ex)
@@ -47,7 +47,7 @@ namespace DashboardCode.Routines.Test
         private static bool GetSumFormatter(StringBuilder sb, int[] t)
         {
             var sum = 0;
-            foreach(var i in t) sum = sum+i;
+            foreach (var i in t) sum = sum + i;
             sb.Append(sum); return true;
         }
 
@@ -71,9 +71,36 @@ namespace DashboardCode.Routines.Test
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel[0];
-            var formatter = JsonChainManager.ComposeEnumerableFormatter(include, rootHandleEmptyArrayLiteral: true);
+            var formatter = JsonManager.ComposeEnumerableFormatter(include, rootHandleEmptyArrayLiteral: true);
             var json = formatter(source);
             if (json != "[]")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        struct Point
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+        }
+
+        [TestMethod]
+        public void JsonSerializeStructPoint()
+        {
+            Include<Point> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
+            var source = new Point() {X=1, Y=1};
+            var formatter = JsonManager.ComposeFormatter(include);
+            var json = formatter(source);
+            if (json != "{\"X\":1,\"Y\":1}")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        [TestMethod]
+        public void JsonSerializeStructPointCreateFormatter()
+        {
+            var source = new Point() { X = 1, Y = 1 };
+            var formatter = JsonManager.ComposeFormatter<Point>();
+            var json = formatter(source);
+            if (json != "{\"X\":1,\"Y\":1}")
                 throw new Exception(nameof(JsonSerializeTest));
         }
 
@@ -85,7 +112,7 @@ namespace DashboardCode.Routines.Test
 
             //Include<TestModel, int[]> pathInclude = (path) => path.ThenInclude(e=>e.)
 
-            var formatter = JsonChainManager.ComposeFormatter(
+            var formatter = JsonManager.ComposeFormatter(
                 include,
                 rules => rules
                         .AddRule<string[]>(GetStringArrayFormatter)
@@ -110,7 +137,7 @@ namespace DashboardCode.Routines.Test
             var source = TestTool.CreateTestModel();
             var include = TestTool.CreateInclude();
 
-            var formatter = JsonChainManager.ComposeFormatter(
+            var formatter = JsonManager.ComposeFormatter(
                 include,
                 rules => rules
                         .AddRule<string[]>(GetStringArrayFormatter)
@@ -132,7 +159,7 @@ namespace DashboardCode.Routines.Test
             var include = TestTool.CreateInclude();
 
             // TODO: 1) add nice error message "Node "" included as leaf but formatter of its type... is not setuped" 2) add string[] formatter
-            var formatter = JsonChainManager.ComposeFormatter(include, useToString: true);
+            var formatter = JsonManager.ComposeFormatter(include, useToString: true);
             var json = formatter(source);
             if (json!= "{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":\"System.String[]\"},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":\"System.Int32[]\",\"ListTest\":\"System.Collections.Generic.List`1[System.Guid]\",\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}")
                 throw new Exception(nameof(JsonSerializeTest));
@@ -143,7 +170,7 @@ namespace DashboardCode.Routines.Test
         {
             var include = TestTool.CreateInclude();
 
-            var formatter = JsonChainManager.ComposeFormatter(include
+            var formatter = JsonManager.ComposeFormatter(include
                 , rootHandleNull: false, useToString: true
             );
             var json = formatter(null);
@@ -156,7 +183,7 @@ namespace DashboardCode.Routines.Test
         {
             Include<TestModel> include = (chain) => chain.Include(e=>e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel();
-            var formatter = JsonChainManager.ComposeFormatter(
+            var formatter = JsonManager.ComposeFormatter(
                     include
                     , handleNullProperty: false
                     , rootHandleEmptyObjectLiteral: true
@@ -171,7 +198,7 @@ namespace DashboardCode.Routines.Test
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel();
-            var formatter = JsonChainManager.ComposeFormatter(include
+            var formatter = JsonManager.ComposeFormatter(include
                     , handleNullProperty: false
                     , rootHandleEmptyObjectLiteral: false
             );
@@ -185,7 +212,7 @@ namespace DashboardCode.Routines.Test
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel[0];
-            var formatter = JsonChainManager.ComposeEnumerableFormatter(include, rootHandleEmptyArrayLiteral: false);
+            var formatter = JsonManager.ComposeEnumerableFormatter(include, rootHandleEmptyArrayLiteral: false);
             var json = formatter(source);
             if (json != "")
                 throw new Exception(nameof(JsonSerializeTest));
@@ -194,11 +221,11 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void JsonSerializeStringNullTest()
         {
-            var formatter1 = JsonChainManager.ComposeFormatter<string>(rootHandleNull: true);
+            var formatter1 = JsonManager.ComposeFormatter<string>(rootHandleNull: true);
             var json1 = formatter1(null);
             if (json1 != "null")
                 throw new Exception(nameof(JsonSerializeTest));
-            var formatter2 = JsonChainManager.ComposeFormatter<string>(rootHandleNull: false);
+            var formatter2 = JsonManager.ComposeFormatter<string>(rootHandleNull: false);
             var json2 = formatter2(null);
             if (json2 != "")
                 throw new Exception(nameof(JsonSerializeTest));
@@ -211,7 +238,7 @@ namespace DashboardCode.Routines.Test
             var include = TestTool.CreateInclude();
 
             // TODO: 1) add nice error message "Node "" included as leaf but formatter of its type... is not setuped" 2) add string[] formatter
-            var formatter = JsonChainManager.ComposeEnumerableFormatter(include
+            var formatter = JsonManager.ComposeEnumerableFormatter(include
                     , handleNullProperty: false
                     , handleNullArrayProperty: false
                     , rootHandleNullArray:false
@@ -227,7 +254,7 @@ namespace DashboardCode.Routines.Test
         {
             var include = TestTool.CreateInclude();
 
-            var formatter = JsonChainManager.ComposeEnumerableFormatter(include
+            var formatter = JsonManager.ComposeEnumerableFormatter(include
                     , rootHandleNullArray: false
                     , handleNullProperty: false
                     , handleNullArrayProperty: false
@@ -244,7 +271,7 @@ namespace DashboardCode.Routines.Test
             var data = TestTool.CreateTestModel();
             Include<TestModel> include = chain => chain.Include(i => i.Message).ThenInclude(i => i.DateTimeMsg);
 
-            var formatter = JsonChainManager.ComposeFormatter(include);
+            var formatter = JsonManager.ComposeFormatter(include);
             var json = formatter(data);
             if (json != "{\"Message\":{\"DateTimeMsg\":\"9999-12-31T23:59:59.999\"}}")
                 throw new Exception(nameof(JsonSerializeDateTimeField));
@@ -256,7 +283,7 @@ namespace DashboardCode.Routines.Test
             var data = TestTool.CreateTestModel();
             Include<TestModel> include = chain => chain.Include(i => i.Message).ThenInclude(i => i.DateTimeMsg);
 
-            var formatter = JsonChainManager.ComposeFormatter(include, dateTimeFormat: "yyyy-MM-dd");
+            var formatter = JsonManager.ComposeFormatter(include, dateTimeFormat: "yyyy-MM-dd");
             var json = formatter(data);
             if (json != "{\"Message\":{\"DateTimeMsg\":\"9999-12-31\"}}")
                 throw new Exception(nameof(JsonSerializeDateTimeField));
@@ -266,50 +293,50 @@ namespace DashboardCode.Routines.Test
         public void JsonSerializeFloatingPointCustomFormatField()
         {
             {
-                var formatter1 = JsonChainManager.ComposeFormatter<float>();
+                var formatter1 = JsonManager.ComposeFormatter<float>();
                 var json1 = formatter1((float)1 / 3);
                 if (json1 != "0.3333333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1");
 
-                var formatter1e = JsonChainManager.ComposeEnumerableFormatter<float>();
+                var formatter1e = JsonManager.ComposeEnumerableFormatter<float>();
                 var json1e = formatter1e(new float[] { (float)1 / 3, (float)Math.Sqrt(7) });
                 if (json1e != "[0.3333333,2.645751]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1e");
 
-                var formatter2 = JsonChainManager.ComposeFormatter<float>(floatingPointFormat: "N4");
+                var formatter2 = JsonManager.ComposeFormatter<float>(floatingPointFormat: "N4");
                 var json2 = formatter2((float)1 / 3);
                 if (json2 != "0.3333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "2");
 
-                var formatter2e = JsonChainManager.ComposeEnumerableFormatter<float>(floatingPointFormat: "N4");
+                var formatter2e = JsonManager.ComposeEnumerableFormatter<float>(floatingPointFormat: "N4");
                 var json2e = formatter2e(new float[] { (float)1 / 3, (float)Math.Sqrt(7) });
                 if (json2e != "[0.3333,2.6458]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "3");
             }
 
             {
-                var formatter1 = JsonChainManager.ComposeFormatter<double>();
+                var formatter1 = JsonManager.ComposeFormatter<double>();
                 var json1 = formatter1((double)1 / 3);
                 if (json1 != "0.333333333333333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1D");
 
-                var formatter1e = JsonChainManager.ComposeEnumerableFormatter<double>();
+                var formatter1e = JsonManager.ComposeEnumerableFormatter<double>();
                 var json1e = formatter1e(new double[] { (double)1 / 3, Math.Sqrt(7) });
                 if (json1e != "[0.333333333333333,2.64575131106459]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1De");
 
-                var formatter2 = JsonChainManager.ComposeFormatter<double>(floatingPointFormat: "N4");
+                var formatter2 = JsonManager.ComposeFormatter<double>(floatingPointFormat: "N4");
                 var json2 = formatter2((double)1 / 3);
                 if (json2 != "0.3333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "2D");
 
-                var formatter2e = JsonChainManager.ComposeEnumerableFormatter<double>(floatingPointFormat: "N4");
+                var formatter2e = JsonManager.ComposeEnumerableFormatter<double>(floatingPointFormat: "N4");
                 var json2e = formatter2e(new double[] { (double)1 / 3, Math.Sqrt(7) });
                 if (json2e != "[0.3333,2.6458]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "3D");
             }
             {
-                var formatter1 = JsonChainManager.ComposeFormatter<float?>();
+                var formatter1 = JsonManager.ComposeFormatter<float?>();
                 var json1 = formatter1((float)1 / 3);
                 if (json1 != "0.3333333")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "1N");
@@ -318,7 +345,7 @@ namespace DashboardCode.Routines.Test
                 if (json2 != "null")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "2N");
 
-                var formatter2e = JsonChainManager.ComposeEnumerableFormatter<float?>();
+                var formatter2e = JsonManager.ComposeEnumerableFormatter<float?>();
                 var json2e = formatter2e(new float?[] { (float)1 / 3, null });
                 if (json2e != "[0.3333333,null]")
                     throw new Exception(nameof(JsonSerializeDateTimeField) + "3Ne");
@@ -336,7 +363,7 @@ namespace DashboardCode.Routines.Test
             var data = TestTool.CreateTestModel();
             Include<TestModel> include = chain => chain.Include(i => i.Message).ThenInclude(i => i.DateTimeMsg);
 
-            var formatter = JsonChainManager.ComposeFormatter(include,
+            var formatter = JsonManager.ComposeFormatter(include,
                 dateTimeFormat: "yyyy-MM-dd"
                 );
             var json = formatter(data);

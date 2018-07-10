@@ -7,8 +7,8 @@
     <ProjectGuid>{44A20BD4-D2D8-43C4-8DB7-FA1129C3F0E1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DashboardCode.Routines.Serialization.NETFramework</RootNamespace>
-    <AssemblyName>DashboardCode.Routines.Serialization.NETFramework</AssemblyName>
+    <RootNamespace>DashboardCode.Serialization.NETFramework</RootNamespace>
+    <AssemblyName>DashboardCode.Serialization.NETFramework</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -46,7 +46,7 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Routines\Routines.csproj">
+    <ProjectReference Include="..\..\..\Routines\Routines.csproj">
       <Project>{7f19bf12-3f67-4185-a8f1-48bdc6129915}</Project>
       <Name>Routines</Name>
     </ProjectReference>

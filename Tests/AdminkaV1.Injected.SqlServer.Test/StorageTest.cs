@@ -222,6 +222,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                                 (repository2, batch2) =>
                                 {
                                     var parentRecordF2 = repository2.Find(e => e.FieldA == "1_A", includes);
+                                    var countF2 = parentRecordF2.ParentRecordHierarchyRecordMap.Count();
                                     if (countF2 != 1)
                                         throw new Exception("This is strange. I expect there value 1 number elements in the collection. When db contains 2 elements", ex);
                                 });

@@ -3,3 +3,8 @@ System.ServiceModel.Primitives and System.ServiceModel.Http (used by AdminkaV1.L
 
 2. this project contains tool required for coverage test: opencover, reportgenerator, coveralls 
 (coveralls should be limited to version 0.7.0 since mangagin ver 1 from dotnet install doesn't work for me)
+
+3. todo update coveralls 
+https://stackoverflow.com/questions/51104369/ef-core-is-it-possible-to-support-two-models-in-one-database/51117766#51117766 
+https://github.com/csMACnz/coveralls.net/issues/84
+https://natemcmaster.com/blog/2018/05/12/dotnet-global-tools/

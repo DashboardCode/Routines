@@ -27,5 +27,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\NLogLoggingAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Logging\RoutineLoggingTransients.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SerializationManager.cs" />
   </ItemGroup>
 </Project>

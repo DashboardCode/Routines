@@ -58,13 +58,15 @@ namespace DashboardCode.Routines.Json
             return @value;
         }
 
-        internal static bool IsNullable(Type type, bool handleNullProperty)
-        {
-            var @value = !type.GetTypeInfo().IsValueType || Nullable.GetUnderlyingType(type) != null;
-            if (@value)
-                @value = handleNullProperty;
-            return @value;
-        }
+        //internal static bool IsNullable(Type type, bool handleNullProperty)
+        //{
+        //    var @value = false;
+        //    if (handleNullProperty)
+        //    {
+        //        @value = !type.GetTypeInfo().IsValueType || Nullable.GetUnderlyingType(type) != null;
+        //    }
+        //    return @value;
+        //}
 
         internal static SerializersPair CreateSerializsPair(
             ChainNode node, 
@@ -161,7 +163,7 @@ namespace DashboardCode.Routines.Json
                 var serializersPair = CreateSerializsPair(node, parentType, getLeafSerializerSet, getInternalSerializerSet);
                 formatterExpression = serializersPair.SerializerExpression;
 
-                if (IsNullable(node.Type, serializersPair.HandleNullProperty))
+                if (serializersPair.HandleNullProperty && IsNullable(node.Type))
                 {
                     if (serializersPair.NullSerializer == null)
                         throw new NotSupportedException($"Null serializer is not setuped for internal node '{node.FindLinkedRootXPath()}' ");
@@ -217,9 +219,9 @@ namespace DashboardCode.Routines.Json
         {
             MethodInfo serializeObjectGenericMethodInfo;
             if (handleEmptyPropertyList)
-                serializeObjectGenericMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeObjectHandleEmpty));
+                serializeObjectGenericMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeAssociativeArrayHandleEmpty));
             else
-                serializeObjectGenericMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeObject));
+                serializeObjectGenericMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeAssociativeArray));
 
             var serializeObjectResolvedMethodInfo = serializeObjectGenericMethodInfo.MakeGenericMethod(objectType);
             var serializePropertyFuncDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), objectType, typeof(bool));
@@ -267,18 +269,18 @@ namespace DashboardCode.Routines.Json
                 if (isNullableStruct.Value)
                 {
                     if (handleEmptyList)
-                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNStructArrayHandleEmpty));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNValueArrayHandleEmpty));
                     else
-                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNStructArray));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNValueArray));
 
                 }
                 else
                 {
                     itemNullSerializerRequired = false;
                     if (handleEmptyList)
-                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeStructArrayHandleEmpty));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeValueArrayHandleEmpty));
                     else
-                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeStructArray));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeValueArray));
                 }
             }
 
@@ -301,10 +303,10 @@ namespace DashboardCode.Routines.Json
             return serializePropertyMethod;
         }
 
-        private static MethodInfo GetPropertySerializerMethodInfo(bool? isNullableStruct, bool handleNullProperty)
+        private static MethodInfo GetPropertySerializerMethodInfo(bool? isNullableValueType, bool handleNullProperty)
         {
             MethodInfo serializePropertyMethod;
-            if (isNullableStruct == null)
+            if (isNullableValueType == null)
             {
                 if (!handleNullProperty)
                     serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefProperty));
@@ -313,16 +315,16 @@ namespace DashboardCode.Routines.Json
             }
             else
             {
-                if (isNullableStruct.Value)
+                if (isNullableValueType.Value)
                 {
                     if (!handleNullProperty)
-                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNStructProperty));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNValueProperty));
                     else
-                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNStructPropertyHandleNull));
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull));
                 }
                 else
                 {
-                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeStructProperty));
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeValueProperty));
                 }
             }
             return serializePropertyMethod;

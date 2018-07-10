@@ -35,8 +35,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\NLogExtensibles\NLogTools.csproj" />
+    <ProjectReference Include="..\..\Routines.ActiveDirectory\Routines.ActiveDirectory.csproj" />
     <ProjectReference Include="..\..\Routines.Configuration.NETStandard\Routines.Configuration.NETStandard.csproj" />
-    <ProjectReference Include="..\..\Routines.Serialization.NETStandard\Routines.Serialization.NETStandard.csproj" />
     <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
     <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj" />

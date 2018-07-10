@@ -37,24 +37,24 @@ namespace Benchmark
             include2.Invoke(chain);
             var serializerNode = process.Root;
 
-            formatter = JsonChainManager.ComposeFormatter<Box2>(serializerNode.ComposeInclude<Box2>(), stringBuilderCapacity: 4000);
+            formatter = JsonManager.ComposeFormatter<Box2>(serializerNode.ComposeInclude<Box2>(), stringBuilderCapacity: 4000);
 
-            serializerFunc = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeObject(sbP, tP,
-                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool)
+            serializerFunc = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
+                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool)
                     );
 
-            Expression<Func<StringBuilder, Box2, bool>> serializerFuncCompiledExp = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeObject(sbP, tP,
-                       (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool)
+            Expression<Func<StringBuilder, Box2, bool>> serializerFuncCompiledExp = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
+                       (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool)
                    );
             serializerFuncCompiled = serializerFuncCompiledExp.Compile();
 
             Include<Box2> includeAlt = (i) => i.Include(e => e.B1);
             //serializer3 = includeAlt.BuildNExpJsonSerializer();
             Func<Box2, bool> getterDelegate = o => o.B1;
-            Expression<Func<StringBuilder, Box2, bool>> testFuncBuilded2Exp = (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, JsonValueStringBuilderExtensions.SerializeBool);
+            Expression<Func<StringBuilder, Box2, bool>> testFuncBuilded2Exp = (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "B1", getterDelegate, JsonValueStringBuilderExtensions.SerializeBool);
             testFuncBuilded2 = testFuncBuilded2Exp.Compile();
 
-            testFunc = (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeStructProperty(sb4, t4, "B1", getterDelegate, JsonValueStringBuilderExtensions.SerializeBool);
+            testFunc = (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "B1", getterDelegate, JsonValueStringBuilderExtensions.SerializeBool);
 
             #region Test
             var getterDelegateType = typeof(Func<,>).MakeGenericType(typeof(Box2), typeof(bool));
@@ -70,7 +70,7 @@ namespace Benchmark
             var formatterDelegate     = formatterMethodInfo.CreateDelegate(formatterDelegateType);
             var formatterConstantExpression = Expression.Constant(formatterDelegate, formatterDelegateType);
 
-            var serializePropertyMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeStructProperty));
+            var serializePropertyMethodInfo = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeValueProperty));
             var serializePropertyGenericMethodInfo = serializePropertyMethodInfo.MakeGenericMethod(typeof(Box2), typeof(bool));
 
             var serializePropertyDelegateType = typeof(Func<,,,,,>).MakeGenericType(typeof(StringBuilder), typeof(string), typeof(Box2), typeof(Func<Box2, bool>), typeof(Func<StringBuilder, bool, bool>), typeof(bool));

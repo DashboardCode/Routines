@@ -26,6 +26,12 @@ namespace Routines.Json.Test
         }
 
         [TestMethod]
+        public void TestJsonVector()
+        {
+            var p = new System.Drawing.Point(0, 0);
+            var json = $"{{\"x\":{p.X}, \"y\":{p.Y}}}";
+        }
+        [TestMethod]
         public void TestJsonNetCircular()
         {
             Stockholder stockholder = new Stockholder

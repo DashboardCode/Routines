@@ -17,13 +17,8 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
-
-#if NETSTANDARD2_0
-    using DashboardCode.Routines.Serialization.NETStandard;
-#else
-    using DashboardCode.Routines.Serialization.NETFramework;
-    using DashboardCode.Routines.ActiveDirectory.NETFramework;
-#endif
+using DashboardCode.Routines.ActiveDirectory;
+//using DashboardCode.Routines.Serialization;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -121,28 +116,28 @@ namespace DashboardCode.AdminkaV1.Injected
 #endregion
 
 #region Serialize
-        public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class
-        {
-            var knownTypes = include.ListLeafTypes();
-            return DeserializeXml<T>(xmlText, knownTypes);
-        }
-        public static string SerializeToXml<T>(T t, Include<T> include) where T : class
-        {
-            var knownTypes = include.ListLeafTypes();
-            return SerializeToXml(t, typeof(T), knownTypes);
-        }
-        public static string SerializeToXml(object o, IEnumerable<Type> knownTypes = null)
-        {
-            return SerializeToXml(o, o.GetType(), knownTypes);
-        }
-        public static T DeserializeXml<T>(string xmlText, IEnumerable<Type> knownTypes = null)
-        {
-            return SerializationManager.DeserializeXml<T>(xmlText, knownTypes);
-        }
-        private static string SerializeToXml(object o, Type rootType, IEnumerable<Type> knownTypes = null)
-        {
-            return SerializationManager.SerializeToXml(o, rootType, knownTypes);
-        }
+        //public static T DeserializeXml<T>(string xmlText, Include<T> include = null) where T : class
+        //{
+        //    var knownTypes = include.ListLeafTypes();
+        //    return DeserializeXml<T>(xmlText, knownTypes);
+        //}
+        //public static string SerializeToXml<T>(T t, Include<T> include) where T : class
+        //{
+        //    var knownTypes = include.ListLeafTypes();
+        //    return SerializeToXml(t, typeof(T), knownTypes);
+        //}
+        //public static string SerializeToXml(object o, IEnumerable<Type> knownTypes = null)
+        //{
+        //    return SerializeToXml(o, o.GetType(), knownTypes);
+        //}
+        //public static T DeserializeXml<T>(string xmlText, IEnumerable<Type> knownTypes = null)
+        //{
+        //    return SerializationManager.DeserializeXml<T>(xmlText, knownTypes);
+        //}
+        //private static string SerializeToXml(object o, Type rootType, IEnumerable<Type> knownTypes = null)
+        //{
+        //    return SerializationManager.SerializeToXml(o, rootType, knownTypes);
+        //}
         public static T DeserializeJson<T>(string json)
         {
             return SerializationManager.DeserializeJson<T>(json);

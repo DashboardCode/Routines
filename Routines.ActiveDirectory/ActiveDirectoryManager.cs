@@ -6,7 +6,7 @@ using System.Security.Principal;
 using System.DirectoryServices.AccountManagement;
 using System.DirectoryServices.Protocols;
 
-namespace DashboardCode.Routines.ActiveDirectory.NETFramework
+namespace DashboardCode.Routines.ActiveDirectory
 {
     public static class ActiveDirectoryManager
     {
