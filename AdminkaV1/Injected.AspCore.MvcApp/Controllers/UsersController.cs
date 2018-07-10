@@ -7,7 +7,7 @@ using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
-using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration.Standard;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
 {

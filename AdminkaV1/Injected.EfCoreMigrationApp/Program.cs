@@ -13,7 +13,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 
     public class Program
     {
-        public readonly static ApplicationSettings ApplicationSettings = new ApplicationSettings();
+        public readonly static ApplicationSettingsStandard ApplicationSettings = new ApplicationSettingsStandard();
         public static readonly string MigrationAssembly = typeof(Program).Assembly.GetName().Name;
         static void Main(string[] args)
         {

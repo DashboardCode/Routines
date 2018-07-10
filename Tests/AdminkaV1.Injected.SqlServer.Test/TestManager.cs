@@ -9,7 +9,11 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 {
     public static class TestManager
     {
-        public readonly static ApplicationSettings ApplicationSettings = new ApplicationSettings();
+#if NETCOREAPP
+        public readonly static ApplicationSettingsStandard ApplicationSettings = new ApplicationSettingsStandard();
+#else
+        public readonly static ApplicationSettingsClassic ApplicationSettings = new ApplicationSettingsClassic();
+#endif
 
         public static void Reset(string databaseName = "AdminkaV1")
         {

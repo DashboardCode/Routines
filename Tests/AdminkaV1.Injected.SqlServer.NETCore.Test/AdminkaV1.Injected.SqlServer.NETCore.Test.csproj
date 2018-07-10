@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
-    <ProjectReference Include="..\..\AdminkaV1\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.AspNetCore;
-using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration.Standard;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
 

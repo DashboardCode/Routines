@@ -1,4 +1,4 @@
-﻿namespace DashboardCode.Routines.Configuration.NETFramework.Test
+﻿namespace DashboardCode.Routines.Configuration.Classic.Test
 {
     public class ConfigurationNETFramework
     {

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using DashboardCode.Routines.AspNetCore;
-using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration.Standard;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -50,8 +50,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             services.AddSingleton(ConfigurationRoot);
             services.Configure<List<RoutineResolvable>>(ConfigurationRoot.GetSection("Routines"));
             services.AddSingleton(services);
-            var applicationSettings = new ApplicationSettings(ConfigurationRoot);
-            services.AddSingleton(applicationSettings);
+            var applicationSettings = new ApplicationSettingsStandard(ConfigurationRoot);
+            services.AddSingleton(typeof(ApplicationSettings), applicationSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

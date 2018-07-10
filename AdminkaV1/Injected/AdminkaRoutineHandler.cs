@@ -20,7 +20,7 @@ namespace DashboardCode.AdminkaV1.Injected
     {
         #region constructors without usercontext
         public AdminkaRoutineHandler(
-            ApplicationSettingsBase applicationSettingsBase,
+            ApplicationSettings applicationSettingsBase,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             string @namespace, string controller, string action,
             object input
@@ -107,7 +107,7 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used in tests and benchmarks: predefined UserContext with custom logging to list, but with performance counters
         // TODO: benchmark should be used with full authentication
         public AdminkaRoutineHandler(
-            ApplicationSettingsBase applicationSettingsBase,
+            ApplicationSettings applicationSettingsBase,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             MemberTag memberTag,
             UserContext userContext,

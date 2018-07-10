@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DashboardCode.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.Classic
 {
     [DebuggerTypeProxy(typeof(RoutinesConfigurationSectionDebugView))]
     public class RoutinesConfigurationSection : ConfigurationSection

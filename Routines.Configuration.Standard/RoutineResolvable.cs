@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DashboardCode.Routines.Configuration.NETStandard
+namespace DashboardCode.Routines.Configuration.Standard
 {
 
     public class RoutineResolvable : IRoutineConfigurationRecord

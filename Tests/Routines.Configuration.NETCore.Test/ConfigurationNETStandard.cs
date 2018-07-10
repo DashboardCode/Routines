@@ -2,7 +2,7 @@
 using System.Reflection;
 using Xunit;
 
-using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration.Standard;
 
 [assembly: CollectionBehavior(MaxParallelThreads = 1, DisableTestParallelization = true)]
 

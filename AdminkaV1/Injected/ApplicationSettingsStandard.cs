@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
-using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration.Standard;
 using DashboardCode.Routines.Configuration;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
-    public class ApplicationSettings : ApplicationSettingsBase
+    public class ApplicationSettingsStandard : ApplicationSettings
     {
         static (IConfigurationManagerLoader, IConnectionStringMap, IAppSettings) Create(IConfigurationRoot configurationRoot)
         {
@@ -20,9 +20,11 @@ namespace DashboardCode.AdminkaV1.Injected
             return (configurationManagerLoader, connectionStringMap, appSettings);
         }
 
-        public ApplicationSettings(IConfigurationRoot configurationRoot = null):base(Create(configurationRoot))
+        public ApplicationSettingsStandard(IConfigurationRoot configurationRoot = null):base(Create(configurationRoot))
         {
             
         }
     }
 }
+
+

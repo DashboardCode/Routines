@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration.Standard;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 

@@ -44,6 +44,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
     <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj" />
-    <ProjectReference Include="..\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj" />
+    <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj" />
   </ItemGroup>
 </Project>

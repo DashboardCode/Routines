@@ -31,16 +31,12 @@
     <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
     <ProjectReference Include="..\..\AdminkaV1\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
+	<ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj" />
+	
+	<ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
+	<ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />
   </ItemGroup>
   
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
-    <ProjectReference Include="..\..\AdminkaV1\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj" />
-	<ProjectReference Include="..\..\Routines.Configuration.NETStandard\Routines.Configuration.NETStandard.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net47' ">
-    <ProjectReference Include="..\..\AdminkaV1\Injected.NETFramework\AdminkaV1.Injected.NETFramework.csproj" />
-	<ProjectReference Include="..\..\Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj" />
-  </ItemGroup>
   <ItemGroup>
     <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

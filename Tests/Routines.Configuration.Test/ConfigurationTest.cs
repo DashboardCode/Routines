@@ -5,13 +5,13 @@
 
 namespace DashboardCode.Routines.Configuration.Test
 {
-#if !(NETCOREAPP1_1 || NETCOREAPP2_0 || NETCOREAPP2_1)
+#if !NETCOREAPP
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
 #endif
     public class ConfigurationTest
     {
 
-#if NETCOREAPP1_1 || NETCOREAPP2_0  || NETCOREAPP2_1
+#if NETCOREAPP
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -23,12 +23,11 @@ namespace DashboardCode.Routines.Configuration.Test
         }
 
 
-#if NETCOREAPP1_1 || NETCOREAPP2_0  || NETCOREAPP2_1
+#if NETCOREAPP
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
 #endif
-
         public void TestContainerResolve()
         {
             var container = new WrappedContainer(nameof(ConfigurationTest), nameof(TestContainerResolve));
@@ -44,7 +43,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails 2");
         }
 
-#if NETCOREAPP1_1 || NETCOREAPP2_0  || NETCOREAPP2_1
+#if NETCOREAPP
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -80,7 +79,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails. Case 4");
         }
 
-#if NETCOREAPP1_1 || NETCOREAPP2_0  || NETCOREAPP2_1
+#if NETCOREAPP
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -99,7 +98,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails. Case 2");
         }
 
-#if NETCOREAPP1_1 || NETCOREAPP2_0  || NETCOREAPP2_1
+#if NETCOREAPP
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]

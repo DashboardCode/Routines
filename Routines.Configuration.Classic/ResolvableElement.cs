@@ -3,7 +3,7 @@ using System.Configuration;
 using System.Diagnostics;
 
 
-namespace DashboardCode.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.Classic
 {
     [DebuggerDisplay("{Namespace}.{Type}; {InstanceCreatedAt}/{StaticCreatedAt}")]
     [DebuggerTypeProxy(typeof(ResolvableElementDebugView))]

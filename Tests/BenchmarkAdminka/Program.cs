@@ -5,7 +5,11 @@ namespace BenchmarkAdminka
 {
     class Program
     {
-        public readonly static ApplicationSettings ApplicationSettings = new ApplicationSettings();
+#if NETCOREAPP
+        public readonly static ApplicationSettingsStandard ApplicationSettings = new ApplicationSettingsStandard();
+#else
+        public readonly static ApplicationSettingsClassic ApplicationSettings = new ApplicationSettingsClassic();
+#endif
         static void Main(string[] args)
         {
             //var b = new BenchmarkAdminkaRoutineListLogger();

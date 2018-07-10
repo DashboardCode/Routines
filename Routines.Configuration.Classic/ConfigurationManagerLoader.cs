@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 
-namespace DashboardCode.Routines.Configuration.NETFramework
+namespace DashboardCode.Routines.Configuration.Classic
 {
     public class AppSettings : IAppSettings
     {

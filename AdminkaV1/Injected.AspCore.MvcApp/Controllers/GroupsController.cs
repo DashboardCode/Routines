@@ -10,7 +10,7 @@ using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Collections.Generic;
-using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration.Standard;
 using Microsoft.Extensions.Options;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers

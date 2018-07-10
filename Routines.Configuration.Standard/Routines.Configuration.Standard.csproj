@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>DashboardCode.Routines.Configuration.NETStandard</AssemblyName>
-    <RootNamespace>DashboardCode.Routines.Configuration.NETStandard</RootNamespace>
+    <AssemblyName>DashboardCode.Routines.Configuration.Standard</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.Configuration.Standard</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

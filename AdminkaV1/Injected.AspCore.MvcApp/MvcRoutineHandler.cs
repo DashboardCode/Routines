@@ -8,7 +8,7 @@ using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines.Injected;
-using DashboardCode.Routines.Configuration.NETStandard;
+using DashboardCode.Routines.Configuration.Standard;
 using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.DataAccessEfCore;

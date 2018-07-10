@@ -44,9 +44,10 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\Routines.AspNetCore\Routines.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
-    <ProjectReference Include="..\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj" />
+    <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj" />
   </ItemGroup>
   
   <ItemGroup>

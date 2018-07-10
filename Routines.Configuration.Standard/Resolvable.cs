@@ -1,4 +1,4 @@
-﻿namespace DashboardCode.Routines.Configuration.NETStandard
+﻿namespace DashboardCode.Routines.Configuration.Standard
 {
     public class Resolvable : IResolvableConfigurationRecord
     {

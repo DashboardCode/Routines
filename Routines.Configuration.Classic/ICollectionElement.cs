@@ -1,4 +1,4 @@
-﻿namespace DashboardCode.Routines.Configuration.NETFramework
+﻿namespace DashboardCode.Routines.Configuration.Classic
 {
     interface ICollectionMemberElement
     {

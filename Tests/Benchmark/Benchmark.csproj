@@ -29,5 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
+	<ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />
+	<ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
   </ItemGroup>
 </Project>

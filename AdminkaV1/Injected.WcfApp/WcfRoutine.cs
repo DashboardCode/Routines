@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 using DashboardCode.Routines.Configuration;
-using DashboardCode.Routines.Configuration.NETFramework;
+using DashboardCode.Routines.Configuration.Classic;
 
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 
@@ -10,7 +10,7 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
     public class WcfRoutine : AdminkaRoutineHandler
     {
-        public static readonly ApplicationSettings ApplicationSettings = new ApplicationSettings();
+        public static readonly ApplicationSettingsClassic ApplicationSettings = new ApplicationSettingsClassic();
 
         public WcfRoutine(Routines.MemberTag memberTag, string faultCodeNamespace, object input) 
             : this(Guid.NewGuid(), memberTag, GetUserContext(), faultCodeNamespace,

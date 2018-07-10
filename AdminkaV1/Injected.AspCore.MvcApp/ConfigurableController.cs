@@ -1,4 +1,4 @@
-﻿using DashboardCode.Routines.Configuration.NETStandard;
+﻿using DashboardCode.Routines.Configuration.Standard;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 

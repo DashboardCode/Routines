@@ -20,7 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{68C4C8C2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines", "Routines\Routines.csproj", "{7F19BF12-3F67-4185-A8F1-48BDC6129915}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.NETStandard", "AdminkaV1\Injected.NETStandard\AdminkaV1.Injected.NETStandard.csproj", "{A186E18C-A446-4218-A2A8-6B126DABA983}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected", "AdminkaV1\Injected\AdminkaV1.Injected.csproj", "{A186E18C-A446-4218-A2A8-6B126DABA983}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1", "AdminkaV1\Abstractions\AdminkaV1.csproj", "{0AFBD8EE-9049-4B87-BD18-5FB925D38352}"
 EndProject
@@ -28,13 +28,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Injected.WcfApp", "AdminkaV1\Injected.WcfApp\AdminkaV1.Injected.WcfApp.csproj", "{38A0A937-1800-4703-B207-BA3BBBF95D8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Configuration.NETFramework", "Routines.Configuration.NETFramework\Routines.Configuration.NETFramework.csproj", "{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Configuration.Classic", "Routines.Configuration.Classic\Routines.Configuration.Classic.csproj", "{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Configuration.NETFramework.Test", "Tests\Routines.Configuration.NETFramework.Test\Routines.Configuration.NETFramework.Test.csproj", "{EB32496F-B021-4179-A593-BA8EB7631BC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Test", "Tests\Routines.Test\Routines.Test.csproj", "{2B5CADED-2F8B-4809-ABA8-7B679D31E162}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.NETStandard.EfCoreMigrationApp", "AdminkaV1\Injected.NETStandard.EfCoreMigrationApp\AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.EfCoreMigrationApp", "AdminkaV1\Injected.EfCoreMigrationApp\AdminkaV1.Injected.EfCoreMigrationApp.csproj", "{D2558325-785F-4A34-896E-B24846347BFB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore", "Routines.Storage.EfCore\Routines.Storage.EfCore.csproj", "{E0AB2637-9207-4941-9C9D-1FA6FD67FFE6}"
 EndProject
@@ -44,13 +44,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ef6.Sandbox", "Tests\ConsoleApps\Routines.Storage.EfModelTest.Ef6.Sandbox\Ef6.Sandbox.csproj", "{FAEEA516-2296-4C52-9BE5-525B56F50880}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Configuration.NETStandard", "Routines.Configuration.NETStandard\Routines.Configuration.NETStandard.csproj", "{521C6B0D-926F-4301-9441-4DCFDCDD0A59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Configuration.Standard", "Routines.Configuration.Standard\Routines.Configuration.Standard.csproj", "{521C6B0D-926F-4301-9441-4DCFDCDD0A59}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.NETFramework", "Tests\Legacy\Serialization.NETFramework\Serialization.NETFramework.csproj", "{44A20BD4-D2D8-43C4-8DB7-FA1129C3F0E1}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AdminkaV1.Injected", "AdminkaV1\Injected\AdminkaV1.Injected.shproj", "{89394319-E1FB-4E00-8138-1478FED390EE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.Injected.NETFramework", "AdminkaV1\Injected.NETFramework\AdminkaV1.Injected.NETFramework.csproj", "{02666E1B-53C7-42DB-AC39-A16127DD5C81}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore", "Routines.AspNetCore\Routines.AspNetCore.csproj", "{06CEAC59-C96C-4F84-B1D6-14AA5753BB43}"
 EndProject
@@ -165,18 +161,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfCore.NETCore.Sandbox", "Tests\ConsoleApps\Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox\EfCore.NETCore.Sandbox.csproj", "{52F84ED0-2BEB-42C9-A314-7ABA8E510240}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.ActiveDirectory", "Routines.ActiveDirectory\Routines.ActiveDirectory.csproj", "{B7A08474-2008-444F-A576-D0A58CB6EEDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.ActiveDirectory", "Routines.ActiveDirectory\Routines.ActiveDirectory.csproj", "{B7A08474-2008-444F-A576-D0A58CB6EEDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Legacy", "Legacy", "{8D506658-E646-4F4E-96E5-562AB7B41031}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		AdminkaV1\Injected\AdminakV1.Injected.Shared.projitems*{02666e1b-53c7-42db-ac39-a16127dd5c81}*SharedItemsImports = 4
 		Tests\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems*{0ff86a9d-f8de-4029-843f-5029519e0b92}*SharedItemsImports = 13
 		Tests\NLogExtensibles.Test\NLogExtensibles.Test.projitems*{27cc69a4-c721-48d7-b2df-21a02f9c7b4c}*SharedItemsImports = 4
 		Tests\AdminkaV1.LoggingDom.WcfClient.Test\AdminkaV1.LoggingDom.WcfClient.Test.projitems*{47cde2e7-aa42-4bc1-bb0b-27acb7ffaed6}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems*{724e7146-c083-4e3f-9759-5bda6c78fa01}*SharedItemsImports = 13
-		AdminkaV1\Injected\AdminakV1.Injected.Shared.projitems*{89394319-e1fb-4e00-8138-1478fed390ee}*SharedItemsImports = 13
 		Tests\NLogExtensibles.Test\NLogExtensibles.Test.projitems*{8ecd6861-42b4-447d-9ec9-412a22ab0f3e}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{9176634f-e2be-45e3-ac2e-e268887c9989}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems*{ac5c1c59-1611-4a6b-9e88-9e85bc4d22d8}*SharedItemsImports = 4
@@ -690,38 +684,6 @@ Global
 		{44A20BD4-D2D8-43C4-8DB7-FA1129C3F0E1}.Release|x64.Build.0 = Release|Any CPU
 		{44A20BD4-D2D8-43C4-8DB7-FA1129C3F0E1}.Release|x86.ActiveCfg = Release|Any CPU
 		{44A20BD4-D2D8-43C4-8DB7-FA1129C3F0E1}.Release|x86.Build.0 = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Android.ActiveCfg = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Android.Build.0 = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|iOS.ActiveCfg = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|iOS.Build.0 = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Windows-x64.Build.0 = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|Windows-x86.Build.0 = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|x64.Build.0 = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Debug|x86.Build.0 = Debug|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Android.ActiveCfg = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Android.Build.0 = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|iOS.ActiveCfg = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|iOS.Build.0 = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Windows-ARM.Build.0 = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Windows-x64.ActiveCfg = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Windows-x64.Build.0 = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Windows-x86.ActiveCfg = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|Windows-x86.Build.0 = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|x64.ActiveCfg = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|x64.Build.0 = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|x86.ActiveCfg = Release|Any CPU
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81}.Release|x86.Build.0 = Release|Any CPU
 		{06CEAC59-C96C-4F84-B1D6-14AA5753BB43}.Debug|Android.ActiveCfg = Debug|Any CPU
 		{06CEAC59-C96C-4F84-B1D6-14AA5753BB43}.Debug|Android.Build.0 = Debug|Any CPU
 		{06CEAC59-C96C-4F84-B1D6-14AA5753BB43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -1794,8 +1756,6 @@ Global
 		{215CD0DE-09D8-46F4-A9CF-5C4EAE8217F6} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
 		{FAEEA516-2296-4C52-9BE5-525B56F50880} = {0A13BD11-5233-4DFE-8ADD-88CBC4F597DD}
 		{44A20BD4-D2D8-43C4-8DB7-FA1129C3F0E1} = {8D506658-E646-4F4E-96E5-562AB7B41031}
-		{89394319-E1FB-4E00-8138-1478FED390EE} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
-		{02666E1B-53C7-42DB-AC39-A16127DD5C81} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
 		{E306B786-C40E-4FD1-99EF-8AF99C9CBA3B} = {52BA4719-F064-4388-A426-1E1174D3A0EB}
 		{183F2465-F2AE-4548-BAB6-88C8BB4076F0} = {52BA4719-F064-4388-A426-1E1174D3A0EB}
 		{72DA7AC6-74FB-4BE8-A690-B1A42567F0B6} = {90E0E81A-4CDA-43B8-A302-8430519EEA90}
