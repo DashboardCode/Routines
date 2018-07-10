@@ -83,7 +83,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{FB8DD7DE-757
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AdminkaV1.Injected.SqlServer.Test", "Tests\AdminkaV1.Injected.SqlServer.Test\AdminkaV1.Injected.SqlServer.Test.shproj", "{B9077909-87F9-494B-9D6B-5E4F18A7325B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogExtensibles.NETFramework.Test", "Tests\NLogExtensibles.NETFramework.Test\NLogExtensibles.NETFramework.Test.csproj", "{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLogTools.NETFramework.Test", "Tests\NLogTools.NETFramework.Test\NLogTools.NETFramework.Test.csproj", "{27CC69A4-C721-48D7-B2DF-21A02F9C7B4C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Tests\Benchmark\Benchmark.csproj", "{C30762B6-E02B-4FA8-9A51-3B4FAFD86B0A}"
 EndProject
@@ -117,7 +117,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfCore.NETFramework.Sandbox
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.LoggingDom.WcfClient", "AdminkaV1\LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj", "{932B5777-027D-42B9-AA43-57E182F6D08D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogTools", "NLogExtensibles\NLogTools.csproj", "{0A46EAC2-A602-4840-A0F8-B5D82B05FA2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogTools", "NLogTools\NLogTools.csproj", "{0A46EAC2-A602-4840-A0F8-B5D82B05FA2A}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "AdminkaV1.LoggingDom.WcfClient.Test", "Tests\AdminkaV1.LoggingDom.WcfClient.Test\AdminkaV1.LoggingDom.WcfClient.Test.shproj", "{47CDE2E7-AA42-4BC1-BB0B-27ACB7FFAED6}"
 EndProject
@@ -151,9 +151,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Mvc.San
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkAdminka", "Tests\BenchmarkAdminka\BenchmarkAdminka.csproj", "{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogExtensibles.NETCore.Test", "Tests\NLogExtensibles.NETCore.Test\NLogExtensibles.NETCore.Test.csproj", "{44E79AB5-9494-4E83-863F-65D5765B34F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NLogTools.NETCore.Test", "Tests\NLogTools.NETCore.Test\NLogTools.NETCore.Test.csproj", "{44E79AB5-9494-4E83-863F-65D5765B34F5}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NLogExtensibles.Test", "Tests\NLogExtensibles.Test\NLogExtensibles.Test.shproj", "{8ECD6861-42B4-447D-9EC9-412A22AB0F3E}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NLogTools.Test", "Tests\NLogTools.Test\NLogTools.Test.shproj", "{8ECD6861-42B4-447D-9EC9-412A22AB0F3E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test\AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test.csproj", "{5E79C527-3337-4F7C-9AA3-D71E75E3915B}"
 EndProject
@@ -168,10 +168,10 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Tests\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems*{0ff86a9d-f8de-4029-843f-5029519e0b92}*SharedItemsImports = 13
-		Tests\NLogExtensibles.Test\NLogExtensibles.Test.projitems*{27cc69a4-c721-48d7-b2df-21a02f9c7b4c}*SharedItemsImports = 4
+		Tests\NLogTools.Test\NLogTools.Test.projitems*{27cc69a4-c721-48d7-b2df-21a02f9c7b4c}*SharedItemsImports = 4
 		Tests\AdminkaV1.LoggingDom.WcfClient.Test\AdminkaV1.LoggingDom.WcfClient.Test.projitems*{47cde2e7-aa42-4bc1-bb0b-27acb7ffaed6}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems*{724e7146-c083-4e3f-9759-5bda6c78fa01}*SharedItemsImports = 13
-		Tests\NLogExtensibles.Test\NLogExtensibles.Test.projitems*{8ecd6861-42b4-447d-9ec9-412a22ab0f3e}*SharedItemsImports = 13
+		Tests\NLogTools.Test\NLogTools.Test.projitems*{8ecd6861-42b4-447d-9ec9-412a22ab0f3e}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{9176634f-e2be-45e3-ac2e-e268887c9989}*SharedItemsImports = 13
 		Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems*{ac5c1c59-1611-4a6b-9e88-9e85bc4d22d8}*SharedItemsImports = 4
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{ac5c1c59-1611-4a6b-9e88-9e85bc4d22d8}*SharedItemsImports = 4

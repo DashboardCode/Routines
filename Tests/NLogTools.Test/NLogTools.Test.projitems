@@ -6,7 +6,7 @@
     <SharedGUID>8ecd6861-42b4-447d-9ec9-412a22ab0f3e</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>NLogExtensibles.Test</Import_RootNamespace>
+    <Import_RootNamespace>NLogTools.Test</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)LogManager.cs" />
