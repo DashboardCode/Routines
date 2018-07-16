@@ -14,13 +14,13 @@ namespace DashboardCode.Routines
             return rootNode;
         }
 
-        public static Include<T> AppendLeafs<T>(this Include<T> source) where T : class
+        public static Include<T> AppendLeafs<T>(this Include<T> source, LeafRulesDictionaryBase leafRulesDictionaryBase = null)
         {
             var parser = new ChainVisitor<T>();
             var train = new Chain<T>(parser);
             source.Invoke(train);
             var root = parser.Root;
-            root.AppendLeafs();
+            root.AppendLeafs(leafRulesDictionaryBase);
             var destination = root.ComposeInclude<T>();
             return destination;
         }
@@ -107,6 +107,33 @@ namespace DashboardCode.Routines
 
             var union = ChainNodeTree.Merge(rootNode1, rootNode2);
             var @value = union.ComposeInclude<T>();
+            return @value;
+        }
+
+        public static Include<T> CreateDefaultInclude<T>()
+        {
+            Include<T> @value = null;
+            var type = typeof(T);
+            if (type.IsAssociativeArrayType())
+            {
+                var root = new ChainNode(type);
+                root.AppendLeafs();
+                @value = root.ComposeInclude<T>();
+            }
+            return @value;
+        }
+
+        public static Include<T> CreateDefaultEfCoreInclude<T>()
+        {
+            Include<T> @value = null;
+            var type = typeof(T);
+            if (type.IsAssociativeArrayType())
+            {
+                var root = new ChainNode(type);
+                var options = new LeafRulesDictionaryBase(LeafRulesDictionaryBase.IncludeLeafsEfCore);
+                root.AppendLeafs(options);
+                @value = root.ComposeInclude<T>();
+            }
             return @value;
         }
     }

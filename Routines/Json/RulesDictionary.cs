@@ -60,14 +60,19 @@ namespace DashboardCode.Routines.Json
             dictionary[type] = serializer;
         }
 
-        protected void AddRule<T>(
-            Func<StringBuilder, T, bool> func = null,
+        protected void AddRuleBase<T>(
+            Func<StringBuilder, T, bool> serializer = null,
             Func<StringBuilder, bool> nullSerializer = null,
             bool? handleNullProperty = null,
             InternalNodeOptions internalNodeOptions = null
         ) 
         {
-            AddTypeRuleForCurrentInclude<T>(func, nullSerializer ?? this.nullSerializer, handleNullProperty ?? this.handleNullProperty, internalNodeOptions ?? this.internalNodeOptions);
+            AddTypeRuleForCurrentInclude<T>(
+                serializer, 
+                nullSerializer ?? this.nullSerializer, 
+                handleNullProperty ?? this.handleNullProperty, 
+
+                internalNodeOptions ?? this.internalNodeOptions);
         }
     }
 
@@ -99,24 +104,45 @@ namespace DashboardCode.Routines.Json
             if (dateTimeFormat == null)
                 AddTypeRuleOptimized<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeToIso8601WithMs(sb, t));
             else
-                AddRule<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeDateTimeDotNet(sb, t, dateTimeFormat));
+                AddRuleBase<DateTime>((sb, t) => JsonValueStringBuilderExtensions.SerializeDateTimeDotNet(sb, t, dateTimeFormat));
             if (floatingPointFormat != null)
             {
-                AddRule<double>((sb, t) => JsonValueStringBuilderExtensions.SerializeDoubleDotNet(sb, t, floatingPointFormat));
-                AddRule<float>((sb, t) => JsonValueStringBuilderExtensions.SerializeFloatDotNet(sb, t, floatingPointFormat));
+                AddRuleBase<double>((sb, t) => JsonValueStringBuilderExtensions.SerializeDoubleDotNet(sb, t, floatingPointFormat));
+                AddRuleBase<float>((sb, t) => JsonValueStringBuilderExtensions.SerializeFloatDotNet(sb, t, floatingPointFormat));
             }
             AddTypeRuleOptimized<byte[]>((sb, t) => JsonValueStringBuilderExtensions.SerializeBase64(sb, t));
             AddTypeRuleOptimized<decimal>((sb, t) => JsonValueStringBuilderExtensions.SerializePrimitive(sb, t));
         }
 
-        public new RulesSubDictionary<TEntity> AddRule<T>(
-            Func<StringBuilder, T, bool> func = null,
+        public RulesSubDictionary<TEntity> AddRule<T>(
+            Func<StringBuilder, T, bool> serializer = null,
+            Func<StringBuilder, bool> nullSerializer = null,
+            bool? handleNullProperty = null,
+            string propertySerializationName = null
+        )
+        {
+            base.AddRuleBase(serializer, nullSerializer, handleNullProperty, 
+                new InternalNodeOptions(
+                        internalNodeOptions.HandleEmptyObjectLiteral,
+                        internalNodeOptions.HandleEmptyArrayLiteral,
+                        internalNodeOptions.NullSerializer,
+                        internalNodeOptions.HandleNullProperty,
+                        internalNodeOptions.NullArraySerializer,
+                        internalNodeOptions.HandleNullArrayProperty,
+                        propertySerializationName
+                    )
+            );
+            return this;
+        }
+
+        public RulesSubDictionary<TEntity> AddRule<T>(
+            Func<StringBuilder, T, bool> serializer = null,
             Func<StringBuilder, bool> nullSerializer = null,
             bool? handleNullProperty = null,
             InternalNodeOptions internalNodeOptions = null
         )
         {
-            base.AddRule(func, nullSerializer, handleNullProperty, internalNodeOptions);
+            base.AddRuleBase(serializer, nullSerializer, handleNullProperty, internalNodeOptions);
             return this;
         }
     }
@@ -155,14 +181,14 @@ namespace DashboardCode.Routines.Json
             AddTypeRuleOptimized<decimal>((sb, t) => JsonValueStringBuilderExtensions.SerializePrimitive(sb, t));
         }
 
-        public new RulesDictionary<TEntity> AddRule<T>(
+        public RulesDictionary<TEntity> AddRule<T>(
             Func<StringBuilder, T, bool> func = null,
             Func<StringBuilder, bool> nullSerializer = null,
             bool? handleNullProperty = null,
             InternalNodeOptions internalNodeOptions = null
         )
         {
-            base.AddRule(func, nullSerializer, handleNullProperty, internalNodeOptions);
+            base.AddRuleBase(func, nullSerializer, handleNullProperty, internalNodeOptions);
             return this;
         }
 
@@ -236,7 +262,7 @@ namespace DashboardCode.Routines.Json
             return rule;
         }
 
-        internal InternalNodeOptions GeInternalNodeOptions(ChainNode node, bool isEnumerable)
+        internal InternalNodeOptions GeInternalNodeOptions(ChainNode node)
         {
             var theDictionary = GetDictionary(node);
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;

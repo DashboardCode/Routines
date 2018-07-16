@@ -1,7 +1,9 @@
+#if TEST
 using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Test
+
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Test
 {
     [TestClass]
     public class EfModelEfCoreUnitTest
@@ -9,7 +11,15 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Test
         string connectionString;
         public EfModelEfCoreUnitTest()
         {
-            connectionString = ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
+#if NETCOREAPP
+            var configurationRoot =
+                DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Test.
+                ConfigurationManager.ResolveConfigurationRoot();
+            connectionString = configurationRoot.GetSection("ConnectionString").Value;
+#else
+            connectionString = 
+                ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
+#endif
         }
 
         [TestMethod]
@@ -31,3 +41,4 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Test
         }
     }
 }
+#endif

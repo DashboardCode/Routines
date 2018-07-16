@@ -38,7 +38,8 @@ namespace DashboardCode.Routines.Test
                     .ThenIncludeAll(e => e.Uniques);
             var appendedInclude = include1.AppendLeafs(); 
             var pathes1 = appendedInclude.ListLeafKeyPaths();
-            if (pathes1.Count!=6)
+            var pathes2 = appendedInclude.ListLeafXPaths();
+            if (pathes1.Count!=5)
                 throw new ApplicationException("IncludesAppendLeafsTest error");
         }
 

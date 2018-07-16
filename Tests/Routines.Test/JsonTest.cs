@@ -115,19 +115,19 @@ namespace DashboardCode.Routines.Test
             var formatter = JsonManager.ComposeFormatter(
                 include,
                 rules => rules
-                        .AddRule<string[]>(GetStringArrayFormatter)
-                        .AddRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
-                        .AddRule<IEnumerable<Guid>>(GetStringGuidFormatter)
-                        .Subset(
-                              chain  => chain.Include(e => e.Test),
-                              subRules => subRules.AddRule<int[]>(GetSumFormatter)
-                        ),
+                    .AddRule<string[]>(GetStringArrayFormatter)
+                    .AddRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
+                    .AddRule<IEnumerable<Guid>>(GetStringGuidFormatter)
+                    .Subset(
+                        chain  => chain.Include(e => e.Test),
+                        subRules => subRules.AddRule<int[]>(serializer: GetSumFormatter, propertySerializationName: "Sum")
+                    ),
                 useToString: false,
                 dateTimeFormat: null, 
                 floatingPointFormat: null);
 
             var json = formatter(source);
-            if (json != "{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":[\"FieldA1\",\"FieldA2\"]},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Test\":6,\"ListTest\":[\"360bc50a-4d9f-4703-bbea-58f67a6ff475\",\"f2ecf4d8-f4a6-446c-a363-cc79b02decdd\"],\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}")
+            if (json != "{\"StorageModel\":{\"Entity\":{\"Name\":\"EntityName1\",\"Namespace\":\"EntityNamespace1\"},\"Key\":{\"Attributes\":[\"FieldA1\",\"FieldA2\"]},\"TableName\":\"TableName1\",\"Uniques\":[{\"IndexName\":\"IndexName1\",\"Fields\":[\"FieldU1\"]},{\"IndexName\":\"IndexName2\",\"Fields\":[\"FieldU2\"]}]},\"Sum\":6,\"ListTest\":[\"360bc50a-4d9f-4703-bbea-58f67a6ff475\",\"f2ecf4d8-f4a6-446c-a363-cc79b02decdd\"],\"Message\":{\"TextMsg\":\"Initial\",\"DateTimeMsg\":\"9999-12-31T23:59:59.999\",\"IntNullableMsg\":7},\"IntNullable1\":null,\"IntNullable2\":555}")
                 throw new Exception(nameof(JsonSerializeTestAddedFormatter));
         }
 

@@ -8,10 +8,12 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>latest</LangVersion>
+    <DefineConstants>TRACE;DEBUG;TEST</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>latest</LangVersion>
+    <DefineConstants>TRACE;TEST</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

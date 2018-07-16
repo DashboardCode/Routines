@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
@@ -63,7 +64,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox.Incl
             }
             else
             {
-                var properties = type.GetProperties();
+                var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
                 foreach (var propertyInfo in properties)
                 {
                     if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)

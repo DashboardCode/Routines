@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
@@ -70,6 +71,18 @@ namespace DashboardCode.Routines.Storage.EfCore
                     stringBuilder.AppendMarkdownProperty("   " + p.Metadata.Name, (p.CurrentValue?.ToString()) ?? "(null)");
                 i++;
             }
+        }
+
+        public static DbSet<TEntity> Include<TEntity>(this DbContext dbContext, Include<TEntity> include, bool noTracking=false) where TEntity: class
+        {
+            var dbSet = dbContext.Set<TEntity>();
+            IQueryable<TEntity> query;
+            if (noTracking)
+                query = dbSet.AsNoTracking();
+            else
+                query = dbSet.AsQueryable();
+            query = query.Include(include);
+            return dbSet;
         }
     }
 }

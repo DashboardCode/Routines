@@ -127,35 +127,6 @@ namespace DashboardCode.Routines
             return new Tuple<object, object>(sourceValue, copiedValue);
         }
         
-        public static List<PropertyInfo> GetPrimitiveOrSimpleProperties(
-            Type type, IReadOnlyCollection<Type> simpleTextTypes, IReadOnlyCollection<Type> simpleNumberTypes)
-        {
-            var properties = type.GetTypeInfo().DeclaredProperties;
-            var list = new List<PropertyInfo>();
-            foreach (var propertyInfo in properties)
-                if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
-                {
-                    var propertyType = propertyInfo.PropertyType;
-                    var typeInfo = propertyType.GetTypeInfo();
-                    if (typeInfo.IsPrimitive 
-                        || propertyType==typeof(string) 
-                        || simpleTextTypes.Contains(propertyInfo.PropertyType)
-                        || simpleNumberTypes.Contains(propertyInfo.PropertyType))
-                    {
-                        list.Add(propertyInfo);
-                    }
-                    else
-                    {
-                        var baseNullableType = Nullable.GetUnderlyingType(propertyType);
-                        if (baseNullableType != null && baseNullableType.GetTypeInfo().IsPrimitive)
-                        {
-                            list.Add(propertyInfo);
-                        }
-                    }
-                }
-            return list;
-        }
-
         // Contravariance enables you to use a LESS derived type (means base) than that specified by the generic parameter. 
         public static Expression<Func<TEntity, IEnumerable<TRelationEntity>>> ContravarianceToIEnumerable<TEntity, TRelationEntity>(
             this Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelation)

@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.ActiveDirectory</AssemblyName>
     <RootNamespace>DashboardCode.Routines.ActiveDirectory</RootNamespace>
-    <Version>2.0.1-beta1</Version>
+    <Version>2.0.1</Version>
     <Product>DashboardCode.Routines</Product>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
@@ -15,6 +15,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
     <Description>Markdown LdapException for nice logging and error dialogs</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

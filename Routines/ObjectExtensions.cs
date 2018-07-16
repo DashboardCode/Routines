@@ -180,51 +180,51 @@ namespace DashboardCode.Routines
             return ChainNodeExtensions.EqualsNodes(entity1, entity2, nodes);
         }
 
-        public static void Copy<T>(T source, T destination, Include<T> include = null, IReadOnlyCollection<Type> systemTypes = null)
+        public static void Copy<T>(T source, T destination, Include<T> include = null, IReadOnlyCollection<Type> supportedTypes = null)
             where T : class
         {
             IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
             if (include != null)
                 nodes = include.CreateChainNode().Children.Values;
-            ChainNodeExtensions.CopyNodes(source, destination, nodes, systemTypes);
+            ChainNodeExtensions.CopyNodes(source, destination, nodes, supportedTypes);
         }
 
-        public static void CopyAll<TCol, T>(TCol source, TCol destination, Include<T> include = null, IReadOnlyCollection<Type> systemTypes = null)
+        public static void CopyAll<TCol, T>(TCol source, TCol destination, Include<T> include = null, IReadOnlyCollection<Type> supportedTypes = null)
             where TCol : IEnumerable<T>
         {
             IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
             if (include != null)
                 nodes = include.CreateChainNode().Children.Values;
-            ChainNodeExtensions.CopyNodes(source, destination, nodes, systemTypes);
+            ChainNodeExtensions.CopyNodes(source, destination, nodes, supportedTypes);
         }
 
-        public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> systemTypes = null)
+        public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> supportedTypes = null)
             where T : class
         {
             if (!(source is T))
                 return default(T);
-            if (systemTypes == default(IReadOnlyCollection<Type>))
-                systemTypes = SystemTypesExtensions.SystemTypes;
+            if (supportedTypes == default(IReadOnlyCollection<Type>))
+                supportedTypes = SystemTypesExtensions.SystemTypes;
             var constructor = source.GetType().GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
             var destination = (T)constructor.Invoke(null);
-            Copy(source, destination, include, systemTypes);
+            Copy(source, destination, include, supportedTypes);
             return destination;
         }
 
         public static TCol CloneAll<TCol, T>(TCol source, Include<T> include,
-            IReadOnlyCollection<Type> systemTypes = null)
+            IReadOnlyCollection<Type> supportedTypes = null)
             where TCol : class, IEnumerable<T>
         {
             if (source == null)
                 return null;
-            if (systemTypes == default(IReadOnlyCollection<Type>))
-                systemTypes = SystemTypesExtensions.SystemTypes;
+            if (supportedTypes == default(IReadOnlyCollection<Type>))
+                supportedTypes = SystemTypesExtensions.SystemTypes;
             var typeInfo = source.GetType().GetTypeInfo();
             var constructorInfo = typeInfo.DeclaredConstructors.FirstOrDefault(e => e.GetParameters().Count() == 0);
             if (constructorInfo == null)
                  throw new NotImplementedException($"Can't clone collection '${typeInfo.Name}' because it doesn't have default constructor. Use CopyAll instead passing precreated collection as copy destination.");
             var destination = (TCol)constructorInfo.Invoke(null);
-            CopyAll(source, destination, include, systemTypes);
+            CopyAll(source, destination, include, supportedTypes);
             return destination;
         }
     }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using DashboardCode.Routines.Storage.EfCore.Relational;
 using DashboardCode.Routines.Storage.EfCore;
+using DashboardCode.Routines.Json;
 
 namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 {
@@ -116,6 +117,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             Do(connectionString, false);
         }
 
+        
         internal static void SqlServerTest2(string connectionString)
         {
             using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString)))
@@ -144,6 +146,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 dbContext.SaveChanges();
             }
         }
+
 
         private static void Do(string connectionString, bool inMemory)
         {
@@ -234,5 +237,77 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 || countK1 - 1 == instancesInPoolCount))
                 throw new Exception("Something unexpected 2. cound of dbcontext with pooled messages should be equal to number of StatefullLoggerFactories instances (one can created by other tests) ");
         }
+
+
+        #region JSON
+        static CachedFormatter cachedJsonFormatter1 = new CachedFormatter();
+        static CachedFormatter cachedJsonFormatter2 = new CachedFormatter();
+        static CachedFormatter cachedJsonFormatter3 = new CachedFormatter();
+        static CachedFormatter cachedJsonFormatter4 = new CachedFormatter();
+        static CachedFormatter cachedJsonFormatter5 = new CachedFormatter();
+        internal static void SqlServerGetJson(string connectionString)
+        {
+            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString)))
+            {
+                TestService.Clear(new AdoBatch(dbContext));
+                TestService.Reset(StorageFactory.CreateStorage(dbContext));
+            }
+
+            var messages = new List<string>();
+            Action<string> verbose = (text) => {
+                messages.Add(text);
+                Console.WriteLine(text);
+                Console.WriteLine();
+            };
+
+            Console.WriteLine("Check connection string:");
+            Console.WriteLine(connectionString);
+
+            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString, false), verbose))
+            {
+                // the test 
+                var json1 = dbContext.ParentRecords
+                   .Include(e => e.ParentRecordHierarchyRecordMap)
+                   .ThenInclude(e => e.HierarchyRecord)
+                   .Select(e => new { e.FieldA, e.FieldB1 })
+                   .ToJson(cachedJsonFormatter1, chain => chain.Include(e => e.FieldA).Include(e => e.FieldB1));
+
+                // the same 
+                var json2 = dbContext.ParentRecords
+                   .Include(e => e.ParentRecordHierarchyRecordMap)
+                   .ThenInclude(e => e.HierarchyRecord)
+                   .Select(e => new { e.FieldA, e.FieldB1 })
+                   .ToJson(cachedJsonFormatter2);
+
+                if (json1 != json2)
+                    throw new Exception("Something wrong 1");
+
+                var json3 = dbContext.ParentRecords
+                   .Include(e => e.ParentRecordHierarchyRecordMap)
+                   .ThenInclude(e => e.HierarchyRecord)
+                   .Select(e => new Tuple<string, string>(e.FieldA, e.FieldB1))
+                   .ToJson(cachedJsonFormatter3);
+
+                if (json3 != "[{\"Item1\":\"1_A\",\"Item2\":\"1_B\"},{\"Item1\":\"2_A\",\"Item2\":\"2_B\"},{\"Item1\":\"3_A\",\"Item2\":\"3_B\"}]")
+                    throw new Exception("Something wrong 2");
+
+                Include<ParentRecord> include = chain => chain
+                    .IncludeAll(e => e.ParentRecordHierarchyRecordMap)
+                    .ThenInclude(e => e.HierarchyRecord);
+
+                var json4 = dbContext.ParentRecords
+                   .Include(e => e.ParentRecordHierarchyRecordMap)
+                   .ThenInclude(e => e.HierarchyRecord)
+                   .ToJson(cachedJsonFormatter4, include);
+
+                var json5 = dbContext
+                   .Include(include)
+                   .ToJson(cachedJsonFormatter5, include);
+
+                if (json4 != json5)
+                    throw new Exception("Something wrong 3");
+            }
+        }
+        #endregion
     }
 }
