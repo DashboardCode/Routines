@@ -1,4 +1,8 @@
-﻿https://github.com/aspnet/benchmarks
+﻿Move NLogTools, NLogTools.NETCore.Test, NLogTools.NETFramework.Test to separate solution and github project
+
+Compare polyfils injector with COREPOLIFYLLS https://www.npmjs.com/package/core-js  (should be used for VS SPA projects to support IE 11)
+
+https://github.com/aspnet/benchmarks
 
 https://github.com/sveinn-steinarsson/flot-downsample
 
