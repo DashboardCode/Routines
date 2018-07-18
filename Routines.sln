@@ -62,6 +62,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget", "Nuget", "{72DA7AC6-74FB-4BE8-A690-B1A42567F0B6}"
 	ProjectSection(SolutionItems) = preProject
 		Tour\Nuget\CreateNugetPackage.ps1 = Tour\Nuget\CreateNugetPackage.ps1
+		nugetall.ps1 = nugetall.ps1
 		Tour\Nuget\README.md = Tour\Nuget\README.md
 		Tour\Nuget\Routines.1.0.12.nuspec = Tour\Nuget\Routines.1.0.12.nuspec
 	EndProjectSection
