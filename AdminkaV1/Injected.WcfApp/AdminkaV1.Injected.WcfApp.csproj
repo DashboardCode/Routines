@@ -197,10 +197,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NLogTools\NLogTools.csproj">
-      <Project>{0a46eac2-a602-4840-a0f8-b5d82b05fa2a}</Project>
-      <Name>NLogTools</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj">
       <Project>{5CEC7388-FBA6-4542-A23A-5C6A5BA607B9}</Project>
       <Name>Routines.Configuration.Classic</Name>

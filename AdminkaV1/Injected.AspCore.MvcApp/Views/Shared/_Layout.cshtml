@@ -119,11 +119,13 @@
         </div>
     </div>
 
-
-    <environment names="Development">
-        <script src="~/dist/main.js" asp-append-version="true"></script>
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/popper.js/dist/popper.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
-    <environment names="Staging,Production">
+    <environment exclude="Development">
         <script src="~/dist/main.js" asp-append-version="true"></script>
     </environment>
 
@@ -168,14 +170,14 @@
     </div>
     <script>
         //document.addEventListener("DOMContentLoaded", function (event) {
-            var title = $('#dashboardcode-account-box-id-tooltip').removeClass('d-none').remove().html();
-            $('#dashboardcode-account-box-id').tooltip
-                ({
-                    html: true,
-                    title: title,
-                    trigger: "hover focus",
-                    template: '<div class="tooltip" role="tooltip"><div class="tooltip-inner" style="background-color:#EEEEEE; opacity:0.9; color:black; border:0px solid red; "></div></div>'
-                });
+        var title = $('#dashboardcode-account-box-id-tooltip').removeClass('d-none').remove().html();
+        $('#dashboardcode-account-box-id').tooltip
+            ({
+                html: true,
+                title: title,
+                trigger: "hover focus",
+                template: '<div class="tooltip" role="tooltip"><div class="tooltip-inner" style="background-color:#EEEEEE; opacity:0.9; color:black; border:0px solid red; "></div></div>'
+            });
         //});
     </script>
 

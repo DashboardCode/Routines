@@ -15,8 +15,8 @@ $sign = Read-Host 'Enter sign'
 #cd .\Routines.AspNetCore\bin\Release
 #nuget push DashboardCode.Routines.AspNetCore.2.0.1.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
-#cd .\Routines.Configuration.Standard\bin\Release
-#nuget push DashboardCode.Routines.Configuration.Standard.2.0.1.nupkg $sign -Source https://api.nuget.org/v3/index.json
+cd .\Routines.Configuration.Standard\bin\Release
+nuget push DashboardCode.Routines.Configuration.Standard.2.0.2.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 #cd .\Routines.Storage.SqlServer\bin\Release
 #nuget push DashboardCode.Routines.Storage.SqlServer.2.0.1.nupkg $sign -Source https://api.nuget.org/v3/index.json
@@ -31,4 +31,4 @@ $sign = Read-Host 'Enter sign'
 #nuget push DashboardCode.Routines.ActiveDirectory.2.0.1.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 #cd .\Routines.Configuration.Classic\bin\Release
-#nuget push DashboardCode.Routines.Configuration.Classic.2.0.1.nupkg $sign -Source https://api.nuget.org/v3/index.json
+#nuget push DashboardCode.Routines.Configuration.Classic.2.0.2.nupkg $sign -Source https://api.nuget.org/v3/index.json

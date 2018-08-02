@@ -98,9 +98,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     WcfClientManager.AppendWcfClientFaultException(sb, ex);
                     DataAccessEfCoreManager.Append(sb, ex);
                     SqlServerManager.Append(sb, ex);
-#if !NETSTANDARD2_0
                     ActiveDirectoryManager.Append(sb, ex);
-#endif
                     appender?.Invoke(sb, ex);
                 }
             );

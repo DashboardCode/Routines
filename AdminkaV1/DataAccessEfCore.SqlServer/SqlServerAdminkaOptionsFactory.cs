@@ -19,9 +19,16 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
         public void Create(DbContextOptionsBuilder optionsBuilder) 
         {
             if (migrationAssembly != null)
-                optionsBuilder.UseSqlServer(connectionString, sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder.MigrationsAssembly(migrationAssembly));
+                optionsBuilder.UseSqlServer(connectionString, 
+                    sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder
+                    .MigrationsAssembly(migrationAssembly)
+                    .MigrationsHistoryTable("AdminkaDbContextMigrationHistory", "ef"));
             else
-                optionsBuilder.UseSqlServer(connectionString);
+                optionsBuilder.UseSqlServer(connectionString,
+                    sqlServerDbContextOptionsBuilder =>
+                    sqlServerDbContextOptionsBuilder
+                        .MigrationsHistoryTable("AdminkaDbContextMigrationHistory", "ef")
+                        );
 
             var relationalOptions = RelationalOptionsExtension.Extract(optionsBuilder.Options);
             // TODO: Migrate those 2 lines to EF Core 2

@@ -2,3 +2,7 @@ Extensions used:
 
 Visual Studio WCF Connected Service - 
 https://marketplace.visualstudio.com/items?itemName=WCFCORETEAM.VisualStudioWCFConnectedService
+
+Update SDK manually
+https://www.microsoft.com/net/download/archives
+https://www.microsoft.com/net/download/dotnet-core/2.1

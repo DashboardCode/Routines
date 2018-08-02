@@ -30,13 +30,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DashboardCode.NLogTools" Version="1.0.0" />
     <PackageReference Include="DynamicExpresso.Core" Version="2.1.0" />
     <PackageReference Include="Markdown" Version="2.2.1" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\NLogTools\NLogTools.csproj" />
     <ProjectReference Include="..\..\Routines.ActiveDirectory\Routines.ActiveDirectory.csproj" />
     <ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />
     <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />

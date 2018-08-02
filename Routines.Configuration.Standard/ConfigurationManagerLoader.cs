@@ -5,8 +5,8 @@ namespace DashboardCode.Routines.Configuration.Standard
 {
     public class AppSettings : IAppSettings
     {
-        readonly IConfigurationRoot configurationRoot;
-        public AppSettings(IConfigurationRoot configurationRoot) =>
+        readonly IConfiguration configurationRoot;
+        public AppSettings(IConfiguration configurationRoot) =>
             this.configurationRoot = configurationRoot;
 
         public string GetValue(string key)
@@ -19,8 +19,8 @@ namespace DashboardCode.Routines.Configuration.Standard
 
     public class ConnectionStringMap : IConnectionStringMap
     {
-        readonly IConfigurationRoot configurationRoot;
-        public ConnectionStringMap(IConfigurationRoot configurationRoot) =>
+        readonly IConfiguration configurationRoot;
+        public ConnectionStringMap(IConfiguration configurationRoot) =>
             this.configurationRoot = configurationRoot;
 
         public string GetConnectionString(string name = "ConnectionString")
@@ -37,12 +37,12 @@ namespace DashboardCode.Routines.Configuration.Standard
     {
         const string defaultSectionName = "Routines";
         internal readonly List<RoutineResolvable> routineResolvables;
-        readonly IConfigurationRoot configurationRoot;
+        readonly IConfiguration configuration;
 
-        public ConfigurationManagerLoader(IConfigurationRoot configurationRoot, string sectionName = defaultSectionName)
+        public ConfigurationManagerLoader(IConfiguration configuration, string sectionName = defaultSectionName)
         {
-            this.configurationRoot = configurationRoot;
-            var section = configurationRoot.GetSection(sectionName);
+            this.configuration = configuration;
+            var section = configuration.GetSection(sectionName);
             routineResolvables = new List<RoutineResolvable>();
             section.Bind(routineResolvables);
         }

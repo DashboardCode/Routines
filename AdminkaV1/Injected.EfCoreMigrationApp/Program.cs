@@ -20,9 +20,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
             var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
 
             // This application should execute all migrations, therefore dbContext should be setuped with migrations assembly
-            var adminkaStorageConfiguration = ApplicationSettings.CreateMigrationAdminkaStorageConfiguration(MigrationAssembly);
+            var storageConfiguration = ApplicationSettings.CreateMigrationAdminkaStorageConfiguration(MigrationAssembly);
             var routine = new AdminkaRoutineHandler(
-                adminkaStorageConfiguration,
+                storageConfiguration,
                 ApplicationSettings.PerformanceCounters,
                 ApplicationSettings.AuthenticationLogging,
                 ApplicationSettings.ConfigurationContainerFactory,
