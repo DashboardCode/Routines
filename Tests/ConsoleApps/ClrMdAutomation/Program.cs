@@ -102,7 +102,8 @@ namespace ClrMdAutomation
             string propertyName1, 
             string propertyName2)
         {
-            //Expression<Func<StringBuilder, Point, bool>> serializerExp =
+            // Going to create this static code dynamically:
+            // Expression<Func<StringBuilder, Point, bool>> serializerExp =
             //        (sb, t) => SerializeAssociativeArray(sb, t,
             //            (sb1, t1) => SerializeValueProperty(sb1, t1, "X", o1 => o1.X, SerializeValueToString),
             //            (sb2, t2) => SerializeValueProperty(sb2, t2, "Y", o2 => o2.Y, SerializeValueToString)
