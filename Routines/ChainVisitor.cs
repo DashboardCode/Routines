@@ -32,7 +32,7 @@ namespace DashboardCode.Routines
             var name = propertyInfo.Name;
             if (!dictionary.TryGetValue(name, out ChainPropertyNode node))
             {
-                node = new ChainPropertyNode(navigationType, expression, propertyInfo, name, isEnumerable, parent);
+                node = new ChainPropertyNode(navigationType, expression, /*propertyInfo,*/ name, isEnumerable, parent);
                 dictionary.Add(name, node);
             }
             return node;

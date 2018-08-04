@@ -15,17 +15,15 @@ namespace DashboardCode.Routines
     public class ChainPropertyNode : ChainNode
     {
         public readonly LambdaExpression Expression;
-        public readonly PropertyInfo PropertyInfo;
-        public readonly string PropertyName;
+        public readonly string MemberName;
         public readonly bool IsEnumerable;
         public readonly ChainNode Parent;
 
-        public ChainPropertyNode(Type type, LambdaExpression expression, PropertyInfo propertyInfo, string propertyName, bool isEnumerable, ChainNode parent)
+        public ChainPropertyNode(Type type, LambdaExpression expression, string memberName, bool isEnumerable, ChainNode parent)
             : base(type)
         {
             Expression = expression;
-            PropertyInfo = propertyInfo;
-            PropertyName = propertyName;
+            MemberName = memberName;
             IsEnumerable = isEnumerable;
             Parent = parent;
         }
@@ -35,7 +33,7 @@ namespace DashboardCode.Routines
     {
         private static readonly LinkedTree<ChainNode, ChainPropertyNode, string> meta = new LinkedTree<ChainNode, ChainPropertyNode, string>(
             n => n.Children.Values, 
-            n => n.PropertyName, 
+            n => n.MemberName, 
             (n,k)   => n.Children.GetValueOrDefault(k),
             (n)     => new ChainNode(n.Type), 
             (n,p)   => n.CloneChainPropertyNode(p),

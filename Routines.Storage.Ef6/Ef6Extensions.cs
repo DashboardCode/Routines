@@ -86,7 +86,7 @@ namespace DashboardCode.Routines.Storage.Ef6
                     foreach (var n in node.Children)
                     {
                         var child = n.Value;
-                        var propertyInfo = navigationPropertyInfos.FirstOrDefault(p => p.Name == child.PropertyName);
+                        var propertyInfo = navigationPropertyInfos.FirstOrDefault(p => p.Name == child.MemberName);
                         if (propertyInfo != null)
                         {
                             var childDestination = child.CloneChainPropertyNode(destination);
@@ -142,7 +142,7 @@ namespace DashboardCode.Routines.Storage.Ef6
                 foreach (var n in node.Children)
                 {
                     var child = n.Value;
-                    var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.PropertyName);
+                    var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.MemberName);
                     if (propertyInfo != null)
                     {
                         var childDestination = child.CloneChainPropertyNode(destination);

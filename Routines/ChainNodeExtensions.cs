@@ -83,8 +83,8 @@ namespace DashboardCode.Routines
     {
         public static ChainPropertyNode CloneChainPropertyNode(this ChainPropertyNode node, ChainNode parent)
         {
-            var child = new ChainPropertyNode(node.Type, node.Expression, node.PropertyInfo, node.PropertyName, node.IsEnumerable, parent);
-            parent.Children.Add(node.PropertyName, child);
+            var child = new ChainPropertyNode(node.Type, node.Expression,/* node.MemberInfo,*/ node.MemberName, node.IsEnumerable, parent);
+            parent.Children.Add(node.MemberName, child);
             return child;
         }
 
@@ -105,7 +105,7 @@ namespace DashboardCode.Routines
         public static void AddChild(this ChainNode node, PropertyInfo propertyInfo)
         {
             var expression = node.Type.CreatePropertyLambda(propertyInfo);
-            node.Children.Add(propertyInfo.Name, new ChainPropertyNode(propertyInfo.PropertyType, expression, propertyInfo, propertyInfo.Name, false, node));
+            node.Children.Add(propertyInfo.Name, new ChainPropertyNode(propertyInfo.PropertyType, expression,/* propertyInfo, */propertyInfo.Name, false, node));
         }
 
         public static void AppendLeafs(this ChainNode node, LeafRulesDictionaryBase leafRulesDictionaryBase=null)
@@ -261,7 +261,7 @@ namespace DashboardCode.Routines
                 else if (typeInfo.IsValueType)
                 {
                     if (nodes.Count() > 0)
-                        throw new InvalidOperationException($"It is impossible to clone value type's '{type.FullName}' instance specifing includes '{string.Join(", ", nodes.Select(e => e.PropertyName))}' . Value type's instance can be cloned only entirely!");
+                        throw new InvalidOperationException($"It is impossible to clone value type's '{type.FullName}' instance specifing includes '{string.Join(", ", nodes.Select(e => e.MemberName))}' . Value type's instance can be cloned only entirely!");
                     return sourceItem;
                 }
                 else if (typeInfo.IsClass)

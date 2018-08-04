@@ -74,7 +74,7 @@ namespace DashboardCode.Routines.Storage.EfCore
                     foreach (var n in source.Children)
                     {
                         var child = n.Value;
-                        var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.PropertyName);
+                        var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.MemberName);
                         if (propertyInfo != null)
                         {
                             var childDestination = child.CloneChainPropertyNode(destination);
@@ -106,7 +106,7 @@ namespace DashboardCode.Routines.Storage.EfCore
                     foreach (var n in source.Children)
                     {
                         var child = n.Value;
-                        var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.PropertyName);
+                        var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.MemberName);
                         if (propertyInfo != null)
                         {
                             var childDestination = child.CloneChainPropertyNode(destination);

@@ -129,7 +129,7 @@ namespace DashboardCode.Routines.Json
             bool? isNullableStruct = IsNullableStruct(node.Type);
             //var internalNodeOptions = getInternalNodeOptions(node,true);
 
-            var getterLambdaExpression = CreateGetterLambdaExpression(parentType, node.Type, node.PropertyName);
+            var getterLambdaExpression = CreateGetterLambdaExpression(parentType, node.Type, node.MemberName);
             var getterDelegate = getterLambdaExpression.Compile();
             var getterConstantExpression = Expression.Constant(getterDelegate, getterDelegate.GetType());
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
@@ -199,7 +199,7 @@ namespace DashboardCode.Routines.Json
                 GetEnumerablePropertySerializerMethodInfo(nullFormatterExpression != null) :
                 GetPropertySerializerMethodInfo(isNullableStruct, nullFormatterExpression != null);
 
-            var propertySerializationName = internalNodeOptions?.PropertySerializationName ?? node.PropertyName;
+            var propertySerializationName = internalNodeOptions?.PropertySerializationName ?? node.MemberName;
 
             var serializePropertyExpression = CreateSerializePropertyLambda(
                          parentType,

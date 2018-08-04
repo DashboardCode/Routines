@@ -79,6 +79,13 @@ namespace DashboardCode.Routines
             return propertyLambda;
         }
 
+        public static LambdaExpression CreatePropertyLambda(this Type declaringType, string propertyName)
+        {
+            var propertyInfo = declaringType.GetProperty("propertyName");
+            var propertyLambda = CreatePropertyLambda(declaringType, propertyInfo);
+            return propertyLambda;
+        }
+
         public static PropertyInfo GrabDeclaredOrInheritedPoperty(this TypeInfo typeInfo, string propertyName)
         {
             foreach (var p in ListProperties(typeInfo))
