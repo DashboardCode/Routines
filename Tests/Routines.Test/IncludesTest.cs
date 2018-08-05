@@ -148,13 +148,11 @@ namespace DashboardCode.Routines.Test
                     .Include(i => i.CultureInfos)
                     .Include(i => i.StorageModel)
                         .ThenInclude(i => i.Entity)
-                            .ThenInclude(i => i.Namespace)
+                            .ThenIncluding(i => i.Namespace)
+                            .ThenInclude(i => i.Name)
                     .Include(i => i.StorageModel)
                         .ThenInclude(i => i.Key)
-                            .ThenInclude(i => i.Attributes)
-                    .Include(i => i.StorageModel)
-                        .ThenInclude(i => i.Entity)
-                            .ThenInclude(i => i.Name);
+                            .ThenInclude(i => i.Attributes);
 
             var contains2 = include.IsSupersetOf(include2);
 
@@ -178,10 +176,11 @@ namespace DashboardCode.Routines.Test
                 = chain => chain
                     .Include(i => i.StorageModel)
                         .ThenInclude(i => i.Entity)
-                            .ThenInclude(i => i.Namespace)
-                    .Include(i => i.StorageModel)
-                        .ThenInclude(i => i.Entity)
+                            .ThenIncluding(i => i.Namespace)
                             .ThenInclude(i => i.Name);
+            //.Include(i => i.StorageModel)
+            //    .ThenInclude(i => i.Entity)
+            //        .ThenInclude(i => i.Name);
 
             Include<TestModel> include3
                 = includable => includable

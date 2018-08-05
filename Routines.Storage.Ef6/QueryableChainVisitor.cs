@@ -27,18 +27,21 @@ namespace DashboardCode.Routines.Storage.Ef6
         }
         public void Parse<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression, bool changeCurrentNode, string memberName)
         {
-            if (!changeCurrentNode)
-                throw new NotImplementedException("!changeCurrentNode");
-            QueryableText = QueryableText+"."+ expression.GetMemberName();
-            Queryable = Queryable.Include(QueryableText);
+            string newQueryableText = QueryableText + "." + expression.GetMemberName();
+            if (changeCurrentNode)
+            {
+                QueryableText = newQueryableText;
+            }
+            Queryable = Queryable.Include(newQueryableText);
         }
         public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression, bool changeCurrentNode, string memberName = null)
         {
-            if (!changeCurrentNode)
-                throw new NotImplementedException("!changeCurrentNode");
-
-            QueryableText = QueryableText + "." + enumerableExpression.GetMemberName();
-            Queryable = Queryable.Include(QueryableText);
+            string newQueryableText = QueryableText + "." + enumerableExpression.GetMemberName();
+            if (changeCurrentNode)
+            {
+                QueryableText = newQueryableText;
+            }
+            Queryable = Queryable.Include(newQueryableText);
         }
     }
 }

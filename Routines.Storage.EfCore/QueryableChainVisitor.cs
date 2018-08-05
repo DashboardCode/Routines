@@ -28,7 +28,7 @@ namespace DashboardCode.Routines.Storage.EfCore
         public void Parse<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression, bool changeCurrentNode, string memberName = null)
         {
             if (!changeCurrentNode)
-                throw new NotImplementedException("!changeCurrentNode");
+                throw new NotImplementedException("ThenInculding for EF Core is NOT implemented");
 
             if (isEnumerable)
                 Queryable = EntityFrameworkQueryableExtensions.ThenInclude(
@@ -38,10 +38,10 @@ namespace DashboardCode.Routines.Storage.EfCore
                     (IIncludableQueryable<TRootEntity, TMidEntity>)Queryable, expression);
             isEnumerable = false;
         }
-        public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression, bool changeCurrentNode, string memberName = null)
+        public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression,  bool changeCurrentNode, string memberName = null)
         {
             if (!changeCurrentNode)
-                throw new NotImplementedException("!changeCurrentNode");
+                throw new NotImplementedException("ThenInculding for EF Core is NOT implemented");
 
             if (isEnumerable)
                 Queryable = EntityFrameworkQueryableExtensions.ThenInclude(
