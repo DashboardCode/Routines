@@ -70,21 +70,40 @@ namespace DashboardCode.Routines
 
         public static LambdaExpression CreatePropertyLambda(this Type declaringType, PropertyInfo propertyInfo)
         {
-            ParameterExpression eParameterExpression = Expression.Parameter(declaringType, "e");
+            ParameterExpression expression = Expression.Parameter(declaringType, "e");
             var propertyCallExpression = Expression.Property(
-                eParameterExpression,
+                expression,
                 propertyInfo
                 );
-            var propertyLambda = Expression.Lambda(propertyCallExpression, new[] { eParameterExpression });
+            var propertyLambda = Expression.Lambda(propertyCallExpression, new[] { expression });
             return propertyLambda;
+        }
+
+        public static LambdaExpression CreateFieldLambda(this Type declaringType, FieldInfo fieldInfo)
+        {
+            ParameterExpression expression = Expression.Parameter(declaringType, "e");
+            var propertyCallExpression = Expression.Field(
+                expression,
+                fieldInfo
+                );
+            var fieldLambda = Expression.Lambda(propertyCallExpression, new[] { expression });
+            return fieldLambda;
         }
 
         public static LambdaExpression CreatePropertyLambda(this Type declaringType, string propertyName)
         {
-            var propertyInfo = declaringType.GetProperty("propertyName");
+            var propertyInfo = declaringType.GetProperty(propertyName);
             var propertyLambda = CreatePropertyLambda(declaringType, propertyInfo);
             return propertyLambda;
         }
+
+        public static LambdaExpression CreateFieldLambda(this Type declaringType, string fieldName)
+        {
+            var fieldInfo = declaringType.GetField(fieldName);
+            var fieldLambda = CreateFieldLambda(declaringType, fieldInfo);
+            return fieldLambda;
+        }
+
 
         public static PropertyInfo GrabDeclaredOrInheritedPoperty(this TypeInfo typeInfo, string propertyName)
         {
@@ -92,6 +111,14 @@ namespace DashboardCode.Routines
                 if (p.Name == propertyName)
                     return p;
             throw new Exception($"Property '{propertyName}' not found in type '{typeInfo.Name}'");
+        }
+
+        public static FieldInfo GrabDeclaredOrInheritedField(this TypeInfo typeInfo, string fieldName)
+        {
+            foreach (var p in ListFields(typeInfo))
+                if (p.Name == fieldName)
+                    return p;
+            throw new Exception($"Field '{fieldName}' not found in type '{typeInfo.Name}'");
         }
 
         public static IEnumerable<PropertyInfo> ListProperties(this TypeInfo typeInfo)
@@ -104,5 +131,14 @@ namespace DashboardCode.Routines
             }
         }
 
+        public static IEnumerable<FieldInfo> ListFields(this TypeInfo typeInfo)
+        {
+            while (typeInfo != null)
+            {
+                foreach (var p in typeInfo.DeclaredFields)
+                    yield return p;
+                typeInfo = typeInfo.BaseType?.GetTypeInfo();
+            }
+        }
     }
 }

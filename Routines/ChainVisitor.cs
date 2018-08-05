@@ -16,47 +16,78 @@ namespace DashboardCode.Routines
 
         public readonly ChainNode Root = new ChainNode(typeof(TRootEntity));
 
-        private ChainPropertyNode CurrentNode;
+        private ChainMemberNode CurrentNode;
 
-        private static ChainPropertyNode AddIfAbsent(
+        private static ChainMemberNode AddIfAbsent(
             ChainNode parent,
-            LambdaExpression expression,
+            LambdaExpression lambdaExpression,
+            string memberName,
             Type navigationType,
             Type navigationEnumerableType,
             bool isEnumerable
             )
         {
             var dictionary = parent.Children;
-
-            var propertyInfo = ((MemberExpression)expression.Body).Member as PropertyInfo;
-            var name = propertyInfo.Name;
-            if (!dictionary.TryGetValue(name, out ChainPropertyNode node))
+            if (memberName != null)
             {
-                node = new ChainPropertyNode(navigationType, expression, /*propertyInfo,*/ name, isEnumerable, parent);
-                dictionary.Add(name, node);
+                if (!dictionary.TryGetValue(memberName, out ChainMemberNode node))
+                {
+                    node = new ChainMemberNode(navigationType, lambdaExpression, memberName, isEnumerable, parent);
+                    dictionary.Add(memberName, node);
+                }
+                return node;
             }
-            return node;
+            else
+            {
+                if (lambdaExpression.Body is MemberExpression)
+                {
+                    var memberInfo = ((MemberExpression)lambdaExpression.Body).Member;
+                    var name = memberInfo.Name;
+                    if (!dictionary.TryGetValue(name, out ChainMemberNode node))
+                    {
+                        node = new ChainMemberNode(navigationType, lambdaExpression, name, isEnumerable, parent);
+                        dictionary.Add(name, node);
+                    }
+                    return node;
+                }
+                else if (lambdaExpression.Body is MethodCallExpression)
+                {
+                    var methodInfo = ((MethodCallExpression)lambdaExpression.Body).Method;
+                    var name = methodInfo.Name;
+                    if (!dictionary.TryGetValue(name, out ChainMemberNode node))
+                    {
+                        node = new ChainMemberNode(navigationType, lambdaExpression, name, isEnumerable, parent);
+                        dictionary.Add(name, node);
+                    }
+                    return node;
+                }
+                else
+                    throw new NotSupportedException("Not supported type of expression: neither member, neither method call");
+            }
+
         }
 
-        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression)
+        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> navigationExpression, string memberName)
         {
-            var node = AddIfAbsent(Root, navigationExpression,  typeof(TEntity), null, false);
+            var node = AddIfAbsent(Root, navigationExpression, memberName, typeof(TEntity), null, false);
             CurrentNode = node;
         }
-        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression)
+        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> navigationExpression, string memberName)
         {
-            var node = AddIfAbsent(Root, navigationExpression,  typeof(TEntity), typeof(IEnumerable<TEntity>), true);
+            var node = AddIfAbsent(Root, navigationExpression, memberName,  typeof(TEntity), typeof(IEnumerable<TEntity>), true);
             CurrentNode = node;
         }
-        public void Parse<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression)
+        public void Parse<TThenEntity, TEntity>(Expression<Func<TThenEntity, TEntity>> navigationExpression, bool changeCurrenNode, string memberName)
         {
-            var node = AddIfAbsent(CurrentNode, navigationExpression, typeof(TEntity), null, false);
-            CurrentNode = node;
+            var node = AddIfAbsent(CurrentNode, navigationExpression, memberName, typeof(TEntity), null, false);
+            if (changeCurrenNode)
+                CurrentNode = node;
         }
-        public void ParseEnumerable<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression)
+        public void ParseEnumerable<TThenEntity, TEntity>(Expression<Func<TThenEntity, IEnumerable<TEntity>>> navigationExpression, bool changeCurrenNode, string memberName)
         {
-            var node = AddIfAbsent(CurrentNode, navigationExpression, typeof(TEntity), typeof(IEnumerable<TEntity>), true);
-            CurrentNode = node;
+            var node = AddIfAbsent(CurrentNode, navigationExpression, memberName, typeof(TEntity), typeof(IEnumerable<TEntity>), true);
+            if (changeCurrenNode)
+                CurrentNode = node;
         }
     }
 }

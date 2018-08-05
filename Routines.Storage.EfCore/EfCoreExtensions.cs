@@ -77,7 +77,7 @@ namespace DashboardCode.Routines.Storage.EfCore
                         var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.MemberName);
                         if (propertyInfo != null)
                         {
-                            var childDestination = child.CloneChainPropertyNode(destination);
+                            var childDestination = child.CloneChainMemberNode(destination);
                             extractNavigationsAppendKeyLeafsRecursive(child, childDestination);
                         }
                     }
@@ -109,7 +109,7 @@ namespace DashboardCode.Routines.Storage.EfCore
                         var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.MemberName);
                         if (propertyInfo != null)
                         {
-                            var childDestination = child.CloneChainPropertyNode(destination);
+                            var childDestination = child.CloneChainMemberNode(destination);
                             //childDestination.AddChild(propertyInfo);
                             extractNavigationsAppendKeyLeafsRecursive(child, childDestination);
                         }

@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.Routines.Storage;
 using System.Collections.Generic;
 using System.Linq;
+using DashboardCode.Routines.Json;
 
 namespace DashboardCode.Routines.Test
 {
@@ -419,5 +420,168 @@ namespace DashboardCode.Routines.Test
             items.Add(new Item() { F1 = "F1", F2 = "F2", Items = items });
             ObjectExtensions.DetachAll<List<Item>, Item>(items, (i)=>i.Include(e=>e.Items));
         }
+
+        [TestMethod]
+        public void IncludesChildNodeTest1()
+        {
+            var root = new ChainNode(typeof(Point));
+            var child = new ChainMemberNode(
+                     typeof(int),
+                     expression: typeof(Point).CreatePropertyLambda("X"),
+                     memberName: "X", isEnumerable: false, parent: root
+            );
+            root.Children.Add("X", child);
+            var include = ChainNodeExtensions.ComposeInclude<Point>(root);
+            var p = new Point() { X=1, Y=-1};
+            var foramtter = JsonManager.ComposeFormatter<Point>(include);
+            var json = foramtter(p);
+            if (json != "{\"X\":1}")
+                throw new Exception();
+        }
+
+        [TestMethod]
+        public void IncludesChildNodeTest2()
+        {
+            var root = new ChainNode(typeof(Point));
+            var child = root.AddChild("X");
+            var include = ChainNodeExtensions.ComposeInclude<Point>(root);
+            var p = new Point() { X = 1, Y = -1 };
+            var foramtter = JsonManager.ComposeFormatter<Point>(include);
+            var json = foramtter(p);
+            if (json != "{\"X\":1}")
+                throw new Exception();
+        }
+
+        [TestMethod]
+        public void IncludesChildNodeTest1Field()
+        {
+            var root = new ChainNode(typeof(StrangePoint));
+            var child = new ChainMemberNode(
+                     typeof(int),
+                     expression: typeof(StrangePoint).CreateFieldLambda("X"),
+                     memberName: "X", isEnumerable: false, parent: root
+            );
+            root.Children.Add("X", child);
+            var include = ChainNodeExtensions.ComposeInclude<StrangePoint>(root);
+            var p = new StrangePoint() { X = 1, Y = -1 };
+            var foramtter = JsonManager.ComposeFormatter<StrangePoint>(include);
+            var json = foramtter(p);
+            if (json != "{\"X\":1}")
+                throw new Exception();
+        }
+
+        [TestMethod]
+        public void IncludesChildNodeTest2Field()
+        {
+            var root = new ChainNode(typeof(StrangePoint));
+            var child = root.AddChild("X");
+            var child2 = root.AddChild("Point");
+            var child3 = child2.AddChild("Y");
+            var include = ChainNodeExtensions.ComposeInclude<StrangePoint>(root);
+            var xpath = IncludeExtensions.ListLeafXPaths(include);
+            // ------------
+            var parser = new ChainVisitor<StrangePoint>();
+            var includable = new Chain<StrangePoint>(parser);
+            if (include != null)
+                include.Invoke(includable);
+            var node = parser.Root;
+            var c = node.Children.Count();
+            if (c != 2)
+                throw new Exception("<>2");
+            // ------------
+            var p = new StrangePoint() { X = 1, Y = -1, Point =new Point() { X=10, Y=-10} };
+            var foramtter = JsonManager.ComposeFormatter<StrangePoint>(include);
+            var json = foramtter(p);
+            if (json != "{\"X\":1,\"Point\":{\"Y\":-10}}")
+                throw new Exception();
+        }
+
+        [TestMethod]
+        public void IncludesTestMethod1()
+        {
+            Include<StrangePoint> include
+                = chain => chain
+                    .Include(i => i.X)
+                    .Include(i => i.GetPoint())
+                        .ThenInclude(i => i.Y);
+            var xpath = IncludeExtensions.ListLeafXPaths(include);
+            // ------------
+            var parser = new ChainVisitor<StrangePoint>();
+            var includable = new Chain<StrangePoint>(parser);
+            if (include != null)
+                include.Invoke(includable);
+            var node = parser.Root;
+            var c = node.Children.Count();
+            if (c != 2)
+                throw new Exception("<>2");
+            var p = new StrangePoint() { X = 1, Y = -1, Point = new Point() { X = 10, Y = -10 } };
+            var foramtter = JsonManager.ComposeFormatter<StrangePoint>(include);
+            var json = foramtter(p);
+            if (json != "{\"X\":1,\"GetPoint\":{\"Y\":-10}}")
+                throw new Exception();
+        }
+
+        [TestMethod]
+        public void IncludesTestMethod2()
+        {
+            Include<StrangePoint> include
+                = chain => chain
+                    .Include(i => i.X)
+                    .Include(i => i.GetPoint().X+1,"GX");
+            var xpath = IncludeExtensions.ListLeafXPaths(include);
+            // ------------
+            var parser = new ChainVisitor<StrangePoint>();
+            var includable = new Chain<StrangePoint>(parser);
+            if (include != null)
+                include.Invoke(includable);
+            var node = parser.Root;
+            var c = node.Children.Count();
+            if (c != 2)
+                throw new Exception("<>2");
+            var p = new StrangePoint() { X = 1, Y = -1, Point = new Point() { X = 10, Y = -10 } };
+            var foramtter = JsonManager.ComposeFormatter<StrangePoint>(include);
+            var json = foramtter(p);
+            if (json != "{\"X\":1,\"GX\":11}")
+                throw new Exception();
+        }
+
+        [TestMethod]
+        public void IncludesTestMethodAnd()
+        {
+            Include<StrangePoint> include
+                = chain => chain
+                    .Include(i => i.StrangePoint1)
+                        .ThenIncluding(i =>i.Point1)
+                        .ThenInclude(i => i.Point2)
+                    .Include(i => i.StrangePoint2)
+                        .ThenIncluding(i => i.Point1)
+                        .ThenInclude(i => i.Point2);
+
+            var xpath = IncludeExtensions.ListLeafXPaths(include);
+            if (xpath.Count != 4)
+                throw new Exception("bad");
+        }
+    }
+
+    public struct Point
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+    }
+
+    public struct StrangePoint
+    {
+        public int X;
+        public int Y;
+        public Point Point;
+        public Point GetPoint() { return Point; }
+        public StrangePointF StrangePoint1;
+        public StrangePointF StrangePoint2;
+    }
+
+    public struct StrangePointF
+    {
+        public Point Point1;
+        public Point Point2;
     }
 }

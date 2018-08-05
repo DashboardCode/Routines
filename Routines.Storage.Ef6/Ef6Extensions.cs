@@ -89,7 +89,7 @@ namespace DashboardCode.Routines.Storage.Ef6
                         var propertyInfo = navigationPropertyInfos.FirstOrDefault(p => p.Name == child.MemberName);
                         if (propertyInfo != null)
                         {
-                            var childDestination = child.CloneChainPropertyNode(destination);
+                            var childDestination = child.CloneChainMemberNode(destination);
                             extractNavigationsAppendKeyLeafsRecursive(child, childDestination, model);
                         }
                     }
@@ -145,7 +145,7 @@ namespace DashboardCode.Routines.Storage.Ef6
                     var propertyInfo = navigationPropertyInfos.FirstOrDefault(e => e.Name == child.MemberName);
                     if (propertyInfo != null)
                     {
-                        var childDestination = child.CloneChainPropertyNode(destination);
+                        var childDestination = child.CloneChainMemberNode(destination);
                         extractNavigationsAppendKeyLeafsRecursive(child, childDestination, model);
                     }
                 }

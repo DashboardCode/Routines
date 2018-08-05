@@ -34,7 +34,7 @@ namespace DashboardCode.Routines.Json
             bool handleNullProperty,
             Func<StringBuilder, bool> nullArraySerializer,
             bool handleNullArrayProperty,
-            string propertySerializationName
+            string serializationName
             )
         {
             HandleEmptyObjectLiteral = handleEmptyObjectLiteral;
@@ -43,7 +43,7 @@ namespace DashboardCode.Routines.Json
             HandleNullProperty = handleNullProperty;
             NullArraySerializer = nullArraySerializer;
             HandleNullArrayProperty = handleNullArrayProperty;
-            PropertySerializationName = propertySerializationName;
+            SerializationName = serializationName;
         }
 
         public readonly bool HandleEmptyObjectLiteral = true;
@@ -53,7 +53,7 @@ namespace DashboardCode.Routines.Json
         public readonly bool HandleNullProperty = true;
         public readonly Func<StringBuilder, bool> NullArraySerializer;
         public readonly bool HandleNullArrayProperty = true;
-        public readonly string PropertySerializationName = null;
+        public readonly string SerializationName = null;
     }
 
     internal class SerializersPair
@@ -121,7 +121,7 @@ namespace DashboardCode.Routines.Json
             }
         }
 
-        public static void ConfigureSerializeProperty(ChainPropertyNode node, Type parentType, List<Expression> propertyExpressions
+        public static void ConfigureSerializeProperty(ChainMemberNode node, Type parentType, List<Expression> propertyExpressions
             , Func<ChainNode, SerializerOptions> getSerialiazerOptions
             , Func<ChainNode, InternalNodeOptions> getInternalNodeOptions)
         {
@@ -129,7 +129,7 @@ namespace DashboardCode.Routines.Json
             bool? isNullableStruct = IsNullableStruct(node.Type);
             //var internalNodeOptions = getInternalNodeOptions(node,true);
 
-            var getterLambdaExpression = CreateGetterLambdaExpression(parentType, node.Type, node.MemberName);
+            var getterLambdaExpression = node.Expression;
             var getterDelegate = getterLambdaExpression.Compile();
             var getterConstantExpression = Expression.Constant(getterDelegate, getterDelegate.GetType());
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
@@ -199,7 +199,7 @@ namespace DashboardCode.Routines.Json
                 GetEnumerablePropertySerializerMethodInfo(nullFormatterExpression != null) :
                 GetPropertySerializerMethodInfo(isNullableStruct, nullFormatterExpression != null);
 
-            var propertySerializationName = internalNodeOptions?.PropertySerializationName ?? node.MemberName;
+            var propertySerializationName = internalNodeOptions?.SerializationName ?? node.MemberName;
 
             var serializePropertyExpression = CreateSerializePropertyLambda(
                          parentType,
@@ -223,14 +223,6 @@ namespace DashboardCode.Routines.Json
         {
             var constantExpression = Expression.Constant(nullSerializer, typeof(Func<StringBuilder, bool>));
             return constantExpression;
-        }
-
-        private static LambdaExpression CreateGetterLambdaExpression(Type entityType, Type propertyType, string propertyName)
-        {
-            var o = Expression.Parameter(entityType, "o");
-            var getterMemberExpression = Expression.Property(o, entityType.GetTypeInfo().GrabDeclaredOrInheritedPoperty(propertyName));
-            var getterExpression = Expression.Lambda(getterMemberExpression, new[] { o });
-            return getterExpression;
         }
 
         private static LambdaExpression CreateSerializeObjectLambda(Type objectType, bool handleEmptyPropertyList, Expression[] serializeProperties)

@@ -15,23 +15,28 @@ namespace DashboardCode.Routines.Storage.Ef6
         public QueryableChainVisitor(IQueryable<TRootEntity> rootQueryable) =>
             Queryable = rootQueryable ?? throw new ArgumentNullException(nameof(rootQueryable));
 
-        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
+        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression, string memberName = null)
         {
             QueryableText = expression.GetMemberName();
             Queryable = Queryable.Include(QueryableText);
         }
-        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression)
+        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression, string memberName = null)
         {
             QueryableText = enumerableExpression.GetMemberName();
             Queryable = Queryable.Include(QueryableText);
         }
-        public void Parse<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression)
+        public void Parse<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression, bool changeCurrentNode, string memberName)
         {
+            if (!changeCurrentNode)
+                throw new NotImplementedException("!changeCurrentNode");
             QueryableText = QueryableText+"."+ expression.GetMemberName();
             Queryable = Queryable.Include(QueryableText);
         }
-        public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression)
+        public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression, bool changeCurrentNode, string memberName = null)
         {
+            if (!changeCurrentNode)
+                throw new NotImplementedException("!changeCurrentNode");
+
             QueryableText = QueryableText + "." + enumerableExpression.GetMemberName();
             Queryable = Queryable.Include(QueryableText);
         }

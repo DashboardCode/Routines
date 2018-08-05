@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace DashboardCode.Routines
 {
     public class ChainNode
     {
-        public readonly Dictionary<string, ChainPropertyNode> Children = new Dictionary<string, ChainPropertyNode>();
+        public readonly Dictionary<string, ChainMemberNode> Children = new Dictionary<string, ChainMemberNode>();
         public readonly Type Type;
         public ChainNode(Type type) => Type = type;
     }
 
-    public class ChainPropertyNode : ChainNode
+    public class ChainMemberNode : ChainNode
     {
         public readonly LambdaExpression Expression;
         public readonly string MemberName;
         public readonly bool IsEnumerable;
         public readonly ChainNode Parent;
 
-        public ChainPropertyNode(Type type, LambdaExpression expression, string memberName, bool isEnumerable, ChainNode parent)
+        public ChainMemberNode(Type type, LambdaExpression expression, string memberName, bool isEnumerable, ChainNode parent)
             : base(type)
         {
             Expression = expression;
@@ -31,20 +30,20 @@ namespace DashboardCode.Routines
 
     public static class ChainNodeTree
     {
-        private static readonly LinkedTree<ChainNode, ChainPropertyNode, string> meta = new LinkedTree<ChainNode, ChainPropertyNode, string>(
+        private static readonly LinkedTree<ChainNode, ChainMemberNode, string> meta = new LinkedTree<ChainNode, ChainMemberNode, string>(
             n => n.Children.Values, 
             n => n.MemberName, 
             (n,k)   => n.Children.GetValueOrDefault(k),
             (n)     => new ChainNode(n.Type), 
-            (n,p)   => n.CloneChainPropertyNode(p),
+            (n,p)   => n.CloneChainMemberNode(p),
             (n)     => n.Parent,
             (n1,n2) => n1.Type==n2.Type
         );
 
-        public static string FindLinkedRootXPath(ChainPropertyNode node) =>
+        public static string FindLinkedRootXPath(ChainMemberNode node) =>
              TreeExtensions.FindLinkedRootXPath(meta, node);
 
-        public static ChainNode FindLinkedRootPath(ChainPropertyNode node) =>
+        public static ChainNode FindLinkedRootPath(ChainMemberNode node) =>
              TreeExtensions.FindLinkedRootPath(meta, node);
 
         public static bool IsEqualTo(ChainNode node1, ChainNode node2) =>

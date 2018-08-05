@@ -64,7 +64,7 @@ namespace DashboardCode.Routines.Json
                         handleNullProperty : handleNullProperty,
                         nullArraySerializer : nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                         handleNullArrayProperty : handleNullArrayProperty,
-                        propertySerializationName: null
+                        serializationName: null
                         )
                 );
             config?.Invoke(rulesDictionary);
@@ -230,7 +230,7 @@ namespace DashboardCode.Routines.Json
                         handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                         nullSerializer: nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                         nullArraySerializer: nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
-                        propertySerializationName: null)
+                        serializationName: null)
                 );
             config?.Invoke(rulesDictionary);
 

@@ -165,7 +165,7 @@ namespace DashboardCode.Routines
 
         public static bool Equals<T>(T entity1, T entity2, Include<T> include = null)
         {
-            IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
+            IEnumerable<ChainMemberNode> nodes = new List<ChainMemberNode>();
             if (include != null)
                 nodes = include.CreateChainNode().Children.Values;
             return ChainNodeExtensions.EqualsNodes(entity1, entity2, nodes);
@@ -174,7 +174,7 @@ namespace DashboardCode.Routines
         public static bool EqualsAll<TCol, T>(TCol entity1, TCol entity2, Include<T> include = null)
             where TCol: IEnumerable<T>
         {
-            IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
+            IEnumerable<ChainMemberNode> nodes = new List<ChainMemberNode>();
             if (include != null)
                 nodes = include.CreateChainNode().Children.Values;
             return ChainNodeExtensions.EqualsNodes(entity1, entity2, nodes);
@@ -183,7 +183,7 @@ namespace DashboardCode.Routines
         public static void Copy<T>(T source, T destination, Include<T> include = null, IReadOnlyCollection<Type> supportedTypes = null)
             where T : class
         {
-            IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
+            IEnumerable<ChainMemberNode> nodes = new List<ChainMemberNode>();
             if (include != null)
                 nodes = include.CreateChainNode().Children.Values;
             ChainNodeExtensions.CopyNodes(source, destination, nodes, supportedTypes);
@@ -192,7 +192,7 @@ namespace DashboardCode.Routines
         public static void CopyAll<TCol, T>(TCol source, TCol destination, Include<T> include = null, IReadOnlyCollection<Type> supportedTypes = null)
             where TCol : IEnumerable<T>
         {
-            IEnumerable<ChainPropertyNode> nodes = new List<ChainPropertyNode>();
+            IEnumerable<ChainMemberNode> nodes = new List<ChainMemberNode>();
             if (include != null)
                 nodes = include.CreateChainNode().Children.Values;
             ChainNodeExtensions.CopyNodes(source, destination, nodes, supportedTypes);

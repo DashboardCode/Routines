@@ -15,19 +15,22 @@ namespace DashboardCode.Routines.Storage.EfCore
         public QueryableChainVisitor(IQueryable<TRootEntity> rootQueryable) =>
             Queryable = rootQueryable ?? throw new ArgumentNullException(nameof(rootQueryable));
 
-        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression)
+        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression, string memberName=null)
         {
             Queryable = EntityFrameworkQueryableExtensions.Include(Queryable, expression);
             isEnumerable = false;
         }
-        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression)
+        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression, string memberName = null)
         {
             Queryable = EntityFrameworkQueryableExtensions.Include(Queryable, enumerableExpression);
             isEnumerable = true;
         }
-        public void Parse<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression)
+        public void Parse<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression, bool changeCurrentNode, string memberName = null)
         {
-            if(isEnumerable)
+            if (!changeCurrentNode)
+                throw new NotImplementedException("!changeCurrentNode");
+
+            if (isEnumerable)
                 Queryable = EntityFrameworkQueryableExtensions.ThenInclude(
                     (IIncludableQueryable<TRootEntity, IEnumerable<TMidEntity>>)Queryable, expression);
             else
@@ -35,8 +38,11 @@ namespace DashboardCode.Routines.Storage.EfCore
                     (IIncludableQueryable<TRootEntity, TMidEntity>)Queryable, expression);
             isEnumerable = false;
         }
-        public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression)
+        public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression, bool changeCurrentNode, string memberName = null)
         {
+            if (!changeCurrentNode)
+                throw new NotImplementedException("!changeCurrentNode");
+
             if (isEnumerable)
                 Queryable = EntityFrameworkQueryableExtensions.ThenInclude(
                     (IIncludableQueryable<TRootEntity, IEnumerable<TMidEntity>>)Queryable, enumerableExpression);

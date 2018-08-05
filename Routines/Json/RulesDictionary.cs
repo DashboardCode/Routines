@@ -229,7 +229,7 @@ namespace DashboardCode.Routines.Json
         private Dictionary<Type, SerializerOptions> GetDictionary(ChainNode node)
         {
             var theDictionary = default(Dictionary<Type, SerializerOptions>);
-            if (node is ChainPropertyNode chainPropertyNode)
+            if (node is ChainMemberNode chainPropertyNode)
             {
                 var path = ChainNodeTree.FindLinkedRootPath(chainPropertyNode);
                 for (int i = subsets.Count - 1; i >= 0; i--)

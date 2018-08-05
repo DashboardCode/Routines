@@ -81,9 +81,9 @@ namespace DashboardCode.Routines
 
     public static class ChainNodeExtensions
     {
-        public static ChainPropertyNode CloneChainPropertyNode(this ChainPropertyNode node, ChainNode parent)
+        public static ChainMemberNode CloneChainMemberNode(this ChainMemberNode node, ChainNode parent)
         {
-            var child = new ChainPropertyNode(node.Type, node.Expression,/* node.MemberInfo,*/ node.MemberName, node.IsEnumerable, parent);
+            var child = new ChainMemberNode(node.Type, node.Expression,/* node.MemberInfo,*/ node.MemberName, /*node.ChainMemberNodeExpressionType,*/ node.IsEnumerable, parent);
             parent.Children.Add(node.MemberName, child);
             return child;
         }
@@ -102,10 +102,32 @@ namespace DashboardCode.Routines
             return @value;
         }
 
-        public static void AddChild(this ChainNode node, PropertyInfo propertyInfo)
+        public static ChainMemberNode AddChild(this ChainNode node, string memberName)
+        {
+            var propertyInfo = node.Type.GetProperty(memberName);
+            if (propertyInfo!=null)
+                return AddChild(node, propertyInfo);
+            else
+            {
+                var fieldInfo = node.Type.GetField(memberName);
+                return AddChild(node, fieldInfo);
+            }
+        }
+
+        public static ChainMemberNode AddChild(this ChainNode node, PropertyInfo propertyInfo)
         {
             var expression = node.Type.CreatePropertyLambda(propertyInfo);
-            node.Children.Add(propertyInfo.Name, new ChainPropertyNode(propertyInfo.PropertyType, expression,/* propertyInfo, */propertyInfo.Name, false, node));
+            var child = new ChainMemberNode(propertyInfo.PropertyType, expression, propertyInfo.Name, /*chainMemberNodeExpressionType: ChainMemberNodeExpressionType.PROPERTY, */isEnumerable: false, node);
+            node.Children.Add(propertyInfo.Name, child);
+            return child;
+        }
+
+        public static ChainMemberNode AddChild(this ChainNode node, FieldInfo fieldInfo)
+        {
+            var expression = node.Type.CreateFieldLambda(fieldInfo);
+            var child = new ChainMemberNode(fieldInfo.FieldType, expression, fieldInfo.Name, /*chainMemberNodeExpressionType: ChainMemberNodeExpressionType.FIELD,*/ isEnumerable:false, node);
+            node.Children.Add(fieldInfo.Name, child);
+            return child;
         }
 
         public static void AppendLeafs(this ChainNode node, LeafRulesDictionaryBase leafRulesDictionaryBase=null)
@@ -125,7 +147,7 @@ namespace DashboardCode.Routines
 
         public static Include<T> ComposeInclude<T>(this ChainNode root)
         {
-            var parents = new ChainPropertyNode[0];
+            var parents = new ChainMemberNode[0];
             var entityType = root.Type;
             Type rootChainType = typeof(Chain<>).MakeGenericType(entityType);
             ParameterExpression tParameterExpression = Expression.Parameter(rootChainType, "t");
@@ -139,34 +161,34 @@ namespace DashboardCode.Routines
             return @destination;
         }
 
-        private static int AddLevelRecursive(ChainNode root, ChainPropertyNode[] parents, int number, Expression inExpression, out Expression outExpression)
+        private static int AddLevelRecursive(ChainNode root, ChainMemberNode[] parents, int number, Expression inExpression, out Expression outExpression)
         {
             var @value = number;
             var node = parents.Length == 0 ? root : parents[parents.Length - 1];
             outExpression = null;
             foreach (var childPair in node.Children)
             {
-                var propertyNode = childPair.Value;
+                var memberNode = childPair.Value;
 
-                var modifiedParents = new ChainPropertyNode[parents.Length + 1];
+                var modifiedParents = new ChainMemberNode[parents.Length + 1];
                 parents.CopyTo(modifiedParents, 0);
-                modifiedParents[parents.Length] = propertyNode;
+                modifiedParents[parents.Length] = memberNode;
 
-                if (propertyNode.Children.Count != 0)
+                if (memberNode.Children.Count != 0)
                 {
                     @value = AddLevelRecursive(root, modifiedParents, @value, inExpression, out outExpression);
                     inExpression = outExpression;
                 }
                 else
                 {
-                    @value = AddProperty(root, modifiedParents, @value, inExpression, out outExpression);
+                    @value = AddMember(root, modifiedParents, @value, inExpression, out outExpression);
                     inExpression = outExpression;
                 }
             }
             return @value;
         }
 
-        private static int AddProperty(ChainNode root, ChainPropertyNode[] parents, int number, Expression inExpression, out Expression outExpression)
+        private static int AddMember(ChainNode root, ChainMemberNode[] parents, int number, Expression inExpression, out Expression outExpression)
         {
             bool isRoot = true;
             outExpression = null;
@@ -208,9 +230,10 @@ namespace DashboardCode.Routines
                         includeMethodInfo = includeGenericMethodInfo.MakeGenericMethod(p.Type);
                     }
                 }
-                var propertyLambda = p.Expression;
-
-                var methodCallExpression = Expression.Call(inExpression, includeMethodInfo, new[] { propertyLambda });
+                var lambda = p.Expression;
+                var name = p.MemberName;
+                Expression pExp = Expression.Constant(name, typeof(string));
+                var methodCallExpression = Expression.Call(inExpression, includeMethodInfo, new[] { lambda, pExp });
                 inExpression = methodCallExpression;
 
                 isRoot = false;
@@ -233,7 +256,7 @@ namespace DashboardCode.Routines
             return ChainNodeTree.ListXPaths(node);
         }
 
-        private static void ListLeafTypesRecursive(this IEnumerable<ChainPropertyNode> nodes, List<Type> types)
+        private static void ListLeafTypesRecursive(this IEnumerable<ChainMemberNode> nodes, List<Type> types)
         {
             foreach (var node in nodes)
             {
@@ -244,7 +267,7 @@ namespace DashboardCode.Routines
             }
         }
 
-        private static object CloneItem(object sourceItem, IEnumerable<ChainPropertyNode> nodes, IReadOnlyCollection<Type> supportedTypes)
+        private static object CloneItem(object sourceItem, IEnumerable<ChainMemberNode> nodes, IReadOnlyCollection<Type> supportedTypes)
         {
             if (sourceItem == null)
             {
@@ -281,7 +304,7 @@ namespace DashboardCode.Routines
         internal static void CopyNodes(
             object source,
             object destination,
-            IEnumerable<ChainPropertyNode> nodes,
+            IEnumerable<ChainMemberNode> nodes,
             IReadOnlyCollection<Type> supportedTypes)
         {
             if (source is Array sourceArray)
@@ -385,7 +408,7 @@ namespace DashboardCode.Routines
             }
         }
 
-        private static bool EqualsItem(object entity1Item, object entity2Item, IEnumerable<ChainPropertyNode> nodes)
+        private static bool EqualsItem(object entity1Item, object entity2Item, IEnumerable<ChainMemberNode> nodes)
         {
             if (entity1Item == null && entity2Item == null)
                 return true;
@@ -402,7 +425,7 @@ namespace DashboardCode.Routines
         internal static bool EqualsNodes(
             object entity1,
             object entity2,
-            IEnumerable<ChainPropertyNode> nodes)
+            IEnumerable<ChainMemberNode> nodes)
         {
             bool @value = true;
 
@@ -510,7 +533,7 @@ namespace DashboardCode.Routines
         public static string FindLinkedRootXPath(this ChainNode node)
         {
             var @value = default(string);
-            if (node is ChainPropertyNode chainPropertyNode)
+            if (node is ChainMemberNode chainPropertyNode)
                 @value = ChainNodeTree.FindLinkedRootXPath(chainPropertyNode);
             else
                 @value = "/";
