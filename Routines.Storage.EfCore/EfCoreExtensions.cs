@@ -8,10 +8,20 @@ namespace DashboardCode.Routines.Storage.EfCore
     {
         public static IQueryable<T> Include<T>(this IQueryable<T> query, Include<T> include) where T: class
         {
-            var iState = new QueryableChainVisitor<T>(query);
-            var includable = new Chain<T>(iState);
-            include?.Invoke(includable);
-            return iState.Queryable;
+            if (include == null)
+                return query;
+            var paths = include.ListLeafKeyPaths();
+            foreach(var p in paths)
+            {
+                var joined = string.Join(".", p);
+                query = query.Include(joined);
+            }
+            return query;
+
+            //var iState = new QueryableChainVisitor<T>(query);
+            //var includable = new Chain<T>(iState);
+            //include?.Invoke(includable);
+            //return iState.Queryable;
         }
         public static void Detach<T>(this DbContext context, T entity, Include<T> include) where T : class
         {

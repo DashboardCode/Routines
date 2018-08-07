@@ -49,10 +49,10 @@ namespace Benchmark
             Include<Box> include = (i) => i.IncludeAll(e => e.Rows);
             var include2 = include.AppendLeafs();
 
-            var process = new ChainVisitor<Box>();
-            var chain = new Chain<Box>(process);
+            var visitor = new ChainVisitor<Box>();
+            var chain = new Chain<Box>(visitor);
             include2.Invoke(chain);
-            var serializerNode = process.Root;
+            var serializerNode = visitor.Root;
             var include3 = serializerNode.ComposeInclude<Box>();
 
             formatter1 = JsonManager.ComposeFormatter(include3, stringBuilderCapacity: 4000);

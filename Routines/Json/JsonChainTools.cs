@@ -126,7 +126,7 @@ namespace DashboardCode.Routines.Json
             , Func<ChainNode, InternalNodeOptions> getInternalNodeOptions)
         {
 
-            bool? isNullableStruct = IsNullableStruct(node.Type);
+            bool? isNullableValueType = IsNullableStruct(node.Type);
             //var internalNodeOptions = getInternalNodeOptions(node,true);
 
             var getterLambdaExpression = node.Expression;
@@ -166,7 +166,7 @@ namespace DashboardCode.Routines.Json
 
                 MethodCallExpression methodCallExpression = CreateSerializeArrayMethodCall(
                     serializationType,
-                    isNullableStruct,
+                    isNullableValueType,
                     itemSerializers.SerializerExpression,
                     nullItemSerializerExpression, //itemSerializers.NullSerializer,
                     sbParameterExpression,
@@ -194,10 +194,10 @@ namespace DashboardCode.Routines.Json
                 }
                 //nullFormatterExpression = expressions.NullSerializer;
             }
-
+            bool isLeaf = node.Children.Count ==  0;
             MethodInfo propertySerializerMethodInfo = (node.IsEnumerable) ?
                 GetEnumerablePropertySerializerMethodInfo(nullFormatterExpression != null) :
-                GetPropertySerializerMethodInfo(isNullableStruct, nullFormatterExpression != null);
+                GetPropertySerializerMethodInfo(isLeaf, isNullableValueType, nullFormatterExpression != null);
 
             var propertySerializationName = internalNodeOptions?.SerializationName ?? node.MemberName;
 
@@ -322,7 +322,7 @@ namespace DashboardCode.Routines.Json
             return serializePropertyMethod;
         }
 
-        private static MethodInfo GetPropertySerializerMethodInfo(bool? isNullableValueType, bool handleNullProperty)
+        private static MethodInfo GetPropertySerializerMethodInfo(bool isLeaf, bool? isNullableValueType, bool handleNullProperty)
         {
             MethodInfo serializePropertyMethod;
             if (isNullableValueType == null)
@@ -334,12 +334,19 @@ namespace DashboardCode.Routines.Json
             }
             else
             {
-                if (isNullableValueType.Value)
+                if (isNullableValueType.Value && isLeaf)
                 {
                     if (!handleNullProperty)
                         serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNValueProperty));
                     else
                         serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull));
+                }
+                else if (isNullableValueType.Value && !isLeaf)
+                {
+                    if (!handleNullProperty)
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNValueNavProperty));
+                    else
+                        serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeNValueNavPropertyHandleNull));
                 }
                 else
                 {

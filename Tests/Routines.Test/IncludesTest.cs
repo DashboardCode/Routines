@@ -560,6 +560,23 @@ namespace DashboardCode.Routines.Test
             if (xpath.Count != 4)
                 throw new Exception("bad");
         }
+
+        [TestMethod]
+        public void IncludesTestNullable()
+        {
+            Include<StrangePointF> include
+                = chain => chain
+                    .Include(i => i.NextPoint)
+                        .ThenIncluding(i => i.Value.X);
+            var points = new[] { new StrangePointF() { NextPoint = null }, new StrangePointF() { NextPoint = new Point() { X=1, Y=-1} } };
+            var p = new StrangePointF() { NextPoint = null };
+            var formatter = JsonManager.ComposeEnumerableFormatter(include);
+            var json = formatter(points);
+
+            var xpath = IncludeExtensions.ListLeafXPaths(include);
+            if (json != "[{\"NextPoint\":null},{\"NextPoint\":{\"X\":1}}]")
+                throw new Exception("bad");
+        }
     }
 
     public struct Point
@@ -582,5 +599,7 @@ namespace DashboardCode.Routines.Test
     {
         public Point Point1;
         public Point Point2;
+        public Point? NextPoint;
     }
+
 }

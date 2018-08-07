@@ -34,6 +34,12 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Test
         {
             DbContextTests.SqlServerGetJson(connectionString);
         }
+
+        [TestMethod]
+        public void SqlServerNavigation()
+        {
+            DbContextTests.SqlServerNavigation(connectionString);
+        }
 #endif
     }
 }

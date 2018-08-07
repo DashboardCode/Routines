@@ -238,6 +238,32 @@ namespace DashboardCode.Routines.Json
             }
             return notEmpty;
         }
+
+        public static bool SerializeNValueNavPropertyHandleNull<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
+            Func<T, TProp?> getter, Func<StringBuilder, TProp?, bool> serializer, Func<StringBuilder, bool> nullSerializer) where TProp : struct
+        {
+            stringBuilder.Append('"').Append(propertyName).Append('"').Append(':');
+            var nullableValue = getter(t);
+            var notEmpty = (nullableValue.HasValue) ? serializer(stringBuilder, nullableValue) : nullSerializer(stringBuilder);
+            if (!notEmpty)
+                stringBuilder.Length -= (propertyName.Length + 3);
+            return notEmpty;
+        }
+
+        public static bool SerializeNValueNavProperty<T, TProp>(StringBuilder stringBuilder, T t, string propertyName,
+            Func<T, TProp?> getter, Func<StringBuilder, TProp?, bool> serializer) where TProp : struct
+        {
+            var notEmpty = false;
+            var nullableValue = getter(t);
+            if (nullableValue.HasValue)
+            {
+                stringBuilder.Append('"').Append(propertyName).Append('"').Append(':');
+                notEmpty = serializer(stringBuilder, nullableValue);
+                if (!notEmpty)
+                    stringBuilder.Length -= (propertyName.Length + 3);
+            }
+            return notEmpty;
+        }
         #endregion
 
         #region Serialize Ref Property

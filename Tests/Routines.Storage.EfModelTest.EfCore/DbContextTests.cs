@@ -117,6 +117,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             Do(connectionString, false);
         }
 
+
         
         internal static void SqlServerTest2(string connectionString)
         {
@@ -240,6 +241,24 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 
 
         #region JSON
+        internal static void SqlServerNavigation(string connectionString)
+        {
+            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString)))
+            {
+                TestService.Clear(new AdoBatch(dbContext));
+                TestService.Reset(StorageFactory.CreateStorage(dbContext));
+
+                Include<ParentRecord> include = chain => chain
+                    .IncludeAll(e => (e as ParentRecord).ChildRecords)
+                    .ThenIncluding(e => e.ParentRecord)
+                    .ThenIncluding(e => e.TypeRecord);
+
+                var list = dbContext.ParentRecords.Include(include).ToList();
+                 
+            }
+
+        }
+
         static CachedFormatter cachedJsonFormatter1 = new CachedFormatter();
         static CachedFormatter cachedJsonFormatter2 = new CachedFormatter();
         static CachedFormatter cachedJsonFormatter3 = new CachedFormatter();
