@@ -16,15 +16,14 @@ namespace Benchmark
     [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
-    public class BenchmarkJson
+    public class BenchmarkComposeFormatter
     {
         static Box box;
         static List<Row> testData = new List<Row>();
-        static Func<Box, string> formatter1;
-        static Func<StringBuilder, Box, bool> serializer2;
-        static Func<StringBuilder, Box, bool> serializer4;
-        //static NExpJsonSerializer<Box> serializer3;
-        static BenchmarkJson()
+        static Func<Box, string> composeFormatterDelegate;
+        static Func<StringBuilder, Box, bool> dslRoutineExpressionManuallyConstruted;
+        static Func<StringBuilder, Box, bool> dslRoutineDelegateManuallyConstrutedFormatter;
+        static BenchmarkComposeFormatter()
         {
             for(int i=0;i<600;i++)
             {
@@ -46,18 +45,12 @@ namespace Benchmark
             }
             box = new Box { Rows = testData };
 
-            Include<Box> include = (i) => i.IncludeAll(e => e.Rows);
-            var include2 = include.AppendLeafs();
+            Include<Box> include = (chain => chain.IncludeAll(e => e.Rows));
+            var includeWithLeafs = include.AppendLeafs();
 
-            var visitor = new ChainVisitor<Box>();
-            var chain = new Chain<Box>(visitor);
-            include2.Invoke(chain);
-            var serializerNode = visitor.Root;
-            var include3 = serializerNode.ComposeInclude<Box>();
+            composeFormatterDelegate = JsonManager.ComposeFormatter(includeWithLeafs, stringBuilderCapacity: 4000);
 
-            formatter1 = JsonManager.ComposeFormatter(include3, stringBuilderCapacity: 4000);
-
-            Expression<Func<StringBuilder, Box, bool>> serializer2Exp = 
+            Expression<Func<StringBuilder, Box, bool>> dslRoutineExpressionManuallyConstrutedExpression = 
                     (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
                         (sb, t) => JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull(sb, t, "Rows",  o => o.Rows,
                             (sb2, t2) => JsonComplexStringBuilderExtensions.SerializeRefArrayHandleEmpty(sb2, t2,
@@ -84,9 +77,9 @@ namespace Benchmark
                             JsonValueStringBuilderExtensions.NullSerializer
                         )
                     );
-            serializer2 = serializer2Exp.Compile();
+            dslRoutineExpressionManuallyConstruted = dslRoutineExpressionManuallyConstrutedExpression.Compile();
 
-            serializer4 = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
+            dslRoutineDelegateManuallyConstrutedFormatter = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
                         (sb, t) => JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull(sb, t, "Rows", o => o.Rows,
                             (sb2, t2) => JsonComplexStringBuilderExtensions.SerializeRefArrayHandleEmpty(sb2, t2,
                                 (sb3, t3) =>
@@ -111,56 +104,93 @@ namespace Benchmark
                               ),
                             JsonValueStringBuilderExtensions.NullSerializer
                         ));
-
-            Include < Box> includeAlt = (i) => i.IncludeAll(e => e.Rows);
-            //serializer3 = includeAlt.BuildNExpJsonSerializer();
         }
 
-        //[Benchmark]
-        public string RoutineExpression()
+        [Benchmark]
+        public string fake_expressionManuallyConstruted()
         {
-            var sb = new StringBuilder(4000);
-            serializer2(sb, box);
+            var sb = new StringBuilder();
+            dslRoutineExpressionManuallyConstruted(sb, box);
             var json = sb.ToString();
             return json;
         }
 
 
-        //[Benchmark]
-        //public string RoutineInterpretated()
-        //{
-        //    var text = serializer3.Serialize(box);
-        //    return text;
-        //}
-
         [Benchmark]
-        public string RoutineExpressionCompiled()
+        public string dslRoutineComposeFormatter()
         {
-            var json = formatter1(box);
+            var json = composeFormatterDelegate(box);
             return json;
         }
 
 
         [Benchmark]
-        public string RoutineFunc()
+        public string fake_delegateManuallyConstruted()
         {
-            var sb = new StringBuilder(4000);
-            serializer4(sb, box);
+            var sb = new StringBuilder();
+            dslRoutineDelegateManuallyConstrutedFormatter(sb, box);
             var json = sb.ToString();
             return json;
         }
 
         [Benchmark]
-        public string JsonNet()
+        public string JsonNet_Default()
+        {
+            string text = JsonConvert.SerializeObject(box);
+            return text;
+        }
+
+
+        [Benchmark]
+        public string JsonNet_Indented()
+        {
+            string text = JsonConvert.SerializeObject(
+                box, Formatting.Indented,
+                new Newtonsoft.Json.JsonSerializerSettings { });
+            return text;
+        }
+
+        [Benchmark]
+        public string JsonNet_NullIgnore()
         {
             string text = JsonConvert.SerializeObject(
                 box,
                 new Newtonsoft.Json.JsonSerializerSettings
                 {
-                     //DateFormatString= "yyyy-MM-ddTHH:mm:ss.fffK" //"yyyy-MM-ddTHH:mm:ssK", 
-                     //NullValueHandling= NullValueHandling.Ignore
+                    NullValueHandling = NullValueHandling.Ignore
                 });
             return text;
+        }
+
+        [Benchmark]
+        public string JsonNet_DateFormatFF()
+        {
+            string text = JsonConvert.SerializeObject(
+                box,
+                new Newtonsoft.Json.JsonSerializerSettings
+                {
+                    DateFormatString = "yyyy-MM-ddTHH:mm:ssK"
+                });
+            return text;
+        }
+
+        [Benchmark]
+        public string JsonNet_DateFormatSS()
+        {
+            string text = JsonConvert.SerializeObject(
+                box,
+                new Newtonsoft.Json.JsonSerializerSettings
+                {
+                    DateFormatString = "yyyy-MM-ddTHH:mm:ss.fffK"
+                });
+            return text;
+        }
+
+        [Benchmark]
+        public string ServiceStack_SerializeToString()
+        {
+            var json = ServiceStack.Text.JsonSerializer.SerializeToString(box);
+            return json;
         }
     }
 

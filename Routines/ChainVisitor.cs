@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -88,6 +89,51 @@ namespace DashboardCode.Routines
             var node = AddIfAbsent(CurrentNode, navigationExpression, memberName, typeof(TEntity), typeof(IEnumerable<TEntity>), true);
             if (changeCurrenNode)
                 CurrentNode = node;
+        }
+    }
+
+    public class QueryableChainVisitor<TRootEntity> : IChainVisitor<TRootEntity>
+    {
+        public IQueryable<TRootEntity> Queryable { get; private set; }
+        public string QueryableText { get; private set; } = "";
+        public readonly Func<IQueryable<TRootEntity>, string, IQueryable<TRootEntity>> include;
+
+        public QueryableChainVisitor(IQueryable<TRootEntity> rootQueryable, Func<IQueryable<TRootEntity>, string, IQueryable<TRootEntity>> include)
+        {
+            this.include = include;
+            Queryable = rootQueryable ?? throw new ArgumentNullException(nameof(rootQueryable));
+        }
+
+        public void ParseRoot<TEntity>(Expression<Func<TRootEntity, TEntity>> expression, string memberName = null)
+        {
+            QueryableText = expression.GetMemberName();
+            Queryable = include(Queryable, QueryableText);
+        }
+
+        public void ParseRootEnumerable<TEntity>(Expression<Func<TRootEntity, IEnumerable<TEntity>>> enumerableExpression, string memberName = null)
+        {
+            QueryableText = enumerableExpression.GetMemberName();
+            Queryable = include(Queryable, QueryableText);
+        }
+
+        public void Parse<TMidEntity, TEntity>(Expression<Func<TMidEntity, TEntity>> expression, bool changeCurrentNode, string memberName)
+        {
+            string newQueryableText = QueryableText + "." + expression.GetMemberName();
+            if (changeCurrentNode)
+            {
+                QueryableText = newQueryableText;
+            }
+            Queryable = include(Queryable, newQueryableText);
+        }
+
+        public void ParseEnumerable<TMidEntity, TEntity>(Expression<Func<TMidEntity, IEnumerable<TEntity>>> enumerableExpression, bool changeCurrentNode, string memberName = null)
+        {
+            string newQueryableText = QueryableText + "." + enumerableExpression.GetMemberName();
+            if (changeCurrentNode)
+            {
+                QueryableText = newQueryableText;
+            }
+            Queryable = include(Queryable, newQueryableText);
         }
     }
 }

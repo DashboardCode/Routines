@@ -12,8 +12,11 @@ using DashboardCode.Routines.Json;
 
 namespace Benchmark
 {
-    [Config(typeof(CoreToolchain2JobConfig))]
-    [RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
+    //[Config(typeof(CoreToolchain2JobConfig))]
+    //[RankColumn, MinColumn, MaxColumn, StdDevColumn, MedianColumn]
+    //[HtmlExporter, MarkdownExporter]
+    //[MemoryDiagnoser]
+    [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
     public class BenchmarkJsonSimple

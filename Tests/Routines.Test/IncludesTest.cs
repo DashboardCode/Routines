@@ -523,10 +523,14 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void IncludesTestMethod2()
         {
+            int x = 10;
+            string df = "YYYY";
+            DateTime dt=DateTime.Now; dt.ToString(df); ;
+
             Include<StrangePoint> include
                 = chain => chain
                     .Include(i => i.X)
-                    .Include(i => i.GetPoint().X+1,"GX");
+                    .Include(i => i.GetPoint().X+x,"GX");
             var xpath = IncludeExtensions.ListLeafXPaths(include);
             // ------------
             var parser = new ChainVisitor<StrangePoint>();

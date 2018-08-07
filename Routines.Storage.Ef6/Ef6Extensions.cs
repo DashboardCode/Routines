@@ -13,7 +13,7 @@ namespace DashboardCode.Routines.Storage.Ef6
     {
         public static IQueryable<T> Include<T>(this IQueryable<T> query, Include<T> include) where T: class
         {
-            var iState = new QueryableChainVisitor<T>(query);
+            var iState = new QueryableChainVisitor<T>(query, QueryableExtensions.Include);
             var includable = new Chain<T>(iState);
             include?.Invoke(includable);
             return iState.Queryable;

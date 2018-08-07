@@ -9,7 +9,7 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<BenchmarkForEach>();
+            BenchmarkRunner.Run<BenchmarkComposeFormatter>();
         }
     }
 
@@ -17,8 +17,8 @@ namespace Benchmark
     {
         public CoreToolchain2JobConfig()
         {
-            Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp20));
-            Add(Job.Clr.With(CsProjCoreToolchain.NetCoreApp20));
+            Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp21));
+            Add(Job.Clr.With(CsProjCoreToolchain.NetCoreApp21));
         }
     }
 
@@ -34,7 +34,7 @@ namespace Benchmark
     {
         public ManualWindowsDiagnosersConfig()
         {
-#if !(NETCOREAPP1_1  || NETCOREAPP2_0 || NETCOREAPP2_1)
+#if !NETCOREAPP
             //Add(Job.ShortRun.With(Jit.RyuJit).With(Platform.X64).With(Runtime.Core).With(CsProjCoreToolchain.NetCoreApp20));
             //Add(DisassemblyDiagnoser.Create(new DisassemblyDiagnoserConfig(printAsm: true, printPrologAndEpilog: true, recursiveDepth: 3)));
             //Add(new BenchmarkDotNet.Diagnostics.Windows.InliningDiagnoser());
