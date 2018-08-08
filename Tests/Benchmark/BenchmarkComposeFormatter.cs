@@ -117,7 +117,7 @@ namespace Benchmark
 
 
         [Benchmark]
-        public string dslRoutineComposeFormatter()
+        public string dslComposeFormatter()
         {
             var json = composeFormatterDelegate(box);
             return json;
