@@ -261,6 +261,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 
         static CachedFormatter cachedJsonFormatter1 = new CachedFormatter();
         static CachedFormatter cachedJsonFormatter2 = new CachedFormatter();
+        static CachedFormatter cachedJsonFormatter2b = new CachedFormatter();
         static CachedFormatter cachedJsonFormatter3 = new CachedFormatter();
         static CachedFormatter cachedJsonFormatter4 = new CachedFormatter();
         static CachedFormatter cachedJsonFormatter5 = new CachedFormatter();
@@ -317,11 +318,11 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 var json4 = dbContext.ParentRecords
                    .Include(e => e.ParentRecordHierarchyRecordMap)
                    .ThenInclude(e => e.HierarchyRecord)
-                   .ToJson(cachedJsonFormatter4, include);
+                   .ToJson(cachedJsonFormatter4, include, LeafRuleManager.DefaultEfCore);
 
                 var json5 = dbContext
                    .Include(include)
-                   .ToJson(cachedJsonFormatter5, include);
+                   .ToJson(cachedJsonFormatter5, include.AppendLeafs(LeafRuleManager.DefaultEfCore) );
 
                 if (json4 != json5)
                     throw new Exception("Something wrong 3");

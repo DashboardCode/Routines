@@ -71,8 +71,8 @@ namespace DashboardCode.Routines.Test
                 throw new ApplicationException("IncludesCloneAll error 2");
 
             // for coverage
-            var clonedB = ObjectExtensions.CloneAll(list, includes, SystemTypesExtensions.SystemTypes); 
-            var clonedNull = ObjectExtensions.Clone(default(TestModel), includes, SystemTypesExtensions.SystemTypes);
+            var clonedB = ObjectExtensions.CloneAll(list, includes, LeafRuleManager.Default); 
+            var clonedNull = ObjectExtensions.Clone(default(TestModel), includes, LeafRuleManager.Default);
             var clonedNulls = ObjectExtensions.CloneAll<List<TestModel>,TestModel>(null, includes);
             var xx = new List<TestModel>();
             ObjectExtensions.CopyAll<List<TestModel>, TestModel>(list, xx);
@@ -212,13 +212,13 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void IncludesEqualsTest()
         {
-            
+
             var source = TestTool.CreateTestModel();
             Include<TestModel> includes
                 = includable => includable
                     .IncludeAll(i => i.TestChilds)
                         .ThenIncludeAll(i => i.Uniques)
-                    .Include(i=>i.ListTest);
+                    .Include(i => i.ListTest);
             var destination = ObjectExtensions.Clone(source, includes);
 
             //equals by reference will be false
@@ -256,7 +256,7 @@ namespace DashboardCode.Routines.Test
 
             // equalsIncludes correct,  into clone key is not included neither by include, neither by types; expected false
             var source2 = TestTool.CreateTestModel();
-            var destination2 = ObjectExtensions.Clone(source2, includes, new List<Type>());
+            var destination2 = ObjectExtensions.Clone(source2, includes, LeafRuleManager.ComposeLeafRule(new Type[] { }));
             if (ObjectExtensions.Equals(source2, destination2, equalsIncludes))
                 throw new ApplicationException("Eqauls doesn't working properly. Case 4");
 
@@ -335,11 +335,10 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void IncludesCloneTest()
         {
-
             var source = TestTool.CreateTestModel();
             var includes = TestTool.CreateInclude();
 
-            var destination = ObjectExtensions.Clone(source, includes, SystemTypesExtensions.SystemTypes);
+            var destination = ObjectExtensions.Clone(source, includes, LeafRuleManager.Default);
 
             if (source.PropertyInt!=destination.PropertyInt 
                 ||
@@ -544,7 +543,7 @@ namespace DashboardCode.Routines.Test
             var p = new StrangePoint() { X = 1, Y = -1, Point = new Point() { X = 10, Y = -10 } };
             var foramtter = JsonManager.ComposeFormatter<StrangePoint>(include);
             var json = foramtter(p);
-            if (json != "{\"X\":1,\"GX\":11}")
+            if (json != "{\"X\":1,\"GX\":20}")
                 throw new Exception();
         }
 

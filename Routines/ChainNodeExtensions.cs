@@ -1,81 +1,92 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace DashboardCode.Routines
 {
-    public class LeafRulesDictionaryBase
+    public static class LeafRuleManager
     {
-        internal readonly Func<ChainNode, IEnumerable<PropertyInfo>> defaultLeafParser = null;
+        public static readonly Func<ChainNode, IEnumerable<MemberInfo>> Default = ComposeLeafRule();
+        public static readonly Func<ChainNode, IEnumerable<MemberInfo>> DefaultEfCore = ComposeLeafRule(isIncludeSpecialReadonly:true);
 
-        public LeafRulesDictionaryBase(Func<ChainNode, IEnumerable<PropertyInfo>> defaultLeafParser = null)
+        public static Func<ChainNode, IEnumerable<MemberInfo>> ComposeLeafRule<T>(Include<T> include)
         {
-            this.defaultLeafParser = defaultLeafParser ?? IncludeLeafsDefault;
+            var root = IncludeExtensions.CreateChainNode(include);
+            return ComposeLeafRule(root);
         }
 
-        public static IEnumerable<PropertyInfo> IncludeLeafsDefault(ChainNode node)
+        public static Func<ChainNode, IEnumerable<MemberInfo>> ComposeLeafRule(ChainNode root)
         {
-            var filteredProperties = new List<PropertyInfo>();
-            var properties = node.Type.GetTypeInfo().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            foreach(var propertyInfo in properties)
-            if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
+            return (node) =>
             {
-                var propertyType = propertyInfo.PropertyType;
-                var typeInfo = propertyType.GetTypeInfo();
-                var simpleTextTypes = SystemTypesExtensions.DefaultSimpleTextTypes;
-                var simpleSymbolTypes = SystemTypesExtensions.DefaultSimpleSymbolTypes;
-                if (typeInfo.IsPrimitive
-                    || propertyType == typeof(string)
-                    || simpleTextTypes.Contains(propertyInfo.PropertyType)
-                    || simpleSymbolTypes.Contains(propertyInfo.PropertyType))
+                var filteredProperties = new List<MemberInfo>();
+                var path = ChainNodeTree.FindLinkedRootKeyPath(node);
+                var n = default(ChainNode);
+                if (path.Length == 0)
                 {
-                    filteredProperties.Add(propertyInfo);
+                    n = root;
                 }
                 else
                 {
-                    var baseNullableType = Nullable.GetUnderlyingType(propertyType);
-                    if (baseNullableType != null && baseNullableType.GetTypeInfo().IsPrimitive)
-                        filteredProperties.Add(propertyInfo);
+                    if (ChainNodeTree.FindNode(root, path, out ChainMemberNode c))
+                        n = c;
                 }
-            }
-            return filteredProperties;
+                if (n != default(ChainNode))
+                {
+                    var type = n.Type;
+                    foreach (var child in n.Children)
+                    {
+                        var propertyName = child.Key;
+                        var propertyInfo = type.GetProperty(propertyName);
+                        filteredProperties.Add(propertyInfo);
+                    }
+                }
+                return filteredProperties;
+            };
         }
 
-        public static IEnumerable<PropertyInfo> IncludeLeafsEfCore(ChainNode node)
+        public static Func<ChainNode, IEnumerable<MemberInfo>> ComposeLeafRule(IReadOnlyCollection<Type> types=null, bool isIncludeSpecialReadonly=false)
         {
-            var filteredProperties = new List<PropertyInfo>();
-            var type = node.Type;
-            var properties = type.GetTypeInfo().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            bool includeReadonly = TypeExtensions.IsAnonymousType(type) || TypeExtensions.IsTupleOrValueTuple(type);
-            foreach (var propertyInfo in properties)
+            return (node) =>
             {
-                if (propertyInfo.CanRead 
-                    && (includeReadonly || (!includeReadonly && propertyInfo.CanWrite)) 
-                    && propertyInfo.GetIndexParameters().Length == 0)
+                var type = node.Type;
+                Func<Type, bool> isIncludable;
+                if (types == null)
+                    isIncludable = TypeExtensions.IsSystemType;
+                else
+                    isIncludable = (t) => types.Contains(t);
+                var filteredMembers = new List<MemberInfo>();
+                var typeInfo = type.GetTypeInfo();
+                var properties = typeInfo.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                bool includeSpecialReadonly = false;
+                if (isIncludeSpecialReadonly)
                 {
-                    var propertyType = propertyInfo.PropertyType;
-                    var typeInfo = propertyType.GetTypeInfo();
-                    var simpleTextTypes = SystemTypesExtensions.DefaultSimpleTextTypes;
-                    var simpleSymbolTypes = SystemTypesExtensions.DefaultSimpleSymbolTypes;
-                    if (typeInfo.IsPrimitive
-                        || propertyType == typeof(string)
-                        || simpleTextTypes.Contains(propertyInfo.PropertyType)
-                        || simpleSymbolTypes.Contains(propertyInfo.PropertyType))
+                    includeSpecialReadonly = TypeExtensions.IsAnonymousType(type) || TypeExtensions.IsTuple(type);
+                }
+                foreach (var propertyInfo in properties)
+                    if (propertyInfo.CanRead
+                        && (includeSpecialReadonly || (!includeSpecialReadonly && propertyInfo.CanWrite))
+                        && propertyInfo.GetIndexParameters().Length == 0)
                     {
-                        filteredProperties.Add(propertyInfo);
+                        var propertyType = propertyInfo.PropertyType;
+                        if (isIncludable(propertyType))
+                            filteredMembers.Add(propertyInfo);
                     }
-                    else
+                if (TypeExtensions.IsValueTuple(type))
+                {
+                    var fields = typeInfo.GetFields(BindingFlags.Instance | BindingFlags.Public);
+                    foreach (var fieldInfo in fields)
                     {
-                        var baseNullableType = Nullable.GetUnderlyingType(propertyType);
-                        if (baseNullableType != null && baseNullableType.GetTypeInfo().IsPrimitive)
-                            filteredProperties.Add(propertyInfo);
+                        var fieldType = fieldInfo.FieldType;
+                        if (TypeExtensions.IsSystemType(fieldType))
+                            filteredMembers.Add(fieldType);
                     }
                 }
-            }
-            return filteredProperties;
+                return filteredMembers;
+            };
         }
     }
 
@@ -117,7 +128,7 @@ namespace DashboardCode.Routines
         public static ChainMemberNode AddChild(this ChainNode node, PropertyInfo propertyInfo)
         {
             var expression = node.Type.CreatePropertyLambda(propertyInfo);
-            var child = new ChainMemberNode(propertyInfo.PropertyType, expression, propertyInfo.Name, /*chainMemberNodeExpressionType: ChainMemberNodeExpressionType.PROPERTY, */isEnumerable: false, node);
+            var child = new ChainMemberNode(propertyInfo.PropertyType, expression, propertyInfo.Name, isEnumerable: false, node);
             node.Children.Add(propertyInfo.Name, child);
             return child;
         }
@@ -125,23 +136,23 @@ namespace DashboardCode.Routines
         public static ChainMemberNode AddChild(this ChainNode node, FieldInfo fieldInfo)
         {
             var expression = node.Type.CreateFieldLambda(fieldInfo);
-            var child = new ChainMemberNode(fieldInfo.FieldType, expression, fieldInfo.Name, /*chainMemberNodeExpressionType: ChainMemberNodeExpressionType.FIELD,*/ isEnumerable:false, node);
+            var child = new ChainMemberNode(fieldInfo.FieldType, expression, fieldInfo.Name, isEnumerable:false, node);
             node.Children.Add(fieldInfo.Name, child);
             return child;
         }
 
-        public static void AppendLeafs(this ChainNode node, LeafRulesDictionaryBase leafRulesDictionaryBase=null)
+        public static void AppendLeafs(this ChainNode node, Func<ChainNode, IEnumerable<MemberInfo>> leafRule =null)
         {
-            if (leafRulesDictionaryBase == null)
-                leafRulesDictionaryBase = new LeafRulesDictionaryBase();
+            if (leafRule == null)
+                leafRule = LeafRuleManager.Default;
             foreach (var n in node.Children.Values)
-                AppendLeafs(n, leafRulesDictionaryBase);
+                AppendLeafs(n, leafRule);
             var hasLeafs = node.HasLeafs();
             if (!hasLeafs)
             {
-                var members = leafRulesDictionaryBase.defaultLeafParser(node);
-                foreach (var propertyInfo in members)
-                    node.AddChild(propertyInfo);
+                var members = leafRule(node);
+                foreach (var memberInfo in members)
+                    node.AddChild(memberInfo.Name);
             }
         }
 
@@ -193,7 +204,7 @@ namespace DashboardCode.Routines
             bool isRoot = true;
             outExpression = null;
             if (parents.Length == 0)
-                throw new Exception("impossible situation");
+                throw new Exception("Impossible situation");
             var head = root;
             foreach (var p in parents)
             {
@@ -267,7 +278,7 @@ namespace DashboardCode.Routines
             }
         }
 
-        private static object CloneItem(object sourceItem, IEnumerable<ChainMemberNode> nodes, IReadOnlyCollection<Type> supportedTypes)
+        private static object CloneItem(object sourceItem, ChainNode parentNode, IEnumerable<ChainMemberNode> nodes, Func<ChainNode, IEnumerable<MemberInfo>> leafRule)
         {
             if (sourceItem == null)
             {
@@ -291,7 +302,7 @@ namespace DashboardCode.Routines
                 {
                     var constructor = typeInfo.DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
                     var destinationItem = constructor.Invoke(null);
-                    CopyNodes(sourceItem, destinationItem, nodes, supportedTypes);
+                    CopyNodes(sourceItem, destinationItem, parentNode, nodes, leafRule);
                     return destinationItem;
                 }
                 else
@@ -304,62 +315,63 @@ namespace DashboardCode.Routines
         internal static void CopyNodes(
             object source,
             object destination,
+            ChainNode parentNode,
             IEnumerable<ChainMemberNode> nodes,
-            IReadOnlyCollection<Type> supportedTypes)
+            Func<ChainNode, IEnumerable<MemberInfo>> leafRule)
         {
             if (source is Array sourceArray)
             {
-                CopyArray(sourceArray, (Array)destination, sourceItem => CloneItem(sourceItem, nodes, supportedTypes));
+                CopyArray(sourceArray, (Array)destination, sourceItem => CloneItem(sourceItem, parentNode, nodes, leafRule));
             }
             else if (source is IEnumerable enumerable && destination is IList destinationList)
             {
-                CopyList(enumerable, destinationList, sourceItem => CloneItem(sourceItem, nodes, supportedTypes));
+                CopyList(enumerable, destinationList, sourceItem => CloneItem(sourceItem, parentNode, nodes, leafRule));
             }
             else if (source is IEnumerable sourceEnumerable && source.GetType().GetTypeInfo().ImplementedInterfaces.Any(t =>
                     t.GetTypeInfo().IsGenericType &&
                     t.GetGenericTypeDefinition() == typeof(ISet<>)))
             {
-                CopySet(sourceEnumerable, destination, (sourceItem) => CloneItem(sourceItem, nodes, supportedTypes));
+                CopySet(sourceEnumerable, destination, (sourceItem) => CloneItem(sourceItem, parentNode, nodes, leafRule));
             }
             else
             {
 
-                if (supportedTypes != null)
-                    CopyPublicWritableTypesPropertiesOfTypes(source, destination, supportedTypes);
+                if (leafRule != null)
+                    CopyLeafs(source, destination, parentNode, leafRule);
                 foreach (var node in nodes)
                 {
                     var value = ((MemberExpression)node.Expression.Body).CopyMemberValue(source, destination);
                     var s = value.Item1;
                     var d = value.Item2;
                     if (s != null)
-                        CopyNodes(s, d, node.Children.Values, supportedTypes); // recursion
+                        CopyNodes(s, d, node, node.Children.Values, leafRule); // recursion
                 }
             }
         }
 
-        public static List<PropertyInfo> GetPublicWritablePropertiesOfTypes(
-            Type type, 
-            IReadOnlyCollection<Type> supportedTypes)
-        {
-            var properties = type.GetTypeInfo().GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            var list = new List<PropertyInfo>();
-            foreach (var propertyInfo in properties)
-                if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
-                    if (supportedTypes.Contains(propertyInfo.PropertyType))
-                        list.Add(propertyInfo);
-            return list;
-        }
-
-        public static void CopyPublicWritableTypesPropertiesOfTypes(
+        public static void CopyLeafs(
             object source,
             object destination,
-            IReadOnlyCollection<Type> supportedTypes = null)
+            ChainNode node,
+            Func<ChainNode, IEnumerable<MemberInfo>> leafRule
+            )
         {
-            var properties = GetPublicWritablePropertiesOfTypes(destination.GetType(), supportedTypes);
-            foreach (var propertyInfo in properties)
+            var members = leafRule(node);
+            foreach (var memberInfo in members)
             {
-                var value = propertyInfo.GetValue(source, null);
-                propertyInfo.SetValue(destination, value);
+                if (memberInfo is PropertyInfo propertyInfo) {
+                    var value = propertyInfo.GetValue(source, null);
+                    propertyInfo.SetValue(destination, value);
+                }
+                else if (memberInfo is FieldInfo fieldInfo)
+                {
+                    var value = fieldInfo.GetValue(source);
+                    fieldInfo.SetValue(destination, value);
+                }
+                else
+                {
+                    throw new NotImplementedException("Unknown memberInfo type: " + memberInfo.GetType());
+                }
             }
         }
 
@@ -538,6 +550,11 @@ namespace DashboardCode.Routines
             else
                 @value = "/";
             return @value;
+        }
+
+        public static string[] FindLinkedRootKeyPath(this ChainMemberNode node)
+        {
+            return ChainNodeTree.FindLinkedRootKeyPath(node);
         }
     }
 }

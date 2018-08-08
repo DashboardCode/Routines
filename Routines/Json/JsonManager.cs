@@ -23,7 +23,7 @@ namespace DashboardCode.Routines.Json
             , bool rootHandleEmptyObjectLiteral = true
             , int stringBuilderCapacity = 16)
         {
-            return ComposeFormatter<T>(include: null, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
+            return ComposeFormatter(include: null, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
                     floatingPointFormat: floatingPointFormat, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                     nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
                     handleNullArrayProperty: handleNullArrayProperty, rootHandleNull: rootHandleNull, rootHandleEmptyObjectLiteral: rootHandleEmptyObjectLiteral, stringBuilderCapacity: stringBuilderCapacity
@@ -48,22 +48,51 @@ namespace DashboardCode.Routines.Json
            , bool rootHandleEmptyObjectLiteral = true
            , int stringBuilderCapacity = 16)
         {
+            ChainNode root = IncludeExtensions.CreateChainNode(include);
             if (include == null && config == null)
             {
-               include = IncludeExtensions.CreateDefaultInclude<T>();
+                var type = typeof(T);
+                if (type.IsAssociativeArrayType())
+                {
+                    root.AppendLeafs();
+                }
             }
+            return ComposeFormatter(root, config, useToString, dateTimeFormat, floatingPointFormat, handleEmptyObjectLiteral,
+                    handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer,
+                    handleNullArrayProperty, rootHandleNull, rootHandleEmptyObjectLiteral, stringBuilderCapacity
+                );
+        }
+
+
+        public static Func<T, string> ComposeFormatter<T>(
+           this ChainNode root
+           , Action<RulesDictionary<T>> config = null
+           , bool useToString = false
+           , string dateTimeFormat = null
+           , string floatingPointFormat = null
+           , bool handleEmptyObjectLiteral = true
+           , bool handleEmptyArrayLiteral = true
+           , Func<StringBuilder, bool> nullSerializer = null
+           , bool handleNullProperty = true
+           , Func<StringBuilder, bool> nullArraySerializer = null
+           , bool handleNullArrayProperty = true
+           , bool rootHandleNull = true
+           , bool rootHandleEmptyObjectLiteral = true
+           , int stringBuilderCapacity = 16)
+        {
+            
             var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
                 /*stringAsJsonLiteral*/ false,
                 /*stringJsonEscape*/    true,
                 nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                 handleNullProperty,
                     new InternalNodeOptions(
-                        handleEmptyObjectLiteral : handleEmptyObjectLiteral,
-                        handleEmptyArrayLiteral : handleEmptyArrayLiteral,
-                        nullSerializer : nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
-                        handleNullProperty : handleNullProperty,
-                        nullArraySerializer : nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
-                        handleNullArrayProperty : handleNullArrayProperty,
+                        handleEmptyObjectLiteral: handleEmptyObjectLiteral,
+                        handleEmptyArrayLiteral: handleEmptyArrayLiteral,
+                        nullSerializer: nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                        handleNullProperty: handleNullProperty,
+                        nullArraySerializer: nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                        handleNullArrayProperty: handleNullArrayProperty,
                         serializationName: null
                         )
                 );
@@ -72,7 +101,7 @@ namespace DashboardCode.Routines.Json
             Func<ChainNode, SerializerOptions> getSerializerOptions = n => rulesDictionary.GetLeafSerializerOptions(n);
             Func<ChainNode, InternalNodeOptions> getInternalNodeOptions = n => rulesDictionary.GeInternalNodeOptions(n);
 
-            var serializer = ComposeSerializer(include, getSerializerOptions, getInternalNodeOptions, rootHandleNull, rootHandleEmptyObjectLiteral);
+            var serializer = ComposeSerializer<T>(root, getSerializerOptions, getInternalNodeOptions, rootHandleNull, rootHandleEmptyObjectLiteral);
             return (t) => {
                 var stringBuilder = new StringBuilder(stringBuilderCapacity);
                 serializer(stringBuilder, t);
@@ -81,7 +110,7 @@ namespace DashboardCode.Routines.Json
         }
 
         public static Func<StringBuilder, T, bool> ComposeSerializer<T>(
-            Include<T> include
+            ChainNode root
             , Func<ChainNode, SerializerOptions> getSerializerOptions
             , Func<ChainNode, InternalNodeOptions> getInternalNodeOptions
             , bool rootHandleNull
@@ -91,20 +120,14 @@ namespace DashboardCode.Routines.Json
             Func<StringBuilder, T, bool> @value = null;
             Expression serializeExpression;
 
-            var parser = new ChainVisitor<T>();
-            var includable = new Chain<T>(parser);
-            if (include != null)
-                include.Invoke(includable);
-            var node = parser.Root;
-
             var objectType = typeof(T);
             var sbParameterExpression = Expression.Parameter(typeof(StringBuilder), "sb");
             var tParameterExpression = Expression.Parameter(objectType, "t");
 
-            if (node.Children.Count == 0) // leaf
+            if (root.Children.Count == 0) // leaf
             {
-                var serializerSet = getSerializerOptions(node);
-                var isNullableStruct = JsonChainTools.IsNullableStruct(node.Type);
+                var serializerSet = getSerializerOptions(root);
+                var isNullableStruct = JsonChainTools.IsNullableStruct(root.Type);
                 if (isNullableStruct != null && isNullableStruct.Value == false)
                 {
                     var delegateMethodInfo = serializerSet.Serializer.GetMethodInfo();
@@ -156,21 +179,21 @@ namespace DashboardCode.Routines.Json
             }
             else // internal (note: currently can't be nullable struct)
             {
-                var serializerSet = getInternalNodeOptions(node);
+                var serializerSet = getInternalNodeOptions(root);
                 var properies = new List<Expression>();
-                foreach (var c in node.Children)
+                foreach (var c in root.Children)
                 {
                     var n = c.Value;
-                    JsonChainTools.ConfigureSerializeProperty(n, node.Type, properies, getSerializerOptions, getInternalNodeOptions);
+                    JsonChainTools.ConfigureSerializeProperty(n, root.Type, properies, getSerializerOptions, getInternalNodeOptions);
                 }
                 var methodCallExpression = JsonChainTools.CreateSerializeMethodCallExpression(sbParameterExpression, tParameterExpression, objectType, rootHandleEmptyObjectLiteral, properies.ToArray());
 
-                if (JsonChainTools.IsNullable(node.Type))
+                if (JsonChainTools.IsNullable(root.Type))
                 {
                     if (rootHandleNull)
                     {
                         if (serializerSet.NullSerializer == null)
-                            throw new NotSupportedException($"Null serializer is not setuped for internal node '{node.FindLinkedRootXPath()}' ");
+                            throw new NotSupportedException($"Null serializer is not setuped for internal node '{root.FindLinkedRootXPath()}' ");
                         var rootNullSerializeMethodInfo = serializerSet.NullSerializer.GetMethodInfo();
                         MethodCallExpression nullCallExpression = Expression.Call(rootNullSerializeMethodInfo, new Expression[] { sbParameterExpression });
 
@@ -215,10 +238,39 @@ namespace DashboardCode.Routines.Json
             , bool rootHandleEmptyArrayLiteral = true
             , int stringBuilderCapacity = 16)
         {
+
+            ChainNode root = IncludeExtensions.CreateChainNode(include);
             if (include == null && config == null)
             {
-                include = IncludeExtensions.CreateDefaultInclude<T>();
+                var type = typeof(T);
+                if (type.IsAssociativeArrayType())
+                {
+                    root.AppendLeafs();
+                }
             }
+
+            return ComposeEnumerableFormatter(root, config, useToString, dateTimeFormat, floatingPointFormat,
+                handleEmptyObjectLiteral, handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer,
+                handleNullArrayProperty, rootHandleNullArray, rootHandleEmptyArrayLiteral, stringBuilderCapacity);
+
+        }
+
+        public static Func<IEnumerable<T>, string> ComposeEnumerableFormatter<T>(
+            this ChainNode root
+            , Action<RulesDictionary<T>> config = null
+            , bool useToString = false
+            , string dateTimeFormat = null
+            , string floatingPointFormat = null
+            , bool handleEmptyObjectLiteral = true
+            , bool handleEmptyArrayLiteral = true
+            , Func<StringBuilder, bool> nullSerializer = null
+            , bool handleNullProperty = true
+            , Func<StringBuilder, bool> nullArraySerializer = null
+            , bool handleNullArrayProperty = true
+            , bool rootHandleNullArray = true
+            , bool rootHandleEmptyArrayLiteral = true
+            , int stringBuilderCapacity = 16)
+        {
 
             var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
                 /*stringAsJsonLiteral*/ false,
@@ -237,9 +289,9 @@ namespace DashboardCode.Routines.Json
             Func<ChainNode, SerializerOptions> getLeafSerializerOptions = n => rulesDictionary.GetLeafSerializerOptions(n);
             Func<ChainNode, InternalNodeOptions> getInternalNodeOptions = n => rulesDictionary.GeInternalNodeOptions(n);
 
-            var serializer = ComposeEnumerableSerializer(include
+            var serializer = ComposeEnumerableSerializer<T>(root
                 , getLeafSerializerOptions
-                , getInternalNodeOptions 
+                , getInternalNodeOptions
                 , rootHandleNullArray, rootHandleEmptyArrayLiteral);
             return (t) =>
             {
@@ -271,25 +323,19 @@ namespace DashboardCode.Routines.Json
         }
 
         public static Func<StringBuilder, IEnumerable<T>, bool> ComposeEnumerableSerializer<T>(
-            Include<T> include
+            ChainNode root
             , Func<ChainNode, SerializerOptions> getSerializerOptions
             , Func<ChainNode, InternalNodeOptions> getInternalNodeOptions
             , bool rootHandleNullArray
             , bool rootHandleEmptyArrayLiteral)
         {
-            var parser = new ChainVisitor<T>();
-            var includable = new Chain<T>(parser);
-            if (include != null)
-                include.Invoke(includable);
-            var node = parser.Root;
-
             Func<StringBuilder, IEnumerable<T>, bool> @value = null;
             var enumerableType = typeof(IEnumerable<T>);
 
-            var expressions = JsonChainTools.CreateSerializsPair(node,/* node.Type,*/ getSerializerOptions, getInternalNodeOptions);
+            var expressions = JsonChainTools.CreateSerializsPair(root,/* node.Type,*/ getSerializerOptions, getInternalNodeOptions);
 
             ConstantExpression nullSerializerExpression = null;
-            if (JsonChainTools.IsNullable(node.Type))
+            if (JsonChainTools.IsNullable(root.Type))
             {
                 if (expressions.NullSerializer == null)
                     throw new NotSupportedException($"Null serializer is not setuped for root node");
@@ -298,9 +344,9 @@ namespace DashboardCode.Routines.Json
 
             var sbExpression = Expression.Parameter(typeof(StringBuilder), "sb");
             var tExpression = Expression.Parameter(enumerableType, "t");
-            var isNullableStruct = JsonChainTools.IsNullableStruct(node.Type);
+            var isNullableStruct = JsonChainTools.IsNullableStruct(root.Type);
 
-            var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
+            var serializationType = Nullable.GetUnderlyingType(root.Type) ?? root.Type;
 
             var methodCallExpression = JsonChainTools.CreateSerializeArrayMethodCall(
                 serializationType,
@@ -314,7 +360,7 @@ namespace DashboardCode.Routines.Json
             Expression serializeConditionalExpression;
             if (rootHandleNullArray)
             {
-                var serializers = getInternalNodeOptions(node);
+                var serializers = getInternalNodeOptions(root);
                 var rootNullMethodInfo = serializers.NullSerializer.GetMethodInfo();
                 MethodCallExpression nullCallExpression = Expression.Call(rootNullMethodInfo, new Expression[] { sbExpression });
                 serializeConditionalExpression = Expression.Condition(

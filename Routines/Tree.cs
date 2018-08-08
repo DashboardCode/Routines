@@ -148,7 +148,21 @@ namespace DashboardCode.Routines
             return @value;
         }
 
-        public static string FindLinkedRootXPath<TNodePrimal, TNode, TKey>(this LinkedTree<TNodePrimal, TNode, TKey> tree, TNode node)
+        public static bool FindNode<TNodePrimal, TNode, TKey>(this LinkedTree<TNodePrimal, TNode, TKey> tree, TNodePrimal root, TKey[] path, out TNode node)
+            where TNode : TNodePrimal
+        {
+            node = default;
+            var i = root;
+            foreach (var p in path)
+            {
+                node = tree.GetChild(i, p);
+                if (node == null)
+                    return false;
+            }
+            return true;
+        }
+
+        public static string FindLinkedRootXPath<TNodePrimal, TNode, TKey>(this LinkedTree<TNodePrimal, TNode, TKey> tree, TNodePrimal node)
             where TNode : TNodePrimal
         {
             TNodePrimal parent = node;
@@ -188,6 +202,43 @@ namespace DashboardCode.Routines
                 stringBuilder.Append("/").Append(a);
             var text = stringBuilder.ToString();
             return text;
+        }
+
+
+        public static string[] FindLinkedRootKeyPath<TNodePrimal, TNode, TKey>(this LinkedTree<TNodePrimal, TNode, TKey> tree, TNodePrimal node)
+            where TNode : TNodePrimal
+        {
+            TNodePrimal parent = node;
+            var ancestorsAndSelf = new List<string>();
+            var l = 0;
+            while (true)
+            {
+                if (parent is TNode child)
+                {
+                    parent = tree.LinkToParent(child);
+                    if (parent == null)
+                    {
+                        break; // it is root
+                    }
+                    else
+                    {
+                        var nodeKey = tree.GetKey(child);
+                        var keyText = nodeKey.ToString();
+                        ancestorsAndSelf.Add(keyText);
+                        l += keyText.Length + 1;
+                    }
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+            if (l == 0)
+                return new string[] { };
+            ancestorsAndSelf.Reverse();
+
+            return ancestorsAndSelf.ToArray();
         }
         #endregion
 

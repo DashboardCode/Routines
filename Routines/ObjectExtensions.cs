@@ -140,7 +140,7 @@ namespace DashboardCode.Routines
                 {
                     if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
                     {
-                        if ( !SystemTypesExtensions.Contains(propertyInfo.PropertyType) )
+                        if ( !TypeExtensions.IsSystemType(propertyInfo.PropertyType) )
                         {
                             string propertyName = propertyInfo.Name;
                             var value = propertyInfo.GetValue(entity, null);
@@ -180,51 +180,49 @@ namespace DashboardCode.Routines
             return ChainNodeExtensions.EqualsNodes(entity1, entity2, nodes);
         }
 
-        public static void Copy<T>(T source, T destination, Include<T> include = null, IReadOnlyCollection<Type> supportedTypes = null)
+        public static void Copy<T>(T source, T destination, Include<T> include = null, Func<ChainNode, IEnumerable<MemberInfo>> leafRule = null)
             where T : class
         {
-            IEnumerable<ChainMemberNode> nodes = new List<ChainMemberNode>();
-            if (include != null)
-                nodes = include.CreateChainNode().Children.Values;
-            ChainNodeExtensions.CopyNodes(source, destination, nodes, supportedTypes);
+            var node = include.CreateChainNode();
+            var nodes = node.Children.Values;
+            ChainNodeExtensions.CopyNodes(source, destination, node, nodes, leafRule);
         }
 
-        public static void CopyAll<TCol, T>(TCol source, TCol destination, Include<T> include = null, IReadOnlyCollection<Type> supportedTypes = null)
+        public static void CopyAll<TCol, T>(TCol source, TCol destination, Include<T> include = null, Func<ChainNode, IEnumerable<MemberInfo>> leafRule = null)
             where TCol : IEnumerable<T>
         {
-            IEnumerable<ChainMemberNode> nodes = new List<ChainMemberNode>();
-            if (include != null)
-                nodes = include.CreateChainNode().Children.Values;
-            ChainNodeExtensions.CopyNodes(source, destination, nodes, supportedTypes);
+            var node = include.CreateChainNode();
+            var nodes = node.Children.Values;
+            ChainNodeExtensions.CopyNodes(source, destination, node, nodes, leafRule);
         }
 
-        public static T Clone<T>(T source, Include<T> include, IReadOnlyCollection<Type> supportedTypes = null)
+        public static T Clone<T>(T source, Include<T> include, Func<ChainNode, IEnumerable<MemberInfo>> leafRule = null)
             where T : class
         {
             if (!(source is T))
                 return default(T);
-            if (supportedTypes == default(IReadOnlyCollection<Type>))
-                supportedTypes = SystemTypesExtensions.SystemTypes;
+            if (leafRule == null)
+                leafRule = LeafRuleManager.Default;
             var constructor = source.GetType().GetTypeInfo().DeclaredConstructors.First(e => e.GetParameters().Count() == 0);
             var destination = (T)constructor.Invoke(null);
-            Copy(source, destination, include, supportedTypes);
+            Copy(source, destination, include, leafRule);
             return destination;
         }
 
         public static TCol CloneAll<TCol, T>(TCol source, Include<T> include,
-            IReadOnlyCollection<Type> supportedTypes = null)
+            Func<ChainNode, IEnumerable<MemberInfo>> leafRule = null)
             where TCol : class, IEnumerable<T>
         {
             if (source == null)
                 return null;
-            if (supportedTypes == default(IReadOnlyCollection<Type>))
-                supportedTypes = SystemTypesExtensions.SystemTypes;
+            if (leafRule == null)
+                leafRule = LeafRuleManager.Default;
             var typeInfo = source.GetType().GetTypeInfo();
             var constructorInfo = typeInfo.DeclaredConstructors.FirstOrDefault(e => e.GetParameters().Count() == 0);
             if (constructorInfo == null)
                  throw new NotImplementedException($"Can't clone collection '${typeInfo.Name}' because it doesn't have default constructor. Use CopyAll instead passing precreated collection as copy destination.");
             var destination = (TCol)constructorInfo.Invoke(null);
-            CopyAll(source, destination, include, supportedTypes);
+            CopyAll(source, destination, include, leafRule);
             return destination;
         }
     }

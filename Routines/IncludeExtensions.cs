@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace DashboardCode.Routines
 {
@@ -7,6 +8,8 @@ namespace DashboardCode.Routines
     {
         public static ChainNode CreateChainNode<T>(this Include<T> include)
         {
+            if (include == null)
+                return new ChainNode(typeof(T));
             var visitor = new ChainVisitor<T>();
             var chain = new Chain<T>(visitor);
             include.Invoke(chain);
@@ -14,13 +17,13 @@ namespace DashboardCode.Routines
             return rootNode;
         }
 
-        public static Include<T> AppendLeafs<T>(this Include<T> source, LeafRulesDictionaryBase leafRulesDictionaryBase = null)
+        public static Include<T> AppendLeafs<T>(this Include<T> source, Func<ChainNode, IEnumerable<MemberInfo>> leafRule = null)
         {
             var parser = new ChainVisitor<T>();
             var train = new Chain<T>(parser);
             source.Invoke(train);
             var root = parser.Root;
-            root.AppendLeafs(leafRulesDictionaryBase);
+            root.AppendLeafs(leafRule);
             var destination = root.ComposeInclude<T>();
             return destination;
         }
@@ -107,33 +110,6 @@ namespace DashboardCode.Routines
 
             var union = ChainNodeTree.Merge(rootNode1, rootNode2);
             var @value = union.ComposeInclude<T>();
-            return @value;
-        }
-
-        public static Include<T> CreateDefaultInclude<T>()
-        {
-            Include<T> @value = null;
-            var type = typeof(T);
-            if (type.IsAssociativeArrayType())
-            {
-                var root = new ChainNode(type);
-                root.AppendLeafs();
-                @value = root.ComposeInclude<T>();
-            }
-            return @value;
-        }
-
-        public static Include<T> CreateDefaultEfCoreInclude<T>()
-        {
-            Include<T> @value = null;
-            var type = typeof(T);
-            if (type.IsAssociativeArrayType())
-            {
-                var root = new ChainNode(type);
-                var options = new LeafRulesDictionaryBase(LeafRulesDictionaryBase.IncludeLeafsEfCore);
-                root.AppendLeafs(options);
-                @value = root.ComposeInclude<T>();
-            }
             return @value;
         }
     }

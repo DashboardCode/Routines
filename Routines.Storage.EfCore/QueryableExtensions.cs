@@ -1,41 +1,22 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Collections.Generic;
 
 using DashboardCode.Routines.Json;
 
 namespace DashboardCode.Routines.Storage.EfCore
 {
-    public class CachedFormatter
-    {
-        Delegate formatter;
-
-        internal Delegate GetFormatter<T>(Include<T> include = null)
-        {
-            if (formatter != null)
-                return formatter;
-            else
-            {
-                if (include == null)
-                {
-                    include = IncludeExtensions.CreateDefaultEfCoreInclude<T>();
-                }
-                else
-                {
-                    include = IncludeExtensions.AppendLeafs(include, new LeafRulesDictionaryBase(LeafRulesDictionaryBase.IncludeLeafsEfCore));
-                }
-                formatter = JsonManager.ComposeEnumerableFormatter(include);
-                return formatter;
-            }
-        }
-    }
-
     public static class QueryableExtensions
     {
-        public static string ToJson<T>(this IQueryable<T> queryable, CachedFormatter cache, Include<T> include = null)
+        public static string ToJson<T>(this IQueryable<T> queryable, 
+            CachedFormatter cache, 
+            Include<T> include = null,
+            Func<ChainNode, IEnumerable<MemberInfo>> leafRule = null)
         {
-            var theDelegate = cache.GetFormatter(include);
-            var formatter = (Func<IEnumerable<T>, string>)theDelegate;
+            var theDelegate = cache.GetFormatter(include, leafRule);
+            if (!(theDelegate is Func<IEnumerable<T>, string> formatter))
+                throw new NotImplementedException("It seems you reuse CachedFormatter. It is forbidden. Use one CachedFormatter for one Include");
             var enumerable = (IEnumerable<T>)queryable;
             var json = formatter(enumerable);
             return json;

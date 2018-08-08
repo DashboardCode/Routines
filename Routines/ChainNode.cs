@@ -40,8 +40,14 @@ namespace DashboardCode.Routines
             (n1,n2) => n1.Type==n2.Type
         );
 
+        public static bool FindNode(ChainNode root, string[] path, out ChainMemberNode node) =>
+             TreeExtensions.FindNode(meta, root, path, out node);
+
         public static string FindLinkedRootXPath(ChainMemberNode node) =>
              TreeExtensions.FindLinkedRootXPath(meta, node);
+
+        public static string[] FindLinkedRootKeyPath(ChainNode node) =>
+             TreeExtensions.FindLinkedRootKeyPath(meta, node);
 
         public static ChainNode FindLinkedRootPath(ChainMemberNode node) =>
              TreeExtensions.FindLinkedRootPath(meta, node);
