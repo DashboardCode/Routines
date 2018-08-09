@@ -5,30 +5,28 @@ $SolutionFolderPath = $PSScriptRoot
 cd $SolutionFolderPath
 
 $sign = Read-Host 'Enter sign'
+$ver = '2.0.4'
 
-#cd .\NLogTools\bin\Release
-#nuget push DashboardCode.NLogTools.1.0.0.nupkg $sign -Source https://api.nuget.org/v3/index.json
+cd $SolutionFolderPath\Routines\bin\Release
+nuget push DashboardCode.Routines.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
-#cd $SolutionFolderPath\Routines\bin\Release
-#nuget push DashboardCode.Routines.2.0.3.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.AspNetCore\bin\Release
-#nuget push DashboardCode.Routines.AspNetCore.2.0.3.nupkg $sign -Source https://api.nuget.org/v3/index.json
+cd $SolutionFolderPath\Routines.AspNetCore\bin\Release
+nuget push DashboardCode.Routines.AspNetCore.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 cd $SolutionFolderPath\Routines.Configuration.Standard\bin\Release
-nuget push DashboardCode.Routines.Configuration.Standard.2.0.3.nupkg $sign -Source https://api.nuget.org/v3/index.json
+nuget push DashboardCode.Routines.Configuration.Standard.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 cd $SolutionFolderPath\Routines.Storage.SqlServer\bin\Release
-nuget push DashboardCode.Routines.Storage.SqlServer.2.0.3.nupkg $sign -Source https://api.nuget.org/v3/index.json
+nuget push DashboardCode.Routines.Storage.SqlServer.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 cd $SolutionFolderPath\Routines.Storage.EfCore.Relational\bin\Release
-nuget push DashboardCode.Routines.Storage.EfCore.Relational.2.0.3.nupkg $sign -Source https://api.nuget.org/v3/index.json
+nuget push DashboardCode.Routines.Storage.EfCore.Relational.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 cd $SolutionFolderPath\Routines.Storage.EfCore\bin\Release
-nuget push DashboardCode.Routines.Storage.EfCore.2.0.3.nupkg $sign -Source https://api.nuget.org/v3/index.json
+nuget push DashboardCode.Routines.Storage.EfCore.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 cd $SolutionFolderPath\Routines.ActiveDirectory\bin\Release
-nuget push DashboardCode.Routines.ActiveDirectory.2.0.3.nupkg $sign -Source https://api.nuget.org/v3/index.json
+nuget push DashboardCode.Routines.ActiveDirectory.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 cd $SolutionFolderPath\Routines.Configuration.Classic\bin\Release
-nuget push DashboardCode.Routines.Configuration.Classic.2.0.3.nupkg $sign -Source https://api.nuget.org/v3/index.json
+nuget push DashboardCode.Routines.Configuration.Classic.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json

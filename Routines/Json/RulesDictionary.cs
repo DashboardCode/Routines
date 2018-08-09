@@ -149,7 +149,7 @@ namespace DashboardCode.Routines.Json
 
     public class RulesDictionary<TEntity>: RulesDictionaryBase<TEntity>
     {
-        List<RulesSubDictionary<TEntity>> subsets = new List<RulesSubDictionary<TEntity>>();
+        List<RulesSubDictionary<TEntity>> subtrees = new List<RulesSubDictionary<TEntity>>();
 
         public RulesDictionary(
             bool useToString, 
@@ -192,7 +192,7 @@ namespace DashboardCode.Routines.Json
             return this;
         }
 
-        public RulesDictionary<TEntity> Subset(
+        public RulesDictionary<TEntity> SubTree(
             Include<TEntity> include,
             Action<RulesSubDictionary<TEntity>> config=null,
             bool? useToString = null,
@@ -220,7 +220,7 @@ namespace DashboardCode.Routines.Json
                 internalNodeOptions ?? this.internalNodeOptions);
             config?.Invoke(subDictionary);
 
-            subsets.Add(subDictionary);
+            subtrees.Add(subDictionary);
 
             return this;
         }
@@ -232,10 +232,10 @@ namespace DashboardCode.Routines.Json
             if (node is ChainMemberNode chainPropertyNode)
             {
                 var path = ChainNodeTree.FindLinkedRootPath(chainPropertyNode);
-                for (int i = subsets.Count - 1; i >= 0; i--)
+                for (int i = subtrees.Count - 1; i >= 0; i--)
                 {
-                    var subset = subsets[i];
-                    if (ChainNodeTree.IsSubsetOf(path, subset.root))
+                    var subset = subtrees[i];
+                    if (ChainNodeTree.IsSubTreeOf(path, subset.root))
                     {
                         theDictionary = subset.dictionary;
                         break;

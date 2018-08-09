@@ -11,7 +11,7 @@ namespace DashboardCode.Routines.Test
     }
 
     [TestClass]
-    public class JsonSubsetTest
+    public class JsonSubTreeTest
     {
         [TestMethod]
         public void JsonSerializeSunsetString()
@@ -27,7 +27,7 @@ namespace DashboardCode.Routines.Test
             var formatter2 = JsonManager.ComposeFormatter(
                 include,
                 rules => rules
-                    .Subset(
+                    .SubTree(
                           chain => chain.Include(e => e.Text2),
                           stringAsJsonLiteral: true
                     )
@@ -36,7 +36,7 @@ namespace DashboardCode.Routines.Test
             var formatter3 = JsonManager.ComposeFormatter(
                 include,
                 rules => rules
-                    .Subset(
+                    .SubTree(
                           chain => chain.Include(e => e.Text2), 
                           stringJsonEscape:false
                     )

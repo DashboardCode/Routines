@@ -93,7 +93,7 @@ namespace DashboardCode.Routines.Test
             var include2 = TestTool.CreateInclude();
             var includeWithLeafs = include2.AppendLeafs();
 
-            ObjectExtensions.Detach2(source2, includeWithLeafs);
+            ObjectExtensions.Detach(source2, includeWithLeafs);
 
             var b1 = ObjectExtensions.Equals(source1, source, include1);
             var b2 = ObjectExtensions.Equals(source2, source, include2);

@@ -63,7 +63,7 @@
   <ItemGroup>
     <Compile Include="AsyncUnitTest.cs" />
     <Compile Include="Injected\LoggingTransients.cs" />
-    <Compile Include="JsonSubsetTest.cs" />
+    <Compile Include="JsonSubTreeTest.cs" />
     <Compile Include="MemberExpressionTest.cs" />
     <Compile Include="TreeTest.cs" />
     <Compile Include="JsonTest.cs" />

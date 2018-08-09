@@ -290,14 +290,16 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                    .Include(e => e.ParentRecordHierarchyRecordMap)
                    .ThenInclude(e => e.HierarchyRecord)
                    .Select(e => new { e.FieldA, e.FieldB1 })
-                   .ToJson(cachedJsonFormatter1, chain => chain.Include(e => e.FieldA).Include(e => e.FieldB1));
+                   .ToJsonAll(cachedJsonFormatter1, 
+                        chain => chain.Include(e => e.FieldA).Include(e => e.FieldB1)
+                        );
 
                 // the same 
                 var json2 = dbContext.ParentRecords
                    .Include(e => e.ParentRecordHierarchyRecordMap)
                    .ThenInclude(e => e.HierarchyRecord)
                    .Select(e => new { e.FieldA, e.FieldB1 })
-                   .ToJson(cachedJsonFormatter2);
+                   .ToJsonAll(cachedJsonFormatter2);
 
                 if (json1 != json2)
                     throw new Exception("Something wrong 1");
@@ -306,7 +308,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                    .Include(e => e.ParentRecordHierarchyRecordMap)
                    .ThenInclude(e => e.HierarchyRecord)
                    .Select(e => new Tuple<string, string>(e.FieldA, e.FieldB1))
-                   .ToJson(cachedJsonFormatter3);
+                   .ToJsonAll(cachedJsonFormatter3);
 
                 if (json3 != "[{\"Item1\":\"1_A\",\"Item2\":\"1_B\"},{\"Item1\":\"2_A\",\"Item2\":\"2_B\"},{\"Item1\":\"3_A\",\"Item2\":\"3_B\"}]")
                     throw new Exception("Something wrong 2");
@@ -318,11 +320,24 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 var json4 = dbContext.ParentRecords
                    .Include(e => e.ParentRecordHierarchyRecordMap)
                    .ThenInclude(e => e.HierarchyRecord)
-                   .ToJson(cachedJsonFormatter4, include, LeafRuleManager.DefaultEfCore);
+                   .ToJsonAll(cachedJsonFormatter4, include, 
+                        LeafRuleManager.DefaultEfCore,
+                        config: rules => rules
+                            .SubTree(
+                                  chain => chain.Include(e => e.FieldB1),
+                                  stringAsJsonLiteral: true
+                            )
+                        );
 
                 var json5 = dbContext
                    .Include(include)
-                   .ToJson(cachedJsonFormatter5, include.AppendLeafs(LeafRuleManager.DefaultEfCore) );
+                   .ToJsonAll(cachedJsonFormatter5, include.AppendLeafs(LeafRuleManager.DefaultEfCore),
+                   config: rules => rules
+                            .SubTree(
+                                  chain => chain.Include(e => e.FieldB1),
+                                  stringAsJsonLiteral: true
+                            )
+                   );
 
                 if (json4 != json5)
                     throw new Exception("Something wrong 3");

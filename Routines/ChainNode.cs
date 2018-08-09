@@ -55,11 +55,11 @@ namespace DashboardCode.Routines
         public static bool IsEqualTo(ChainNode node1, ChainNode node2) =>
             TreeExtensions.IsEqualTo(meta, node1, node2);
 
-        public static bool IsSupersetOf(ChainNode node1, ChainNode node2) =>
-             TreeExtensions.IsSupersetOf(meta, node1, node2);
+        public static bool IsSuperTreeOf(ChainNode node1, ChainNode node2) =>
+             TreeExtensions.IsSuperTreeOf(meta, node1, node2);
 
-        public static bool IsSubsetOf(ChainNode node1, ChainNode node2) =>
-            TreeExtensions.IsSubsetOf(meta, node1, node2);
+        public static bool IsSubTreeOf(ChainNode node1, ChainNode node2) =>
+            TreeExtensions.IsSubTreeOf(meta, node1, node2);
 
         public static ChainNode Merge(ChainNode node1, ChainNode node2) =>
             TreeExtensions.Merge(meta, node1, node2);

@@ -32,13 +32,6 @@ namespace DashboardCode.Routines
             }
         }
 
-        public static void Detach2<T>(T entity, Include<T> include) where T : class
-        {
-            var chainNode = include.CreateChainNode();
-            var paths = ChainNodeTree.ListLeafKeyPaths(chainNode);
-            DetachRecursive2(entity, paths);
-        }
-
         private static void DetachRecursive(object entity, IReadOnlyCollection<string[]> allowedPaths)
         {
             IReadOnlyCollection<string[]> ModifyPaths(string propertyName, IReadOnlyCollection<string[]> source)
@@ -78,8 +71,6 @@ namespace DashboardCode.Routines
                 {
                     if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
                     {
-                        //if ( !SystemTypesExtensions.Contains(propertyInfo.PropertyType) )
-                        //{
                             string propertyName = propertyInfo.Name;
                             var value = propertyInfo.GetValue(entity, null);
                             if (value != null)
@@ -95,69 +86,6 @@ namespace DashboardCode.Routines
                                     propertyInfo.SetValue(entity, null);
                                 }
                             }
-                        //}
-                    }
-                }
-            }
-        }
-
-        private static void DetachRecursive2(object entity, IReadOnlyCollection<string[]> allowedPaths)
-        {
-            List<string[]> ModifyPaths(string propertyName, IReadOnlyCollection<string[]> source)
-            {
-                var destination = new List<string[]>();
-                foreach (var path in allowedPaths)
-                {
-                    var root = path[0];
-                    if (root == propertyName)
-                    {
-                        if (path.Length > 1)
-                        {
-                            var newPath = new string[path.Length - 1];
-                            newPath = path.Skip(1).ToArray();
-                            destination.Add(newPath);
-                        }
-                    }
-                }
-                return destination;
-            }
-
-            var type = entity.GetType();
-            if (entity is IEnumerable enumerableEntity)
-            {
-                foreach (var value in enumerableEntity)
-                {
-                    if (value != null)
-                    {
-                        DetachRecursive2(value, allowedPaths);
-                    }
-                }
-            }
-            else
-            {
-                var properties = type.GetTypeInfo().DeclaredProperties;
-                foreach (var propertyInfo in properties)
-                {
-                    if (propertyInfo.CanRead && propertyInfo.CanWrite && propertyInfo.GetIndexParameters().Length == 0)
-                    {
-                        if ( !TypeExtensions.IsSystemType(propertyInfo.PropertyType) )
-                        {
-                            string propertyName = propertyInfo.Name;
-                            var value = propertyInfo.GetValue(entity, null);
-                            if (value != null)
-                            {
-                                var selectedPaths = allowedPaths.Where(e => e[0] == propertyName).ToList();
-                                if (selectedPaths.Count() > 0)
-                                {
-                                    var newPaths = ModifyPaths(propertyName, allowedPaths);
-                                    DetachRecursive2(value, newPaths);
-                                }
-                                else
-                                {
-                                    propertyInfo.SetValue(entity, null);
-                                }
-                            }
-                        }
                     }
                 }
             }

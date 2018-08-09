@@ -158,8 +158,8 @@ namespace DashboardCode.Routines.Test
         public void SNodeCloneTest()
         {
             var x1cloned = STree.Instance.Clone(s1);
-            var b1 = STree.Instance.IsSubsetOf(s1, x1cloned);
-            var b2 = STree.Instance.IsSupersetOf(s1, x1cloned);
+            var b1 = STree.Instance.IsSubTreeOf(s1, x1cloned);
+            var b2 = STree.Instance.IsSuperTreeOf(s1, x1cloned);
             var b3 = STree.Instance.IsEqualTo(s1, x1cloned);
             var b4 = STree.Instance.IsEqualTo(x1cloned, s1);
             if (b1 == false || b2 == false || b3 == false || b4 == false)
@@ -169,11 +169,11 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void SNodeLogicalTest()
         {
-            var b1 = STree.Instance.IsSupersetOf(s1, s2);
-            var b2 = STree.Instance.IsSubsetOf(s2, s1);
+            var b1 = STree.Instance.IsSuperTreeOf(s1, s2);
+            var b2 = STree.Instance.IsSubTreeOf(s2, s1);
 
-            var b3 = STree.Instance.IsSubsetOf(s1, s2);
-            var b4 = STree.Instance.IsSupersetOf(s2, s1);
+            var b3 = STree.Instance.IsSubTreeOf(s1, s2);
+            var b4 = STree.Instance.IsSuperTreeOf(s2, s1);
 
             var b5 = STree.Instance.IsEqualTo(s1, s2);
             var b6 = STree.Instance.IsEqualTo(s2, s1);
@@ -181,20 +181,20 @@ namespace DashboardCode.Routines.Test
             if (b1 == false || b2 == false || b3 == true || b4 == true || b5 == true || b6 == true)
                 throw new Exception("logical operation fails A");
 
-            var b1b = STree.Instance.IsSupersetOf(s1, s3);
-            var b2b = STree.Instance.IsSubsetOf(s3, s1);
+            var b1b = STree.Instance.IsSuperTreeOf(s1, s3);
+            var b2b = STree.Instance.IsSubTreeOf(s3, s1);
 
-            var b3b = STree.Instance.IsSubsetOf(s1, s3);
-            var b4b = STree.Instance.IsSupersetOf(s3, s1);
+            var b3b = STree.Instance.IsSubTreeOf(s1, s3);
+            var b4b = STree.Instance.IsSuperTreeOf(s3, s1);
 
             if (b1b == true || b2b == true || b3b == true || b4b == true)
                 throw new Exception("logical operation fails B");
 
-            var b1c = STree.Instance.IsSupersetOf(s3, s2);
-            var b2c = STree.Instance.IsSubsetOf(s2, s3);
+            var b1c = STree.Instance.IsSuperTreeOf(s3, s2);
+            var b2c = STree.Instance.IsSubTreeOf(s2, s3);
 
-            var b3c = STree.Instance.IsSubsetOf(s3, s2);
-            var b4c = STree.Instance.IsSupersetOf(s2, s3);
+            var b3c = STree.Instance.IsSubTreeOf(s3, s2);
+            var b4c = STree.Instance.IsSuperTreeOf(s2, s3);
 
             if (b1c == false || b2c == false || b3c == true || b4c == true)
                 throw new Exception("logical operation fails C");
@@ -215,9 +215,9 @@ namespace DashboardCode.Routines.Test
 
             var b3 = STree.Instance.IsEqualTo(z1, s1);
 
-            var q1 = STree.Instance.IsSupersetOf(z3, s1);
-            var q2 = STree.Instance.IsSupersetOf(z3, s2);
-            var q3 = STree.Instance.IsSupersetOf(z3, s3);
+            var q1 = STree.Instance.IsSuperTreeOf(z3, s1);
+            var q2 = STree.Instance.IsSuperTreeOf(z3, s2);
+            var q3 = STree.Instance.IsSuperTreeOf(z3, s3);
             if (q1 == false || q2 == false || q3 == false)
                 throw new Exception("union superset fails");
         }

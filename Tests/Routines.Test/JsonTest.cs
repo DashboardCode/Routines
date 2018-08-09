@@ -118,7 +118,7 @@ namespace DashboardCode.Routines.Test
                     .AddRule<string[]>(GetStringArrayFormatter)
                     .AddRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
                     .AddRule<IEnumerable<Guid>>(GetStringGuidFormatter)
-                    .Subset(
+                    .SubTree(
                         chain  => chain.Include(e => e.Test),
                         subRules => subRules.AddRule<int[]>(serializer: GetSumFormatter, propertySerializationName: "Sum")
                     ),

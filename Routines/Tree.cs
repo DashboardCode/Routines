@@ -277,7 +277,7 @@ namespace DashboardCode.Routines
             return found;
         }
 
-        public static bool IsSubsetOf<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
+        public static bool IsSubTreeOf<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
             where TNode : TNodePrimal
         {
             if (!tree.RootEquals(node1, node2))
@@ -308,7 +308,7 @@ namespace DashboardCode.Routines
             return found;
         }
 
-        public static bool IsSupersetOf<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
+        public static bool IsSuperTreeOf<TNodePrimal, TNode, TKey>(this Tree<TNodePrimal, TNode, TKey> tree, TNodePrimal node1, TNodePrimal node2)
             where TNode : TNodePrimal
         {
             var @value = tree.IsSubsetRecursive(node2, node1);

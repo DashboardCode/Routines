@@ -90,7 +90,7 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.CreateChainNode();
             var rootNode2 = include2.CreateChainNode();
 
-            bool @value = ChainNodeTree.IsSupersetOf(rootNode1, rootNode2);
+            bool @value = ChainNodeTree.IsSuperTreeOf(rootNode1, rootNode2);
             return @value;
         }
 
@@ -99,7 +99,7 @@ namespace DashboardCode.Routines
             var rootNode1 = include1.CreateChainNode();
             var rootNode2 = include2.CreateChainNode();
 
-            bool @value = ChainNodeTree.IsSubsetOf(rootNode1, rootNode2);
+            bool @value = ChainNodeTree.IsSubTreeOf(rootNode1, rootNode2);
             return @value;
         }
 
