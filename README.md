@@ -69,6 +69,90 @@ var formatter = JsonManager.ComposeFormatter(
                     ));
 ```
 
-To be continue
+## Equals
+
+```
+Include<User> include = chain=>chain.Include(e=>e.UserId).IncludeAll(e=>e.Groups).ThenInclude(e=>e.GroupId)
+
+bool b1 = ObjectExtensions.Equals(user1, user2, include);
+bool b2 = ObjectExtensions.EqualsAll(userList1, userList2, include);
+```
+
+## Clone
+```cs
+Include<User> include = chain=>chain.Include(e=>e.UserId).IncludeAll(e=>e.Groups).ThenInclude(e=>e.GroupId)
+
+var newUser = ObjectExtensions.Clone(user1, include, leafRule1);
+var newUserList = ObjectExtensions.CloneAll(userList1, leafRule1);
+```
+
+## Copy
+
+```cs
+Include<User> include = chain=>chain.IncludeAll(e=>e.Groups);
+
+ObjectExtensions.Copy(user1, user2, include, supportedLeafsRule);  
+ObjectExtensions.CopyAll(userList1, userList2, include, supportedLeafsRule);
+```
+
+## DSL Includes Internal Structures
+
+```
+ChainNode root = include.CreateChainNode();
+```
+There root contains .Children - `Dictionary<srting, ChainMemberNode>` 
+
+`ChainMemberNode` type - additionally contains `.Parent` - ref to parent.
+
+You can create `includes` dinamically:
+
+```cs
+var root = new ChainNode(typeof(Point));
+var child = new ChainPropertyNode(
+         typeof(int),
+         expression: typeof(Point).CreatePropertyLambda("X"),
+         memberName:"X", isEnumerable:false, parent:root
+);
+root.Children.Add("X", child);
+// or there is number of extension methods e.g.: var child = root.AddChild("X");
+
+Include<Point> include = ChainNodeExtensions.ComposeInclude<Point>(root);
+```
+
+
+## DSL Includes Meta operations
+
+Add leafs by rule
+```
+Func<ChainNode, MemberName> leafRule = ... //
+inlcude.AppendLeafs(leafRule ?? LeafRuleManager.DefaultEfCore);
+```
+
+
+Compare:
+```cs
+var b1 = InlcudeExtensions.IsEqualTo(include1, include2);
+var b2 = InlcudeExtensions.IsSubTreeOf(include1, include2);
+var b3 = InlcudeExtensions.IsSuperTreeOf(include1, include2);
+```
+</spoiler>
+
+Clone:
+```cs
+var include2 = InlcudeExtensions.Clone(include1);
+```
+
+Merge:
+```cs
+var include3 = InlcudeExtensions.Equals(include1, include2);
+```
+
+Get XPATH to all leafs:
+```cs
+IReadOnlyCollection<string> paths1 = InlcudeExtensions.ListLeafXPaths(include);
+```
+
+ 
+
 
 [![Coverage Status](https://s3.amazonaws.com/assets.coveralls.io/badges/coveralls_78.svg)](https://coveralls.io/github/rpokrovskij/Vse?branch=)
