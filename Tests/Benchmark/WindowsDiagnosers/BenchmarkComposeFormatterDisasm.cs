@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
@@ -19,7 +17,7 @@ namespace Benchmark
 #if !NETCOREAPP
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(printAsm: true, printSource: true)]
-    [BenchmarkDotNet.Attributes.Jobs.RyuJitX64Job]
+    [RyuJitX64Job]
     [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
 #endif
     public class BenchmarkComposeFormatterDisasm

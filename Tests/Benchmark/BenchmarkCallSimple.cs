@@ -4,8 +4,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace Benchmark
 {

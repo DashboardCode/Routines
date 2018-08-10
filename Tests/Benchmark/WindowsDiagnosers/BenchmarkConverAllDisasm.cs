@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace Benchmark
 {
@@ -12,7 +10,7 @@ namespace Benchmark
 #if !NETCOREAPP
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(printAsm: true, printSource: true)]
-    [BenchmarkDotNet.Attributes.Jobs.RyuJitX64Job]
+    [RyuJitX64Job]
     [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
 #endif
     public class BenchmarkConverAllDisasm

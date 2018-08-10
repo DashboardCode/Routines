@@ -1,7 +1,5 @@
 ﻿using System.Text;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace Benchmark
 {

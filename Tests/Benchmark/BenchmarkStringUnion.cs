@@ -3,8 +3,6 @@ using System.Text;
 using System.Collections.Generic;
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace Benchmark
 {

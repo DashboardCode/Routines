@@ -4,8 +4,6 @@ using System.Reflection;
 using System.Linq.Expressions;
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace Benchmark
 {
@@ -16,7 +14,7 @@ namespace Benchmark
 #if !(NETCOREAPP1_1 || NETCOREAPP2_0  || NETCOREAPP2_1)
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(printAsm: true, printSource: true)]
-    [BenchmarkDotNet.Attributes.Jobs.RyuJitX64Job]
+    [RyuJitX64Job]
     [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
 #endif
     public class BenchmarkCallSimpleDisasm

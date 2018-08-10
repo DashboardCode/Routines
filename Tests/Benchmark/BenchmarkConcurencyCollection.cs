@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Attributes.Columns;
-using BenchmarkDotNet.Attributes.Exporters;
 
 namespace Benchmark
 {
