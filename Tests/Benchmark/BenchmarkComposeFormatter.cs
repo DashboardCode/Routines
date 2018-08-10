@@ -9,6 +9,8 @@ using BenchmarkDotNet.Attributes.Exporters;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
+using Jil;
+using FastExpressionCompiler;
 
 namespace Benchmark
 {
@@ -21,8 +23,11 @@ namespace Benchmark
         static Box box;
         static List<Row> testData = new List<Row>();
         static Func<Box, string> composeFormatterDelegate;
+        static Func<Box, string> composeFormatterFastCompileDelegate;
+        static Func<StringBuilder, Box, bool> fastExpressionCompilerDelegate;
         static Func<StringBuilder, Box, bool> dslRoutineExpressionManuallyConstruted;
         static Func<StringBuilder, Box, bool> dslRoutineDelegateManuallyConstrutedFormatter;
+
         static BenchmarkComposeFormatter()
         {
             for(int i=0;i<600;i++)
@@ -45,10 +50,12 @@ namespace Benchmark
             }
             box = new Box { Rows = testData };
 
+
             Include<Box> include = (chain => chain.IncludeAll(e => e.Rows));
             var includeWithLeafs = include.AppendLeafs();
 
-            composeFormatterDelegate = JsonManager.ComposeFormatter(includeWithLeafs, stringBuilderCapacity: 4000);
+            composeFormatterDelegate = JsonManager.ComposeFormatter(includeWithLeafs);
+            composeFormatterFastCompileDelegate = JsonManager.ComposeFormatter(includeWithLeafs, compile: (ex)=>ex.CompileFast());
 
             Expression<Func<StringBuilder, Box, bool>> dslRoutineExpressionManuallyConstrutedExpression = 
                     (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
@@ -77,7 +84,9 @@ namespace Benchmark
                             JsonValueStringBuilderExtensions.NullSerializer
                         )
                     );
+
             dslRoutineExpressionManuallyConstruted = dslRoutineExpressionManuallyConstrutedExpression.Compile();
+            fastExpressionCompilerDelegate = dslRoutineExpressionManuallyConstrutedExpression.CompileFast();
 
             dslRoutineDelegateManuallyConstrutedFormatter = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
                         (sb, t) => JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull(sb, t, "Rows", o => o.Rows,
@@ -107,12 +116,11 @@ namespace Benchmark
         }
 
         [Benchmark]
-        public string fake_expressionManuallyConstruted()
+        public string fastExpressionCompiler()
         {
             var sb = new StringBuilder();
-            dslRoutineExpressionManuallyConstruted(sb, box);
-            var json = sb.ToString();
-            return json;
+            fastExpressionCompilerDelegate(sb, box);
+            return sb.ToString();
         }
 
 
@@ -120,6 +128,32 @@ namespace Benchmark
         public string dslComposeFormatter()
         {
             var json = composeFormatterDelegate(box);
+            return json;
+        }
+
+        [Benchmark]
+        public string dslComposeFormatter_FastCompile()
+        {
+            var json = composeFormatterFastCompileDelegate(box);
+            return json;
+        }
+
+        [Benchmark]
+        public string jil()
+        {
+            using (var output = new System.IO.StringWriter())
+            {
+                JSON.Serialize(box, output);
+                return output.ToString();
+            }
+        }
+
+        [Benchmark]
+        public string fake_expressionManuallyConstruted()
+        {
+            var sb = new StringBuilder();
+            dslRoutineExpressionManuallyConstruted(sb, box);
+            var json = sb.ToString();
             return json;
         }
 
@@ -133,65 +167,65 @@ namespace Benchmark
             return json;
         }
 
-        [Benchmark]
-        public string JsonNet_Default()
-        {
-            string text = JsonConvert.SerializeObject(box);
-            return text;
-        }
+        //[Benchmark]
+        //public string JsonNet_Default()
+        //{
+        //    string text = JsonConvert.SerializeObject(box);
+        //    return text;
+        //}
 
 
-        [Benchmark]
-        public string JsonNet_Indented()
-        {
-            string text = JsonConvert.SerializeObject(
-                box, Formatting.Indented,
-                new Newtonsoft.Json.JsonSerializerSettings { });
-            return text;
-        }
+        //[Benchmark]
+        //public string JsonNet_Indented()
+        //{
+        //    string text = JsonConvert.SerializeObject(
+        //        box, Formatting.Indented,
+        //        new Newtonsoft.Json.JsonSerializerSettings { });
+        //    return text;
+        //}
 
-        [Benchmark]
-        public string JsonNet_NullIgnore()
-        {
-            string text = JsonConvert.SerializeObject(
-                box,
-                new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
-                });
-            return text;
-        }
+        //[Benchmark]
+        //public string JsonNet_NullIgnore()
+        //{
+        //    string text = JsonConvert.SerializeObject(
+        //        box,
+        //        new Newtonsoft.Json.JsonSerializerSettings
+        //        {
+        //            NullValueHandling = NullValueHandling.Ignore
+        //        });
+        //    return text;
+        //}
 
-        [Benchmark]
-        public string JsonNet_DateFormatFF()
-        {
-            string text = JsonConvert.SerializeObject(
-                box,
-                new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    DateFormatString = "yyyy-MM-ddTHH:mm:ssK"
-                });
-            return text;
-        }
+        //[Benchmark]
+        //public string JsonNet_DateFormatFF()
+        //{
+        //    string text = JsonConvert.SerializeObject(
+        //        box,
+        //        new Newtonsoft.Json.JsonSerializerSettings
+        //        {
+        //            DateFormatString = "yyyy-MM-ddTHH:mm:ssK"
+        //        });
+        //    return text;
+        //}
 
-        [Benchmark]
-        public string JsonNet_DateFormatSS()
-        {
-            string text = JsonConvert.SerializeObject(
-                box,
-                new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    DateFormatString = "yyyy-MM-ddTHH:mm:ss.fffK"
-                });
-            return text;
-        }
+        //[Benchmark]
+        //public string JsonNet_DateFormatSS()
+        //{
+        //    string text = JsonConvert.SerializeObject(
+        //        box,
+        //        new Newtonsoft.Json.JsonSerializerSettings
+        //        {
+        //            DateFormatString = "yyyy-MM-ddTHH:mm:ss.fffK"
+        //        });
+        //    return text;
+        //}
 
-        [Benchmark]
-        public string ServiceStack_SerializeToString()
-        {
-            var json = ServiceStack.Text.JsonSerializer.SerializeToString(box);
-            return json;
-        }
+        //[Benchmark]
+        //public string ServiceStack_SerializeToString()
+        //{
+        //    var json = ServiceStack.Text.JsonSerializer.SerializeToString(box);
+        //    return json;
+        //}
     }
 
     public class Box

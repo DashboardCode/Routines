@@ -15,6 +15,7 @@ namespace DashboardCode.Routines.Json
         internal readonly Dictionary<Type, SerializerOptions> dictionary = new Dictionary<Type, SerializerOptions>();
         protected readonly string dateTimeFormat;
         protected readonly string floatingPointFormat;
+        protected readonly Func<LambdaExpression, Delegate> compile;
 
         public RulesDictionaryBase(
             bool useToString,
@@ -22,7 +23,8 @@ namespace DashboardCode.Routines.Json
             string floatingPointFormat,
             bool stringAsJsonLiteral,
             bool stringJsonEscape,
-            Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions
+            Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions,
+            Func<LambdaExpression, Delegate> compile
         )
         {
             this.useToString = useToString;
@@ -31,6 +33,7 @@ namespace DashboardCode.Routines.Json
             this.internalNodeOptions = internalNodeOptions;
             this.dateTimeFormat = dateTimeFormat;
             this.floatingPointFormat = floatingPointFormat;
+            this.compile = compile;
         }
 
         protected void AddTypeRuleForCurrentInclude<T>(
@@ -47,7 +50,7 @@ namespace DashboardCode.Routines.Json
               Expression<Func<StringBuilder, T, bool>> funcExpression
         )
         {
-            var methodInfo = JsonChainTools.GetMethodInfoExpr(funcExpression);
+            var methodInfo = JsonChainTools.GetMethodInfoExpr(funcExpression, compile);
             var type = typeof(T);
 
             var formatterDelegateType = typeof(Func<,,>).MakeGenericType(typeof(StringBuilder), type, typeof(bool));
@@ -89,8 +92,10 @@ namespace DashboardCode.Routines.Json
                 string floatingPointFormat,
                 bool stringAsJsonLiteral,
                 bool stringJsonEscape,
-                Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions
-            ):base(useToString, dateTimeFormat, floatingPointFormat, stringAsJsonLiteral, stringJsonEscape, nullSerializer, handleNullProperty, internalNodeOptions)
+                Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions,
+                Func<LambdaExpression, Delegate> compile
+            ) :base(useToString, dateTimeFormat, floatingPointFormat, stringAsJsonLiteral, stringJsonEscape, nullSerializer, handleNullProperty, internalNodeOptions, compile
+                )
         {
             this.root = root;
 
@@ -157,8 +162,9 @@ namespace DashboardCode.Routines.Json
             string floatingPointFormat, 
             bool stringAsJsonLiteral,
             bool stringJsonEscape,
-            Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions)
-            : base(useToString, dateTimeFormat, floatingPointFormat, stringAsJsonLiteral, stringJsonEscape, nullSerializer, handleNullProperty, internalNodeOptions)
+            Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions,
+            Func<LambdaExpression, Delegate> compile)
+            : base(useToString, dateTimeFormat, floatingPointFormat, stringAsJsonLiteral, stringJsonEscape, nullSerializer, handleNullProperty, internalNodeOptions, compile)
         {
 
             AddTypeRuleOptimized<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
@@ -217,10 +223,11 @@ namespace DashboardCode.Routines.Json
                 stringJsonEscape    ?? true, 
                 nullSerializer      ?? this.nullSerializer, 
                 handleNullProperty  ?? this.handleNullProperty, 
-                internalNodeOptions ?? this.internalNodeOptions);
-            config?.Invoke(subDictionary);
-
-            subtrees.Add(subDictionary);
+                internalNodeOptions ?? this.internalNodeOptions,
+                compile: compile
+                );
+                config?.Invoke(subDictionary);
+                subtrees.Add(subDictionary);
 
             return this;
         }

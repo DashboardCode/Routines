@@ -3,30 +3,22 @@ BenchmarkDotNet=v0.10.14, OS=Windows 10.0.17134
 Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical and 4 physical cores
 .NET Core SDK=2.1.300
   [Host]     : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
-  Job-OHCUYR : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
-  Job-IEDGXR : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
+  Job-UYDYHW : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
+  Job-LLCKPY : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
 
 Toolchain=.NET Core 2.1  
 
                             Method | Runtime |      Mean |     Error |    StdDev |       Min |       Max |    Median | Rank |     Gen 0 |    Gen 1 |   Gen 2 |  Allocated |
 ---------------------------------- |-------- |----------:|----------:|----------:|----------:|----------:|----------:|-----:|----------:|---------:|--------:|-----------:|
- fake_expressionManuallyConstruted |     Clr | 54.373 ms | 0.2124 ms | 0.1987 ms | 54.093 ms | 54.722 ms | 54.315 ms |   17 | 2125.0000 | 312.5000 |       - | 7401.58 KB |
-        dslRoutineComposeFormatter |     Clr |  2.187 ms | 0.0128 ms | 0.0120 ms |  2.160 ms |  2.209 ms |  2.188 ms |    1 |  226.5625 |  58.5938 | 58.5938 |  849.47 KB |
-   fake_delegateManuallyConstruted |     Clr |  2.331 ms | 0.0127 ms | 0.0119 ms |  2.311 ms |  2.349 ms |  2.328 ms |    3 |  406.2500 |  78.1250 | 58.5938 | 1494.55 KB |
-                   JsonNet_Default |     Clr |  2.933 ms | 0.0234 ms | 0.0219 ms |  2.906 ms |  2.980 ms |  2.934 ms |    7 |  175.7813 |  58.5938 | 58.5938 |  658.65 KB |
-                           JsonNet |     Clr |  3.084 ms | 0.0120 ms | 0.0107 ms |  3.061 ms |  3.102 ms |  3.083 ms |    8 |  175.7813 |  58.5938 | 58.5938 |  658.95 KB |
-                  JsonNet_Indented |     Clr |  3.842 ms | 0.0197 ms | 0.0184 ms |  3.813 ms |  3.866 ms |  3.844 ms |   13 |  148.4375 |  97.6563 | 97.6563 |  967.25 KB |
-                JsonNet_NullIgnore |     Clr |  2.868 ms | 0.0114 ms | 0.0107 ms |  2.848 ms |  2.886 ms |  2.872 ms |    5 |  136.7188 |  42.9688 | 42.9688 |  564.98 KB |
-              JsonNet_DateFormatFF |     Clr |  3.268 ms | 0.0152 ms | 0.0142 ms |  3.250 ms |  3.297 ms |  3.267 ms |    9 |  214.8438 |  54.6875 | 54.6875 |  757.41 KB |
-              JsonNet_DateFormatSS |     Clr |  3.790 ms | 0.0151 ms | 0.0142 ms |  3.772 ms |  3.827 ms |  3.787 ms |   12 |  175.7813 |  58.5938 | 58.5938 |  785.53 KB |
-    ServiceStack_SerializeToString |     Clr |  4.353 ms | 0.0204 ms | 0.0191 ms |  4.318 ms |  4.384 ms |  4.356 ms |   16 |  218.7500 |  39.0625 | 39.0625 |  805.13 KB |
- fake_expressionManuallyConstruted |    Core | 54.396 ms | 0.1758 ms | 0.1644 ms | 54.104 ms | 54.629 ms | 54.383 ms |   17 | 2125.0000 | 312.5000 |       - | 7401.58 KB |
-        dslRoutineComposeFormatter |    Core |  2.208 ms | 0.0093 ms | 0.0078 ms |  2.193 ms |  2.220 ms |  2.211 ms |    2 |  226.5625 |  58.5938 | 58.5938 |  849.47 KB |
-   fake_delegateManuallyConstruted |    Core |  2.351 ms | 0.0102 ms | 0.0086 ms |  2.334 ms |  2.369 ms |  2.352 ms |    4 |  406.2500 |  78.1250 | 58.5938 | 1494.55 KB |
-                   JsonNet_Default |    Core |  2.902 ms | 0.0160 ms | 0.0150 ms |  2.883 ms |  2.934 ms |  2.899 ms |    6 |  175.7813 |  58.5938 | 58.5938 |  658.63 KB |
-                           JsonNet |    Core |  2.866 ms | 0.0131 ms | 0.0122 ms |  2.844 ms |  2.884 ms |  2.867 ms |    5 |  175.7813 |  58.5938 | 58.5938 |  658.93 KB |
-                  JsonNet_Indented |    Core |  3.508 ms | 0.0145 ms | 0.0136 ms |  3.487 ms |  3.530 ms |  3.510 ms |   11 |  148.4375 |  97.6563 | 97.6563 |  967.23 KB |
-                JsonNet_NullIgnore |    Core |  2.944 ms | 0.0089 ms | 0.0079 ms |  2.932 ms |  2.960 ms |  2.942 ms |    7 |  136.7188 |  42.9688 | 42.9688 |  564.97 KB |
-              JsonNet_DateFormatFF |    Core |  3.480 ms | 0.0121 ms | 0.0113 ms |  3.458 ms |  3.497 ms |  3.479 ms |   10 |  214.8438 |  54.6875 | 54.6875 |  757.41 KB |
-              JsonNet_DateFormatSS |    Core |  3.880 ms | 0.0139 ms | 0.0130 ms |  3.854 ms |  3.899 ms |  3.877 ms |   14 |  175.7813 |  58.5938 | 58.5938 |  785.53 KB |
-    ServiceStack_SerializeToString |    Core |  4.225 ms | 0.0120 ms | 0.0106 ms |  4.201 ms |  4.243 ms |  4.226 ms |   15 |  218.7500 |  39.0625 | 39.0625 |  805.13 KB |
+            fastExpressionCompiler |     Clr | 15.075 ms | 0.0490 ms | 0.0458 ms | 15.002 ms | 15.143 ms | 15.059 ms |    9 |  625.0000 | 171.8750 | 46.8750 | 2489.78 KB |
+               dslComposeFormatter |     Clr |  2.291 ms | 0.0245 ms | 0.0229 ms |  2.269 ms |  2.333 ms |  2.284 ms |    6 |  226.5625 |  62.5000 | 58.5938 |  856.92 KB |
+   dslComposeFormatter_FastCompile |     Clr |  2.264 ms | 0.0175 ms | 0.0164 ms |  2.244 ms |  2.297 ms |  2.260 ms |    5 |  226.5625 |  62.5000 | 58.5938 |  856.92 KB |
+                               jil |     Clr |  1.113 ms | 0.0118 ms | 0.0110 ms |  1.103 ms |  1.138 ms |  1.108 ms |    2 |  109.3750 |  54.6875 | 54.6875 |  505.95 KB |
+ fake_expressionManuallyConstruted |     Clr | 51.068 ms | 0.1025 ms | 0.0959 ms | 50.906 ms | 51.214 ms | 51.088 ms |   10 | 1687.5000 | 437.5000 |       - | 6164.08 KB |
+   fake_delegateManuallyConstruted |     Clr |  2.362 ms | 0.0092 ms | 0.0086 ms |  2.349 ms |  2.382 ms |  2.359 ms |    7 |  406.2500 |  78.1250 | 58.5938 | 1494.55 KB |
+            fastExpressionCompiler |    Core | 14.751 ms | 0.0313 ms | 0.0293 ms | 14.715 ms | 14.821 ms | 14.745 ms |    8 |  625.0000 | 171.8750 | 46.8750 | 2489.78 KB |
+               dslComposeFormatter |    Core |  2.216 ms | 0.0052 ms | 0.0049 ms |  2.207 ms |  2.222 ms |  2.218 ms |    3 |  226.5625 |  62.5000 | 58.5938 |  856.92 KB |
+   dslComposeFormatter_FastCompile |    Core |  2.225 ms | 0.0085 ms | 0.0079 ms |  2.212 ms |  2.237 ms |  2.225 ms |    4 |  226.5625 |  62.5000 | 58.5938 |  856.92 KB |
+                               jil |    Core |  1.105 ms | 0.0031 ms | 0.0027 ms |  1.100 ms |  1.108 ms |  1.105 ms |    1 |  109.3750 |  54.6875 | 54.6875 |  505.95 KB |
+ fake_expressionManuallyConstruted |    Core | 51.053 ms | 0.2729 ms | 0.2553 ms | 50.739 ms | 51.523 ms | 51.066 ms |   10 | 1687.5000 | 437.5000 |       - | 6164.08 KB |
+   fake_delegateManuallyConstruted |    Core |  2.362 ms | 0.0118 ms | 0.0105 ms |  2.341 ms |  2.382 ms |  2.363 ms |    7 |  406.2500 |  78.1250 | 58.5938 | 1494.55 KB |

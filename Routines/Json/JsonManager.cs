@@ -21,12 +21,15 @@ namespace DashboardCode.Routines.Json
             , bool handleNullArrayProperty = true
             , bool rootHandleNull = true
             , bool rootHandleEmptyObjectLiteral = true
-            , int stringBuilderCapacity = 16)
+            , int stringBuilderCapacity = 16
+            , Func<LambdaExpression, Delegate> compile = null
+            )
         {
             return ComposeFormatter(include: null, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
                     floatingPointFormat: floatingPointFormat, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                     nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
-                    handleNullArrayProperty: handleNullArrayProperty, rootHandleNull: rootHandleNull, rootHandleEmptyObjectLiteral: rootHandleEmptyObjectLiteral, stringBuilderCapacity: stringBuilderCapacity
+                    handleNullArrayProperty: handleNullArrayProperty, rootHandleNull: rootHandleNull, rootHandleEmptyObjectLiteral: rootHandleEmptyObjectLiteral, stringBuilderCapacity: stringBuilderCapacity,
+                    compile: compile
                 );
         }
 
@@ -46,7 +49,8 @@ namespace DashboardCode.Routines.Json
            , bool handleNullArrayProperty = true
            , bool rootHandleNull = true
            , bool rootHandleEmptyObjectLiteral = true
-           , int stringBuilderCapacity = 16)
+           , int stringBuilderCapacity = 16
+           , Func<LambdaExpression, Delegate> compile = null)
         {
             ChainNode root = IncludeExtensions.CreateChainNode(include);
             if (include == null && config == null)
@@ -59,7 +63,7 @@ namespace DashboardCode.Routines.Json
             }
             return ComposeFormatter(root, config, useToString, dateTimeFormat, floatingPointFormat, handleEmptyObjectLiteral,
                     handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer,
-                    handleNullArrayProperty, rootHandleNull, rootHandleEmptyObjectLiteral, stringBuilderCapacity
+                    handleNullArrayProperty, rootHandleNull, rootHandleEmptyObjectLiteral, stringBuilderCapacity, compile
                 );
         }
 
@@ -78,9 +82,11 @@ namespace DashboardCode.Routines.Json
            , bool handleNullArrayProperty = true
            , bool rootHandleNull = true
            , bool rootHandleEmptyObjectLiteral = true
-           , int stringBuilderCapacity = 16)
+           , int stringBuilderCapacity = 16
+           , Func<LambdaExpression, Delegate> compile= null)
         {
-            
+            if (compile == null)
+                compile = StandardCompile;
             var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
                 /*stringAsJsonLiteral*/ false,
                 /*stringJsonEscape*/    true,
@@ -94,14 +100,15 @@ namespace DashboardCode.Routines.Json
                         nullArraySerializer: nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                         handleNullArrayProperty: handleNullArrayProperty,
                         serializationName: null
-                        )
+                        ),
+                compile: compile
                 );
             config?.Invoke(rulesDictionary);
 
             Func<ChainNode, SerializerOptions> getSerializerOptions = n => rulesDictionary.GetLeafSerializerOptions(n);
             Func<ChainNode, InternalNodeOptions> getInternalNodeOptions = n => rulesDictionary.GeInternalNodeOptions(n);
 
-            var serializer = ComposeSerializer<T>(root, getSerializerOptions, getInternalNodeOptions, rootHandleNull, rootHandleEmptyObjectLiteral);
+            var serializer = ComposeSerializer<T>(root, getSerializerOptions, getInternalNodeOptions, rootHandleNull, rootHandleEmptyObjectLiteral, compile);
             return (t) => {
                 var stringBuilder = new StringBuilder(stringBuilderCapacity);
                 serializer(stringBuilder, t);
@@ -115,6 +122,7 @@ namespace DashboardCode.Routines.Json
             , Func<ChainNode, InternalNodeOptions> getInternalNodeOptions
             , bool rootHandleNull
             , bool rootHandleEmptyObjectLiteral
+            , Func<LambdaExpression, Delegate> compile
             )
         {
             Func<StringBuilder, T, bool> @value = null;
@@ -184,7 +192,7 @@ namespace DashboardCode.Routines.Json
                 foreach (var c in root.Children)
                 {
                     var n = c.Value;
-                    JsonChainTools.ConfigureSerializeProperty(n, root.Type, properies, getSerializerOptions, getInternalNodeOptions);
+                    JsonChainTools.ConfigureSerializeProperty(n, root.Type, properies, getSerializerOptions, getInternalNodeOptions, compile);
                 }
                 var methodCallExpression = JsonChainTools.CreateSerializeMethodCallExpression(sbParameterExpression, tParameterExpression, objectType, rootHandleEmptyObjectLiteral, properies.ToArray());
 
@@ -218,7 +226,7 @@ namespace DashboardCode.Routines.Json
                 }
             }
             var serializeLambda = Expression.Lambda(serializeExpression, new[] { sbParameterExpression, tParameterExpression });
-            @value = ((Expression<Func<StringBuilder, T, bool>>)serializeLambda).Compile();
+            @value = (Func<StringBuilder, T, bool>)compile(serializeLambda);
             return @value;
         }
 
@@ -236,9 +244,11 @@ namespace DashboardCode.Routines.Json
             , bool handleNullArrayProperty = true
             , bool rootHandleNullArray = true
             , bool rootHandleEmptyArrayLiteral = true
-            , int stringBuilderCapacity = 16)
+            , int stringBuilderCapacity = 16
+            , Func<LambdaExpression, Delegate> compile=null)
         {
-
+            if (compile == null)
+                compile = StandardCompile;
             ChainNode root = IncludeExtensions.CreateChainNode(include);
             if (include == null && config == null)
             {
@@ -251,8 +261,13 @@ namespace DashboardCode.Routines.Json
 
             return ComposeEnumerableFormatter(root, config, useToString, dateTimeFormat, floatingPointFormat,
                 handleEmptyObjectLiteral, handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer,
-                handleNullArrayProperty, rootHandleNullArray, rootHandleEmptyArrayLiteral, stringBuilderCapacity);
+                handleNullArrayProperty, rootHandleNullArray, rootHandleEmptyArrayLiteral, stringBuilderCapacity, compile);
 
+        }
+
+        private static Delegate StandardCompile(LambdaExpression expression)
+        {
+            return expression.Compile();
         }
 
         public static Func<IEnumerable<T>, string> ComposeEnumerableFormatter<T>(
@@ -269,9 +284,11 @@ namespace DashboardCode.Routines.Json
             , bool handleNullArrayProperty = true
             , bool rootHandleNullArray = true
             , bool rootHandleEmptyArrayLiteral = true
-            , int stringBuilderCapacity = 16)
+            , int stringBuilderCapacity = 16
+            , Func<LambdaExpression, Delegate> compile = null)
         {
-
+            if (compile == null)
+                compile = StandardCompile;
             var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
                 /*stringAsJsonLiteral*/ false,
                 /*stringJsonEscape*/    true,
@@ -282,7 +299,8 @@ namespace DashboardCode.Routines.Json
                         handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                         nullSerializer: nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                         nullArraySerializer: nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
-                        serializationName: null)
+                        serializationName: null),
+                compile:compile
                 );
             config?.Invoke(rulesDictionary);
 
@@ -292,7 +310,10 @@ namespace DashboardCode.Routines.Json
             var serializer = ComposeEnumerableSerializer<T>(root
                 , getLeafSerializerOptions
                 , getInternalNodeOptions
-                , rootHandleNullArray, rootHandleEmptyArrayLiteral);
+                , rootHandleNullArray
+                , rootHandleEmptyArrayLiteral
+                , compile: compile
+                );
             return (t) =>
             {
                 var stringBuilder = new StringBuilder(stringBuilderCapacity);
@@ -314,9 +335,9 @@ namespace DashboardCode.Routines.Json
             , bool handleNullArrayProperty = true
             , bool rootHandleNullArray = true
             , bool rootHandleEmptyArrayLiteral = true
-            , int stringBuilderCapacity = 16)
+            , int stringBuilderCapacity = 16
+            , Func<LambdaExpression, Delegate> compile = null)
         {
-
             return ComposeEnumerableFormatter<T>(include: null, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
                 floatingPointFormat: floatingPointFormat, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral, nullSerializer: nullSerializer, handleNullProperty: handleNullProperty,
                 rootHandleNullArray: rootHandleNullArray, rootHandleEmptyArrayLiteral: rootHandleEmptyArrayLiteral, stringBuilderCapacity: stringBuilderCapacity);
@@ -327,12 +348,13 @@ namespace DashboardCode.Routines.Json
             , Func<ChainNode, SerializerOptions> getSerializerOptions
             , Func<ChainNode, InternalNodeOptions> getInternalNodeOptions
             , bool rootHandleNullArray
-            , bool rootHandleEmptyArrayLiteral)
+            , bool rootHandleEmptyArrayLiteral
+            , Func<LambdaExpression, Delegate> compile)
         {
             Func<StringBuilder, IEnumerable<T>, bool> @value = null;
             var enumerableType = typeof(IEnumerable<T>);
 
-            var expressions = JsonChainTools.CreateSerializsPair(root,/* node.Type,*/ getSerializerOptions, getInternalNodeOptions);
+            var expressions = JsonChainTools.CreateSerializsPair(root,/* node.Type,*/ getSerializerOptions, getInternalNodeOptions, compile);
 
             ConstantExpression nullSerializerExpression = null;
             if (JsonChainTools.IsNullable(root.Type))
@@ -379,7 +401,7 @@ namespace DashboardCode.Routines.Json
             }
 
             var serializeArrayLambda = Expression.Lambda(serializeConditionalExpression, new[] { sbExpression, tExpression });
-            @value = (Func<StringBuilder, IEnumerable<T>, bool>)serializeArrayLambda.Compile();
+            @value = (Func<StringBuilder, IEnumerable<T>, bool>)compile(serializeArrayLambda);
             return @value;
         }
     }

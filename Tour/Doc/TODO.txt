@@ -1,4 +1,33 @@
-﻿Move NLogTools, NLogTools.NETCore.Test, NLogTools.NETFramework.Test to separate VS solution / github project
+﻿What is this?
+public static class PageModelExtensions
+{
+    public static ActionResult RedirectToPageJson<TPage>(this TPage controller, string pageName)
+        where TPage : PageModel
+    {
+        return controller.JsonNet(new
+            {
+                redirect = controller.Url.Page(pageName)
+            }
+        );
+    }
+ 
+    public static ContentResult JsonNet(this PageModel controller, object model)
+    {
+        var serialized = JsonConvert.SerializeObject(model, new JsonSerializerSettings
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        });
+ 
+        return new ContentResult
+        {
+            Content = serialized,
+            ContentType = "application/json"
+        };
+    }
+}
+
+
+Intetrate INCLUDE DSL with https://fluentvalidation.net/
 
 Compare polyfils injector with COREPOLIFYLLS https://www.npmjs.com/package/core-js  (should be used for VS SPA projects to support IE 11)
 

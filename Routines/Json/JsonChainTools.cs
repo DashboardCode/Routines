@@ -92,7 +92,8 @@ namespace DashboardCode.Routines.Json
             ChainNode node, 
             //Type parentType, 
             Func<ChainNode, SerializerOptions> getLeafSerializerSet, 
-            Func<ChainNode, InternalNodeOptions> getInternalSerializerSet)
+            Func<ChainNode, InternalNodeOptions> getInternalSerializerSet,
+            Func<LambdaExpression,Delegate> compile)
         {
             if (node.Children.Count == 0) // leaf node
             {
@@ -111,10 +112,10 @@ namespace DashboardCode.Routines.Json
                 foreach (var c in node.Children)
                 {
                     var n = c.Value;
-                    ConfigureSerializeProperty(n, node.Type, properies, getLeafSerializerSet, getInternalSerializerSet);
+                    ConfigureSerializeProperty(n, node.Type, properies, getLeafSerializerSet, getInternalSerializerSet, compile);
                 }
                 var objectFormatterLambda = CreateSerializeObjectLambda(node.Type, internalSerializerSet.HandleEmptyObjectLiteral, properies.ToArray());
-                var @delegate = objectFormatterLambda.Compile();
+                var @delegate = compile(objectFormatterLambda);
                 
                 var delegateConstant = Expression.Constant(@delegate, @delegate.GetType());
                 return new SerializersPair(delegateConstant, internalSerializerSet.NullSerializer, internalSerializerSet.HandleNullProperty);
@@ -123,14 +124,15 @@ namespace DashboardCode.Routines.Json
 
         public static void ConfigureSerializeProperty(ChainMemberNode node, Type parentType, List<Expression> propertyExpressions
             , Func<ChainNode, SerializerOptions> getSerialiazerOptions
-            , Func<ChainNode, InternalNodeOptions> getInternalNodeOptions)
+            , Func<ChainNode, InternalNodeOptions> getInternalNodeOptions,
+            Func<LambdaExpression, Delegate> compile)
         {
 
             bool? isNullableValueType = IsNullableStruct(node.Type);
             //var internalNodeOptions = getInternalNodeOptions(node,true);
 
             var getterLambdaExpression = node.Expression;
-            var getterDelegate = getterLambdaExpression.Compile();
+            var getterDelegate = compile(getterLambdaExpression);
             var getterConstantExpression = Expression.Constant(getterDelegate, getterDelegate.GetType());
             var serializationType = Nullable.GetUnderlyingType(node.Type) ?? node.Type;
 
@@ -149,7 +151,7 @@ namespace DashboardCode.Routines.Json
                 // check that property should be serailizable: SerializeRefProperty
                 
 
-                var itemSerializers = CreateSerializsPair(node, /*parentType,*/ getSerialiazerOptions, getInternalNodeOptions);
+                var itemSerializers = CreateSerializsPair(node, /*parentType,*/ getSerialiazerOptions, getInternalNodeOptions, compile);
 
                 //var itemSerializerExpression = itemSerializers.Item1;
                 //var itemNullSerializerExpression = itemSerializers.Item2;
@@ -174,7 +176,7 @@ namespace DashboardCode.Routines.Json
                     internalNodeOptions.HandleEmptyArrayLiteral);
 
                 var serializeArrayLambda = Expression.Lambda(methodCallExpression, new[] { sbParameterExpression, tParameterExpression });
-                var serializeArrayDelegate = serializeArrayLambda.Compile();
+                var serializeArrayDelegate = compile(serializeArrayLambda);
 
                 formatterExpression = Expression.Constant(serializeArrayDelegate, serializeArrayDelegate.GetType());
                 if (internalNodeOptions.HandleNullArrayProperty)
@@ -183,7 +185,7 @@ namespace DashboardCode.Routines.Json
             else
             {
                 propertyType = serializationType;
-                var serializersPair = CreateSerializsPair(node,/* parentType,*/ getSerialiazerOptions, getInternalNodeOptions);
+                var serializersPair = CreateSerializsPair(node,/* parentType,*/ getSerialiazerOptions, getInternalNodeOptions, compile);
                 formatterExpression = serializersPair.SerializerExpression;
 
                 if (serializersPair.HandleNullProperty && IsNullable(node.Type))
@@ -212,7 +214,7 @@ namespace DashboardCode.Routines.Json
                          formatterExpression,
                          nullFormatterExpression);
 
-            var @delegate = serializePropertyExpression.Compile();
+            var @delegate = compile(serializePropertyExpression);
             var delegateConstant = Expression.Constant(@delegate, @delegate.GetType());
 
             propertyExpressions.Add(delegateConstant);
@@ -385,7 +387,7 @@ namespace DashboardCode.Routines.Json
         }
         #endregion
 
-        public static MethodInfo GetMethodInfoExpr<T>(Expression<Func<StringBuilder, T, bool>> expression)
+        public static MethodInfo GetMethodInfoExpr<T>(Expression<Func<StringBuilder, T, bool>> expression, Func<LambdaExpression, Delegate> compile)
         {
             MethodInfo methodInfo = default(MethodInfo);
             if (expression.Body is MethodCallExpression callExpression)
@@ -399,7 +401,7 @@ namespace DashboardCode.Routines.Json
             }
             if (methodInfo == null)
             {
-                var @delegate = expression.Compile();
+                var @delegate = compile(expression);
                 methodInfo = @delegate.GetMethodInfo();
             }
             return methodInfo;

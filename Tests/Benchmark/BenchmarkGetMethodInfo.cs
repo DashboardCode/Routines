@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using BenchmarkDotNet.Attributes;
@@ -20,7 +21,8 @@ namespace Benchmark
 
         public BenchmarkGetMethodInfo()
         {
-            var methodInfo2 = JsonChainTools.GetMethodInfoExpr<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));
+            Func<LambdaExpression, Delegate> compile = (exp) => exp.Compile();
+            var methodInfo2 = JsonChainTools.GetMethodInfoExpr<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t), compile);
             var del2 = methodInfo2.CreateDelegate(typeof(Func<StringBuilder, bool, bool>));
             func2 = (Func<StringBuilder, bool, bool>)del2;
 

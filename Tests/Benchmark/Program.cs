@@ -9,6 +9,8 @@ namespace Benchmark
     {
         static void Main(string[] args)
         {
+            //var x = new BenchmarkComposeFormatter();
+            //var a = x.dslComposeFormatter_FastCompile();
             BenchmarkRunner.Run<BenchmarkComposeFormatter>();
         }
     }
