@@ -26,6 +26,61 @@ namespace Benchmark
         static Func<StringBuilder, Box, bool> dslRoutineExpressionManuallyConstruted;
         static Func<StringBuilder, Box, bool> dslRoutineDelegateManuallyConstrutedFormatter;
 
+        public static string ImperativeIdeal(Box box)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{");
+            sb.Append("\"Rows\"}:");
+            sb.Append("[");
+            var added = false;
+            foreach(var o in box.Rows)
+            {
+                sb.Append("{");
+                sb.Append("\"At\":").Append('"').Append(o.At.ToString("yyyy-MM-ddTHH:mm:ss.fffK")).Append('"').Append(",");
+                sb.Append("\"I1\":").Append(o.I1).Append(",");
+                sb.Append("\"I2\":");
+                if (o.I2.HasValue)
+                    sb.Append(o.I2.Value); 
+                else
+                    sb.Append("null");
+                sb.Append(",");
+                sb.Append("\"B1\":").Append(o.B1).Append(",");
+                sb.Append("\"B2\":");
+                if (o.B2.HasValue)
+                    sb.Append(o.B2.Value);
+                else
+                    sb.Append("null");
+                sb.Append(",");
+
+                sb.Append("\"D1\":").Append(o.D1).Append(",");
+                sb.Append("\"D2\":").Append(o.D2).Append(",");
+                sb.Append("\"D3\":").Append(o.D3).Append(",");
+                sb.Append("\"D4\":");
+                if (o.D4.HasValue)
+                    sb.Append(o.D4.Value);
+                else
+                    sb.Append("null");
+                sb.Append(",");
+
+                sb.Append("\"F1\":").Append(o.F1); sb.Append(",");
+                sb.Append("\"F2\":").Append(o.F2); sb.Append(",");
+                sb.Append("\"F3\":").Append(o.F3); sb.Append(",");
+                sb.Append("\"F4\":").Append(",");
+                if (o.F4.HasValue)
+                    sb.Append(o.F4.Value);
+                else
+                    sb.Append("null");
+
+                sb.Append("},");
+                added = true;
+            }
+            if (added)
+                sb.Length = sb.Length - 1;
+            sb.Append("]");
+            sb.Append("}");
+            return sb.ToString();
+        }
+
         static BenchmarkComposeFormatter()
         {
             for(int i=0;i<600;i++)
@@ -137,11 +192,17 @@ namespace Benchmark
         }
 
         [Benchmark]
+        public string ImperativeIdeal()
+        {
+            return ImperativeIdeal(box);
+        }
+        
+        [Benchmark]
         public string jil()
         {
             using (var output = new System.IO.StringWriter())
             {
-                JSON.Serialize(box, output);
+                JSON.Serialize(box, output, new Options(excludeNulls:false) );
                 return output.ToString();
             }
         }

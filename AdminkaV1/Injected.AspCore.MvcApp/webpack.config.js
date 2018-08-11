@@ -48,6 +48,11 @@ module.exports = {
     // TRY: https://github.com/alexpalombaro/modernizr-webpack-plugin
 
     entry: './src/index.es8.js',
+
+    //resolve: {
+    //    extensions: ['.ts', '.tsx', '.js', '.json']
+    //},
+
     //entry: './src/loaders.js',
     //entry: {
     //    app: `webpack-polyfill-injector?${JSON.stringify({
@@ -159,10 +164,17 @@ module.exports = {
                     })
 
             },
-
+            //// ts debug
+            //{
+            //    test: /\.tsx?$/,
+            //    loader: 'babel-loader',
+            //},
             {
                 test: /\.ts$/,
-                "loader": 'awesome-typescript-loader'
+                use: [
+                    'babel-loader',
+                    'ts-loader',
+                ]
             },
 
             {
@@ -171,7 +183,7 @@ module.exports = {
             },
 
             {
-                test: /\.(es8)\.(js)$/,
+                test: /\.(es8)\.(js)$/, // /\.(tsx?)|(js)$/, // 
                 include: /src/,
                 exclude: /node_modules/,
                 use: {
@@ -179,6 +191,7 @@ module.exports = {
                     options: {
                         babelrc: false,
                         presets: [
+                            //"@babel/typescript", 
                             ["@babel/env",
                                 {
                                     "targets": {
@@ -194,16 +207,17 @@ module.exports = {
                         // plugins: ['@babel/plugin-transform-runtime']
                     }
                 }
-            },
-
-            {
-                include: /src/,
-                exclude: /node_modules/,
-                test: /global\.js$/,
-                use: {
-                    loader: "script-loader"
-                }
             }
+            //,
+
+            //{
+            //    include: /src/,
+            //    exclude: /node_modules/,
+            //    test: /global\.js$/,
+            //    use: {
+            //        loader: "script-loader"
+            //    }
+            //}
         ]
     }
 };

@@ -11,7 +11,7 @@
                     resolve(values[0]);
                 }, 100);
             });
-        };
+        }
 
         const message = await GetMessage();
         //console.log(`This is ${message}`, );

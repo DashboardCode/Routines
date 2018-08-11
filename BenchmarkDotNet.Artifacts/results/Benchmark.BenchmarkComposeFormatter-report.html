@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Benchmark.BenchmarkComposeFormatter</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.11.0, OS=Windows 10.0.17134.165 (1803/April2018Update/Redstone4)
+Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical and 4 physical cores
+.NET Core SDK=2.1.300
+  [Host] : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
+  Clr    : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
+  Core   : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
+</code></pre>
+<pre><code>Toolchain=.NET Core 2.1  
+</code></pre>
+
+<table>
+<thead><tr><th>                     Method</th><th>Job</th><th>Runtime</th><th> Mean</th><th>Error</th><th>StdDev</th><th>  Min</th><th>  Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>fastExpressionCompiler</td><td>Clr</td><td>Clr</td><td>11,889.7 us</td><td>35.970 us</td><td>33.646 us</td><td>11,851.1 us</td><td>11,974.4 us</td><td>11,885.4 us</td><td>10</td><td>625.0000</td><td>46.8750</td><td>31.2500</td><td>2144.31 KB</td>
+</tr><tr><td>dslComposeFormatter</td><td>Clr</td><td>Clr</td><td>1,205.7 us</td><td>2.762 us</td><td>2.306 us</td><td>1,202.2 us</td><td>1,211.2 us</td><td>1,205.5 us</td><td>6</td><td>171.8750</td><td>42.9688</td><td>42.9688</td><td>624.02 KB</td>
+</tr><tr><td>dslComposeFormatter_FastCompile</td><td>Clr</td><td>Clr</td><td>1,182.1 us</td><td>6.496 us</td><td>5.424 us</td><td>1,170.6 us</td><td>1,191.7 us</td><td>1,183.0 us</td><td>4</td><td>171.8750</td><td>42.9688</td><td>42.9688</td><td>624.02 KB</td>
+</tr><tr><td>ImperativeIdeal</td><td>Clr</td><td>Clr</td><td>780.3 us</td><td>2.576 us</td><td>2.284 us</td><td>776.9 us</td><td>785.4 us</td><td>779.5 us</td><td>3</td><td>85.9375</td><td>42.9688</td><td>42.9688</td><td>281.88 KB</td>
+</tr><tr><td>jil</td><td>Clr</td><td>Clr</td><td>741.5 us</td><td>7.172 us</td><td>6.358 us</td><td>726.2 us</td><td>747.6 us</td><td>744.9 us</td><td>2</td><td>-</td><td>-</td><td>-</td><td>422.56 KB</td>
+</tr><tr><td>fake_expressionManuallyConstruted</td><td>Clr</td><td>Clr</td><td>44,525.7 us</td><td>248.962 us</td><td>232.879 us</td><td>44,128.9 us</td><td>44,925.8 us</td><td>44,444.6 us</td><td>13</td><td>1916.6667</td><td>83.3333</td><td>-</td><td>6081.18 KB</td>
+</tr><tr><td>fake_delegateManuallyConstruted</td><td>Clr</td><td>Clr</td><td>1,296.3 us</td><td>16.229 us</td><td>15.181 us</td><td>1,278.5 us</td><td>1,328.6 us</td><td>1,293.6 us</td><td>8</td><td>345.7031</td><td>64.4531</td><td>42.9688</td><td>1224.15 KB</td>
+</tr><tr><td>fastExpressionCompiler</td><td>Core</td><td>Core</td><td>11,918.4 us</td><td>36.688 us</td><td>34.318 us</td><td>11,874.6 us</td><td>11,995.0 us</td><td>11,913.7 us</td><td>11</td><td>625.0000</td><td>46.8750</td><td>31.2500</td><td>2144.31 KB</td>
+</tr><tr><td>dslComposeFormatter</td><td>Core</td><td>Core</td><td>1,217.6 us</td><td>7.458 us</td><td>6.976 us</td><td>1,211.0 us</td><td>1,231.5 us</td><td>1,214.0 us</td><td>7</td><td>171.8750</td><td>42.9688</td><td>42.9688</td><td>624.02 KB</td>
+</tr><tr><td>dslComposeFormatter_FastCompile</td><td>Core</td><td>Core</td><td>1,192.6 us</td><td>7.599 us</td><td>7.108 us</td><td>1,183.8 us</td><td>1,207.0 us</td><td>1,190.0 us</td><td>5</td><td>171.8750</td><td>42.9688</td><td>42.9688</td><td>624.02 KB</td>
+</tr><tr><td>ImperativeIdeal</td><td>Core</td><td>Core</td><td>779.6 us</td><td>2.758 us</td><td>2.445 us</td><td>775.6 us</td><td>783.9 us</td><td>779.6 us</td><td>3</td><td>85.9375</td><td>42.9688</td><td>42.9688</td><td>281.88 KB</td>
+</tr><tr><td>jil</td><td>Core</td><td>Core</td><td>726.1 us</td><td>13.785 us</td><td>13.538 us</td><td>708.7 us</td><td>758.0 us</td><td>722.9 us</td><td>1</td><td>-</td><td>-</td><td>-</td><td>422.56 KB</td>
+</tr><tr><td>fake_expressionManuallyConstruted</td><td>Core</td><td>Core</td><td>43,944.2 us</td><td>123.927 us</td><td>115.922 us</td><td>43,705.7 us</td><td>44,071.8 us</td><td>43,976.3 us</td><td>12</td><td>1750.0000</td><td>-</td><td>-</td><td>5668.68 KB</td>
+</tr><tr><td>fake_delegateManuallyConstruted</td><td>Core</td><td>Core</td><td>1,338.9 us</td><td>8.739 us</td><td>8.174 us</td><td>1,329.1 us</td><td>1,353.8 us</td><td>1,335.6 us</td><td>9</td><td>345.7031</td><td>64.4531</td><td>42.9688</td><td>1224.15 KB</td>
+</tr></tbody></table>
+</body>
+</html>

@@ -1,8 +1,7 @@
-﻿//// <reference path="typings/jquery/jquery.d.ts" />
-declare var dc_showErrorDialog: any;
+﻿declare var dc_showErrorDialog: any;
 declare var dc_showErrorDialogJs: any;
 declare var dc_notify_error: any;
-module DashboardCode {
+
 
     export interface VoidAction {
         (WorkflowManager: Workflow): void;
@@ -20,7 +19,7 @@ module DashboardCode {
         (textStatus: string): void;
     }
 
-    export class WorkflowManager {
+    export default class WorkflowManager {
         public operationName: string;
         public correlationToken: string;
         private logBuffer = [];
@@ -457,4 +456,4 @@ module DashboardCode {
             $(document).ready(function () { dc_notify_error(title) });
         }
     }
-}
+

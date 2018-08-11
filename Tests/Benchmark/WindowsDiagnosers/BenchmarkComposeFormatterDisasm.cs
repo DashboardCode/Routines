@@ -51,11 +51,35 @@ namespace Benchmark
             box = new Box { Rows = testData };
 
             Include<Box> include = (chain => chain.IncludeAll(e => e.Rows));
-            var includeWithLeafs = include.AppendLeafs();
+            composeFormatterDelegate = JsonManager.ComposeFormatter(include.AppendLeafs(), stringBuilderCapacity: 4000);
 
-            composeFormatterDelegate = JsonManager.ComposeFormatter(includeWithLeafs, stringBuilderCapacity: 4000);
+            dslRoutineDelegateManuallyConstrutedFormatter = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
+                        (sb, t) => JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull(sb, t, "Rows", o => o.Rows,
+                            (sb2, t2) => JsonComplexStringBuilderExtensions.SerializeRefArrayHandleEmpty(sb2, t2,
+                                (sb3, t3) =>
+                                    JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sb3, t3,
+                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "At", o => o.At, JsonValueStringBuilderExtensions.SerializeToIso8601WithMs),
+                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "I1", o => o.I1, JsonValueStringBuilderExtensions.SerializeValueToString),
+                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull(sb4, t4, "I2", o => o.I2, JsonValueStringBuilderExtensions.SerializeValueToString, JsonValueStringBuilderExtensions.NullSerializer),
+                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool),
+                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull(sb4, t4, "B2", o => o.B2, JsonValueStringBuilderExtensions.SerializeBool, JsonValueStringBuilderExtensions.NullSerializer),
 
-            Expression<Func<StringBuilder, Box, bool>> dslRoutineExpressionManuallyConstrutedExpression =
+                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "D1", o => o.D1, JsonValueStringBuilderExtensions.SerializeValueToString),
+                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "D2", o => o.D2, JsonValueStringBuilderExtensions.SerializeValueToString),
+                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "D3", o => o.D3, JsonValueStringBuilderExtensions.SerializeValueToString),
+                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull(sb4, t4, "D4", o => o.D4, JsonValueStringBuilderExtensions.SerializeValueToString, JsonValueStringBuilderExtensions.NullSerializer),
+
+                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "F1", o => o.F1, JsonValueStringBuilderExtensions.SerializeValueToString),
+                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "F2", o => o.F2, JsonValueStringBuilderExtensions.SerializeValueToString),
+                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "F3", o => o.F3, JsonValueStringBuilderExtensions.SerializeValueToString),
+                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull(sb4, t4, "F4", o => o.F4, JsonValueStringBuilderExtensions.SerializeValueToString, JsonValueStringBuilderExtensions.NullSerializer)
+                                     ),
+                                JsonValueStringBuilderExtensions.NullSerializer
+                              ),
+                            JsonValueStringBuilderExtensions.NullSerializer
+                        ));
+
+            Expression<Func<StringBuilder, Box, bool>> dslRoutineExpressionManuallyConstrutedExpression = 
                     (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
                         (sb, t) => JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull(sb, t, "Rows", o => o.Rows,
                             (sb2, t2) => JsonComplexStringBuilderExtensions.SerializeRefArrayHandleEmpty(sb2, t2,
@@ -84,31 +108,7 @@ namespace Benchmark
                     );
             dslRoutineExpressionManuallyConstruted = dslRoutineExpressionManuallyConstrutedExpression.Compile();
 
-            dslRoutineDelegateManuallyConstrutedFormatter = (sbP, tP) => JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sbP, tP,
-                        (sb, t) => JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull(sb, t, "Rows", o => o.Rows,
-                            (sb2, t2) => JsonComplexStringBuilderExtensions.SerializeRefArrayHandleEmpty(sb2, t2,
-                                (sb3, t3) =>
-                                    JsonComplexStringBuilderExtensions.SerializeAssociativeArray(sb3, t3,
-                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "At", o => o.At, JsonValueStringBuilderExtensions.SerializeToIso8601WithMs),
-                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "I1", o => o.I1, JsonValueStringBuilderExtensions.SerializeValueToString),
-                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull(sb4, t4, "I2", o => o.I2, JsonValueStringBuilderExtensions.SerializeValueToString, JsonValueStringBuilderExtensions.NullSerializer),
-                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "B1", o => o.B1, JsonValueStringBuilderExtensions.SerializeBool),
-                                        (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull(sb4, t4, "B2", o => o.B2, JsonValueStringBuilderExtensions.SerializeBool, JsonValueStringBuilderExtensions.NullSerializer),
-
-                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "D1", o => o.D1, JsonValueStringBuilderExtensions.SerializeValueToString),
-                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "D2", o => o.D2, JsonValueStringBuilderExtensions.SerializeValueToString),
-                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "D3", o => o.D3, JsonValueStringBuilderExtensions.SerializeValueToString),
-                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull(sb4, t4, "D4", o => o.D4, JsonValueStringBuilderExtensions.SerializeValueToString, JsonValueStringBuilderExtensions.NullSerializer),
-
-                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "F1", o => o.F1, JsonValueStringBuilderExtensions.SerializeValueToString),
-                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "F2", o => o.F2, JsonValueStringBuilderExtensions.SerializeValueToString),
-                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeValueProperty(sb4, t4, "F3", o => o.F3, JsonValueStringBuilderExtensions.SerializeValueToString),
-                                     (sb4, t4) => JsonComplexStringBuilderExtensions.SerializeNValuePropertyHandleNull(sb4, t4, "F4", o => o.F4, JsonValueStringBuilderExtensions.SerializeValueToString, JsonValueStringBuilderExtensions.NullSerializer)
-                                     ),
-                                JsonValueStringBuilderExtensions.NullSerializer
-                              ),
-                            JsonValueStringBuilderExtensions.NullSerializer
-                        ));
+            
         }
 
         [Benchmark]
