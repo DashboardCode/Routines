@@ -14,11 +14,7 @@ namespace DashboardCode.Routines.Storage
         readonly IRepositoryContainer<TDbContext> repositoryGFactory;
         readonly IOrmContainer<TDbContext> ormGFactory;
 
-        protected readonly TUserContext userContext;
-
         public StorageRoutineHandler(
-            TUserContext userContext,
-
             IEntityMetaServiceContainer entityMetaServiceContainer,
             
             Func<TDbContext> createDbContext,
@@ -28,7 +24,6 @@ namespace DashboardCode.Routines.Storage
             IOrmContainer<TDbContext> ormGFactory,
 
             IRoutineHandler<RoutineClosure<TUserContext>> routineHandler
-            
             ) : base(
                 new IndependentRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, createDbContext), 
                 new IndependentOrmHandlerGFactory<TUserContext, TDbContext>(
@@ -36,7 +31,6 @@ namespace DashboardCode.Routines.Storage
                         entityMetaServiceContainer, createDbContextForStorage),
                 routineHandler)
         {
-            this.userContext = userContext;
             this.entityMetaServiceContainer = entityMetaServiceContainer;
             this.createDbContext            = createDbContext;
             this.createDbContextForStorage  = createDbContextForStorage;
@@ -44,9 +38,9 @@ namespace DashboardCode.Routines.Storage
             this.ormGFactory                = ormGFactory;
         }
 
-        protected IndependentDbContextHandler<TUserContext, TDbContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
+        public ResourceHandler<TUserContext, TDbContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
         {
-            var dbContextHandler = new IndependentDbContextHandler<TUserContext, TDbContext>(closure, createDbContext);
+            var dbContextHandler = new ResourceHandler<TUserContext, TDbContext>(closure, createDbContext);
             return dbContextHandler;
         }
 

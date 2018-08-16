@@ -1,0 +1,266 @@
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: "liga";
+}
+
+.dc-exception {
+  cursor: pointer;
+  background-color: lightgray;
+  color: darkred;
+  width: 100%;
+  max-width: 100%;
+  border-width: 0em;
+  padding: 0.5em;
+}
+
+.dc-exception p code {
+  background-color: lightgray;
+}
+
+.dc-exception p {
+  margin-left: 0.2em;
+}
+
+.btn-xsm {
+  padding: 0 0;
+  margin: 0 0 !important;
+  border-width: 0;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  border-radius: 0.16rem;
+}
+
+.btn-xsm:active {
+  color: #007bff;
+  border: 0px none black !important;
+  font-size: smaller;
+}
+
+.adminka-action-button-group .btn-sm {
+  padding-left: 0px;
+  padding-right: 0px;
+  color: black;
+}
+
+.adminka-action-button-group .btn-xsm {
+  padding-left: 0px;
+  padding-right: 0px;
+  color: black;
+}
+
+.adminka-action-button-group .btn-sm:hover {
+  color: #007bff;
+}
+
+.adminka-action-button-group .btn-xsm:hover {
+  color: #007bff;
+}
+
+.adminka-action-button-group .material-icons {
+  vertical-align: bottom;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+a.adminka-btn {
+  color: #333333;
+  border: 1px solid #DDDDDD;
+  background-color: #DDDDDD;
+  padding-left: 0.4rem;
+  padding-right: 0.4rem;
+  border-radius: 3px;
+  text-decoration: none;
+}
+
+a.adminka-btn:hover {
+  color: #007bff;
+}
+
+.adminka-btn-ok {
+  color: white;
+  background-color: black;
+}
+
+.adminka-btn-ok:hover {
+  color: white;
+  background-color: #007bff;
+}
+
+.btn-logo {
+  padding: 0 0;
+  margin: 0 0 !important;
+  border-width: 0;
+}
+
+.btn-logo:active {
+  color: #007bff;
+  border: 0px none black !important;
+}
+
+.btn-xsm .material-icons {
+  font-size: 0.98rem;
+  padding: 0 0;
+  margin: 0 0;
+}
+
+a.badge::before {
+  font-family: "Material Icons";
+  font-size: 0.7rem;
+  vertical-align: top;
+  margin-right: 0.2rem;
+  vertical-align: bottom;
+  content: "insert_drive_file";
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga" 1;
+}
+
+.table, .table th, .table td {
+  border-left: 0px none black;
+  border-right: 0px none black;
+}
+
+#svg:hover {
+  fill: #007bff;
+}
+
+.badge .material-icons {
+  font-size: 0.7rem;
+  vertical-align: bottom;
+  margin-right: 0.2rem;
+}
+
+.dropdown-toggle {
+  color: black;
+}
+
+.adminka-navigation {
+  color: black;
+}
+
+.adminka-navigation:hover {
+  color: #007bff;
+  text-decoration: none;
+}
+
+a.adminka-navigation-list::before {
+  font-family: "Material Icons";
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: "view_list";
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga" 1;
+}
+
+a.adminka-navigation-edit::before {
+  font-family: "Material Icons";
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: "edit";
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga" 1;
+}
+
+a.adminka-navigation-delete::before {
+  font-family: "Material Icons";
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: "delete";
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga" 1;
+}
+
+a.adminka-navigation-details::before {
+  font-family: "Material Icons";
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: "insert_drive_file";
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga" 1;
+}
+
+a.adminka-navigation-clear::before {
+  font-family: "Material Icons";
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: "clear";
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga" 1;
+}
+
+.dropdown-item:hover {
+  color: #007bff;
+}
+
+.dropdown-item:active {
+  color: white;
+}
+
+.dropdown-toggle:hover {
+  text-decoration: none;
+}
+
+a.badge {
+  color: black;
+  font-size: 72%;
+  padding-left: 0px;
+  padding-right: 0.3rem;
+}
+
+a.badge:hover {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.h-input {
+  min-height: calc(2.25rem + 2px);
+}
+
+dl.row > dt {
+  font-weight: normal;
+}
+
+.page-item.active .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: black;
+  border-color: black;
+}
+
+.page-link {
+  color: black;
+}
+
+.paginate_button {
+  font-size: small;
+}
+
+/*# sourceMappingURL=site.css.map */

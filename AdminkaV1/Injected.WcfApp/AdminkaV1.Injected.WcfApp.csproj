@@ -213,10 +213,6 @@
       <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
       <Name>AdminkaV1</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj">
-      <Project>{bf9fb9b0-baee-457a-8c8e-d82dc68e0710}</Project>
-      <Name>AdminkaV1.DataAccessEfCore</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj">
       <Project>{a186e18c-a446-4218-a2a8-6b126daba983}</Project>
       <Name>AdminkaV1.Injected</Name>

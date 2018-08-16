@@ -55,6 +55,7 @@
     <Folder Include="Content\" />
     <Folder Include="dist\css\" />
     <Folder Include="dist\js\" />
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
   
   <ItemGroup>

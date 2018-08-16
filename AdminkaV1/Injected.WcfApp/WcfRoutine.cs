@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Configuration.Classic;
 
-using DashboardCode.AdminkaV1.DataAccessEfCore;
-
 namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
     public class WcfRoutine : AdminkaRoutineHandler
@@ -51,14 +49,14 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 
         public static Exception TransformException(
             Exception exception, 
-            Guid correlationToken, Routines.MemberTag memberTag, string faultCodeNamespace, Func<Exception, string> markdownException)
+            Guid correlationToken, MemberTag memberTag, string faultCodeNamespace, Func<Exception, string> markdownException)
         {
             var message = default(string);
             var code = default(string);
-            if (exception is AdminkaException)
+            if (exception is AdminkaException adminkaException)
             {
-                message = exception.Message;
-                code = ((AdminkaException)exception).Code;
+                message = adminkaException.Message;
+                code = adminkaException.Code;
             }
             else
             {

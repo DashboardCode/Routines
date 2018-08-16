@@ -35,7 +35,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public static Func<ConfigurableController, Task<IActionResult>> ComposeAsync(Func<IRepository<TEntity>, Task<IActionResult>> func)
             => Compose(
                  routine =>
-                     routine.HandleStorageAsync<IActionResult, TEntity>(
+                     routine.StorageRoutineHandler.HandleStorageAsync<IActionResult, TEntity>(
                         repository => func(repository)
                     )
             );
@@ -334,7 +334,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public  Task<IActionResult> Index()
         {
             var routine = new MvcRoutineHandler(controller);
-            return routine.HandleStorageAsync<IActionResult, TEntity>(
+            return routine.StorageRoutineHandler.HandleStorageAsync<IActionResult, TEntity>(
                 async repository => {
                     var entities = await repository.ListAsync(meta.IndexIncludes);
                     return controller.View(nameof(Index), entities);

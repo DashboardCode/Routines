@@ -100,9 +100,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 input)
         {
             this.Controller = controller;
-            this.SessionState = new SessionState(controller.HttpContext.Session, userContext);
+            this.SessionState = new SessionState(controller.HttpContext.Session, UserContext);
             controller.ViewBag.Session = this.SessionState;
-            controller.ViewBag.UserContext = userContext;
+            controller.ViewBag.UserContext = UserContext;
         }
 
         #region MVC
@@ -119,7 +119,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                    HandleStorageAsync<IActionResult, TEntity>( repository =>
+                    StorageRoutineHandler.HandleStorageAsync<IActionResult, TEntity>( repository =>
                         Task.Run(() =>
                             MvcHandler.MakeActionResultOnRequest(
                                     repository,
@@ -144,7 +144,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                    HandleStorageAsync<IActionResult, TEntity>(repository =>
+                    StorageRoutineHandler.HandleStorageAsync<IActionResult, TEntity>(repository =>
                     Task.Run(() =>
                       MvcHandler.MakeActionResultOnRequest(
                                repository,
@@ -168,7 +168,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                        HandleStorageAsync<IActionResult, TEntity>(repository =>
+                        StorageRoutineHandler.HandleStorageAsync<IActionResult, TEntity>(repository =>
                            Task.Run( () =>
                            MvcHandler.MakeActionResultOnCreate(
                                    repository,
@@ -192,7 +192,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                        HandleStorageAsync<IActionResult, TEntity>(repository =>
+                        StorageRoutineHandler.HandleStorageAsync<IActionResult, TEntity>(repository =>
                         Task.Run(
                            () => MvcHandler.MakeActionResultOnCreate(
                                    repository,
@@ -219,7 +219,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     >
                  > action
                 ) where TEntity : class =>
-                    HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                    StorageRoutineHandler.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
                        Task.Run(
                             () => MvcHandler.MakeActionResultOnSave(
                                 repository,
@@ -252,7 +252,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     >
                  > action
                 ) where TEntity : class =>
-                    HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                    StorageRoutineHandler.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
                                 Task.Run(
                                     () => MvcHandler.MakeActionResultOnSave(
                                     repository,

@@ -10,25 +10,25 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
     {
         public AdminkaStorageRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IEntityMetaServiceContainer entityMetaServiceContainer,
             UserContext userContext,
+
+            IEntityMetaServiceContainer entityMetaServiceContainer,
             Action<string> efDbContextVerbose,
             IRoutineHandler<RoutineClosure<UserContext>> routineHandler) :
             this(
                 entityMetaServiceContainer,
-                () => DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration, efDbContextVerbose),
                 userContext,
+                () => DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration, efDbContextVerbose),
                 routineHandler)
         {
         }
 
         private AdminkaStorageRoutineHandler(
             IEntityMetaServiceContainer entityMetaServiceContainer,
-            Func<AdminkaDbContext> createDbContext,
             UserContext userContext,
+            Func<AdminkaDbContext> createDbContext,
             IRoutineHandler<RoutineClosure<UserContext>> routineHandler) :
             base(
-                userContext,
                 entityMetaServiceContainer,
                 createDbContext,
                 () => new ValueTuple<AdminkaDbContext, IAuditVisitor>(

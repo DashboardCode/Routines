@@ -13,7 +13,7 @@
     <RootNamespace>DashboardCode.Routines</RootNamespace>
     <AssemblyName>DashboardCode.Routines</AssemblyName>
 	<LangVersion>latest</LangVersion>
-	<Version>2.0.5</Version>
+	<Version>2.0.9</Version>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
 	<PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>

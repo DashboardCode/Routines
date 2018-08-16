@@ -4,7 +4,7 @@ using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class UserRoutineHandler<TUserContext> // : RoutineHandler<RoutineClosure<TUserContext>>
+    public class UserRoutineHandler<TUserContext> 
     {
         readonly IOrmHandlerGFactory<TUserContext> ormHandlerGFactory;
         readonly IRepositoryHandlerGFactory<TUserContext> repositoryHandlerGFactory;
@@ -218,7 +218,7 @@ namespace DashboardCode.Routines.Injected
 
         public TOutput HandleTransaction<TOutput, TEntity>(
             Func<Transacted<TEntity, TOutput>, RoutineClosure<TUserContext>, TOutput> func
-            ) where TEntity : class
+        ) where TEntity : class
         {
             return routineHandler.Handle(closure =>
             {

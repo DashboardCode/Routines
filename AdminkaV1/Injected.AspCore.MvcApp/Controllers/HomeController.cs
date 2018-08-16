@@ -15,7 +15,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         public IActionResult Index()
         {
             var handler = new MvcRoutineHandler(this);
-            return handler.Handle<IActionResult>((u) =>
+            return handler.UserRoutineHandler.Handle<IActionResult>((u) =>
             {
                 return View();
             });

@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         {
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
-            var x = routine.Handle(container =>
+            var x = routine.UserRoutineHandler.Handle(container =>
             {
                 container.Verbose("Test message");
                 return "Output text";
@@ -28,7 +28,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
             try
             {
-                var x = routine.Handle<string>(container =>
+                var x = routine.UserRoutineHandler.Handle<string>(container =>
                 {
                     container.Verbose("Test message");
                     throw new Exception("Test exception");

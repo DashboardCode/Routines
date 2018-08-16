@@ -36,7 +36,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                 new MemberTag(typeof(InitialCustoms).Namespace, nameof(InitialCustoms), nameof(Up)), userContext,
                 new { });
 
-            routine.Handle(
+            routine.UserRoutineHandler.Handle(
                 closure => {
                     string loginName = null;
                     // string groupAdName = "FakeDomain\\Testers";

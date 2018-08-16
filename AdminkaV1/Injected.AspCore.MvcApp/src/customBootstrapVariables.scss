@@ -1,0 +1,6 @@
+$code-color: #555555;
+
+// Every Sass variable in Bootstrap 4 includes the !default flag allowing you to override the variable's default value
+@import "./../node_modules/bootstrap/scss/functions";
+@import "./../node_modules/bootstrap/scss/variables";
+@import "./../node_modules/bootstrap/scss/mixins";

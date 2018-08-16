@@ -1,12 +1,4 @@
-@import "customBootstrap";
-@import "./old.css";
-
-@font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Material Icons'), local('MaterialIcons-Regular'), url(~material-design-icons/iconfont/MaterialIcons-Regular.woff2) format('woff2'), url(~material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'), url(~material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
-}
+@import "customBootstrapVariables";
 
 .material-icons {
     font-family: 'Material Icons';
@@ -55,7 +47,8 @@ $btn-line-height-xsm: $btn-line-height-sm*0.8;
 $btn-border-radius-xsm: $btn-border-radius-sm*0.8;
 
 .btn-xsm {
-    padding: 0 0; //$btn-padding-y-xsm $btn-padding-x-xsm;
+    padding: 0 0;
+    //$btn-padding-y-xsm $btn-padding-x-xsm;
     margin: 0 0 !important;
     border-width: 0;
     font-size: $font-size-xsm;
@@ -120,7 +113,8 @@ a.adminka-btn:hover {
 }
 
 .btn-logo {
-    padding: 0 0; //$btn-padding-y-xsm $btn-padding-x-xsm;
+    padding: 0 0;
+    //$btn-padding-y-xsm $btn-padding-x-xsm;
     margin: 0 0 !important;
     border-width: 0;
 }
@@ -157,10 +151,10 @@ a.badge::before {
     fill: $primary;
 }
 
-.badge .material-icons{
-    font-size:0.7rem; 
-    vertical-align:bottom; 
-    margin-right:0.2rem;
+.badge .material-icons {
+    font-size: 0.7rem;
+    vertical-align: bottom;
+    margin-right: 0.2rem;
 }
 
 .dropdown-toggle {
@@ -229,4 +223,53 @@ a.adminka-navigation-clear::before {
     -webkit-font-feature-settings: 'liga' 1;
     -moz-font-feature-settings: 'liga' 1;
     font-feature-settings: 'liga' 1;
+}
+
+.dropdown-item:hover {
+    color: $primary;
+}
+
+.dropdown-item:active {
+    color: white;
+}
+
+.dropdown-toggle:hover {
+    text-decoration: none;
+}
+
+a.badge {
+    color: black;
+    font-size: 72%;
+    padding-left: 0px;
+    padding-right: 0.3rem;
+}
+
+a.badge:hover {
+    color: $primary;
+    text-decoration: none;
+}
+
+
+.h-input {
+    //min-height: #{$input-height};
+    min-height: calc(2.25rem + 2px);
+}
+
+dl.row > dt {
+    font-weight: normal;
+}
+
+.page-item.active .page-link {
+    z-index: 1;
+    color: #fff;
+    background-color: black;
+    border-color: black;
+}
+
+.page-link {
+    color: black;
+}
+
+.paginate_button {
+    font-size: small;
 }

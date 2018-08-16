@@ -3,8 +3,14 @@
 const CleanPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const PathModule = require('path');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+
+
 const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const outputFolderPath = PathModule.resolve(__dirname, 'wwwroot/dist');
 
@@ -36,7 +42,6 @@ console.log('process.env.npm_package_version: ' + process.env.npm_package_versio
 // ts loader
 // http://leruplund.dk/2017/04/15/setting-up-asp-net-core-in-visual-studio-2017-with-npm-webpack-and-typescript-part-ii/
 
-const extractCSS = new ExtractTextPlugin('main.css');
 module.exports = {
     // TODO: ref "Vendor" files from CDN (externals, vendor options)
     // TODO: entry should be empty (npm run webuild used to define entry point and this should be enough)
@@ -47,11 +52,7 @@ module.exports = {
 
     // TRY: https://github.com/alexpalombaro/modernizr-webpack-plugin
 
-    entry: './src/index.es8.js',
-
-    //resolve: {
-    //    extensions: ['.ts', '.tsx', '.js', '.json']
-    //},
+    entry: './src/index.js',
 
     //entry: './src/loaders.js',
     //entry: {
@@ -66,12 +67,28 @@ module.exports = {
     //        'jquery'
     //    ]
     //},
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                styles: {
+                    name: 'styles',
+                    test: /\.css$/,
+                    chunks: 'all',
+                    enforce: true
+                }
+            }
+        }
+    },
     output: {
         path: outputFolderPath,
         publicPath: '/dist/',
         filename: '[name].js'
     },
     plugins: [
+        new MiniCssExtractPlugin({
+            filename: "[name].css"
+        }),
+        new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer:false }),
         //new PolyfillInjectorPlugin({
         //    singleFile: true,
         //    polyfills: [
@@ -81,8 +98,8 @@ module.exports = {
         //    ]
         //}),
         new ManifestPlugin(),
-        new CleanPlugin(outputFolderPath, { verbose: false }),
-        extractCSS
+        new CleanPlugin(outputFolderPath, { verbose: false })
+
         // MANAGE DEPENDENCY. METHOD 1. Manage dependencies at build-time.
         // replaces a symbol in another source through the respective import
         //new webpack.ProvidePlugin({
@@ -92,25 +109,9 @@ module.exports = {
         //    'window.$': 'jquery'
         // })
     ],
+    devtool: "source-map",
     module: {
         rules: [
-
-            //{
-            //    loader: 'webpack-modernizr-loader',
-            //    options: {
-            //        // Full list of supported options can be found in [config-all.json](https://github.com/Modernizr/Modernizr/blob/master/lib/config-all.json).
-            //        options: [
-            //            "setClasses",
-            //        ],
-            //        "feature-detects": [
-            //            "es6/contains"
-            //            //"test/css/flexbox",
-            //            //"test/es6/promises",
-            //            //"test/serviceworker"
-            //        ]
-            //    },
-            //    test: /AAAmodernizr\.js$/
-            //},
             // MANAGE DEPENDENCY. METHOD 1. Manage dependencies at run-time. Adds modules, require('whatever') calls, to concreate modules
             // https://github.com/webpack-contrib/imports-loader
             // add the require('whatever') calls, to those modules (not global) 
@@ -120,7 +121,6 @@ module.exports = {
             //     //use: "imports-loader?$=jquery"
             //     use: imports-loader?define=>false // disable AMD if you see that webpack include the same module two times: commonJS and AMD
             // },
-
 
             {
                 // MANAGE DEPENDENCY. METHOD 2. Manage dependencies at run-time. Adds modules to the global object
@@ -137,87 +137,69 @@ module.exports = {
             },
 
             {
-                test: /\.(scss)$/,
-                use:
-                    extractCSS.extract({
-                        fallback: 'style-loader',
-                        use:
-                            [
-                                {
-                                    loader: 'css-loader'   // translates CSS into CommonJS JavaScript modules
-                                }, {
-                                    loader: 'postcss-loader', // run post css actions (here autoprefixer)
-                                    options: {
-                                        sourceMap: true,
-                                        plugins: function () {
-                                            return [
-                                                require('precss'),
-                                                require('autoprefixer') // adds "vendor's" prefixes e.g. -webkit-input-placeholder , -ms-input-placeholder etc.
-                                            ];
-                                        }
-                                    }
-                                }, {
-                                    loader: 'sass-loader', options: {
-                                        sourceMap: true
-                                    } // compiles Sass to CSS
-                                }]
-                    })
-
-            },
-            //// ts debug
-            //{
-            //    test: /\.tsx?$/,
-            //    loader: 'babel-loader',
-            //},
-            {
-                test: /\.ts$/,
+                test: /\.(scss|css)$/,
                 use: [
-                    'babel-loader',
-                    'ts-loader',
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: "css-loader",
+                        options: {
+                            sourceMap: true,
+                            minimize: {
+                                safe: true
+                            }
+                        }
+                    },
+                    {
+                        loader: "postcss-loader",
+                        options: {
+                            sourceMap: true,
+                            autoprefixer: {
+                                browsers: ["last 2 versions"]
+                            },
+                            plugins: () => [
+                                require('precss'),
+                                require('autoprefixer') // adds "vendor's" prefixes e.g. -webkit-input-placeholder , -ms-input-placeholder etc.
+
+                            ]
+                        },
+                    },
+                    {
+                        loader: "sass-loader",
+                        options: { sourceMap: true }
+                    }
                 ]
             },
-
             {
                 test: /\.(woff2|woff|ttf|svg|png)$/,
                 use: 'url-loader'
             },
 
             {
-                test: /\.(es8)\.(js)$/, // /\.(tsx?)|(js)$/, // 
+                test: /\.(tsx?)|(js)$/, 
                 include: /src/,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
                     options: {
                         babelrc: false,
+                        plugins: ['babel-plugin-transform-class-properties'],
                         presets: [
-                            //"@babel/typescript", 
+                            "@babel/typescript", // this or plugin  @babel/plugin-transform-typescript
                             ["@babel/env",
                                 {
+                                    "modules": false, // required for typescript?
                                     "targets": {
                                         "browsers": ["last 2 chrome versions", "ie 11", "safari 11", "edge 15", "firefox 59"]
                                     },
                                     "debug": true
                                 }
                             ]
-                        ]
-                        // presets: ["env"] // https://babeljs.io/docs/plugins/preset-env , alternative https://github.com/christophehurpeau/babel-preset-modern-browsers
-                        // babelrc: false,
+                        ],
                         // plugins: [require('@babel/plugin-proposal-object-rest-spread')]
                         // plugins: ['@babel/plugin-transform-runtime']
                     }
                 }
             }
-            //,
-
-            //{
-            //    include: /src/,
-            //    exclude: /node_modules/,
-            //    test: /global\.js$/,
-            //    use: {
-            //        loader: "script-loader"
-            //    }
-            //}
         ]
     }
 };

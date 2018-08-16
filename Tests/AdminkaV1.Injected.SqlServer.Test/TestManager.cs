@@ -26,7 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag(typeof(TestManager)), new UserContext("UnitTest"), new { input = "Input text" });
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var typeRecord1 = new TypeRecord()
                 {
@@ -166,7 +166,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 loggingTransientsFactory,
                 new MemberTag(typeof(TestManager)), new UserContext("UnitTest"),
                 new { input = "Input text" });
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
             {
                 ormHandlerFactory.Create<ChildRecord>().Handle((repository, storage) =>
                 {

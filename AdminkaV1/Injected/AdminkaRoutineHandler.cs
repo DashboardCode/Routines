@@ -13,11 +13,16 @@ using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Diagnostics;
+using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
-    public class AdminkaRoutineHandler : AdminkaStorageRoutineHandler
+    public class AdminkaRoutineHandler //: AdminkaStorageRoutineHandler
     {
+        readonly AdminkaStorageRoutineHandler storageRoutineHandler;
+        readonly IAuthenticationLogging authenticationLogging;
+        public readonly UserContext UserContext;
+
         #region constructors without usercontext
         public AdminkaRoutineHandler(
             ApplicationSettings applicationSettingsBase,
@@ -229,43 +234,51 @@ namespace DashboardCode.AdminkaV1.Injected
         {
         }
 
-        IAuthenticationLogging authenticationLogging;
         internal protected AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             UserContext userContext,
             RoutineLoggingTransients routineLoggingTransients
-        ) : base(
-                adminkaStorageConfiguration,
-                InjectedManager.EntityMetaServiceContainer,
-                userContext,  // need usercontext for setting audit properties 
-                routineLoggingTransients.Verbose,
-                routineLoggingTransients.RoutineHandler)
+        )
         {
+            this.UserContext = userContext;
             this.authenticationLogging = routineLoggingTransients.AuthenticationLogging;
+            this.storageRoutineHandler = new AdminkaStorageRoutineHandler(
+                    adminkaStorageConfiguration,
+                    userContext,  // need usercontext for setting audit properties 
+                    InjectedManager.EntityMetaServiceContainer,
+                    routineLoggingTransients.Verbose,
+                    routineLoggingTransients.RoutineHandler
+                );
         }
 
+        public UserRoutineHandler<UserContext> UserRoutineHandler { get { return storageRoutineHandler; }  }
+        public StorageRoutineHandler<UserContext, AdminkaDbContext> StorageRoutineHandler { get { return storageRoutineHandler; } }
+
         public void HandleServicesContainer(Action<ITraceService> action) =>
-            Handle(closure => action(new TraceService(CreateDbContextHandler(closure))));
+            storageRoutineHandler.Handle(closure => action(new TraceService(storageRoutineHandler.CreateDbContextHandler(closure))));
 
         public TOutput HandleServicesContainer<TOutput>(Func<ITraceService, TOutput> func) =>
-            Handle(closure => func(new TraceService(CreateDbContextHandler(closure))));
+            storageRoutineHandler.Handle(closure => func(new TraceService(storageRoutineHandler.CreateDbContextHandler(closure))));
 
         public Task<TOutput> HandleServicesContainerAsync<TOutput>(Func<ITraceService, Task<TOutput>> func) =>
-            HandleAsync(closure => func(new TraceService(CreateDbContextHandler(closure))));
+            storageRoutineHandler.HandleAsync(closure => func(new TraceService(storageRoutineHandler.CreateDbContextHandler(closure))));
 
         public TOutput HandleServicesContainer<TOutput>(
             Func<IAuthenticationService, RoutineClosure<UserContext>, Action<Guid, MemberTag, string>, TOutput> func) =>
-            Handle(closure => func(new AuthenticationService(CreateDbContextHandler(closure)), closure, authenticationLogging.TraceAuthentication));
+            storageRoutineHandler.Handle(
+                closure => func(
+                    new AuthenticationService(storageRoutineHandler.CreateDbContextHandler(closure)), 
+                    closure, authenticationLogging.TraceAuthentication));
 
         #region Handle Remote Services
         public void HandleRemoteServicesContainer(Action<ITraceService> action) =>
-            Handle(closure => action(new LoggingDom.WcfClient.TraceServiceProxy()));
+            storageRoutineHandler.Handle(closure => action(new LoggingDom.WcfClient.TraceServiceProxy()));
 
         public TOutput HandleRemoteServicesContainer<TOutput>(Func<ITraceService, TOutput> func) =>
-            Handle(closure => func(new LoggingDom.WcfClient.TraceServiceProxy()));
+            storageRoutineHandler.Handle(closure => func(new LoggingDom.WcfClient.TraceServiceProxy()));
 
         public Task<TOutput> HandleRemoteServicesContainerAsync<TOutput>(Func<ITraceServiceAsync, Task<TOutput>> func) =>
-            HandleAsync(closure => func(new LoggingDom.WcfClient.TraceServiceAsyncProxy())); 
+            storageRoutineHandler.HandleAsync(closure => func(new LoggingDom.WcfClient.TraceServiceAsyncProxy())); 
         #endregion
     }
 }

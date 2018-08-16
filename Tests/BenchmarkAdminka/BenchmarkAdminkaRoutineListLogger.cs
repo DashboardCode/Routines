@@ -33,7 +33,7 @@ namespace BenchmarkAdminka
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineLogList),
                 new { });
-            routine.Handle(container =>
+            routine.UserRoutineHandler.Handle(container =>
             {
 
             });
@@ -49,7 +49,7 @@ namespace BenchmarkAdminka
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineNoAuthorizationLogList)), userContext, new { });
-            routine.Handle(container =>
+            routine.UserRoutineHandler.Handle(container =>
             {
 
             });
@@ -66,7 +66,7 @@ namespace BenchmarkAdminka
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryLogList), new { });
-            routine.HandleRepository<ParentRecord>((repository, closure) =>
+            routine.StorageRoutineHandler.HandleRepository<ParentRecord>((repository, closure) =>
             {
                 var parentRecords = repository.List();
                 closure.Verbose?.Invoke("sample");
@@ -91,7 +91,7 @@ namespace BenchmarkAdminka
             try
             {
                 IReadOnlyCollection<ParentRecord> parentRecords;
-                routine.HandleRepository<ParentRecord>((repository, closure) =>
+                routine.StorageRoutineHandler.HandleRepository<ParentRecord>((repository, closure) =>
                {
                    parentRecords = repository.List();
                    closure.Verbose?.Invoke("sample");
@@ -117,7 +117,7 @@ namespace BenchmarkAdminka
                 loggingTransientsFactory,
                 "Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryErrorLogList), new { });
              IReadOnlyCollection<ParentRecord> parentRecords =
-                 routine.HandleRepository<IReadOnlyCollection<ParentRecord>, ParentRecord >((repository, closure) =>
+                 routine.StorageRoutineHandler.HandleRepository<IReadOnlyCollection<ParentRecord>, ParentRecord >((repository, closure) =>
                  {
                      var output = repository.List();
                      closure.Verbose?.Invoke("sample");

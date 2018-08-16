@@ -96,7 +96,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
             {
                 ormHandlerFactory.Create<Role>().Handle((repository, storage) =>
                 {
@@ -200,7 +200,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
             {
                 ormHandlerFactory.Create<Role>().Handle((repository, storage) =>
                 {

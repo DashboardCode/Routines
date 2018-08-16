@@ -30,7 +30,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                 userContext, 
                 new { });
 
-            routine.HandleDbContext(
+            routine.StorageRoutineHandler.HandleDbContext(
                 dbContext => {
                     dbContext.Database.Migrate();
                 });

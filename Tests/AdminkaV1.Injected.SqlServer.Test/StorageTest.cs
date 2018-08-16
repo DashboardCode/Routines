@@ -31,7 +31,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 new MemberTag(this), userContext, new { input = "Input text" });
             int newParentRecordId = 0;
             byte[] newRowVersion = null;
-            routine.HandleOrmFactory(ormHandlerFactory =>
+            routine.StorageRoutineHandler.HandleOrmFactory(ormHandlerFactory =>
            {
                var parentRecord = new ParentRecord
                {
@@ -75,7 +75,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                });
            });
 
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 // Update
@@ -119,7 +119,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             });
             // Remove
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -149,7 +149,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>();
                 rh.Handle(
@@ -258,7 +258,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>();
                 rh.Handle(

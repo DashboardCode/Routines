@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.Configuration.Standard</AssemblyName>
     <RootNamespace>DashboardCode.Routines.Configuration.Standard</RootNamespace>
-    <Version>2.0.5</Version>
+    <Version>2.0.9</Version>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Product>DashboardCode.Routines</Product>
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>

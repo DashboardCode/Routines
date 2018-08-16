@@ -31,7 +31,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.HandleOrmFactory((ormHandlerFactory) =>
+            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(
@@ -83,7 +83,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.HandleOrmFactory(ormHandlerFactory =>
+            routine.StorageRoutineHandler.HandleOrmFactory(ormHandlerFactory =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(

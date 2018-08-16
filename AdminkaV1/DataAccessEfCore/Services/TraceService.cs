@@ -1,14 +1,14 @@
 ﻿using System;
 
-using DashboardCode.Routines.Storage;
 using DashboardCode.AdminkaV1.LoggingDom;
+using DashboardCode.Routines.Injected;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class TraceService : ITraceService
     {
-        readonly IndependentDbContextHandler<UserContext, AdminkaDbContext> dbContextHandler;
-        public TraceService(IndependentDbContextHandler<UserContext, AdminkaDbContext> dbContextHandler)
+        readonly ResourceHandler<UserContext, AdminkaDbContext> dbContextHandler;
+        public TraceService(ResourceHandler<UserContext, AdminkaDbContext> dbContextHandler)
             => this.dbContextHandler = dbContextHandler;
 
         public Trace GetTrace(Guid correlationToken)
