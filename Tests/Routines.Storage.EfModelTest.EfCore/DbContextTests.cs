@@ -267,6 +267,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
         static CachedFormatter cachedJsonFormatter5 = new CachedFormatter();
         internal static void SqlServerGetJson(string connectionString)
         {
+
             using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString)))
             {
                 TestService.Clear(new AdoBatch(dbContext));
@@ -279,6 +280,9 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 Console.WriteLine(text);
                 Console.WriteLine();
             };
+
+            
+
 
             Console.WriteLine("Check connection string:");
             Console.WriteLine(connectionString);

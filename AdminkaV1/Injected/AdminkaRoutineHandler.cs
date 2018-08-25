@@ -25,14 +25,14 @@ namespace DashboardCode.AdminkaV1.Injected
 
         #region constructors without usercontext
         public AdminkaRoutineHandler(
-            ApplicationSettings applicationSettingsBase,
+            ApplicationSettings applicationSettings,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             string @namespace, string controller, string action,
             object input
         ) : this(
-                applicationSettingsBase.AdminkaStorageConfiguration,
-                applicationSettingsBase.PerformanceCounters,
-                applicationSettingsBase.ConfigurationContainerFactory,
+                applicationSettings.AdminkaStorageConfiguration,
+                applicationSettings.PerformanceCounters,
+                applicationSettings.ConfigurationContainerFactory,
                 composeLoggers,
                 @namespace, controller, action,
                 input)
@@ -42,7 +42,7 @@ namespace DashboardCode.AdminkaV1.Injected
         private AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
-            ConfigurationContainerFactory configurationContainerFactory,
+            IConfigurationContainerFactory configurationContainerFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             string @namespace, string controller, string action,
             object input
@@ -61,7 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
-            ConfigurationContainerFactory configurationContainerFactory,
+            IConfigurationContainerFactory configurationContainerFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             Guid correlationToken,
             MemberTag memberTag,
@@ -112,15 +112,15 @@ namespace DashboardCode.AdminkaV1.Injected
         // Used in tests and benchmarks: predefined UserContext with custom logging to list, but with performance counters
         // TODO: benchmark should be used with full authentication
         public AdminkaRoutineHandler(
-            ApplicationSettings applicationSettingsBase,
+            ApplicationSettings applicationSettings,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             MemberTag memberTag,
             UserContext userContext,
             object input
             ) : this(
-                applicationSettingsBase.AdminkaStorageConfiguration,
-                applicationSettingsBase.PerformanceCounters,
-                applicationSettingsBase.ConfigurationContainerFactory,
+                applicationSettings.AdminkaStorageConfiguration,
+                applicationSettings.PerformanceCounters,
+                applicationSettings.ConfigurationContainerFactory,
                 composeLoggers,
                 memberTag,
                 userContext,
@@ -132,7 +132,7 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
-            ConfigurationContainerFactory configurationContainerFactory,
+            IConfigurationContainerFactory configurationContainerFactory,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
             MemberTag memberTag,
             UserContext userContext,
@@ -155,7 +155,7 @@ namespace DashboardCode.AdminkaV1.Injected
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
             IAuthenticationLogging authenticationLogging,
-            ConfigurationContainerFactory configurationFactory,
+            IConfigurationContainerFactory configurationFactory,
             MemberTag memberTag,
             UserContext userContext,
             object input
@@ -177,7 +177,7 @@ namespace DashboardCode.AdminkaV1.Injected
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
             IAuthenticationLogging authenticationLogging,
-            ConfigurationContainerFactory configurationFactory,
+            IConfigurationContainerFactory configurationFactory,
             Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
             Guid correlationToken,
             MemberTag memberTag,

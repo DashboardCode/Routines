@@ -2,25 +2,24 @@
 using System.Collections.Generic;
 
 using DashboardCode.Routines.Configuration;
-using DashboardCode.Routines.Configuration.Classic;
 
 namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
     public class WcfRoutine : AdminkaRoutineHandler
     {
-        public static readonly ApplicationSettingsClassic ApplicationSettings = new ApplicationSettingsClassic();
+        public static readonly ApplicationSettingsClassic ApplicationSettingsClassic = new ApplicationSettingsClassic();
 
         public WcfRoutine(Routines.MemberTag memberTag, string faultCodeNamespace, object input) 
             : this(Guid.NewGuid(), memberTag, GetUserContext(), faultCodeNamespace,
-                  new ConfigurationManagerLoader(),  input)
+                    input)
         {
         }
 
         protected WcfRoutine(Guid correlationToken, Routines.MemberTag memberTag, UserContext userContext, string faultCodeNamespace,
-            ConfigurationManagerLoader configurationManagerLoader, object input)
+             object input)
             : this(correlationToken, memberTag, GetUserContext(), faultCodeNamespace,
-                  ApplicationSettings.AdminkaStorageConfiguration,
-                  new ConfigurationContainerFactory(configurationManagerLoader),  input)
+                  ApplicationSettingsClassic.AdminkaStorageConfiguration,
+                  ApplicationSettingsClassic.ResetConfigurationContainerFactory(),  input)
         {
         }
 
@@ -30,11 +29,11 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
             UserContext userContext, 
             string faultCodeNamespace,
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            ConfigurationContainerFactory configurationFactory, object input)
+            IConfigurationContainerFactory configurationFactory, object input)
             : base(
                   adminkaStorageConfiguration,
-                  ApplicationSettings.PerformanceCounters,
-                  ApplicationSettings.AuthenticationLogging,
+                  ApplicationSettingsClassic.PerformanceCounters,
+                  ApplicationSettingsClassic.AuthenticationLogging,
                   configurationFactory,
                   (ex, g, mt, md) => TransformException(ex, g, mt, faultCodeNamespace, md),
                   correlationToken,
@@ -49,7 +48,7 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 
         public static Exception TransformException(
             Exception exception, 
-            Guid correlationToken, MemberTag memberTag, string faultCodeNamespace, Func<Exception, string> markdownException)
+            Guid correlationToken, Routines.MemberTag memberTag, string faultCodeNamespace, Func<Exception, string> markdownException)
         {
             var message = default(string);
             var code = default(string);

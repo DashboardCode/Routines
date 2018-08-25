@@ -1,4 +1,15 @@
-﻿What is this?
+﻿Chekc this 
+http://www.signumsoftware.com/en/Framework - heavy expresion tree framework
+Microsoft.Linq.Translations - something like parse linq expression trees? 
+Delegate Decompiler - sample of methodBody.GetILAsByteArray() function body as il 
+PredicateBuilder - firstExp.Compose(secondExp, Expression.AndAlso) - combine two lambda expressions with booleans between (otherwise parameters problems)
+
+ProjectToType<ProductDto> automapper, mapster - automapper has expression - check it
+
+https://www.youtube.com/watch?time_continue=168&v=J2XzsCoJM4o 
+
+
+What is this?
 public static class PageModelExtensions
 {
     public static ActionResult RedirectToPageJson<TPage>(this TPage controller, string pageName)

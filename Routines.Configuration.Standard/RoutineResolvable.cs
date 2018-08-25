@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Configuration.Standard
 {
-
-    public class RoutineResolvable : IRoutineConfigurationRecord
+    public class RoutineResolvable : IRoutineConfigurationRecord<IConfigurationSection>
     {
         public string Namespace { get; set; }
         public string Type { get; set; }
@@ -11,7 +11,7 @@ namespace DashboardCode.Routines.Configuration.Standard
         public string For { get; set; }
         public List<Resolvable> Resolvables { get; set; }
 
-        IEnumerable<IResolvableConfigurationRecord> IRoutineConfigurationRecord.Resolvables
+        IEnumerable<IResolvableConfigurationRecord<IConfigurationSection>> IRoutineConfigurationRecord<IConfigurationSection>.Resolvables
         {
             get {
                 return Resolvables;

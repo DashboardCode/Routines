@@ -1,4 +1,6 @@
-﻿export default class Es8Test {
+﻿import Popper from 'popper.js';
+
+export default class Es8Test {
     constructor() {
     }
 

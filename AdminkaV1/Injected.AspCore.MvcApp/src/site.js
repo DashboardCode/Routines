@@ -2,6 +2,7 @@
 import Es8Test from './Es8Test';
 import WorkflowManager from './WorkflowManager.ts';
 import Popper from 'popper.js';
+import $ from 'JQuery' 
 
 
 // TODO: polyfil injectorss

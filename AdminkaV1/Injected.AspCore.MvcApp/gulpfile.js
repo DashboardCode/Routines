@@ -19,32 +19,59 @@ gulp.task('del-lib', function () {
 });
 
 gulp.task('copy-lib', function (done) {
-    gulp.src('./node_modules/bootstrap/dist/**/*')
-        .pipe(gulp.dest('./wwwroot/lib/bootstrap/dist'));
-    gulp.src('./node_modules/jquery/dist/**/*')
-        .pipe(gulp.dest('./wwwroot/lib/jquery/dist'));
+    gulp.src('./node_modules/requirejs/require.js')
+        .pipe(gulp.dest('./wwwroot/js'));
 
-    gulp.src('./node_modules/jquery-validation/dist/**/*')
-        .pipe(gulp.dest('./wwwroot/lib/jquery-validation/dist'));
+    gulp.src('./node_modules/@babel/polyfill/dist/polyfill.js')
+        .pipe(gulp.dest('./wwwroot/js'));
 
-    gulp.src('./node_modules/jquery-validation-unobtrusive/dist/**/*')
-        .pipe(gulp.dest('./wwwroot/lib/jquery-validation-unobtrusive/dist'));
+    gulp.src('./node_modules/bootstrap/dist/js/bootstrap.js')
+        .pipe(gulp.dest('./wwwroot/js/'));
+    gulp.src('./node_modules/bootstrap/dist/css/bootstrap.css')
+        .pipe(gulp.dest('./wwwroot/css/'));
 
-    gulp.src('./node_modules/popper.js/dist/**/*')
-        .pipe(gulp.dest('./wwwroot/lib/popper.js/dist'));
-    gulp.src('./node_modules/datatables.net/**/*')
-        .pipe(gulp.dest('./wwwroot/lib/datatables.net'));
-    gulp.src('./node_modules/datatables.net-bs4/**/*')
-        .pipe(gulp.dest('./wwwroot/lib/datatables.net-bs4'));
-    gulp.src('./node_modules/@dashboardcode/bsmultiselect/dist/**/*')
-        .pipe(gulp.dest('./wwwroot/lib/@dashboardcode/bsmultiselect/dist'));
+    gulp.src('./node_modules/jquery/dist/jquery.js')
+        .pipe(gulp.dest('./wwwroot/js'));
+
+    //<script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    //    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
+
+    gulp.src('./node_modules/jquery-validation/dist/jquery.validate.js')
+        .pipe(gulp.dest('./wwwroot/js'));
+
+    gulp.src('./node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js')
+        .pipe(gulp.dest('./wwwroot/js'));
+
+
+    gulp.src('./node_modules/popper.js/dist/esm/popper.js')
+        .pipe(gulp.dest('./wwwroot/js'));
+
+    gulp.src('./node_modules/datatables.net/js/jquery.dataTables.js')
+        .pipe(gulp.dest('./wwwroot/js'));
+
+    gulp.src('./node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js')
+        .pipe(gulp.dest('./wwwroot/js'));
+
+    //gulp.src('./node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css')
+    //    .pipe(gulp.dest('./wwwroot/css'));
+
+    gulp.src('./node_modules/@dashboardcode/bsmultiselect/dist/css/BsMultiSelect.css')
+        .pipe(gulp.dest('./wwwroot/css'));
+
+    gulp.src('./node_modules/@dashboardcode/bsmultiselect/dist/js/BsMultiSelect.js')
+        .pipe(gulp.dest('./wwwroot/js'));
 
     gulp.src('./node_modules/material-design-icons/iconfont/*.woff2')
-        .pipe(gulp.dest('./wwwroot/lib/material-design-icons/iconfont'));
+        .pipe(gulp.dest('./wwwroot/fonts'));
     gulp.src('./node_modules/material-design-icons/iconfont/*.woff')
-        .pipe(gulp.dest('./wwwroot/lib/material-design-icons/iconfont'));
+        .pipe(gulp.dest('./wwwroot/fonts'));
     gulp.src('./node_modules/material-design-icons/iconfont/*.ttf')
-        .pipe(gulp.dest('./wwwroot/lib/material-design-icons/iconfont'));
+        .pipe(gulp.dest('./wwwroot/fonts'));
+
+
+    gulp.src('./src/rindex.js')
+        .pipe(gulp.dest('./wwwroot/js'));
+
     done();
 });
 

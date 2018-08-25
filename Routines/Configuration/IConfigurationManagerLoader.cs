@@ -2,8 +2,8 @@
 
 namespace DashboardCode.Routines.Configuration
 {
-    public interface IConfigurationManagerLoader
+    public interface IConfigurationManagerLoader<TSerialized>
     {
-        IEnumerable<IRoutineConfigurationRecord> GetGetRoutineConfigurationRecords();
+        IEnumerable<IRoutineConfigurationRecord<TSerialized>> GetGetRoutineConfigurationRecords();
     }
 }

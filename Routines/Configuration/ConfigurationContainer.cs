@@ -1,13 +1,19 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace DashboardCode.Routines.Configuration
 {
-    public class ConfigurationContainer 
+    public class ConfigurationContainer<TSerialized> : IContainer
     {
-        private readonly List<IResolvableConfigurationRecord> elements = new List<IResolvableConfigurationRecord>();
-        public ConfigurationContainer(IEnumerable<IRoutineConfigurationRecord> routineConfigurationRecords, MemberTag memberTag)
+        private readonly List<IResolvableConfigurationRecord<TSerialized>> elements = new List<IResolvableConfigurationRecord<TSerialized>>();
+        IGWithConstructorFactory<TSerialized> deserializer;
+        public ConfigurationContainer(
+            IEnumerable<IRoutineConfigurationRecord<TSerialized>> routineConfigurationRecords,
+            IGWithConstructorFactory<TSerialized> deserializer, 
+            MemberTag memberTag)
         {
+            this.deserializer = deserializer;
             var memberRoutineConfigurationRecords = routineConfigurationRecords.LimitRoutineConfigurationRecords(memberTag);
             foreach (var routineConfigurationRecord in memberRoutineConfigurationRecords)
             {
@@ -22,8 +28,11 @@ namespace DashboardCode.Routines.Configuration
             }
         }
 
-        public ConfigurationContainer(IEnumerable<IRoutineConfigurationRecord> routineConfigurationRecords, MemberTag memberTag, string @for)
+        public ConfigurationContainer(IEnumerable<IRoutineConfigurationRecord<TSerialized>> routineConfigurationRecords,
+            IGWithConstructorFactory<TSerialized> deserializer, 
+            MemberTag memberTag, string @for)
         {
+            this.deserializer = deserializer;
             var memberRoutineConfigurationRecords = routineConfigurationRecords.LimitRoutineConfigurationRecords(memberTag);
             foreach (var routineConfigurationRecord in memberRoutineConfigurationRecords)
             {
@@ -38,7 +47,14 @@ namespace DashboardCode.Routines.Configuration
             }
         }
 
-        public string ResolveString<T>()
+        public T Resolve<T>() where T : new()
+        {
+            var serialized = this.ResolveString<T>();
+            return deserializer.Create<T>(serialized); 
+        }
+
+
+        public TSerialized ResolveString<T>()
         {
             var type = typeof(T);
             var typeName = type.Name;
@@ -47,9 +63,9 @@ namespace DashboardCode.Routines.Configuration
             return @value;
         }
 
-        public string ResolveString(string typeNamespace, string typeName)
+        public TSerialized ResolveString(string typeNamespace, string typeName)
         {
-            var @value = default(string);
+            var @value = default(TSerialized);
             var config = elements.FirstOrDefault(e => (e.Namespace == typeNamespace || string.IsNullOrEmpty(e.Namespace)) && e.Type == typeName);
             if (config != null)
                 @value = config.Value;

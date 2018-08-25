@@ -5,11 +5,11 @@ namespace DashboardCode.Routines.Configuration
 {
     public static class RoutineConfigurationRecordExtensions
     {
-        public static List<IRoutineConfigurationRecord> LimitRoutineConfigurationRecords(this IEnumerable<IRoutineConfigurationRecord> routines, MemberTag memberTag)
+        public static List<IRoutineConfigurationRecord<TSerialized>> LimitRoutineConfigurationRecords<TSerialized>(this IEnumerable<IRoutineConfigurationRecord<TSerialized>> routines, MemberTag memberTag)
         {
-            var rangedRoutines = new Dictionary<int, IRoutineConfigurationRecord>();
+            var rangedRoutines = new Dictionary<int, IRoutineConfigurationRecord<TSerialized>>();
             int rA = 0, rB = 1000, rC = 2000;
-            foreach (IRoutineConfigurationRecord routine in routines)
+            foreach (IRoutineConfigurationRecord<TSerialized> routine in routines)
             {
                 if (
                     (routine.Namespace == memberTag.Namespace || routine.Namespace.IsNullOrWhiteSpaceOrAsterix())

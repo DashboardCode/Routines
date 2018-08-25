@@ -2,12 +2,12 @@
 
 using DashboardCode.Routines.Configuration;
 
-using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Diagnostics;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
+
     // Connection string and instance name a cached there (readed only once)
     // There is a leak abstraction: how configurationManagerLoader works with disk on concreate platform (read on each call or now)
     // but all should support it.
@@ -15,32 +15,34 @@ namespace DashboardCode.AdminkaV1.Injected
     // track changes (means share one instance between all processes)
     public abstract class ApplicationSettings
     {
-        public readonly AdminkaStorageConfiguration AdminkaStorageConfiguration;
-        public readonly Func<string, AdminkaStorageConfiguration> CreateMigrationAdminkaStorageConfiguration;
-        public readonly ConfigurationContainerFactory ConfigurationContainerFactory;
-        public readonly IPerformanceCounters PerformanceCounters;
-        public readonly NLogAuthenticationLogging AuthenticationLogging;
+        public AdminkaStorageConfiguration AdminkaStorageConfiguration { get; private set; }
+        public Func<string, AdminkaStorageConfiguration> CreateMigrationAdminkaStorageConfiguration { get; private set; }
+        public IPerformanceCounters PerformanceCounters { get; private set; }
+        public NLogAuthenticationLogging AuthenticationLogging { get; private set; }
+        public IConfigurationContainerFactory ConfigurationContainerFactory { get; private set; }
 
         public ApplicationSettings(
-            (IConfigurationManagerLoader configurationManagerLoader,
-            IConnectionStringMap connectionStringMap,
-            IAppSettings appSettings) tulpe
-            ):this(tulpe.configurationManagerLoader, tulpe.connectionStringMap, tulpe.appSettings)
+            (IConnectionStringMap connectionStringMap,
+             IAppSettings appSettings,
+             IConfigurationContainerFactory configurationContainerFactory
+            ) tulpe
+            ):this(tulpe.connectionStringMap, tulpe.appSettings, tulpe.configurationContainerFactory)
         {
 
         }
-
         public ApplicationSettings(
-            IConfigurationManagerLoader configurationManagerLoader,
             IConnectionStringMap connectionStringMap,
-            IAppSettings appSettings
+            IAppSettings appSettings,
+            IConfigurationContainerFactory configurationContainerFactory 
             )
         {
             var connectionString = connectionStringMap.GetConnectionString("AdminkaConnectionString");
             AdminkaStorageConfiguration = new AdminkaStorageConfiguration(connectionString, null, StorageType.SQLSERVER);
             CreateMigrationAdminkaStorageConfiguration = (migrationAssembly) =>
                  new AdminkaStorageConfiguration(connectionString, migrationAssembly, StorageType.SQLSERVER);
-            ConfigurationContainerFactory = new ConfigurationContainerFactory(configurationManagerLoader);
+
+            ConfigurationContainerFactory = configurationContainerFactory;
+
             AuthenticationLogging = new NLogAuthenticationLogging();
             var instanceName = appSettings.GetValue("InstanceName");
             if (!string.IsNullOrEmpty(instanceName))

@@ -2,19 +2,17 @@
 
 namespace DashboardCode.Routines.Configuration
 {
-    public class ContainerFactory<TUserContext>
+    public class ContainerFactory<TUserContext> 
     {
-        ConfigurationContainerFactory configurationContainerFactory;
+        IConfigurationContainerFactory configurationContainerFactory;
         Func<TUserContext, string> getVerboseLoggingFlag;
-        IGFactory<string> deserializer;
         public ContainerFactory(
-            ConfigurationContainerFactory configurationContainerFactory,
-            Func<TUserContext, string> getVerboseLoggingFlag,
-            IGFactory<string> deserializer)
+            IConfigurationContainerFactory configurationContainerFactory,
+            Func<TUserContext, string> getVerboseLoggingFlag
+            )
         {
             this.configurationContainerFactory = configurationContainerFactory;
             this.getVerboseLoggingFlag = getVerboseLoggingFlag;
-            this.deserializer = deserializer;
         }
 
         public IContainer CreateContainer(MemberTag memberTag, TUserContext userContext)
@@ -23,7 +21,7 @@ namespace DashboardCode.Routines.Configuration
             var configurationContainer = configurationContainerFactory
                 .Create(memberTag, @for);
             
-            return new Container(configurationContainer, deserializer);
+            return configurationContainer;
         }
     }
 }

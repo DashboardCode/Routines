@@ -1,10 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Text;
+using System.Linq.Expressions;
 
 namespace DashboardCode.Routines.Json
 {
+    internal class CachedDelegates<TIn, TOut>
+    {
+        private static readonly ConcurrentDictionary<Expression<Func<TIn,TOut>>, Func<TIn,TOut>> Cache = new ConcurrentDictionary<Expression<Func<TIn, TOut>>, Func<TIn, TOut>>();
+        public static Func<TIn, TOut> AsFunc(Expression<Func<TIn, TOut>> expr) =>
+            Cache.GetOrAdd(expr, 
+                k=>
+                k.Compile()
+                );
+
+    }
+
     public class CachedFormatter
     {
         Delegate formatter;

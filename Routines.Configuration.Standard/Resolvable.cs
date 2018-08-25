@@ -1,9 +1,11 @@
-﻿namespace DashboardCode.Routines.Configuration.Standard
+﻿using Microsoft.Extensions.Configuration;
+
+namespace DashboardCode.Routines.Configuration.Standard
 {
-    public class Resolvable : IResolvableConfigurationRecord
+    public class Resolvable : IResolvableConfigurationRecord<IConfigurationSection>
     {
         public string Namespace { get; set; }
         public string Type      { get; set; }
-        public string Value     { get; set; }
+        public IConfigurationSection Value { get; set; }
     }
 }

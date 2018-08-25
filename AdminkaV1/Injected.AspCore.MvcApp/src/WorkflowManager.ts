@@ -1,4 +1,8 @@
-﻿declare var dc_showErrorDialog: any;
+﻿/// <reference path="../node_modules/@types/jquery/index.d.ts" />
+
+import Popper from 'popper.js';
+
+declare var dc_showErrorDialog: any;
 declare var dc_showErrorDialogJs: any;
 declare var dc_notify_error: any;
 

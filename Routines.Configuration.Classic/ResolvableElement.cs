@@ -7,7 +7,7 @@ namespace DashboardCode.Routines.Configuration.Classic
 {
     [DebuggerDisplay("{Namespace}.{Type}; {InstanceCreatedAt}/{StaticCreatedAt}")]
     [DebuggerTypeProxy(typeof(ResolvableElementDebugView))]
-    public class ResolvableElement : ConfigurationElement, ICollectionMemberElement, IResolvableConfigurationRecord //, IResolvableRecord
+    public class ResolvableElement : ConfigurationElement, ICollectionMemberElement, IResolvableConfigurationRecord<string> //, IResolvableRecord
     {
         private static readonly ConfigurationProperty namespaceProperty =
             new ConfigurationProperty("namespace", typeof(string), "", ConfigurationPropertyOptions.None);
@@ -89,6 +89,8 @@ namespace DashboardCode.Routines.Configuration.Classic
                 throw new InvalidOperationException("Config's element Type property should be valid .NET type name");
         }
         public string Key { get; } = Guid.NewGuid().ToString();
+
+        
 
         #region Debug
         public static readonly DateTime StaticCreatedAt = DateTime.Now;

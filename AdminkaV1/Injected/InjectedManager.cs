@@ -140,12 +140,14 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             return SerializationManager.DeserializeJson<T>(json);
         }
-        class JsonDeserializerGFactory : IGFactory<string>
+
+        public static ContainerFactory<UserContext> CreateContainerFactory(IConfigurationContainerFactory configurationFactory)
         {
-            public T Create<T>(string json) =>
-                DeserializeJson<T>(json);
+            return
+                new ContainerFactory<UserContext>(
+                    configurationFactory,
+                    InjectedManager.GetVerboseLoggingFlag);
         }
-        static readonly JsonDeserializerGFactory jsonDeserializerGFactory = new JsonDeserializerGFactory();
 
         public static string SerializeToJson(object o)
         {
@@ -202,11 +204,6 @@ namespace DashboardCode.AdminkaV1.Injected
         public static string GetVerboseLoggingFlag(UserContext userContext) =>
             (userContext?.User?.HasPrivilege(Privilege.VerboseLogging) ?? false) ? Privilege.VerboseLogging : null;
 
-        public static ContainerFactory<UserContext> CreateContainerFactory(ConfigurationContainerFactory configurationFactory) =>
-            new ContainerFactory<UserContext>(
-                configurationFactory,
-                GetVerboseLoggingFlag,
-                jsonDeserializerGFactory);
 
         public static Func<object, object, TimeSpan, bool> ComposeTestInputOutput(string errorRuleLang, string errorRule, Action<DateTime, string> logError)
         {

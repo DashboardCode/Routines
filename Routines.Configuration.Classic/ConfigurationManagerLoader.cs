@@ -24,23 +24,24 @@ namespace DashboardCode.Routines.Configuration.Classic
         }
     }
 
-    public class ConfigurationManagerLoader : IConfigurationManagerLoader
+    public class ConfigurationManagerLoader : IConfigurationManagerLoader<string>
     {
         const string key = "routinesConfiguration";
         readonly string sectionName;
+        readonly IGWithConstructorFactory<string> deserializer;
 
         public ConfigurationManagerLoader(string sectionName = key)
         {
             this.sectionName = sectionName;
         }
 
-        public IEnumerable<IRoutineConfigurationRecord> GetGetRoutineConfigurationRecords()
+        public IEnumerable<IRoutineConfigurationRecord<string>> GetGetRoutineConfigurationRecords()
         {
             var section = ConfigurationManager.GetSection(sectionName);
             if (section == null)
                 throw new System.Exception($"Configuration section '{sectionName}' was not found");
             var routinesConfigurationSection = (RoutinesConfigurationSection)section;
-            var routineConfigurationRecords = ((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineConfigurationRecord>();
+            var routineConfigurationRecords = ((IEnumerable)routinesConfigurationSection.Routines).Cast<IRoutineConfigurationRecord<string>>();
             return routineConfigurationRecords;
         }
 

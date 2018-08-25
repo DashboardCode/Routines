@@ -15,12 +15,13 @@
                 font-family: 'Material Icons';
                 font-style: normal;
                 font-weight: 400;
-                src: local('Material Icons'), local('MaterialIcons-Regular'), url(/lib/material-design-icons/iconfont/MaterialIcons-Regular.woff2) format('woff2'), url(/lib/material-design-icons/iconfont/MaterialIcons-Regular.woff) format('woff'), url(/lib/material-design-icons/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+                src: local('Material Icons'), local('MaterialIcons-Regular'), url(/fonts/MaterialIcons-Regular.woff2) format('woff2'), url(/fonts/MaterialIcons-Regular.woff) format('woff'), url(/fonts/MaterialIcons-Regular.ttf) format('truetype');
             }
         </style>
         @*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />*@
         <link rel="stylesheet" href="~/css/customBootstrap.css" />
-        <link rel="stylesheet" href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" />
+        @*<link rel="stylesheet" href="~/lib/datatables.net-bs4/css/dataTables.bootstrap4.css" />*@
+        @*<link rel="stylesheet" href="~/css/dataTables.bootstrap4.css" />*@
         <link rel="stylesheet" href="~/css/site.css" />
     </environment>
     <environment exclude="Development">
@@ -131,16 +132,33 @@
     </div>
 
     <environment include="Development">
-        <script src="~/dist/main.js" asp-append-version="true"></script>
+        <script type="module">
+            import "./js/jquery.js"
+            import "./js/jquery.validate.js";
+            import "./js/jquery.validate.unobtrusive.js";
 
-        @*<script src="~/lib/jquery/dist/jquery.js"></script>
-            <script src="~/lib/popper.js/dist/umd/popper.js"></script>
-            <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-            <script src="~/lib/datatables.net/js/jquery.dataTables.js"></script>
-            <script src="~/lib/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
-            <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-            <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js"></script>
-            <script src="~/lib/@@dashboardcode/bsmultiselect/dist/js/BsMultiSelect.js"></script>
+            import("./js/popper.js").then(
+            (m)=>{
+                window.console.log(m["popper"]);
+                //window.Popper = p;
+                //import "./js/bootstrap.js"; // TODO : error
+            });
+
+            // to solve try those
+            // 1) compile whole bootstrap folder with
+            // $ babel --source-maps --out-dir=lib src // but this also moves not js files to out-dir
+            // 2) try those plugins to change
+            // https://github.com/entwicklerstube/babel-plugin-root-import
+            // https://github.com/per2plex/babel-project-relative-import
+            // https://github.com/tleunen/babel-plugin-module-resolver
+        </script>
+
+            @*
+            <script src="~/js/bootstrap.js"></script>
+            <script src="~/js/jquery.dataTables.js"></script>
+            <script src="~/js/dataTables.bootstrap4.js"></script>
+            <script src="~/js/BsMultiSelect.js"></script>
+            <script src="~/js/Es8Test.js" type="module"></script>
             <script src="~/js/site.js"></script>*@
     </environment>
     <environment exclude="Development">
@@ -151,9 +169,30 @@
 
     <environment names="Development">
         <script>
-            if (typeof $ !== 'function' || typeof jQuery !== 'function') {
-                alert('jquery is not defined on global level when it is expected')
-            }
+            // this will not work since there are no `script src` loader
+            //if (typeof $ !== 'function' || typeof jQuery !== 'function') {
+            //    alert('jquery is not defined on global level when it is expected')
+            //}
+
+            document.addEventListener("DOMContentLoaded", function (event) {
+                if (typeof $ !== 'function' || typeof jQuery !== 'function') {
+                    alert('Inline Type 1: jquery is not defined on global level when it is expected')
+                } else {
+                    window.console.log("jquery loaded: inline type 1");
+                }
+            });
+        </script>
+
+        <script type="module">
+            import("./js/jquery.js").then(
+                function(){
+                    if (typeof $ !== 'function' || typeof jQuery !== 'function') {
+                        alert('Inline Type 2: jquery is not defined on global level when it is expected')
+                    } else {
+                        window.console.log("jquery loaded: inline type 2");
+                    }
+                }
+            );
         </script>
     </environment>
     @*<script>
@@ -186,7 +225,7 @@
             }
         }
     </div>
-    <script>
+    @*<script>
         //document.addEventListener("DOMContentLoaded", function (event) {
         var title = $('#dashboardcode-account-box-id-tooltip').removeClass('d-none').remove().html();
         $('#dashboardcode-account-box-id').tooltip
@@ -197,9 +236,9 @@
                 template: '<div class="tooltip" role="tooltip"><div class="tooltip-inner" style="background-color:#EEEEEE; opacity:0.9; color:black; border:0px solid red; "></div></div>'
             });
         //});
-    </script>
+    </script>*@
 
-    @if (ViewData.ContainsKey("Exception"))
+    @*@if (ViewData.ContainsKey("Exception"))
     {
         <script>
             document.addEventListener("DOMContentLoaded", function (event) {
@@ -210,6 +249,6 @@
                 ShowExceptionModal();
             })();
         </script>
-    }
+    }*@
 </body>
 </html>

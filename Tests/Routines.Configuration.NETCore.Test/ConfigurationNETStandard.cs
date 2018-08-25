@@ -3,8 +3,11 @@ using System.Reflection;
 using Xunit;
 
 using DashboardCode.Routines.Configuration.Standard;
+using DashboardCode.Routines.Configuration.Test;
 
 [assembly: CollectionBehavior(MaxParallelThreads = 1, DisableTestParallelization = true)]
+
+
 
 namespace DashboardCode.Routines.Configuration.NETCore.Test
 {
@@ -28,10 +31,13 @@ namespace DashboardCode.Routines.Configuration.NETCore.Test
         public ConfigurationNETStandard()
         {
             var configurationRoot = ConfigurationManager.ResolveConfigurationRoot();
-            configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot);
+            configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot, new Deserializer());
         }
 
-        public ConfigurationContainer Create(MemberTag memberTag) =>
-            new ConfigurationContainer(configurationManagerLoader.GetGetRoutineConfigurationRecords(), memberTag);
+        public ConfigurationContainer<Microsoft.Extensions.Configuration.IConfigurationSection> Create(MemberTag memberTag) =>
+            new ConfigurationContainer<Microsoft.Extensions.Configuration.IConfigurationSection>(
+                configurationManagerLoader.GetGetRoutineConfigurationRecords(),
+                 new Deserializer(),
+                memberTag);
     }
 }

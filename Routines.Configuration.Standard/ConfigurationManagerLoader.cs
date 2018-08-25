@@ -33,16 +33,18 @@ namespace DashboardCode.Routines.Configuration.Standard
         }
     }
 
-    public class ConfigurationManagerLoader: IConfigurationManagerLoader
+    public class ConfigurationManagerLoader: IConfigurationManagerLoader<IConfigurationSection>
     {
         const string defaultSectionName = "Routines";
         internal readonly List<RoutineResolvable> routineResolvables;
-        readonly IConfiguration configuration;
+        readonly IConfigurationRoot configurationRoot;
+        readonly IGWithConstructorFactory<IConfigurationSection> deserializer;
 
-        public ConfigurationManagerLoader(IConfiguration configuration, string sectionName = defaultSectionName)
+        public ConfigurationManagerLoader(IConfigurationRoot configurationRoot, IGWithConstructorFactory<IConfigurationSection> deserializer, string sectionName = defaultSectionName)
         {
-            this.configuration = configuration;
-            var section = configuration.GetSection(sectionName);
+            this.configurationRoot = configurationRoot;
+            this.deserializer = deserializer;
+            var section = configurationRoot.GetSection(sectionName);
             routineResolvables = new List<RoutineResolvable>();
             section.Bind(routineResolvables);
         }
@@ -50,7 +52,7 @@ namespace DashboardCode.Routines.Configuration.Standard
         public ConfigurationManagerLoader(List<RoutineResolvable> routineResolvables) =>
             this.routineResolvables = routineResolvables;
 
-        public IEnumerable<IRoutineConfigurationRecord> GetGetRoutineConfigurationRecords() =>
+        public IEnumerable<IRoutineConfigurationRecord<IConfigurationSection>> GetGetRoutineConfigurationRecords() =>
             routineResolvables;
     }
 }

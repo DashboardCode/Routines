@@ -11,7 +11,6 @@ using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Configuration.Standard;
 using DashboardCode.Routines.Configuration;
 
-using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Diagnostics;
 
@@ -54,20 +53,20 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         {
         }
 
-        public MvcRoutineHandler(
+        private MvcRoutineHandler(
                 ConfigurableController controller,
                 Guid correlationToken,
                 MemberTag memberTag,
                 ConfigurationManagerLoader configurationManagerLoader,
                 object input) :
             this(
-                 controller.ApplicationSettings.AdminkaStorageConfiguration,
-                 controller.ApplicationSettings.PerformanceCounters,
-                 new ConfigurationContainerFactory(configurationManagerLoader),
+                 controller.ApplicationSettingsStandard.AdminkaStorageConfiguration,
+                 controller.ApplicationSettingsStandard.PerformanceCounters,
+                 ApplicationSettingsStandard.ResetConfigurationContainerFactory(configurationManagerLoader),
                  controller,
                  correlationToken,
                  memberTag,
-                 InjectedManager.ComposeNLogMemberLoggerFactory(controller.ApplicationSettings.AuthenticationLogging),
+                 InjectedManager.ComposeNLogMemberLoggerFactory(controller.ApplicationSettingsStandard.AuthenticationLogging),
                  input)
         {
             controller.HttpContext.Items["CorrelationToken"] = correlationToken;
@@ -83,7 +82,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         private MvcRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
-            ConfigurationContainerFactory configurationFactory,
+            IConfigurationContainerFactory configurationFactory,
             ConfigurableController controller, 
             Guid correlationToken,
             MemberTag memberTag,

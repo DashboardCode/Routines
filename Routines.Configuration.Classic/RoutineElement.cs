@@ -9,7 +9,7 @@ namespace DashboardCode.Routines.Configuration.Classic
 {
     [DebuggerDisplay("{Namespace}.{Type}.{Member}/{For}; {InstanceCreatedAt}/{StaticCreatedAt}")]
     [DebuggerTypeProxy(typeof(RoutineElementDebugView))]
-    public class RoutineElement :  ConfigurationElement, ICollectionMemberElement, IRoutineConfigurationRecord //, IRoutineResolvableRecord
+    public class RoutineElement :  ConfigurationElement, ICollectionMemberElement, IRoutineConfigurationRecord<string> //, IRoutineResolvableRecord
     {
         private static readonly ConfigurationProperty NamespaceProperty =
             new ConfigurationProperty("namespace", typeof(string), "", ConfigurationPropertyOptions.None);
@@ -141,11 +141,11 @@ namespace DashboardCode.Routines.Configuration.Classic
             }
         }
 
-        IEnumerable<IResolvableConfigurationRecord> IRoutineConfigurationRecord.Resolvables
+        IEnumerable<IResolvableConfigurationRecord<string>> IRoutineConfigurationRecord<string>.Resolvables
         {
             get
             {
-                return ((IEnumerable)base[""]).Cast<IResolvableConfigurationRecord>();
+                return ((IEnumerable)base[""]).Cast<IResolvableConfigurationRecord<string>>();
             }
         }
 
@@ -166,8 +166,8 @@ namespace DashboardCode.Routines.Configuration.Classic
         class RoutineElementDebugView
         {
             private readonly RoutineElement routineElement;
-            public IEnumerable<IResolvableConfigurationRecord> Resolvables
-                { get { return ((IRoutineConfigurationRecord)routineElement).Resolvables.ToList(); } }
+            public IEnumerable<IResolvableConfigurationRecord<string>> Resolvables
+                { get { return ((IRoutineConfigurationRecord<string>)routineElement).Resolvables.ToList(); } }
             public string Namespace { get { return routineElement.Namespace; } }
             public string Type { get { return routineElement.Type; } }
             public string Member { get { return routineElement.Member; } }

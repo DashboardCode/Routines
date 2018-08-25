@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.ServiceModel;
+using DashboardCode.Routines;
 
 using TraceServiceReference;
-
-using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
 {

@@ -21,6 +21,7 @@
   <ItemGroup>
     <Content Remove="NLog.config" />
     <Content Remove="wwwroot\images\logo.svg" />
+    <Content Remove="wwwroot\js\rindex.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -55,7 +56,6 @@
     <Folder Include="Content\" />
     <Folder Include="dist\css\" />
     <Folder Include="dist\js\" />
-    <Folder Include="wwwroot\js\" />
   </ItemGroup>
   
   <ItemGroup>

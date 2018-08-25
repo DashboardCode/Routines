@@ -1,10 +1,13 @@
-﻿namespace DashboardCode.Routines.Configuration.Classic.Test
+﻿using DashboardCode.Routines.Configuration.Test;
+
+namespace DashboardCode.Routines.Configuration.Classic.Test
 {
     public class ConfigurationNETFramework
     {
         ConfigurationManagerLoader configurationManagerLoader = new ConfigurationManagerLoader();
+        Deserializer serializer = new Deserializer();
 
-        public ConfigurationContainer Create(MemberTag memberTag) =>
-            new ConfigurationContainer(configurationManagerLoader.GetGetRoutineConfigurationRecords(), memberTag);
+        public ConfigurationContainer<string> Create(MemberTag memberTag) =>
+            new ConfigurationContainer<string>(configurationManagerLoader.GetGetRoutineConfigurationRecords(), serializer,  memberTag);
     }
 }
