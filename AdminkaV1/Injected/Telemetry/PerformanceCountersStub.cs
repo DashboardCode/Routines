@@ -1,4 +1,4 @@
-﻿namespace DashboardCode.AdminkaV1.Injected.Diagnostics
+﻿namespace DashboardCode.AdminkaV1.Injected.Telemetry
 {
     public class PerformanceCountersStub : IPerformanceCounters
     {

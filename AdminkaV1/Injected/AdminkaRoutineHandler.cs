@@ -12,7 +12,7 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.Logging;
-using DashboardCode.AdminkaV1.Injected.Diagnostics;
+using DashboardCode.AdminkaV1.Injected.Telemetry;
 using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.Injected

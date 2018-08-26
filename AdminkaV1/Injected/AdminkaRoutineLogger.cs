@@ -5,7 +5,7 @@ using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
-using DashboardCode.AdminkaV1.Injected.Diagnostics;
+using DashboardCode.AdminkaV1.Injected.Telemetry;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
