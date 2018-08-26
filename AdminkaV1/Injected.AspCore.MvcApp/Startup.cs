@@ -25,13 +25,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 .AddEnvironmentVariables();
             // TODO:
             // updatable configuration https://stackoverflow.com/questions/40970944/how-to-update-values-into-appsetting-json
-            ConfigurationRoot = builder.Build();
-
+            Configuration = builder.Build();
+            IConfiguration c = Configuration;
             if (hostingEnvironment.IsDevelopment())
                 builder.AddUserSecrets<Startup>();
         }
 
-        private IConfigurationRoot ConfigurationRoot { get; } // is updatable on change
+        private IConfiguration Configuration { get; } // is updatable on change
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -47,17 +47,17 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
             // Add framework services.
             services.AddMvc();
-            services.AddSingleton(ConfigurationRoot);
-            services.Configure<List<RoutineResolvable>>(ConfigurationRoot.GetSection("Routines"));
+            services.AddSingleton(Configuration);
+            services.Configure<List<RoutineResolvable>>(Configuration.GetSection("Routines"));
             services.AddSingleton(services);
-            var applicationSettings = InjectedManager.CreateApplicationSettingsStandard(ConfigurationRoot);
+            var applicationSettings = InjectedManager.CreateApplicationSettingsStandard(Configuration);
             services.AddSingleton(applicationSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceCollection services)
         {
-            var configurationSection = ConfigurationRoot.GetSection("Logging");
+            var configurationSection = Configuration.GetSection("Logging");
             loggerFactory.AddConsole(configurationSection);
             loggerFactory.AddDebug();
 

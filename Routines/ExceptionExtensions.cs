@@ -94,7 +94,7 @@ namespace DashboardCode.Routines
         {
             stringBuilder.AppendMarkdownLine("FileLoadException specific:");
             stringBuilder.Append("   ").AppendMarkdownLine($"[FileName] {exception.FileName}");
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
+#if !(NETSTANDARD)
                 stringBuilder.Append("   ").AppendMarkdownLine($"[FusionLog] {exception.FusionLog}");
 #endif
         }

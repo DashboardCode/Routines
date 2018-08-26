@@ -140,14 +140,6 @@ namespace DashboardCode.AdminkaV1.Injected
             return SerializationManager.DeserializeJson<T>(json);
         }
 
-        public static ContainerFactory<UserContext> CreateContainerFactory(IConfigurationContainerFactory configurationFactory)
-        {
-            return
-                new ContainerFactory<UserContext>(
-                    configurationFactory,
-                    InjectedManager.GetVerboseLoggingFlag);
-        }
-
         public static string SerializeToJson(object o)
         {
             return SerializationManager.SerializeToJson(o);
@@ -200,6 +192,8 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         #endregion
 
+        #region ApplicationSettings
+
         readonly static Routines.Configuration.Classic.DeserializerClassic deserializerClassic = 
             new Routines.Configuration.Classic.DeserializerClassic(
                 (j,o)=> Newtonsoft.Json.JsonConvert.SerializeObject(o)
@@ -223,7 +217,7 @@ namespace DashboardCode.AdminkaV1.Injected
             return new ConfigurationContainerFactory<Microsoft.Extensions.Configuration.IConfigurationSection>(configurationManagerLoader, deserializer);
         }
 
-        public static ApplicationSettings CreateApplicationSettingsStandard(Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot=null)
+        public static ApplicationSettings CreateApplicationSettingsStandard(Microsoft.Extensions.Configuration.IConfiguration configurationRoot=null)
         {
             if (configurationRoot == null)
             {
@@ -237,6 +231,15 @@ namespace DashboardCode.AdminkaV1.Injected
             var configurationManagerLoader = new Routines.Configuration.Standard.ConfigurationManagerLoader(configurationRoot);
             var configurationContainerFactory = ResetConfigurationContainerFactoryStandard(configurationManagerLoader);
             return new ApplicationSettings(connectionStringMap, appSettings, configurationContainerFactory);
+        }
+        #endregion
+
+        public static ContainerFactory<UserContext> CreateContainerFactory(IConfigurationContainerFactory configurationFactory)
+        {
+            return
+                new ContainerFactory<UserContext>(
+                    configurationFactory,
+                    GetVerboseLoggingFlag);
         }
 
         public static string GetVerboseLoggingFlag(UserContext userContext) =>
@@ -343,5 +346,46 @@ namespace DashboardCode.AdminkaV1.Injected
             });
             return new UserContext(user, cultureInfo);
         }
+
+        #region DependencyInjection interface
+        //public static void MvcConfigure(IApplicationBuilder applicationBuilder)
+//        {
+//            DatabaseErrorPageExtensions.UseDatabaseErrorPage(applicationBuilder);
+//        }
+
+        //public static void AddMvc(Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot, IServiceCollection serviceCollection)
+//        {
+//            var applicationSettings = CreateApplicationSettingsStandard(configurationRoot);
+//            var connectionString = applicationSettings.AuthenticationStorageConfiguration.ConnectionString;
+
+//            serviceCollection.AddDbContext<AuthenticationDbContext>(optionsBuilder =>
+//                optionsBuilder.UseSqlServer(connectionString));
+
+//            serviceCollection.AddScoped<IPasswordHasher<WebUser>, CustomPasswordHasher>();
+
+//            serviceCollection.AddIdentity<WebUser, IdentityRole<int>>(
+
+//                options =>
+//                {
+//                    options.SignIn.RequireConfirmedEmail = true;
+//#if DEBUG
+//                    options.Password.RequireDigit = false;
+//                    options.Password.RequiredLength = 4;
+//                    options.Password.RequireNonAlphanumeric = false;
+//                    options.Password.RequireUppercase = false;
+//                    options.Password.RequireLowercase = false;
+//#endif   
+//                })
+//                .AddEntityFrameworkStores<AuthenticationDbContext>()
+//                .AddDefaultTokenProviders();
+
+//            serviceCollection.ConfigureApplicationCookie(options => options.LoginPath = new PathString("/WebUserIdentity/Account/Login"));
+
+//            serviceCollection.AddSingleton(typeof(ApplicationSettings), applicationSettings);
+//            serviceCollection.AddTransient<IEmailService, EmailService>();
+//            serviceCollection.AddSingleton(typeof(ApplicationSettings), applicationSettings);
+//        }
+
+        #endregion
     }
 }

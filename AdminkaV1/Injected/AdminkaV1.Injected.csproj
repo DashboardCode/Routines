@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DashboardCode.NLogTools" Version="1.0.1" />
+    <PackageReference Include="DashboardCode.NLogTools" Version="1.0.2" />
     <PackageReference Include="DynamicExpresso.Core" Version="2.1.0" />
     <PackageReference Include="Markdown" Version="2.2.1" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.5.0" />

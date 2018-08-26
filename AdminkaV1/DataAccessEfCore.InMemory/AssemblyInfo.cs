@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
+#if !(NETSTANDARD)
 [assembly: AssemblyTitle("DashboardCode.AdminkaV1.DataAccessEfCore.InMemory")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]

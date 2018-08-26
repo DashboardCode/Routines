@@ -19,13 +19,13 @@ namespace DashboardCode.Routines.Configuration.Standard
 
     public class ConnectionStringMap : IConnectionStringMap
     {
-        readonly IConfiguration configurationRoot;
-        public ConnectionStringMap(IConfiguration configurationRoot) =>
-            this.configurationRoot = configurationRoot;
+        readonly IConfiguration configuration;
+        public ConnectionStringMap(IConfiguration configuration) =>
+            this.configuration = configuration;
 
         public string GetConnectionString(string name = "ConnectionString")
         {
-            var section = configurationRoot.GetSection(name);
+            var section = configuration.GetSection(name);
             var connectionString = section.Value;
             //var password = configurationRoot["AdminkaPassword"];
             //var loginName = configurationRoot["AdminkaUserName"];
@@ -37,12 +37,12 @@ namespace DashboardCode.Routines.Configuration.Standard
     {
         const string defaultSectionName = "Routines";
         internal readonly List<RoutineResolvable> routineResolvables;
-        readonly IConfigurationRoot configurationRoot;
+        readonly IConfiguration configuration;
 
-        public ConfigurationManagerLoader(IConfigurationRoot configurationRoot, string sectionName = defaultSectionName)
+        public ConfigurationManagerLoader(IConfiguration configuration, string sectionName = defaultSectionName)
         {
-            this.configurationRoot = configurationRoot;
-            var section = configurationRoot.GetSection(sectionName);
+            this.configuration = configuration;
+            var section = this.configuration.GetSection(sectionName);
             routineResolvables = new List<RoutineResolvable>();
             section.Bind(routineResolvables);
         }

@@ -1,7 +1,6 @@
-﻿using System.IO;
+﻿using DashboardCode.Routines;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-
-using DashboardCode.Routines;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -9,20 +8,21 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     {
         public static void Main(string[] args)
         {
-            #if DEBUG
-                TestDependencies();
+            #if  DEBUG
+                TestDependencies();  // fail early test
             #endif
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .UseApplicationInsights()
-                .Build();
-
-            host.Run();
-
+            CreateWebHostBuilder(args).Build().Run();
         }
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+            //.UseKestrel()
+            //.UseContentRoot(System.IO.Directory.GetCurrentDirectory())
+            //.UseIISIntegration()
+            //.UseStartup<Startup>()
+            //.UseApplicationInsights()
+            ;
 
         public static void TestDependencies()
         {

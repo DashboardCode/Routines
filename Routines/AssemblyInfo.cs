@@ -4,7 +4,7 @@
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-#if !(NETSTANDARD1_4 || NETSTANDARD1_5 || NETSTANDARD1_6 || NETSTANDARD1_7 || NETSTANDARD2_0)
+#if !(NETSTANDARD)
 [assembly: System.Reflection.AssemblyTitle("Routines")]
 [assembly: System.Reflection.AssemblyDescription("")]
 [assembly: System.Reflection.AssemblyConfiguration("")]

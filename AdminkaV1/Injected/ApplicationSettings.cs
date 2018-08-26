@@ -16,6 +16,7 @@ namespace DashboardCode.AdminkaV1.Injected
     public class ApplicationSettings
     {
         public AdminkaStorageConfiguration AdminkaStorageConfiguration { get; private set; }
+
         public Func<string, AdminkaStorageConfiguration> CreateMigrationAdminkaStorageConfiguration { get; private set; }
         public IPerformanceCounters PerformanceCounters { get; private set; }
         public NLogAuthenticationLogging AuthenticationLogging { get; private set; }
