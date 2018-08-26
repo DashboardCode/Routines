@@ -49,12 +49,14 @@ namespace DashboardCode.Routines.Configuration
 
         public T Resolve<T>() where T : new()
         {
-            var serialized = this.ResolveString<T>();
+            var serialized = this.ResolveSerialized<T>();
+            if (serialized == null)
+                return new T();
             return deserializer.Create<T>(serialized); 
         }
 
 
-        public TSerialized ResolveString<T>()
+        public TSerialized ResolveSerialized<T>()
         {
             var type = typeof(T);
             var typeName = type.Name;

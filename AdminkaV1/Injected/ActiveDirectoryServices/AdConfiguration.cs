@@ -2,13 +2,8 @@
 
 namespace DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices
 {
-    public class AdConfiguration : System.IProgress<string>
+    public class AdConfiguration 
     {
-        public bool UseAdAuthorization { get; private set; } = true;
-        public void Report(string json)
-        {
-            var dictionary = InjectedManager.DeserializeJson <Dictionary<string, string>>(json);
-            UseAdAuthorization = bool.Parse(dictionary["UseAdAuthorization"]);
-        }
+        public bool UseAdAuthorization { get; set; } = true;
     }
 }

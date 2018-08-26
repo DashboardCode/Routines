@@ -10,7 +10,7 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             public TOutput Create<TOutput>(string input) where TOutput : new()
             {
-               return InjectedManager.DeserializeJson<TOutput>(input);
+                return InjectedManager.DeserializeJson<TOutput>(input);
             }
         }
         readonly static Deserializer deserializer = new Deserializer();

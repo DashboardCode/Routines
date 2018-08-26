@@ -16,8 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.11.0" />
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.11.0" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.1" />
+    
 
     <PackageReference Include="DynamicExpresso.Core" Version="2.1.0" />
 
@@ -29,7 +29,7 @@
   </ItemGroup>
   
     <ItemGroup Condition="'$(TargetFramework)' == 'net47'">
-		<PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.11.0" />
+		<PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.11.1" />
 	</ItemGroup>
 
   <ItemGroup>
