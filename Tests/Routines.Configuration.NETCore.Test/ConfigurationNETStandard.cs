@@ -31,7 +31,7 @@ namespace DashboardCode.Routines.Configuration.NETCore.Test
         public ConfigurationNETStandard()
         {
             var configurationRoot = ConfigurationManager.ResolveConfigurationRoot();
-            configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot, new Deserializer());
+            configurationManagerLoader = new ConfigurationManagerLoader(configurationRoot);
         }
 
         public ConfigurationContainer<Microsoft.Extensions.Configuration.IConfigurationSection> Create(MemberTag memberTag) =>

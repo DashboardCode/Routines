@@ -38,12 +38,10 @@ namespace DashboardCode.Routines.Configuration.Standard
         const string defaultSectionName = "Routines";
         internal readonly List<RoutineResolvable> routineResolvables;
         readonly IConfigurationRoot configurationRoot;
-        readonly IGWithConstructorFactory<IConfigurationSection> deserializer;
 
-        public ConfigurationManagerLoader(IConfigurationRoot configurationRoot, IGWithConstructorFactory<IConfigurationSection> deserializer, string sectionName = defaultSectionName)
+        public ConfigurationManagerLoader(IConfigurationRoot configurationRoot, string sectionName = defaultSectionName)
         {
             this.configurationRoot = configurationRoot;
-            this.deserializer = deserializer;
             var section = configurationRoot.GetSection(sectionName);
             routineResolvables = new List<RoutineResolvable>();
             section.Bind(routineResolvables);

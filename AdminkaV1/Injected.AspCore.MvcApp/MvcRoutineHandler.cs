@@ -60,13 +60,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 ConfigurationManagerLoader configurationManagerLoader,
                 object input) :
             this(
-                 controller.ApplicationSettingsStandard.AdminkaStorageConfiguration,
-                 controller.ApplicationSettingsStandard.PerformanceCounters,
-                 ApplicationSettingsStandard.ResetConfigurationContainerFactory(configurationManagerLoader),
+                 controller.ApplicationSettings.AdminkaStorageConfiguration,
+                 controller.ApplicationSettings.PerformanceCounters,
+                 InjectedManager.ResetConfigurationContainerFactoryStandard(configurationManagerLoader),
                  controller,
                  correlationToken,
                  memberTag,
-                 InjectedManager.ComposeNLogMemberLoggerFactory(controller.ApplicationSettingsStandard.AuthenticationLogging),
+                 InjectedManager.ComposeNLogMemberLoggerFactory(controller.ApplicationSettings.AuthenticationLogging),
                  input)
         {
             controller.HttpContext.Items["CorrelationToken"] = correlationToken;

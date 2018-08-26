@@ -28,7 +28,6 @@ namespace DashboardCode.Routines.Configuration.Classic
     {
         const string key = "routinesConfiguration";
         readonly string sectionName;
-        readonly IGWithConstructorFactory<string> deserializer;
 
         public ConfigurationManagerLoader(string sectionName = key)
         {

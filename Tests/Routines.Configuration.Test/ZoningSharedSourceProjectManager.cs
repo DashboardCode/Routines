@@ -15,7 +15,7 @@ namespace DashboardCode.Routines.Configuration.Test
             var configurationBuilder = new ConfigurationBuilder();
             JsonConfigurationExtensions.AddJsonFile(configurationBuilder, "appsettings.json", false, true);
             var configurationRoot = configurationBuilder.Build();
-            return new Standard.ConfigurationManagerLoader(configurationRoot, new Deserializer());
+            return new Standard.ConfigurationManagerLoader(configurationRoot);
         }
 #else
         public static IConfigurationManagerLoader<string> GetLoader()

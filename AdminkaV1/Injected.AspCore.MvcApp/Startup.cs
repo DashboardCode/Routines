@@ -50,7 +50,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             services.AddSingleton(ConfigurationRoot);
             services.Configure<List<RoutineResolvable>>(ConfigurationRoot.GetSection("Routines"));
             services.AddSingleton(services);
-            var applicationSettings = new ApplicationSettingsStandard(ConfigurationRoot);
+            var applicationSettings = InjectedManager.CreateApplicationSettingsStandard(ConfigurationRoot);
             services.AddSingleton(applicationSettings);
         }
 

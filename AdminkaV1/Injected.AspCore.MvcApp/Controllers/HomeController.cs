@@ -8,7 +8,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
     public class HomeController : ConfigurableController
     {
         public HomeController(
-            ApplicationSettingsStandard applicationSettings, 
+            ApplicationSettings applicationSettings, 
             IOptionsSnapshot<List<RoutineResolvable>> routineResolvablesOption) : base(applicationSettings, routineResolvablesOption.Value)
         {
 

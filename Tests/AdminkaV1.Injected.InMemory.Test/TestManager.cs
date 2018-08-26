@@ -9,9 +9,9 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
     public static class TestManager
     {
 #if NETCOREAPP
-        public readonly static ApplicationSettingsStandard ApplicationSettings = new ApplicationSettingsStandard();
+        public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsStandard();
 #else
-        public readonly static ApplicationSettingsClassic ApplicationSettings = new ApplicationSettingsClassic();
+        public readonly static ApplicationSettingsClassic ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();
 #endif
         public static void Reset(string databaseName)
         {

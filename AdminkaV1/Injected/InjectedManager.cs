@@ -18,7 +18,6 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
 using DashboardCode.Routines.ActiveDirectory;
-//using DashboardCode.Routines.Serialization;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -35,7 +34,7 @@ namespace DashboardCode.AdminkaV1.Injected
         /// </summary>
         private static void ForceEarlyFail()
         {
-#if !NETSTANDARD2_0
+#if !NETSTANDARD
             /* 
               System.ServiceModel.Primitives, 4.4.1 case. Can be diagnosed by unit case: AdminkaV1.Injected.SqlServer.NETFramework.Test 
               Important: when NUGET informs that System.ServiceModel.Primitives 4.4.1 version installed, actually 4.2.0.0 specified 
@@ -61,7 +60,7 @@ namespace DashboardCode.AdminkaV1.Injected
 
         public static IIdentity GetDefaultIdentity()
         {
-#if NETSTANDARD2_0
+#if NETSTANDARD
             // TODO: Core 2.1 will contains AD functionality https://github.com/dotnet/corefx/issues/2089 and 
             // there we will need update this code to get roles similar to WindowsIdentity.GetCurrent().
             return new GenericIdentity(Environment.UserDomainName + "\\" + Environment.UserName, "Anonymous");
@@ -155,7 +154,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public static string SerializeToJson(object o, int depth, bool ignoreDuplicates)
         {
-#if NETSTANDARD2_0
+#if NETSTANDARD
             var types = typeof(UserContext).GetTypeInfo().Assembly.GetTypes();
 #else
             var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
@@ -199,7 +198,46 @@ namespace DashboardCode.AdminkaV1.Injected
                 return (listLoggingAdapter, listLoggingAdapter);
             };
         }
-#endregion
+        #endregion
+
+        readonly static Routines.Configuration.Classic.DeserializerClassic deserializerClassic = 
+            new Routines.Configuration.Classic.DeserializerClassic(
+                (j,o)=> Newtonsoft.Json.JsonConvert.SerializeObject(o)
+                );
+
+        public static IConfigurationContainerFactory ResetConfigurationContainerFactoryClassic()
+        {
+            return new ConfigurationContainerFactory<string>(new Routines.Configuration.Classic.ConfigurationManagerLoader(), deserializerClassic);
+        }
+                                          
+        public static ApplicationSettings CreateApplicationSettingsClassic()
+        {
+            return new ApplicationSettings(new Routines.Configuration.Classic.ConnectionStringMap(), 
+                new Routines.Configuration.Classic.AppSettings(), ResetConfigurationContainerFactoryClassic());
+        }
+
+        readonly static Routines.Configuration.Standard.DeserializerStandard deserializer = new Routines.Configuration.Standard.DeserializerStandard();
+
+        public static IConfigurationContainerFactory ResetConfigurationContainerFactoryStandard(IConfigurationManagerLoader<Microsoft.Extensions.Configuration.IConfigurationSection> configurationManagerLoader)
+        {
+            return new ConfigurationContainerFactory<Microsoft.Extensions.Configuration.IConfigurationSection>(configurationManagerLoader, deserializer);
+        }
+
+        public static ApplicationSettings CreateApplicationSettingsStandard(Microsoft.Extensions.Configuration.IConfigurationRoot configurationRoot=null)
+        {
+            if (configurationRoot == null)
+            {
+                var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
+                Microsoft.Extensions.Configuration.JsonConfigurationExtensions.AddJsonFile(configurationBuilder, "appsettings.json", optional: false, reloadOnChange: true);
+                configurationRoot = configurationBuilder.Build();
+            }
+            var connectionStringMap = new Routines.Configuration.Standard.ConnectionStringMap(configurationRoot);
+            var appSettings = new Routines.Configuration.Standard.AppSettings(configurationRoot);
+
+            var configurationManagerLoader = new Routines.Configuration.Standard.ConfigurationManagerLoader(configurationRoot);
+            var configurationContainerFactory = ResetConfigurationContainerFactoryStandard(configurationManagerLoader);
+            return new ApplicationSettings(connectionStringMap, appSettings, configurationContainerFactory);
+        }
 
         public static string GetVerboseLoggingFlag(UserContext userContext) =>
             (userContext?.User?.HasPrivilege(Privilege.VerboseLogging) ?? false) ? Privilege.VerboseLogging : null;
@@ -282,7 +320,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     User @value;
                     if (useAdAuthorization)
                     {
-#if NETSTANDARD2_0
+#if NETSTANDARD
                         throw new NotImplementedException("LDAP is not supported for NETStandard");
 #else
                         var groups = ActiveDirectoryManager.ListGroups(identity, out string loginName, out string firstName, out string secondName);

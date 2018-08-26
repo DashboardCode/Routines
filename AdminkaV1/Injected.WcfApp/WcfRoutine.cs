@@ -7,7 +7,7 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
     public class WcfRoutine : AdminkaRoutineHandler
     {
-        public static readonly ApplicationSettingsClassic ApplicationSettingsClassic = new ApplicationSettingsClassic();
+        public static readonly ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();
 
         public WcfRoutine(Routines.MemberTag memberTag, string faultCodeNamespace, object input) 
             : this(Guid.NewGuid(), memberTag, GetUserContext(), faultCodeNamespace,
@@ -18,8 +18,8 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
         protected WcfRoutine(Guid correlationToken, Routines.MemberTag memberTag, UserContext userContext, string faultCodeNamespace,
              object input)
             : this(correlationToken, memberTag, GetUserContext(), faultCodeNamespace,
-                  ApplicationSettingsClassic.AdminkaStorageConfiguration,
-                  ApplicationSettingsClassic.ResetConfigurationContainerFactory(),  input)
+                  ApplicationSettings.AdminkaStorageConfiguration,
+                  InjectedManager.ResetConfigurationContainerFactoryClassic(),  input)
         {
         }
 
@@ -32,8 +32,8 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
             IConfigurationContainerFactory configurationFactory, object input)
             : base(
                   adminkaStorageConfiguration,
-                  ApplicationSettingsClassic.PerformanceCounters,
-                  ApplicationSettingsClassic.AuthenticationLogging,
+                  ApplicationSettings.PerformanceCounters,
+                  ApplicationSettings.AuthenticationLogging,
                   configurationFactory,
                   (ex, g, mt, md) => TransformException(ex, g, mt, faultCodeNamespace, md),
                   correlationToken,

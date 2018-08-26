@@ -13,7 +13,7 @@ namespace DashboardCode.AdminkaV1.Injected
     // but all should support it.
     // ASP Core MVC implementation uses its "options" method to access routine configuration and uses ASP core recommended way to 
     // track changes (means share one instance between all processes)
-    public abstract class ApplicationSettings
+    public class ApplicationSettings
     {
         public AdminkaStorageConfiguration AdminkaStorageConfiguration { get; private set; }
         public Func<string, AdminkaStorageConfiguration> CreateMigrationAdminkaStorageConfiguration { get; private set; }
@@ -21,15 +21,6 @@ namespace DashboardCode.AdminkaV1.Injected
         public NLogAuthenticationLogging AuthenticationLogging { get; private set; }
         public IConfigurationContainerFactory ConfigurationContainerFactory { get; private set; }
 
-        public ApplicationSettings(
-            (IConnectionStringMap connectionStringMap,
-             IAppSettings appSettings,
-             IConfigurationContainerFactory configurationContainerFactory
-            ) tulpe
-            ):this(tulpe.connectionStringMap, tulpe.appSettings, tulpe.configurationContainerFactory)
-        {
-
-        }
         public ApplicationSettings(
             IConnectionStringMap connectionStringMap,
             IAppSettings appSettings,
