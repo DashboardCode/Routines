@@ -105,5 +105,26 @@ namespace DashboardCode.Routines.Storage
                     createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
                 );
         }
+
+        public async Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func)
+        {
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
+            using (dbContext)
+                await func(
+                    createRepository(dbContext, noTracking),
+                    createOrmStorage(dbContext, analyzeException, auditVisitor)
+                );
+        }
+
+        public async Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task> func)
+        {
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
+            using (dbContext)
+                await func(
+                    createRepository(dbContext, noTracking),
+                    createOrmStorage(dbContext, analyzeException, auditVisitor),
+                    createOrmMetaAdapter(dbContext, ormEntitySchemaAdapter)
+                );
+        }
     }
 }

@@ -51,5 +51,15 @@ namespace DashboardCode.Routines.Storage
         {
             return func(repository, ormStorage, ormEntitySchemaAdapter);
         }
+
+        public Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func)
+        {
+            return func(repository, ormStorage);
+        }
+
+        public Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task> func)
+        {
+            return func(repository, ormStorage, ormEntitySchemaAdapter);
+        }
     }
 }

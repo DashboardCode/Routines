@@ -155,7 +155,7 @@ namespace DashboardCode.AdminkaV1.Injected
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             IPerformanceCounters performanceCounters,
             IAuthenticationLogging authenticationLogging,
-            IConfigurationContainerFactory configurationFactory,
+            IConfigurationContainerFactory configurationContainerFactory,
             MemberTag memberTag,
             UserContext userContext,
             object input
@@ -164,7 +164,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 performanceCounters,
                 InjectedManager.DefaultRoutineTagTransformException,
                 InjectedManager.ComposeNLogMemberLoggerFactory(authenticationLogging),
-                InjectedManager.CreateContainerFactory(configurationFactory),
+                InjectedManager.CreateContainerFactory(configurationContainerFactory),
                 Guid.NewGuid(),
                 memberTag,
                 userContext,

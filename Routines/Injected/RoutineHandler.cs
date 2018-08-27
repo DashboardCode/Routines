@@ -7,6 +7,7 @@ namespace DashboardCode.Routines.Injected
     {
         void Handle(Action<TClosure> action);
         TOutput Handle<TOutput>(Func<TClosure, TOutput> func);
+        Task HandleAsync(Func<TClosure, Task> func);
         Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func);
     }
 
@@ -78,6 +79,32 @@ namespace DashboardCode.Routines.Injected
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
             var successTask = default(Task<TOutput>);
+            exceptionHandler.Handle(
+                () =>
+                {
+                    var (onSuccess, onFailure) = start();
+                    return (
+                        () => {
+                            successTask = func(closure);
+                            successTask.ContinueWith(
+                                t =>
+                                    onSuccess()
+                                );
+                        },
+                        isSuccess =>
+                        {
+                            if (!isSuccess)
+                                onFailure();
+                        }
+                    );
+                }
+            );
+            return successTask;
+        }
+
+        public Task HandleAsync(Func<TClosure, Task> func)
+        {
+            var successTask = default(Task);
             exceptionHandler.Handle(
                 () =>
                 {
@@ -182,6 +209,33 @@ namespace DashboardCode.Routines.Injected
                                     onSuccess(t.Result)
                                 );
                         },
+                        isSuccess =>
+                        {
+                            if (!isSuccess)
+                                onFailure();
+                        }
+                    );
+                }
+            );
+            return successTask;
+        }
+
+        public Task HandleAsync(Func<TClosure, Task> func)
+        {
+            var successTask = default(Task);
+            exceptionHandler.Handle(
+                () =>
+                {
+                    var (onSuccess, onFailure) = start();
+                    return (
+                        () => {
+                            successTask = func(closure);
+                            successTask.ContinueWith(
+                                t =>
+                                    onSuccess(null)
+                                );
+                        }
+                    ,
                         isSuccess =>
                         {
                             if (!isSuccess)

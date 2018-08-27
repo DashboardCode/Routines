@@ -193,6 +193,9 @@ namespace DashboardCode.Routines.Storage
         public Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, Task<TOutput>> func) =>
             HandleAsync(ComposeDbContextHandled(func));
 
+        public Task HandleDbContextAsync(Func<TDbContext, Task> func) =>
+            HandleAsync(ComposeDbContextHandled(func));
+
 
         public void HandleDbContext(Action<TDbContext, RoutineClosure<TUserContext>> action) =>
             Handle(ComposeDbContextHandled(action));
@@ -203,6 +206,8 @@ namespace DashboardCode.Routines.Storage
         public Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
             HandleAsync(ComposeDbContextFuncHandled(func));
 
+        public Task HandleDbContextAsync(Func<TDbContext, RoutineClosure<TUserContext>, Task> func) =>
+            HandleAsync(ComposeDbContextFuncHandled(func));
         #endregion
 
         #region Handle with Handler's Factory
@@ -215,6 +220,9 @@ namespace DashboardCode.Routines.Storage
         public Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
             HandleAsync(ComposeOrmFactoryHandled(func));
 
+        public Task HandleOrmFactoryAsync(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task> func) =>
+            HandleAsync(ComposeOrmFactoryHandled(func));
+
         public void HandleRepositoryFactory(Action<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>> action) =>
             Handle(ComposeRepositoryFactoryHandled(action));
 
@@ -222,6 +230,9 @@ namespace DashboardCode.Routines.Storage
             Handle(ComposeRepositoryFactoryHandled(func));
 
         public Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            HandleAsync(ComposeRepositoryFactoryHandled(func));
+
+        public Task HandleRepositoryFactoryAsync(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task> func) =>
             HandleAsync(ComposeRepositoryFactoryHandled(func));
 
         public void HandleOrmFactory(Action<ReliantOrmHandlerGFactory<TUserContext, TDbContext>> action) =>
@@ -233,13 +244,17 @@ namespace DashboardCode.Routines.Storage
         public Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, Task<TOutput>> func) =>
             HandleAsync(ComposeOrmFactoryHandled(func));
 
+        public Task HandleOrmFactoryAsync(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, Task> func) =>
+            HandleAsync(ComposeOrmFactoryHandled(func));
+
+
         public void HandleRepositoryFactory(Action<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>> action) =>
             Handle(ComposeRepositoryFactoryHandled(action));
 
         public TOutput HandleRepositoryFactory<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, TOutput> func) =>
             Handle(ComposeRepositoryFactoryHandled(func));
 
-        public Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, Task<TOutput>> func) =>
+        public Task HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, Task> func) =>
             HandleAsync(ComposeRepositoryFactoryHandled(func));
         #endregion
     }

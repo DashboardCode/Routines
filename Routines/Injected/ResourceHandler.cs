@@ -8,9 +8,11 @@ namespace DashboardCode.Routines.Injected
         void Handle(Action<TResource> action);
         TOutput Handle<TOutput>(Func<TResource, TOutput> func);
         Task<TOutput> HandleAsync<TOutput>(Func<TResource, Task<TOutput>> func);
+        Task HandleAsync(Func<TResource, Task> func);
         void Handle(Action<TResource, RoutineClosure<TUserContext>> action);
         TOutput Handle<TOutput>(Func<TResource, RoutineClosure<TUserContext>, TOutput> func);
         Task<TOutput> HandleAsync<TOutput>(Func<TResource, RoutineClosure<TUserContext>, Task<TOutput>> func);
+        Task HandleAsync(Func<TResource, RoutineClosure<TUserContext>, Task> func);
     }
 
     public class ResourceHandler<TUserContext, TResource> : IResourceHandler<TUserContext, TResource>
@@ -61,6 +63,18 @@ namespace DashboardCode.Routines.Injected
         {
             using (var resource = resourceFactory())
                 return await func(resource, closure);
+        }
+
+        public async Task HandleAsync(Func<TResource, Task> func)
+        {
+            using (var dbContext = resourceFactory())
+                 await func(dbContext);
+        }
+
+        public async Task HandleAsync(Func<TResource, RoutineClosure<TUserContext>, Task> func)
+        {
+            using (var resource = resourceFactory())
+                 await func(resource, closure);
         }
     }
 }

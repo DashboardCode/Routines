@@ -61,7 +61,17 @@ namespace DashboardCode.Routines.Storage
             using (var dbContext = dbContextFactory())
                 return await func(createRepository(dbContext), closure);
         }
+
+        public async Task HandleAsync(Func<IRepository<TEntity>, Task> func)
+        {
+            using (var dbContext = dbContextFactory())
+                await func(createRepository(dbContext));
+        }
+
+        public async Task HandleAsync(Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task> func)
+        {
+            using (var dbContext = dbContextFactory())
+                await func(createRepository(dbContext), closure);
+        }
     }
-
-
 }
