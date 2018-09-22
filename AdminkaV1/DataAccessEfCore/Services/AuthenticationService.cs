@@ -1,18 +1,18 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-
+using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
 using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.Routines.Injected;
+
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        readonly RoutineHandler<UserContext, AdminkaDbContext> repositoryDbContextHandler;
-        public AuthenticationService(RoutineHandler<UserContext, AdminkaDbContext> repositoryDbContextHandler)
+        readonly RoutineHandler<AdminkaDbContext, UserContext> repositoryDbContextHandler;
+        public AuthenticationService(RoutineHandler<AdminkaDbContext, UserContext> repositoryDbContextHandler)
             => this.repositoryDbContextHandler = repositoryDbContextHandler;
         
         public User GetUser(string loginName, string firstName, string secondName, IEnumerable<string> adGroupsNames)

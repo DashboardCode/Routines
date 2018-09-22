@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines
 {
-    public class ComplexRoutineHandler<TUserContext, TClosure> : IRoutineHandler<TClosure, TUserContext> where TClosure : IDisposable
+    public class ComplexRoutineHandler<TClosure, TUserContext> : IRoutineHandler<TClosure, TUserContext> where TClosure : IDisposable
     {
         readonly Func<RoutineClosure<TUserContext>, TClosure> createResource;
         readonly IHandler<RoutineClosure<TUserContext>> handler;
@@ -17,9 +17,9 @@ namespace DashboardCode.Routines.Injected
             this.handler = handler;
         }
 
-        public RoutineHandler<TUserContext, TClosure> CreateResource(RoutineClosure<TUserContext> closure)
+        public RoutineHandler<TClosure, TUserContext> CreateResource(RoutineClosure<TUserContext> closure)
         {
-            var dbContextHandler = new RoutineHandler<TUserContext, TClosure>(()=>createResource(closure), closure);
+            var dbContextHandler = new RoutineHandler<TClosure, TUserContext>(()=>createResource(closure), closure);
             return dbContextHandler;
         }
 
@@ -119,7 +119,7 @@ namespace DashboardCode.Routines.Injected
         #endregion
     }
 
-    public class ComplexRoutineHandler<TUserContext, TIResource, TResource> : IRoutineHandler<TIResource, TUserContext>
+    public class ComplexRoutineHandler<TIResource, TUserContext, TResource> : IRoutineHandler<TIResource, TUserContext>
         where TResource : IDisposable, TIResource
     {
         readonly Func<RoutineClosure<TUserContext>, TResource> createResource;
@@ -134,9 +134,9 @@ namespace DashboardCode.Routines.Injected
             this.routineHandler = routineHandler;
         }
 
-        public RoutineHandler<TUserContext, TResource> CreateResource(RoutineClosure<TUserContext> closure)
+        public RoutineHandler<TResource, TUserContext> CreateResource(RoutineClosure<TUserContext> closure)
         {
-            var dbContextHandler = new RoutineHandler<TUserContext, TResource>(() => createResource(closure), closure);
+            var dbContextHandler = new RoutineHandler<TResource, TUserContext>(() => createResource(closure), closure);
             return dbContextHandler;
         }
 

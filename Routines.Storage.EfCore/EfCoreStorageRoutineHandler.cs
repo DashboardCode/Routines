@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 
-using DashboardCode.Routines.Injected;
+using DashboardCode.Routines.Logging;
 
 namespace DashboardCode.Routines.Storage.EfCore
 {

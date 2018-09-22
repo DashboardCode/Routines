@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using DashboardCode.Routines.Injected;
-
 namespace DashboardCode.Routines.Storage
 {
     public class StorageRoutineHandler<TUserContext, TDbContext> : UserRoutineHandler<TUserContext>
@@ -38,9 +36,9 @@ namespace DashboardCode.Routines.Storage
             this.ormGFactory                = ormGFactory;
         }
 
-        public RoutineHandler<TUserContext, TDbContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
+        public RoutineHandler<TDbContext, TUserContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
         {
-            var dbContextHandler = new RoutineHandler<TUserContext, TDbContext>(createDbContext, closure);
+            var dbContextHandler = new RoutineHandler<TDbContext, TUserContext>(createDbContext, closure);
             return dbContextHandler;
         }
 

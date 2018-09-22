@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DashboardCode.Routines.Injected.Logging;
+using DashboardCode.Routines.Logging;
 using DashboardCode.Routines.Storage;
 
-namespace DashboardCode.Routines.Injected.Test
+namespace DashboardCode.Routines.Logging.Test
 {
     [TestClass]
     public class RoutinesTest

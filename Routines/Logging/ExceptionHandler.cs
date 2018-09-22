@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.ExceptionServices;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines.Logging
 {
     public class ExceptionHandler 
     {

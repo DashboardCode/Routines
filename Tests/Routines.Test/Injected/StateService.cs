@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DashboardCode.Routines.Injected.Test
+namespace DashboardCode.Routines.Logging.Test
 {
     public class CustomRoutineClosure
     {

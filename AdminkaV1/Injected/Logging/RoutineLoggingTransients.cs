@@ -1,6 +1,6 @@
 ﻿using System;
 using DashboardCode.Routines;
-using DashboardCode.Routines.Injected;
+using DashboardCode.Routines.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {

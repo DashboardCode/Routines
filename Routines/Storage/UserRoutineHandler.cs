@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DashboardCode.Routines.Storage;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines.Storage
 {
     public class UserRoutineHandler<TUserContext> : IHandler<RoutineClosure<TUserContext>>
     {

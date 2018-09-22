@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 
-using DashboardCode.Routines.Injected;
+using DashboardCode.Routines.Logging;
 
 namespace DashboardCode.Routines.Configuration.Test
 {

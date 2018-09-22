@@ -7,7 +7,7 @@ using NLog.Common;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
-using DashboardCode.Routines.Injected.Logging;
+using DashboardCode.Routines.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {

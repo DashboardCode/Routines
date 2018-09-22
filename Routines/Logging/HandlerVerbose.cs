@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines.Logging
 {
-    public class HandlerSilent<TClosure> : IHandler<TClosure>
+    public class HandlerVerbose<TClosure> : IHandler<TClosure>
     {
         private readonly TClosure closure;
         private readonly ExceptionHandler exceptionHandler;
-        private readonly Func<(Action, Action)> start;
+        private readonly Func<(Action<object>, Action)> start;
         /// <summary>
         /// 
         /// </summary>
         /// <param name="closure"></param>
         /// <param name="exceptionHandler"></param>
         /// <param name="start">returns logOnSuccess and onFailure (Used for: a. finish activity record b. trigger buffer flash)</param>
-        public HandlerSilent(
+        public HandlerVerbose(
             TClosure closure,
             ExceptionHandler exceptionHandler,
-            Func<(Action, Action)> start)
+            Func<(Action<object>, Action)> start)
         {
             this.closure = closure;
             this.exceptionHandler = exceptionHandler;
@@ -33,7 +33,7 @@ namespace DashboardCode.Routines.Injected
                     return (
                         () => {
                             action(closure);
-                            onSuccess();
+                            onSuccess(null);
                         }
                     ,
                         isSuccess =>
@@ -56,7 +56,7 @@ namespace DashboardCode.Routines.Injected
                     return (
                         () => {
                             @value = func(closure);
-                            onSuccess();
+                            onSuccess(@value);
                         }
                     ,
                         isSuccess =>
@@ -82,7 +82,7 @@ namespace DashboardCode.Routines.Injected
                             successTask = func(closure);
                             successTask.ContinueWith(
                                 t =>
-                                    onSuccess()
+                                    onSuccess(t.Result)
                                 );
                         }
                     ,
@@ -109,7 +109,7 @@ namespace DashboardCode.Routines.Injected
                             successTask = func(closure);
                             successTask.ContinueWith(
                                 t =>
-                                    onSuccess()
+                                    onSuccess(null)
                                 );
                         }
                     ,
@@ -124,6 +124,4 @@ namespace DashboardCode.Routines.Injected
             return successTask;
         }
     }
-
-
 }

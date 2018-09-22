@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using DashboardCode.Routines.Injected.Logging;
 
-namespace DashboardCode.Routines.Injected.Test
+namespace DashboardCode.Routines.Logging.Test
 {
     public class LoggingAdapter : IMemberLogger
     {

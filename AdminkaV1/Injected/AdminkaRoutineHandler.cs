@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Security.Principal;
 
 using DashboardCode.Routines;
-using DashboardCode.Routines.Injected;
+using DashboardCode.Routines.Logging;
 using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.LoggingDom;
@@ -14,7 +14,6 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Telemetry;
 using DashboardCode.Routines.Storage;
-using DashboardCode.Routines.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected
 {

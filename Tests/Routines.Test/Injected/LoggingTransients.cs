@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DashboardCode.Routines.Injected.Test
+namespace DashboardCode.Routines.Logging.Test
 {
     public class LoggingTransients
     {

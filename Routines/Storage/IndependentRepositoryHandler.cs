@@ -1,4 +1,4 @@
-﻿using DashboardCode.Routines.Injected;
+﻿using DashboardCode.Routines.Logging;
 using System;
 using System.Threading.Tasks;
 

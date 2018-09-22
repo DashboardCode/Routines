@@ -1,12 +1,11 @@
 ﻿using System;
 
 using DashboardCode.Routines;
-using DashboardCode.Routines.Injected;
+using DashboardCode.Routines.Logging;
 using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Telemetry;
-using DashboardCode.Routines.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected
 {

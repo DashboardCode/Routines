@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines
 {
-    public class RoutineHandler<TUserContext, TResource> : IRoutineHandler<TResource, TUserContext> where TResource : IDisposable
+    public class RoutineHandler<TResource, TUserContext> : IRoutineHandler<TResource, TUserContext> where TResource : IDisposable
     {
         readonly RoutineClosure<TUserContext> closure;
         readonly Func<TResource> createResource;

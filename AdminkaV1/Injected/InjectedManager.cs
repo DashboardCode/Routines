@@ -17,7 +17,7 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
 using DashboardCode.Routines.ActiveDirectory;
-using DashboardCode.Routines.Injected.Logging;
+using DashboardCode.Routines.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected
 {

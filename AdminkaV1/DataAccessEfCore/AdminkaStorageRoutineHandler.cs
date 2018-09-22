@@ -1,6 +1,6 @@
 ﻿using System;
 using DashboardCode.Routines;
-using DashboardCode.Routines.Injected;
+using DashboardCode.Routines.Logging;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
 
