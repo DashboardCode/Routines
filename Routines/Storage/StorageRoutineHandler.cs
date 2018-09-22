@@ -23,7 +23,7 @@ namespace DashboardCode.Routines.Storage
             IRepositoryContainer<TDbContext> repositoryGFactory,
             IOrmContainer<TDbContext> ormGFactory,
 
-            IRoutineHandler<RoutineClosure<TUserContext>> routineHandler
+            IHandler<RoutineClosure<TUserContext>> routineHandler
             ) : base(
                 new IndependentRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, createDbContext), 
                 new IndependentOrmHandlerGFactory<TUserContext, TDbContext>(
@@ -38,9 +38,9 @@ namespace DashboardCode.Routines.Storage
             this.ormGFactory                = ormGFactory;
         }
 
-        public ResourceHandler<TUserContext, TDbContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
+        public RoutineHandler<TUserContext, TDbContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
         {
-            var dbContextHandler = new ResourceHandler<TUserContext, TDbContext>(closure, createDbContext);
+            var dbContextHandler = new RoutineHandler<TUserContext, TDbContext>(createDbContext, closure);
             return dbContextHandler;
         }
 

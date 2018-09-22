@@ -15,7 +15,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             IEntityMetaServiceContainer entityMetaServiceContainer, 
             Func<TDbContext> createDbContext, 
             Func<(TDbContext, IAuditVisitor)> createDbContextForStorage,
-            IRoutineHandler<RoutineClosure<TUserContext>> routineHandler
+            IHandler<RoutineClosure<TUserContext>> routineHandler
             ) : 
                 base(entityMetaServiceContainer, createDbContext, createDbContextForStorage, repositoryContainer, ormContainer,
                      routineHandler)

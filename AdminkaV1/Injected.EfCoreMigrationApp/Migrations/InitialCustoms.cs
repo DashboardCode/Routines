@@ -15,7 +15,7 @@ using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
-    public static class InitialCustoms
+    static class InitialCustoms
     {
         public static void Up(MigrationBuilder migrationBuilder, IModel targetModel)
         {

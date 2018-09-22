@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DashboardCode.Routines.Injected.Logging;
 
 namespace DashboardCode.Routines.Injected.Test
 {

@@ -7,12 +7,12 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
     public class RoutineLoggingTransients
     {
         public IAuthenticationLogging AuthenticationLogging { get; private set; }
-        public readonly IRoutineHandler<RoutineClosure<UserContext>> RoutineHandler;
+        public readonly IHandler<RoutineClosure<UserContext>> RoutineHandler;
         public readonly Action<string> Verbose;
 
         public RoutineLoggingTransients(
             IAuthenticationLogging authenticationLogging,
-            IRoutineHandler<RoutineClosure<UserContext>> routineHandler,
+            IHandler<RoutineClosure<UserContext>> routineHandler,
             Action<string> verbose
             )
         {

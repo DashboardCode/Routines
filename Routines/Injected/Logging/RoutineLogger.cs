@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines.Injected.Logging
 {
     public class RoutineLogger
     {
@@ -14,7 +14,7 @@ namespace DashboardCode.Routines.Injected
             //this.createMemberLogger = createMemberLogger;
         }
 
-        public (IRoutineHandler<TClosure>, TClosure) CreateRoutineHandler<TClosure>(
+        public (IHandler<TClosure>, TClosure) CreateRoutineHandler<TClosure>(
                 bool veroseEnabled,
                 Func<Action<DateTime, string>, TClosure> createClosure,
                 ExceptionHandler exceptionHandler,
@@ -30,7 +30,7 @@ namespace DashboardCode.Routines.Injected
                 Action<long> performanceCounter
             )
         {
-            IRoutineHandler<TClosure> routineHandler = null;
+            IHandler<TClosure> routineHandler = null;
             TClosure closure = default;
             if (veroseEnabled)
             {
@@ -50,7 +50,7 @@ namespace DashboardCode.Routines.Injected
                     testInputOutput
                 );
                 closure = createClosure(logVerbose);
-                routineHandler = new RoutineHandlerVerbose<TClosure>(closure, exceptionHandler, start);
+                routineHandler = new HandlerVerbose<TClosure>(closure, exceptionHandler, start);
             }
             else
             {
@@ -63,7 +63,7 @@ namespace DashboardCode.Routines.Injected
                     logInput
                 );
                 closure = createClosure(null/*logVerbose*/);
-                routineHandler = new RoutineHandlerSilent<TClosure>(closure, exceptionHandler, silentStart);
+                routineHandler = new HandlerSilent<TClosure>(closure, exceptionHandler, silentStart);
             };
             return (routineHandler, closure);
         }

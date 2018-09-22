@@ -14,6 +14,7 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Telemetry;
 using DashboardCode.Routines.Storage;
+using DashboardCode.Routines.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected
 {

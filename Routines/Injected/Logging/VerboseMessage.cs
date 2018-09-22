@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines.Injected.Logging
 {
     public class VerboseMessage
     {

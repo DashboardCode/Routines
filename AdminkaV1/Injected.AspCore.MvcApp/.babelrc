@@ -1,5 +1,5 @@
 {
-
+  // TODO: change plugins etc. https://blogs.msdn.microsoft.com/typescript/2018/08/27/typescript-and-babel-7/
   "plugins": [ "babel-plugin-transform-class-properties"],
   "presets": [
     "@babel/typescript",

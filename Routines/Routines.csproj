@@ -29,4 +29,8 @@
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Injected\ResourceHandler.cs~RF2677ba20.TMP" />
+  </ItemGroup>
 </Project>

@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Security.Principal;
 
 using DashboardCode.Routines;
-using DashboardCode.Routines.Injected;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.Routines.Configuration;
@@ -18,6 +17,7 @@ using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
 using DashboardCode.Routines.ActiveDirectory;
+using DashboardCode.Routines.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected
 {

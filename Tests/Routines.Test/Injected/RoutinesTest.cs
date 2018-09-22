@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using DashboardCode.Routines.Injected.Logging;
 using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.Injected.Test

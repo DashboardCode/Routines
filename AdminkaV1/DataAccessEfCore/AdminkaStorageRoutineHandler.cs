@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
             IEntityMetaServiceContainer entityMetaServiceContainer,
             Action<string> efDbContextVerbose,
-            IRoutineHandler<RoutineClosure<UserContext>> routineHandler) :
+            IHandler<RoutineClosure<UserContext>> routineHandler) :
             this(
                 entityMetaServiceContainer,
                 userContext,
@@ -27,7 +27,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
             IEntityMetaServiceContainer entityMetaServiceContainer,
             UserContext userContext,
             Func<AdminkaDbContext> createDbContext,
-            IRoutineHandler<RoutineClosure<UserContext>> routineHandler) :
+            IHandler<RoutineClosure<UserContext>> routineHandler) :
             base(
                 entityMetaServiceContainer,
                 createDbContext,

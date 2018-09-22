@@ -13,6 +13,7 @@ using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Telemetry;
+using DashboardCode.Routines.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {

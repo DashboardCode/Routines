@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines.Injected.Logging
 {
     public interface IDataLogger
     {

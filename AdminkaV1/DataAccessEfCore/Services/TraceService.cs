@@ -7,8 +7,8 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class TraceService : ITraceService
     {
-        readonly ResourceHandler<UserContext, AdminkaDbContext> dbContextHandler;
-        public TraceService(ResourceHandler<UserContext, AdminkaDbContext> dbContextHandler)
+        readonly RoutineHandler<UserContext, AdminkaDbContext> dbContextHandler;
+        public TraceService(RoutineHandler<UserContext, AdminkaDbContext> dbContextHandler)
             => this.dbContextHandler = dbContextHandler;
 
         public Trace GetTrace(Guid correlationToken)

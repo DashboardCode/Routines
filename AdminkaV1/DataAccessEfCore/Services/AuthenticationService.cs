@@ -11,8 +11,8 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        readonly ResourceHandler<UserContext, AdminkaDbContext> repositoryDbContextHandler;
-        public AuthenticationService(ResourceHandler<UserContext, AdminkaDbContext> repositoryDbContextHandler)
+        readonly RoutineHandler<UserContext, AdminkaDbContext> repositoryDbContextHandler;
+        public AuthenticationService(RoutineHandler<UserContext, AdminkaDbContext> repositoryDbContextHandler)
             => this.repositoryDbContextHandler = repositoryDbContextHandler;
         
         public User GetUser(string loginName, string firstName, string secondName, IEnumerable<string> adGroupsNames)

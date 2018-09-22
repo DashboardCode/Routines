@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace DashboardCode.Routines.Injected
+namespace DashboardCode.Routines.Injected.Logging
 {
     public class VerboseBuffer
     {

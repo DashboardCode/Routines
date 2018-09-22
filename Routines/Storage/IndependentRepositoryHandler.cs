@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace DashboardCode.Routines.Storage
 {
 
-    public interface IIndependentRepositoryHandler<TUserContext, TEntity> : IResourceHandler<TUserContext, IRepository<TEntity>>
+    public interface IIndependentRepositoryHandler<TUserContext, TEntity> : IRoutineHandler<IRepository<TEntity>, TUserContext>
         where TEntity : class
     {
     }

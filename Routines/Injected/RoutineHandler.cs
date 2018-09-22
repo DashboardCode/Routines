@@ -3,248 +3,130 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Injected
 {
-    public interface IRoutineHandler<TClosure>
+    public class RoutineHandler<TUserContext, TResource> : IRoutineHandler<TResource, TUserContext> where TResource : IDisposable
     {
-        void Handle(Action<TClosure> action);
-        TOutput Handle<TOutput>(Func<TClosure, TOutput> func);
-        Task HandleAsync(Func<TClosure, Task> func);
-        Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func);
-    }
+        readonly RoutineClosure<TUserContext> closure;
+        readonly Func<TResource> createResource;
 
-    public class RoutineHandlerSilent<TClosure> : IRoutineHandler<TClosure>
-    {
-        private readonly TClosure closure;
-        private readonly ExceptionHandler exceptionHandler;
-        private readonly Func<(Action, Action)> start;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="closure"></param>
-        /// <param name="exceptionHandler"></param>
-        /// <param name="start">returns logOnSuccess and onFailure (Used for: a. finish activity record b. trigger buffer flash)</param>
-        public RoutineHandlerSilent(
-            TClosure closure,
-            ExceptionHandler exceptionHandler,
-            Func<(Action, Action)> start)
+        public RoutineHandler(
+                Func<TResource> createResource,
+                RoutineClosure<TUserContext> closure
+            )
         {
             this.closure = closure;
-            this.exceptionHandler = exceptionHandler;
-            this.start = start;
+            this.createResource = createResource;
         }
 
-        public void Handle(Action<TClosure> action)
+        public void Handle(Action<TResource> action)
         {
-            exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            action(closure);
-                            onSuccess();
-                        },
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
-                    );
-                }
-            );
+            using (var resource = createResource())
+                action(resource);
         }
 
-        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
+        public TOutput Handle<TOutput>(Func<TResource, TOutput> func)
         {
-            var @value = default(TOutput);
-            exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            @value = func(closure);
-                            onSuccess();
-                        },
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
-                    );
-                }
-            );
-            return @value;
+            using (var resource = createResource())
+                return func(resource);
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TResource, Task<TOutput>> func)
         {
-            var successTask = default(Task<TOutput>);
-            exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            successTask = func(closure);
-                            successTask.ContinueWith(
-                                t =>
-                                    onSuccess()
-                                );
-                        },
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
-                    );
-                }
-            );
-            return successTask;
+            using (var dbContext = createResource())
+                return await func(dbContext);
         }
 
-        public Task HandleAsync(Func<TClosure, Task> func)
+        public void Handle(Action<TResource, RoutineClosure<TUserContext>> action)
         {
-            var successTask = default(Task);
-            exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            successTask = func(closure);
-                            successTask.ContinueWith(
-                                t =>
-                                    onSuccess()
-                                );
-                        },
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
-                    );
-                }
-            );
-            return successTask;
+            using (var resource = createResource())
+                action(resource, closure);
+        }
+
+        public TOutput Handle<TOutput>(Func<TResource, RoutineClosure<TUserContext>, TOutput> func)
+        {
+            using (var resource = createResource())
+                return func(resource, closure);
+        }
+
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TResource, RoutineClosure<TUserContext>, Task<TOutput>> func)
+        {
+            using (var resource = createResource())
+                return await func(resource, closure);
+        }
+
+        public async Task HandleAsync(Func<TResource, Task> func)
+        {
+            using (var dbContext = createResource())
+                 await func(dbContext);
+        }
+
+        public async Task HandleAsync(Func<TResource, RoutineClosure<TUserContext>, Task> func)
+        {
+            using (var resource = createResource())
+                 await func(resource, closure);
         }
     }
 
-    public class RoutineHandlerVerbose<TClosure> : IRoutineHandler<TClosure>
+    public class RoutineHandler<TIResource, TUserContext, TResource> : IRoutineHandler<TIResource, TUserContext> where TResource : IDisposable, TIResource
     {
-        private readonly TClosure closure;
-        private readonly ExceptionHandler exceptionHandler;
-        private readonly Func<(Action<object>, Action)> start; 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="closure"></param>
-        /// <param name="exceptionHandler"></param>
-        /// <param name="start">returns logOnSuccess and onFailure (Used for: a. finish activity record b. trigger buffer flash)</param>
-        public RoutineHandlerVerbose(
-            TClosure closure,
-            ExceptionHandler exceptionHandler,
-            Func<(Action<object>, Action)> start)
+        readonly RoutineClosure<TUserContext> closure;
+        readonly Func<TResource> createResource;
+
+        public RoutineHandler(
+                Func<TResource> createResource,
+                RoutineClosure<TUserContext> closure
+            )
         {
             this.closure = closure;
-            this.exceptionHandler = exceptionHandler;
-            this.start = start;
+            this.createResource = createResource;
         }
 
-        public void Handle(Action<TClosure> action)
+        public void Handle(Action<TIResource> action)
         {
-            exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            action(closure);
-                            onSuccess(null);
-                        },
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
-                    );
-                }
-            );
+            using (var resource = createResource())
+                action(resource);
         }
 
-        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
+        public TOutput Handle<TOutput>(Func<TIResource, TOutput> func)
         {
-            var @value = default(TOutput);
-            exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            @value = func(closure);
-                            onSuccess(@value);
-                        },
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
-                    );
-                }
-            );
-            return @value;
+            using (var resource = createResource())
+                return func(resource);
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TIResource, Task<TOutput>> func)
         {
-            var successTask = default(Task<TOutput>);
-            exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            successTask = func(closure);
-                            successTask.ContinueWith(
-                                t =>
-                                    onSuccess(t.Result)
-                                );
-                        },
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
-                    );
-                }
-            );
-            return successTask;
+            using (var dbContext = createResource())
+                return await func(dbContext);
         }
 
-        public Task HandleAsync(Func<TClosure, Task> func)
+        public void Handle(Action<TIResource, RoutineClosure<TUserContext>> action)
         {
-            var successTask = default(Task);
-            exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            successTask = func(closure);
-                            successTask.ContinueWith(
-                                t =>
-                                    onSuccess(null)
-                                );
-                        }
-                    ,
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
-                    );
-                }
-            );
-            return successTask;
+            using (var resource = createResource())
+                action(resource, closure);
         }
+
+        public TOutput Handle<TOutput>(Func<TIResource, RoutineClosure<TUserContext>, TOutput> func)
+        {
+            using (var resource = createResource())
+                return func(resource, closure);
+        }
+
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TIResource, RoutineClosure<TUserContext>, Task<TOutput>> func)
+        {
+            using (var resource = createResource())
+                return await func(resource, closure);
+        }
+
+        public async Task HandleAsync(Func<TIResource, Task> func)
+        {
+            using (var dbContext = createResource())
+                await func(dbContext);
+        }
+
+        public async Task HandleAsync(Func<TIResource, RoutineClosure<TUserContext>, Task> func)
+        {
+            using (var resource = createResource())
+                await func(resource, closure);
+        }
+
     }
 }

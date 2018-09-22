@@ -4,16 +4,16 @@ using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.Injected
 {
-    public class UserRoutineHandler<TUserContext> 
+    public class UserRoutineHandler<TUserContext> : IHandler<RoutineClosure<TUserContext>>
     {
         readonly IOrmHandlerGFactory<TUserContext> ormHandlerGFactory;
         readonly IRepositoryHandlerGFactory<TUserContext> repositoryHandlerGFactory;
-        readonly IRoutineHandler<RoutineClosure<TUserContext>> routineHandler;
+        readonly IHandler<RoutineClosure<TUserContext>> routineHandler;
 
         public UserRoutineHandler(
             IRepositoryHandlerGFactory<TUserContext> repositoryHandlerGFactory,
             IOrmHandlerGFactory<TUserContext> ormHandlerGFactory,
-            IRoutineHandler<RoutineClosure<TUserContext>> routineHandler)
+            IHandler<RoutineClosure<TUserContext>> routineHandler)
         {
             this.repositoryHandlerGFactory = repositoryHandlerGFactory;
             this.ormHandlerGFactory = ormHandlerGFactory;

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 
 using DashboardCode.Routines;
-using DashboardCode.Routines.Injected;
+using DashboardCode.Routines.Injected.Logging;
 
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.Routines.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
