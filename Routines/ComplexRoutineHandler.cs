@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines
 {
-    public class ComplexRoutineHandler<TClosure, TUserContext> : IRoutineHandler<TClosure, TUserContext> where TClosure : IDisposable
+    public class ComplexRoutineDisposeHandler<TClosure, TUserContext> : IRoutineHandler<TClosure, TUserContext> where TClosure : IDisposable
     {
         readonly Func<RoutineClosure<TUserContext>, TClosure> createResource;
         readonly IHandler<RoutineClosure<TUserContext>> handler;
 
-        public ComplexRoutineHandler(
+        public ComplexRoutineDisposeHandler(
             Func<RoutineClosure<TUserContext>, TClosure> createResource,
             IHandler<RoutineClosure<TUserContext>> handler
             ) 
@@ -17,49 +17,6 @@ namespace DashboardCode.Routines
             this.handler = handler;
         }
 
-        public RoutineHandler<TClosure, TUserContext> CreateResource(RoutineClosure<TUserContext> closure)
-        {
-            var dbContextHandler = new RoutineHandler<TClosure, TUserContext>(()=>createResource(closure), closure);
-            return dbContextHandler;
-        }
-
-        private Action<RoutineClosure<TUserContext>> ComposeResourceHandled(Action<TClosure, RoutineClosure<TUserContext>> action)
-        {
-            return closure =>
-            {
-                using (var resource = createResource(closure))
-                    action(resource, closure);
-            };
-        }
-
-        private Func<RoutineClosure<TUserContext>, TOutput> ComposeResourceFuncHandled<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func)
-        {
-            return closure =>
-            {
-                using (var resource = createResource(closure))
-                    return func(resource, closure);
-            };
-        }
-
-        public Action<RoutineClosure<TUserContext>> ComposeResourceHandled(Action<TClosure> action)
-        {
-            return closure =>
-            {
-                using (var resource = createResource(closure))
-                    action(resource);
-            };
-        }
-
-        public Func<RoutineClosure<TUserContext>, TOutput> ComposeResourceHandled<TOutput>(Func<TClosure, TOutput> func)
-        {
-            return closure =>
-            {
-                using (var resource = createResource(closure))
-                    return func(resource);
-            };
-        }
-
-        #region IRoutineHandler
         public void Handle(Action<TClosure> action) =>
             handler.Handle(closure =>
             {
@@ -116,17 +73,16 @@ namespace DashboardCode.Routines
                 using (var resource = createResource(closure))
                     await func(resource, closure);
             });
-        #endregion
     }
 
-    public class ComplexRoutineHandler<TIResource, TUserContext, TResource> : IRoutineHandler<TIResource, TUserContext>
-        where TResource : IDisposable, TIResource
+    public class ComplexRoutineDisposeHandler<TClosure, TUserContext, TDerivedClosure> : IRoutineHandler<TClosure, TUserContext>
+        where TDerivedClosure : IDisposable, TClosure
     {
-        readonly Func<RoutineClosure<TUserContext>, TResource> createResource;
+        readonly Func<RoutineClosure<TUserContext>, TDerivedClosure> createResource;
         readonly IHandler<RoutineClosure<TUserContext>> routineHandler;
 
-        public ComplexRoutineHandler(
-            Func<RoutineClosure<TUserContext>, TResource> createResource,
+        public ComplexRoutineDisposeHandler(
+            Func<RoutineClosure<TUserContext>, TDerivedClosure> createResource,
             IHandler<RoutineClosure<TUserContext>> routineHandler
             )
         {
@@ -134,104 +90,204 @@ namespace DashboardCode.Routines
             this.routineHandler = routineHandler;
         }
 
-        public RoutineHandler<TResource, TUserContext> CreateResource(RoutineClosure<TUserContext> closure)
-        {
-            var dbContextHandler = new RoutineHandler<TResource, TUserContext>(() => createResource(closure), closure);
-            return dbContextHandler;
-        }
-
-        private Action<RoutineClosure<TUserContext>> ComposeResourceHandled(Action<TIResource, RoutineClosure<TUserContext>> action)
-        {
-            return closure =>
-            {
-                using (var resource = createResource(closure))
-                    action(resource, closure);
-            };
-        }
-
-        private Func<RoutineClosure<TUserContext>, TOutput> ComposeResourceFuncHandled<TOutput>(Func<TIResource, RoutineClosure<TUserContext>, TOutput> func)
-        {
-            return closure =>
-            {
-                using (var resource = createResource(closure))
-                    return func(resource, closure);
-            };
-        }
-
-        public Action<RoutineClosure<TUserContext>> ComposeResourceHandled(Action<TIResource> action)
-        {
-            return closure =>
-            {
-                using (var resource = createResource(closure))
-                    action(resource);
-            };
-        }
-
-        public Func<RoutineClosure<TUserContext>, TOutput> ComposeResourceHandled<TOutput>(Func<TIResource, TOutput> func)
-        {
-            return closure =>
-            {
-                using (var resource = createResource(closure))
-                    return func(resource);
-            };
-        }
-
-        #region Handle with AdminkaDbContext
-        public void Handle(Action<TIResource> action) =>
+        public void Handle(Action<TClosure> action) =>
             routineHandler.Handle(closure =>
             {
                 using (var resource = createResource(closure))
                     action(resource);
             });
 
-        public TOutput Handle<TOutput>(Func<TIResource, TOutput> func) =>
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             routineHandler.Handle(closure =>
             {
                 using (var resource = createResource(closure))
                     return func(resource);
             });
 
-        public void Handle(Action<TIResource, RoutineClosure<TUserContext>> action) =>
+        public void Handle(Action<TClosure, RoutineClosure<TUserContext>> action) =>
             routineHandler.Handle(closure =>
             {
                 using (var resource = createResource(closure))
                     action(resource, closure);
             });
 
-        public TOutput Handle<TOutput>(Func<TIResource, RoutineClosure<TUserContext>, TOutput> func) =>
+        public TOutput Handle<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func) =>
             routineHandler.Handle(closure =>
             {
                 using (var resource = createResource(closure))
                     return func(resource, closure);
             });
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<TIResource, Task<TOutput>> func) =>
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async closure =>
             {
                 using (var resource = createResource(closure))
                     return await func(resource);
             });
 
-        public Task HandleAsync(Func<TIResource, Task> func) =>
+        public Task HandleAsync(Func<TClosure, Task> func) =>
             routineHandler.HandleAsync(async closure =>
             {
                 using (var resource = createResource(closure))
                     await func(resource);
             });
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<TIResource, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async closure =>
             {
                 using (var resource = createResource(closure))
                     return await func(resource, closure);
             });
 
-        public Task HandleAsync(Func<TIResource, RoutineClosure<TUserContext>, Task> func) =>
+        public Task HandleAsync(Func<TClosure, RoutineClosure<TUserContext>, Task> func) =>
             routineHandler.HandleAsync(async closure =>
             {
                 using (var resource = createResource(closure))
                     await func(resource, closure);
             });
-        #endregion
+    }
+
+    public class ComplexRoutineHandler<TClosure, TUserContext> : IRoutineHandler<TClosure, TUserContext>
+    {
+        readonly Func<RoutineClosure<TUserContext>, TClosure> createResource;
+        readonly IHandler<RoutineClosure<TUserContext>> handler;
+
+        public ComplexRoutineHandler(
+            Func<RoutineClosure<TUserContext>, TClosure> createResource,
+            IHandler<RoutineClosure<TUserContext>> handler
+            )
+        {
+            this.createResource = createResource;
+            this.handler = handler;
+        }
+
+        public void Handle(Action<TClosure> action) =>
+            handler.Handle(closure =>
+            {
+                var resource = createResource(closure);
+                action(resource);
+            });
+
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
+            handler.Handle(closure =>
+            {
+                var resource = createResource(closure);
+                return func(resource);
+            });
+
+
+        public void Handle(Action<TClosure, RoutineClosure<TUserContext>> action) =>
+            handler.Handle(closure =>
+            {
+                var resource = createResource(closure);
+                action(resource, closure);
+            });
+
+        public TOutput Handle<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func) =>
+            handler.Handle(closure =>
+            {
+                var resource = createResource(closure);
+                return func(resource, closure);
+            });
+
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
+            handler.HandleAsync(async closure =>
+            {
+                var resource = createResource(closure);
+                return await func(resource);
+            });
+
+        public Task HandleAsync(Func<TClosure, Task> func) =>
+            handler.HandleAsync(async closure =>
+            {
+                var resource = createResource(closure);
+                await func(resource);
+            });
+
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            handler.HandleAsync(async closure =>
+            {
+                var resource = createResource(closure);
+                return await func(resource, closure);
+            });
+
+        public Task HandleAsync(Func<TClosure, RoutineClosure<TUserContext>, Task> func) =>
+            handler.HandleAsync(async closure =>
+            {
+                var resource = createResource(closure);
+                await func(resource, closure);
+            });
+    }
+
+    public class ComplexRoutineHandler<TClosure, TUserContext, TDerivedClosure> : IRoutineHandler<TClosure, TUserContext>
+        where TDerivedClosure : TClosure
+    {
+        readonly Func<RoutineClosure<TUserContext>, TDerivedClosure> createResource;
+        readonly IHandler<RoutineClosure<TUserContext>> routineHandler;
+
+        public ComplexRoutineHandler(
+            Func<RoutineClosure<TUserContext>, TDerivedClosure> createResource,
+            IHandler<RoutineClosure<TUserContext>> routineHandler
+            )
+        {
+            this.createResource = createResource;
+            this.routineHandler = routineHandler;
+        }
+
+        public void Handle(Action<TClosure> action) =>
+            routineHandler.Handle(closure =>
+            {
+                var resource = createResource(closure);
+                action(resource);
+            });
+
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
+            routineHandler.Handle(closure =>
+            {
+                var resource = createResource(closure);
+                return func(resource);
+            });
+
+        public void Handle(Action<TClosure, RoutineClosure<TUserContext>> action) =>
+            routineHandler.Handle(closure =>
+            {
+                var resource = createResource(closure);
+                action(resource, closure);
+            });
+
+        public TOutput Handle<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func) =>
+            routineHandler.Handle(closure =>
+            {
+                var resource = createResource(closure);
+                return func(resource, closure);
+            });
+
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
+            routineHandler.HandleAsync(async closure =>
+            {
+                var resource = createResource(closure);
+                return await func(resource);
+            });
+
+        public Task HandleAsync(Func<TClosure, Task> func) =>
+            routineHandler.HandleAsync(async closure =>
+            {
+                var resource = createResource(closure);
+                await func(resource);
+            });
+
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            routineHandler.HandleAsync(async closure =>
+            {
+                var resource = createResource(closure);
+                return await func(resource, closure);
+            });
+
+        public Task HandleAsync(Func<TClosure, RoutineClosure<TUserContext>, Task> func) =>
+            routineHandler.HandleAsync(async closure =>
+            {
+                var resource = createResource(closure);
+                await func(resource, closure);
+            });
     }
 }

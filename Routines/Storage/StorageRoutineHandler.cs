@@ -36,9 +36,9 @@ namespace DashboardCode.Routines.Storage
             this.ormGFactory                = ormGFactory;
         }
 
-        public RoutineHandler<TDbContext, TUserContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
+        public RoutineDisposeHandler<TDbContext, TUserContext> CreateDbContextHandler(RoutineClosure<TUserContext> closure)
         {
-            var dbContextHandler = new RoutineHandler<TDbContext, TUserContext>(createDbContext, closure);
+            var dbContextHandler = new RoutineDisposeHandler<TDbContext, TUserContext>(createDbContext, closure);
             return dbContextHandler;
         }
 

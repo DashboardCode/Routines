@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines
 {
-    public class RoutineHandler<TResource, TUserContext> : IRoutineHandler<TResource, TUserContext> where TResource : IDisposable
+    public class RoutineDisposeHandler<TClosure, TUserContext> : IRoutineHandler<TClosure, TUserContext> where TClosure : IDisposable
     {
         readonly RoutineClosure<TUserContext> closure;
-        readonly Func<TResource> createResource;
+        readonly Func<TClosure> createResource;
 
-        public RoutineHandler(
-                Func<TResource> createResource,
+        public RoutineDisposeHandler(
+                Func<TClosure> createResource,
                 RoutineClosure<TUserContext> closure
             )
         {
@@ -17,62 +17,62 @@ namespace DashboardCode.Routines
             this.createResource = createResource;
         }
 
-        public void Handle(Action<TResource> action)
+        public void Handle(Action<TClosure> action)
         {
             using (var resource = createResource())
                 action(resource);
         }
 
-        public TOutput Handle<TOutput>(Func<TResource, TOutput> func)
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
         {
             using (var resource = createResource())
                 return func(resource);
         }
 
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TResource, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
             using (var dbContext = createResource())
                 return await func(dbContext);
         }
 
-        public void Handle(Action<TResource, RoutineClosure<TUserContext>> action)
+        public void Handle(Action<TClosure, RoutineClosure<TUserContext>> action)
         {
             using (var resource = createResource())
                 action(resource, closure);
         }
 
-        public TOutput Handle<TOutput>(Func<TResource, RoutineClosure<TUserContext>, TOutput> func)
+        public TOutput Handle<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func)
         {
             using (var resource = createResource())
                 return func(resource, closure);
         }
 
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TResource, RoutineClosure<TUserContext>, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, Task<TOutput>> func)
         {
             using (var resource = createResource())
                 return await func(resource, closure);
         }
 
-        public async Task HandleAsync(Func<TResource, Task> func)
+        public async Task HandleAsync(Func<TClosure, Task> func)
         {
             using (var dbContext = createResource())
                  await func(dbContext);
         }
 
-        public async Task HandleAsync(Func<TResource, RoutineClosure<TUserContext>, Task> func)
+        public async Task HandleAsync(Func<TClosure, RoutineClosure<TUserContext>, Task> func)
         {
             using (var resource = createResource())
                  await func(resource, closure);
         }
     }
 
-    public class RoutineHandler<TIResource, TUserContext, TResource> : IRoutineHandler<TIResource, TUserContext> where TResource : IDisposable, TIResource
+    public class RoutineDisposeHandler<TClosure, TUserContext, TDerivedClosure> : IRoutineHandler<TClosure, TUserContext> where TDerivedClosure : IDisposable, TClosure
     {
         readonly RoutineClosure<TUserContext> closure;
-        readonly Func<TResource> createResource;
+        readonly Func<TDerivedClosure> createResource;
 
-        public RoutineHandler(
-                Func<TResource> createResource,
+        public RoutineDisposeHandler(
+                Func<TDerivedClosure> createResource,
                 RoutineClosure<TUserContext> closure
             )
         {
@@ -80,52 +80,179 @@ namespace DashboardCode.Routines
             this.createResource = createResource;
         }
 
-        public void Handle(Action<TIResource> action)
+        public void Handle(Action<TClosure> action)
         {
             using (var resource = createResource())
                 action(resource);
         }
 
-        public TOutput Handle<TOutput>(Func<TIResource, TOutput> func)
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
         {
             using (var resource = createResource())
                 return func(resource);
         }
 
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TIResource, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
             using (var dbContext = createResource())
                 return await func(dbContext);
         }
 
-        public void Handle(Action<TIResource, RoutineClosure<TUserContext>> action)
+        public void Handle(Action<TClosure, RoutineClosure<TUserContext>> action)
         {
             using (var resource = createResource())
                 action(resource, closure);
         }
 
-        public TOutput Handle<TOutput>(Func<TIResource, RoutineClosure<TUserContext>, TOutput> func)
+        public TOutput Handle<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func)
         {
             using (var resource = createResource())
                 return func(resource, closure);
         }
 
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TIResource, RoutineClosure<TUserContext>, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, Task<TOutput>> func)
         {
             using (var resource = createResource())
                 return await func(resource, closure);
         }
 
-        public async Task HandleAsync(Func<TIResource, Task> func)
+        public async Task HandleAsync(Func<TClosure, Task> func)
         {
             using (var dbContext = createResource())
                 await func(dbContext);
         }
 
-        public async Task HandleAsync(Func<TIResource, RoutineClosure<TUserContext>, Task> func)
+        public async Task HandleAsync(Func<TClosure, RoutineClosure<TUserContext>, Task> func)
         {
             using (var resource = createResource())
                 await func(resource, closure);
+        }
+
+    }
+
+    public class RoutineHandler<TClosure, TUserContext> : IRoutineHandler<TClosure, TUserContext>
+    {
+        readonly RoutineClosure<TUserContext> closure;
+        readonly Func<TClosure> createResource;
+
+        public RoutineHandler(
+                Func<TClosure> createResource,
+                RoutineClosure<TUserContext> closure
+            )
+        {
+            this.closure = closure;
+            this.createResource = createResource;
+        }
+
+        public void Handle(Action<TClosure> action)
+        {
+            var resource = createResource();
+            action(resource);
+        }
+
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
+        {
+            var resource = createResource();
+            return func(resource);
+        }
+
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        {
+            var dbContext = createResource();
+            return await func(dbContext);
+        }
+
+        public void Handle(Action<TClosure, RoutineClosure<TUserContext>> action)
+        {
+            var resource = createResource();
+            action(resource, closure);
+        }
+
+        public TOutput Handle<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func)
+        {
+            var resource = createResource();
+            return func(resource, closure);
+        }
+
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, Task<TOutput>> func)
+        {
+            var resource = createResource();
+            return await func(resource, closure);
+        }
+
+        public async Task HandleAsync(Func<TClosure, Task> func)
+        {
+            var dbContext = createResource();
+            await func(dbContext);
+        }
+
+        public async Task HandleAsync(Func<TClosure, RoutineClosure<TUserContext>, Task> func)
+        {
+            var resource = createResource();
+            await func(resource, closure);
+        }
+    }
+
+    public class RoutineHandler<TClosure, TUserContext, TDerivedClosure> : IRoutineHandler<TClosure, TUserContext> where TDerivedClosure : TClosure
+    {
+        readonly RoutineClosure<TUserContext> closure;
+        readonly Func<TDerivedClosure> createResource;
+
+        public RoutineHandler(
+                Func<TDerivedClosure> createResource,
+                RoutineClosure<TUserContext> closure
+            )
+        {
+            this.closure = closure;
+            this.createResource = createResource;
+        }
+
+        public void Handle(Action<TClosure> action)
+        {
+            var resource = createResource();
+            action(resource);
+        }
+
+        public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
+        {
+            var resource = createResource();
+            return func(resource);
+        }
+
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        {
+            var dbContext = createResource();
+            return await func(dbContext);
+        }
+
+        public void Handle(Action<TClosure, RoutineClosure<TUserContext>> action)
+        {
+            var resource = createResource();
+            action(resource, closure);
+        }
+
+        public TOutput Handle<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func)
+        {
+            var resource = createResource();
+            return func(resource, closure);
+        }
+
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, Task<TOutput>> func)
+        {
+            var resource = createResource();
+            return await func(resource, closure);
+        }
+
+        public async Task HandleAsync(Func<TClosure, Task> func)
+        {
+            var dbContext = createResource();
+            await func(dbContext);
+        }
+
+        public async Task HandleAsync(Func<TClosure, RoutineClosure<TUserContext>, Task> func)
+        {
+            var resource = createResource();
+            await func(resource, closure);
         }
 
     }
