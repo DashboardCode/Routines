@@ -1,13 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace DashboardCode.Routines
+﻿namespace DashboardCode.Routines
 {
-    public interface IRoutineHandler<TClosure, TUserContext> : IHandler<TClosure>
+    public interface IRoutineHandler<TClosure, TUserContext> : IHandler<TClosure>, IHandler<TClosure, RoutineClosure<TUserContext>>
     {
-        void Handle(Action<TClosure, RoutineClosure<TUserContext>> action);
-        TOutput Handle<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, TOutput> func);
-        Task<TOutput> HandleAsync<TOutput>(Func<TClosure, RoutineClosure<TUserContext>, Task<TOutput>> func);
-        Task HandleAsync(Func<TClosure, RoutineClosure<TUserContext>, Task> func);
     }
 }

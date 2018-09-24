@@ -4,16 +4,15 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines.Storage
 {
-    public class DbConnectionHandler<TIService, TUserContext,  TService> : 
+    public class DbConnectionHandler<TIService, TUserContext> : 
         IRoutineHandler<(TIService service, Action<Action> tran), TUserContext> 
-        where TService : TIService
     {
-        readonly Func<DbConnection, Action<DbCommand>, TService> construct;
+        readonly Func<DbConnection, Action<DbCommand>, TIService> construct;
         readonly Func<DbConnection> createConnection;
         readonly RoutineClosure<TUserContext> closure;
 
         public DbConnectionHandler(
-            Func<DbConnection, Action<DbCommand>, TService> construct,
+            Func<DbConnection, Action<DbCommand>, TIService> construct,
             Func<DbConnection> createConnection,
             RoutineClosure<TUserContext> closure)
         {
