@@ -91,7 +91,7 @@ namespace DashboardCode.Routines.Logging.Test
                     (ticks) => { }
             );
 
-            var userRoutineHandler = new UserRoutineHandler<UserContext>(
+            var userRoutineHandler = new StorageRoutineHandler<UserContext>(
                 testRepositoryHandlerFactory,
                 testOrmHandlerFactory,
                 routineHandler);
@@ -199,7 +199,7 @@ namespace DashboardCode.Routines.Logging.Test
                     (ticks) => { }
             );
 
-                var userRoutineHandler = new UserRoutineHandler<UserContext>(
+                var userRoutineHandler = new StorageRoutineHandler<UserContext>(
                     testRepositoryHandlerFactory,
                     testOrmHandlerFactory,
                     routineHandler

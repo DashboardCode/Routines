@@ -5,7 +5,7 @@
     <AssemblyName>DashboardCode.Routines.Storage.EfCore.Relational</AssemblyName>
     <RootNamespace>DashboardCode.Routines.Storage.EfCore.Relational</RootNamespace>
     <PackageId>DashboardCode.Routines.Storage.EfCore.Relational</PackageId>
-    <Version>2.0.25</Version>
+    <Version>2.0.27</Version>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Product>DashboardCode.Routines</Product>
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
@@ -17,7 +17,7 @@
     <PackageTags></PackageTags>
     <Description>DeleteAll generation for Microsoft.EntityFramework.Relational</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>2.0.25.0</AssemblyVersion>
+    <AssemblyVersion>2.0.27.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace DashboardCode.Routines
 {
@@ -27,6 +28,37 @@ namespace DashboardCode.Routines
     {
         public RoutineHandler(
                 Func<TClosure> createResource,
+                RoutineClosure<TUserContext> closure
+            ) : base(createResource, closure)
+        {
+        }
+    }
+
+    public class RoutineDisposeHandlerAsync<TClosure, TUserContext> : DisposeHandlerAsync<TClosure, RoutineClosure<TUserContext>> where TClosure : IDisposable
+    {
+        public RoutineDisposeHandlerAsync(
+                Func<Task<TClosure>> createResource,
+                RoutineClosure<TUserContext> closure
+            ) : base(createResource, closure)
+        {
+        }
+    }
+
+    public class RoutineDisposeHandlerAsync<TClosure, TUserContext, TDerivedClosure> : DisposeHandlerAsync<TClosure, RoutineClosure<TUserContext>, TDerivedClosure>
+        where TDerivedClosure : IDisposable, TClosure
+    {
+        public RoutineDisposeHandlerAsync(
+                Func<Task<TDerivedClosure>> createResource,
+                RoutineClosure<TUserContext> closure
+            ) : base(createResource, closure)
+        {
+        }
+    }
+
+    public class RoutineHandlerAsync<TClosure, TUserContext> : HandlerAsync<TClosure, RoutineClosure<TUserContext>>
+    {
+        public RoutineHandlerAsync(
+                Func<Task<TClosure>> createResource,
                 RoutineClosure<TUserContext> closure
             ) : base(createResource, closure)
         {

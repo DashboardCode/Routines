@@ -4,12 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.AspNetCore</AssemblyName>
     <RootNamespace>DashboardCode.Routines.AspNetCore</RootNamespace>
-    <Version>2.0.25</Version>
+    <Version>2.0.27</Version>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Product>DashboardCode.Routines</Product>
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
-    <AssemblyVersion>2.0.25.0</AssemblyVersion>
-    <FileVersion>2.0.25.0</FileVersion>
+    <AssemblyVersion>2.0.27.0</AssemblyVersion>
+    <FileVersion>2.0.27.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>

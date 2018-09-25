@@ -5,7 +5,7 @@ using DashboardCode.Routines.Logging;
 
 namespace DashboardCode.Routines.Storage.EfCore
 {
-    public class EfCoreStorageRoutineHandler<TUserContext, TDbContext> : StorageRoutineHandler<TUserContext, TDbContext>
+    public class EfCoreStorageRoutineHandler<TUserContext, TDbContext> : MetaStorageRoutineHandler<TUserContext, TDbContext>
         where TDbContext : DbContext
     {
         static readonly RepositoryContainer<TDbContext> repositoryContainer = new RepositoryContainer<TDbContext>();

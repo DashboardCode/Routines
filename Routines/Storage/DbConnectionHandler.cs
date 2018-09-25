@@ -40,13 +40,14 @@ namespace DashboardCode.Routines.Storage
 
         }
 
+        // -------------------- -------------------- -------------------- -------------------- -------------------- --------------------
         public void Handle(Action<(TIService service, Action<Action> tran)> action)
         {
             using (var connection = createConnection())
             {
                 connection.Open();
-                var (get,transact) = ComposeTransact(connection);
-                var service = construct(connection, get);
+                var (set,transact) = ComposeTransact(connection);
+                var service = construct(connection, set);
                 action((service, transact));
             }
         }
@@ -56,8 +57,8 @@ namespace DashboardCode.Routines.Storage
             using (var connection = createConnection())
             {
                 connection.Open();
-                var (get, transact) = ComposeTransact(connection);
-                var service = construct(connection, get);
+                var (set, transact) = ComposeTransact(connection);
+                var service = construct(connection, set);
                 return func((service, transact));
             }
         }
@@ -67,8 +68,8 @@ namespace DashboardCode.Routines.Storage
             using (var connection = createConnection())
             {
                 connection.Open();
-                var (get, transact) = ComposeTransact(connection);
-                var service = construct(connection, get);
+                var (set, transact) = ComposeTransact(connection);
+                var service = construct(connection, set);
                 action((service, transact), closure);
             }
         }
@@ -78,8 +79,8 @@ namespace DashboardCode.Routines.Storage
             using (var connection = createConnection())
             {
                 connection.Open();
-                var (get, transact) = ComposeTransact(connection);
-                var service = construct(connection, get);
+                var (set, transact) = ComposeTransact(connection);
+                var service = construct(connection, set);
                 return func((service, transact), closure);
             }
         }
@@ -90,8 +91,8 @@ namespace DashboardCode.Routines.Storage
             using (var connection = createConnection())
             {
                 await connection.OpenAsync();
-                var (get, transact) = ComposeTransact(connection);
-                var service = construct(connection, get);
+                var (set, transact) = ComposeTransact(connection);
+                var service = construct(connection, set);
                 var output = await func((service, transact));
                 return output;
             }
@@ -102,8 +103,8 @@ namespace DashboardCode.Routines.Storage
             using (var connection = createConnection())
             {
                 await connection.OpenAsync();
-                var (get, transact) = ComposeTransact(connection);
-                var service = construct(connection, get);
+                var (set, transact) = ComposeTransact(connection);
+                var service = construct(connection, set);
                 await func((service, transact));
             }
         }
@@ -113,9 +114,8 @@ namespace DashboardCode.Routines.Storage
             using (var connection = createConnection())
             {
                 await connection.OpenAsync();
-                var (get, transact) = ComposeTransact(connection);
-                var service = construct(connection, get);
-                
+                var (set, transact) = ComposeTransact(connection);
+                var service = construct(connection, set);
                 var output = await func((service, transact), closure);
                 return output;
             }
@@ -126,8 +126,8 @@ namespace DashboardCode.Routines.Storage
             using (var connection = createConnection())
             {
                 await connection.OpenAsync();
-                var (get, transact) = ComposeTransact(connection);
-                var service = construct(connection, get);
+                var (set, transact) = ComposeTransact(connection);
+                var service = construct(connection, set);
                 await func((service, transact), closure);
             }
         }

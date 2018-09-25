@@ -251,8 +251,8 @@ namespace DashboardCode.AdminkaV1.Injected
                 );
         }
 
-        public UserRoutineHandler<UserContext> UserRoutineHandler { get { return storageRoutineHandler; }  }
-        public StorageRoutineHandler<UserContext, AdminkaDbContext> StorageRoutineHandler { get { return storageRoutineHandler; } }
+        public StorageRoutineHandler<UserContext> UserRoutineHandler { get { return storageRoutineHandler; }  }
+        public MetaStorageRoutineHandler<UserContext, AdminkaDbContext> StorageRoutineHandler { get { return storageRoutineHandler; } }
 
         public void HandleServicesContainer(Action<ITraceService> action) =>
             storageRoutineHandler.Handle(closure => action(new TraceService(storageRoutineHandler.CreateDbContextHandler(closure))));
