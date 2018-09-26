@@ -14,7 +14,7 @@ namespace DashboardCode.Routines.Storage
     {
         readonly RoutineClosure<TUserContext> closure;
         readonly Func<TDbContext, IRepository<TEntity>> createRepository;
-        Func<TDbContext> dbContextFactory;
+        readonly Func<TDbContext> dbContextFactory;
         internal IndependentRepositoryHandler(
                 RoutineClosure<TUserContext> closure,
                 Func<TDbContext> dbContextFactory,

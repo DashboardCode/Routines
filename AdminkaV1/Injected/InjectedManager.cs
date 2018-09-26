@@ -18,6 +18,7 @@ using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
 using DashboardCode.Routines.ActiveDirectory;
 using DashboardCode.Routines.Logging;
+using DashboardCode.Routines.Storage.EfCore.Relational.SqlServer;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -54,7 +55,8 @@ namespace DashboardCode.AdminkaV1.Injected
                       DataAccessEfCoreManager.Analyze(ex, storageResultBuilder);
                       SqlServerManager.Analyze(ex, storageResultBuilder);
                   }
-            )
+            ),
+            (modelBuilder) => AdminkaDbContext.BuildModel(modelBuilder)
         ); 
 #endregion
 

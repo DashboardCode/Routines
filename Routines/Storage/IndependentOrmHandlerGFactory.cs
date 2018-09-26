@@ -5,10 +5,10 @@ namespace DashboardCode.Routines.Storage
     public class IndependentOrmHandlerGFactory<TUserContext, TDataAccess> : IOrmHandlerGFactory<TUserContext>
         where TDataAccess : IDisposable
     {
-        IRepositoryContainer<TDataAccess> repositoryGFactory;
-        IOrmContainer<TDataAccess> ormGFactory;
-        IEntityMetaServiceContainer entityMetaServiceContainer;
-        Func<(TDataAccess, IAuditVisitor)> dbContextFactoryForStorage;
+        readonly IRepositoryContainer<TDataAccess> repositoryGFactory;
+        readonly IOrmContainer<TDataAccess> ormGFactory;
+        readonly IEntityMetaServiceContainer entityMetaServiceContainer;
+        readonly Func<(TDataAccess, IAuditVisitor)> dbContextFactoryForStorage;
 
         public IndependentOrmHandlerGFactory(
                 IRepositoryContainer<TDataAccess> repositoryGFactory,

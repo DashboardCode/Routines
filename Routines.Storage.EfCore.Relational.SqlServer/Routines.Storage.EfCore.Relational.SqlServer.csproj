@@ -2,31 +2,29 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>DashboardCode.Routines.ActiveDirectory</AssemblyName>
-    <RootNamespace>DashboardCode.Routines.ActiveDirectory</RootNamespace>
+    <AssemblyName>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</AssemblyName>
+    <RootNamespace>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</RootNamespace>
+    <PackageId>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</PackageId>
     <Version>2.0.28</Version>
-    <Product>DashboardCode.Routines</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
+    <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
+    <Product>DashboardCode.Routines</Product>
+    <Description>ModelBuilder that supports db constraints through annotations</Description>
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
     <PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
-    <PackageTags></PackageTags>
-    <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
-    <Description>Markdown LdapException for nice logging and error dialogs</Description>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>2.0.28.0</AssemblyVersion>
-    <FileVersion>2.0.28.0</FileVersion>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.DirectoryServices" Version="4.5.0" />
-    <PackageReference Include="System.DirectoryServices.AccountManagement" Version="4.5.0" />
-    <PackageReference Include="System.DirectoryServices.Protocols" Version="4.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj" />
     <ProjectReference Include="..\Routines\Routines.csproj" />
   </ItemGroup>
 

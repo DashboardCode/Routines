@@ -5,7 +5,7 @@ $SolutionFolderPath = $PSScriptRoot
 cd $SolutionFolderPath
 
 $sign = Read-Host 'Enter sign'
-$ver = '2.0.27'
+$ver = '2.0.28'
 
 cd $SolutionFolderPath\Routines\bin\Release
 nuget push DashboardCode.Routines.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
@@ -21,6 +21,9 @@ nuget push DashboardCode.Routines.Storage.SqlServer.$ver.nupkg $sign -Source htt
 
 cd $SolutionFolderPath\Routines.Storage.EfCore.Relational\bin\Release
 nuget push DashboardCode.Routines.Storage.EfCore.Relational.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
+
+cd $SolutionFolderPath\Routines.Storage.EfCore.Relational.SqlServer\bin\Release
+nuget push DashboardCode.Routines.Storage.EfCore.Relational.SqlServer.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
 
 cd $SolutionFolderPath\Routines.Storage.EfCore\bin\Release
 nuget push DashboardCode.Routines.Storage.EfCore.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json

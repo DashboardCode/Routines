@@ -24,18 +24,18 @@ namespace DashboardCode.Routines.Storage
         private static (Action<DbCommand>, Action<Action>) ComposeTransact(DbConnection  connection)
         {
             DbTransaction transaction = null;
-            Action<Action> tran = a =>
+            void tran(Action a)
             {
                 transaction = connection.BeginTransaction();
                 a();
                 transaction.Commit();
                 transaction = null;
-            };
-            Action<DbCommand> set = (c) =>
+            }
+            void set(DbCommand c)
             {
                 if (transaction != null)
                     c.Transaction = transaction;
-            };
+            }
             return (set, tran);
 
         }

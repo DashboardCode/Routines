@@ -5,31 +5,28 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 
-using DashboardCode.Routines.Storage;
-using DashboardCode.Routines.Storage.EfCore;
-
-namespace DashboardCode.AdminkaV1.DataAccessEfCore
+namespace DashboardCode.Routines.Storage.EfCore.Relational.SqlServer
 {
-    public class EntityMetaServiceContainer : IEntityMetaServiceContainer
+    public class EntityMetaServiceContainer: IEntityMetaServiceContainer
     {
         readonly Dictionary<string, OrmEntitySchemaAdapter> relationDbSchemaAdapters;
         readonly IMutableModel mutableModel;
         readonly Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
+        
 
-        public EntityMetaServiceContainer(Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze)
+        public EntityMetaServiceContainer(
+            Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze,
+            Action<ModelBuilder> buildModel 
+            )
         {
             this.analyze = analyze;
             this.relationDbSchemaAdapters = new Dictionary<string, OrmEntitySchemaAdapter>();
 
             //TODO:  constraints and unique indexes list should be integrated with configuration files or get from db directly
 
-            //var serviceCollection = new ServiceCollection();
-            //var serviceProvider = serviceCollection.BuildServiceProvider();
-            //var conventionSet2 = serviceProvider.GetService<ConventionSet>();
-
             var conventionSet = new ConventionSet();
             var modelBuilder = new ModelBuilder(conventionSet);
-            AdminkaDbContext.BuildModel(modelBuilder);
+            buildModel(modelBuilder);
             mutableModel = modelBuilder.Model;
 
             var entityTypes = mutableModel.GetEntityTypes();
@@ -84,13 +81,13 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
 
         class OrmEntitySchemaAdapter : IOrmEntitySchemaAdapter
         {
-            string[] Binaries;
-            string[] Keys;
-            string[] Requireds;
-            string SchemaName;
-            string TableName;
-            Dictionary<string, (string[], string)> Constraints;
-            Dictionary<string, string[]> Uniques;
+            readonly string[] Binaries;
+            readonly string[] Keys;
+            readonly string[] Requireds;
+            readonly string SchemaName;
+            readonly string TableName;
+            readonly Dictionary<string, (string[], string)> Constraints;
+            readonly Dictionary<string, string[]> Uniques;
             public OrmEntitySchemaAdapter(IEntityType entityType)
             {
                 SchemaName = entityType.Relational().Schema;

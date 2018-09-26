@@ -33,7 +33,8 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore
                 createDbContext,
                 () => new ValueTuple<AdminkaDbContext, IAuditVisitor>(
                     createDbContext(),
-                    new AuditVisitor(userContext)
+                    new AuditVisitor<IVersioned>(
+                        (e)=> { e.RowVersionAt = DateTime.Now; e.RowVersionBy = userContext.AuditStamp; })
                 ),
                 routineHandler)
         {

@@ -1,4 +1,8 @@
-﻿namespace DashboardCode.AdminkaV1.DataAccessEfCore
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace DashboardCode.Routines.Storage
 {
     public class Constraint
     {
