@@ -16,8 +16,8 @@
     <PackageTags></PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>2.0.28.0</AssemblyVersion>
-    <FileVersion>2.0.28.0</FileVersion>
+    <AssemblyVersion>2.0.29.0</AssemblyVersion>
+    <FileVersion>2.0.29.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -90,14 +90,14 @@ namespace DashboardCode.Routines.Logging
                 logOnStart = () =>
                 {
                     var startDateTime = DateTime.Now;
-                    Func<TimeSpan> onFinish = () =>
+                    TimeSpan onFinish()
                     {
                         var finnishDateTime = DateTime.Now;
                         var duration = finnishDateTime - startDateTime;
                         performanceCounter(duration.Ticks);
                         return duration;
-                    };
-                    Action<object> onSuccess = output =>
+                    }
+                    void onSuccess(object output)
                     {
                         var duration = onFinish();
                         if (testInputOutput(input, output, duration))
@@ -106,13 +106,13 @@ namespace DashboardCode.Routines.Logging
                             logOutput(DateTime.Now, output);
                             flash();
                         }
-                    };
-                    Action onFailure = () =>
+                    }
+                    void onFailure()
                     {
                         onFinish();
                         logInput(startDateTime, input);
                         flash();
-                    };
+                    }
                     return (onSuccess, onFailure);
                 };
             }
@@ -123,15 +123,15 @@ namespace DashboardCode.Routines.Logging
                     var startDateTime = DateTime.Now;
                     activityLogger.LogActivityStart(startDateTime);
 
-                    Func<bool, TimeSpan> onFinish = isSuccess =>
+                    TimeSpan onFinish(bool isSuccess)
                     {
                         var finishDateTime = DateTime.Now;
                         var duration = finishDateTime - startDateTime;
                         activityLogger.LogActivityFinish(finishDateTime, duration, isSuccess);
                         performanceCounter(duration.Ticks);
                         return duration;
-                    };
-                    Action<object> onSuccess = (output) =>
+                    }
+                    void onSuccess(object output)
                     {
                         var duration = onFinish(true);
                         if (testInputOutput(input, output, duration))
@@ -140,13 +140,13 @@ namespace DashboardCode.Routines.Logging
                             logOutput(DateTime.Now, output);
                             flash();
                         }
-                    };
-                    Action onFailure = () =>
+                    }
+                    void onFailure()
                     {
                         onFinish(false);
                         logInput(startDateTime, input);
                         flash();
-                    };
+                    }
                     return (onSuccess, onFailure);
                 };
             }
@@ -168,16 +168,16 @@ namespace DashboardCode.Routines.Logging
                 logOnStart = () =>
                 {
                     var startDateTime = DateTime.Now;
-                    Action onFinish = () =>
+                    void onFinish()
                     {
                         var duration = DateTime.Now - startDateTime;
                         performanceCounter(duration.Ticks);
-                    };
-                    Action onFailure = () =>
+                    }
+                    void onFailure()
                     {
                         logInput(startDateTime, input);
                         onFinish();
-                    };
+                    }
                     return (onFinish, onFailure);
                 };
             }
@@ -188,18 +188,18 @@ namespace DashboardCode.Routines.Logging
                     var startDateTime = DateTime.Now;
                     activityLogger.LogActivityStart(startDateTime);
 
-                    Action<bool> onFinish = isSuccess =>
+                    void onFinish(bool isSuccess)
                     {
                         var finishDateTime = DateTime.Now;
                         var duration = finishDateTime - startDateTime;
                         activityLogger.LogActivityFinish(finishDateTime, duration, isSuccess);
                         performanceCounter(duration.Ticks);
-                    };
-                    Action onFailure = () =>
+                    }
+                    void onFailure()
                     {
                         logInput(startDateTime, input);
                         onFinish(false);
-                    };
+                    }
                     return (() => onFinish(true), onFailure);
                 };
             }
