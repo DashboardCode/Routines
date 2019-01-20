@@ -341,10 +341,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 });
         }
 
-        public async Task<IActionResult> Details()
+        public Task<IActionResult> Details()
         {
             var routine = new MvcRoutineHandler(controller);
-            return await routine.HandleMvcRequestAsync<TKey, TEntity>(
+            return routine.HandleMvcRequestAsync<TKey, TEntity>(
                 "Details",
                 repository => steps =>
                     steps(
@@ -353,10 +353,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
         }
 
-        public async Task<IActionResult> Create()
+        public Task<IActionResult> Create()
         {
             var routine = new MvcRoutineHandler(controller);
-            return await routine.HandleMvcCreateAsync<TEntity>(
+            return routine.HandleMvcCreateAsync<TEntity>(
                 "Create",
                  repository => steps =>
                     steps(
@@ -366,10 +366,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
         }
 
-        public async Task<IActionResult> CreateConfirmed()
+        public Task<IActionResult> CreateConfirmed()
         {
             var routine = new MvcRoutineHandler(controller);
-            return await routine.HandleMvcSaveAsync<TEntity>(
+            return routine.HandleMvcSaveAsync<TEntity>(
                 "Create",
                 (repository, state) => steps =>
                     steps(
@@ -381,10 +381,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
         }
 
-        public async Task<IActionResult> Edit()
+        public Task<IActionResult> Edit()
         {
             var routine = new MvcRoutineHandler(controller);
-            return await routine.HandleMvcRequestAsync<TKey, TEntity>(
+            return routine.HandleMvcRequestAsync<TKey, TEntity>(
                 "Edit",
                  repository => steps =>
                       steps(
@@ -394,10 +394,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
         }
 
-        public async Task<IActionResult> EditConfirmed()
+        public Task<IActionResult> EditConfirmed()
         {
             var routine = new MvcRoutineHandler(controller);
-            return await routine.HandleMvcSaveAsync<TEntity>(
+            return routine.HandleMvcSaveAsync<TEntity>(
                 "Edit",
                 (repository, state) => steps =>
                     steps(
@@ -409,10 +409,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
         }
 
-        public async Task<IActionResult> Delete()
+        public Task<IActionResult> Delete()
         {
             var routine = new MvcRoutineHandler(controller);
-            return await routine.HandleMvcRequestAsync<TKey, TEntity>(
+            return routine.HandleMvcRequestAsync<TKey, TEntity>(
                 "Delete",
                 repository => steps =>
                       steps(
@@ -422,10 +422,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
         }
 
-        public async Task<IActionResult> DeleteConfirmed()
+        public Task<IActionResult> DeleteConfirmed()
         {
             var routine = new MvcRoutineHandler(controller);
-            return await routine.HandleMvcSaveAsync<TEntity>(
+            return routine.HandleMvcSaveAsync<TEntity>(
                 "Delete",
                 (repository, state) => steps =>
                 steps(

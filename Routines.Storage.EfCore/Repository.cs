@@ -68,8 +68,9 @@ namespace DashboardCode.Routines.Storage.EfCore
         public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
         {
             var queryable = Query(include);
-            var list = await queryable.Where(predicate).SingleOrDefaultAsync();
-            return list;
+            var queryableWhere = queryable.Where(predicate);
+            var entity = await queryableWhere.SingleOrDefaultAsync();
+            return entity;
         }
 
         public IRepository<TNewBaseEntity> Clone<TNewBaseEntity>() where TNewBaseEntity : class =>

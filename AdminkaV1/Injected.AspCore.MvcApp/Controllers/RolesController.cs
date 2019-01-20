@@ -81,53 +81,53 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
         }
 
         #region Details / Index
-        public async Task<IActionResult> Details()
+        public Task<IActionResult> Details()
         {
-            return await consumer.Details();
+            return consumer.Details();
         }
 
-        public async Task<IActionResult> Index()
+        public Task<IActionResult> Index()
         {
-            return await consumer.Index();
+            return consumer.Index();
         }
         #endregion
 
         #region Create
-        public async Task<IActionResult> Create()
+        public Task<IActionResult> Create()
         {
-            return await consumer.Create();
+            return  consumer.Create();
         }
 
         [HttpPost, ActionName(nameof(Create)), ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateConfirmed()
+        public Task<IActionResult> CreateConfirmed()
         {
-            return await consumer.CreateConfirmed();
+            return consumer.CreateConfirmed();
         }
         #endregion
 
         #region Edit
-        public async Task<IActionResult> Edit()
+        public Task<IActionResult> Edit()
         {
-            return await consumer.Edit();
+            return consumer.Edit();
         }
 
         [HttpPost, ActionName(nameof(Edit)), ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditFormData()
+        public Task<IActionResult> EditFormData()
         {
-            return await consumer.EditConfirmed();
+            return consumer.EditConfirmed();
         }
         #endregion
 
         #region Delete
-        public async Task<IActionResult> Delete()
+        public Task<IActionResult> Delete()
         {
-            return await consumer.Delete();
+            return consumer.Delete();
         }
 
         [HttpPost, ActionName(nameof(Delete)), ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteFormData()
+        public Task<IActionResult> DeleteFormData()
         {
-            return await consumer.DeleteConfirmed();
+            return consumer.DeleteConfirmed();
         }
         #endregion
      }

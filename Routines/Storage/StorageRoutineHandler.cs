@@ -323,7 +323,9 @@ namespace DashboardCode.Routines.Storage
                     return func(
                         transacted => transacted(
                             repository,
-                            f2 => storage.HandleAnalyzableExceptionAsync(() => storage.HandleCommitAsync(() => storage.HandleSaveAsync(batch => f2(batch))))
+                            f2 => storage.HandleAnalyzableExceptionAsync(
+                                () => storage.HandleCommitAsync(
+                                    () => storage.HandleSaveAsync(batch => f2(batch))))
                         ),
                         closure);
                 });

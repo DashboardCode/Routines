@@ -42,11 +42,11 @@ namespace DashboardCode.Routines.Storage.EfCore
             );
         }
 
-        public Task<StorageResult> HandleAsync(Action<IBatch<TEntity>> action)
+        public async Task<StorageResult> HandleAsync(Func<IBatch<TEntity>, Task> action)
         {
-            return HandleAnalyzableExceptionAsync(() => 
-                HandleSaveAsync(batch => 
-                    action(batch)
+            return await HandleAnalyzableExceptionAsync(async () => 
+                await HandleSaveAsync(async batch => 
+                     await action(batch)
                 )
             );
         }
@@ -95,7 +95,7 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public async Task HandleCommitAsync(Func<Task> func)
         {
-            using (var transaction = dbContext.Database.BeginTransaction())
+            using (var transaction = await dbContext.Database.BeginTransactionAsync())
             {
                 await func();
                 transaction.Commit();
@@ -108,12 +108,11 @@ namespace DashboardCode.Routines.Storage.EfCore
             dbContext.SaveChanges();
         }
 
-        public async Task HandleSaveAsync(Action<IBatch<TEntity>> action)
+        public async Task HandleSaveAsync(Func<IBatch<TEntity>, Task> action)
         {
-            action(new Batch<TEntity>(dbContext, auditVisitor));
+            await action(new Batch<TEntity>(dbContext, auditVisitor));
             await dbContext.SaveChangesAsync();
         }
-
     }
 
     public class OrmStorage : IOrmStorage

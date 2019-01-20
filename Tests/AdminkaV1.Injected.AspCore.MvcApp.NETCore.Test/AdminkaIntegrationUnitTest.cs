@@ -101,14 +101,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });
+
             await routine.StorageRoutineHandler.HandleOrmFactoryAsync(async (ormHandlerFactory) =>
             {
-                await ormHandlerFactory.Create<Role>().HandleAsync(async (repository, storage) =>
+                var x = ormHandlerFactory.Create<Role>();
+                await x.HandleAsync(async (repository, storage) =>
                 {
-
                     var res = await storage.HandleAsync(async batch =>
                     {
-                        // TODO: async error
                         var r = await repository.FindAsync(e => e.RoleName == roleName);
                         if (r != null)
                             batch.Remove(r);
@@ -142,7 +142,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var postRequest1 = new HttpRequestMessage(HttpMethod.Post, "/Roles/Create") { Content = formUrlEncodedContentC };
 
             var createConfirmHttpResponseMessage = await httpClient.SendAsync(postRequest1);
-            Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
+            Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
             var location = createConfirmHttpResponseMessage.Headers.Location;
 
             var listHttpResponseMessage = await httpClient.GetAsync("/Roles");
@@ -171,7 +171,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var postRequestEC = new HttpRequestMessage(HttpMethod.Post, "/Roles/Edit") { Content = formUrlEncodedContentE };
             var editConfirmHttpResponseMessage = await httpClient.SendAsync(postRequestEC);
             //var doc = editConfirmHttpResponseMessage.GetDocument();
-            Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
+            Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
 
             var deleteHttpResponseMessage = await httpClient.GetAsync("/Roles/Delete/" + id);
             deleteHttpResponseMessage.EnsureSuccessStatusCode();
@@ -191,7 +191,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var formUrlEncodedContentD = new FormUrlEncodedContent(formDataD);
             var postRequestD = new HttpRequestMessage(HttpMethod.Post, "/Roles/Delete") { Content = formUrlEncodedContentD };
             var deleteConfirmHttpResponseMessage = await httpClient.SendAsync(postRequestD);
-            Assert.IsTrue(deleteConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
+            Assert.IsTrue(deleteConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
         }
 
         [TestMethod]
@@ -207,13 +207,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            await routine.StorageRoutineHandler.HandleOrmFactoryAsync(async (ormHandlerFactory) =>
             {
-                ormHandlerFactory.Create<Role>().Handle((repository, storage) =>
+                await ormHandlerFactory.Create<Role>().HandleAsync(async (repository, storage) =>
                 {
-                    var res = storage.Handle(batch =>
+                    var res = await storage.HandleAsync(async batch =>
                     {
-                        var r = repository.Find(e => e.RoleName == roleName);
+                        var r = await repository.FindAsync(e => e.RoleName == roleName);
                         if (r != null)
                             batch.Remove(r);
                     });
@@ -246,7 +246,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var postRequest1 = new HttpRequestMessage(HttpMethod.Post, "/Roles/Create") { Content = formUrlEncodedContentC };
 
             var createConfirmHttpResponseMessage = await httpClient.SendAsync(postRequest1);
-            Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
+            Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
             var location = createConfirmHttpResponseMessage.Headers.Location;
 
             var listHttpResponseMessage = await httpClient.GetAsync("/Roles");
@@ -275,7 +275,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var postRequestEC = new HttpRequestMessage(HttpMethod.Post, "/Roles/Edit") { Content = formUrlEncodedContentE };
             var editConfirmHttpResponseMessage = await httpClient.SendAsync(postRequestEC);
             //var doc = editConfirmHttpResponseMessage.GetDocument();
-            Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
+            Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
 
             var deleteHttpResponseMessage = await httpClient.GetAsync("/Roles/Delete/" + id);
             deleteHttpResponseMessage.EnsureSuccessStatusCode();
@@ -295,7 +295,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var formUrlEncodedContentD = new FormUrlEncodedContent(formDataD);
             var postRequestD = new HttpRequestMessage(HttpMethod.Post, "/Roles/Delete") { Content = formUrlEncodedContentD };
             var deleteConfirmHttpResponseMessage = await httpClient.SendAsync(postRequestD);
-            Assert.IsTrue(deleteConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
+            Assert.IsTrue(deleteConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
         }
     }
 }

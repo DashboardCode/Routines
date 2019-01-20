@@ -14,9 +14,9 @@
 ( function( global, factory ) {
 
 	"use strict";
-    window.console.log("jquery 2"); 
-    if (typeof module === "object" && typeof module.exports === "object") {
-        window.console.log("jquery we are in module");
+
+	if ( typeof module === "object" && typeof module.exports === "object" ) {
+
 		// For CommonJS and CommonJS-like environments where a proper `window`
 		// is present, execute the factory and get jQuery.
 		// For environments that do not have a `window` with a `document`
@@ -32,8 +32,7 @@
 				}
 				return factory( w );
 			};
-    } else {
-        window.console.log(global);
+	} else {
 		factory( global );
 	}
 
@@ -46,7 +45,6 @@
 // enough that all such attempts are guarded in a try block.
 "use strict";
 
-window.console.log("jquery 1");
 var arr = [];
 
 var document = window.document;

@@ -56,15 +56,15 @@ namespace DashboardCode.Routines.Storage
                     return func(dbContext);
             });
 
-        public Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, Task<TOutput>> func) =>
-            HandleAsync(async closure =>
+        public async Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, Task<TOutput>> func) =>
+            await HandleAsync(async closure =>
             {
                 using (var dbContext = createDbContext())
                     return await func(dbContext);
             });
 
-        public Task HandleDbContextAsync(Func<TDbContext, Task> func) =>
-            HandleAsync(async closure =>
+        public async Task HandleDbContextAsync(Func<TDbContext, Task> func) =>
+            await HandleAsync(async closure =>
             {
                 using (var dbContext = createDbContext())
                     await func(dbContext);
@@ -83,15 +83,15 @@ namespace DashboardCode.Routines.Storage
                     return func(dbContext, closure);
             });
 
-        public Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
-            HandleAsync(async closure =>
+        public async Task<TOutput> HandleDbContextAsync<TOutput>(Func<TDbContext, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            await HandleAsync(async closure =>
             {
                 using (var dbContext = createDbContext())
                     return await func(dbContext, closure);
             });
 
-        public Task HandleDbContextAsync(Func<TDbContext, RoutineClosure<TUserContext>, Task> func) =>
-            HandleAsync(async closure =>
+        public async Task HandleDbContextAsync(Func<TDbContext, RoutineClosure<TUserContext>, Task> func) =>
+            await HandleAsync(async closure =>
             {
                 using (var dbContext = createDbContext())
                     await func(dbContext, closure);
@@ -115,16 +115,16 @@ namespace DashboardCode.Routines.Storage
                     return func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, entityMetaServiceContainer, auditVisitor, dbContext), closure);
             });
 
-        public Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
-            HandleAsync(async closure =>
+        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            await HandleAsync(async closure =>
             {
                 var (dbContext, auditVisitor) = createDbContextForStorage();
                 using (dbContext)
                     return await func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, entityMetaServiceContainer, auditVisitor, dbContext), closure);
             });
 
-        public Task HandleOrmFactoryAsync(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task> func) =>
-            HandleAsync(async closure =>
+        public async Task HandleOrmFactoryAsync(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task> func) =>
+            await HandleAsync(async closure =>
             {
                 var (dbContext, auditVisitor) = createDbContextForStorage();
                 using (dbContext)
@@ -145,15 +145,15 @@ namespace DashboardCode.Routines.Storage
                     return func(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext), closure);
             });
 
-        public Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
-            HandleAsync(async closure =>
+        public async Task<TOutput> HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task<TOutput>> func) =>
+            await HandleAsync(async closure =>
             {
                 using (var dbContext = createDbContext())
                     return await func(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext), closure);
             });
 
-        public Task HandleRepositoryFactoryAsync(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task> func) =>
-            HandleAsync(async closure =>
+        public async Task HandleRepositoryFactoryAsync(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, RoutineClosure<TUserContext>, Task> func) =>
+            await HandleAsync(async closure =>
             {
                 using (var dbContext = createDbContext())
                     await func(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext), closure);
@@ -175,16 +175,16 @@ namespace DashboardCode.Routines.Storage
                     return func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, entityMetaServiceContainer, auditVisitor, dbContext));
             });
 
-        public Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, Task<TOutput>> func) =>
-            HandleAsync(async closure =>
+        public async Task<TOutput> HandleOrmFactoryAsync<TOutput>(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, Task<TOutput>> func) =>
+            await HandleAsync(async closure =>
             {
                 var (dbContext, auditVisitor) = createDbContextForStorage();
                 using (dbContext)
                     return await func(new ReliantOrmHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, ormGFactory, entityMetaServiceContainer, auditVisitor, dbContext));
             });
 
-        public Task HandleOrmFactoryAsync(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, Task> func) =>
-            HandleAsync(async closure =>
+        public async Task HandleOrmFactoryAsync(Func<ReliantOrmHandlerGFactory<TUserContext, TDbContext>, Task> func) =>
+            await HandleAsync(async closure =>
             {
                 var (dbContext, auditVisitor) = createDbContextForStorage();
                 using (dbContext)
@@ -206,8 +206,8 @@ namespace DashboardCode.Routines.Storage
                     return func(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext));
             });
 
-        public Task HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, Task> func) =>
-            HandleAsync(async closure =>
+        public async Task HandleRepositoryFactoryAsync<TOutput>(Func<ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>, Task> func) =>
+            await HandleAsync(async closure =>
             {
                 using (var dbContext = createDbContext())
                     await func(new ReliantRepositoryHandlerGFactory<TUserContext, TDbContext>(repositoryGFactory, dbContext));

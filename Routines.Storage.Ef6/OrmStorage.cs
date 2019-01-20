@@ -30,14 +30,14 @@ namespace DashboardCode.Routines.Storage.Ef6
             });
         }
 
-        public StorageResult HandleAsync(Action<IBatch<TEntity>> action)
-        {
-            return HandleAnalyzableException(() => {
-                HandleSaveAsync((batch) => {
-                    action(batch);
-                });
-            });
-        }
+        //public StorageResult HandleAsync(Action<IBatch<TEntity>> action)
+        //{
+        //    return HandleAnalyzableException(() => {
+        //        HandleSaveAsync((batch) => {
+        //            action(batch);
+        //        });
+        //    });
+        //}
 
         public StorageResult HandleAnalyzableException(Action action)
         {
@@ -70,13 +70,13 @@ namespace DashboardCode.Routines.Storage.Ef6
             dbContext.SaveChanges();
         }
 
-        public async void HandleSaveAsync(Action<IBatch<TEntity>> action)
+        public async Task HandleSaveAsync(Func<IBatch<TEntity>, Task> action)
         {
-            action(new Batch<TEntity>(dbContext, setAuditProperties));
+            await action(new Batch<TEntity>(dbContext, setAuditProperties));
             await dbContext.SaveChangesAsync();
         }
 
-        Task<StorageResult> IOrmStorage<TEntity>.HandleAsync(Action<IBatch<TEntity>> action)
+        Task<StorageResult> IOrmStorage<TEntity>.HandleAsync(Func<IBatch<TEntity>,Task> action)
         {
             throw new NotImplementedException();
         }
@@ -91,9 +91,20 @@ namespace DashboardCode.Routines.Storage.Ef6
             throw new NotImplementedException();
         }
 
-        Task IOrmStorage<TEntity>.HandleSaveAsync(Action<IBatch<TEntity>> action)
+        Task IOrmStorage<TEntity>.HandleSaveAsync(Func<IBatch<TEntity>,Task> action)
         {
             throw new NotImplementedException();
+        }
+
+        public StorageResult HandleAsync(Func<IBatch<TEntity>, Task> action)
+        {
+            return HandleAnalyzableException(async () =>
+            {
+                await HandleSaveAsync(async (batch) =>
+                {
+                    await action(batch);
+                });
+            });
         }
     }
 

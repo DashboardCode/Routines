@@ -1,7 +1,7 @@
 # in case of "cannot be loaded because running scripts is disabled on this system" execute 'Set-ExecutionPolicy RemoteSigned'
 # in case of "Requested registry access is not allowed." run script in ISE started "as Administrator"
 
-$categoryName = "DashboardCode Adminka MvcApp"
+$categoryName = "DashboardCode Adminka"
 $categoryHelp = "Application performance"
 $categoryType = [System.Diagnostics.PerformanceCounterCategoryType]::MultiInstance
 

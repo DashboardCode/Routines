@@ -6,7 +6,6 @@ const PathModule = require('path');
 
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 
 const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
@@ -67,22 +66,38 @@ module.exports = {
     //        'jquery'
     //    ]
     //},
+    output: {
+        path: outputFolderPath,
+        //mode: 'development',
+        filename: '[name].js',  // filename: '[name].[contenthash].js' produce main.bca50319635bfdec741b.js - also add HashedModuleIdsPlugin if you want to use "constant" hashs
+        publicPath: '/dist/'
+    },
     optimization: {
+        runtimeChunk: 'single',
         splitChunks: {
+            chunks: 'all',
+            maxInitialRequests: Infinity,
+            minSize: 0,
             cacheGroups: {
                 styles: {
                     name: 'styles',
-                    test: /\.css$/,
+                    test: /customBootstrap.css$/,
                     chunks: 'all',
                     enforce: true
+                },
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendor'
+                    // file for package
+                    //name(module) {
+                    //    // RP: node_modules/packageName/not/this/part.js or node_modules/packageName
+                    //    const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+                    //    return `npm.${packageName.replace('@', '')}`; //  RP: actual for .NET
+                    //},
                 }
+
             }
         }
-    },
-    output: {
-        path: outputFolderPath,
-        publicPath: '/dist/',
-        filename: '[name].js'
     },
     plugins: [
         new MiniCssExtractPlugin({
@@ -143,10 +158,7 @@ module.exports = {
                     {
                         loader: "css-loader",
                         options: {
-                            sourceMap: true,
-                            minimize: {
-                                safe: true
-                            }
+                            sourceMap: true
                         }
                     },
                     {
@@ -157,7 +169,7 @@ module.exports = {
                                 browsers: ["last 2 versions"]
                             },
                             plugins: () => [
-                                require('precss'),
+                                //require('precss'),
                                 require('autoprefixer') // adds "vendor's" prefixes e.g. -webkit-input-placeholder , -ms-input-placeholder etc.
 
                             ]
@@ -173,9 +185,8 @@ module.exports = {
                 test: /\.(woff2|woff|ttf|svg|png)$/,
                 use: 'url-loader'
             },
-
             {
-                test: /\.(tsx?)|(js)$/, 
+                test: /\.(tsx?)|(js)$/,
                 include: /src/,
                 exclude: /node_modules/,
                 use: {
@@ -187,14 +198,26 @@ module.exports = {
                             "@babel/typescript", // this or plugin  @babel/plugin-transform-typescript
                             ["@babel/env",
                                 {
+                                    "useBuiltIns": "usage",
                                     "modules": false, // required for typescript?
                                     "targets": {
-                                        "browsers": ["last 2 chrome versions", "ie 11", "safari 11", "edge 15", "firefox 59"]
+                                        "browsers": [
+                                            "last 2 chrome versions", "ie 11", "safari 11", "edge 15", "firefox 59"
+                                            //  bootsrap set:
+                                            //  "chrome  >= 45",
+                                            //  "Firefox >= 38",
+                                            //  "Explorer >= 10",
+                                            //  "edge >= 12",
+                                            //  "iOS >= 9",
+                                            //  "Safari >= 9",
+                                            //  "Android >= 4.4",
+                                            //  "Opera >= 30"
+                                        ]
                                     },
                                     "debug": true
                                 }
                             ]
-                        ],
+                        ]
                         // plugins: [require('@babel/plugin-proposal-object-rest-spread')]
                         // plugins: ['@babel/plugin-transform-runtime']
                     }

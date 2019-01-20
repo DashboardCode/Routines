@@ -2,8 +2,8 @@
   "compileOnSave": true,
   "compilerOptions": {
     "sourceRoot": "./src",
-    "target": "es6",
-    "module": "es6",
+    "target": "es5",
+    "module": "es2015",
     "moduleResolution": "node",
     "sourceMap": true,
     "strict": true,
