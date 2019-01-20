@@ -153,7 +153,7 @@ namespace DashboardCode.Routines.Logging
             return logOnStart;
         }
 
-        private static Func<(Action, Action)> CreateRoutineHandlerSilent<TClosure>(
+        private static Func<(Action onSuccess, Action onFailre)> CreateRoutineHandlerSilent<TClosure>(
                 Func<Action<DateTime, string>, TClosure> createClosure,
                 bool finishActivity,
                 Action<long> performanceCounter,

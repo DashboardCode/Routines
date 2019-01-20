@@ -58,8 +58,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceCollection services)
         {
             var configurationSection = Configuration.GetSection("Logging");
-            loggerFactory.AddConsole(configurationSection);
-            loggerFactory.AddDebug();
+            //loggerFactory.AddConsole(configurationSection);
+            //loggerFactory.AddDebug();
 
             // TODO: experiment with ETW 
             // https://docs.microsoft.com/en-us/dotnet/framework/wcf/samples/etw-tracing

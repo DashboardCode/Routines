@@ -10,8 +10,13 @@ namespace DashboardCode.Routines.Storage
     {
         IReadOnlyCollection<TEntity> List(Include<TEntity> include = null);
         Task<List<TEntity>> ListAsync(Include<TEntity> include = null);
+
         IReadOnlyCollection<TEntity> List(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
+        Task<IReadOnlyCollection<TEntity>> ListAsync(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
+
         TEntity Find(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
+        Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
+
         IQueryable<TEntity> Query(Include<TEntity> include = null);
 
         #region Prototype support

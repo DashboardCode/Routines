@@ -11,7 +11,7 @@ namespace Benchmark
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
-#if !(NETCOREAPP1_1 || NETCOREAPP2_0  || NETCOREAPP2_1)
+#if !(NETCOREAPP)
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(printAsm: true, printSource: true)]
     [RyuJitX64Job]
@@ -19,10 +19,10 @@ namespace Benchmark
 #endif
     public class BenchmarkCallSimpleDisasm
     {
-        static Func<StringBuilder, int, int, bool> callLambda;
-        static Func<StringBuilder, int, int, bool> callLambdaConst;
-        static Func<StringBuilder, int, int, bool> callBuilded;
-        static Func<StringBuilder, int, int, bool> callBuildedReal;
+        readonly static Func<StringBuilder, int, int, bool> callLambda;
+        readonly static Func<StringBuilder, int, int, bool> callLambdaConst;
+        readonly static Func<StringBuilder, int, int, bool> callBuilded;
+        readonly static Func<StringBuilder, int, int, bool> callBuildedReal;
         private static bool Append<T>(StringBuilder sb, T i1, T i2, Func<T, T, T> operation)
         {
             sb.Append(operation(i1, i2));
@@ -134,12 +134,12 @@ namespace Benchmark
             var b = callLambdaConst(sb, 1, 2);
             return sb.ToString();
         }
-#endregion
+        #endregion
 
-#region Add lambda
-        static Func<int, int, int> addLambda;
-        static Func<int, int, int> addLambdaConst;
-        static Func<int, int, int> addBuilded;
+        #region Add lambda
+        readonly static Func<int, int, int> addLambda;
+        readonly static Func<int, int, int> addLambdaConst;
+        readonly static Func<int, int, int> addBuilded;
 
         //[Benchmark]
         public int AddBuilded()

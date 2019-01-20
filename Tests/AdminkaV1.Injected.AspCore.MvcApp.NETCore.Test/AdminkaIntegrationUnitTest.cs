@@ -27,24 +27,29 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
         readonly HttpClient httpClient;
         public AdminkaIntegrationUnitTest()
         {
-            var hostBuilder = new WebHostBuilder()
-                .UseContentRoot(TestManager.GetContentRoot())
-                // TODO: should I use it and when?
-                //  .UseEnvironment("Development")
-                .ConfigureServices(TestManager.InitializeServices)
-                .UseStartup<Startup>()
-                // TODO: should I do configuration in place (or trust that one from Start)
-                // to overwrite configuration for test
-                /*.UseConfiguration(
-                    new Microsoft.Extensions.Configuration.ConfigurationBuilder()
-                    .SetBasePath(System.IO.Path.GetFullPath(@"../../../../APIProjectFolder/"))
-                    .AddJsonFile("appsettings.json", optional: false)
-                    .AddUserSecrets<Startup>()
-                    .Build()
-                )*/;
-            testServer = new TestServer(hostBuilder);
+            var customWebApplicationFactory = new CustomWebApplicationFactory<Startup>();
+            
+            httpClient = customWebApplicationFactory.CreateClient();
+            testServer = customWebApplicationFactory.Server;
 
-            httpClient = testServer.CreateClient();
+            //var hostBuilder = new WebHostBuilder()
+            //    .UseContentRoot(TestManager.GetContentRoot())
+            //    // TODO: should I use it and when?
+            //    //  .UseEnvironment("Development")
+            //    .ConfigureServices(TestManager.InitializeServices)
+            //    .UseStartup<Startup>()
+            //    // TODO: should I do configuration in place (or trust that one from Start)
+            //    // to overwrite configuration for test
+            //    /*.UseConfiguration(
+            //        new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+            //        .SetBasePath(System.IO.Path.GetFullPath(@"../../../../APIProjectFolder/"))
+            //        .AddJsonFile("appsettings.json", optional: false)
+            //        .AddUserSecrets<Startup>()
+            //        .Build()
+            //    )*/;
+            //testServer = new TestServer(hostBuilder);
+
+            //httpClient = testServer.CreateClient();
         }
 
         [TestMethod]
@@ -96,27 +101,29 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
                 new { input = "Input text" });
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            await routine.StorageRoutineHandler.HandleOrmFactoryAsync(async (ormHandlerFactory) =>
             {
-                ormHandlerFactory.Create<Role>().Handle((repository, storage) =>
+                await ormHandlerFactory.Create<Role>().HandleAsync(async (repository, storage) =>
                 {
-                    var res = storage.Handle(batch =>
-                     {
-                         var r = repository.Find(e => e.RoleName == roleName);
-                         if (r != null)
-                             batch.Remove(r);
-                     });
+
+                    var res = await storage.HandleAsync(async batch =>
+                    {
+                        // TODO: async error
+                        var r = await repository.FindAsync(e => e.RoleName == roleName);
+                        if (r != null)
+                            batch.Remove(r);
+                    });
                     if (!res.IsOk())
                         throw new Exception("Can't prepare role");
                 });
             });
 
-            var detailsHttpResponseMessage = httpClient.GetAsync("/Roles/Details/1").Result;
+            var detailsHttpResponseMessage = await httpClient.GetAsync("/Roles/Details/1");
             detailsHttpResponseMessage.EnsureSuccessStatusCode();
             var contentDetails = await detailsHttpResponseMessage.Content.ReadAsStringAsync();
             Assert.IsTrue(contentDetails.Contains("<html"));
 
-            var createHttpResponseMessage = httpClient.GetAsync("/Roles/Create").Result;
+            var createHttpResponseMessage = await httpClient.GetAsync("/Roles/Create");
             createHttpResponseMessage.EnsureSuccessStatusCode();
             httpClient.TransferAntiforgeryCookie(createHttpResponseMessage);
             var createHtmlDocument = await createHttpResponseMessage.GetDocument();
@@ -138,13 +145,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
             var location = createConfirmHttpResponseMessage.Headers.Location;
 
-            var listHttpResponseMessage = httpClient.GetAsync("/Roles").Result;
+            var listHttpResponseMessage = await httpClient.GetAsync("/Roles");
             listHttpResponseMessage.EnsureSuccessStatusCode();
             var listHtmlDocument = await listHttpResponseMessage.GetDocument();
 
             var id = listHtmlDocument.GetTableCell("adminka-roles-table-id", 2, cell => cell == roleName, 1);
 
-            var editHttpResponseMessage = httpClient.GetAsync("/Roles/Edit/" + id).Result;
+            var editHttpResponseMessage = await httpClient.GetAsync("/Roles/Edit/" + id);
             editHttpResponseMessage.EnsureSuccessStatusCode();
             var editHtmlDocument = await editHttpResponseMessage.GetDocument();
 
@@ -166,7 +173,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             //var doc = editConfirmHttpResponseMessage.GetDocument();
             Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
 
-            var deleteHttpResponseMessage = httpClient.GetAsync("/Roles/Delete/" + id).Result;
+            var deleteHttpResponseMessage = await httpClient.GetAsync("/Roles/Delete/" + id);
             deleteHttpResponseMessage.EnsureSuccessStatusCode();
             var deleteHtmlDocument = await deleteHttpResponseMessage.GetDocument();
 
@@ -215,12 +222,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                 });
             });
 
-            var detailsHttpResponseMessage = httpClient.GetAsync("/Roles/Details/1").Result;
+            var detailsHttpResponseMessage = await httpClient.GetAsync("/Roles/Details/1");
             detailsHttpResponseMessage.EnsureSuccessStatusCode();
             var contentDetails = await detailsHttpResponseMessage.Content.ReadAsStringAsync();
             Assert.IsTrue(contentDetails.Contains("<html"));
 
-            var createHttpResponseMessage = httpClient.GetAsync("/Roles/Create").Result;
+            var createHttpResponseMessage = await httpClient.GetAsync("/Roles/Create");
             createHttpResponseMessage.EnsureSuccessStatusCode();
             httpClient.TransferAntiforgeryCookie(createHttpResponseMessage);
             var createHtmlDocument = await createHttpResponseMessage.GetDocument();
@@ -242,13 +249,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
             var location = createConfirmHttpResponseMessage.Headers.Location;
 
-            var listHttpResponseMessage = httpClient.GetAsync("/Roles").Result;
+            var listHttpResponseMessage = await httpClient.GetAsync("/Roles");
             listHttpResponseMessage.EnsureSuccessStatusCode();
             var listHtmlDocument = await listHttpResponseMessage.GetDocument();
 
             var id = listHtmlDocument.GetTableCell("adminka-roles-table-id", 2, cell => cell == roleName, 1);
 
-            var editHttpResponseMessage = httpClient.GetAsync("/Roles/Edit/" + id).Result;
+            var editHttpResponseMessage = await httpClient.GetAsync("/Roles/Edit/" + id);
             editHttpResponseMessage.EnsureSuccessStatusCode();
             var editHtmlDocument = await editHttpResponseMessage.GetDocument();
 
@@ -270,7 +277,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             //var doc = editConfirmHttpResponseMessage.GetDocument();
             Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
 
-            var deleteHttpResponseMessage = httpClient.GetAsync("/Roles/Delete/" + id).Result;
+            var deleteHttpResponseMessage = await httpClient.GetAsync("/Roles/Delete/" + id);
             deleteHttpResponseMessage.EnsureSuccessStatusCode();
             var deleteHtmlDocument = await deleteHttpResponseMessage.GetDocument();
 

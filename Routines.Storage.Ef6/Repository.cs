@@ -51,12 +51,28 @@ namespace DashboardCode.Routines.Storage.Ef6
             return list;
         }
 
+        public async Task<IReadOnlyCollection<TEntity>> ListAsync(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
+        {
+            var queryable = MakeQueryable(include);
+            var list = await queryable.Where(predicate).ToListAsync();
+            return list;
+        }
+
+
         public TEntity Find(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
         {
             var queryable = MakeQueryable(include);
             var list = queryable.Where(predicate).SingleOrDefault();
             return list;
         }
+
+        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
+        {
+            var queryable = MakeQueryable(include);
+            var list = await queryable.Where(predicate).SingleOrDefaultAsync();
+            return list;
+        }
+
 
         public IRepository<TNewBaseEntity> Clone<TNewBaseEntity>() where TNewBaseEntity : class =>
             new Repository<TNewBaseEntity>(this.context, asNoTracking);
@@ -76,5 +92,6 @@ namespace DashboardCode.Routines.Storage.Ef6
         {
             throw new NotImplementedException();
         }
+
     }
 }

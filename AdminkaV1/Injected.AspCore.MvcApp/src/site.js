@@ -1,8 +1,8 @@
-﻿import '@babel/polyfill';
+﻿//import '@babel/polyfill';
 import Es8Test from './Es8Test';
 import WorkflowManager from './WorkflowManager.ts';
 import Popper from 'popper.js';
-import $ from 'JQuery' 
+//import $ from 'JQuery' 
 
 
 // TODO: polyfil injectorss
@@ -11,6 +11,8 @@ import $ from 'JQuery'
 
 
 Popper.Defaults.modifiers.computeStyle.gpuAcceleration = !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform));
+Popper.Defaults.modifiers.preventOverflow = { enabled: false };
+Popper.Defaults.modifiers.flip = { enabled: false };
 
 let es8test = new Es8Test();
 es8test.run();

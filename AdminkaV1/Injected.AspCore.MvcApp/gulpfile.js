@@ -61,16 +61,19 @@ gulp.task('copy-lib', function (done) {
     gulp.src('./node_modules/@dashboardcode/bsmultiselect/dist/js/BsMultiSelect.js')
         .pipe(gulp.dest('./wwwroot/js'));
 
-    gulp.src('./node_modules/material-design-icons/iconfont/*.woff2')
-        .pipe(gulp.dest('./wwwroot/fonts'));
-    gulp.src('./node_modules/material-design-icons/iconfont/*.woff')
-        .pipe(gulp.dest('./wwwroot/fonts'));
-    gulp.src('./node_modules/material-design-icons/iconfont/*.ttf')
-        .pipe(gulp.dest('./wwwroot/fonts'));
+    //gulp.src('./node_modules/material-design-icons/iconfont/*.woff2')
+    //    .pipe(gulp.dest('./wwwroot/fonts'));
+    //gulp.src('./node_modules/material-design-icons/iconfont/*.woff')
+    //    .pipe(gulp.dest('./wwwroot/fonts'));
+    //gulp.src('./node_modules/material-design-icons/iconfont/*.ttf')
+    //    .pipe(gulp.dest('./wwwroot/fonts'));
 
-
-    gulp.src('./src/rindex.js')
-        .pipe(gulp.dest('./wwwroot/js'));
+    gulp.src('./node_modules/material-design-icons-iconfont/dist/fonts/*.woff2')
+        .pipe(gulp.dest('./wwwroot/fonts'));
+    gulp.src('./node_modules/material-design-icons-iconfont/dist/fonts/*.woff')
+        .pipe(gulp.dest('./wwwroot/fonts'));
+    gulp.src('./node_modules/material-design-icons-iconfont/dist/fonts/*.ttf')
+        .pipe(gulp.dest('./wwwroot/fonts'));
 
     done();
 });

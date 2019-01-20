@@ -17,7 +17,7 @@ namespace DashboardCode.Routines.Logging
         public HandlerSilent(
             TClosure closure,
             ExceptionHandler exceptionHandler,
-            Func<(Action, Action)> start)
+            Func<(Action onSuccess, Action onFailure)> start)
         {
             this.closure = closure;
             this.exceptionHandler = exceptionHandler;
@@ -34,8 +34,7 @@ namespace DashboardCode.Routines.Logging
                         () => {
                             action(closure);
                             onSuccess();
-                        }
-                    ,
+                        },
                         isSuccess =>
                         {
                             if (!isSuccess)
@@ -57,8 +56,7 @@ namespace DashboardCode.Routines.Logging
                         () => {
                             @value = func(closure);
                             onSuccess();
-                        }
-                    ,
+                        },
                         isSuccess =>
                         {
                             if (!isSuccess)
@@ -70,50 +68,40 @@ namespace DashboardCode.Routines.Logging
             return @value;
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
-            var successTask = default(Task<TOutput>);
-            exceptionHandler.Handle(
+            var @value = default(TOutput);
+            await exceptionHandler.HandleAsync(
                 () =>
                 {
                     var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            successTask = func(closure);
-                            successTask.ContinueWith(
-                                t =>
-                                    onSuccess()
-                                );
-                        }
-                    ,
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
+                    return (async () => {
+                        @value = await func(closure);
+                        onSuccess();
+                    }
+                    , isSuccess =>
+                    {
+                        if (!isSuccess)
+                            onFailure();
+                    }
                     );
                 }
             );
-            return successTask;
+            return @value;
         }
 
-        public Task HandleAsync(Func<TClosure, Task> func)
+        public async Task HandleAsync(Func<TClosure, Task> func)
         {
-            var successTask = default(Task);
-            exceptionHandler.Handle(
+            await exceptionHandler.HandleAsync(
                 () =>
                 {
                     var (onSuccess, onFailure) = start();
                     return (
-                        () => {
-                            successTask = func(closure);
-                            successTask.ContinueWith(
-                                t =>
-                                    onSuccess()
-                                );
+                        async () => {
+                            await func(closure);
+                            onSuccess();
                         }
-                    ,
-                        isSuccess =>
+                        , isSuccess =>
                         {
                             if (!isSuccess)
                                 onFailure();
@@ -121,7 +109,6 @@ namespace DashboardCode.Routines.Logging
                     );
                 }
             );
-            return successTask;
         }
     }
 

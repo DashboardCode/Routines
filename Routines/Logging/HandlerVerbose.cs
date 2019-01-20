@@ -70,58 +70,46 @@ namespace DashboardCode.Routines.Logging
             return @value;
         }
 
-        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
-            var successTask = default(Task<TOutput>);
-            exceptionHandler.Handle(
+            var @value = default(TOutput);
+            await exceptionHandler.HandleAsync(
                 () =>
                 {
                     var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            successTask = func(closure);
-                            successTask.ContinueWith(
-                                t =>
-                                    onSuccess(t.Result)
-                                );
-                        }
-                    ,
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
+                    return (async () => {
+                        @value = await func(closure);
+                        onSuccess(@value);
+                    }
+                    , isSuccess =>
+                    {
+                        if (!isSuccess)
+                            onFailure();
+                    }
                     );
                 }
             );
-            return successTask;
+            return @value;
         }
 
-        public Task HandleAsync(Func<TClosure, Task> func)
+        public async Task HandleAsync(Func<TClosure, Task> func)
         {
-            var successTask = default(Task);
-            exceptionHandler.Handle(
+            await exceptionHandler.HandleAsync(
                 () =>
                 {
                     var (onSuccess, onFailure) = start();
-                    return (
-                        () => {
-                            successTask = func(closure);
-                            successTask.ContinueWith(
-                                t =>
-                                    onSuccess(null)
-                                );
-                        }
-                    ,
-                        isSuccess =>
-                        {
-                            if (!isSuccess)
-                                onFailure();
-                        }
+                    return (async () => {
+                        await func(closure);
+                        onSuccess(null);
+                    }
+                    , isSuccess =>
+                    {
+                        if (!isSuccess)
+                            onFailure();
+                    }
                     );
                 }
             );
-            return successTask;
         }
     }
 }

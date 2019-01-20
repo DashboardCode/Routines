@@ -1,11 +1,17 @@
 ﻿using System.Linq;
 using DashboardCode.Routines.Storage;
 using Microsoft.EntityFrameworkCore.Design.Internal;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 {
     public class AdminkaCSharpHelper : CSharpHelper
     {
+        public AdminkaCSharpHelper(IRelationalTypeMappingSource relationalTypeMappingSource) : base(relationalTypeMappingSource)
+        {
+
+        }
+
         public override string UnknownLiteral(object value)
         {
             if (value is Constraint[] constraints)

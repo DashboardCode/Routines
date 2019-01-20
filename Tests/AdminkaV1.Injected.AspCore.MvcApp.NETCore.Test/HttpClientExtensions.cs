@@ -45,6 +45,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             httpClient.DefaultRequestHeaders.Add("Cookie", cookie);
             //httpClient.DefaultRequestHeaders.Add("Cookie", cookieList);
         }
+
+
     }
 
     public static class HtmlDocumentExtensions

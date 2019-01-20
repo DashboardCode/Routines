@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.1;net47</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>
 	<LangVersion>latest</LangVersion>
 	</PropertyGroup>
   
@@ -16,21 +16,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.11.1" />
-    
-
-    <PackageReference Include="DynamicExpresso.Core" Version="2.1.0" />
-
+    <PackageReference Include="BenchmarkDotNet" Version="0.11.3" />
+    <PackageReference Include="DynamicExpresso.Core" Version="2.2.1" />
     <PackageReference Include="FastExpressionCompiler" Version="1.10.1" />
     <PackageReference Include="Jil" Version="2.16.0" />
-
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="ServiceStack.Text" Version="5.4.0" />
   </ItemGroup>
   
-    <ItemGroup Condition="'$(TargetFramework)' == 'net47'">
-		<PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.11.1" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net47'">
+		<PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.11.3" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Routines\Routines.csproj" />

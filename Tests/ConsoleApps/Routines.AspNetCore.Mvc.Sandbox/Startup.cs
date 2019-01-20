@@ -13,11 +13,14 @@ namespace Routines.AspNetCore.Mvc.Sandbox
         {
             serviceCollection.AddMvc();
             serviceCollection.AddSingleton(serviceCollection);
+            serviceCollection.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddDebug();
+            });
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceCollection serviceCollection, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddDebug(LogLevel.Debug);
             var logger = loggerFactory.CreateLogger("Startup");
             logger.LogWarning("Logger configured!");
 

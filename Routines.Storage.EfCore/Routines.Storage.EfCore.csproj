@@ -7,12 +7,12 @@
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
     <PackageId>DashboardCode.Routines.Storage.EfCore</PackageId>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
-    <AssemblyVersion>2.0.29.0</AssemblyVersion>
-    <FileVersion>2.0.29.0</FileVersion>
+    <AssemblyVersion>2.0.31.0</AssemblyVersion>
+    <FileVersion>2.0.31.0</FileVersion>
     <Description>Routines Repository pattern realisation for EF Core</Description>
     <RootNamespace>DashboardCode.Routines.Storage.EfCore</RootNamespace>
     <AssemblyName>DashboardCode.Routines.Storage.EfCore</AssemblyName>
-    <Version>2.0.29</Version>
+    <Version>2.0.31</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
@@ -31,6 +31,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>latest</LangVersion>
+    <NoWarn>1701;1702; NU5125</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>

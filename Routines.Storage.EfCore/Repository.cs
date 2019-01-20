@@ -51,10 +51,24 @@ namespace DashboardCode.Routines.Storage.EfCore
             return list;
         }
 
+        public async Task<IReadOnlyCollection<TEntity>> ListAsync(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
+        {
+            var queryable = Query(include);
+            var list = await queryable.Where(predicate).ToListAsync();
+            return list;
+        }
+
         public TEntity Find(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
         {
             var queryable = Query(include);
             var list = queryable.Where(predicate).SingleOrDefault();
+            return list;
+        }
+
+        public async Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null)
+        {
+            var queryable = Query(include);
+            var list = await queryable.Where(predicate).SingleOrDefaultAsync();
             return list;
         }
 
