@@ -40,6 +40,14 @@ Something like this problem you will meet every time you update node
 First try 'npm rebuild node-sass'
 If doesn't help do the same manually: go to https://github.com/sass/node-sass/releases/tag/v4.8.3 (put your version there) and get the file that is pointed in message, in case of "win32-x64-57\binding.node" that is win32-x64-57_binding.node rename it to the binding.node and put to the  \node_modules\node-sass\vendor\win32-x64-57 folder
 
+# solving npm conflicts
+https://github.com/webpack/webpack/issues/8656
+analyzing npm ls packageName
+
+npm install webpack@4.28.4
+npm install acorn-dynamic-import@4.0.0
+npm update acorn --depth 20  - updates till the level
+npm dedupe
 
 
 1. ASP HTML
