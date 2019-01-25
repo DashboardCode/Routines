@@ -193,9 +193,9 @@ module.exports = {
                     loader: "babel-loader",
                     options: {
                         babelrc: false,
-                        plugins: ['babel-plugin-transform-class-properties'],
+                        plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-proposal-object-rest-spread"],
                         presets: [
-                            "@babel/typescript", // this or plugin  @babel/plugin-transform-typescript
+                            "@babel/preset-typescript", // this or plugin  @babel/plugin-transform-typescript
                             ["@babel/env",
                                 {
                                     "useBuiltIns": "usage",
@@ -218,8 +218,6 @@ module.exports = {
                                 }
                             ]
                         ]
-                        // plugins: [require('@babel/plugin-proposal-object-rest-spread')]
-                        // plugins: ['@babel/plugin-transform-runtime']
                     }
                 }
             }

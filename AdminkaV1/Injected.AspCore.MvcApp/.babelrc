@@ -1,11 +1,12 @@
 {
-  "plugins": [ "babel-plugin-transform-class-properties" ],
+  "plugins": [ "@babel/plugin-proposal-class-properties", "@babel/plugin-proposal-object-rest-spread" ],
   "presets": [
-    "@babel/typescript",
+    "@babel/preset-typescript", // this or plugin  @babel/plugin-transform-typescript
     [
       "@babel/env",
       {
-        "modules": "umd",
+        "useBuiltIns": "usage",
+        "modules": false, // required for typescript?
         "targets": {
           "browsers": [
             "last 2 chrome versions",

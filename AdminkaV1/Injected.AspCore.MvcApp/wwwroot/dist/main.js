@@ -126,13 +126,20 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var WorkflowManager =
 /*#__PURE__*/
 function () {
   function WorkflowManager(operationName) {
     _classCallCheck(this, WorkflowManager);
 
-    this.logBuffer = [];
+    _defineProperty(this, "operationName", void 0);
+
+    _defineProperty(this, "correlationToken", void 0);
+
+    _defineProperty(this, "logBuffer", []);
+
     this.operationName = operationName;
     this.correlationToken = this.NewGuid();
   }
@@ -187,6 +194,20 @@ function () {
 var ExceptionDetails = function ExceptionDetails(IsUser, Message, ExceptionType, ExceptionMessage, Controller, Action, TechInfo) {
   _classCallCheck(this, ExceptionDetails);
 
+  _defineProperty(this, "IsUser", void 0);
+
+  _defineProperty(this, "Message", void 0);
+
+  _defineProperty(this, "ExceptionType", void 0);
+
+  _defineProperty(this, "ExceptionMessage", void 0);
+
+  _defineProperty(this, "Controller", void 0);
+
+  _defineProperty(this, "Action", void 0);
+
+  _defineProperty(this, "TechInfo", void 0);
+
   this.IsUser = IsUser;
   this.Message = Message;
   this.ExceptionType = ExceptionType;
@@ -202,8 +223,14 @@ function () {
   function Workflow(operationName, correlationToken) {
     _classCallCheck(this, Workflow);
 
-    this.logErrorUrl = '/Error/LogBrowserMessage';
-    this.logPerfUrl = '/Error/WriteBrowserPerfomanceCounter';
+    _defineProperty(this, "OperationName", void 0);
+
+    _defineProperty(this, "CorrelationToken", void 0);
+
+    _defineProperty(this, "logErrorUrl", '/Error/LogBrowserMessage');
+
+    _defineProperty(this, "logPerfUrl", '/Error/WriteBrowserPerfomanceCounter');
+
     this.OperationName = operationName;
     this.CorrelationToken = correlationToken;
   }
