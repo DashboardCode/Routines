@@ -29,6 +29,7 @@ namespace DashboardCode.Routines.Json
             , bool useToString = false
             , string dateTimeFormat = null
             , string floatingPointFormat = null
+            , bool objectAsArray = false
             , bool handleEmptyObjectLiteral = true
             , bool handleEmptyArrayLiteral = true
             , Func<StringBuilder, bool> nullSerializer = null
@@ -56,8 +57,13 @@ namespace DashboardCode.Routines.Json
                     if (leafRule != null)
                         root.AppendLeafs(leafRule);
                 }
-                formatter = JsonManager.ComposeEnumerableFormatter(root, config, useToString, dateTimeFormat, floatingPointFormat, handleEmptyObjectLiteral,
-                    handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer, handleNullArrayProperty, rootHandleNullArray, rootHandleEmptyArrayLiteral, stringBuilderCapacity
+                formatter = JsonManager.ComposeEnumerableFormatter(
+                    root: root, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat, 
+                    floatingPointFormat: floatingPointFormat, objectAsArray: objectAsArray,
+                    handleEmptyObjectLiteral: handleEmptyObjectLiteral,
+                    handleEmptyArrayLiteral: handleEmptyArrayLiteral, nullSerializer: nullSerializer, 
+                    handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer, handleNullArrayProperty: handleNullArrayProperty, 
+                    rootHandleNullArray: rootHandleNullArray, rootHandleEmptyLiteral: rootHandleEmptyArrayLiteral, stringBuilderCapacity: stringBuilderCapacity
                     );
                 return formatter;
             }
@@ -70,6 +76,7 @@ namespace DashboardCode.Routines.Json
             bool useToString = false,
             string dateTimeFormat = null,
             string floatingPointFormat = null,
+            bool objectAsArray = false,
             bool handleEmptyObjectLiteral = true,
             bool handleEmptyArrayLiteral = true,
             Func<StringBuilder, bool> nullSerializer = null,
@@ -96,7 +103,7 @@ namespace DashboardCode.Routines.Json
                     if (leafRule!=null)
                         root.AppendLeafs(leafRule);
                 }
-                formatter = JsonManager.ComposeFormatter(root, config, useToString, dateTimeFormat, floatingPointFormat, handleEmptyObjectLiteral,
+                formatter = JsonManager.ComposeFormatter(root, config, useToString, dateTimeFormat, floatingPointFormat, objectAsArray, handleEmptyObjectLiteral,
                     handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer, handleNullArrayProperty, rootHandleNullArray, rootHandleEmptyArrayLiteral, stringBuilderCapacity);
                 return formatter;
             }

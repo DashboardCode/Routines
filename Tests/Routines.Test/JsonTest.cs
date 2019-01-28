@@ -71,7 +71,7 @@ namespace DashboardCode.Routines.Test
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel[0];
-            var formatter = JsonManager.ComposeEnumerableFormatter(include, rootHandleEmptyArrayLiteral: true);
+            var formatter = JsonManager.ComposeEnumerableFormatter(include, rootHandleEmptyLiteral: true);
             var json = formatter(source);
             if (json != "[]")
                 throw new Exception(nameof(JsonSerializeTest));
@@ -83,6 +83,12 @@ namespace DashboardCode.Routines.Test
             public int Y { get; set; }
         }
 
+        struct Point2
+        {
+            public string X { get; set; }
+            public string Y { get; set; }
+        }
+
         [TestMethod]
         public void JsonSerializeStructPoint()
         {
@@ -91,6 +97,50 @@ namespace DashboardCode.Routines.Test
             var formatter = JsonManager.ComposeFormatter(include);
             var json = formatter(source);
             if (json != "{\"X\":1,\"Y\":1}")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        [TestMethod]
+        public void JsonSerializeStructPointAsArray()
+        {
+            Include<Point> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
+            var source = new Point() { X = 1, Y = 2 };
+            var formatter = JsonManager.ComposeFormatter(include,objectAsArray:true);
+            var json = formatter(source);
+            if (json != "[1,2]")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        [TestMethod]
+        public void JsonSerializeStructPointAsArray2()
+        {
+            Include<Point2> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
+            var source = new Point2() { X = null, Y = null };
+            var formatter = JsonManager.ComposeFormatter(include, objectAsArray: true,handleNullProperty:false );
+            var json = formatter(source);
+            if (json != "[]")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        [TestMethod]
+        public void JsonSerializeStructPointAsArray2b()
+        {
+            Include<Point2> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
+            var source = new Point2() { X = null, Y = null };
+            var formatter = JsonManager.ComposeFormatter(include, objectAsArray: true, handleNullProperty: false, rootHandleEmptyLiteral: false );
+            var json = formatter(source);
+            if (json != "")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        [TestMethod]
+        public void JsonSerializeStructPointAsArray3()
+        {
+            Include<Point2> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
+            var source = new Point2() { X = null, Y = "" };
+            var formatter = JsonManager.ComposeFormatter(include, objectAsArray: true, handleNullProperty: false);
+            var json = formatter(source);
+            if (json != "[,\"\"]")
                 throw new Exception(nameof(JsonSerializeTest));
         }
 
@@ -186,7 +236,7 @@ namespace DashboardCode.Routines.Test
             var formatter = JsonManager.ComposeFormatter(
                     include
                     , handleNullProperty: false
-                    , rootHandleEmptyObjectLiteral: true
+                    , rootHandleEmptyLiteral: true
             );
             var json = formatter(source);
             if (json != "{}")
@@ -200,7 +250,7 @@ namespace DashboardCode.Routines.Test
             var source = new TestModel();
             var formatter = JsonManager.ComposeFormatter(include
                     , handleNullProperty: false
-                    , rootHandleEmptyObjectLiteral: false
+                    , rootHandleEmptyLiteral: false
             );
             var json = formatter(source);
             if (json != "")
@@ -212,7 +262,7 @@ namespace DashboardCode.Routines.Test
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
             var source = new TestModel[0];
-            var formatter = JsonManager.ComposeEnumerableFormatter(include, rootHandleEmptyArrayLiteral: false);
+            var formatter = JsonManager.ComposeEnumerableFormatter(include, rootHandleEmptyLiteral: false);
             var json = formatter(source);
             if (json != "")
                 throw new Exception(nameof(JsonSerializeTest));

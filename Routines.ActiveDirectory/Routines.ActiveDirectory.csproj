@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.ActiveDirectory</AssemblyName>
     <RootNamespace>DashboardCode.Routines.ActiveDirectory</RootNamespace>
-    <Version>2.0.32</Version>
+    <Version>2.0.33</Version>
     <Product>DashboardCode.Routines</Product>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
@@ -16,12 +16,20 @@
     <RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
     <Description>Markdown LdapException for nice logging and error dialogs</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>2.0.32.0</AssemblyVersion>
-    <FileVersion>2.0.32.0</FileVersion>
+    <AssemblyVersion>2.0.33.0</AssemblyVersion>
+    <FileVersion>2.0.33.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>1701;1702; NU5125</NoWarn>
+    <NoWarn>1701;1702;NU5125</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>1701;1702;NU5125</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

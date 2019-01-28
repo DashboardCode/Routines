@@ -1,0 +1,3 @@
+# CSharp code style settings:
+[*.cs]
+csharp_style_pattern_local_over_anonymous_function = false

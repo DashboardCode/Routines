@@ -8,9 +8,9 @@ namespace DashboardCode.Routines.Storage
     {
         List<FieldMessage> fieldMessages;
         IOrmEntitySchemaAdapter relationalEntitySchemaAdapter;
-        string genericErrorField;
-        Type entityType;
-        Exception exception;
+        readonly string genericErrorField;
+        readonly Type entityType;
+        readonly Exception exception;
         public StorageResultBuilder(Exception exception, Type entityType, IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, string genericErrorField)
         {
             this.entityType = entityType;
@@ -129,16 +129,16 @@ namespace DashboardCode.Routines.Storage
         {
             if (table == relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName)
             {
-                var constraint = relationalEntitySchemaAdapter.GetConstraint(constraintName);
-                if (constraint.Attributes != null)
+                var (Attributes, Message) = relationalEntitySchemaAdapter.GetConstraint(constraintName);
+                if (Attributes != null)
                 {
-                    if (constraint.Attributes.Length == 1)
-                        fieldMessages.Add(constraint.Attributes[0], constraint.Message);
+                    if (Attributes.Length == 1)
+                        fieldMessages.Add(Attributes[0], Message);
                     else
                     {
-                        var csv = string.Join(",", constraint.Attributes);
-                        foreach (var f in constraint.Attributes)
-                            fieldMessages.Add(f, constraint.Message);
+                        var csv = string.Join(",", Attributes);
+                        foreach (var f in Attributes)
+                            fieldMessages.Add(f, Message);
                     }
                 }
             }

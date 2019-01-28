@@ -48,6 +48,64 @@ namespace DashboardCode.Routines.Json
         }
         #endregion
 
+        #region Object As Array Serializers
+        public static bool SerializeAssociativeArrayAsArray<T>(StringBuilder stringBuilder, T t, params Func<StringBuilder, T, bool>[] propertySerializers)
+        {
+            var @value = false;
+            stringBuilder.Append('[');
+            var commas = 0;
+            foreach (var propertySerializer in propertySerializers)
+            {
+                var notEmpty = propertySerializer(stringBuilder, t);
+                stringBuilder.Append(',');
+                commas++;
+                if (notEmpty)
+                {
+                    if (!@value)
+                        @value = true;
+                }
+            };
+            if (@value)
+            {
+                stringBuilder.Length--;
+                stringBuilder.Append(']');
+            }
+            else
+            {
+                stringBuilder.Length = stringBuilder.Length - commas-1;
+            }
+            return @value;
+        }
+
+        public static bool SerializeAssociativeArrayAsArrayHandleEmpty<T>(StringBuilder stringBuilder, T t, params Func<StringBuilder, T, bool>[] propertySerializers)
+        {
+            var @value = false;
+            stringBuilder.Append('[');
+            var commas = 0;
+            foreach (var propertySerializer in propertySerializers)
+            {
+                var notEmpty = propertySerializer(stringBuilder, t);
+                stringBuilder.Append(',');
+                commas++;
+                if (notEmpty)
+                {
+                    if (!@value)
+                        @value = true;
+                }
+            };
+            if (@value)
+            {
+                stringBuilder.Length--;
+            }
+            else
+            {
+                stringBuilder.Length = stringBuilder.Length - commas;
+            }
+            stringBuilder.Append(']');
+            return @value;
+        }
+        #endregion
+
         #region Array Serializers
         public static bool SerializeRefArray<T>(StringBuilder stringBuilder, IEnumerable<T> enumerable, Func<StringBuilder, T, bool> itemSerializer, Func<StringBuilder, bool> nullSerializer) where T: class
         {
@@ -294,6 +352,77 @@ namespace DashboardCode.Routines.Json
         }
         #endregion
 
-       
+        #region Serialize A Struct Property
+        public static bool SerializeValueAProperty<T, TProp>(StringBuilder stringBuilder, T t,
+            Func<T, TProp> getter, Func<StringBuilder, TProp, bool> serializer) where TProp : struct
+        {
+            var value = getter(t);
+            var notEmpty = serializer(stringBuilder, value);
+            return notEmpty;
+        }
+
+        public static bool SerializeNValueAPropertyHandleNull<T, TProp>(StringBuilder stringBuilder, T t, 
+            Func<T, TProp?> getter, Func<StringBuilder, TProp, bool> serializer, Func<StringBuilder, bool> nullSerializer) where TProp : struct
+        {
+            var nullableValue = getter(t);
+            var notEmpty = (nullableValue.HasValue) ? 
+                serializer(stringBuilder, nullableValue.Value) : nullSerializer(stringBuilder);
+            return notEmpty;
+        }
+
+        public static bool SerializeNValueAProperty<T, TProp>(StringBuilder stringBuilder, T t, 
+            Func<T, TProp?> getter, Func<StringBuilder, TProp, bool> serializer) where TProp : struct
+        {
+            var notEmpty = false;
+            var nullableValue = getter(t);
+            if (nullableValue.HasValue)
+            {
+                notEmpty = serializer(stringBuilder, nullableValue.Value);
+            }
+            return notEmpty;
+        }
+
+        public static bool SerializeNValueNavAPropertyHandleNull<T, TProp>(StringBuilder stringBuilder, T t, 
+            Func<T, TProp?> getter, Func<StringBuilder, TProp?, bool> serializer, Func<StringBuilder, bool> nullSerializer) where TProp : struct
+        {
+            var nullableValue = getter(t);
+            var notEmpty = (nullableValue.HasValue) ? serializer(stringBuilder, nullableValue) : nullSerializer(stringBuilder);
+            return notEmpty;
+        }
+
+        public static bool SerializeNValueNavAProperty<T, TProp>(StringBuilder stringBuilder, T t, 
+            Func<T, TProp?> getter, Func<StringBuilder, TProp?, bool> serializer) where TProp : struct
+        {
+            var notEmpty = false;
+            var nullableValue = getter(t);
+            if (nullableValue.HasValue)
+            {
+                notEmpty = serializer(stringBuilder, nullableValue);
+            }
+            return notEmpty;
+        }
+        #endregion
+
+        #region Serialize A Ref Property
+        public static bool SerializeRefAPropertyHandleNull<T, TProp>(StringBuilder stringBuilder, T t, 
+            Func<T, TProp> getter, Func<StringBuilder, TProp, bool> formatter, Func<StringBuilder, bool> nullFormatter) where TProp : class
+        {
+            var value = getter(t);
+            var notEmpty = (value == null) ? nullFormatter(stringBuilder) : formatter(stringBuilder, value);
+            return notEmpty;
+        }
+
+        public static bool SerializeRefAProperty<T, TProp>(StringBuilder stringBuilder, T t, 
+            Func<T, TProp> getter, Func<StringBuilder, TProp, bool> formatter) where TProp : class
+        {
+            var notEmpty = false;
+            var value = getter(t);
+            if (value != null)
+            {
+                notEmpty = formatter(stringBuilder, value);
+            }
+            return notEmpty;
+        }
+        #endregion
     }
 }

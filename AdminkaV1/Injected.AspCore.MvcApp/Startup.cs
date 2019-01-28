@@ -74,9 +74,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             }
             else
             {
-//#pragma warning disable CS0162
+#pragma warning disable CS0162
                 app.UseExceptionHandler("/Home/Error");
-//#pragma warning restore CS0162
+#pragma warning restore CS0162
             }
 
             app.UseStaticFiles();

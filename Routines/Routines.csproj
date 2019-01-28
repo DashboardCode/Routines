@@ -7,13 +7,13 @@
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
     <PackageId>DashboardCode.Routines</PackageId>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
-    <AssemblyVersion>2.0.32.0</AssemblyVersion>
-    <FileVersion>2.0.32.0</FileVersion>
+    <AssemblyVersion>2.0.33.0</AssemblyVersion>
+    <FileVersion>2.0.33.0</FileVersion>
     <Description>Middle layer framework to compose functions such as "clone", "compare", "serialize" etc using "navigation expressions" and provide some abstractions missed in standard framework ("repository",  "buffered conditional logging", etc.).</Description>
     <RootNamespace>DashboardCode.Routines</RootNamespace>
     <AssemblyName>DashboardCode.Routines</AssemblyName>
 	<LangVersion>latest</LangVersion>
-	<Version>2.0.32</Version>
+	<Version>2.0.33</Version>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
 	<PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
@@ -28,10 +28,15 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <DebugSymbols>True</DebugSymbols>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <NoWarn>1701;1702;NU5125</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>1701;1702; NU5125</NoWarn>
+    <NoWarn>1701;1702;NU5125</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
   </PropertyGroup>
 
   <ItemGroup>

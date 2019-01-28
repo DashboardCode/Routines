@@ -21,8 +21,6 @@ namespace DashboardCode.Routines.Json
             bool useToString,
             string dateTimeFormat,
             string floatingPointFormat,
-            bool stringAsJsonLiteral,
-            bool stringJsonEscape,
             Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions,
             Func<LambdaExpression, Delegate> compile
         )
@@ -94,7 +92,7 @@ namespace DashboardCode.Routines.Json
                 bool stringJsonEscape,
                 Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions,
                 Func<LambdaExpression, Delegate> compile
-            ) :base(useToString, dateTimeFormat, floatingPointFormat, stringAsJsonLiteral, stringJsonEscape, nullSerializer, handleNullProperty, internalNodeOptions, compile
+            ) :base(useToString, dateTimeFormat, floatingPointFormat, nullSerializer, handleNullProperty, internalNodeOptions, compile
                 )
         {
             this.root = root;
@@ -130,6 +128,7 @@ namespace DashboardCode.Routines.Json
                 new InternalNodeOptions(
                         internalNodeOptions.HandleEmptyObjectLiteral,
                         internalNodeOptions.HandleEmptyArrayLiteral,
+                        internalNodeOptions.ObjectAsArray,
                         internalNodeOptions.NullSerializer,
                         internalNodeOptions.HandleNullProperty,
                         internalNodeOptions.NullArraySerializer,
@@ -164,7 +163,7 @@ namespace DashboardCode.Routines.Json
             bool stringJsonEscape,
             Func<StringBuilder, bool> nullSerializer, bool handleNullProperty, InternalNodeOptions internalNodeOptions,
             Func<LambdaExpression, Delegate> compile)
-            : base(useToString, dateTimeFormat, floatingPointFormat, stringAsJsonLiteral, stringJsonEscape, nullSerializer, handleNullProperty, internalNodeOptions, compile)
+            : base(useToString, dateTimeFormat, floatingPointFormat, nullSerializer, handleNullProperty, internalNodeOptions, compile)
         {
 
             AddTypeRuleOptimized<bool>((sb, t) => JsonValueStringBuilderExtensions.SerializeBool(sb, t));

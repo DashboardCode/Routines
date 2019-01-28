@@ -18,6 +18,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             , bool useToString = false
             , string dateTimeFormat = null
             , string floatingPointFormat = null
+            , bool objectAsArray = false
             , bool handleEmptyObjectLiteral = true
             , bool handleEmptyArrayLiteral = true
             , Func<StringBuilder, bool> nullSerializer = null
@@ -29,7 +30,8 @@ namespace DashboardCode.Routines.Storage.EfCore
             , int stringBuilderCapacity = 16
             )
         {
-            var theDelegate = cache.GetEnumerableFormatter(include, leafRule, config, useToString, dateTimeFormat, floatingPointFormat, handleEmptyObjectLiteral,
+            var theDelegate = cache.GetEnumerableFormatter(include, leafRule, config, useToString, dateTimeFormat, floatingPointFormat,
+                objectAsArray, handleEmptyObjectLiteral,
                 handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer, handleNullArrayProperty, rootHandleNullArray,
                 rootHandleEmptyArrayLiteral, stringBuilderCapacity
                 );
@@ -48,6 +50,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             bool useToString = false,
             string dateTimeFormat = null,
             string floatingPointFormat = null,
+            bool objectAsArray=false,
             bool handleEmptyObjectLiteral = true,
             bool handleEmptyArrayLiteral = true,
             Func<StringBuilder, bool> nullSerializer = null,
@@ -62,7 +65,7 @@ namespace DashboardCode.Routines.Storage.EfCore
         {
             var theDelegate = cache.GetFormatter(
                 include, 
-                leafRule, config, useToString, dateTimeFormat, floatingPointFormat, handleEmptyObjectLiteral, handleEmptyArrayLiteral,
+                leafRule, config, useToString, dateTimeFormat, floatingPointFormat, objectAsArray, handleEmptyObjectLiteral, handleEmptyArrayLiteral,
                 nullSerializer, handleNullProperty, nullArraySerializer, handleNullArrayProperty, rootHandleNullArray, rootHandleEmptyArrayLiteral, stringBuilderCapacity
                 );
             if (!(theDelegate is Func<T, string> formatter))

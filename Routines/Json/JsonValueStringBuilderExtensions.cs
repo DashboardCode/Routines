@@ -142,7 +142,7 @@ namespace DashboardCode.Routines.Json
 
         // This will be always a little bit slower than Convert.ToBase64String because of cost of "safe array indexers"
         // but I left it there because it can be used in future projects on stream (after some modifications) 
-        static char[] base64chars = Encoding.ASCII.GetChars(Encoding.ASCII.GetBytes("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"));
+        static readonly char[] base64chars = Encoding.ASCII.GetChars(Encoding.ASCII.GetBytes("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"));
         public static bool SerializeBase64Custom(StringBuilder sb, byte[] bytes)
         {
             unchecked
