@@ -36,8 +36,9 @@ namespace DashboardCode.Routines.Json
             , bool handleNullProperty = true
             , Func<StringBuilder, bool> nullArraySerializer = null
             , bool handleNullArrayProperty = true
-            , bool rootHandleNullArray = true
-            , bool rootHandleEmptyArrayLiteral = true
+            , string rootAsProperty = null
+            , bool rootHandleNull = true
+            , bool rootHandleEmptyLiteral = true
             , int stringBuilderCapacity = 16
             )
         {
@@ -62,8 +63,9 @@ namespace DashboardCode.Routines.Json
                     floatingPointFormat: floatingPointFormat, objectAsArray: objectAsArray,
                     handleEmptyObjectLiteral: handleEmptyObjectLiteral,
                     handleEmptyArrayLiteral: handleEmptyArrayLiteral, nullSerializer: nullSerializer, 
-                    handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer, handleNullArrayProperty: handleNullArrayProperty, 
-                    rootHandleNullArray: rootHandleNullArray, rootHandleEmptyLiteral: rootHandleEmptyArrayLiteral, stringBuilderCapacity: stringBuilderCapacity
+                    handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer, handleNullArrayProperty: handleNullArrayProperty,
+                    rootAsProperty : rootAsProperty,
+                    rootHandleNull: rootHandleNull, rootHandleLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity
                     );
                 return formatter;
             }
@@ -83,8 +85,9 @@ namespace DashboardCode.Routines.Json
             bool handleNullProperty = true,
             Func<StringBuilder, bool> nullArraySerializer = null,
             bool handleNullArrayProperty = true,
-            bool rootHandleNullArray = true, 
-            bool rootHandleEmptyArrayLiteral = true,
+            string rootAsProperty = null,
+            bool rootHandleNull = true, 
+            bool rootHandleEmptyLiteral = true,
             int stringBuilderCapacity = 16)
         {
             if (formatter != null)
@@ -103,8 +106,17 @@ namespace DashboardCode.Routines.Json
                     if (leafRule!=null)
                         root.AppendLeafs(leafRule);
                 }
-                formatter = JsonManager.ComposeFormatter(root, config, useToString, dateTimeFormat, floatingPointFormat, objectAsArray, handleEmptyObjectLiteral,
-                    handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer, handleNullArrayProperty, rootHandleNullArray, rootHandleEmptyArrayLiteral, stringBuilderCapacity);
+                formatter = JsonManager.ComposeFormatter(root: root, 
+                    config: config, useToString: useToString, dateTimeFormat: dateTimeFormat, 
+                    floatingPointFormat: floatingPointFormat, objectAsArray: objectAsArray, 
+                    handleEmptyObjectLiteral: handleEmptyObjectLiteral,
+                    handleEmptyArrayLiteral: handleEmptyArrayLiteral, 
+                    nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, 
+                    nullArraySerializer: nullArraySerializer, handleNullArrayProperty: handleNullArrayProperty,
+                    rootAsProperty: rootAsProperty,
+                    rootHandleNull: rootHandleNull, 
+                    rootHandleEmptyLiteral: rootHandleEmptyLiteral, 
+                    stringBuilderCapacity);
                 return formatter;
             }
         }

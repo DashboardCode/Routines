@@ -25,15 +25,21 @@ namespace DashboardCode.Routines.Storage.EfCore
             , bool handleNullProperty = true
             , Func<StringBuilder, bool> nullArraySerializer = null
             , bool handleNullArrayProperty = true
-            , bool rootHandleNullArray = true
-            , bool rootHandleEmptyArrayLiteral = true
+            , string rootAsProperty = null
+            , bool rootHandleNull = true
+            , bool rootHandleEmptyLiteral = true
             , int stringBuilderCapacity = 16
             )
         {
-            var theDelegate = cache.GetEnumerableFormatter(include, leafRule, config, useToString, dateTimeFormat, floatingPointFormat,
-                objectAsArray, handleEmptyObjectLiteral,
-                handleEmptyArrayLiteral, nullSerializer, handleNullProperty, nullArraySerializer, handleNullArrayProperty, rootHandleNullArray,
-                rootHandleEmptyArrayLiteral, stringBuilderCapacity
+            var theDelegate = cache.GetEnumerableFormatter(include: include,
+                leafRule: leafRule, config: config, useToString: useToString,
+                dateTimeFormat: dateTimeFormat, floatingPointFormat: floatingPointFormat,
+                objectAsArray: objectAsArray, handleEmptyObjectLiteral: handleEmptyObjectLiteral,
+                handleEmptyArrayLiteral: handleEmptyArrayLiteral, 
+                nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, 
+                nullArraySerializer: nullArraySerializer, 
+                handleNullArrayProperty: handleNullArrayProperty, rootAsProperty: rootAsProperty, rootHandleNull: rootHandleNull,
+                rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity
                 );
             if (!(theDelegate is Func<IEnumerable<T>, string> formatter))
                 throw new NotImplementedException("It seems you reuse CachedFormatter. It is forbidden. Use one CachedFormatter for one Include");
@@ -57,16 +63,22 @@ namespace DashboardCode.Routines.Storage.EfCore
             bool handleNullProperty = true,
             Func<StringBuilder, bool> nullArraySerializer = null,
             bool handleNullArrayProperty = true,
-            bool rootHandleNullArray = true, bool
-            rootHandleEmptyArrayLiteral = true,
+            string rootAsProperty = null,
+            bool rootHandleNull = true, 
+            bool rootHandleEmptyLiteral = true,
             int stringBuilderCapacity = 16
 
             )
         {
             var theDelegate = cache.GetFormatter(
-                include, 
-                leafRule, config, useToString, dateTimeFormat, floatingPointFormat, objectAsArray, handleEmptyObjectLiteral, handleEmptyArrayLiteral,
-                nullSerializer, handleNullProperty, nullArraySerializer, handleNullArrayProperty, rootHandleNullArray, rootHandleEmptyArrayLiteral, stringBuilderCapacity
+                include: include, 
+                leafRule: leafRule, config: config, useToString: useToString, 
+                dateTimeFormat: dateTimeFormat, floatingPointFormat: floatingPointFormat, 
+                objectAsArray: objectAsArray, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
+                nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
+                handleNullArrayProperty: handleNullArrayProperty, 
+                rootAsProperty: rootAsProperty, rootHandleNull: rootHandleNull, rootHandleEmptyLiteral: rootHandleEmptyLiteral, 
+                stringBuilderCapacity: stringBuilderCapacity
                 );
             if (!(theDelegate is Func<T, string> formatter))
                 throw new NotImplementedException("It seems you reuse CachedFormatter. It is forbidden. Use one CachedFormatter for one Include");

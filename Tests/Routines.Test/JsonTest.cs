@@ -112,6 +112,18 @@ namespace DashboardCode.Routines.Test
         }
 
         [TestMethod]
+        public void JsonSerializeStructPointAsArrayAndProperty()
+        {
+            Include<Point> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
+            var source = new Point() { X = 1, Y = 2 };
+            var formatter = JsonManager.ComposeFormatter(
+                include, objectAsArray: true, rootAsProperty:"data");
+            var json = formatter(source);
+            if (json != "{\"data\":[1,2]}")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        [TestMethod]
         public void JsonSerializeStructPointAsArray2()
         {
             Include<Point2> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
@@ -119,6 +131,17 @@ namespace DashboardCode.Routines.Test
             var formatter = JsonManager.ComposeFormatter(include, objectAsArray: true,handleNullProperty:false );
             var json = formatter(source);
             if (json != "[]")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        [TestMethod]
+        public void JsonSerializeStructPointAsArray2AsProperty()
+        {
+            Include<Point2> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
+            var source = new Point2() { X = null, Y = null };
+            var formatter = JsonManager.ComposeFormatter(include, objectAsArray: true, rootAsProperty: "data", handleNullProperty: false, rootHandleEmptyLiteral: false);
+            var json = formatter(source);
+            if (json != "")
                 throw new Exception(nameof(JsonSerializeTest));
         }
 
@@ -291,7 +314,7 @@ namespace DashboardCode.Routines.Test
             var formatter = JsonManager.ComposeEnumerableFormatter(include
                     , handleNullProperty: false
                     , handleNullArrayProperty: false
-                    , rootHandleNullArray:false
+                    , rootHandleNull:false
                     , useToString: true
             );
             var json = formatter(source);
@@ -305,7 +328,7 @@ namespace DashboardCode.Routines.Test
             var include = TestTool.CreateInclude();
 
             var formatter = JsonManager.ComposeEnumerableFormatter(include
-                    , rootHandleNullArray: false
+                    , rootHandleNull: false
                     , handleNullProperty: false
                     , handleNullArrayProperty: false
                     , useToString: true
