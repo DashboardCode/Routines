@@ -72,7 +72,7 @@ namespace DashboardCode.Routines.Test
 
             // for coverage
             var clonedB = ObjectExtensions.CloneAll(list, includes, LeafRuleManager.Default); 
-            var clonedNull = ObjectExtensions.Clone(default(TestModel), includes, LeafRuleManager.Default);
+            var clonedNull = ObjectExtensions.Clone(default, includes, LeafRuleManager.Default);
             var clonedNulls = ObjectExtensions.CloneAll<List<TestModel>,TestModel>(null, includes);
             var xx = new List<TestModel>();
             ObjectExtensions.CopyAll<List<TestModel>, TestModel>(list, xx);

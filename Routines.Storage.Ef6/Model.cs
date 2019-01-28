@@ -2,7 +2,7 @@
 
 namespace DashboardCode.Routines.Storage.Ef6
 {
-    public class Model<TEntity> :  IOrmEntitySchemaAdapter<TEntity> where TEntity : class
+    public sealed class Model<TEntity> :  IOrmEntitySchemaAdapter<TEntity> where TEntity : class
     {
         private readonly DbContext context;
 
@@ -20,46 +20,6 @@ namespace DashboardCode.Routines.Storage.Ef6
 
         public Include<TEntity> ExtractNavigationsAppendKeyLeafs(Include<TEntity> include) =>
             Ef6Extensions.ExtractNavigationsAppendKeyProperties(include, context);
-
-        public string[] Binaries()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public string[] GetKeys()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public string[] Requireds()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        (string SchemaName, string TableName) IOrmEntitySchemaAdapter.GetTableName()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public string[] GetRequireds()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public string[] GetBinaries()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public string[] GetUnique()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public (string[] Attributes, string Message) GetConstraint()
-        {
-            throw new System.NotImplementedException();
-        }
 
         Include<TEntity> IOrmEntitySchemaAdapter<TEntity>.AppendModelFields(Include<TEntity> include)
         {
@@ -102,6 +62,11 @@ namespace DashboardCode.Routines.Storage.Ef6
         }
 
         (string[] Attributes, string Message) IOrmEntitySchemaAdapter.GetConstraint(string name)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        (string SchemaName, string TableName) IOrmEntitySchemaAdapter.GetTableName()
         {
             throw new System.NotImplementedException();
         }

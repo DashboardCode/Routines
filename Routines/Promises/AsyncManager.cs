@@ -6,8 +6,12 @@ using System.Collections.Concurrent;
 
 namespace DashboardCode.Routines
 {
+    /// <summary>
+    /// This was used with unit tests when async was not supported by unit tests frameworks.
+    /// </summary>
     public static class AsyncManager
     {
+
         public static void Handle(Func<Task> func)
         {
             using (var asyncTaskScheduler = new AsyncTaskScheduler())
@@ -24,12 +28,17 @@ namespace DashboardCode.Routines
                     SynchronizationContext.SetSynchronizationContext(asyncSynchronizationContext);
 
                     asyncTaskScheduler.Increment();
-                    var funcTask = asyncTaskFactory.StartNew(func, asyncTaskFactory.CancellationToken, TaskCreationOptions.HideScheduler | TaskCreationOptions.DenyChildAttach, asyncTaskScheduler).Unwrap();
+#pragma warning disable AsyncFixer04
+                    var funcTask = asyncTaskFactory.StartNew(func, asyncTaskFactory.CancellationToken, 
+                        TaskCreationOptions.HideScheduler | TaskCreationOptions.DenyChildAttach, 
+                        asyncTaskScheduler).Unwrap();
+
                     var continuationTask = funcTask.ContinueWith(t =>
                     {
                         asyncTaskScheduler.Decrement();
                         t.GetAwaiter().GetResult();
                     }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, asyncTaskScheduler);
+#pragma warning restore AsyncFixer04 
                     
                     var tasks = asyncTaskScheduler.GetConsumingEnumerable();
                     foreach (var (hasAwait, t) in tasks)
@@ -38,6 +47,7 @@ namespace DashboardCode.Routines
                         if (hasAwait)
                             t.GetAwaiter().GetResult();
                     }
+                    // wait till continuationTask end - means we can use asyncTaskScheduler in the using block
                     continuationTask.GetAwaiter().GetResult();
 
                     SynchronizationContext.SetSynchronizationContext(oldContext);

@@ -104,7 +104,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
         }
 
         // NOTE: not threadsafe way of disposing
-        public override void Dispose()
+        public sealed override void Dispose()
         {
             returnLoggerFactory?.Invoke();
             returnLoggerFactory = null;
