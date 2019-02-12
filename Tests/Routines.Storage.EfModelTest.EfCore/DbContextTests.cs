@@ -259,12 +259,12 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
 
         }
 
-        static CachedFormatter cachedJsonFormatter1 = new CachedFormatter();
-        static CachedFormatter cachedJsonFormatter2 = new CachedFormatter();
-        static CachedFormatter cachedJsonFormatter2b = new CachedFormatter();
-        static CachedFormatter cachedJsonFormatter3 = new CachedFormatter();
-        static CachedFormatter cachedJsonFormatter4 = new CachedFormatter();
-        static CachedFormatter cachedJsonFormatter5 = new CachedFormatter();
+        static readonly CachedFormatter cachedJsonFormatter1 = new CachedFormatter();
+        static readonly CachedFormatter cachedJsonFormatter2 = new CachedFormatter();
+        static readonly CachedFormatter cachedJsonFormatter2b = new CachedFormatter();
+        static readonly CachedFormatter cachedJsonFormatter3 = new CachedFormatter();
+        static readonly CachedFormatter cachedJsonFormatter4 = new CachedFormatter();
+        static readonly CachedFormatter cachedJsonFormatter5 = new CachedFormatter();
         internal static void SqlServerGetJson(string connectionString)
         {
 
@@ -272,6 +272,11 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             {
                 TestService.Clear(new AdoBatch(dbContext));
                 TestService.Reset(StorageFactory.CreateStorage(dbContext));
+                using (var c = dbContext.Database.GetDbConnection())
+                {
+                    c.Open();
+                    var x = Routines.Storage.SqlServer.SqlServerManager.GetApproximateRowCount(c, "tst.ParentRecords");
+                }
             }
 
             var messages = new List<string>();

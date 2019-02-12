@@ -36,6 +36,7 @@ namespace DashboardCode.Routines.Json
             , bool handleNullProperty = true
             , Func<StringBuilder, bool> nullArraySerializer = null
             , bool handleNullArrayProperty = true
+            , Action<IJsonRootPropertyAppender> rootPropertyAppender = null
             , string rootAsProperty = null
             , bool rootHandleNull = true
             , bool rootHandleEmptyLiteral = true
@@ -64,7 +65,7 @@ namespace DashboardCode.Routines.Json
                     handleEmptyObjectLiteral: handleEmptyObjectLiteral,
                     handleEmptyArrayLiteral: handleEmptyArrayLiteral, nullSerializer: nullSerializer, 
                     handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer, handleNullArrayProperty: handleNullArrayProperty,
-                    rootAsProperty : rootAsProperty,
+                    rootAsProperty : rootAsProperty, rootPropertyAppender: rootPropertyAppender,
                     rootHandleNull: rootHandleNull, rootHandleLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity
                     );
                 return formatter;
@@ -86,6 +87,7 @@ namespace DashboardCode.Routines.Json
             Func<StringBuilder, bool> nullArraySerializer = null,
             bool handleNullArrayProperty = true,
             string rootAsProperty = null,
+            Action<IJsonRootPropertyAppender> rootPropertyAppender = null,
             bool rootHandleNull = true, 
             bool rootHandleEmptyLiteral = true,
             int stringBuilderCapacity = 16)
@@ -114,6 +116,7 @@ namespace DashboardCode.Routines.Json
                     nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, 
                     nullArraySerializer: nullArraySerializer, handleNullArrayProperty: handleNullArrayProperty,
                     rootAsProperty: rootAsProperty,
+                    rootPropertyAppender: rootPropertyAppender,
                     rootHandleNull: rootHandleNull, 
                     rootHandleEmptyLiteral: rootHandleEmptyLiteral, 
                     stringBuilderCapacity);

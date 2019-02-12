@@ -117,11 +117,12 @@ namespace DashboardCode.Routines.Test
             Include<Point> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
             var source = new Point() { X = 1, Y = 2 };
             var formatter = JsonManager.ComposeFormatter(
-                include, objectAsArray: true, rootAsProperty:"data");
+                include, objectAsArray: true, rootAsProperty:"data", rootPropertyAppender: j=>j.AddNumberProperty("extra",3).AddStringProperty("extra2","\""));
             var json = formatter(source);
-            if (json != "{\"data\":[1,2]}")
+            if (json != "{\"data\":[1,2],\"extra\":3,\"extra2\":\"\\\"\"}")
                 throw new Exception(nameof(JsonSerializeTest));
         }
+
 
         [TestMethod]
         public void JsonSerializeStructPointAsArray2()

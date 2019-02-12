@@ -83,7 +83,7 @@ namespace DashboardCode.AdminkaV1.Injected
              AdminkaStorageConfiguration adminkaStorageConfiguration,
              IPerformanceCounters performanceCounters,
              Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
-             ContainerFactory<UserContext> containerFactory,
+             ContainerFactory containerFactory,
              Guid correlationToken,
              MemberTag memberTag,
              IIdentity identity,
@@ -202,7 +202,7 @@ namespace DashboardCode.AdminkaV1.Injected
             IPerformanceCounters performanceCounters,
             Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers,
-            ContainerFactory<UserContext> containerFactory,
+            ContainerFactory containerFactory,
             Guid correaltionToken,
             MemberTag memberTag,
             UserContext userContext,
@@ -222,7 +222,7 @@ namespace DashboardCode.AdminkaV1.Injected
         internal AdminkaRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             AdminkaRoutineLogger routineLogger,
-            ContainerFactory<UserContext> containerFactory,
+            ContainerFactory containerFactory,
             MemberTag memberTag,
             UserContext userContext,
             object input) :

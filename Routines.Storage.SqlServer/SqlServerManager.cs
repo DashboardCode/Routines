@@ -2,11 +2,59 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Data.SqlClient;
+using System.Data;
+using System.Threading.Tasks;
+using System.Data.Common;
 
 namespace DashboardCode.Routines.Storage.SqlServer
 {
     public static class SqlServerManager
     {
+        public static async Task<long> GetApproximateRowCountAsync(DbConnection connection, string objname)
+        {
+            var command = connection.CreateCommand();
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "sp_spaceused";
+            var parameter1 = command.CreateParameter();
+            parameter1.ParameterName = "@objname";
+            parameter1.Value = objname;
+            parameter1.DbType = DbType.String;
+            command.Parameters.Add(parameter1);
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    var rowsText = reader[1] as string; 
+                    return long.Parse(rowsText);
+                }
+                return 0;
+            }
+        }
+
+        public static long GetApproximateRowCount(DbConnection connection, string objname)
+        {
+            var command = connection.CreateCommand();
+            command.CommandType = CommandType.StoredProcedure;
+            command.CommandText = "sp_spaceused";
+            var parameter1 = command.CreateParameter();
+            parameter1.ParameterName = "@objname";
+            parameter1.Value = objname;
+            parameter1.DbType = DbType.String;
+            command.Parameters.Add(parameter1);
+            // TODO: 
+            // ((SqlConnection)connection).RetrieveStatistics
+            // https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/sql/provider-statistics-for-sql-server 
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var rowsText = reader[1] as string;
+                    return long.Parse(rowsText);
+                }
+                return 0;
+            }
+        }
+
         public static void Append(StringBuilder stringBuilder, Exception exception)
         {
             if (exception is SqlException sqlException)

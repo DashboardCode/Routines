@@ -28,11 +28,11 @@ namespace DashboardCode.AdminkaV1.Injected
 
         public RoutineLoggingTransients CreateTransients(
             MemberTag memberTag,
-            ContainerFactory<UserContext> containerFactory,
+            ContainerFactory containerFactory,
             UserContext userContext,
             object input)
         {
-            var container = containerFactory.CreateContainer(memberTag, userContext);
+            var container = containerFactory.CreateContainer(memberTag, userContext.AuditStamp);
             var loggingConfiguration = container.Resolve<LoggingConfiguration>();
             var loggingVerboseConfiguration = container.Resolve<LoggingVerboseConfiguration>();
 

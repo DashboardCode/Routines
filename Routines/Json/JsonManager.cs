@@ -21,6 +21,7 @@ namespace DashboardCode.Routines.Json
             , Func<StringBuilder, bool> nullArraySerializer = null
             , bool handleNullArrayProperty = true
             , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender> rootPropertyAppender = null
             , bool rootHandleNull = true
             , bool rootHandleEmptyLiteral = true
             , int stringBuilderCapacity = 16
@@ -33,7 +34,7 @@ namespace DashboardCode.Routines.Json
                     handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                     nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
                     handleNullArrayProperty: handleNullArrayProperty,
-                    rootAsProperty: rootAsProperty,
+                    rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender,
                     rootHandleNull: rootHandleNull, rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity,
                     compile: compile, doCompileInnerLambdas: doCompileInnerLambdas
                 );
@@ -53,6 +54,7 @@ namespace DashboardCode.Routines.Json
            , Func<StringBuilder, bool> nullArraySerializer = null
            , bool handleNullArrayProperty = true
            , string rootAsProperty = null
+           , Action<IJsonRootPropertyAppender> rootPropertyAppender = null
            , bool rootHandleNull = true
            , bool rootHandleEmptyLiteral = true
            , int stringBuilderCapacity = 16
@@ -75,7 +77,7 @@ namespace DashboardCode.Routines.Json
                     nullArraySerializer: nullArraySerializer,
                     handleNullArrayProperty: handleNullArrayProperty,
 
-                    rootAsProperty: rootAsProperty, rootHandleNull: rootHandleNull, 
+                    rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender, rootHandleNull: rootHandleNull, 
                     rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity, 
                     compile: compile, doCompileInnerLambdas: doCompileInnerLambdas
                 );
@@ -96,6 +98,7 @@ namespace DashboardCode.Routines.Json
            , Func<StringBuilder, bool> nullArraySerializer = null
            , bool handleNullArrayProperty = true
            , string rootAsProperty = null
+           , Action<IJsonRootPropertyAppender> rootPropertyAppender = null
            , bool rootHandleNull = true
            , bool rootHandleEmptyLiteral = true
            , int stringBuilderCapacity = 16
@@ -136,7 +139,16 @@ namespace DashboardCode.Routines.Json
                     if (stringBuilder.Length == rootAsProperty.Length + 4)
                         stringBuilder.Length = 0;
                     else
+                    {
+                        if (rootPropertyAppender != null)
+                        {
+                            var j = new JsonRootPropertyAppender();
+                            rootPropertyAppender(j);
+                            stringBuilder.Append(",");
+                            j.Build(stringBuilder);
+                        }
                         stringBuilder.Append("}");
+                    }
                 }
                 else
                 {
@@ -279,6 +291,7 @@ namespace DashboardCode.Routines.Json
             , Func<StringBuilder, bool> nullArraySerializer = null
             , bool handleNullArrayProperty = true
             , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender> rootPropertyAppender = null
             , bool rootHandleNull = true
             , bool rootHandleEmptyLiteral = true
             , int stringBuilderCapacity = 16
@@ -304,7 +317,7 @@ namespace DashboardCode.Routines.Json
                 handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                 nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
                 handleNullArrayProperty: handleNullArrayProperty,
-                rootAsProperty: rootAsProperty,
+                rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender,
                 rootHandleNull: rootHandleNull, rootHandleLiteral: rootHandleEmptyLiteral,
                 stringBuilderCapacity: stringBuilderCapacity, compile: compile, doCompileInnerLambdas: doCompileInnerLambdas);
 
@@ -329,6 +342,7 @@ namespace DashboardCode.Routines.Json
             , Func<StringBuilder, bool> nullArraySerializer = null
             , bool handleNullArrayProperty = true
             , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender> rootPropertyAppender = null
             , bool rootHandleNull = true
             , bool rootHandleLiteral = true
             , int stringBuilderCapacity = 16
@@ -372,7 +386,17 @@ namespace DashboardCode.Routines.Json
                     if (stringBuilder.Length == rootAsProperty.Length + 4)
                         stringBuilder.Length = 0;
                     else
+                    {
+                        if (rootPropertyAppender != null)
+                        {
+                            
+                            var j = new JsonRootPropertyAppender();
+                            rootPropertyAppender(j);
+                            stringBuilder.Append(",");
+                            j.Build(stringBuilder);
+                        }
                         stringBuilder.Append("}");
+                    }
                 }
                 else
                 {
@@ -395,6 +419,7 @@ namespace DashboardCode.Routines.Json
             , Func<StringBuilder, bool> nullArraySerializer = null
             , bool handleNullArrayProperty = true
             , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender> rootPropertyAppender = null
             , bool rootHandleNull = true
             , bool rootHandleEmptyLiteral = true
             , int stringBuilderCapacity = 16
@@ -404,7 +429,7 @@ namespace DashboardCode.Routines.Json
             return ComposeEnumerableFormatter(include: null, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
                 floatingPointFormat: floatingPointFormat, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                 objectAsArray: objectAsArray, nullSerializer: nullSerializer, handleNullProperty: handleNullProperty,
-                rootAsProperty: rootAsProperty,
+                rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender,
                 rootHandleNull: rootHandleNull, rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity, compile: compile, doCompileInnerLambdas: doCompileInnerLambdas);
         }
 

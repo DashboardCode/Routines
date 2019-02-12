@@ -7,6 +7,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Sandbox
         static void Main(string[] args)
         {
             var connectionString = ConfigurationManager.ConnectionStrings["EfCoreTest"].ConnectionString;
+            
             DbContextTests.SqlServerGetJson(connectionString);
 
             //DbContextTests.ParallelTest(connectionString);

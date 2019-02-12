@@ -236,12 +236,11 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         #endregion
 
-        public static ContainerFactory<UserContext> CreateContainerFactory(IConfigurationContainerFactory configurationFactory)
+        public static ContainerFactory CreateContainerFactory(IConfigurationContainerFactory configurationFactory)
         {
             return
-                new ContainerFactory<UserContext>(
-                    configurationFactory,
-                    GetVerboseLoggingFlag);
+                new ContainerFactory(
+                    configurationFactory);
         }
 
         public static string GetVerboseLoggingFlag(UserContext userContext) =>
@@ -290,7 +289,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 AdminkaRoutineLogger routineLogger,
                 Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
                 AdminkaStorageConfiguration adminkaStorageConfiguration,
-                ContainerFactory<UserContext> containerFactory,
+                ContainerFactory containerFactory,
                 MemberTag memberTag,
                 IIdentity identity,
                 CultureInfo cultureInfo

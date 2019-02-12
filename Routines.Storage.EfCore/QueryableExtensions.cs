@@ -10,7 +10,7 @@ namespace DashboardCode.Routines.Storage.EfCore
 {
     public static class QueryableExtensions
     {
-        public static string ToJsonAll<T>(this IQueryable<T> queryable, 
+        public static string ToJsonAll<T>(this IEnumerable<T> enumerable, 
             CachedFormatter cache, 
             Include<T> include = null
             , Func<ChainNode, IEnumerable<MemberInfo>> leafRule = null
@@ -26,6 +26,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             , Func<StringBuilder, bool> nullArraySerializer = null
             , bool handleNullArrayProperty = true
             , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender> rootPropertyAppender = null
             , bool rootHandleNull = true
             , bool rootHandleEmptyLiteral = true
             , int stringBuilderCapacity = 16
@@ -38,17 +39,18 @@ namespace DashboardCode.Routines.Storage.EfCore
                 handleEmptyArrayLiteral: handleEmptyArrayLiteral, 
                 nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, 
                 nullArraySerializer: nullArraySerializer, 
-                handleNullArrayProperty: handleNullArrayProperty, rootAsProperty: rootAsProperty, rootHandleNull: rootHandleNull,
+                handleNullArrayProperty: handleNullArrayProperty, 
+                rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender,
+                rootHandleNull: rootHandleNull,
                 rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity
                 );
             if (!(theDelegate is Func<IEnumerable<T>, string> formatter))
                 throw new NotImplementedException("It seems you reuse CachedFormatter. It is forbidden. Use one CachedFormatter for one Include");
-            var enumerable = (IEnumerable<T>)queryable;
             var json = formatter(enumerable);
             return json;
         }
 
-        public static string ToJson<T>(this IQueryable<T> queryable,
+        public static string ToJson<T>(this T entity,
             CachedFormatter cache,
             Include<T> include = null,
             Func<ChainNode, IEnumerable<MemberInfo>> leafRule = null,
@@ -64,6 +66,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             Func<StringBuilder, bool> nullArraySerializer = null,
             bool handleNullArrayProperty = true,
             string rootAsProperty = null,
+            Action<IJsonRootPropertyAppender> rootPropertyAppender = null,
             bool rootHandleNull = true, 
             bool rootHandleEmptyLiteral = true,
             int stringBuilderCapacity = 16
@@ -77,13 +80,13 @@ namespace DashboardCode.Routines.Storage.EfCore
                 objectAsArray: objectAsArray, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                 nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
                 handleNullArrayProperty: handleNullArrayProperty, 
-                rootAsProperty: rootAsProperty, rootHandleNull: rootHandleNull, rootHandleEmptyLiteral: rootHandleEmptyLiteral, 
+                rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender,
+                rootHandleNull: rootHandleNull, rootHandleEmptyLiteral: rootHandleEmptyLiteral, 
                 stringBuilderCapacity: stringBuilderCapacity
                 );
             if (!(theDelegate is Func<T, string> formatter))
                 throw new NotImplementedException("It seems you reuse CachedFormatter. It is forbidden. Use one CachedFormatter for one Include");
-            var enumerable = (T)queryable;
-            var json = formatter(enumerable);
+            var json = formatter(entity);
             return json;
         }
     }

@@ -44,7 +44,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             AdminkaRoutineLogger routineLogger,
             Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
-            ContainerFactory<UserContext> configurationContainerFactory
+            ContainerFactory configurationContainerFactory
             )
         {
             // get userContextGuid from session
