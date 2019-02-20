@@ -19,7 +19,7 @@ namespace DashboardCode.Routines
 
             void appendHeadersRecursive(Exception ex)
             {
-                stringBuilder.Append(" - ").AppendMarkdownLine(ex.Message);
+                stringBuilder.Append(" - ").AppendMarkdownLine(ex.Message?.Replace(Environment.NewLine, " "));
                 if (ex.InnerException != null)
                     appendHeadersRecursive(ex.InnerException);
                 if (ex is AggregateException aException)
@@ -38,7 +38,7 @@ namespace DashboardCode.Routines
             {
                 stringBuilder.Append("### ").Append(" ")
                       .Append(ex.GetType().FullName)
-                      .Append(" - ").AppendMarkdownLine(ex.Message)
+                      .Append(" - ").AppendMarkdownLine(ex.Message?.Replace(Environment.NewLine," "))
                       .AppendException(ex);
                 if (ex is ArgumentException argumentException)
                     stringBuilder.AppendArgumentException(argumentException);

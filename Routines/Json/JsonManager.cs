@@ -46,7 +46,7 @@ namespace DashboardCode.Routines.Json
            , bool useToString = false
            , string dateTimeFormat = null
            , string floatingPointFormat = null
-           , bool objectAsArray=false
+           , bool objectAsArray = false
            , bool handleEmptyObjectLiteral = true
            , bool handleEmptyArrayLiteral = true
            , Func<StringBuilder, bool> nullSerializer = null
@@ -70,15 +70,15 @@ namespace DashboardCode.Routines.Json
                     root.AppendLeafs();
                 }
             }
-            return ComposeFormatter(root: root, config:config, useToString: useToString, dateTimeFormat: dateTimeFormat, 
-                    floatingPointFormat: floatingPointFormat, objectAsArray: objectAsArray, 
+            return ComposeFormatter(root: root, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
+                    floatingPointFormat: floatingPointFormat, objectAsArray: objectAsArray,
                     handleEmptyObjectLiteral: handleEmptyObjectLiteral,
-                    handleEmptyArrayLiteral: handleEmptyArrayLiteral, nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, 
+                    handleEmptyArrayLiteral: handleEmptyArrayLiteral, nullSerializer: nullSerializer, handleNullProperty: handleNullProperty,
                     nullArraySerializer: nullArraySerializer,
                     handleNullArrayProperty: handleNullArrayProperty,
 
-                    rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender, rootHandleNull: rootHandleNull, 
-                    rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity, 
+                    rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender, rootHandleNull: rootHandleNull,
+                    rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity,
                     compile: compile, doCompileInnerLambdas: doCompileInnerLambdas
                 );
         }
@@ -102,14 +102,14 @@ namespace DashboardCode.Routines.Json
            , bool rootHandleNull = true
            , bool rootHandleEmptyLiteral = true
            , int stringBuilderCapacity = 16
-           , Func<LambdaExpression, Delegate> compile= null
+           , Func<LambdaExpression, Delegate> compile = null
            , bool doCompileInnerLambdas = true)
         {
             if (compile == null)
                 compile = StandardCompile;
             var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
                 stringAsJsonLiteral: false,
-                stringJsonEscape:    true,
+                stringJsonEscape: true,
                 nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                 handleNullProperty,
                 new InternalNodeOptions(
@@ -128,9 +128,10 @@ namespace DashboardCode.Routines.Json
 
             var serializer = ComposeSerializer<T>(root,
                 n => rulesDictionary.GetLeafSerializerOptions(n),
-                n => rulesDictionary.GeInternalNodeOptions(n), 
+                n => rulesDictionary.GeInternalNodeOptions(n),
                 rootHandleNull, rootHandleEmptyLiteral, compile, doCompileInnerLambdas);
-            return (t) => {
+            return (t) =>
+            {
                 var stringBuilder = new StringBuilder(stringBuilderCapacity);
                 if (!string.IsNullOrEmpty(rootAsProperty))
                 {
@@ -231,14 +232,14 @@ namespace DashboardCode.Routines.Json
             else // internal (note: currently can't be nullable struct)
             {
                 var serializerSet = getInternalNodeOptions(root);
-                var parentObjectAsArray= serializerSet.ObjectAsArray;
+                var parentObjectAsArray = serializerSet.ObjectAsArray;
                 var properies = new List<Expression>();
                 foreach (var c in root.Children)
                 {
                     var n = c.Value;
                     JsonChainTools.ConfigureSerializeProperty(n, root.Type,
                         parentObjectAsArray,
-                        properies, getSerializerOptions, getInternalNodeOptions, 
+                        properies, getSerializerOptions, getInternalNodeOptions,
                         compile, doCompileInnerLambdas);
                 }
                 var methodCallExpression = JsonChainTools.CreateSerializeMethodCallExpression(sbParameterExpression, tParameterExpression, objectType, parentObjectAsArray, rootHandleEmptyLiteral, properies.ToArray());
@@ -295,7 +296,7 @@ namespace DashboardCode.Routines.Json
             , bool rootHandleNull = true
             , bool rootHandleEmptyLiteral = true
             , int stringBuilderCapacity = 16
-            , Func<LambdaExpression, Delegate> compile=null
+            , Func<LambdaExpression, Delegate> compile = null
             , bool doCompileInnerLambdas = true)
         {
             if (compile == null)
@@ -310,10 +311,10 @@ namespace DashboardCode.Routines.Json
                 }
             }
 
-            return ComposeEnumerableFormatter(root: root, config: config, 
-                useToString: useToString, 
-                dateTimeFormat: dateTimeFormat, floatingPointFormat: floatingPointFormat, 
-                objectAsArray: objectAsArray, 
+            return ComposeEnumerableFormatter(root: root, config: config,
+                useToString: useToString,
+                dateTimeFormat: dateTimeFormat, floatingPointFormat: floatingPointFormat,
+                objectAsArray: objectAsArray,
                 handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
                 nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
                 handleNullArrayProperty: handleNullArrayProperty,
@@ -353,7 +354,7 @@ namespace DashboardCode.Routines.Json
                 compile = StandardCompile;
             var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
                 stringAsJsonLiteral: false,
-                stringJsonEscape:    true,
+                stringJsonEscape: true,
                 nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer, handleNullProperty,
                     new InternalNodeOptions(
                         handleNullProperty: handleNullProperty,
@@ -364,7 +365,7 @@ namespace DashboardCode.Routines.Json
                         nullSerializer: nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                         nullArraySerializer: nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
                         serializationName: null),
-                compile:compile
+                compile: compile
                 );
             config?.Invoke(rulesDictionary);
 
@@ -389,7 +390,7 @@ namespace DashboardCode.Routines.Json
                     {
                         if (rootPropertyAppender != null)
                         {
-                            
+
                             var j = new JsonRootPropertyAppender();
                             rootPropertyAppender(j);
                             stringBuilder.Append(",");
@@ -495,5 +496,310 @@ namespace DashboardCode.Routines.Json
             @value = (Func<StringBuilder, IEnumerable<T>, bool>)compile(serializeArrayLambda);
             return @value;
         }
+
+        #region Parametrized formatters
+
+        public static Func<T, TP, string> ComposeFormatter<T, TP>(
+            Action<RulesDictionary<T>> config = null
+            , bool useToString = false
+            , string dateTimeFormat = null
+            , string floatingPointFormat = null
+            , bool objectAsArray = false
+            , bool handleEmptyObjectLiteral = true
+            , bool handleEmptyArrayLiteral = true
+            , Func<StringBuilder, bool> nullSerializer = null
+            , bool handleNullProperty = true
+            , Func<StringBuilder, bool> nullArraySerializer = null
+            , bool handleNullArrayProperty = true
+            , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender, TP> rootPropertyAppender = null
+            , bool rootHandleNull = true
+            , bool rootHandleEmptyLiteral = true
+            , int stringBuilderCapacity = 16
+            , Func<LambdaExpression, Delegate> compile = null
+            , bool doCompileInnerLambdas = true
+            )
+        {
+            return ComposeFormatter<T, TP>(include: null, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
+                    floatingPointFormat: floatingPointFormat, objectAsArray: objectAsArray,
+                    handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
+                    nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
+                    handleNullArrayProperty: handleNullArrayProperty,
+                    rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender,
+                    rootHandleNull: rootHandleNull, rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity,
+                    compile: compile, doCompileInnerLambdas: doCompileInnerLambdas
+                );
+        }
+
+        public static Func<T, TP, string> ComposeFormatter<T, TP>(
+           this Include<T> include
+           , Action<RulesDictionary<T>> config = null
+           , bool useToString = false
+           , string dateTimeFormat = null
+           , string floatingPointFormat = null
+           , bool objectAsArray = false
+           , bool handleEmptyObjectLiteral = true
+           , bool handleEmptyArrayLiteral = true
+           , Func<StringBuilder, bool> nullSerializer = null
+           , bool handleNullProperty = true
+           , Func<StringBuilder, bool> nullArraySerializer = null
+           , bool handleNullArrayProperty = true
+           , string rootAsProperty = null
+           , Action<IJsonRootPropertyAppender, TP> rootPropertyAppender = null
+           , bool rootHandleNull = true
+           , bool rootHandleEmptyLiteral = true
+           , int stringBuilderCapacity = 16
+           , Func<LambdaExpression, Delegate> compile = null
+           , bool doCompileInnerLambdas = true)
+        {
+            ChainNode root = IncludeExtensions.CreateChainNode(include);
+            if (include == null && config == null)
+            {
+                var type = typeof(T);
+                if (type.IsAssociativeArrayType())
+                {
+                    root.AppendLeafs();
+                }
+            }
+            return ComposeFormatter<T, TP>(root: root, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
+                    floatingPointFormat: floatingPointFormat, objectAsArray: objectAsArray,
+                    handleEmptyObjectLiteral: handleEmptyObjectLiteral,
+                    handleEmptyArrayLiteral: handleEmptyArrayLiteral, nullSerializer: nullSerializer, handleNullProperty: handleNullProperty,
+                    nullArraySerializer: nullArraySerializer,
+                    handleNullArrayProperty: handleNullArrayProperty,
+
+                    rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender, rootHandleNull: rootHandleNull,
+                    rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity,
+                    compile: compile, doCompileInnerLambdas: doCompileInnerLambdas
+                );
+        }
+
+
+        public static Func<T, TP, string> ComposeFormatter<T, TP>(
+           this ChainNode root
+           , Action<RulesDictionary<T>> config = null
+           , bool useToString = false
+           , string dateTimeFormat = null
+           , string floatingPointFormat = null
+           , bool objectAsArray = false
+           , bool handleEmptyObjectLiteral = true
+           , bool handleEmptyArrayLiteral = true
+           , Func<StringBuilder, bool> nullSerializer = null
+           , bool handleNullProperty = true
+           , Func<StringBuilder, bool> nullArraySerializer = null
+           , bool handleNullArrayProperty = true
+           , string rootAsProperty = null
+           , Action<IJsonRootPropertyAppender, TP> rootPropertyAppender = null
+           , bool rootHandleNull = true
+           , bool rootHandleEmptyLiteral = true
+           , int stringBuilderCapacity = 16
+           , Func<LambdaExpression, Delegate> compile = null
+           , bool doCompileInnerLambdas = true)
+        {
+            if (compile == null)
+                compile = StandardCompile;
+            var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
+                stringAsJsonLiteral: false,
+                stringJsonEscape: true,
+                nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                handleNullProperty,
+                new InternalNodeOptions(
+                    handleEmptyObjectLiteral: handleEmptyObjectLiteral,
+                    handleEmptyArrayLiteral: handleEmptyArrayLiteral,
+                    objectAsArray: objectAsArray,
+                    nullSerializer: nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                    handleNullProperty: handleNullProperty,
+                    nullArraySerializer: nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                    handleNullArrayProperty: handleNullArrayProperty,
+                    serializationName: null
+                ),
+                compile: compile
+                );
+            config?.Invoke(rulesDictionary);
+
+            var serializer = ComposeSerializer<T>(root,
+                n => rulesDictionary.GetLeafSerializerOptions(n),
+                n => rulesDictionary.GeInternalNodeOptions(n),
+                rootHandleNull, rootHandleEmptyLiteral, compile, doCompileInnerLambdas);
+            return (t, tp) =>
+            {
+                var stringBuilder = new StringBuilder(stringBuilderCapacity);
+                if (!string.IsNullOrEmpty(rootAsProperty))
+                {
+                    stringBuilder.Append($"{{\"{rootAsProperty}\":");
+                    serializer(stringBuilder, t);
+                    if (stringBuilder.Length == rootAsProperty.Length + 4)
+                        stringBuilder.Length = 0;
+                    else
+                    {
+                        if (rootPropertyAppender != null)
+                        {
+                            var j = new JsonRootPropertyAppender();
+                            rootPropertyAppender(j, tp);
+                            stringBuilder.Append(",");
+                            j.Build(stringBuilder);
+                        }
+                        stringBuilder.Append("}");
+                    }
+                }
+                else
+                {
+                    serializer(stringBuilder, t);
+                }
+                return stringBuilder.ToString();
+            };
+        }
+
+        public static Func<IEnumerable<T>, TP, string> ComposeEnumerableFormatter<T, TP>(
+            this Include<T> include
+            , Action<RulesDictionary<T>> config = null
+            , bool useToString = false
+            , string dateTimeFormat = null
+            , string floatingPointFormat = null
+            , bool objectAsArray = false
+            , bool handleEmptyObjectLiteral = true
+            , bool handleEmptyArrayLiteral = true
+            , Func<StringBuilder, bool> nullSerializer = null
+            , bool handleNullProperty = true
+            , Func<StringBuilder, bool> nullArraySerializer = null
+            , bool handleNullArrayProperty = true
+            , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender, TP> rootPropertyAppender = null
+            , bool rootHandleNull = true
+            , bool rootHandleEmptyLiteral = true
+            , int stringBuilderCapacity = 16
+            , Func<LambdaExpression, Delegate> compile = null
+            , bool doCompileInnerLambdas = true)
+        {
+            if (compile == null)
+                compile = StandardCompile;
+            ChainNode root = IncludeExtensions.CreateChainNode(include);
+            if (include == null && config == null)
+            {
+                var type = typeof(T);
+                if (type.IsAssociativeArrayType())
+                {
+                    root.AppendLeafs();
+                }
+            }
+
+            return ComposeEnumerableFormatter(root: root, config: config,
+                useToString: useToString,
+                dateTimeFormat: dateTimeFormat, floatingPointFormat: floatingPointFormat,
+                objectAsArray: objectAsArray,
+                handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
+                nullSerializer: nullSerializer, handleNullProperty: handleNullProperty, nullArraySerializer: nullArraySerializer,
+                handleNullArrayProperty: handleNullArrayProperty,
+                rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender,
+                rootHandleNull: rootHandleNull, rootHandleLiteral: rootHandleEmptyLiteral,
+                stringBuilderCapacity: stringBuilderCapacity, compile: compile, doCompileInnerLambdas: doCompileInnerLambdas);
+
+        }
+
+        public static Func<IEnumerable<T>, TP, string> ComposeEnumerableFormatter<T, TP>(
+            this ChainNode root
+            , Action<RulesDictionary<T>> config = null
+            , bool useToString = false
+            , string dateTimeFormat = null
+            , string floatingPointFormat = null
+            , bool objectAsArray = false
+            , bool handleEmptyObjectLiteral = true
+            , bool handleEmptyArrayLiteral = true
+            , Func<StringBuilder, bool> nullSerializer = null
+            , bool handleNullProperty = true
+            , Func<StringBuilder, bool> nullArraySerializer = null
+            , bool handleNullArrayProperty = true
+            , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender, TP> rootPropertyAppender = null
+            , bool rootHandleNull = true
+            , bool rootHandleLiteral = true
+            , int stringBuilderCapacity = 16
+            , Func<LambdaExpression, Delegate> compile = null
+            , bool doCompileInnerLambdas = true)
+        {
+            if (compile == null)
+                compile = StandardCompile;
+            var rulesDictionary = new RulesDictionary<T>(useToString, dateTimeFormat, floatingPointFormat,
+                stringAsJsonLiteral: false,
+                stringJsonEscape: true,
+                nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer, handleNullProperty,
+                    new InternalNodeOptions(
+                        handleNullProperty: handleNullProperty,
+                        handleNullArrayProperty: handleNullArrayProperty,
+                        objectAsArray: objectAsArray,
+                        handleEmptyObjectLiteral: handleEmptyObjectLiteral,
+                        handleEmptyArrayLiteral: handleEmptyArrayLiteral,
+                        nullSerializer: nullSerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                        nullArraySerializer: nullArraySerializer ?? JsonValueStringBuilderExtensions.NullSerializer,
+                        serializationName: null),
+                compile: compile
+                );
+            config?.Invoke(rulesDictionary);
+
+            var serializer = ComposeEnumerableSerializer<T>(root
+                , n => rulesDictionary.GetLeafSerializerOptions(n)
+                , n => rulesDictionary.GeInternalNodeOptions(n)
+                , rootHandleNull
+                , rootHandleLiteral
+                , compile: compile
+                , doCompileInnerLambdas: doCompileInnerLambdas
+                );
+            return (t, tp) =>
+            {
+                var stringBuilder = new StringBuilder(stringBuilderCapacity);
+                if (!string.IsNullOrEmpty(rootAsProperty))
+                {
+                    stringBuilder.Append($"{{\"{rootAsProperty}\":");
+                    serializer(stringBuilder, t);
+                    if (stringBuilder.Length == rootAsProperty.Length + 4)
+                        stringBuilder.Length = 0;
+                    else
+                    {
+                        if (rootPropertyAppender != null)
+                        {
+
+                            var j = new JsonRootPropertyAppender();
+                            rootPropertyAppender(j, tp);
+                            stringBuilder.Append(",");
+                            j.Build(stringBuilder);
+                        }
+                        stringBuilder.Append("}");
+                    }
+                }
+                else
+                {
+                    serializer(stringBuilder, t);
+                }
+                return stringBuilder.ToString();
+            };
+        }
+
+        public static Func<IEnumerable<T>, TP, string> ComposeEnumerableFormatter<T, TP>(
+            Action<RulesDictionary<T>> config = null
+            , bool useToString = false
+            , string dateTimeFormat = null
+            , string floatingPointFormat = null
+            , bool handleEmptyObjectLiteral = true
+            , bool handleEmptyArrayLiteral = true
+            , bool objectAsArray = false
+            , Func<StringBuilder, bool> nullSerializer = null
+            , bool handleNullProperty = true
+            , Func<StringBuilder, bool> nullArraySerializer = null
+            , bool handleNullArrayProperty = true
+            , string rootAsProperty = null
+            , Action<IJsonRootPropertyAppender, TP> rootPropertyAppender = null
+            , bool rootHandleNull = true
+            , bool rootHandleEmptyLiteral = true
+            , int stringBuilderCapacity = 16
+            , Func<LambdaExpression, Delegate> compile = null
+            , bool doCompileInnerLambdas = true)
+        {
+            return ComposeEnumerableFormatter(include: null, config: config, useToString: useToString, dateTimeFormat: dateTimeFormat,
+                floatingPointFormat: floatingPointFormat, handleEmptyObjectLiteral: handleEmptyObjectLiteral, handleEmptyArrayLiteral: handleEmptyArrayLiteral,
+                objectAsArray: objectAsArray, nullSerializer: nullSerializer, handleNullProperty: handleNullProperty,
+                rootAsProperty: rootAsProperty, rootPropertyAppender: rootPropertyAppender,
+                rootHandleNull: rootHandleNull, rootHandleEmptyLiteral: rootHandleEmptyLiteral, stringBuilderCapacity: stringBuilderCapacity, compile: compile, doCompileInnerLambdas: doCompileInnerLambdas);
+        }
+        #endregion
     }
 }

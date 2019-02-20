@@ -8,6 +8,7 @@ namespace DashboardCode.Routines.Json
     {
         IJsonRootPropertyAppender AddStringProperty(string name, string value);
         IJsonRootPropertyAppender AddNumberProperty(string name, int value);
+        //IJsonRootPropertyAppender AddNumberProperty(string name, int value);
         IJsonRootPropertyAppender AddNumberProperty(string name, bool value);
         IJsonRootPropertyAppender AddNumberProperty(string name, double value);
         IJsonRootPropertyAppender AddJsonProperty(string name, string value);

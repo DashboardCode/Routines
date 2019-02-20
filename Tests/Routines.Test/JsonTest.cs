@@ -115,14 +115,75 @@ namespace DashboardCode.Routines.Test
         public void JsonSerializeStructPointAsArrayAndProperty()
         {
             Include<Point> include = (chain) => chain.Include(e => e.X).Include(e => e.Y);
-            var source = new Point() { X = 1, Y = 2 };
+            var x = 3;
             var formatter = JsonManager.ComposeFormatter(
-                include, objectAsArray: true, rootAsProperty:"data", rootPropertyAppender: j=>j.AddNumberProperty("extra",3).AddStringProperty("extra2","\""));
-            var json = formatter(source);
-            if (json != "{\"data\":[1,2],\"extra\":3,\"extra2\":\"\\\"\"}")
+                include, objectAsArray: true, rootAsProperty:"data", rootPropertyAppender: j=>j.AddNumberProperty("extra",x).AddStringProperty("extra2","\""));
+
+            var source1 = new Point() { X = 1, Y = 2 };
+            var json1 = formatter(source1);
+            if (json1 != "{\"data\":[1,2],\"extra\":3,\"extra2\":\"\\\"\"}")
+                throw new Exception(nameof(JsonSerializeTest));
+
+            x = -3;
+            var source2 = new Point() { X = 2, Y = 1 };
+            var json2 = formatter(source2);
+            if (json2 != "{\"data\":[2,1],\"extra\":-3,\"extra2\":\"\\\"\"}")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+        
+        [TestMethod]
+        public void JsonSerializeStructPointAsArrayAndPropertyCached()
+        {
+            var source1 = new[] { new Point() { X = 1, Y = 2 }, new Point() { X = 3, Y = 4 } };
+            var json1 = JsonSerializeStructPointAsArrayAndPropertyCachedHelper1(source1, 1);
+            if (json1 != "{\"data\":[[2],[4]],\"added\":1}")
+                throw new Exception(nameof(JsonSerializeTest));
+
+            var source2 = new[] { new Point() { X = 4, Y = 3 }, new Point() { X = 2, Y = 1 } };
+            var json2 = JsonSerializeStructPointAsArrayAndPropertyCachedHelper1(source2, 2);
+            if (json2 != "{\"data\":[[5],[3]],\"added\":1}")
                 throw new Exception(nameof(JsonSerializeTest));
         }
 
+        readonly static CachedFormatter cachedFormatter1 = new CachedFormatter();
+        private string JsonSerializeStructPointAsArrayAndPropertyCachedHelper1(Point[] source, int x)
+        {
+            
+            var json = source.ToJsonAll(
+                cachedFormatter1,
+                chain => chain.Include(e => e.X + x, "IX"),
+                objectAsArray: true, 
+                rootAsProperty: "data",
+                rootPropertyAppender: j => j.AddNumberProperty("added", x));
+            return json;
+        }
+
+        [TestMethod]
+        public void JsonSerializeStructPointAsArrayAndPropertyCached2()
+        {
+            var source1 = new[] { new Point() { X = 1, Y = 2 }, new Point() { X = 3, Y = 4 } };
+            var json1 = JsonSerializeStructPointAsArrayAndPropertyCachedHelper2(source1, 1);
+            if (json1 != "{\"data\":[[2],[4]],\"added\":1}")
+                throw new Exception(nameof(JsonSerializeTest));
+
+            var source2 = new[] { new Point() { X = 1, Y = 2 }, new Point() { X = 3, Y = 4 } };
+            var json2 = JsonSerializeStructPointAsArrayAndPropertyCachedHelper2(source2, 2);
+            if (json2 != "{\"data\":[[2],[4]],\"added\":2}")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
+        readonly static CachedFormatter cachedFormatter2 = new CachedFormatter();
+        private string JsonSerializeStructPointAsArrayAndPropertyCachedHelper2(Point[] source, int closure)
+        {
+            var json = source.ToJsonAll(
+                closure,
+                cachedFormatter1,
+                chain => chain.Include(e => e.X + closure, "IX"),
+                objectAsArray: true,
+                rootAsProperty: "data",
+                rootPropertyAppender: (j, c) => j.AddNumberProperty("added", c));
+            return json;
+        }
 
         [TestMethod]
         public void JsonSerializeStructPointAsArray2()
