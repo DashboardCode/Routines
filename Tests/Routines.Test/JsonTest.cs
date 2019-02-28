@@ -89,6 +89,13 @@ namespace DashboardCode.Routines.Test
             public string Y { get; set; }
         }
 
+        struct Point3
+        {
+            public int X { get; set; }
+            public int Y { get; set; }
+            public List<Point> Points { get; set; }
+        }
+
         [TestMethod]
         public void JsonSerializeStructPoint()
         {
@@ -110,6 +117,19 @@ namespace DashboardCode.Routines.Test
             if (json != "[1,2]")
                 throw new Exception(nameof(JsonSerializeTest));
         }
+
+        [TestMethod]
+        public void JsonSerializeStructPointAsArrayComplex()
+        {
+            Include<Point3> include = (chain) => chain.Include(e => e.X).Include(e => e.Y)
+                .IncludeAll(e => e.Points).ThenIncluding(e=>e.X).ThenIncluding(e => e.Y);
+            var source = new Point3() { X = 1, Y = 2, Points = new List<Point>() { new Point() { X = 3, Y = 4 }, new Point() { X = 5, Y = 6 } } };
+            var formatter = JsonManager.ComposeFormatter(include, objectAsArray: true);
+            var json = formatter(source);
+            if (json != "[1,2,[[3,4],[5,6]]]")
+                throw new Exception(nameof(JsonSerializeTest));
+        }
+
 
         [TestMethod]
         public void JsonSerializeStructPointAsArrayAndProperty()

@@ -230,7 +230,7 @@ namespace DashboardCode.Routines.Json
             }
             bool isLeaf = node.Children.Count ==  0;
             MethodInfo propertySerializerMethodInfo = (node.IsEnumerable) ?
-                GetEnumerablePropertySerializerMethodInfo(nullFormatterExpression != null) :
+                GetEnumerablePropertySerializerMethodInfo(nullFormatterExpression != null, parentObjectAsArray) :
                 GetPropertySerializerMethodInfo(isLeaf, isNullableValueType, nullFormatterExpression != null, parentObjectAsArray);
 
             var propertySerializationName = internalNodeOptions?.SerializationName ?? node.MemberName;
@@ -361,14 +361,25 @@ namespace DashboardCode.Routines.Json
                 methodCallExpression = Expression.Call(serializePropertyGenericMethodInfo, new Expression[] { sbExpression, tExpression, serializeExpression });
             return methodCallExpression;
         }
-
-        private static MethodInfo GetEnumerablePropertySerializerMethodInfo(bool handleNullProperty)
+        // !!!!!!!!!!!!!!!!!
+        private static MethodInfo GetEnumerablePropertySerializerMethodInfo(bool handleNullProperty, bool objectAsArray)
         {
             MethodInfo serializePropertyMethod;
-            if (!handleNullProperty)
-                serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefProperty));
+            if (objectAsArray)
+            {
+                if (!handleNullProperty)
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefAProperty));
+                else
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefAPropertyHandleNull));
+            }
             else
-                serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull));
+            {
+                if (!handleNullProperty)
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefProperty));
+                else
+                    serializePropertyMethod = typeof(JsonComplexStringBuilderExtensions).GetTypeInfo().GetDeclaredMethod(nameof(JsonComplexStringBuilderExtensions.SerializeRefPropertyHandleNull));
+
+            }
             return serializePropertyMethod;
         }
 
