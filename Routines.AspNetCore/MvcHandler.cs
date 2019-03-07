@@ -33,7 +33,7 @@ namespace DashboardCode.Routines.AspNetCore
             Action<string, object> addViewData,
             Action<string, string> publishStorageError,
             Func<IActionResult> successView,
-            Func<object, IActionResult> view,
+            Func<TEntity, IActionResult> view,
             Func<
                 IRepository<TEntity>, 
                 TState,
@@ -107,7 +107,7 @@ namespace DashboardCode.Routines.AspNetCore
             Action<string, object> addViewData,
             Action<string, string> publishStorageError,
             Func<IActionResult> successView,
-            Func<object, IActionResult> view,
+            Func<TEntity, IActionResult> view,
             Func<
                 IRepository<TEntity>,
                 TState,
@@ -162,7 +162,7 @@ namespace DashboardCode.Routines.AspNetCore
           IRepository<TEntity> repository,
           Action<string, object> addViewData,
           HttpRequest request,
-          Func<object, IActionResult> view,
+          Func<TEntity, IActionResult> view,
           Func<IActionResult> notFound,
           Func<
               IRepository<TEntity>,
@@ -195,7 +195,7 @@ namespace DashboardCode.Routines.AspNetCore
         public static IActionResult MakeActionResultOnRequest<TKey, TEntity>(
           IRepository<TEntity> repository,
           HttpRequest request,
-          Func<object, IActionResult> view,
+          Func<TEntity, IActionResult> view,
           Func<IActionResult> notFound,
           Func<
               IRepository<TEntity>,
@@ -227,7 +227,7 @@ namespace DashboardCode.Routines.AspNetCore
             IRepository<TEntity> repository,
             Action<string, object> addViewData,
             HttpRequest request,
-            Func<object, IActionResult> view,
+            Func<TEntity, IActionResult> view,
             Func<
                 IRepository<TEntity>,
                 Func<
@@ -252,7 +252,7 @@ namespace DashboardCode.Routines.AspNetCore
         public static IActionResult MakeActionResultOnCreate<TEntity>(
             IRepository<TEntity> repository,
             HttpRequest request,
-            Func<object, IActionResult> view,
+            Func<TEntity, IActionResult> view,
             Func<
                 IRepository<TEntity>,
                 Func<

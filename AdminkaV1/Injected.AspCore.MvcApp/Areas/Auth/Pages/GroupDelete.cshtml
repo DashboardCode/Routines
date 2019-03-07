@@ -1,0 +1,78 @@
+﻿@page
+@model DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages.GroupDeleteModel
+@{
+    ViewData["SubTitle"] = "Delete Group";
+}
+
+<div class="d-flex flex-row justify-content-between align-self">
+    <h3>Group (@Model.Id)</h3>
+    <a class="adminka-navigation adminka-navigation-clear" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@Model.Id"></a>
+</div>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2 mb-sm-4">
+            Name
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @Html.DisplayFor(model => model.Entity.GroupName)
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            AD Group
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @Html.DisplayFor(model => model.Entity.GroupAdName)
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Privileges
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var p in Model.Entity.GetPrivileges())
+            {
+                <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeName</a>
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Roles
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var r in Model.Entity.GetRoles())
+            {
+                <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Users
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var u in Model.Entity.GetUsers())
+            {
+                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+            }
+        </dd>
+    </dl>
+    <h4>Are you sure you want to delete this?</h4>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.Entity.GroupId)
+        @Html.HiddenFor(model => model.Entity.RowVersion)
+
+        <div class="form-group">
+            <div class="d-flex flex-row align-self">
+                <input type="submit" value="Delete" class="btn adminka-btn-ok" />
+                <a class="adminka-btn adminka-navigation-list mx-3" asp-area="" asp-controller="Groups" asp-action="Index">Back to List</a>
+            </div>
+        </div>
+    }
+</div>

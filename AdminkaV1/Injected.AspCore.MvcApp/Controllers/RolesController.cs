@@ -14,64 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
     public class RolesController : ConfigurableController
     {
         #region Meta
-        static ControllerMeta<Role, int> meta = new ControllerMeta<Role, int>(
-            id => e => e.RoleId == id,
-            Converters.TryParseInt,
-            chain => chain
-                       .IncludeAll( e => e.RolePrivilegeMap)
-                       .ThenInclude(e => e.Privilege)
-                       .IncludeAll( e => e.GroupRoleMap)
-                       .ThenInclude(e => e.Group)
-                       .IncludeAll( e => e.UserRoleMap)
-                       .ThenInclude(e => e.User),
-            chain => chain
-                       .IncludeAll( e => e.RolePrivilegeMap)
-                       .ThenInclude(e => e.Privilege)
-                       .IncludeAll( e => e.GroupRoleMap)
-                       .ThenInclude(e => e.Group)
-                       .IncludeAll( e => e.UserRoleMap)
-                       .ThenInclude(e => e.User),
-            null,
-            editables =>
-                editables
-                    .Add(e=>e.RoleName, Binder.ConvertToString),
-            notEditables => 
-                notEditables
-                    .Add(e => e.RoleId)
-                    .Add(e => e.RowVersion),
-            null,
-            manyToMany => manyToMany
-                .Add("Privileges", "PrivilegesMultiSelectList",
-                    repository => repository.Clone<Privilege>().List(),
-                    e => e.RolePrivilegeMap,
-                    e => e.PrivilegeId,
-                    mm => mm.RoleId,
-                    e => e.PrivilegeId,
-                    nameof(Privilege.PrivilegeId),
-                    nameof(Privilege.PrivilegeName),
-                    (ep, ef) => new RolePrivilege() { RoleId = ep.RoleId, PrivilegeId = ef.PrivilegeId }
-                 ).Add(
-                    "Groups", "GroupsMultiSelectList",
-                    repository => repository.Clone<Group>().List(),
-                    e => e.GroupRoleMap,
-                    mm => mm.GroupId,
-                    mm => mm.RoleId,
-                    e => e.GroupId,
-                    nameof(Group.GroupId),
-                    nameof(Group.GroupName),
-                    (ep, ef) => new GroupRole() { RoleId = ep.RoleId, GroupId = ef.GroupId }
-                 ).Add(
-                    "Users", "UsersMultiSelectList",
-                    repository => repository.Clone<User>().List(),
-                    e => e.UserRoleMap,
-                    mm => mm.UserId,
-                    mm => mm.RoleId,
-                    e => e.UserId,
-                    nameof(AuthenticationDom.User.UserId),
-                    nameof(AuthenticationDom.User.LoginName),
-                    (ep, ef) => new UserRole() { RoleId = ep.RoleId, UserId = ef.UserId }
-            )
-        );
+        static RoleMeta meta = new RoleMeta();
         #endregion
 
         CrudRoutineControllerConsumer<Role, int> consumer;

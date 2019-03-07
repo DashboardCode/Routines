@@ -1,0 +1,70 @@
+﻿@page
+@model DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages.GroupModel
+@{
+    ViewData["SubTitle"] = "Group";
+}
+
+<div class="d-flex flex-row align-self justify-content-between">
+    <h3>Group (@Model.Id)</h3>
+    <div>
+        <a class="ml-4 adminka-navigation adminka-navigation-delete" asp-area="" asp-controller="Groups" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Groups" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    </div>
+</div>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2 mb-sm-4">
+            Name
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @Html.DisplayFor(model => model.Entity.GroupName)
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            AD Group
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @Html.DisplayFor(model => model.Entity.GroupAdName)
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Privileges
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var p in Model.Entity.GetPrivileges())
+            {
+                <a class="badge" asp-page="Privilege" asp-route-id="@p.PrivilegeId">@p.PrivilegeName</a>
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Roles
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var r in Model.Entity.GetRoles())
+            {
+                <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Users
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var u in Model.Entity.GetUsers())
+            {
+                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+            }
+        </dd>
+    </dl>
+    <div class="d-flex flex-row align-self">
+        <a class="adminka-btn adminka-navigation-list" asp-area="" asp-controller="Groups" asp-action="Index">Back to List</a>
+    </div>
+</div>
+
