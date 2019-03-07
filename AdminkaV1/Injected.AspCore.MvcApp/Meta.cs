@@ -12,7 +12,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public static RoleMeta RoleMeta = new RoleMeta();
     }
 
-    public class PrivilegeMeta : ControllerMeta<Privilege, string>
+    public class PrivilegeMeta : MvcMeta<Privilege, string>
     {
         public PrivilegeMeta() : base(
             id => e => e.PrivilegeId == id,
@@ -30,8 +30,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                        .IncludeAll(e => e.UserPrivilegeMap)
                        .ThenInclude(e => e.User),
             chain => chain.Include(e => e.PrivilegeName),
-            editables => editables.Add(e => e.PrivilegeName, Binder.ConvertToString),
-            notEditables => notEditables.Add(e => e.PrivilegeId).Add(e => e.RowVersion),
+            editables => editables.Add(e => e.PrivilegeName, StringValuesExtensions.ConvertToString),
+            hiddenFormFields => hiddenFormFields.Add(e => e.PrivilegeId).Add(e => e.RowVersion),
             null,
             manyToMany => manyToMany
                 .Add("Roles", "RolesMultiSelectList",
@@ -72,7 +72,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
     }
 
-    public class GroupMeta : ControllerMeta<Group, int>
+    public class GroupMeta : MvcMeta<Group, int>
     {
         public GroupMeta() : base(
             id => e => e.GroupId == id,
@@ -93,8 +93,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             null,
             //var roleNameLength = metaBrowser.GetLength<Role>(en => en.RoleName);
             formFields =>
-                formFields.Add(e => e.GroupName, Binder.ConvertToString)
-                          .Add(e => e.GroupAdName, Binder.ConvertToString, asserts => asserts.Add(v => v.Length <= 126, "Too big!"))
+                formFields.Add(e => e.GroupName, StringValuesExtensions.ConvertToString)
+                          .Add(e => e.GroupAdName, StringValuesExtensions.ConvertToString, asserts => asserts.Add(v => v.Length <= 126, "Too big!"))
             //.Add(e => e.GroupAdName, setter => sv => Binder.TryStringValidateLength(sv, v => setter(v), 100))
             //.Add(e => e.GroupId,  Binder.ConvertToInt, asserts => asserts.Add(v => v < 100, "Too big!"))
             //.Add(e => e.GroupId,  Binder.ConvertToInt, v=>new BinderResult(v<100? null: new[] { "Too big!" }), converter => setter => validator => validator(setter(converter())))
@@ -154,7 +154,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
     }
 
-    public class UserMeta : ControllerMeta<User, int>
+    public class UserMeta : MvcMeta<User, int>
     {
         public UserMeta() : base(
             findByIdExpression: id => e => e.UserId == id,
@@ -215,7 +215,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
     }
 
-    public class RoleMeta : ControllerMeta<Role, int>
+    public class RoleMeta : MvcMeta<Role, int>
     {
         public RoleMeta() : base(
             id => e => e.RoleId == id,
@@ -237,9 +237,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             null,
             editables =>
                 editables
-                    .Add(e => e.RoleName, Binder.ConvertToString),
-            notEditables =>
-                notEditables
+                    .Add(e => e.RoleName, StringValuesExtensions.ConvertToString),
+            hiddenFormFields =>
+                hiddenFormFields
                     .Add(e => e.RoleId)
                     .Add(e => e.RowVersion),
             null,

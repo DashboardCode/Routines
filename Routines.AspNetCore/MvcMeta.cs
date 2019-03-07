@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering; // SelectList and MultySelectList
 using Microsoft.Extensions.Primitives;
 
 using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public class ControllerMeta<TEntity, TKey> where TEntity : class, new()
+    public class MvcMeta<TEntity, TKey> where TEntity : class, new()
     {
         public readonly Func<TEntity> Constructor;
         
@@ -375,7 +375,7 @@ namespace DashboardCode.Routines.AspNetCore
             }
         }
 
-        public ControllerMeta(
+        public MvcMeta(
             Func<TKey, Expression<Func<TEntity, bool>>> findByIdExpression,
             Func<string, ValuableResult<TKey>> keyConverter,
             Include<TEntity> indexIncludes,
@@ -390,7 +390,7 @@ namespace DashboardCode.Routines.AspNetCore
 
         }
 
-        public ControllerMeta(
+        public MvcMeta(
             Func<TKey, Expression<Func<TEntity, bool>>> findByIdPredicate,
             Func<string, ValuableResult<TKey>> keyConverter,
 
