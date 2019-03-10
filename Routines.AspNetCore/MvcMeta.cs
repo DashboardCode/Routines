@@ -23,7 +23,7 @@ namespace DashboardCode.Routines.AspNetCore
         public readonly Dictionary<string, Func<TEntity, Action<StringValues>>> HiddenFormFields;
         public readonly Include<TEntity> DisabledFormFields;
 
-        public readonly ReferencesCollection<TEntity> ReferencesCollection;
+        public readonly ReferencesCollection<TEntity, IRepository<TEntity>> ReferencesCollection;
 
         public class HiddenFormFieldsScorer
         {
@@ -306,9 +306,9 @@ namespace DashboardCode.Routines.AspNetCore
         
         public class ManyToManyScorer
         {
-            readonly Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary;
+            readonly Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>>> manyToManyDictionary;
 
-            public ManyToManyScorer(Dictionary<string, IManyToMany<TEntity>> manyToManyDictionary) =>
+            public ManyToManyScorer(Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>>> manyToManyDictionary) =>
                 this.manyToManyDictionary = manyToManyDictionary;
 
             public ManyToManyScorer Add<TF, TMM, TfID>(
@@ -316,11 +316,11 @@ namespace DashboardCode.Routines.AspNetCore
                 string viewDataMultiSelectListKey,
                 Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
                 
-                Expression<Func<TEntity, ICollection<TMM>>> getRelatedExpression,
+                Expression<Func<TEntity, ICollection<TMM>>> getTmmExpression,
                 
                 Func<TMM, TfID> getTmmTfId,
                 Func<TMM, TKey> getTmmTKey,
-                Func<TF, TfID> getId,
+                Func<TF, TfID> getTfId,
                 string multiSelectListOptionValuePropertyName,
                 string multiSelectListOptionTextPropertyName,
 
@@ -334,18 +334,23 @@ namespace DashboardCode.Routines.AspNetCore
                     (addViewData, options, selectedIds) =>
                         addViewData(viewDataMultiSelectListKey, new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, selectedIds));
 
-                var manyToMany = new ManyToMany<TEntity, TF, TMM, TfID>(
-                    formFieldName, addViewData2, getOptions, getRelatedExpression, equalsById, getTmmTfId, getId, construct, toId);
+                var manyToMany = new ManyToMany<TEntity, TF, TMM, TfID, IRepository<TEntity>>(
+                    formFieldName, addViewData2, getOptions, getTmmExpression, equalsById, getTmmTfId, getTfId, construct, toId);
                 manyToManyDictionary.Add(formFieldName, manyToMany);
                 return this;
             }
         }
 
+        public static void X()
+        {
+
+        }
+
         public class OneToManyScorer
         {
-            readonly Dictionary<string, IOneToMany<TEntity>> onyToManyDictionary;
+            readonly Dictionary<string, IOneToMany<TEntity, IRepository<TEntity>>> onyToManyDictionary;
 
-            public OneToManyScorer(Dictionary<string, IOneToMany<TEntity>> onyToManyDictionary) =>
+            public OneToManyScorer(Dictionary<string, IOneToMany<TEntity, IRepository<TEntity>>> onyToManyDictionary) =>
                 this.onyToManyDictionary = onyToManyDictionary;
 
             public OneToManyScorer Add<TF, TMM, TfID>(
@@ -353,14 +358,14 @@ namespace DashboardCode.Routines.AspNetCore
                 string viewDataSelectListKey,
                 Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
 
-                Func<TF, TfID> getId,
+                //Func<TF, TfID> getId,
                 Func<TEntity, TfID> getRefId,
 
                 string selectListOptionValuePropertyName,
-                string selectListOptionTextPropertyName,
+                string selectListOptionTextPropertyName//,
 
-                Func<TEntity, TF, TMM> construct,
-                Func<string, TfID> toId = null
+                //Func<TEntity, TF, TMM> construct,
+                //Func<string, TfID> toId = null
                 ) where TF : class where TMM : class
             {
 
@@ -368,7 +373,7 @@ namespace DashboardCode.Routines.AspNetCore
                     (addViewData, options, selectedId) =>
                         addViewData(viewDataSelectListKey, new SelectList(options, selectListOptionValuePropertyName, selectListOptionTextPropertyName, selectedId));
 
-                var m = new OneToMany<TEntity, TF, TfID>(
+                var m = new OneToMany<TEntity, TF, TfID, IRepository<TEntity>>(
                     formFieldName, addViewData2, getOptions, getRefId);
                 onyToManyDictionary.Add(formFieldName, m);
                 return this;
@@ -415,12 +420,12 @@ namespace DashboardCode.Routines.AspNetCore
             this.FindPredicate = findByIdPredicate;
             this.DisabledFormFields = disabledProperties;
 
-            var manyToManyBinders = new Dictionary<string, IManyToMany<TEntity>>();
+            var manyToManyBinders = new Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>>>();
             addManyToMany?.Invoke(new ManyToManyScorer(manyToManyBinders));
-            var oneToManyBinders = new Dictionary<string, IOneToMany<TEntity>>();
+            var oneToManyBinders = new Dictionary<string, IOneToMany<TEntity, IRepository<TEntity>>>();
             addOneToMany?.Invoke(new OneToManyScorer(oneToManyBinders));
 
-            this.ReferencesCollection = new ReferencesCollection<TEntity>(oneToManyBinders, manyToManyBinders);
+            this.ReferencesCollection = new ReferencesCollection<TEntity, IRepository<TEntity>>(oneToManyBinders, manyToManyBinders);
 
             this.FormFields = new Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>>();
             addFieldBinders?.Invoke(new FormFieldsScorer(FormFields));

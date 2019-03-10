@@ -94,12 +94,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             //var roleNameLength = metaBrowser.GetLength<Role>(en => en.RoleName);
             formFields =>
                 formFields.Add(e => e.GroupName, StringValuesExtensions.ConvertToString)
-                          .Add(e => e.GroupAdName, StringValuesExtensions.ConvertToString, asserts => asserts.Add(v => v.Length <= 126, "Too big!"))
-            //.Add(e => e.GroupAdName, setter => sv => Binder.TryStringValidateLength(sv, v => setter(v), 100))
-            //.Add(e => e.GroupId,  Binder.ConvertToInt, asserts => asserts.Add(v => v < 100, "Too big!"))
-            //.Add(e => e.GroupId,  Binder.ConvertToInt, v=>new BinderResult(v<100? null: new[] { "Too big!" }), converter => setter => validator => validator(setter(converter())))
-            //.Add(e => e.GroupId,  Binder.ConvertToInt,  convertor => setter => { var r = setter(convertor()); if (r.Value > 100) {; } return r.ToVerboseResult(); })
-            //.Add(e => e.GroupId,  setter => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); setter(v);    return new BinderResult(v<100?null: "Too big!"); })
+                          .Add(e => e.GroupAdName, StringValuesExtensions.ConvertToString, asserts => asserts.Add(v => v.Length <= 126, "Too long!"))
+            //.Add(e => e.GroupAdName, setter => sv => StringValuesExtensions.TryStringValidateLength(sv, v => setter(v), 100))
+            //.Add(e => e.GroupId,  StringValuesExtensions.ConvertToInt, asserts => asserts.Add(v => v < 100, "Too long!"))
+            //.Add(e => e.GroupId,  StringValuesExtensions.ConvertToInt, v=>new BinderResult(v<100? null: new[] { "Too long!" }), converter => setter => validator => validator(setter(converter())))
+            //.Add(e => e.GroupId,  StringValuesExtensions.ConvertToInt,  convertor => setter => { var r = setter(convertor()); if (r.Value > 100) {; } return r.ToVerboseResult(); })
+            //.Add(e => e.GroupId,  setter => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); setter(v);    return new BinderResult(v<100?null: "Too long!"); })
             //.Add("GroupId",           e => sv => { if (!int.TryParse(sv.ToString(), out int v)) return new BinderResult("Can't parse"); e.GroupId = v; return new BinderResult(v<100?null:"Too bug!"); })
             ,
 
