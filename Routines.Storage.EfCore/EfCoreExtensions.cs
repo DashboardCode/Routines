@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -23,13 +24,6 @@ namespace DashboardCode.Routines.Storage.EfCore
             var includable = new Chain<T>(iState);
             include?.Invoke(includable);
             return iState.Queryable;
-        }
-
-        public static void Detach<T>(this DbContext context, T entity, Include<T> include) where T : class
-        {
-            context.Entry(entity).State = EntityState.Detached;
-            var dbSet = context.Set<T>();
-            ObjectExtensions.Detach(entity, include);
         }
 
         public static Include<T> AppendModelFields<T>(this Include<T> include, IModel model) where T : class

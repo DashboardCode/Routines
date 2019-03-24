@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 namespace DashboardCode.Routines.Storage.Ef6
 {
@@ -93,5 +94,12 @@ namespace DashboardCode.Routines.Storage.Ef6
             throw new NotImplementedException();
         }
 
+        public void LoadCollection<TRelationEntity>(TEntity entity, Expression<Func<TEntity, IEnumerable<TRelationEntity>>> getTmmExpression) where TRelationEntity : class
+        {
+            DbEntityEntry<TEntity> entry = context.Entry(entity);
+            var name = getTmmExpression.GetMemberName();
+            var col = entry.Collection(name);
+            col.Load();
+        }
     }
 }

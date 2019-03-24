@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering; // SelectList and MultySelectList
 using Microsoft.Extensions.Primitives;
 
 using DashboardCode.Routines.Storage;
+using System.Linq;
 
 namespace DashboardCode.Routines.AspNetCore
 {
@@ -23,7 +24,7 @@ namespace DashboardCode.Routines.AspNetCore
         public readonly Dictionary<string, Func<TEntity, Action<StringValues>>> HiddenFormFields;
         public readonly Include<TEntity> DisabledFormFields;
 
-        public readonly ReferencesCollection<TEntity, IRepository<TEntity>> ReferencesCollection;
+        public readonly ReferencesCollection<TEntity, IRepository<TEntity>, IBatch<TEntity>> ReferencesCollection;
 
         public class HiddenFormFieldsScorer
         {
@@ -306,9 +307,9 @@ namespace DashboardCode.Routines.AspNetCore
         
         public class ManyToManyScorer
         {
-            readonly Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>>> manyToManyDictionary;
+            readonly Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>, IBatch<TEntity>>> manyToManyDictionary;
 
-            public ManyToManyScorer(Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>>> manyToManyDictionary) =>
+            public ManyToManyScorer(Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>, IBatch<TEntity>>> manyToManyDictionary) =>
                 this.manyToManyDictionary = manyToManyDictionary;
 
             public ManyToManyScorer Add<TF, TMM, TfID>(
@@ -332,18 +333,34 @@ namespace DashboardCode.Routines.AspNetCore
 
                 Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>> addViewData2 =
                     (addViewData, options, selectedIds) =>
-                        addViewData(viewDataMultiSelectListKey, new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, selectedIds));
+                        addViewData(viewDataMultiSelectListKey, 
+                        new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, selectedIds.ToList()));
 
-                var manyToMany = new ManyToMany<TEntity, TF, TMM, TfID, IRepository<TEntity>>(
-                    formFieldName, addViewData2, getOptions, getTmmExpression, equalsById, getTmmTfId, getTfId, construct, toId);
+                var getTmm = getTmmExpression.Compile();
+                var memberExpression = (MemberExpression)getTmmExpression.Body;
+                var setTmm = MemberExpressionExtensions.CompileSetPropertyCovariance<TEntity, IEnumerable<TMM>>(memberExpression);
+
+                Expression<Func<TEntity, IEnumerable<TMM>>> getRelationAsEnumerable = getTmmExpression.ContravarianceToIEnumerable();
+
+                var manyToMany = new ManyToMany<TEntity, TF, TMM, TfID, IRepository<TEntity>, IBatch<TEntity>>(
+                    formFieldName, addViewData2, getOptions,
+                    (repository, batch, entity, selected) =>
+                    {
+                        var oldRelations = new List<TMM>();
+                        setTmm(entity, oldRelations);
+                        batch.ModifyRelated(entity, oldRelations, selected, equalsById);
+                    },
+                    (repository, batch, entity, selected) =>
+                        {
+                            repository.LoadCollection(entity, getRelationAsEnumerable);
+                            var oldRelations = getTmm(entity);
+                            batch.ModifyRelated(entity, oldRelations, selected, equalsById);
+                        },
+                    getTmmExpression.Compile(), 
+                    getTmmTfId, getTfId, construct, toId);
                 manyToManyDictionary.Add(formFieldName, manyToMany);
                 return this;
             }
-        }
-
-        public static void X()
-        {
-
         }
 
         public class OneToManyScorer
@@ -420,12 +437,12 @@ namespace DashboardCode.Routines.AspNetCore
             this.FindPredicate = findByIdPredicate;
             this.DisabledFormFields = disabledProperties;
 
-            var manyToManyBinders = new Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>>>();
+            var manyToManyBinders = new Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>, IBatch<TEntity>>>();
             addManyToMany?.Invoke(new ManyToManyScorer(manyToManyBinders));
             var oneToManyBinders = new Dictionary<string, IOneToMany<TEntity, IRepository<TEntity>>>();
             addOneToMany?.Invoke(new OneToManyScorer(oneToManyBinders));
 
-            this.ReferencesCollection = new ReferencesCollection<TEntity, IRepository<TEntity>>(oneToManyBinders, manyToManyBinders);
+            this.ReferencesCollection = new ReferencesCollection<TEntity, IRepository<TEntity>, IBatch<TEntity>>(oneToManyBinders, manyToManyBinders);
 
             this.FormFields = new Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>>();
             addFieldBinders?.Invoke(new FormFieldsScorer(FormFields));

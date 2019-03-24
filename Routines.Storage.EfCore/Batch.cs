@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
@@ -49,9 +48,25 @@ namespace DashboardCode.Routines.Storage.EfCore
             context.Set<TEntity>().Remove(entity);
         }
 
+        public void LoadAndModifyRelated<TRelationEntity>(
+            TEntity entity,
+            Expression<Func<TEntity, ICollection<TRelationEntity>>> getTmmExpression,
+            IEnumerable<TRelationEntity> newRelations,
+            Func<TRelationEntity, TRelationEntity, bool> equalsById
+            ) where TRelationEntity : class
+        {
+            Expression<Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable = getTmmExpression.ContravarianceToIEnumerable();
+            DbContextExtensions.LoadCollection(context, entity, getRelationAsEnumerable);
+            var getTmm = getTmmExpression.Compile();
+            var oldRelations = getTmm(entity);
+            ModifyRelated(
+                entity, oldRelations, newRelations, equalsById
+            );
+        }
+
         public void ModifyRelated<TRelationEntity>(
             TEntity entity,
-            Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelation,
+            ICollection<TRelationEntity> oldRelations,
             IEnumerable<TRelationEntity> newRelations,
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class
@@ -63,31 +78,10 @@ namespace DashboardCode.Routines.Storage.EfCore
 
              context.Entry(blog).Reference(b => b.Owner).Load();
              */
-
-            auditVisitor.SetAuditProperties(entity); // TODO: test if ModifyWithRelated modifies entity ?
-            Expression <Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable = getRelation.ContravarianceToIEnumerable();
-            EntityEntry<TEntity> entry = context.Entry(entity);
             
-            //if (entry.State == EntityState.Detached)
-            //    entry.State = EntityState.Unchanged;
-            var col = entry.Collection(getRelationAsEnumerable);
-            col.Load();
-            var getRelationFunc = getRelation.Compile();
-            var enumerable = getRelationFunc(entity);
-            var oldRelations = enumerable;
-            var tmp = new List<TRelationEntity>();
-            foreach (var e in oldRelations)
-                if (!newRelations.Any(e2 => equalsById(e, e2)))
-                    tmp.Add(e);
-            foreach (var e in tmp)
-                oldRelations.Remove(e);
-
-            foreach (var e in newRelations)
-                if (!oldRelations.Any(e2 => equalsById(e, e2)))
-                {
-                    auditVisitor.SetAuditProperties(e);
-                    oldRelations.Add(e);
-                }
+            auditVisitor.SetAuditProperties(entity); 
+            EntityExtensions.UpdateCollection(oldRelations, newRelations, equalsById,
+                e => auditVisitor.SetAuditProperties(e));
         }
     }
 

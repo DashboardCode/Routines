@@ -18,12 +18,18 @@ namespace DashboardCode.Routines.Storage
         void Add(TEntity t);
         void Remove(TEntity t);
         void Modify(TEntity t, Include<TEntity> include=null);
-        void ModifyRelated<TRelationEntity>(
+        void LoadAndModifyRelated<TRelationEntity>(
                 TEntity entity,
                 Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelated,
                 IEnumerable<TRelationEntity> releatedCollection,
                 Func<TRelationEntity, TRelationEntity, bool> equalsById
-        ) where TRelationEntity : class;
+            ) where TRelationEntity : class;
+        void ModifyRelated<TRelationEntity>(
+            TEntity entity,
+            ICollection<TRelationEntity> oldRelations,
+            IEnumerable<TRelationEntity> newRelations,
+            Func<TRelationEntity, TRelationEntity, bool> equalsById
+            ) where TRelationEntity : class;
     }
 
     public interface IBatch

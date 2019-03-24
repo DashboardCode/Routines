@@ -157,6 +157,16 @@ namespace DashboardCode.Routines
             return setter;
         }
 
+        public static Action<TEntity, TPropertyValue> CompileSetPropertyCovariance<TEntity, TPropertyValue>(this MemberExpression memberExpression)
+        {
+            ParameterExpression eParameter = (ParameterExpression)memberExpression.Expression;
+            ParameterExpression vParameter = Expression.Parameter(typeof(TPropertyValue), "v");
+            var assign = Expression.Assign(memberExpression, Expression.Convert(vParameter, memberExpression.Type));
+            var lambda = Expression.Lambda<Action<TEntity, TPropertyValue>>(assign, eParameter, vParameter);
+            var setter = lambda.Compile();
+            return setter;
+        }
+
         public static Func<TEntity, Action<TPropertyValue>> CompileFunctionalSetter<TEntity, TPropertyValue>(this MemberExpression memberExpression)
         {
             Action<TEntity, TPropertyValue> setter = memberExpression.CompileSetProperty<TEntity, TPropertyValue>();

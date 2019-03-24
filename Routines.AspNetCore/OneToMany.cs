@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
-using DashboardCode.Routines.Storage;
-
 namespace DashboardCode.Routines.AspNetCore
 {
     public class OneToMany<TP, TF, TfID, TDAL> : IOneToMany<TP, TDAL> where TP : class where TF : class 
@@ -18,16 +16,13 @@ namespace DashboardCode.Routines.AspNetCore
         public OneToMany(
             string formFieldName,
             Action<Action<string, object>, IReadOnlyCollection<TF>, TfID> addViewData,
-            //MvcOneToManyNavigationFacade<TP, TF, TfID> navigation,
             Func<TDAL, IReadOnlyCollection<TF>> getOptions,
             Func<TP, TfID> getTpTfId,
-            
-            Func<string, TfID> toId = null
+            Func<string, TfID> parseId = null
             )
         {
             this.formFieldName = formFieldName;
             this.addViewData = addViewData;
-            //this.navigation = navigation;
             this.getOptions = getOptions;
             this.getTpTfId = getTpTfId;
             this.parseId = parseId ?? Converters.GetParser<TfID>();
@@ -36,7 +31,7 @@ namespace DashboardCode.Routines.AspNetCore
         public void PrepareDefaultOptions(Action<string, object> addViewData, TDAL repository)
         {
             var options = getOptions(repository);
-            this.addViewData(addViewData, options, default(TfID));
+            this.addViewData(addViewData, options, default);
         }
 
 
@@ -47,7 +42,8 @@ namespace DashboardCode.Routines.AspNetCore
                 this.addViewData(addViewData, options, getTpTfId(entity));
         }
 
-        public void PrepareParsedOptions(Action<string, object> addViewData, HttpRequest request, TP entity, TDAL repository, out Action addViewDataMultiSelectList)
+        public void PrepareParsedOptions(Action<string, object> addViewData, HttpRequest request, TP entity, TDAL repository,
+            out Action addViewDataMultiSelectList)
         {
             var options = getOptions(repository);
 

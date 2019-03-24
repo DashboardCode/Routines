@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.Configuration.Classic</AssemblyName>
     <RootNamespace>DashboardCode.Routines.Configuration.Classic</RootNamespace>
-    <Version>2.0.43</Version>
+    <Version>2.0.48</Version>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Product>DashboardCode.Routines</Product>
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
@@ -16,8 +16,8 @@
     <PackageTags></PackageTags>
     <PackageReleaseNotes></PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>2.0.43.0</AssemblyVersion>
-    <FileVersion>2.0.43.0</FileVersion>
+    <AssemblyVersion>2.0.48.0</AssemblyVersion>
+    <FileVersion>2.0.48.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

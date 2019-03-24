@@ -42,14 +42,13 @@ namespace DashboardCode.Routines.Storage.Ef6
             context.Set<TEntity>().Remove(entity);
         }
 
-        public void ModifyRelated<TRelationEntity>(
+        public void LoadAndModifyRelated<TRelationEntity>(
             TEntity entity,
             Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelated,
-            IEnumerable<TRelationEntity> newRelated,
+            IEnumerable<TRelationEntity> newRelations,
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class
         {
-            setAuditProperties(entity); // TODO: test does it change
             DbEntityEntry<TEntity> entry = context.Entry(entity);
             var name = getRelated.GetMemberName();
             var col = entry.Collection(name);
@@ -57,21 +56,21 @@ namespace DashboardCode.Routines.Storage.Ef6
 
             var getRelationFunc = getRelated.Compile();
             var oldRelations = getRelationFunc(entity);
-            var tmp = new List<TRelationEntity>();
-            foreach (var e in oldRelations)
-                if (!newRelated.Any(e2 => equalsById(e, e2)))
-                    tmp.Add(e);
-            foreach (var e in tmp)
-                oldRelations.Remove(e);
-
-            foreach (var e in newRelated)
-                if (!oldRelations.Any(e2 => equalsById(e, e2)))
-                {
-                    setAuditProperties(e);
-                    oldRelations.Add(e);
-                }
+            ModifyRelated(entity, oldRelations, newRelations, equalsById);
         }
 
+        public void ModifyRelated<TRelationEntity>(TEntity entity, ICollection<TRelationEntity> oldRelations, IEnumerable<TRelationEntity> newRelations, Func<TRelationEntity, TRelationEntity, bool> equalsById) where TRelationEntity : class
+        {
+            setAuditProperties(entity); 
+            EntityExtensions.UpdateCollection(
+                oldRelations,
+                newRelations,
+                equalsById,
+                setAuditProperties
+                );
+        }
+
+        
     }
 
     public class Batch : IBatch

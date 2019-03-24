@@ -30,7 +30,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Controllers
             edit = CrudRoutineControllerConsumer<User, int>.ComposeEdit(
                 this, meta.EditIncludes, meta.KeyConverter, meta.FindPredicate, meta.ReferencesCollection.PrepareOptions);
             editConfirmed = CrudRoutineControllerConsumer<User, int>.ComposeEditConfirmed(
-                this, authorize, meta.Constructor, meta.FormFields, meta.HiddenFormFields, meta.DisabledFormFields, meta.ReferencesCollection.ParseRelated);
+                this, authorize, meta.Constructor, meta.FormFields, meta.HiddenFormFields, meta.DisabledFormFields, meta.ReferencesCollection.ParseRelatedOnUpdate);
         }
 
         #region Details / Index

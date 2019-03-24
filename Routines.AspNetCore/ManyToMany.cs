@@ -1,33 +1,37 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
-using DashboardCode.Routines.Storage;
+//using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public class ManyToMany<TEntity, TF, TMM, TfID, TDAL> : IManyToMany<TEntity, TDAL> where TEntity : class where TF : class where TMM : class
+    public class ManyToMany<TEntity, TF, TMM, TfID, TDAL, TDST> : IManyToMany<TEntity, TDAL, TDST> where TEntity : class where TF : class where TMM : class
     {
         private readonly Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>> addViewData;
         private readonly Func<TDAL, IReadOnlyCollection<TF>> getOptions;
-        private readonly Expression<Func<TEntity, ICollection<TMM>>> getTmmExpression;
+        private readonly Action<TDAL, TDST, TEntity, List<TMM>> storeUpdate;
+        private readonly Action<TDAL, TDST, TEntity, List<TMM>> storeInsert;
+        //private readonly Expression<Func<TEntity, ICollection<TMM>>> getTmmExpression;
         private readonly Func<TEntity, ICollection<TMM>> getRelated;
-        private readonly Func<TMM, TMM, bool> equalsById;
+        //private readonly Func<TMM, TMM, bool> equalsById;
         private readonly Func<TMM, TfID> getTmmTfId;
-        private readonly string formField;
+        private readonly string formFieldName;
 
         private readonly Func<TF, TfID> getTfId;
         private readonly Func<TEntity, TF, TMM> construct;
         private readonly Func<string, TfID> parseId;
 
         public ManyToMany(
-            string formField,
+            string formFieldName,
             Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>> addViewData,
             Func<TDAL, IReadOnlyCollection<TF>> getOptions,
-            Expression<Func<TEntity, ICollection<TMM>>> getTmmExpression, 
-            Func<TMM, TMM, bool> equalsById,
+            //Action<TDST, TEntity, List<TMM>> getOldRelations,
+            Action<TDAL, TDST, TEntity, List<TMM>> storeInsert,
+            Action<TDAL, TDST, TEntity, List<TMM>> storeUpdate,
+            Func<TEntity, ICollection<TMM>> getTmm, 
+            //Func<TMM, TMM, bool> equalsById,
             Func<TMM, TfID> getTmmTfId,
 
             Func<TF, TfID> getTfId,
@@ -40,13 +44,15 @@ namespace DashboardCode.Routines.AspNetCore
             this.getOptions = getOptions;
 
             // used only in PreparePersistedOptions
-            this.getRelated = getTmmExpression.Compile();
+            this.getRelated = getTmm;// Expression.Compile();
             this.getTmmTfId = getTmmTfId;
 
             // used only in PrepareParsedOptions
-            this.getTmmExpression = getTmmExpression;
-            this.equalsById = equalsById;
-            this.formField = formField;
+            this.storeUpdate = storeUpdate;
+            this.storeInsert = storeInsert;
+            //this.getTmmExpression = getTmmExpression;
+            //this.equalsById = equalsById;
+            this.formFieldName = formFieldName;
             this.getTfId = getTfId;
             this.construct = construct;
             this.parseId = parseId ?? Converters.GetParser<TfID>();
@@ -69,13 +75,31 @@ namespace DashboardCode.Routines.AspNetCore
             };
         }
 
-        public void PrepareParsedOptions(Action<string, object> addViewData, TDAL repository,  HttpRequest request, TEntity entity,  out Action<IBatch<TEntity>> modifyRelated, out Action addViewDataMultiSelectList)
+        public void PrepareParsedOptionsOnInsert(Action<string, object> addViewData, TDAL repository, HttpRequest request, TEntity entity
+            , out Action<TDST> modifyRelated
+            , out Action addViewDataMultiSelectList)
+        {
+            var (selected, options, selectedIds) = Parse(repository, request, entity);
+            modifyRelated = batch => storeInsert(repository, batch, entity, selected);
+            addViewDataMultiSelectList = () => this.addViewData(addViewData, options, selectedIds);
+        }
+
+        public void PrepareParsedOptionsOnUpdate(Action<string, object> addViewData, TDAL repository,  HttpRequest request, TEntity entity
+            , out Action<TDST> modifyRelated 
+            , out Action addViewDataMultiSelectList)
+        {
+            var (selected, options, selectedIds) = Parse(repository, request, entity);
+            modifyRelated = batch => storeUpdate(repository, batch, entity, selected);
+            addViewDataMultiSelectList = () => this.addViewData(addViewData, options, selectedIds);
+        }
+
+        private (List<TMM> selected, IReadOnlyCollection<TF> options, List<TfID> selectedIds) Parse(TDAL repository, HttpRequest request, TEntity entity)
         {
             var options = getOptions(repository);
 
             var selectedIds = new List<TfID>();
             var selected = new List<TMM>();
-            var stringValues = request.Form[formField];
+            var stringValues = request.Form[formFieldName];
             if (stringValues.Count() > 0)
             {
                 foreach (var s in stringValues)
@@ -84,9 +108,7 @@ namespace DashboardCode.Routines.AspNetCore
                     .ToList()
                     .ForEach(e => selected.Add(construct(entity, e)));
             }
-
-            modifyRelated = batch => batch.ModifyRelated(entity, getTmmExpression, selected, equalsById);
-            addViewDataMultiSelectList = () => this.addViewData(addViewData, options, selectedIds);
+            return (selected, options, selectedIds);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace DashboardCode.Routines.Storage
         TEntity Find(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
         Task<TEntity> FindAsync(Expression<Func<TEntity, bool>> predicate, Include<TEntity> include = null);
 
+
         IQueryable<TEntity> Query(Include<TEntity> include = null);
 
         #region Prototype support
@@ -24,6 +25,9 @@ namespace DashboardCode.Routines.Storage
         #endregion
 
         #region ORM "abstraction leaks" - sometimes you need to manipulate entities without pushing changes to db
+        void LoadCollection<TRelationEntity>(TEntity entity, Expression<Func<TEntity, IEnumerable<TRelationEntity>>> getTmmExpression) where TRelationEntity : class;
+
+
         void Detach(TEntity entity, Include<TEntity> include = null);
         void Detach(IEnumerable<TEntity> entity, Include<TEntity> include = null);
         #endregion

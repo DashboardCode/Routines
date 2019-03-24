@@ -64,7 +64,7 @@ namespace DashboardCode.Routines.AspNetCore
                     var entity = getEntityResult.Value;
                     if (entity == null)
                         return new StatusCodeResult((int)HttpStatusCode.BadRequest);
-                    bool isOk = getEntityResult.IsOk();
+                    //bool isOk = getEntityResult.IsOk();
                     var getRelatedResult = getRelated(request, entity, addViewData);
                     if (!getRelatedResult.IsOk())
                         PublishResult(getRelatedResult.Message, publishStorageError);
@@ -76,11 +76,11 @@ namespace DashboardCode.Routines.AspNetCore
                         try
                         {
                             var storageResult = storage.Handle(
-                            batch =>
-                            {
-                                save(entity, batch);
-                                modifyRelated(batch);
-                            });
+                                batch =>
+                                {
+                                    save(entity, batch);
+                                    modifyRelated(batch);
+                                });
                             if (storageResult.IsOk())
                                 return successView();
                             publishException(storageResult.Exception);

@@ -63,7 +63,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                        batch =>
                        {
                            batch.Add(parentRecord);
-                           batch.ModifyRelated(
+                           batch.LoadAndModifyRelated(
                                parentRecord,
                                e => e.ParentRecordHierarchyRecordMap,
                                selectedPrivileges,
@@ -108,7 +108,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch =>
                         {
                             batch.Modify(entity);
-                            batch.ModifyRelated(
+                            batch.LoadAndModifyRelated(
                                 entity,
                                 (e => e.ParentRecordHierarchyRecordMap),
                                 selectedPrivileges,
@@ -166,7 +166,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch.Handle(
                             (storage) =>
                             {
-                                storage.ModifyRelated(
+                                storage.LoadAndModifyRelated(
                                     parentRecord,
                                     e => e.ParentRecordHierarchyRecordMap,
                                     detached,
@@ -200,7 +200,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                             batch.Handle(
                                 (storage) =>
                                 {
-                                    storage.ModifyRelated(
+                                    storage.LoadAndModifyRelated(
                                         parentRecordF,
                                         e => e.ParentRecordHierarchyRecordMap,
                                         detached,
@@ -276,7 +276,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch.Handle(
                             (storage) =>
                             {
-                                storage.ModifyRelated(
+                                storage.LoadAndModifyRelated(
                                     parentRecord,
                                     e => e.ParentRecordHierarchyRecordMap,
                                     only2,

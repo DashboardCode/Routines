@@ -378,7 +378,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     steps(
                             () => authorize(nameof(Create), state.UserContext),
                             request => MvcHandler.Bind(request, meta.Constructor, meta.FormFields, meta.HiddenFormFields),
-                            (request, entity, addViewData) => meta.ReferencesCollection.ParseRelated(addViewData, request, repository, entity),
+                            (request, entity, addViewData) => meta.ReferencesCollection.ParseRelatedOnInsert(addViewData, request, repository, entity),
                             (entity, batch) => batch.Add(entity)
                         )
             );
@@ -406,7 +406,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     steps(
                         () => authorize(nameof(Edit), state.UserContext),
                         request => MvcHandler.Bind(request, meta.Constructor, meta.FormFields, meta.HiddenFormFields),
-                        (request, entity, addViewData) => meta.ReferencesCollection.ParseRelated(addViewData, request, repository, entity),
+                        (request, entity, addViewData) => meta.ReferencesCollection.ParseRelatedOnUpdate(addViewData, request, repository, entity),
                         (entity, batch) => batch.Modify(entity, meta.DisabledFormFields)
                     )
             );

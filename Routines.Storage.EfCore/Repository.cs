@@ -84,5 +84,10 @@ namespace DashboardCode.Routines.Storage.EfCore
             foreach (var entity in entities)
                 context.Detach(entity, include);
         }
+
+        public void LoadCollection<TRelationEntity>(TEntity entity, Expression<Func<TEntity, IEnumerable<TRelationEntity>>> getTmmExpression) where TRelationEntity : class
+        {
+            DbContextExtensions.LoadCollection(context, entity, getTmmExpression);
+        }
     }
 }
