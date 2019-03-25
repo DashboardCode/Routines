@@ -1,9 +1,14 @@
-﻿// import Popper from 'popper.js';
-// <script src="~/lib/datatables.net/js/jquery.dataTables.js"></script>
-import 'bootstrap'; // this will ref jquery and popper
-import 'datatables.net-bs4'; // this will ref dataTabales.js
-import 'jquery-validation'; // dist/jquery.validate.js 
-import 'jquery-validation-unobtrusive'; // dist/jquery.validate.unobtrusive.js
+﻿import 'bootstrap'; // this will bring jquery and popper
+import 'datatables.net-bs4'; // this will bring dataTabales.js
+import 'datatables.net-select-bs4';
+import './../node_modules/datatables.net-buttons/js/buttons.colVis';
+import 'datatables.net-buttons-bs4';
+import 'moment';
+import 'daterangepicker';
+import 'jquery-validation';
+import 'jquery-validation-unobtrusive';
 import '@dashboardcode/bsmultiselect';
+import 'jstree';
+
 import './index.scss';
-import './site.js';
+import './site';

@@ -1,6 +1,6 @@
 ﻿// webpack.config interpretated by node and node by default do not support ES6 (that means import etc.)
 
-const CleanPlugin = require('clean-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const PathModule = require('path');
 
@@ -113,7 +113,7 @@ module.exports = {
         //    ]
         //}),
         new ManifestPlugin(),
-        new CleanPlugin(outputFolderPath, { verbose: false })
+        new CleanWebpackPlugin(), // defualt verbose:false
 
         // MANAGE DEPENDENCY. METHOD 1. Manage dependencies at build-time.
         // replaces a symbol in another source through the respective import
@@ -150,7 +150,13 @@ module.exports = {
                     options: '$'
                 }]
             },
-
+            {
+                test: require.resolve('moment'),
+                use: [{
+                    loader: 'expose-loader',
+                    options: 'moment'
+                }]
+            },
             {
                 test: /\.(scss|css)$/,
                 use: [
@@ -193,13 +199,22 @@ module.exports = {
                     loader: "babel-loader",
                     options: {
                         babelrc: false,
-                        plugins: ["@babel/plugin-proposal-class-properties", "@babel/plugin-proposal-object-rest-spread"],
+                        plugins: [
+                            "@babel/plugin-proposal-class-properties",
+                            "@babel/plugin-proposal-object-rest-spread"],
                         presets: [
-                            "@babel/preset-typescript", // this or plugin  @babel/plugin-transform-typescript
+                            "@babel/preset-typescript", // this preset contains plugin '@babel/plugin-transform-typescript'
+
+                            // @babel/preset-env uses "@babel/polyfill" as facade for corejs polyfills:
+                            // https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md
+                            // alternative to "@babel/polyfill" is "@babel/runtime":
+                            // https://codersmind.com/babel-polyfill-babel-runtime-explained/
+                            // https://babeljs.io/docs/en/babel-runtime-corejs2
                             ["@babel/env",
                                 {
                                     "useBuiltIns": "usage",
                                     "modules": false, // required for typescript?
+                                    "corejs": 3,
                                     "targets": {
                                         "browsers": [
                                             "last 2 chrome versions", "ie 11", "safari 11", "edge 15", "firefox 59"

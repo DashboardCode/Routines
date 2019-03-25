@@ -4,68 +4,77 @@
   "private": true,
   "description": "Adminka - ASP.NET Core MVC Boilerplate",
   "dependencies": {
-    "@babel/polyfill": "7.2.5",
-    "@dashboardcode/bsmultiselect": "0.2.19",
-    "bootstrap": "4.2.1",
-    "bootstrap-daterangepicker": "3.0.3",
-    "datatables.net": "1.10.19",
+    "@babel/polyfill": "7.4.0",
+    "core-js": "3.0.0",
+    "@dashboardcode/bsmultiselect": "0.2.20",
+    "bootstrap": "4.3.1",
     "datatables.net-bs4": "1.10.19",
     "jquery": "3.3.1",
     "jquery-validation": "1.19.0",
     "jquery-validation-unobtrusive": "3.2.11",
-    "popper.js": "1.14.6",
-    "source-map": "^0.7.3"
+    "popper.js": "1.14.7",
+    "source-map": "^0.7.3",
+    "daterangepicker": "3.0.3",
+    "moment": "2.24.0",
+    "datatables.net-select-bs4": "1.3.0",
+    "datatables.net-buttons-bs4": "1.5.6",
+    "jstree": "3.3.7"
   },
   "devDependencies": {
     "@babel/cli": "7.2.3",
-    "@babel/core": "7.2.2",
+    "@babel/core": "7.4.0",
+    "@babel/node": "7.2.2",
     "@babel/plugin-external-helpers": "7.2.0",
     "@babel/plugin-transform-modules-umd": "7.2.0",
     "@babel/plugin-transform-spread": "7.2.2",
-    "@babel/plugin-proposal-class-properties": "7.3.0",
-    "@babel/plugin-proposal-object-rest-spread": "7.3.1",
-    "@babel/preset-env": "7.3.1",
-    "@babel/preset-typescript": "7.1.0",
-    "@types/bootstrap": "4.2.1",
+    "@babel/plugin-transform-regenerator": "7.4.0",
+    "@babel/plugin-transform-runtime": "7.4.0",
+    "@babel/plugin-proposal-class-properties": "7.4.0",
+    "@babel/plugin-proposal-object-rest-spread": "7.4.0",
+    "@babel/preset-env": "7.4.2",
+    "@babel/preset-typescript": "7.3.3",
+    "@types/bootstrap": "4.3.0",
     "@types/jquery": "3.3.29",
-    "@types/node": "10.12.18",
-    "@types/webpack-env": "1.13.6",
-    "autoprefixer": "9.4.6",
+    "@types/node": "11.11.6",
+    "@types/webpack-env": "1.13.9",
+    "@types/datatables.net": "1.10.17",
+    "autoprefixer": "9.5.0",
     "babel-loader": "8.0.5",
-    "clean-webpack-plugin": "1.0.1",
+    "clean-webpack-plugin": "2.0.1",
     "cross-env": "^5.2.0",
-    "css-loader": "2.1.0",
-    "del": "^3.0.0",
+    "css-loader": "2.1.1",
+    "del": "4.0.0",
     "expose-loader": "0.7.5",
     "file-loader": "3.0.1",
     "gulp": "^4.0.0",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",
     "import-loader": "1.0.1",
-    "material-design-icons-iconfont": "4.0.4",
+    "material-design-icons-iconfont": "4.0.5",
     "mini-css-extract-plugin": "0.5.0",
     "node-sass": "^4.11.0",
     "npm-run-all": "4.1.5",
     "optimize-css-assets-webpack-plugin": "5.0.1",
-    "postcss-cli": "6.1.1",
+    "postcss-cli": "6.1.2",
     "postcss-loader": "3.0.0",
     "precss": "4.0.0",
-    "resolve-url-loader": "3.0.0",
-    "sass": "1.16.1",
+    "resolve-url-loader": "3.0.1",
+    "sass": "1.17.3",
     "sass-loader": "7.1.0",
     "script-loader": "0.7.2",
-    "source-map-explorer": "1.6.0",
+    "source-map-explorer": "1.8.0",
     "source-map-loader": "0.2.4",
     "style-loader": "0.23.1",
-    "typescript": "3.2.4",
-    "uglifyjs-webpack-plugin": "2.1.1",
+    "typescript": "3.3.4000",
+    "uglifyjs-webpack-plugin": "2.1.2",
     "url-loader": "1.1.2",
-    "webpack": "4.28.4",
-    "webpack-bundle-analyzer": "3.0.3",
-    "webpack-cli": "3.2.1",
+    "webpack": "4.29.6",
+    "webpack-bundle-analyzer": "3.1.0",
+    "webpack-cli": "3.3.0",
     "webpack-manifest-plugin": "2.0.4",
     "webpack-merge": "4.2.1",
-    "webpack-polyfill-injector": "3.0.1"
+    "webpack-polyfill-injector": "3.0.2",
+    "size-limit": "0.21.1"
   },
   "scripts": {
     "report": "echo.cd & cd & echo. & where node & echo.node -v & node -v & echo. & where npm & echo.npm -version & npm -version & echo. & echo.webpack -version & node ./node_modules/webpack/bin/webpack -version & echo. & echo.sass --version & node ./node_modules/sass/sass --version & echo. & echo.node-sass --version & node ./node_modules/node-sass/bin/node-sass --version & echo. & echo.babel -version & node ./node_modules/@babel/cli/bin/babel --version & echo. & echo.tsc --version & node ./node_modules/typescript/lib/tsc --version ",
@@ -93,32 +102,52 @@
     "sourcemap-cs": "node ./node_modules/source-map-explorer --html wwwroot/dist/main.css wwwroot/dist/main.css.map > ./wwwroot/dist/sourcemap_css.html",
     "sourcemap-js": "node ./node_modules/source-map-explorer --html wwwroot/dist/main.js wwwroot/dist/main.js.map > ./wwwroot/dist/sourcemapjs.html",
     "bundlesize": "dir .\\wwwroot\\dist\\*.js .\\wwwroot\\dist\\*.css",
-    "dist": "npm-run-all gulp dev webpack sourcemap-cs sourcemap-js bundlesize "
+    "dist": "npm-run-all gulp dev webpack sourcemap-cs sourcemap-js size "
   },
   "keywords": [
     "boilerplate"
   ],
   "author": "Roman Pokrovskij",
-  "bundlesize": [
+  "size-limit": [
     {
-      "path": "./wwwroot/dist/main.css",
-      "maxSize": "200 kB",
-      "compression": "none"
-    },
-    {
-      "path": "./wwwroot/dist/main.js",
-      "maxSize": "1500 kB",
-      "compression": "none"
+      "path": "./wwwroot/dist/main.css"
     },
     {
       "path": "./wwwroot/dist/main.css",
-      "maxSize": "50 kB",
-      "compression": "gzip"
+      "gzip": false,
+      "limit": "250 KB"
+    },
+    {
+      "path": "./wwwroot/dist/main.js"
     },
     {
       "path": "./wwwroot/dist/main.js",
-      "maxSize": "500 kB",
-      "compression": "gzip"
+      "gzip": false,
+      "limit": "200 KB"
+    },
+    {
+      "path": "./wwwroot/dist/vendor.css"
+    },
+    {
+      "path": "./wwwroot/dist/vendor.css",
+      "gzip": false,
+      "limit": "200 KB"
+    },
+    {
+      "path": "./wwwroot/dist/vendor.js"
+    },
+    {
+      "path": "./wwwroot/dist/vendor.js",
+      "gzip": false,
+      "limit": "650 KB"
+    },
+    {
+      "path": "./wwwroot/dist/runtime.js"
+    },
+    {
+      "path": "./wwwroot/dist/runtime.js",
+      "gzip": false,
+      "limit": "10 KB"
     }
   ],
   "main": "gulpfile.js",
