@@ -19,7 +19,7 @@ namespace DashboardCode.Routines.Logging.Test
             var loggingTransients = new LoggingTransients(memberTag, log);
 
             bool testInputOutput(object input2, object output, TimeSpan duration) => true;
-            var routineLogger = new RoutineLogger(correlationToken);
+            var routineLogger = new RoutineHandlerFactory(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
                 loggingTransients.TransformException);
@@ -68,7 +68,7 @@ namespace DashboardCode.Routines.Logging.Test
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
 
             bool testInputOutput(object input2, object output, TimeSpan duration) => true;
-            var routineLogger = new RoutineLogger(correlationToken);
+            var routineLogger = new RoutineHandlerFactory(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
                 loggingTransients.TransformException);
@@ -120,7 +120,7 @@ namespace DashboardCode.Routines.Logging.Test
             var loggingTransients = new LoggingTransients(memberTag, log);
 
             bool testInputOutput(object input2, object output, TimeSpan duration) => true;
-            var routineLogger = new RoutineLogger(correlationToken);
+            var routineLogger = new RoutineHandlerFactory(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
                 loggingTransients.TransformException
@@ -177,7 +177,7 @@ namespace DashboardCode.Routines.Logging.Test
             try
             {
                 bool testInputOutput(object input2, object output, TimeSpan duration) => true;
-                var routineLogger = new RoutineLogger(correlationToken);
+                var routineLogger = new RoutineHandlerFactory(correlationToken);
                 var exceptionHandler = new ExceptionHandler(
                     ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
                     loggingTransients.TransformException

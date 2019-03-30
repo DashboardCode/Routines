@@ -36,9 +36,7 @@ namespace DashboardCode.Routines
 
             void appendStackTraceAndDataRecursive(Exception ex)
             {
-                stringBuilder.Append("### ").Append(" ")
-                      .Append(ex.GetType().FullName)
-                      .Append(" - ").AppendMarkdownLine(ex.Message?.Replace(Environment.NewLine," "))
+                stringBuilder.AppendLine("**"+ex.GetType().FullName+"**").Append("### ").AppendMarkdownLine(ex.Message?.Replace(Environment.NewLine," "))
                       .AppendException(ex);
                 if (ex is ArgumentException argumentException)
                     stringBuilder.AppendArgumentException(argumentException);

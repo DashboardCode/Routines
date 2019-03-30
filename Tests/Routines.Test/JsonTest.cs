@@ -197,7 +197,7 @@ namespace DashboardCode.Routines.Test
         {
             var json = source.ToJsonAll(
                 closure,
-                cachedFormatter1,
+                cachedFormatter2,
                 chain => chain.Include(e => e.X + closure, "IX"),
                 objectAsArray: true,
                 rootAsProperty: "data",

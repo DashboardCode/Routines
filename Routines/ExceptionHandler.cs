@@ -2,25 +2,31 @@
 using System.Threading.Tasks;
 using System.Runtime.ExceptionServices;
 
-namespace DashboardCode.Routines.Logging
+namespace DashboardCode.Routines
 {
-    public class ExceptionHandler 
+
+    public interface IExceptionHandler
     {
-        private readonly Action<Exception> logException;
+        void Handle(Action action, Action<bool> onFinish);
+        Task HandleAsync(Func<Task> action, Action<bool> onFinish);
+    }
+
+    public class ExceptionHandler : IExceptionHandler
+    {
+        private readonly Action<Exception> handleException;
         private readonly Func<Exception, Exception>  transformException;
 
         public ExceptionHandler(
-            Action<Exception> logException, 
+            Action<Exception> handleException, 
             Func<Exception, Exception>  transformException
             )
         {
-            this.logException = logException;
+            this.handleException = handleException;
             this.transformException = transformException;
         }
 
-        public void Handle(Func<(Action, Action<bool>)> start)
+        public void Handle(Action action, Action<bool> onFinish)
         {
-            (Action action, Action<bool> onFinish) = start();
             bool isSuccess = false;
             try
             {
@@ -29,7 +35,7 @@ namespace DashboardCode.Routines.Logging
             }
             catch (Exception exception)
             {
-                logException(exception);
+                handleException(exception);
                 var transformedException = transformException(exception);
                 //  NOTE: may be there is a sensce to create alternative handler ExceptionHandler2 that will log transformException
                 //  try
@@ -74,9 +80,8 @@ namespace DashboardCode.Routines.Logging
             }
         }
 
-        public async Task HandleAsync(Func<(Func<Task>, Action<bool>)> start)
+        public async Task HandleAsync(Func<Task> action, Action<bool> onFinish)
         {
-            (Func<Task> action, Action<bool> onFinish) = start();
             bool isSuccess = false;
             try
             {
@@ -85,7 +90,7 @@ namespace DashboardCode.Routines.Logging
             }
             catch (Exception exception)
             {
-                logException(exception);
+                handleException(exception);
                 var transformedException = transformException(exception);
                 //  NOTE: may be there is a sensce to create alternative handler ExceptionHandler2 that will log transformException
                 //  try
@@ -127,6 +132,54 @@ namespace DashboardCode.Routines.Logging
             {
                 onFinish(isSuccess);
                 //stopWatch.Stop(); 
+            }
+        }
+    }
+
+    public class SimpleExceptionHandler : IExceptionHandler
+    {
+        private readonly Action<Exception> handleException;
+
+        public SimpleExceptionHandler(
+            Action<Exception> handleException
+            )
+        {
+            this.handleException = handleException;
+        }
+
+        public void Handle(Action action, Action<bool> onFinish)
+        {
+            bool isSuccess = false;
+            try
+            {
+                action();
+                isSuccess = true;
+            }
+            catch (Exception exception)
+            {
+                handleException(exception);
+            }
+            finally
+            {
+                onFinish(isSuccess);
+            }
+        }
+
+        public async Task HandleAsync(Func<Task> action, Action<bool> onFinish)
+        {
+            bool isSuccess = false;
+            try
+            {
+                await action();
+                isSuccess = true;
+            }
+            catch (Exception exception)
+            {
+                handleException(exception);
+            }
+            finally
+            {
+                onFinish(isSuccess);
             }
         }
     }

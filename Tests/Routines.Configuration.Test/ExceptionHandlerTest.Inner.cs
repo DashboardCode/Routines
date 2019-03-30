@@ -2,8 +2,6 @@
 using System.IO;
 using System.Collections.Generic;
 
-using DashboardCode.Routines.Logging;
-
 namespace DashboardCode.Routines.Configuration.Test
 {
     partial class ExceptionHandlerTest
@@ -17,13 +15,11 @@ namespace DashboardCode.Routines.Configuration.Test
                 exceptionAdapter.TransformException);
             try
             {
+                var source = File.OpenText("notexisted");
                 exceptionHandler.Handle(
-                    () => {
-                        var source = File.OpenText("notexisted");
-                        Action onSuccess = () => { };
-                        Action<bool> onFinally = (isSuccess) => { };
-                        return (onSuccess, onFinally);
-                    });
+                        () => { },
+                        (isSuccess) => { }
+                    );
             }
             catch (Exception ex)
             {

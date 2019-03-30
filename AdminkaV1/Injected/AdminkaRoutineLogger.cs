@@ -9,7 +9,7 @@ using DashboardCode.AdminkaV1.Injected.Telemetry;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
-    public class AdminkaRoutineLogger : RoutineLogger
+    public class AdminkaRoutineLogger : RoutineHandlerFactory
     {
         readonly Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> composeLoggers;
         readonly Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException;

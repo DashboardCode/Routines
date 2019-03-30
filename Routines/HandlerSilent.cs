@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DashboardCode.Routines.Logging
+namespace DashboardCode.Routines
 {
     public class HandlerSilent<TClosure> : IHandler<TClosure>
     {
         private readonly TClosure closure;
-        private readonly ExceptionHandler exceptionHandler;
+        private readonly IExceptionHandler exceptionHandler;
         private readonly Func<(Action, Action)> start;
         /// <summary>
         /// 
@@ -16,7 +16,7 @@ namespace DashboardCode.Routines.Logging
         /// <param name="start">returns logOnSuccess and onFailure (Used for: a. finish activity record b. trigger buffer flash)</param>
         public HandlerSilent(
             TClosure closure,
-            ExceptionHandler exceptionHandler,
+            IExceptionHandler exceptionHandler,
             Func<(Action onSuccess, Action onFailure)> start)
         {
             this.closure = closure;
@@ -26,91 +26,66 @@ namespace DashboardCode.Routines.Logging
 
         public void Handle(Action<TClosure> action)
         {
+            var (onSuccess, onFailure) = start();
             exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
                         () => {
                             action(closure);
                             onSuccess();
                         },
-                        isSuccess =>
-                        {
+                        isSuccess => {
                             if (!isSuccess)
                                 onFailure();
                         }
-                    );
-                }
             );
         }
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
         {
             var @value = default(TOutput);
+            var (onSuccess, onFailure) = start();
             exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
                         () => {
                             @value = func(closure);
                             onSuccess();
                         },
-                        isSuccess =>
-                        {
+                        isSuccess => {
                             if (!isSuccess)
                                 onFailure();
                         }
-                    );
-                }
             );
             return @value;
         }
 
         public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
+            var (onSuccess, onFailure) = start();
             var @value = default(TOutput);
             await exceptionHandler.HandleAsync(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (async () => {
-                        @value = await func(closure);
-                        onSuccess();
-                    }
-                    , isSuccess =>
-                    {
-                        if (!isSuccess)
-                            onFailure();
-                    }
-                    );
-                }
+                        async () => {
+                            @value = await func(closure);
+                            onSuccess();
+                        }, 
+                        isSuccess => {
+                            if (!isSuccess) 
+                                onFailure();
+                        }
             );
             return @value;
         }
 
         public async Task HandleAsync(Func<TClosure, Task> func)
         {
+            var (onSuccess, onFailure) = start();
             await exceptionHandler.HandleAsync(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
                         async () => {
                             await func(closure);
                             onSuccess();
-                        }
-                        , isSuccess =>
-                        {
-                            if (!isSuccess)
+                        }, 
+                        isSuccess => {
+                            if (!isSuccess)  
                                 onFailure();
                         }
-                    );
-                }
             );
         }
     }
-
-
 }

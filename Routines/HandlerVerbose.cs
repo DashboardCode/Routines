@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace DashboardCode.Routines.Logging
+namespace DashboardCode.Routines
 {
     public class HandlerVerbose<TClosure> : IHandler<TClosure>
     {
         private readonly TClosure closure;
-        private readonly ExceptionHandler exceptionHandler;
-        private readonly Func<(Action<object>, Action)> start;
+        private readonly IExceptionHandler exceptionHandler;
+        private readonly Func<(Action<object> onSuccess, Action onFailure)> start;
         /// <summary>
         /// 
         /// </summary>
@@ -16,8 +16,8 @@ namespace DashboardCode.Routines.Logging
         /// <param name="start">returns logOnSuccess and onFailure (Used for: a. finish activity record b. trigger buffer flash)</param>
         public HandlerVerbose(
             TClosure closure,
-            ExceptionHandler exceptionHandler,
-            Func<(Action<object>, Action)> start)
+            IExceptionHandler exceptionHandler,
+            Func<(Action<object> onSuccess, Action onFailure)> start)
         {
             this.closure = closure;
             this.exceptionHandler = exceptionHandler;
@@ -26,46 +26,32 @@ namespace DashboardCode.Routines.Logging
 
         public void Handle(Action<TClosure> action)
         {
+            var (onSuccess, onFailure) = start();
             exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
                         () => {
                             action(closure);
                             onSuccess(null);
-                        }
-                    ,
-                        isSuccess =>
-                        {
+                        },
+                        isSuccess => {
                             if (!isSuccess)
                                 onFailure();
                         }
-                    );
-                }
             );
         }
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func)
         {
             var @value = default(TOutput);
+            var (onSuccess, onFailure) = start();
             exceptionHandler.Handle(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (
                         () => {
                             @value = func(closure);
                             onSuccess(@value);
-                        }
-                    ,
-                        isSuccess =>
-                        {
+                        },
+                        isSuccess => {
                             if (!isSuccess)
                                 onFailure();
                         }
-                    );
-                }
             );
             return @value;
         }
@@ -73,42 +59,33 @@ namespace DashboardCode.Routines.Logging
         public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
             var @value = default(TOutput);
+            var (onSuccess, onFailure) = start();
             await exceptionHandler.HandleAsync(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (async () => {
-                        @value = await func(closure);
-                        onSuccess(@value);
-                    }
-                    , isSuccess =>
-                    {
-                        if (!isSuccess)
-                            onFailure();
-                    }
-                    );
-                }
+                        async () => {
+                            @value = await func(closure);
+                            onSuccess(@value);
+                        }, 
+                        isSuccess => {
+                            if (!isSuccess) { 
+                                onFailure();
+                            }
+                        }
             );
             return @value;
         }
 
         public async Task HandleAsync(Func<TClosure, Task> func)
         {
+            var (onSuccess, onFailure) = start();
             await exceptionHandler.HandleAsync(
-                () =>
-                {
-                    var (onSuccess, onFailure) = start();
-                    return (async () => {
-                        await func(closure);
-                        onSuccess(null);
-                    }
-                    , isSuccess =>
-                    {
-                        if (!isSuccess)
-                            onFailure();
-                    }
-                    );
-                }
+                        async () => {
+                            await func(closure);
+                            onSuccess(null);
+                        }, 
+                        isSuccess => {
+                            if (!isSuccess)
+                                onFailure();
+                        }
             );
         }
     }

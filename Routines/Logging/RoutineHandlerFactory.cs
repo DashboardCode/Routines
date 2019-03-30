@@ -3,21 +3,34 @@ using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Logging
 {
-    public class RoutineLogger
+    public class RoutineHandlerFactory
     {
         public readonly Guid CorrelationToken;
         private readonly List<VerboseBuffer> buffers = new List<VerboseBuffer>();
-        //private readonly Func<Guid, MemberTag, IMemberLogger> createMemberLogger;
-        public RoutineLogger(Guid correlationToken /*, Func<Guid, MemberTag,  IMemberLogger> createMemberLogger*/)
+        public RoutineHandlerFactory(Guid correlationToken)
         {
             CorrelationToken = correlationToken;
-            //this.createMemberLogger = createMemberLogger;
+        }
+
+        public void Flash()
+        {
+            foreach (var b in buffers)
+                b.Flash();
+        }
+
+        public IMemberLogger CreateMemberLogger(IMemberLogger memberLogger, bool shouldVerboseWithStackTrace, bool startActivity)
+        {
+            var buffer = new VerboseBuffer(memberLogger.LogBufferedVerbose, shouldVerboseWithStackTrace);
+            buffers.Add(buffer);
+            return new BufferedMemberLogger(memberLogger, buffer.LogVerbose, startActivity);
         }
 
         public (IHandler<TClosure>, TClosure) CreateRoutineHandler<TClosure>(
                 bool veroseEnabled,
                 Func<Action<DateTime, string>, TClosure> createClosure,
-                ExceptionHandler exceptionHandler,
+                IExceptionHandler exceptionHandler,
+                //Func<Exception, Exception> transformException,
+                //Action<Exception> handleException,
                 bool finishActivity,
                 object input,
                 IActivityLogger activityLogger,
@@ -32,6 +45,8 @@ namespace DashboardCode.Routines.Logging
         {
             IHandler<TClosure> routineHandler = null;
             TClosure closure = default;
+            //var  exceptionHandler = (transformException == null) ? 
+            //    new ExceptionAbsorbHandler(handleException)  : new ExceptionHandler(handleException, transformException) as IExceptionHandler;
             if (veroseEnabled)
             {
                 var start = CreateRoutineHandlerVerbose(
@@ -42,7 +57,6 @@ namespace DashboardCode.Routines.Logging
                     activityLogger,
                     logInput,
                     logOutput,
-                    //bufferedVerboseLogger,
                     memberTag,
                     logVerbose,
                     this.Flash,
@@ -76,7 +90,6 @@ namespace DashboardCode.Routines.Logging
                 IActivityLogger activityLogger,
                 Action<DateTime, object> logInput,
                 Action<DateTime, object> logOutput,
-                //IBufferedVerboseLogger bufferedVerboseLogger,
                 MemberTag memberTag,
                 Action<DateTime, string> logVerbose,
                 Action flash,
@@ -206,73 +219,5 @@ namespace DashboardCode.Routines.Logging
             return logOnStart;
         }
 
-        public void Flash()
-        {
-            foreach (var b in buffers)
-                b.Flash();
-        }
-        
-        public IMemberLogger CreateMemberLogger(IMemberLogger memberLogger/*MemberTag memberTag*/, bool shouldVerboseWithStackTrace, bool startActivity)
-        {
-            //var memberLogger = createMemberLogger(CorrelationToken, memberTag);
-            var buffer = new VerboseBuffer(memberLogger.LogBufferedVerbose, shouldVerboseWithStackTrace);
-            buffers.Add(buffer);
-            return new BufferedMemberLogger(memberLogger, buffer.LogVerbose, startActivity);
-        }
-
-        class BufferedMemberLogger : IMemberLogger
-        {
-            readonly IMemberLogger memberLogger;
-            readonly Action<DateTime, string> logVerbose;
-            readonly bool startActivity;
-
-            public BufferedMemberLogger(IMemberLogger memberLogger, Action<DateTime,string> logVerbose, bool startActivity)
-            {
-                this.memberLogger = memberLogger;
-                this.logVerbose = logVerbose;
-                this.startActivity = startActivity;
-            }
-
-            public void Input(DateTime dateTime, object input)
-            {
-                memberLogger.Input(dateTime, input);
-            }
-
-            public void LogActivityFinish(DateTime dateTime, TimeSpan timeSpan, bool isSuccess)
-            {
-                memberLogger.LogActivityFinish(dateTime, timeSpan, isSuccess);
-            }
-
-            public void LogActivityStart(DateTime dateTime)
-            {
-                if (startActivity)
-                    memberLogger.LogActivityStart(dateTime);
-            }
-
-            public void LogBufferedVerbose(IEnumerable<VerboseMessage> verboseMessages)
-            {
-                memberLogger.LogBufferedVerbose(verboseMessages);
-            }
-
-            public void LogError(DateTime dateTime, string message)
-            {
-                memberLogger.LogError(dateTime, message);
-            }
-
-            public void LogException(DateTime dateTime, Exception exception)
-            {
-                memberLogger.LogException(dateTime, exception);
-            }
-
-            public void LogVerbose(DateTime dateTime, string message)
-            {
-                logVerbose(dateTime, message);
-            }
-
-            public void Output(DateTime dateTime, object output)
-            {
-                memberLogger.Output(dateTime, output);
-            }
-        }
     }
 }

@@ -1,6 +1,7 @@
 import "core-js/modules/es6.array.find";
 import "core-js/modules/es6.function.name";
 import "core-js/modules/es6.regexp.to-string";
+import "core-js/modules/es6.object.to-string";
 import "core-js/modules/es6.regexp.replace";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
