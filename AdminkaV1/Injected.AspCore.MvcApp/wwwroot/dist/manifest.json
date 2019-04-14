@@ -3,6 +3,8 @@
   "main.js": "/dist/main.js",
   "main.css.map": "/dist/main.css.map",
   "main.js.map": "/dist/main.js.map",
+  "polyfill_io.js": "/dist/polyfill_io.js",
+  "polyfill_io.js.map": "/dist/polyfill_io.js.map",
   "runtime.js": "/dist/runtime.js",
   "runtime.js.map": "/dist/runtime.js.map",
   "vendor.css": "/dist/vendor.css",

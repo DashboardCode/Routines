@@ -1,14 +1,14 @@
 ﻿// webpack.config interpretated by node and node by default do not support ES6 (that means import etc.)
-
+const webpack = require('webpack');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const PathModule = require('path');
 
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
-
-const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
+//const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const outputFolderPath = PathModule.resolve(__dirname, 'wwwroot/dist');
@@ -51,7 +51,7 @@ module.exports = {
 
     // TRY: https://github.com/alexpalombaro/modernizr-webpack-plugin
 
-    entry: './src/index.js',
+    //entry: './src/index.js',
 
     //entry: './src/loaders.js',
     //entry: {
@@ -79,6 +79,10 @@ module.exports = {
             maxInitialRequests: Infinity,
             minSize: 0,
             cacheGroups: {
+                polyfill_io: {
+                    name: 'polyfill_io',
+                    test: /polyfill_io.js$/
+                },
                 styles: {
                     name: 'styles',
                     test: /customBootstrap.css$/,
@@ -100,6 +104,7 @@ module.exports = {
         }
     },
     plugins: [
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // remove webpack locale files (safe 400KB space) https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
         new MiniCssExtractPlugin({
             filename: "[name].css"
         }),
@@ -113,7 +118,7 @@ module.exports = {
         //    ]
         //}),
         new ManifestPlugin(),
-        new CleanWebpackPlugin(), // defualt verbose:false
+        new CleanWebpackPlugin() // defualt verbose:false
 
         // MANAGE DEPENDENCY. METHOD 1. Manage dependencies at build-time.
         // replaces a symbol in another source through the respective import
@@ -188,7 +193,7 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(woff2|woff|ttf|svg|png)$/,
+                test: /\.(woff2|woff|ttf|svg|png|gif)$/,
                 use: 'url-loader'
             },
             {

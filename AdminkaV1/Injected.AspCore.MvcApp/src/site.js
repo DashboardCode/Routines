@@ -1,47 +1,37 @@
 ﻿//import '@babel/polyfill';
-import Es8Test from './Es8Test';
-import WorkflowManager from './WorkflowManager.ts';
+import Application from './Application';
 import Popper from 'popper.js';
-//import $ from 'JQuery' 
 
+// FYI: we use webpack' preset-env 'usage' option and that means no need of direct ES polyfill loading
+// import '@babel/polyfill'; 
 
-// TODO: polyfil injectorss
-//import jquery from 'jquery'; // will trigger expose-loader
-//import main from 'webpack-polyfill-injector?{modules:["./src/index.es8.js"]}!';  // will load polyfills (if necessary) and then start your normal entry module
+// TODO: investigate why this was not handled by usage? 
+import "core-js/modules/es.array.includes";
 
+// FYI: web polyfills from https://cdn.polyfill.io/v3/url-builder/
+// https://polyfill.io/v3/polyfill.js?flags=always%7Cgated&features=Element.prototype.closest%2CElement.prototype.classList%2CElement.prototype.matches
+// 'Element.prototype.matches', 'Element.prototype.closest', 'Element.prototype.classList'
+// options: minify=NO, real user monitoring=no, feature detect=YES, always load=YES
+
+import './polyfill_io';
+
+// TODO: wait for polyfill-injectors synchronized loading of run-time scripts (async are not compatable with inline code)
+// This is alternative to webpack configuration:
+// import main from 'webpack-polyfill-injector?{modules:["./src/index.es8.js"]}!';  // will load polyfills (if necessary) and then start your normal entry module
 
 Popper.Defaults.modifiers.computeStyle.gpuAcceleration = !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform));
 Popper.Defaults.modifiers.preventOverflow = { enabled: false };
 Popper.Defaults.modifiers.flip = { enabled: false };
 
-let es8test = new Es8Test();
-es8test.run();
+// default bootstrap popover can't be setuped with dedicated element, this do the trick
+$(document).ready(function () {
+    $('[data-toggle="popover-content"]').popover({
+        html: true,
+        content: function () {
+            return $('#popover-content').html();
+        }
+    });
+});
 
-
-let vm = new WorkflowManager("testop");
-
-
-// global level functions, means browser interpretated.
-// do not use code that need transpilers there
-
-
-function ShowExceptionModal() {
-    $("#exceptionModal").modal('toggle');
-}
-
-//// polyfill Element.closest 
-
-//if (!Element.prototype.matches)
-//    Element.prototype.matches = Element.prototype.msMatchesSelector ||
-//        Element.prototype.webkitMatchesSelector;
-
-//if (!Element.prototype.closest)
-//    Element.prototype.closest = function (s) {
-//        var el = this;
-//        if (!document.documentElement.contains(el)) return null;
-//        do {
-//            if (el.matches(s)) return el;
-//            el = el.parentElement || el.parentNode;
-//        } while (el !== null && el.nodeType === 1);
-//        return null;
-//    };
+window.EDeliveryApp = new Application(window);
+window.EDeliveryApp.Es8TranspilerTest();

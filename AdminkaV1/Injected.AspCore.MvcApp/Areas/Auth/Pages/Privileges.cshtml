@@ -1,0 +1,93 @@
+﻿@page
+@namespace DashboardCode.AdminkaV1.AuthenticationDom
+@model DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages.PrivilegesModel
+
+@{
+    ViewData["SubTitle"] = "Privileges";
+    var UserContext = (DashboardCode.AdminkaV1.UserContext)ViewBag.UserContext;
+    var tableId = "adminka-users-table-id";
+}
+<h3 class="px-3">Privileges</h3>
+<table id="@tableId" class="table table-hover table-bordered mainTable">
+    <thead>
+        <tr>
+            <th width="1rem">
+            </th>
+            <th>
+                ID
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Roles
+            </th>
+            <th>
+                Users
+            </th>
+            <th>
+                Groups
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.List)
+        {
+        <tr>
+            <td class="adminka-action-button-group">
+                <div class="d-flex flex-row">
+                    <a class="btn-sm" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@item.PrivilegeId"><span class="material-icons">insert_drive_file</span></a>
+                    @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
+                        {
+                    <div class="d-flex flex-column">
+                        <a class="btn-xsm" asp-area="" asp-controller="Privileges" asp-action="Edit" asp-route-id="@item.PrivilegeId"><span class="material-icons">edit</span></a>
+                    </div>
+                        }
+                </div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrivilegeId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrivilegeName)
+            </td>
+            <td>
+                @foreach (var r in item.GetRoles())
+                    {
+                <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
+                    }
+            </td>
+            <td>
+                @foreach (var u in item.GetUsers())
+                    {
+                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+                    }
+            </td>
+            <td>
+                @foreach (var g in item.GetGroups())
+                    {
+                <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
+                    }
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var tableId = '#' + '@tableId';
+            var $table = $(tableId).dataTable(
+                {
+                    language: { search: "", searchPlaceholder: "Filter", lengthMenu:"_MENU_" },
+                    stateSave: true,
+                    dom: '<"d-flex flex-row justify-content-end"f>rt<"d-flex flex-row justify-content-between"lp>',
+                    "columnDefs": [
+                        { "searchable": false, "targets": 0 },
+                        { "orderable": false, "targets": 0 }
+                    ]
+                }
+            );
+        });
+    </script>
+}

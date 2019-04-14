@@ -1,0 +1,81 @@
+﻿@page
+@model DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages.RoleModel
+@{
+    ViewData["SubTitle"] = "Role";
+}
+
+
+<div class="d-flex flex-row align-self justify-content-between">
+    <h3>Role (@Model.Entity.RoleId)</h3>
+    <div>
+        <a class="ml-4 adminka-navigation adminka-navigation-delete" asp-area="" asp-controller="Roles" asp-action="Delete" asp-route-id="@Model.Entity.RoleId">Delete</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@Model.Entity.RoleId">Edit</a>
+    </div>
+</div>
+
+<div>
+    <hr />
+
+    <dl class="row">
+        <dt class="col-sm-2 mb-sm-4">
+            Name
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @Html.DisplayFor(model => model.Entity.RoleName)
+        </dd>
+
+        @{var privleges = Model.Entity.GetPrivileges();}
+        <dt class="col-sm-2 mb-sm-4">
+            Privileges Allowed
+        </dt>
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var p in Model.Entity.GetPrivileges())
+            {
+                if (p.Item2)
+                {
+                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                }
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Privileges Denied
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var p in Model.Entity.GetPrivileges())
+            {
+                if (!p.Item2)
+                {
+                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2 mb-sm-4">
+            Groups
+        </dt>
+
+        <dd class="col-sm-9 mb-sm-4">
+            @foreach (var g in Model.Entity.GetGroups())
+            {
+                <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Users
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-2">
+            @foreach (var u in Model.Entity.GetUsers())
+            {
+                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+            }
+        </dd>
+    </dl>
+    <div class="d-flex flex-row align-self">
+        <a class="adminka-btn adminka-navigation-list" asp-area="" asp-controller="Roles" asp-action="Index">Back to List</a>
+    </div>
+</div>
+

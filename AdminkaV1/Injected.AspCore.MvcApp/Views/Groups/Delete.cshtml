@@ -24,9 +24,8 @@
             @Html.DisplayFor(model => model.GroupAdName)
         </dd>
 
-        @{var privleges = Model.GetPrivileges();}
         <dt class="col-sm-2 mb-sm-4">
-            Privileges Allowed
+            Privileges
         </dt>
         <dd class="col-sm-10 mb-sm-4">
             @foreach (var p in Model.GetPrivileges())
@@ -35,19 +34,9 @@
                 {
                     <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                 }
-            }
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Privileges Denied
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var p in Model.GetPrivileges())
-            {
-                if (!p.Item2)
+                else
                 {
-                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge scratched" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>

@@ -130,17 +130,6 @@ a.adminka-btn:hover {
     margin: 0 0;
 }
 
-a.badge::before {
-    font-family: 'Material Icons';
-    font-size: 0.7rem;
-    vertical-align: top;
-    margin-right: 0.2rem;
-    vertical-align: bottom;
-    content: 'insert_drive_file';
-    -webkit-font-feature-settings: 'liga' 1;
-    -moz-font-feature-settings: 'liga' 1;
-    font-feature-settings: 'liga' 1;
-}
 
 .table, .table th, .table td {
     border-left: 0px none black;
@@ -249,6 +238,29 @@ a.badge:hover {
     text-decoration: none;
 }
 
+a.badge.scratched:hover {
+    text-decoration: line-through;
+}
+
+a.badge::before {
+    font-family: 'Material Icons';
+    font-size: 0.7rem;
+    vertical-align: top;
+    margin-right: 0.2rem;
+    vertical-align: bottom;
+    content: 'insert_drive_file';
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
+}
+
+.scratched {
+    text-decoration: line-through;
+}
+
+.adminka-form-group-bsmultiselect-scratched .badge > span {
+    text-decoration: line-through;
+}
 
 .h-input {
     //min-height: #{$input-height};

@@ -131,6 +131,7 @@
 
     <script src="~/dist/runtime.js" asp-append-version="true"></script>
     <script src="~/dist/vendor.js" asp-append-version="true"></script>
+    <script src="~/dist/polyfill_io.js" asp-append-version="true"></script>
     <script src="~/dist/main.js" asp-append-version="true"></script>
 
     <environment include="Development">
@@ -155,7 +156,7 @@
                 // https://github.com/tleunen/babel-plugin-module-resolver
             </script>*@
 
-        @*
+            @*
             <script src="~/js/bootstrap.js"></script>
             <script src="~/js/jquery.dataTables.js"></script>
             <script src="~/js/dataTables.bootstrap4.js"></script>
@@ -163,11 +164,20 @@
             <script src="~/js/Es8Test.js" type="module"></script>
             <script src="~/js/site.js"></script>*@
     </environment>
-    @*<environment exclude="Development">
-            <script src="~/dist/main.js" asp-append-version="true"></script>
-        </environment>*@
 
-    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            (function () {
+                console.log('after loaded - ' + $('body').bsMultiSelect);
+                console.log();
+            })();
+        });
+        console.log("on loading - " + $('body').bsMultiSelect);
+        console.log();
+    </script>
+
+
 
     <environment names="Development">
         <script>
@@ -185,30 +195,30 @@
             });
         </script>
 
-        <script type="module">
-            import("./js/jquery.js").then(
-                function () {
-                    if (typeof $ !== 'function' || typeof jQuery !== 'function') {
-                        alert('Inline Type 2: jquery is not defined on global level when it is expected')
-                    } else {
-                        window.console.log("jquery loaded: inline type 2");
+        @*<script type="module">
+                import("./js/jquery.js").then(
+                    function () {
+                        if (typeof $ !== 'function' || typeof jQuery !== 'function') {
+                            alert('Inline Type 2: jquery is not defined on global level when it is expected')
+                        } else {
+                            window.console.log("jquery loaded: inline type 2");
+                        }
                     }
-                }
-            );
-        </script>
+                );
+            </script>*@
     </environment>
-    @*<script>
-            (function () {
-                $('#dashboardcode-account-box-id').tooltip
-                    ({
-                        html: true,
-                        title: 'Hey there 2',
-                        trigger: "hover focus",
-                        template: '<div class="tooltip" role="tooltip" style="opacity: 0.9;"><div class="arrow" style="color:black; opacity: 0.9;"></div><div class="tooltip-inner" style="background-color:white; color:black; border:1px solid black; opacity: 0.9;"></div></div>'
-                        //template: '<div class="popover" style="opacity: 0.9;"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>',
-                    });
-            })();
-        </script>*@
+    <script>
+        (function () {
+            $('#dashboardcode-account-box-id').tooltip
+                ({
+                    html: true,
+                    title: 'Hey there 2',
+                    trigger: "hover focus",
+                    template: '<div class="tooltip" role="tooltip" style="opacity: 0.9;"><div class="arrow" style="color:black; opacity: 0.9;"></div><div class="tooltip-inner" style="background-color:white; color:black; border:1px solid black; opacity: 0.9;"></div></div>'
+                    //template: '<div class="popover" style="opacity: 0.9;"><div class="arrow"></div><div class="popover-inner"><div class="popover-content"><p></p></div></div></div>',
+                });
+        })();
+    </script>
 
     <div id="dashboardcode-account-box-id-tooltip" class="d-none">
         @if (userContext != null && userContext.User != null)
@@ -227,30 +237,6 @@
             }
         }
     </div>
-    @*<script>
-            //document.addEventListener("DOMContentLoaded", function (event) {
-            var title = $('#dashboardcode-account-box-id-tooltip').removeClass('d-none').remove().html();
-            $('#dashboardcode-account-box-id').tooltip
-                ({
-                    html: true,
-                    title: title,
-                    trigger: "hover focus",
-                    template: '<div class="tooltip" role="tooltip"><div class="tooltip-inner" style="background-color:#EEEEEE; opacity:0.9; color:black; border:0px solid red; "></div></div>'
-                });
-            //});
-        </script>*@
-
-    @*@if (ViewData.ContainsKey("Exception"))
-        {
-            <script>
-                document.addEventListener("DOMContentLoaded", function (event) {
-                    ShowExceptionModal();
-                });
-
-                (function () {
-                    ShowExceptionModal();
-                })();
-            </script>
-        }*@
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

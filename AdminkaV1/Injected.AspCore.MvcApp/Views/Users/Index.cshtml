@@ -68,21 +68,15 @@
                     }
                 </td>
                 <td>
-                    @{ var privileges = item.GetPrivileges(); }
-                    <div>Allowed</div>
-                    @foreach (var p in privileges)
+                    @foreach (var p in item.GetPrivileges())
                     {
                         if (p.Item2)
                         {
                             <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                         }
-                    }
-                    <div>Denied</div>
-                    @foreach (var p in privileges)
-                    {
-                        if (!p.Item2)
+                        else
                         {
-                            <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                            <a style="text-decoration:line-through" class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                         }
                     }
                 </td>
