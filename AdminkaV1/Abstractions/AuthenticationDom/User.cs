@@ -70,47 +70,81 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
             }
             return @value;
         }
-        public IReadOnlyCollection<Privilege> GetPrivileges()
+        public IReadOnlyCollection<(Privilege,bool)> GetPrivileges()
         {
-            IReadOnlyCollection<Privilege> @value = null;
+            IReadOnlyCollection<(Privilege, bool)> @value = null;
             if (UserPrivilegeMap != null)
             {
-                @value = UserPrivilegeMap.Select(e => e.Privilege).ToList();
+                @value = UserPrivilegeMap.Select(e => (e.Privilege, e.IsAllowed)).ToList();
             }
             return @value;
         }
-        public IReadOnlyCollection<Privilege> GetRolesPrivileges()
+        public IReadOnlyCollection<(Privilege, bool)> GetRolesPrivileges()
         {
-            IReadOnlyCollection<Privilege> @value = null;
+            IReadOnlyCollection<(Privilege, bool)> @value = null;
             if (UserRoleMap != null)
             {
-                @value = UserRoleMap.SelectMany(e => e.Role.RolePrivilegeMap).Select(e => e.Privilege).Distinct().ToList();
+                @value = UserRoleMap.SelectMany(e => e.Role.RolePrivilegeMap).Select(e => (e.Privilege, e.IsAllowed)).Distinct().ToList();
             }
             return @value;
         }
-        public IReadOnlyCollection<Privilege> GetGroupsPrivileges()
+        public IReadOnlyCollection<(Privilege, bool)> GetGroupsPrivileges()
         {
-            IReadOnlyCollection<Privilege> @value = null;
+            IReadOnlyCollection<(Privilege, bool)> @value = null;
             if (UserGroupMap != null)
             {
                 @value = UserGroupMap
-                    .SelectMany(e => e.Group.GroupRoleMap).SelectMany(e=>e.Role.RolePrivilegeMap).Select(e=>e.Privilege).Distinct().ToList();
+                    .SelectMany(e => e.Group.GroupRoleMap).SelectMany(e=>e.Role.RolePrivilegeMap).Select(e=> (e.Privilege, e.IsAllowed)).Distinct().ToList();
             }
             return @value;
         }
         public IReadOnlyCollection<Privilege> GetAllPrivileges()
         {
-            IReadOnlyCollection<Privilege> priveleges1 = GetPrivileges();
-            IReadOnlyCollection<Privilege> priveleges2 = GetRolesPrivileges();
-            IReadOnlyCollection<Privilege> priveleges3 = GetGroupsPrivileges();
+            IReadOnlyCollection<(Privilege privilege, bool isAllowed)> priveleges1 = GetPrivileges();
+            IReadOnlyCollection<(Privilege privilege, bool isAllowed)> priveleges2 = GetRolesPrivileges();
+            IReadOnlyCollection<(Privilege privilege, bool isAllowed)> priveleges3 = GetGroupsPrivileges();
+
             var priveleges = new List<Privilege>();
+            var denied = new List<Privilege>();
+            void addPrivilege(Privilege privilege)
+            {
+                if (denied.Any(e => e.PrivilegeId == privilege.PrivilegeId))
+                    if (!priveleges.Any(e => e.PrivilegeId == privilege.PrivilegeId))
+                        priveleges.Add(privilege);
+            }
+            void addDenied(Privilege privilege)
+            {
+                if (!denied.Any(e => e.PrivilegeId == privilege.PrivilegeId))
+                {
+                    priveleges.RemoveAll(e => e.PrivilegeId == privilege.PrivilegeId);
+                    denied.Add(privilege);
+                }
+            }
             if (priveleges1 != null)
-                priveleges.AddRange(priveleges1);
+                foreach (var p in priveleges1)
+                {
+                    if (p.isAllowed)
+                        addPrivilege(p.privilege);
+                    else
+                        addDenied(p.privilege);
+                }
             if (priveleges2 != null)
-                priveleges.AddRange(priveleges2);
+                foreach (var p in priveleges2)
+                {
+                    if (p.isAllowed)
+                        addPrivilege(p.privilege);
+                    else
+                        addDenied(p.privilege);
+                }
             if (priveleges3 != null)
-                priveleges.AddRange(priveleges3);
-            return priveleges.Distinct().ToList();
+                foreach (var p in priveleges3)
+                {
+                    if (p.isAllowed)
+                        addPrivilege(p.privilege);
+                    else
+                        addDenied(p.privilege);
+                }
+            return priveleges;
         }
         #endregion
     }

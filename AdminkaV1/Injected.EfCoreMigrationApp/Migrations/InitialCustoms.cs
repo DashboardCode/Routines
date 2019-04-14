@@ -90,20 +90,20 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                         + $"INSERT INTO scr.Privileges (PrivilegeId, PrivilegeName) VALUES ('{Privilege.VerboseLogging}','Verbose Logging');" + Environment.NewLine;
                     // Create roles for privileges
                     sql += $"INSERT INTO scr.Roles (RoleName) VALUES ('Administrator');" + Environment.NewLine
-                        + $"INSERT INTO scr.RolePrivilegeMap (RoleId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Roles'),'{Privilege.ConfigureSystem}');" + Environment.NewLine
+                        + $"INSERT INTO scr.RolePrivilegeMap (RoleId, PrivilegeId, IsAllowed) VALUES (IDENT_CURRENT('scr.Roles'),'{Privilege.ConfigureSystem}', 1);" + Environment.NewLine
                         + $"INSERT INTO scr.Roles (RoleName) VALUES ('Tester');" + Environment.NewLine
-                        + $"INSERT INTO scr.RolePrivilegeMap (RoleId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Roles'),'{Privilege.VerboseLogging}');" + Environment.NewLine;
+                        + $"INSERT INTO scr.RolePrivilegeMap (RoleId, PrivilegeId, IsAllowed) VALUES (IDENT_CURRENT('scr.Roles'),'{Privilege.VerboseLogging}', 1);" + Environment.NewLine;
 
                     //  create current user, give him 'Configuration' privilege
                     sql += $"INSERT INTO scr.Users (LoginName) VALUES ('{loginName}');" + Environment.NewLine
-                        + $"INSERT INTO scr.UserPrivilegeMap (UserId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Users'),'{Privilege.ConfigureSystem}');" + Environment.NewLine;
+                        + $"INSERT INTO scr.UserPrivilegeMap (UserId, PrivilegeId, IsAllowed) VALUES (IDENT_CURRENT('scr.Users'),'{Privilege.ConfigureSystem}', 1);" + Environment.NewLine;
 
                     // create groups (add priveleges)
                     foreach (var g in adminkaDbInstallGroups)
                     {
                         sql += $"INSERT INTO scr.Groups (GroupName, GroupAdName) VALUES ('{g.Name}','{g.Name}');" + Environment.NewLine;
                         foreach (var privilegeId in g.Priveleges)
-                            sql += $"INSERT INTO scr.GroupPrivilegeMap (GroupId, PrivilegeId) VALUES (IDENT_CURRENT('scr.Groups'),'{privilegeId}');" + Environment.NewLine;
+                            sql += $"INSERT INTO scr.GroupPrivilegeMap (GroupId, PrivilegeId, IsAllowed) VALUES (IDENT_CURRENT('scr.Groups'),'{privilegeId}', 1);" + Environment.NewLine;
                     }
                     migrationBuilder.Sql(sql);
                 });

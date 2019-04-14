@@ -14,13 +14,13 @@
     <div class="form-group row">
         <label class="col-form-label col-sm-2" for="create-group-name-id">Name</label>
         <div class="col-sm-10">
-            @Html.EditorFor(model => model.GroupName, new { htmlAttributes = new {@id= "create-group-name-id", @class = "form-control" } })
+            @Html.EditorFor(model => model.GroupName, new { htmlAttributes = new { @id = "create-group-name-id", @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.GroupName, "", new { @class = "text-danger" })
         </div>
     </div>
 
     <div class="form-group row">
-        <label class="col-form-label col-sm-2"  for="create-group-ad-name-id">AD Group</label>
+        <label class="col-form-label col-sm-2" for="create-group-ad-name-id">AD Group</label>
         <div class="col-sm-10">
             @Html.EditorFor(model => model.GroupAdName, new { htmlAttributes = new { @id = "create-group-ad-name-id", @class = "form-control" } })
             @Html.ValidationMessageFor(model => model.GroupAdName, "", new { @class = "text-danger" })
@@ -28,17 +28,25 @@
     </div>
 
     <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="create-group-privileges-id">Privileges</label>
+        <label class="col-form-label col-sm-2" for="create-group-privileges-id">Privileges Allowed</label>
         <div class="col-sm-10">
-            @Html.ListBox("Privileges", ViewBag.PrivilegesMultiSelectList as MultiSelectList, new { @id = "create-group-privileges-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("Privileges", "", new { @class = "text-danger" })
+            @Html.ListBox("PrivilegesAllowed", ViewBag.PrivilegesAllowedMultiSelectList as MultiSelectList, new { @id = "create-group-privileges-allowed-id", @class = "form-control d-none bootstrap-multiselect" })
+            @Html.ValidationMessage("PrivilegesAllowed", "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-form-label col-sm-2" for="create-group-privileges-id">Privileges Denied</label>
+        <div class="col-sm-10">
+            @Html.ListBox("PrivilegesDenied", ViewBag.PrivilegesDeniedMultiSelectList as MultiSelectList, new { @id = "create-group-privileges-denied-id", @class = "form-control d-none bootstrap-multiselect" })
+            @Html.ValidationMessage("PrivilegesDenied", "", new { @class = "text-danger" })
         </div>
     </div>
 
     <div class="form-group row">
         <label class="col-form-label col-sm-2" for="create-group-roles-id">Roles</label>
         <div class="col-sm-10">
-            @Html.ListBox("Roles", ViewBag.RolesMultiSelectList as MultiSelectList, new { @id = "create-group-roles-id",  @class = "form-control d-none bootstrap-multiselect" })
+            @Html.ListBox("Roles", ViewBag.RolesMultiSelectList as MultiSelectList, new { @id = "create-group-roles-id", @class = "form-control d-none bootstrap-multiselect" })
             @Html.ValidationMessage("Roles", "", new { @class = "text-danger" })
         </div>
     </div>

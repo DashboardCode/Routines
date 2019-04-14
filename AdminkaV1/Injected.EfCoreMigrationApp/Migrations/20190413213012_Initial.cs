@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
-using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrations
 {
-    public partial class MigrationName : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,12 +24,12 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     ActivityRecordId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ActivityRecordLoggedAt = table.Column<DateTime>(nullable: false),
-                    Application = table.Column<string>(maxLength: 4, nullable: false),
                     CorrelationToken = table.Column<Guid>(nullable: false),
-                    DurationTicks = table.Column<long>(nullable: false),
+                    Application = table.Column<string>(maxLength: 4, nullable: false),
                     FullActionName = table.Column<string>(maxLength: 32, nullable: false),
-                    Successed = table.Column<bool>(nullable: false)
+                    ActivityRecordLoggedAt = table.Column<DateTime>(nullable: false),
+                    Successed = table.Column<bool>(nullable: false),
+                    DurationTicks = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,12 +43,12 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     ActivityRecordId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Application = table.Column<string>(maxLength: 4, nullable: false),
                     CorrelationToken = table.Column<Guid>(nullable: false),
+                    Application = table.Column<string>(maxLength: 4, nullable: false),
                     FullActionName = table.Column<string>(maxLength: 32, nullable: false),
                     VerboseRecordLoggedAt = table.Column<DateTime>(nullable: false),
-                    VerboseRecordMessage = table.Column<string>(nullable: true),
-                    VerboseRecordTypeId = table.Column<string>(maxLength: 4, nullable: false)
+                    VerboseRecordTypeId = table.Column<string>(maxLength: 4, nullable: false),
+                    VerboseRecordMessage = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -63,11 +62,11 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     GroupId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    GroupAdName = table.Column<string>(maxLength: 126, nullable: false),
                     GroupName = table.Column<string>(maxLength: 32, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    GroupAdName = table.Column<string>(maxLength: 126, nullable: false),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,9 +80,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     PrivilegeId = table.Column<string>(maxLength: 4, nullable: false),
                     PrivilegeName = table.Column<string>(maxLength: 64, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -98,9 +97,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                     RoleId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoleName = table.Column<string>(maxLength: 64, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -114,12 +113,12 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     UserId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    FirstName = table.Column<string>(maxLength: 64, nullable: true),
                     LoginName = table.Column<string>(maxLength: 126, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
+                    FirstName = table.Column<string>(maxLength: 64, nullable: true),
+                    SecondName = table.Column<string>(maxLength: 32, nullable: true),
                     RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
-                    SecondName = table.Column<string>(maxLength: 32, nullable: true)
+                    RowVersionAt = table.Column<DateTime>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -133,11 +132,11 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     HierarchyRecordId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    HierarchyRecordTitle = table.Column<string>(maxLength: 128, nullable: false),
-                    ParentHierarchyRecordId = table.Column<byte[]>(nullable: true),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    ParentHierarchyRecordId = table.Column<byte[]>(nullable: true),
+                    HierarchyRecordTitle = table.Column<string>(maxLength: 128, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -151,16 +150,16 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     ParentRecordId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
+                    RowVersionAt = table.Column<DateTime>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     FieldA = table.Column<string>(maxLength: 16, nullable: false),
                     FieldB1 = table.Column<string>(maxLength: 16, nullable: false),
                     FieldB2 = table.Column<string>(maxLength: 16, nullable: false),
                     FieldCA = table.Column<string>(maxLength: 16, nullable: false),
                     FieldCB1 = table.Column<string>(maxLength: 16, nullable: false),
                     FieldCB2 = table.Column<string>(maxLength: 16, nullable: false),
-                    FieldNotNull = table.Column<int>(nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    FieldNotNull = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -175,9 +174,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 columns: table => new
                 {
                     TestTypeRecordId = table.Column<string>(maxLength: 4, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
                     RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
+                    RowVersionAt = table.Column<DateTime>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     TypeRecordName = table.Column<string>(maxLength: 32, nullable: false),
                     TypeRecordTestTypeRecordId = table.Column<string>(nullable: true)
                 },
@@ -200,9 +199,10 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     GroupId = table.Column<int>(nullable: false),
                     PrivilegeId = table.Column<string>(maxLength: 4, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    IsAllowed = table.Column<bool>(nullable: false),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -230,9 +230,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     GroupId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -260,9 +260,10 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     RoleId = table.Column<int>(nullable: false),
                     PrivilegeId = table.Column<string>(maxLength: 4, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    IsAllowed = table.Column<bool>(nullable: false),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -290,9 +291,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     UserId = table.Column<int>(nullable: false),
                     GroupId = table.Column<int>(nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -320,9 +321,10 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     UserId = table.Column<int>(nullable: false),
                     PrivilegeId = table.Column<string>(maxLength: 4, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    IsAllowed = table.Column<bool>(nullable: false),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -350,9 +352,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     UserId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -380,9 +382,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     ParentRecordId = table.Column<int>(nullable: false),
                     HierarchyRecordId = table.Column<int>(nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
                     RowVersionAt = table.Column<DateTime>(nullable: false),
-                    RowVersionBy = table.Column<string>(maxLength: 126, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -410,9 +412,9 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 {
                     ParentRecordId = table.Column<int>(maxLength: 4, nullable: false),
                     TypeRecordId = table.Column<string>(maxLength: 4, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    RowVersionAt = table.Column<DateTime>(nullable: false),
                     RowVersionBy = table.Column<string>(maxLength: 126, nullable: true),
+                    RowVersionAt = table.Column<DateTime>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
                     XmlField1 = table.Column<string>(type: "xml", nullable: true),
                     XmlField2 = table.Column<string>(type: "xml", nullable: true)
                 },
@@ -545,7 +547,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp.Migrat
                 table: "TypeRecords",
                 column: "TypeRecordTestTypeRecordId");
 
-            InitialCustoms.Up(migrationBuilder, TargetModel);
+            InitialCustoms.Up(migrationBuilder, this.TargetModel);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

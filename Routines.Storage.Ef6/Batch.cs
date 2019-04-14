@@ -70,7 +70,10 @@ namespace DashboardCode.Routines.Storage.Ef6
                 );
         }
 
-        
+        public void ModifyRelated<TRelationEntity>(TEntity entity, ICollection<TRelationEntity> oldRelations, IEnumerable<TRelationEntity> newRelations, Func<TRelationEntity, TRelationEntity, bool> equalsById, Func<TRelationEntity, TRelationEntity, bool> equalsByValue, Action<TRelationEntity, TRelationEntity> updateValue) where TRelationEntity : class
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Batch : IBatch

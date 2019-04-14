@@ -361,6 +361,66 @@ namespace DashboardCode.Routines.AspNetCore
                 manyToManyDictionary.Add(formFieldName, manyToMany);
                 return this;
             }
+
+            public ManyToManyScorer Add<TF, TMM, TfID>(
+                string formFieldName0,
+                string formFieldName1,
+                string viewDataMultiSelectListKey0,
+                string viewDataMultiSelectListKey1,
+                Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
+
+                Expression<Func<TEntity, ICollection<TMM>>> getTmmExpression,
+
+                Func<TMM, TfID> getTmmTfId,
+                Func<TMM, TKey> getTmmTKey,
+                Func<TMM, bool> getTmmValue,
+                Func<TF, TfID> getTfId,
+                Func<TMM, TMM, bool> equalsByValue,
+                Action<TMM, TMM> updateValue,
+                string multiSelectListOptionValuePropertyName,
+                string multiSelectListOptionTextPropertyName,
+
+                Func<TEntity, TF, bool, TMM> construct,
+                Func<string, TfID> toId = null
+                ) where TF : class where TMM : class
+            {
+                Func<TMM, TMM, bool> equalsById = (e1, e2) => getTmmTfId(e1).Equals(getTmmTfId(e2));
+
+                Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>, IEnumerable<TfID>> addViewData2 =
+                    (addViewData, options, selectedIds0, selectedIds1) => {
+                        addViewData(viewDataMultiSelectListKey0,
+                            new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, selectedIds0.ToList()));
+                        addViewData(viewDataMultiSelectListKey1,
+                            new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, selectedIds1.ToList()));
+                    };
+
+                var getTmm = getTmmExpression.Compile();
+                var memberExpression = (MemberExpression)getTmmExpression.Body;
+                var setTmm = MemberExpressionExtensions.CompileSetPropertyCovariance<TEntity, IEnumerable<TMM>>(memberExpression);
+
+                Expression<Func<TEntity, IEnumerable<TMM>>> getRelationAsEnumerable = getTmmExpression.ContravarianceToIEnumerable();
+
+                var manyToMany = new ManyToMany2<TEntity, TF, TMM, TfID, IRepository<TEntity>, IBatch<TEntity>>(
+                    formFieldName0, formFieldName1, addViewData2, getOptions,
+                    (repository, batch, entity, selected) =>
+                    {
+                        var oldRelations = new List<TMM>();
+                        setTmm(entity, oldRelations);
+                        batch.ModifyRelated(entity, oldRelations, selected, equalsById, equalsByValue, updateValue);
+                    },
+                    (repository, batch, entity, selected) =>
+                    {
+                        repository.LoadCollection(entity, getRelationAsEnumerable);
+                        var oldRelations = getTmm(entity);
+                        batch.ModifyRelated(entity, oldRelations, selected, equalsById, equalsByValue, updateValue);
+                    },
+                    getTmmExpression.Compile(),
+                    getTmmTfId,
+                    getTmmValue,
+                    getTfId, construct, toId);
+                manyToManyDictionary.Add(formFieldName0+ "."+formFieldName1, manyToMany);
+                return this;
+            }
         }
 
         public class OneToManyScorer

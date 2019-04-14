@@ -54,9 +54,22 @@
                     @Html.DisplayFor(modelItem => item.RoleName)
                 </td>
                 <td>
-                    @foreach (var p in item.GetPrivileges())
+                    @{ var privileges = item.GetPrivileges(); }
+                    <div>Allowed</div>
+                    @foreach (var p in privileges)
                     {
-                        <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeName</a>
+                        if (p.Item2)
+                        {
+                            <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                        }
+                    }
+                    <div>Denied</div>
+                    @foreach (var p in privileges)
+                    {
+                        if (!p.Item2)
+                        {
+                            <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                        }
                     }
                 </td>
                 <td>

@@ -42,14 +42,45 @@
             }
         </dd>
 
+        @{var privleges = Model.GetPrivileges();}
         <dt class="col-sm-2 mb-sm-4">
-            Privileges
+            Privileges Allowed
+        </dt>
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var p in privleges)
+            {
+                if (p.Item2)
+                {
+                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                }
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Privileges Denied
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var p in privleges)
+            {
+                if (!p.Item2)
+                {
+                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                }
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Privileges Denied
         </dt>
 
         <dd class="col-sm-10 mb-sm-4">
             @foreach (var p in Model.GetPrivileges())
             {
-                <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeName</a>
+                if (!p.Item2)
+                {
+                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                }
             }
         </dd>
 

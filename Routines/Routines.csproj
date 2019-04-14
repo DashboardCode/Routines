@@ -7,13 +7,13 @@
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
     <PackageId>DashboardCode.Routines</PackageId>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
-    <AssemblyVersion>2.0.51.0</AssemblyVersion>
-    <FileVersion>2.0.51.0</FileVersion>
+    <AssemblyVersion>2.0.52.0</AssemblyVersion>
+    <FileVersion>2.0.52.0</FileVersion>
     <Description>Middle layer framework to compose functions such as "clone", "compare", "serialize" etc using "navigation expressions" and provide some abstractions missed in standard framework ("repository",  "buffered conditional logging", etc.).</Description>
     <RootNamespace>DashboardCode.Routines</RootNamespace>
     <AssemblyName>DashboardCode.Routines</AssemblyName>
 	<LangVersion>latest</LangVersion>
-	<Version>2.0.51</Version>
+	<Version>2.0.52</Version>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
 	<PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>

@@ -83,6 +83,20 @@ namespace DashboardCode.Routines.Storage.EfCore
             EntityExtensions.UpdateCollection(oldRelations, newRelations, equalsById,
                 e => auditVisitor.SetAuditProperties(e));
         }
+
+        public void ModifyRelated<TRelationEntity>(
+            TEntity entity,
+            ICollection<TRelationEntity> oldRelations,
+            IEnumerable<TRelationEntity> newRelations,
+            Func<TRelationEntity, TRelationEntity, bool> equalsById,
+            Func<TRelationEntity, TRelationEntity, bool> equalsByValue,
+            Action<TRelationEntity, TRelationEntity> updateValue
+            ) where TRelationEntity : class
+        {
+            auditVisitor.SetAuditProperties(entity);
+            EntityExtensions.UpdateCollection(oldRelations, newRelations, equalsById, equalsByValue, updateValue,
+                e => auditVisitor.SetAuditProperties(e));
+        }
     }
 
     public class Batch : IBatch

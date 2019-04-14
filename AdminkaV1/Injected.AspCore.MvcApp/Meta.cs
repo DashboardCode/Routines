@@ -114,16 +114,21 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             ,
             null,
             manyToMany => manyToMany.Add(
-                "Privileges",
-                "PrivilegesMultiSelectList",
+                "PrivilegesDenied",
+                "PrivilegesAllowed",
+                "PrivilegesDeniedMultiSelectList",
+                "PrivilegesAllowedMultiSelectList",
                 repository => repository.Clone<Privilege>().List(),
                 e => e.GroupPrivilegeMap,
                 mm => mm.PrivilegeId,
                 mm => mm.GroupId,
+                mm => mm.IsAllowed,
                 e => e.PrivilegeId,
+                (mm1,mm2) => mm1.IsAllowed == mm2.IsAllowed,
+                (mm1, mm2) => mm2.IsAllowed=mm1.IsAllowed,
                 nameof(Privilege.PrivilegeId),
                 nameof(Privilege.PrivilegeName),
-                (ep, ef) => new GroupPrivilege() { GroupId = ep.GroupId, PrivilegeId = ef.PrivilegeId }
+                (ep, ef, v) => new GroupPrivilege() { GroupId = ep.GroupId, PrivilegeId = ef.PrivilegeId, IsAllowed=v }
             ).Add(
                 "Roles",
                 "RolesMultiSelectList",
@@ -181,15 +186,22 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     .Add(e => e.RowVersion),
             oneToMany: null,
             manyToMany: manyToMany => manyToMany
-                .Add("Privileges", "PrivilegesMultiSelectList",
+                .Add(
+                    "PrivilegesDenied",
+                    "PrivilegesAllowed",
+                    "PrivilegesDeniedMultiSelectList",
+                    "PrivilegesAllowedMultiSelectList",
                     repository => repository.Clone<Privilege>().List(),
                     e => e.UserPrivilegeMap,
                     mm => mm.PrivilegeId,
                     mm => mm.UserId,
+                    mm => mm.IsAllowed,
                     e => e.PrivilegeId,
+                    (mm1, mm2) => mm1.IsAllowed == mm2.IsAllowed,
+                    (mm1, mm2) => mm2.IsAllowed = mm1.IsAllowed,
                     nameof(Privilege.PrivilegeId),
                     nameof(Privilege.PrivilegeName),
-                    (ep, ef) => new UserPrivilege() { UserId = ep.UserId, PrivilegeId = ef.PrivilegeId }
+                    (ep, ef, v) => new UserPrivilege() { UserId = ep.UserId, PrivilegeId = ef.PrivilegeId, IsAllowed = v }
                 ).Add("Roles", "RolesMultiSelectList",
                     repository => repository.Clone<Role>().List(),
                     e => e.UserRoleMap,
@@ -244,15 +256,21 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     .Add(e => e.RowVersion),
             null,
             manyToMany => manyToMany
-                .Add("Privileges", "PrivilegesMultiSelectList",
+                .Add("PrivilegesDenied",
+                    "PrivilegesAllowed",
+                    "PrivilegesDeniedMultiSelectList",
+                    "PrivilegesAllowedMultiSelectList",
                     repository => repository.Clone<Privilege>().List(),
                     e => e.RolePrivilegeMap,
                     e => e.PrivilegeId,
                     mm => mm.RoleId,
+                    mm => mm.IsAllowed,
                     e => e.PrivilegeId,
+                    (mm1, mm2) => mm1.IsAllowed == mm2.IsAllowed,
+                    (mm1, mm2) => mm2.IsAllowed = mm1.IsAllowed,
                     nameof(Privilege.PrivilegeId),
                     nameof(Privilege.PrivilegeName),
-                    (ep, ef) => new RolePrivilege() { RoleId = ep.RoleId, PrivilegeId = ef.PrivilegeId }
+                    (ep, ef, v) => new RolePrivilege() { RoleId = ep.RoleId, PrivilegeId = ef.PrivilegeId, IsAllowed=v }
                  ).Add(
                     "Groups", "GroupsMultiSelectList",
                     repository => repository.Clone<Group>().List(),

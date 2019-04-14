@@ -30,7 +30,17 @@ namespace DashboardCode.Routines.Storage
             IEnumerable<TRelationEntity> newRelations,
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class;
-    }
+
+        void ModifyRelated<TRelationEntity>(
+            TEntity entity,
+            ICollection<TRelationEntity> oldRelations,
+            IEnumerable<TRelationEntity> newRelations,
+            Func<TRelationEntity, TRelationEntity, bool> equalsById,
+            Func<TRelationEntity, TRelationEntity, bool> equalsByValue,
+            Action<TRelationEntity, TRelationEntity> updateValue
+            ) where TRelationEntity : class;
+        
+     }
 
     public interface IBatch
     {

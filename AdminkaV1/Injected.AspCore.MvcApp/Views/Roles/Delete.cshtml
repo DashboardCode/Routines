@@ -12,18 +12,35 @@
             Name
         </dt>
 
-        <dd class="col-sm-10 mb-sm-4" >
+        <dd class="col-sm-10 mb-sm-4">
             @Html.DisplayFor(model => model.RoleName)
         </dd>
 
-        <dt class="col-sm-2 mb-sm-4" style="font-weight:normal">
-            Privileges
+        @{var privleges = Model.GetPrivileges();}
+        <dt class="col-sm-2 mb-sm-4">
+            Privileges Allowed
+        </dt>
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var p in Model.GetPrivileges())
+            {
+                if (p.Item2)
+                {
+                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                }
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Privileges Denied
         </dt>
 
         <dd class="col-sm-10 mb-sm-4">
             @foreach (var p in Model.GetPrivileges())
             {
-                <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.PrivilegeId">@p.PrivilegeId</a>
+                if (!p.Item2)
+                {
+                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                }
             }
         </dd>
 
@@ -31,7 +48,7 @@
             Groups
         </dt>
 
-        <dd class="col-sm-9 mb-sm-4" >
+        <dd class="col-sm-9 mb-sm-4">
             @foreach (var g in Model.GetGroups())
             {
                 <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>

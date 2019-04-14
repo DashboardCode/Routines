@@ -26,12 +26,12 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
             }
             return @value;
         }
-        public IReadOnlyCollection<Privilege> GetPrivileges()
+        public IReadOnlyCollection<(Privilege, bool)> GetPrivileges()
         {
-            IReadOnlyCollection<Privilege> @value = null;
+            IReadOnlyCollection<(Privilege, bool)> @value = null;
             if (RolePrivilegeMap != null)
             {
-                @value = RolePrivilegeMap.Select(e => e.Privilege).ToList();
+                @value = RolePrivilegeMap.Select(e => (e.Privilege, e.IsAllowed)).ToList();
             }
             return @value;
         }
