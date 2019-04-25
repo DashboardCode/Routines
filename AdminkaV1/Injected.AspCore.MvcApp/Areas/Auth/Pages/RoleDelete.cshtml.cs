@@ -1,41 +1,36 @@
 using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-
-using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.Routines.Configuration.Standard;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Options;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     public class RoleDeleteModel : PageModel
     {
-        public int Id { get; private set; }
+        public string BackwardUrl { get; private set; }
         public Role Entity { get; private set; }
 
         readonly Func<Task<IActionResult>> delete;
         readonly Func<Task<IActionResult>> deleteConfirmed;
 
-        public RoleDeleteModel(ApplicationSettings applicationSettings, IOptionsSnapshot<List<RoutineResolvable>> routineResolvablesOption)
+        public RoleDeleteModel()
         {
             Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
             var meta = Meta.RoleMeta;
             delete = CrudRoutinePageConsumer<Role, int>.ComposeDelete(
                 this,
-                applicationSettings,
-                routineResolvablesOption.Value,
                 (e) => this.Entity = e,
+                prf => BackwardUrl = prf.BackwardUrl,
+                "Roles",
                 meta.DeleteIncludes, meta.KeyConverter, 
                 meta.FindPredicate);
 
             deleteConfirmed = CrudRoutinePageConsumer<Role, int>.ComposeDeleteConfirmed(
                 this,
-                applicationSettings,
-                routineResolvablesOption.Value,
                 (e) => this.Entity = e,
-                "Groups",
+                prf => BackwardUrl = prf.BackwardUrl,
+                "Roles",
                 authorize, meta.Constructor,  meta.HiddenFormFields);
         }
 

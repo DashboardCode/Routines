@@ -95,13 +95,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
+                new MemberTag(typeof(AdminkaIntegrationUnitTest)),"UnitTest",
                 new { input = "Input text" });
 
-            await routine.StorageRoutineHandler.HandleOrmFactoryAsync(async (ormHandlerFactory) =>
+            await routine.HandleAsync(async (container, closure) => await container.ResolveAdminkaDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
             {
                 var x = ormHandlerFactory.Create<Role>();
                 await x.HandleAsync(async (repository, storage) =>
@@ -115,7 +115,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                     if (!res.IsOk())
                         throw new Exception("Can't prepare role");
                 });
-            });
+            }));
 
             var detailsHttpResponseMessage = await httpClient.GetAsync("/Roles/Details/1");
             detailsHttpResponseMessage.EnsureSuccessStatusCode();
@@ -201,12 +201,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(typeof(AdminkaIntegrationUnitTest)), new UserContext("UnitTest"),
+                new MemberTag(typeof(AdminkaIntegrationUnitTest)), "UnitTest",
                 new { input = "Input text" });
-            await routine.StorageRoutineHandler.HandleOrmFactoryAsync(async (ormHandlerFactory) =>
+            await routine.HandleAsync(async (container, closure) => await container.ResolveAdminkaDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
             {
                 await ormHandlerFactory.Create<Role>().HandleAsync(async (repository, storage) =>
                 {
@@ -219,7 +219,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                     if (!res.IsOk())
                         throw new Exception("Can't prepare role");
                 });
-            });
+            }));
 
             var detailsHttpResponseMessage = await httpClient.GetAsync("/Roles/Details/1");
             detailsHttpResponseMessage.EnsureSuccessStatusCode();

@@ -33,6 +33,7 @@ namespace DashboardCode.Routines.AspNetCore
             Action<string, object> addViewData,
             Action<string, string> publishStorageError,
             Func<IActionResult> successView,
+            Func<string, IActionResult> badRequestView,
             Func<TEntity, IActionResult> view,
             Func<
                 IRepository<TEntity>, 
@@ -63,7 +64,7 @@ namespace DashboardCode.Routines.AspNetCore
                         PublishResult(getEntityResult.Message, publishStorageError);
                     var entity = getEntityResult.Value;
                     if (entity == null)
-                        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                        return badRequestView("Incorrect ID");
                     //bool isOk = getEntityResult.IsOk();
                     var getRelatedResult = getRelated(request, entity, addViewData);
                     if (!getRelatedResult.IsOk())
@@ -107,6 +108,7 @@ namespace DashboardCode.Routines.AspNetCore
             Action<string, object> addViewData,
             Action<string, string> publishStorageError,
             Func<IActionResult> successView,
+            Func<string, IActionResult> badRequestView,
             Func<TEntity, IActionResult> view,
             Func<
                 IRepository<TEntity>,
@@ -134,7 +136,7 @@ namespace DashboardCode.Routines.AspNetCore
                         PublishResult(getEntityResult.Message, publishStorageError);
                     var entity = getEntityResult.Value;
                     if (entity == null)
-                        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                        return badRequestView("Empty request");
                     if (getEntityResult.IsOk())
                     {
                         Action<Exception> publishException = (ex) => addViewData("Exception", ex);
@@ -163,6 +165,7 @@ namespace DashboardCode.Routines.AspNetCore
           Action<string, object> addViewData,
           HttpRequest request,
           Func<TEntity, IActionResult> view,
+          Func<string, IActionResult> badRequestView,
           Func<IActionResult> notFound,
           Func<
               IRepository<TEntity>,
@@ -181,7 +184,7 @@ namespace DashboardCode.Routines.AspNetCore
                 {
                     var valuableResult = MvcHandler.BindId(request, keyConverter);
                     if (!valuableResult.IsOk())
-                        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                        return badRequestView("Incorrect ID");
                     var key = valuableResult.Value;
                     var entity = getEntity(key);
                     if (entity == null)
@@ -196,6 +199,7 @@ namespace DashboardCode.Routines.AspNetCore
           IRepository<TEntity> repository,
           HttpRequest request,
           Func<TEntity, IActionResult> view,
+          Func<string, IActionResult> badRequestView,
           Func<IActionResult> notFound,
           Func<
               IRepository<TEntity>,
@@ -213,7 +217,7 @@ namespace DashboardCode.Routines.AspNetCore
                 {
                     var valuableResult = MvcHandler.BindId(request, keyConverter);
                     if (!valuableResult.IsOk())
-                        return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+                        return badRequestView("Incorrect ID");
                     var key = valuableResult.Value;
                     var entity = getEntity(key);
                     if (entity == null)

@@ -10,22 +10,43 @@ namespace DashboardCode.Routines.ActiveDirectory
 {
     public static class ActiveDirectoryManager
     {
-        public static IReadOnlyList<string> ListGroups(this IIdentity identity, out string identityName, out string givenName, out string surname)
+        public static bool TryExtractUserName(this string userNameWithDomainPrefix, out string userName)
         {
-            var groups = new List<string>();
-            identityName = identity.Name;
-            givenName = null;
-            surname = null;
+            userName = null;
+            if (!string.IsNullOrEmpty(userNameWithDomainPrefix))
+            {
+                int idx = userNameWithDomainPrefix.IndexOf('\\');
+                if (idx == -1)
+                    idx = userNameWithDomainPrefix.IndexOf('@');
+                if (idx > -1)
+                {
+                    userName = userNameWithDomainPrefix.Substring(idx + 1);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static (string givenName, string surname) GetUserData(this IIdentity identity)
+        {
+            string givenName = null;
+            string surname = null;
             using (var principalContext = new PrincipalContext(ContextType.Domain))
             {
+                string identityName = identity.Name;
                 var userPrincipal = UserPrincipal.FindByIdentity(principalContext, identityName);
                 givenName = userPrincipal.GivenName;
                 surname = userPrincipal.Surname;
-                var windowsIdentity = identity as WindowsIdentity;
-                groups = windowsIdentity.Groups.Select(e => e.Translate(typeof(NTAccount)).Value).ToList();
             }
+            return (givenName, surname);
+        }
+
+        public static IReadOnlyList<string> ListGroups(this WindowsIdentity windowsIdentity)
+        {
+            var groups = windowsIdentity.Groups.Select(e => e.Translate(typeof(NTAccount)).Value).ToList();
             return groups;
         }
+
 
         public static void Append(StringBuilder stringBuilder, Exception exception)
         {

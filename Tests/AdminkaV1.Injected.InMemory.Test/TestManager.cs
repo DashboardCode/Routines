@@ -22,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                 logger,
                 new MemberTag(typeof(TestManager)),
                 new { input = "Input text" }, databaseName);
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var typeRecord1 = new TypeRecord()
                 {
@@ -149,7 +149,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                         batch.Add(parentRecordHierarchyRecord5);
                     }).ThrowIfFailed("Can't add ParentRecordHierarchyRecord")
                 );
-            });
+            }));
         }
     }
 }

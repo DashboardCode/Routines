@@ -14,6 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
     class NLogLoggingAdapter : IMemberLogger
     {
         readonly Guid correlationToken;
+        readonly ITraceDocumentBuilder documentBuilder;
         readonly Logger logger;
         readonly MemberTag memberTag;
         readonly Func<Exception, string> markdownException;
@@ -21,14 +22,16 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 
         public NLogLoggingAdapter(
             Guid correlationToken,
+            ITraceDocumentBuilder documentBuilder,
             MemberTag memberTag,
             Func<Exception, string> markdownException,
             Func<object, int, bool, string> serializeObject
             )
         {
             this.correlationToken = correlationToken;
+            this.documentBuilder = documentBuilder;
             this.memberTag = memberTag;
-            var loggerName = "Routine:"+ memberTag.GetCategory();
+            var loggerName = "Routine:" + memberTag.GetCategory();
             logger = LogManager.GetLogger(loggerName); // ~0.5 ms
             this.serializeObject = serializeObject;
             this.markdownException = markdownException;
@@ -36,32 +39,40 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
 
         public void LogActivityStart(DateTime dateTime)
         {
-                var logEventInfo = new LogEventInfo()
-                {
-                    Level = LogLevel.Trace,
-                    TimeStamp = dateTime,
-                    Message = "Started"
-                };
-                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
-                logEventInfo.Properties["Description"] = $"Start;";
-                logger.Log(logEventInfo);
+            var logEventInfo = new LogEventInfo()
+            {
+                Level = LogLevel.Trace,
+                TimeStamp = dateTime,
+                Message = "Started"
+            };
+            logEventInfo.AppendRoutineTag(dateTime, correlationToken, memberTag);
+            logEventInfo.Properties["Description"] = $"Start;";
+            if (documentBuilder != null)
+            {
+                documentBuilder.AddProperty(dateTime, "Started");
             }
+            logger.Log(logEventInfo);
+        }
 
         public void LogActivityFinish(DateTime dateTime, TimeSpan timeSpan, bool isSuccess)
         {
-                var message = (isSuccess ? "Finished" : "FAILURE") + "; " +
-                Math.Round(timeSpan.TotalMilliseconds) + "ms";
+            var verb = (isSuccess ? "Finished" : "FAILURE");
+            var duration = Math.Round(timeSpan.TotalMilliseconds);
 
-                var logEventInfo = new LogEventInfo()
-                {
-                    Level = LogLevel.Trace,
-                    TimeStamp = dateTime,
-                    Message = message
-                };
-                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
-                logEventInfo.Properties["Description"] = $"Finish";
-                logger.Log(logEventInfo);
-            
+            var logEventInfo = new LogEventInfo()
+            {
+                Level = LogLevel.Trace,
+                TimeStamp = dateTime,
+                Message = verb + "; " + duration + "ms"
+            };
+            logEventInfo.AppendRoutineTag(dateTime, correlationToken, memberTag);
+            logEventInfo.Properties["Description"] = $"Finish";
+            if (documentBuilder != null)
+            {
+                documentBuilder.AddProperty(dateTime, $"{verb} - {duration}ms");
+            }
+            logger.Log(logEventInfo);
+
         }
 
         public void LogVerbose(DateTime dateTime, string message)
@@ -72,8 +83,12 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = message
             };
-            logEventInfo.AppendRoutineTag(correlationToken, memberTag);
+            logEventInfo.AppendRoutineTag(dateTime, correlationToken, memberTag);
             logEventInfo.Properties["Description"] = $"Verbose";
+            if (documentBuilder != null)
+            {
+                documentBuilder.AddVerbose(dateTime, message);
+            }
             logger.Log(logEventInfo);
         }
 
@@ -91,15 +106,19 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = verbose.DateTime,
                     Message = verbose.Message,
                 };
-                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
+                logEventInfo.AppendRoutineTag(verbose.DateTime, correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"BufferedVerbose";
                 logEventInfo.Properties["Buffered"] = $"{i++}/{count}";
                 if (verbose.StackTrace != null)
                     logEventInfo.Properties["StackTrace"] = verbose.StackTrace;
+                if (documentBuilder != null)
+                {
+                    documentBuilder.AddVerbose(verbose.DateTime, verbose.Message);
+                }
                 logger.Log(logEventInfo);
             }
         }
-            
+
 
         public void LogException(DateTime dateTime, Exception excepion)
         {
@@ -110,8 +129,12 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = message
             };
-            logEventInfo.AppendRoutineTag(correlationToken, memberTag);
+            logEventInfo.AppendRoutineTag(dateTime, correlationToken, memberTag);
             logEventInfo.Properties["Description"] = $"Exception";
+            if (documentBuilder != null)
+            {
+                documentBuilder.AddException(dateTime, message);
+            }
             logger.Log(logEventInfo);
         }
 
@@ -123,8 +146,12 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                 TimeStamp = dateTime,
                 Message = message
             };
-            logEventInfo.AppendRoutineTag(correlationToken, memberTag);
+            logEventInfo.AppendRoutineTag(dateTime, correlationToken, memberTag);
             logEventInfo.Properties["Description"] = $"Error";
+            if (documentBuilder != null)
+            {
+                documentBuilder.AddVerbose(dateTime, message);
+            }
             logger.Log(logEventInfo);
         }
 
@@ -139,8 +166,12 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = dateTime,
                     Message = message
                 };
-                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
+                logEventInfo.AppendRoutineTag(dateTime, correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"Input";
+                if (documentBuilder != null)
+                {
+                    documentBuilder.AddInput(dateTime, message);
+                }
                 logger.Log(logEventInfo);
             }
             catch (Exception ex)
@@ -160,8 +191,12 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                     TimeStamp = dateTime,
                     Message = message
                 };
-                logEventInfo.AppendRoutineTag(correlationToken, memberTag);
+                logEventInfo.AppendRoutineTag(dateTime, correlationToken, memberTag);
                 logEventInfo.Properties["Description"] = $"Output";
+                if (documentBuilder != null)
+                {
+                    documentBuilder.AddOutput(dateTime, message);
+                }
                 logger.Log(logEventInfo);
             }
             catch (Exception ex)

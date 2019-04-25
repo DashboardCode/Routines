@@ -5,9 +5,9 @@
 }
 
 <div class="d-flex flex-row align-self justify-content-between">
-    <h3>User (@Model.Id)</h3>
+    <h3>User (@Model.Entity.UserId)</h3>
     <div>
-        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="Auth" asp-page="UserEdit" asp-route-id="@Model.Entity.UserId">Edit</a>
     </div>
 </div>
 
@@ -42,7 +42,7 @@
         <dd class="col-sm-10 mb-sm-4">
             @foreach (var r in Model.Entity.GetRoles())
             {
-                <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
+                <a class="badge" asp-area="Auth" asp-page="Role"  asp-route-id="@r.RoleId">@r.RoleName</a>
             }
         </dd>
 
@@ -55,7 +55,7 @@
             {
                 if (p.Item2)
                 {
-                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge" asp-area="Auth" asp-page="Privilege"  asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>
@@ -69,7 +69,7 @@
             {
                 if (!p.Item2)
                 {
-                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>
@@ -81,12 +81,12 @@
         <dd class="col-sm-10 mb-sm-4">
             @foreach (var r in Model.Entity.GetGroups())
             {
-                <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@r.GroupId">@r.GroupName</a>
+                <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@r.GroupId">@r.GroupName</a>
             }
         </dd>
     </dl>
     <div class="d-flex flex-row align-self">
-        <a class="adminka-btn adminka-navigation-list" asp-area="" asp-controller="Users" asp-action="Index">Back to List</a>
+        <a class="adminka-btn adminka-navigation-list" href="@Model.BackwardUrl">Back to List</a>
     </div>
 </div>
 

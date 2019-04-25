@@ -20,17 +20,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void TestConcurencyError()
         {
-            var userContext = new UserContext("UnitTest");
-
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(this), userContext, new { input = "Input text" });
+                new MemberTag(this), "UnitTest", new { input = "Input text" });
             // check constraint on UPDATE
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -43,9 +41,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t0));
                     storageError.ThrowIfFailed();
                 });
-            });
+            }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var t1 = new TypeRecord()
                 {
@@ -59,7 +57,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     if (storageError.Count() != 1 || !storageError.ContainsLike("", "The record you are attempted to edit is currently being"))
                         throw new Exception("Test failed: not correct error. Case 1.");
                 });
-            });
+            }));
         }
     }
 }

@@ -15,27 +15,35 @@ namespace DashboardCode.AdminkaV1.Injected
     // track changes (means share one instance between all processes)
     public class ApplicationSettings
     {
+        public readonly Func<string, ApplicationSettings> CreateMigrationApplicationSettings;
+        public readonly Func<ApplicationSettings> CreateInMemoryApplicationSettings;
+
+        public readonly Func<string, AdminkaStorageConfiguration> CreateMigrationAdminkaStorageConfiguration;
         public AdminkaStorageConfiguration AdminkaStorageConfiguration { get; private set; }
 
-        public Func<string, AdminkaStorageConfiguration> CreateMigrationAdminkaStorageConfiguration { get; private set; }
         public IPerformanceCounters PerformanceCounters { get; private set; }
-        public NLogAuthenticationLogging AuthenticationLogging { get; private set; }
         public IConfigurationContainerFactory ConfigurationContainerFactory { get; private set; }
+        public readonly IUnhandledExceptionLogging UnhandledExceptionLogger;
+        public readonly bool UseAdAuthorization;
+        //public readonly ActiveDirectoryService ActiveDirectoryService;
 
         public ApplicationSettings(
             IConnectionStringMap connectionStringMap,
             IAppSettings appSettings,
-            IConfigurationContainerFactory configurationContainerFactory 
+            IConfigurationContainerFactory configurationContainerFactory,
+            IUnhandledExceptionLogging unhandledExceptionLogger,
+            AdminkaStorageConfiguration adminkaStorageConfiguration=null
             )
         {
+            UnhandledExceptionLogger = unhandledExceptionLogger;
+            UseAdAuthorization = bool.Parse(appSettings.GetValue("UseAdAuthorization") ?? "false");
+            //ActiveDirectoryService = new ActiveDirectoryService(appSettings.GetValue("InternalUsersAdGroup"));
             var connectionString = connectionStringMap.GetConnectionString("AdminkaConnectionString");
-            AdminkaStorageConfiguration = new AdminkaStorageConfiguration(connectionString, null, StorageType.SQLSERVER);
-            CreateMigrationAdminkaStorageConfiguration = (migrationAssembly) =>
-                 new AdminkaStorageConfiguration(connectionString, migrationAssembly, StorageType.SQLSERVER);
+            AdminkaStorageConfiguration = adminkaStorageConfiguration ?? new AdminkaStorageConfiguration(connectionString, null, StorageType.SQLSERVER, null);
 
             ConfigurationContainerFactory = configurationContainerFactory;
 
-            AuthenticationLogging = new NLogAuthenticationLogging();
+            //AuthenticationLogging = new NLogAuthenticationLogging();
             var instanceName = appSettings.GetValue("InstanceName");
             if (!string.IsNullOrEmpty(instanceName))
             {
@@ -52,6 +60,25 @@ namespace DashboardCode.AdminkaV1.Injected
             {
                 PerformanceCounters = new PerformanceCountersStub();
             }
+
+            CreateInMemoryApplicationSettings = () =>
+                new ApplicationSettings(
+                    connectionStringMap, appSettings,
+                    configurationContainerFactory,
+                    unhandledExceptionLogger,
+                    new AdminkaStorageConfiguration(connectionString, null, StorageType.INMEMORY, null)
+                    );
+
+            CreateMigrationAdminkaStorageConfiguration = (migrationAssembly) =>
+                 new AdminkaStorageConfiguration(connectionString, migrationAssembly, StorageType.SQLSERVER, 5 * 60);
+
+            CreateMigrationApplicationSettings = (migrationAssembly) =>
+                 new ApplicationSettings(
+                     connectionStringMap, appSettings, 
+                     configurationContainerFactory,
+                     unhandledExceptionLogger,
+                     CreateMigrationAdminkaStorageConfiguration(migrationAssembly)
+                     );
         }
     }
 }

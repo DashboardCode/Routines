@@ -11,7 +11,7 @@ using DashboardCode.Routines;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
-using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
+using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
 using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
@@ -27,18 +27,19 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
             var adminkaDbInstallGroups = new List<AdminkaDbInstallGroup>();
             config.GetSection("AdminkaDbInstallGroups").Bind(adminkaDbInstallGroups);
 
-            var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
 
-            var routine = new AdminkaRoutineHandler(
-                Program.ApplicationSettings.AdminkaStorageConfiguration,
-                Program.ApplicationSettings.PerformanceCounters,
-                Program.ApplicationSettings.AuthenticationLogging,
-                Program.ApplicationSettings.ConfigurationContainerFactory,
-                new MemberTag(typeof(InitialCustoms).Namespace, nameof(InitialCustoms), nameof(Up)), userContext,
-                new { });
+            var routine = new AdminkaAnonymousRoutineHandler(
+                Program.ApplicationSettings,
+                "EFCoreMigrations",
+                new { },
+                correlationToken: System.Guid.NewGuid(),
+                documentBuilder: null,
+                controllerNamespace: null,
+                controllerName: nameof(InitialCustoms)
+                );
 
-            routine.UserRoutineHandler.Handle(
-                closure => {
+            routine.Handle(
+                (container,closure) => {
                     string loginName = null;
                     // string groupAdName = "FakeDomain\\Testers";
                     var adConfiguration = closure.Resolve<AdConfiguration>();

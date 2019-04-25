@@ -8,7 +8,7 @@ using DashboardCode.Routines.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
-    public class ListLoggingAdapter : IMemberLogger, IAuthenticationLogging
+    public class ListLoggingAdapter : IMemberLogger, IUnhandledExceptionLogging
     {
         readonly List<string> logger = new List<string>();
         readonly Guid correlationToken;
@@ -99,9 +99,9 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             logger.Add(text);
         }
 
-        public void TraceAuthentication(Guid correlationToken, MemberTag memberTag, string message)
+        public void TraceError(Guid correlationToken, string message)
         {
-            logger.Add($"{correlationToken} {memberTag.ToText(correlationToken)} {message}");
+            logger.Add($"{correlationToken} {message}");
         }
     }
 }

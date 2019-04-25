@@ -16,7 +16,7 @@
             <th class="adminka-action-button-group" width="1rem">
                 @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                 {
-                    <a class="btn-sm" asp-area="" asp-controller="Roles" asp-action="Create"><span class="material-icons">note_add</span></a>
+                    <a class="btn-sm" asp-area="Auth" asp-page="RoleCreate"><span class="material-icons">note_add</span></a>
                 }
             </th>
             <th>
@@ -42,12 +42,12 @@
             <tr>
                 <td class="adminka-action-button-group">
                     <div class="d-flex flex-row">
-                        <a class="btn-sm" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@item.RoleId"><span class="material-icons">insert_drive_file</span></a>
+                        <a class="btn-sm" asp-area="Auth" asp-page="Role" asp-route-id="@item.RoleId"><span class="material-icons">insert_drive_file</span></a>
                         @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                         {
                             <div class="d-flex flex-column">
-                                <a class="btn-xsm" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@item.RoleId"><span class="material-icons">edit</span></a>
-                                <a class="btn-xsm" asp-area="" asp-controller="Roles" asp-action="Delete" asp-route-id="@item.RoleId"><span class="material-icons">delete</span></a>
+                                <a class="btn-xsm" asp-area="Auth" asp-page="RoleEdit" asp-route-id="@item.RoleId"><span class="material-icons">edit</span></a>
+                                <a class="btn-xsm" asp-area="Auth" asp-page="RoleDelete" asp-route-id="@item.RoleId"><span class="material-icons">delete</span></a>
                             </div>
                         }
                     </div>
@@ -63,24 +63,24 @@
                     {
                         if (p.Item2)
                         {
-                            <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                            <a class="badge" asp-area="Auth" asp-page="Privilege"  asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                         }
                         else
                         {
-                            <a style="text-decoration:line-through" class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                            <a style="text-decoration:line-through" class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                         }
                     }
                 </td>
                 <td>
                     @foreach (var g in item.GetGroups())
                     {
-                        <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
+                        <a class="badge" asp-area="Auth" asp-page="Groups"  asp-route-id="@g.GroupId">@g.GroupName</a>
                     }
                 </td>
                 <td>
                     @foreach (var u in item.GetUsers())
                     {
-                        <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+                        <a class="badge" asp-area="Auth" asp-page="Users" asp-route-id="@u.UserId">@u.LoginName</a>
                     }
                 </td>
             </tr>

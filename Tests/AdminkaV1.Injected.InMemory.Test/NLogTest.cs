@@ -14,11 +14,11 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         {
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
-            var x = routine.UserRoutineHandler.Handle(container =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlersFactory =>
             {
-                container.Verbose("Test message");
+                closure.Verbose("Test message");
                 return "Output text";
-            });
+            }));
         }
 
         [TestMethod]
@@ -28,11 +28,14 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
             try
             {
-                var x = routine.UserRoutineHandler.Handle<string>(container =>
+                var x = routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlersFactory =>
                 {
-                    container.Verbose("Test message");
+                    closure.Verbose("Test message");
                     throw new Exception("Test exception");
-                });
+#pragma warning disable CS0162 // Unreachable code detected
+                    return 0;
+#pragma warning restore CS0162 // Unreachable code detected
+                }));
             }
             catch (Exception ex)
             {

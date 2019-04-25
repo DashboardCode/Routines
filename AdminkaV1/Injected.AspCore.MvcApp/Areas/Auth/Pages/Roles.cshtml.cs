@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.Routines.Configuration.Standard;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
+using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.Routines.Configuration.Standard;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     public class RolesModel : PageModel
     {
-        public int Id { get; private set; }
+        public string BackwardUrl { get; private set; }
         public IEnumerable<Role> List { get; private set; }
 
         Func<Task<IActionResult>> index;
@@ -21,9 +21,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
             var meta = Meta.RoleMeta;
             Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
             index = CrudRoutinePageConsumer<Role, int>.ComposeIndex(this,
-                applicationSettings,
-                routineResolvablesOption.Value,
                 l=> List = l,
+                prf => BackwardUrl = prf.BackwardUrl,
+                null,
                 meta.IndexIncludes);
         }
 

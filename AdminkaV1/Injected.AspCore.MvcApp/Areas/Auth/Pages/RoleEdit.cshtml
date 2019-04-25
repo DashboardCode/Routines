@@ -6,7 +6,7 @@
 
 <div class="d-flex flex-row justify-content-between align-self">
     <h3>Role (@Model.Entity.RoleId)</h3>
-    <a class="adminka-navigation adminka-navigation-clear" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@Model.Entity.RoleId"></a>
+    <a class="adminka-navigation adminka-navigation-clear" asp-area="Auth" asp-page="Role" asp-route-id="@Model.Entity.RoleId"></a>
 </div>
 
 @using (Html.BeginForm())
@@ -55,7 +55,7 @@
         <div class="form-group">
             <div class="d-flex flex-row align-self">
                 <input type="submit" value="Save" class="btn adminka-btn-ok" />
-                <a class="adminka-btn adminka-navigation-list mx-3" asp-area="" asp-controller="Roles" asp-action="Index">Back to List</a>
+                <a class="adminka-btn adminka-navigation-list mx-3" href="@Model.BackwardUrl">Back to List</a>
             </div>
         </div>
     </div>

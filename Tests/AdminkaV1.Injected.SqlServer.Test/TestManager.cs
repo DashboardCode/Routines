@@ -22,11 +22,11 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(typeof(TestManager)), new UserContext("UnitTest"), new { input = "Input text" });
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+                new MemberTag(typeof(TestManager)), "UnitTest", new { input = "Input text" });
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var typeRecord1 = new TypeRecord()
                 {
@@ -153,7 +153,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         batch.Add(parentRecordHierarchyRecord5);
                     }).ThrowIfFailed("Can't add ParentRecordHierarchyRecord")
                 );
-            });
+            }));
         }
 
         public static void Clear(string databaseName = "AdminkaV1")
@@ -161,12 +161,12 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(typeof(TestManager)), new UserContext("UnitTest"),
+                new MemberTag(typeof(TestManager)), "UnitTest",
                 new { input = "Input text" });
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 ormHandlerFactory.Create<ChildRecord>().Handle((repository, storage) =>
                 {
@@ -213,7 +213,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                             batch.Remove(e);
                     }).ThrowIfFailed();
                 });
-            });
+            }));
         }
     }
 }

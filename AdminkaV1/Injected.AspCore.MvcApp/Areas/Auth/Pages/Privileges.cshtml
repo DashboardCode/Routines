@@ -36,11 +36,11 @@
         <tr>
             <td class="adminka-action-button-group">
                 <div class="d-flex flex-row">
-                    <a class="btn-sm" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@item.PrivilegeId"><span class="material-icons">insert_drive_file</span></a>
+                    <a class="btn-sm" asp-area="Auth" asp-page="Privilege" asp-route-id="@item.PrivilegeId"><span class="material-icons">insert_drive_file</span></a>
                     @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                         {
                     <div class="d-flex flex-column">
-                        <a class="btn-xsm" asp-area="" asp-controller="Privileges" asp-action="Edit" asp-route-id="@item.PrivilegeId"><span class="material-icons">edit</span></a>
+                        <a class="btn-xsm" asp-area="Auth" asp-page="PrivilegeEdit" asp-route-id="@item.PrivilegeId"><span class="material-icons">edit</span></a>
                     </div>
                         }
                 </div>
@@ -54,19 +54,19 @@
             <td>
                 @foreach (var r in item.GetRoles())
                     {
-                <a class="badge" asp-area="" asp-controller="Roles" asp-action="Details" asp-route-id="@r.RoleId">@r.RoleName</a>
+                <a class="badge" asp-area="Auth" asp-page="Role"  asp-route-id="@r.RoleId">@r.RoleName</a>
                     }
             </td>
             <td>
                 @foreach (var u in item.GetUsers())
                     {
-                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+                <a class="badge" asp-area="Auth" asp-page="User"  asp-route-id="@u.UserId">@u.LoginName</a>
                     }
             </td>
             <td>
                 @foreach (var g in item.GetGroups())
                     {
-                <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
+                <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.GroupId">@g.GroupName</a>
                     }
             </td>
         </tr>

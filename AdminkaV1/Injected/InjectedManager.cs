@@ -15,7 +15,7 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
-using DashboardCode.AdminkaV1.Injected.ActiveDirectoryServices;
+using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
 using DashboardCode.Routines.ActiveDirectory;
 using DashboardCode.Routines.Logging;
 using DashboardCode.Routines.Storage.EfCore.Relational.SqlServer;
@@ -71,16 +71,26 @@ namespace DashboardCode.AdminkaV1.Injected
 #endif
         }
 
-#region Exception
+        #region Exception
+        public static string ToHtmlException(string exceptionMarkdown)
+        {
+            var html1 = ToHtml(exceptionMarkdown);
+            var html2 = html1.Replace("<code>\n   at ", "<code><br />at ");
+            return html2;
+        }
+
         public static string ToHtml(this Exception exception)
         {
-            string text = Markdown(exception);
+            string exceptionMarkdown = Markdown(exception);
+            var html = ToHtmlException(exceptionMarkdown);
+            return html;
+        }
+
+        public static string ToHtml(string mdText)
+        {
             var markdown = new HeyRed.MarkdownSharp.Markdown();
-
-            string html1 = markdown.Transform(text);
-            var html2 = html1.Replace("<code>\n   at ", "<code><br />at ");
-
-            return html2;
+            string html = markdown.Transform(mdText);
+            return html;
         }
 
         public static string Markdown(this Exception exception)
@@ -177,19 +187,19 @@ namespace DashboardCode.AdminkaV1.Injected
             return exception;
         }
 
-        public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeNLogMemberLoggerFactory(IAuthenticationLogging authenticationLogging)
+        public static Func<Guid, MemberTag, IMemberLogger> ComposeNLogMemberLoggerFactory(ITraceDocumentBuilder documentBuilder)
         {
             return (correlationToken, memberTag) => {
-                var nLogLoggingAdapter = new NLogLoggingAdapter(correlationToken, memberTag, Markdown, SerializeToJson);
-                return (nLogLoggingAdapter, authenticationLogging);
+                var nLogLoggingAdapter = new NLogLoggingAdapter(correlationToken, documentBuilder, memberTag, Markdown, SerializeToJson);
+                return nLogLoggingAdapter;
             };
         }
 
-        public static Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> ComposeListMemberLoggerFactory(List<string> logger)
+        public static Func<Guid, MemberTag, IMemberLogger> ComposeListMemberLoggerFactory(List<string> logger)
         {
             return (correlationToken, memberTag) => {
                 var listLoggingAdapter = new ListLoggingAdapter(logger, correlationToken, memberTag, Markdown, SerializeToJson);
-                return (listLoggingAdapter, listLoggingAdapter);
+                return listLoggingAdapter;
             };
         }
         #endregion
@@ -209,7 +219,10 @@ namespace DashboardCode.AdminkaV1.Injected
         public static ApplicationSettings CreateApplicationSettingsClassic()
         {
             return new ApplicationSettings(new Routines.Configuration.Classic.ConnectionStringMap(), 
-                new Routines.Configuration.Classic.AppSettings(), ResetConfigurationContainerFactoryClassic());
+                new Routines.Configuration.Classic.AppSettings(), 
+                ResetConfigurationContainerFactoryClassic(),
+                new NUnhandledExceptionLogging()
+                );
         }
 
         readonly static Routines.Configuration.Standard.DeserializerStandard deserializer = new Routines.Configuration.Standard.DeserializerStandard();
@@ -232,7 +245,8 @@ namespace DashboardCode.AdminkaV1.Injected
 
             var configurationManagerLoader = new Routines.Configuration.Standard.ConfigurationManagerLoader(configurationRoot);
             var configurationContainerFactory = ResetConfigurationContainerFactoryStandard(configurationManagerLoader);
-            return new ApplicationSettings(connectionStringMap, appSettings, configurationContainerFactory);
+            var unhandledExceptionLogging = new NUnhandledExceptionLogging();
+            return new ApplicationSettings(connectionStringMap, appSettings, configurationContainerFactory, unhandledExceptionLogging);
         }
         #endregion
 
@@ -285,68 +299,64 @@ namespace DashboardCode.AdminkaV1.Injected
             };
         }
 
-        public static UserContext GetUserContext(
-                AdminkaRoutineLogger routineLogger,
-                Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
-                AdminkaStorageConfiguration adminkaStorageConfiguration,
-                ContainerFactory containerFactory,
-                MemberTag memberTag,
-                IIdentity identity,
-                CultureInfo cultureInfo
-            )
-        {
-            var systemUserContext = new UserContext("Authentication");
-            var memberTag2 = new MemberTag("InjectedManager", "GetUserContext");
+        //public static UserContext GetUserContext(
+        //        AdminkaRoutineLogger routineLogger,
+        //        Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
+        //        AdminkaStorageConfiguration adminkaStorageConfiguration,
+        //        ContainerFactory containerFactory,
+        //        MemberTag memberTag,
+        //        IIdentity identity,
+        //        CultureInfo cultureInfo
+        //    )
+        //{
+        //    var systemUserContext = new UserContext("Authentication");
+        //    var memberTag2 = new MemberTag("InjectedManager", "GetUserContext");
 
-            /// 1) it writes activity and verbose messages to log with its own MemberTag but with the parent's CorrelationToken, Guid.
-            /// 2) subroutine uses the same configuration as parent routine but can "use different @for specification", means configuration can be overrided for "user"
+        //    /// 1) it writes activity and verbose messages to log with its own MemberTag but with the parent's CorrelationToken, Guid.
+        //    /// 2) subroutine uses the same configuration as parent routine but can "use different @for specification", means configuration can be overrided for "user"
 
-            var routine = new AdminkaRoutineHandler(
-                adminkaStorageConfiguration,
-                routineLogger,
-                containerFactory,
-                memberTag2,
-                systemUserContext,
-                new {
-                    PrincipalAuthenticationType = identity.AuthenticationType,
-                    PrincipalName = identity.Name,
-                    PrincipalIsAuthenticated = identity.IsAuthenticated,
-                    PrincipalType = identity.GetType().FullName,
-                    CultureInfo = cultureInfo.ToString()
-                });
-            var user = routine.HandleServicesContainer((authenticationService, closure, logAuthentication) =>
-            {
-                try
-                {
-                    var adConfiguration = closure.Resolve<AdConfiguration>();
-                    bool useAdAuthorization = adConfiguration.UseAdAuthorization;
-                    closure.Verbose?.Invoke($"useAdAuthorization={useAdAuthorization}");
-                    User @value;
-                    if (useAdAuthorization)
-                    {
-#if NETSTANDARD
-                        throw new NotImplementedException("LDAP is not supported for NETStandard");
-#else
-                        var groups = ActiveDirectoryManager.ListGroups(identity, out string loginName, out string firstName, out string secondName);
-                        @value = authenticationService.GetUser(loginName, firstName, secondName, groups);
-#endif
-                    }
-                    else
-                    {
-                        var fakeAdConfiguration = closure.Resolve<FakeAdConfiguration>();
-                        @value = authenticationService.GetUser(
-                            fakeAdConfiguration.FakeAdUser, "Anonymous", "Anonymous", fakeAdConfiguration.FakeAdGroups);
-                    }
-                    logAuthentication(routineLogger.CorrelationToken, memberTag, @value.LoginName);
-                    return @value;
-                }
-                catch (Exception ex)
-                {
-                    throw new AdminkaException("User authetication and authorization service generates an error because of configuration or network connection problems", ex);
-                }
-            });
-            return new UserContext(user, cultureInfo);
-        }
+        //    var routine = new AdminkaXRoutineHandler(
+        //        adminkaStorageConfiguration,
+        //        routineLogger,
+        //        containerFactory,
+        //        memberTag2,
+        //        systemUserContext,
+        //        new {
+        //            PrincipalAuthenticationType = identity.AuthenticationType,
+        //            PrincipalName = identity.Name,
+        //            PrincipalIsAuthenticated = identity.IsAuthenticated,
+        //            PrincipalType = identity.GetType().FullName,
+        //            CultureInfo = cultureInfo.ToString()
+        //        });
+        //    var user = routine.HandleServicesContainer((authenticationService, closure, logAuthentication) =>
+        //    {
+        //        try
+        //        {
+        //            var adConfiguration = closure.Resolve<AdConfiguration>();
+        //            bool useAdAuthorization = adConfiguration.UseAdAuthorization;
+        //            closure.Verbose?.Invoke($"useAdAuthorization={useAdAuthorization}");
+        //            User @value;
+        //            if (useAdAuthorization)
+        //            {
+        //                var groups = ActiveDirectoryManager.ListGroups(identity, out string loginName, out string firstName, out string secondName);
+        //                @value = authenticationService.GetUser(loginName, firstName, secondName, groups);
+        //            }
+        //            else
+        //            {
+        //                var fakeAdConfiguration = closure.Resolve<FakeAdConfiguration>();
+        //                @value = authenticationService.GetUser(
+        //                    fakeAdConfiguration.FakeAdUser, "Anonymous", "Anonymous", fakeAdConfiguration.FakeAdGroups);
+        //            }
+        //            logAuthentication(routineLogger.CorrelationToken, memberTag, @value.LoginName);
+        //            return @value;
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            throw new AdminkaException("User authetication and authorization service generates an error because of configuration or network connection problems", ex);
+        //        }
+        //    });
+        //    return new UserContext(user, cultureInfo);
+        //}
 
         #region DependencyInjection interface
         //public static void MvcConfigure(IApplicationBuilder applicationBuilder)

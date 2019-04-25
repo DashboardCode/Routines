@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "/Pages/_Layout.cshtml";
+}
+
+<div class="my-4 container">
+    <div class="row">
+        <main role="main" class="col-9" style="padding-right:0; margin-right:0">
+            <div class="container" style="padding-right:0; margin-right:0">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+</div>
+
+@{
+    if (ViewData["SubTitle"] != null)
+    {
+        ViewData["Title"] = ViewData["Title"] + " / " + ViewData["SubTitle"];
+    }
+}
+
+
+@*@section Filters {
+    @await RenderSectionAsync("Filters", required: false)
+}*@
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}
+
+@section Messages {
+    @await RenderSectionAsync("Messages", required: false)
+}

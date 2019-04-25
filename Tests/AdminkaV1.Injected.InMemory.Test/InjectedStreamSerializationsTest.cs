@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         {
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
-            var record = routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            var record = routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
@@ -25,7 +25,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                 {
                     return repository.Find(e => e.TestTypeRecordId == "0000", include);
                 });
-            });
+            }));
             var json = InjectedManager.SerializeToJson(record, 2, true);
         }
 

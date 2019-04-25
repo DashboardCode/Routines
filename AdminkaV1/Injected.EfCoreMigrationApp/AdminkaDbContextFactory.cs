@@ -15,8 +15,6 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
         public AdminkaDbContext CreateDbContext(string[] args)
         {
             var adminkaStorageConfiguration = Program.ApplicationSettings.CreateMigrationAdminkaStorageConfiguration(Program.MigrationAssembly);
-            var userContext = new UserContext("EFCoreMigrations", CultureInfo.CurrentCulture);
-            var tag = new MemberTag(this);
             var adminkaDbContext =
                 DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration);
             return adminkaDbContext;

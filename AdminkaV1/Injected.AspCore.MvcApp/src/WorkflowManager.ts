@@ -489,23 +489,23 @@ class ErrorDialog {
     }
 
     public Show(erorDetails: ErorDetails) {
-        this.$errodDialog.find('.kofax-error-title').text(erorDetails.title);
+        this.$errodDialog.find('.adminka-error-title').text(erorDetails.title);
         if (erorDetails.correlationToken) {
-            this.$errodDialog.find('.kofax-error-text-field-correlation-token').text(erorDetails.correlationToken);
-            this.$errodDialog.find('.kofax-error-text-field-correlation-token').parent().show();
+            this.$errodDialog.find('.adminka-error-text-field-correlation-token').text(erorDetails.correlationToken);
+            this.$errodDialog.find('.adminka-error-text-field-correlation-token').parent().show();
         }
         else
-            this.$errodDialog.find('.kofax-error-text-field-correlation-token').parent().hide();
+            this.$errodDialog.find('.adminka-error-text-field-correlation-token').parent().hide();
 
         if (erorDetails.showAdvanced) {
-            this.$errodDialog.find('.kofax-error-advanced').show();
-            this.$errodDialog.find('.kofax-error-text-field-asp-request').text(erorDetails.aspRequestId || "");
-            this.$errodDialog.find('.kofax-error-text-field-message').hide();
-            this.$errodDialog.find('.kofax-error-details')[0].innerHTML = erorDetails.htmlMessage || "";
+            this.$errodDialog.find('.adminka-error-advanced').show();
+            this.$errodDialog.find('.adminka-error-text-field-asp-request').text(erorDetails.aspRequestId || "");
+            this.$errodDialog.find('.adminka-error-text-field-message').hide();
+            this.$errodDialog.find('.adminka-error-details')[0].innerHTML = erorDetails.htmlMessage || "";
         } else {
-            this.$errodDialog.find('.kofax-error-advanced').hide();
-            this.$errodDialog.find('.kofax-error-text-field-message').show();
-            this.$errodDialog.find('.kofax-error-text-field-message').text(erorDetails.message || "");
+            this.$errodDialog.find('.adminka-error-advanced').hide();
+            this.$errodDialog.find('.adminka-error-text-field-message').show();
+            this.$errodDialog.find('.adminka-error-text-field-message').text(erorDetails.message || "");
         }
 
         this.$errodDialog.modal('show');

@@ -23,16 +23,14 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var userContext = new UserContext("UnitTest");
-
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(this), userContext, new { input = "Input text" });
+                new MemberTag(this), "UnitTest", new { input = "Input text" });
             int newParentRecordId = 0;
             byte[] newRowVersion = null;
-            routine.StorageRoutineHandler.HandleOrmFactory(ormHandlerFactory =>
-           {
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
+            {
                var parentRecord = new ParentRecord
                {
                    FieldA = "MMTA",
@@ -73,9 +71,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                    newParentRecordId = parentRecord.ParentRecordId;
                    newRowVersion = parentRecord.RowVersion;
                });
-           });
+           }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 // Update
@@ -117,9 +115,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     if (!storageResult.IsOk())
                         throw new Exception("Test failed");
                 });
-            });
+            }));
             // Remove
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -131,7 +129,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     if (!storageResult.IsOk())
                         throw new Exception("Test failed: includes");
                 });
-            });
+            }));
         }
 
         [TestMethod]
@@ -140,16 +138,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(this), userContext, new { input = "Input text" });
+                new MemberTag(this), "UnitTest", new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>();
                 rh.Handle(
@@ -240,7 +237,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         }
                     }
                );
-            });
+            }));
         }
 
         [TestMethod]
@@ -249,16 +246,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(this), userContext, new { input = "Input text" });
+                new MemberTag(this), "UnitTest", new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle( (container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>();
                 rh.Handle(
@@ -296,7 +292,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                             throw new Exception("This is strange. EF Core have changed something");
 
                     });
-            });
+            }));
         }
     }
 }

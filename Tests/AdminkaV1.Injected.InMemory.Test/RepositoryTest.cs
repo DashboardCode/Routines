@@ -18,13 +18,14 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         {
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
-            routine.StorageRoutineHandler.HandleDbContext((dbContext, closure) =>
+            
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleDbContext(dbContext =>
             {
                 var list = dbContext.ParentRecords
                     .Include(e => e.ParentRecordHierarchyRecordMap)
                     //.ThenInclude(e => e.HierarchyRecordId)
                     .ToList();
-            });
+            }));
         }
 
         [TestMethod]
@@ -35,7 +36,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
-            var record = routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            var record = routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 return repositoryHandler.Handle((repository, storage) =>
@@ -44,7 +45,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                     repository.Detach(entity, include);
                     return entity;
                 });
-            });
+            }));
             if (record.ChildRecords != null) // from first sight TestChildRecords should be included, but .ThenInclude(y => y.TestTypeRecord) returns the same object there it is pointed that TestChildRecords should be not included
                 throw new Exception("Detach error");
         }
@@ -61,7 +62,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                             .ThenInclude(y => y.HierarchyRecord)
                        .IncludeAll(y => y.ChildRecords)
                             .ThenInclude(y => y.TypeRecord);
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -70,7 +71,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                     repository.Detach(parent, include);
                     InjectedManager.SerializeToJson(parent);
                 });
-            });
+            }));
         }
 
     }

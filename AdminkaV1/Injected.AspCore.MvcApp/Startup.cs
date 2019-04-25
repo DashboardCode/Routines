@@ -5,9 +5,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Diagnostics;
 
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines.Configuration.Standard;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -34,39 +38,33 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         private IConfiguration Configuration { get; } // is updatable on change
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        ApplicationSettings applicationSettings;
+        public void ConfigureServices(IServiceCollection serviceCollection)
         {
-            services.AddDistributedMemoryCache();
-            services.AddSession(options =>
-            {
-                // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
-                options.Cookie.HttpOnly = true;
-                options.Cookie.Name = ".AdminkaV1.Session";
-            });
+            applicationSettings = InjectedManager.CreateApplicationSettingsStandard(Configuration);
+            serviceCollection.AddSingleton(applicationSettings);
+            serviceCollection.AddSingleton(Configuration);
+            serviceCollection.AddSingleton(serviceCollection);
 
-            // Add framework services.
-            services.AddMvc();
-            services.AddSingleton(Configuration);
-            services.Configure<List<RoutineResolvable>>(Configuration.GetSection("Routines"));
-            services.AddSingleton(services);
-            var applicationSettings = InjectedManager.CreateApplicationSettingsStandard(Configuration);
-            services.AddSingleton(applicationSettings);
+            // for section real time update
+            serviceCollection.Configure<List<RoutineResolvable>>(Configuration.GetSection("Routines"));
+            // todo test alternative: 
+            //serviceCollection.AddScoped(sp => sp.GetService<Microsoft.Extensions.Options.IOptionsSnapshot<List<RoutineResolvable>>>().Value);
+
+            serviceCollection.AddMemoryCache(); // AddDistributedMemoryCache();
+            serviceCollection.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceCollection services)
         {
-            var configurationSection = Configuration.GetSection("Logging");
-            //loggerFactory.AddConsole(configurationSection);
-            //loggerFactory.AddDebug();
+            if (env.IsDevelopment())
+            {
+                app.UseBrowserLink();
+            }
 
-            // TODO: experiment with ETW 
-            // https://docs.microsoft.com/en-us/dotnet/framework/wcf/samples/etw-tracing
-            // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/logging/?tabs=aspnetcore2x
-            // logging.AddEventSourceLogger(); //  Microsoft.Extensions.Logging.EventSource 
 
-            if (true /*env.IsDevelopment()*/)
+            if (false /*env.IsDevelopment()*/)
             {
 
                 app.UseDeveloperExceptionPage();
@@ -74,30 +72,49 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             }
             else
             {
-#pragma warning disable CS0162
-                app.UseExceptionHandler("/Home/Error");
-#pragma warning restore CS0162
+                const string errorPath = "/Error";
+
+                app.UseExceptionHandler(errorPath);
+
+                // 
+                //app.UseStatusCodePages((statusCodeContext)=> {
+                //    statusCodeContext.HttpContext
+                //    return Task.CompletedTask;
+                //});
+
+                app.UseStatusCodePagesWithReExecute("/Error");
+                app.Use(async (context, next) =>
+                {
+                    if (context.Request.Path == errorPath)
+                    {
+                        //var ex = context.Features.Get<IExceptionHandlerFeature>().Error;
+                        //var originalFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+
+                        //if (originalFeature != null && originalFeature.Path != null && originalFeature.Path.Contains("Api/")) // TODO: regex
+                        //{
+                        //    context.Response.ContentType = "application/json";
+                        //    var aspRequestId = System.Diagnostics.Activity.Current?.Id ?? context.TraceIdentifier;
+                        //    await context.Response.WriteAsync(AspCoreManager.GetErrorActionJson(ex, aspRequestId, applicationSettings.ForceDetailsOnCustomErrorPage));
+                        //    return;
+                        //}
+                    }
+
+                    // Request.Path is not for /Error *or* this isn't an API call.
+                    await next();
+                });
             }
 
             app.UseStaticFiles();
 
-            app.UseSession();
+            //app.UseSession();
 
-            app.UseMiddleware<DurationMiddleware>("X-AdminkaV1-Duration-MSec");
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            //app.UseMiddleware<DurationMiddleware>("X-AdminkaV1-Duration-MSec");
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "forms",
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-                );
+                    name: "defaultArea",
+                    template: "{area:exists}/{controller}/{action}");
             });
         }
     }

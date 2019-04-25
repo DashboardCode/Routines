@@ -29,10 +29,10 @@ namespace DashboardCode.Routines
             return func(resource);
         }
 
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
             var dbContext = createResource();
-            return await func(dbContext);
+            return func(dbContext);
         }
 
         public void Handle(Action<TClosure, TSuperClosure> action)
@@ -47,22 +47,22 @@ namespace DashboardCode.Routines
             return func(resource, closure);
         }
 
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func)
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func)
         {
             var resource = createResource();
-            return await func(resource, closure);
+            return func(resource, closure);
         }
 
-        public async Task HandleAsync(Func<TClosure, Task> func)
+        public Task HandleAsync(Func<TClosure, Task> func)
         {
             var dbContext = createResource();
-            await func(dbContext);
+            return func(dbContext);
         }
 
-        public async Task HandleAsync(Func<TClosure, TSuperClosure, Task> func)
+        public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func)
         {
             var resource = createResource();
-            await func(resource, closure);
+            return func(resource, closure);
         }
     }
 
@@ -408,17 +408,17 @@ namespace DashboardCode.Routines
             return func(resource);
         }
 
-        public async Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
+        public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func)
         {
             var dbContext = createResource();
-            return await func(dbContext);
+            return func(dbContext);
         }
 
 
-        public async Task HandleAsync(Func<TClosure, Task> func)
+        public Task HandleAsync(Func<TClosure, Task> func)
         {
             var dbContext = createResource();
-            await func(dbContext);
+            return func(dbContext);
         }
 
     }

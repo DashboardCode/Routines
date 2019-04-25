@@ -1,0 +1,53 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "ACCESS DENIED";
+    Layout = "_Layout.cshtml";
+    var boxClasses = "offset-md-2 col-md-8 offset-lg-3 col-lg-6";
+    if (Model.ShowAdvancedInformation)
+    {
+        boxClasses = "offset-0 col-12";
+    }
+}
+
+<div class="row pb-sm-5 mt-5">
+    <div class="@boxClasses">
+        <div class="row">
+            <div class="col-md-12">
+                <form method="post" class="adminka-form" asp-route-returnUrl="@Model.ReturnUrl">
+                    <div class="adminka-form-header">@Model.Title</div>
+                    <div class="row">
+                        <div class="col-md-12 p-4">
+                            @if (Model.ShowAdvancedInformation)
+                            {
+                            <div class="pb-3 px-4">
+                                <p style="font-weight:600;text-align:center">@Model.Message</p>
+                                @*<p><strong>ASP Request ID</strong> <code>@Model.RequestId</code></p>*@
+                                @if (Model.CorrelationToken != null)
+                                {
+                                    <p><strong>CorrelationToken</strong> <code>@Model.CorrelationToken</code></p>
+                                }
+                                <div class="pre-scrollable" style="text-align:left; white-space:nowrap; ">
+                                    @Html.Raw(Model.ExceptionHtml)
+                                </div>
+                            </div>
+                            }
+                            else
+                            {
+                            <div style="text-align:center">
+                                <p style="font-weight:600">@Model.Message</p>
+                            </div>
+                            }
+                            <div class="form-group">
+                                <div class="offset-sm-3  col-sm-6" style="text-align:center">
+                                    <a href="@Model.ReturnUrl" class="btn btn-warning">BACK TO @Model.ReturnUrlTitle.ToUpper()</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

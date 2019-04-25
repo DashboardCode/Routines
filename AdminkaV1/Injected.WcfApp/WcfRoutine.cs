@@ -5,46 +5,45 @@ using DashboardCode.Routines.Configuration;
 
 namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
-    public class WcfRoutine : AdminkaRoutineHandler
+    public class WcfRoutine : AdminkaAnonymousRoutineHandler
     {
         public static readonly ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();
 
         public WcfRoutine(Routines.MemberTag memberTag, string faultCodeNamespace, object input) 
-            : this(Guid.NewGuid(), memberTag, GetUserContext(), faultCodeNamespace,
+            : this(Guid.NewGuid(), memberTag,  faultCodeNamespace,
                     input)
         {
         }
 
-        protected WcfRoutine(Guid correlationToken, Routines.MemberTag memberTag, UserContext userContext, string faultCodeNamespace,
+        protected WcfRoutine(Guid correlationToken, Routines.MemberTag memberTag, string faultCodeNamespace,
              object input)
-            : this(correlationToken, memberTag, GetUserContext(), faultCodeNamespace,
-                  ApplicationSettings.AdminkaStorageConfiguration,
-                  InjectedManager.ResetConfigurationContainerFactoryClassic(),  input)
+            : this(
+                  correlationToken, memberTag, faultCodeNamespace,
+                  ApplicationSettings,
+                  InjectedManager.ResetConfigurationContainerFactoryClassic(),
+                  input)
         {
         }
 
         protected WcfRoutine(
             Guid correlationToken,
-            Routines.MemberTag memberTag, 
-            UserContext userContext, 
+            DashboardCode.Routines.MemberTag memberTag,
             string faultCodeNamespace,
-            AdminkaStorageConfiguration adminkaStorageConfiguration,
-            IConfigurationContainerFactory configurationFactory, object input)
+            ApplicationSettings applicationSettings,
+            IConfigurationContainerFactory configurationContainerFactory, object input)
             : base(
-                  adminkaStorageConfiguration,
-                  ApplicationSettings.PerformanceCounters,
-                  ApplicationSettings.AuthenticationLogging,
-                  configurationFactory,
-                  (ex, g, mt, md) => TransformException(ex, g, mt, faultCodeNamespace, md),
-                  correlationToken,
-                  memberTag,
-                  userContext,
-                  input)
+                  applicationSettings: applicationSettings,
+                  performanceCounters: ApplicationSettings.PerformanceCounters,
+                  configurationContainerFactory: configurationContainerFactory,
+                  transformException: (ex, g, mt, md) => TransformException(ex, g, mt, faultCodeNamespace, md),
+                  correlationToken: correlationToken,
+                  documentBuilder: null,
+                  memberTag: memberTag,
+                  anonymousUserContext: new AnonymousUserContext(),
+                  input: input)
         {
         }
 
-        private static UserContext GetUserContext() =>
-            new UserContext("Anonymous");
 
         public static Exception TransformException(
             Exception exception, 

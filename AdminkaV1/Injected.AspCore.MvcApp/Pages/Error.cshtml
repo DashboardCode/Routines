@@ -1,0 +1,56 @@
+﻿@page
+@model ErrorModel
+@{
+    ViewData["Title"] = "Adminka";
+    Layout = "_Layout.cshtml";
+    var boxClasses = "offset-md-2 col-md-8 offset-lg-3 col-lg-6";
+    if (Model.ShowAdvancedInformation)
+    {
+        boxClasses = "offset-0 col-12";
+    }
+}
+
+<div class="row pb-sm-5 mt-5">
+    <div class="adminka-error @boxClasses" style="margin-right:1rem; margin-left:1rem; padding-right:0; padding-left:0; z-index: 1041; background-color:white;"> 
+                    <div class="adminka-error-header">@Model.Title</div> 
+                    <div class="container pt-4 px-5">
+                        @if (Model.ShowAdvancedInformation)
+                        {
+                            <div class="row">
+                                <div class="view-group col-md-6"> 
+                                    <label>ASP Request ID</label> 
+                                    <div class="text-field">@Model.RequestId</div>
+                                </div>
+                                @if (Model.CorrelationToken != null)
+                                {
+                                    <div class="view-group col-md-6">
+                                        <label>CorrelationToken</label>
+                                        <div class="text-field">@Model.CorrelationToken</div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="pre-scrollable">
+                                        @Html.Raw(Model.ExceptionHtml)
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div>
+                                        <p style="font-weight:600; font-size:18px">@Model.Message</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="offset-sm-3 col-sm-6 my-3 " style="text-align:center">
+                            <a href="@Model.ReturnUrl" class="btn btn-danger">BACK TO @Model.ReturnUrlTitle.ToUpper()</a>
+                        </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+</div> 

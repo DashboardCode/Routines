@@ -1,39 +1,35 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.Routines.Configuration.Standard;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Options;
+using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     public class RoleCreateModel : PageModel
     {
         public Role Entity { get; private set; }
-
+        public string BackwardUrl { get; private set; }
         readonly Func<Task<IActionResult>> insert;
         readonly Func<Task<IActionResult>> insertConfirmed;
 
-        public RoleCreateModel(ApplicationSettings applicationSettings, IOptionsSnapshot<List<RoutineResolvable>> routineResolvablesOption)
+        public RoleCreateModel()
         {
             Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
             var meta = Meta.RoleMeta;
 
             insert = CrudRoutinePageConsumer<Role, int>.ComposeCreate(
                 this,
-                applicationSettings,
-                routineResolvablesOption.Value,
                 (e) => this.Entity = e,
+                prf => BackwardUrl = prf.BackwardUrl,
+                "Roles",
                 meta.ReferencesCollection.PrepareEmptyOptions);
 
             insertConfirmed = CrudRoutinePageConsumer<Role, int>.ComposeCreateConfirmed(
                 this,
-                applicationSettings,
-                routineResolvablesOption.Value,
                 (e) => this.Entity = e,
-                "Groups",
+                prf => BackwardUrl = prf.BackwardUrl,
+                "Roles",
                 authorize, meta.Constructor, meta.FormFields, meta.HiddenFormFields, meta.ReferencesCollection.ParseRelatedOnInsert);
         }
 

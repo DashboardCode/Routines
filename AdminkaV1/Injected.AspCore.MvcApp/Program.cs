@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
+
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     public class Program
@@ -17,6 +18,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                //.ConfigureLogging((hostingContext, logging) =>
+                //{
+                //    // need those usings: Microsoft.Extensions.Logging, Microsoft.Extensions.Logging.Console;
+                //    ConsoleLoggerExtensions.AddConsole(logging)
+                //        .AddFilter<ConsoleLoggerProvider>
+                //            (category: null, level: LogLevel.Information)
+                //       .AddFilter<ConsoleLoggerProvider>
+                //           ((category, level) => category == "A" ||
+                //               level == LogLevel.Critical);
+                //})
             //.UseKestrel()
             //.UseContentRoot(System.IO.Directory.GetCurrentDirectory())
             //.UseIISIntegration()
@@ -29,7 +40,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             var t0 = typeof(UserContext);
             var t1 = typeof(RoutineClosure<UserContext>);
             var identity = InjectedManager.GetDefaultIdentity();
-            var html = InjectedManager.Markdown("*** test ***");
+            var html = InjectedManager.Markdown($"*** test {t1.GetType().Name} ***");
         }
     }
 }

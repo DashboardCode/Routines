@@ -8,8 +8,8 @@
 <div class="d-flex flex-row align-self justify-content-between">
     <h3>Role (@Model.Entity.RoleId)</h3>
     <div>
-        <a class="ml-4 adminka-navigation adminka-navigation-delete" asp-area="" asp-controller="Roles" asp-action="Delete" asp-route-id="@Model.Entity.RoleId">Delete</a>
-        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="" asp-controller="Roles" asp-action="Edit" asp-route-id="@Model.Entity.RoleId">Edit</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-delete" asp-area="Auth" asp-page="RoleDelete" asp-route-id="@Model.Entity.RoleId">Delete</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="Auth" asp-page="RoleEdit" asp-route-id="@Model.Entity.RoleId">Edit</a>
     </div>
 </div>
 
@@ -34,7 +34,7 @@
             {
                 if (p.Item2)
                 {
-                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge" asp-area="Auth" asp-page="Privilege"  asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>
@@ -48,7 +48,7 @@
             {
                 if (!p.Item2)
                 {
-                    <a class="badge" asp-area="" asp-controller="Privileges" asp-action="Details" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>
@@ -59,7 +59,7 @@
         <dd class="col-sm-9 mb-sm-4">
             @foreach (var g in Model.Entity.GetGroups())
             {
-                <a class="badge" asp-area="" asp-controller="Groups" asp-action="Details" asp-route-id="@g.GroupId">@g.GroupName</a>
+                <a class="badge" asp-area="Auth" asp-page="Group"  asp-route-id="@g.GroupId">@g.GroupName</a>
             }
         </dd>
 
@@ -70,12 +70,12 @@
         <dd class="col-sm-10 mb-sm-2">
             @foreach (var u in Model.Entity.GetUsers())
             {
-                <a class="badge" asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@u.UserId">@u.LoginName</a>
+                <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId">@u.LoginName</a>
             }
         </dd>
     </dl>
     <div class="d-flex flex-row align-self">
-        <a class="adminka-btn adminka-navigation-list" asp-area="" asp-controller="Roles" asp-action="Index">Back to List</a>
+        <a class="adminka-btn adminka-navigation-list" href="@Model.BackwardUrl">Back to List</a>
     </div>
 </div>
 

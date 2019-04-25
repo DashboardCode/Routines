@@ -1,40 +1,41 @@
 ﻿using System;
 using DashboardCode.Routines;
-using DashboardCode.Routines.Logging;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
 
 namespace DashboardCode.AdminkaV1.DataAccessEfCore
 {
-    public class AdminkaStorageRoutineHandler : EfCoreStorageRoutineHandler<UserContext, AdminkaDbContext>
+    public class AdminkaStorageRoutineHandler<TUserContext> : EfCoreStorageRoutineHandler<TUserContext, AdminkaDbContext>
     {
         public AdminkaStorageRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
-            UserContext userContext,
+            TUserContext userContext,
 
             IEntityMetaServiceContainer entityMetaServiceContainer,
             Action<string> efDbContextVerbose,
-            IHandler<RoutineClosure<UserContext>> routineHandler) :
+            IHandler<RoutineClosure<TUserContext>> routineHandler,
+            Func<TUserContext, string> getAudit) :
             this(
                 entityMetaServiceContainer,
                 userContext,
                 () => DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration, efDbContextVerbose),
-                routineHandler)
+                routineHandler, getAudit)
         {
         }
 
         private AdminkaStorageRoutineHandler(
             IEntityMetaServiceContainer entityMetaServiceContainer,
-            UserContext userContext,
+            TUserContext userContext,
             Func<AdminkaDbContext> createDbContext,
-            IHandler<RoutineClosure<UserContext>> routineHandler) :
+            IHandler<RoutineClosure<TUserContext>> routineHandler,
+            Func<TUserContext, string> getAudit) :
             base(
                 entityMetaServiceContainer,
                 createDbContext,
                 () => new ValueTuple<AdminkaDbContext, IAuditVisitor>(
                     createDbContext(),
                     new AuditVisitor<IVersioned>(
-                        (e)=> { e.RowVersionAt = DateTime.Now; e.RowVersionBy = userContext.AuditStamp; })
+                        (e)=> { e.RowVersionAt = DateTime.Now; e.RowVersionBy = getAudit(userContext); })
                 ),
                 routineHandler)
         {

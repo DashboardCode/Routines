@@ -25,30 +25,30 @@ namespace BenchmarkAdminka
         [Benchmark]
         public void MeasureRoutineNLog()
         {
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
-            var routine = new AdminkaRoutineHandler(
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(null);
+            var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNLog), new { });
-            routine.StorageRoutineHandler.Handle(container =>
+                new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNLog)), 
+                "Anonymous",new { });
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().Handle(repository =>
             {
 
-            });
+            }));
         }
 
         [Benchmark]
         public void MeasureRoutineNoAuthorizationNLog()
         {
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
-            var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(null);
+            var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNoAuthorizationNLog)), userContext, new { });
-            routine.StorageRoutineHandler.Handle(container =>
+                new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNoAuthorizationNLog)), "UnitTest", new { });
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().Handle(repository =>
             {
 
-            });
+            }));
         }
         /// <summary>
         /// Measure speed of empty routine
@@ -57,17 +57,18 @@ namespace BenchmarkAdminka
         public void MeasureRoutineRepositoryNLog()
         {
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
-            var routine = new AdminkaRoutineHandler(
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(null);
+            var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryNLog), new { });
+                new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryNLog)), 
+                "Anonymous", new { });
             IReadOnlyCollection<ParentRecord> parentRecords;
-            routine.StorageRoutineHandler.HandleRepository<ParentRecord>((repository, closure) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleRepository<ParentRecord>(repository =>
             {
                 parentRecords = repository.List();
                 closure.Verbose?.Invoke("sample");
-            });
+            }));
         }
 
         /// <summary>
@@ -77,20 +78,21 @@ namespace BenchmarkAdminka
         public void MeasureRoutineRepositoryExceptionNLog()
         {
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
-            var routine = new AdminkaRoutineHandler(
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(null);
+            var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionNLog), new { });
+                new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionNLog)), 
+                "Anonymous", new { });
             try
             {
                 IReadOnlyCollection<ParentRecord> parentRecords;
-                routine.StorageRoutineHandler.HandleRepository<ParentRecord>((repository, closure) =>
+                routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleRepository<ParentRecord>(repository =>
                 {
                     parentRecords = repository.List();
                     closure.Verbose?.Invoke("sample");
                     throw new Exception("Test exception");
-                });
+                }));
             }
             catch (Exception ex)
             {
@@ -106,20 +108,21 @@ namespace BenchmarkAdminka
         public void MeasureRoutineRepositoryExceptionMailNLog()
         {
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
-            var routine = new AdminkaRoutineHandler(
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(null);
+            var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionMailNLog), new { });
+                new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionMailNLog)), 
+                "Anonymous", new { });
             try
             {
                 IReadOnlyCollection<ParentRecord> parentRecords;
-                routine.StorageRoutineHandler.HandleRepository<ParentRecord>((repository, closure) =>
+                routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleRepository<ParentRecord>(repository =>
                 {
                     parentRecords = repository.List();
                     closure.Verbose?.Invoke("sample");
                     throw new Exception("Test exception");
-                });
+                }));
             }
             catch (Exception ex)
             {
@@ -132,18 +135,20 @@ namespace BenchmarkAdminka
         public void MeasureRoutineRepositoryErrorNLog()
         {
             //var loggingConfiguration = new LoggingConfiguration() { Verbose = true };
-            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(Program.ApplicationSettings.AuthenticationLogging);
-            var routine = new AdminkaRoutineHandler(
+            var loggingTransientsFactory = InjectedManager.ComposeNLogMemberLoggerFactory(null);
+            var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
-                "Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryErrorNLog), new { });
+                new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryErrorNLog))
+                , "Anonymous", 
+                new { });
             IReadOnlyCollection<ParentRecord> parentRecords=
-                routine.StorageRoutineHandler.HandleRepository< IReadOnlyCollection<ParentRecord> , ParentRecord >((repository, closure) =>
+                routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleRepository<IReadOnlyCollection<ParentRecord>, ParentRecord>(repository =>
                 {
                     var output = repository.List();
                     closure.Verbose?.Invoke("sample");
                     return output;
-                });
+                }));
         }
     }
 }

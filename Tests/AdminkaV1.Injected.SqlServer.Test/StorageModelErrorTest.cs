@@ -18,16 +18,17 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void TestDatabaseFieldRequiredError()
         {
-            var userContext = new UserContext("UnitTest");
 
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaRoutineHandler(
-                 TestManager.ApplicationSettings,
+            var routine = new AdminkaAnonymousRoutineHandler(
+                 TestManager.ApplicationSettings,  
                  loggingTransientsFactory,
-                 new MemberTag(this), userContext, new { input = "Input text" });
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+                 new MemberTag(this),
+                 "UnitTest", 
+                 input: new { input = "Input text" });
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -38,9 +39,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     // NOTE 1 : for ef core v1 - returns generic error (can't say which field is errored)
                     // NOTE 2 : id is incremented int (so there are no error that it was not setuped)
                 });
-            });
+            }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -49,9 +50,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t0));
                     storageError.Assert(1, "FieldA", "Is required!", "Case isRequired string is null");
                 });
-            });
+            }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -60,7 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t0));
                     storageError.Assert(1, "FieldCB2", "ID or alternate id has no value", "Case alternate key (part of complex alternate key) absent");
                 });
-            });
+            }));
 
 
             var parentRecord = new ParentRecord()
@@ -73,7 +74,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 FieldCB2 = "3"
             };
 
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -81,9 +82,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(parentRecord));
                     storageError.ThrowIfFailed("Add failed 1");
                 });
-            });
+            }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -100,9 +101,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t2));
                     storageError.Assert(1, "FieldA", "Allready used", "Case 3.");
                 });
-            });
+            }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -119,9 +120,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t2));
                     storageError.Assert(2, new[] { "FieldCB1", "FieldCB2" }, null, "Case 4.");
                 });
-            });
+            }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -138,9 +139,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t2));
                     storageError.Assert(2, new[] { "FieldB1", "FieldB2" }, null, "Case 5.");
                 });
-            });
+            }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -157,7 +158,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t2));
                     storageError.Assert(1, "FieldCA", null, "Case 6.");
                 });
-            });
+            }));
 
             var typeRecord = new TypeRecord()
             {
@@ -165,14 +166,14 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 TypeRecordName = "TestType"
             };
 
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     storage.Handle(batch => batch.Add(typeRecord)).ThrowIfFailed("Can't add TestTypeRecord");
                 });
-            });
+            }));
 
             var childRecord = new ChildRecord()
             {
@@ -182,16 +183,16 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 XmlField2 = "notxml"
             };
 
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ChildRecord>();
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     storage.Handle(batch => batch.Add(childRecord)).ThrowIfFailed("Can't add TestChildRecord");
                 });
-            });
+            }));
 
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -204,10 +205,10 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t0));
                     storageError.Assert(1, nameof(TypeRecord.TestTypeRecordId), null, "Case 7");
                 });
-            });
+            }));
 
             // string that exceed its length limit
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -220,10 +221,10 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t0));
                     storageError.Assert(1, "", null, "Case 8");
                 });
-            });
+            }));
 
             // check constraint on INSERT
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -236,10 +237,10 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Add(t0));
                     storageError.Assert(1, nameof(TypeRecord.TypeRecordName), null, "Case 9");
                 });
-            });
+            }));
 
             // check constraint on UPDATE
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -249,10 +250,10 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Modify(t1));
                     storageError.Assert(1, nameof(TypeRecord.TypeRecordName), null, "Case 10");
                 });
-            });
+            }));
 
             // check NULL on UPDATE
-            routine.StorageRoutineHandler.HandleOrmFactory( ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 repositoryHandler.Handle((repository, storage) =>
@@ -262,7 +263,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var storageError = storage.Handle(batch => batch.Modify(t1));
                     storageError.Assert(1, nameof(TypeRecord.TypeRecordName), null, "Case 11");
                 });
-            });
+            }));
         }
     }
 }

@@ -18,20 +18,18 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         {
             TestManager.Reset(Guid.NewGuid().ToString());
 
-            var userContext = new UserContext("UnitTest");
-
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(this), userContext,
+                new MemberTag(this), "UnitTest",
                 new { input = "Input text" });
             void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.StorageRoutineHandler.HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(
@@ -63,7 +61,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         }
                     }
                );
-            });
+            }));
         }
 
         [TestMethod]
@@ -74,16 +72,15 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
 
             TestManager.Reset(Guid.NewGuid().ToString());
 
-            var userContext = new UserContext("UnitTest");
-            var routine = new AdminkaRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
-                new MemberTag(this), userContext,
+                new MemberTag(this), "UnitTest",
                 new { input = "Input text" });
             void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.StorageRoutineHandler.HandleOrmFactory(ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(
@@ -115,7 +112,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         }
                     }
                );
-            });
+            }));
         }
     }
 }

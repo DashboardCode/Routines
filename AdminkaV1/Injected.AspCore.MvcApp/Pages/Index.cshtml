@@ -1,0 +1,20 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "_Layout.cshtml";
+
+    var urlDetailsAction = @Url.Action("Details", "Users", new { id = 7 });
+}
+
+<div class="d-flex flex-row my-2">
+    <div>
+        <button type="button" class="btn btn-secondary btn-lg" onclick="location.href='@urlDetailsAction'"><span class="material-icons">shop</span></button>
+        <div>Load log</div>
+    </div>
+
+    <div class="mx-5">
+        <button type="button" class="btn btn-secondary btn-lg" onclick="location.href='@urlDetailsAction'"><span class="material-icons">view_list</span></button>
+        <div>View log</div>
+    </div>
+</div>

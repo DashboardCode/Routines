@@ -33,5 +33,5 @@ $(document).ready(function () {
     });
 });
 
-window.EDeliveryApp = new Application(window);
-window.EDeliveryApp.Es8TranspilerTest();
+window.AdminkaApp = new Application(window);
+window.AdminkaApp.Es8TranspilerTest();
