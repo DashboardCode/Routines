@@ -25,6 +25,9 @@ namespace DashboardCode.AdminkaV1.Injected
         public IConfigurationContainerFactory ConfigurationContainerFactory { get; private set; }
         public readonly IUnhandledExceptionLogging UnhandledExceptionLogger;
         public readonly bool UseAdAuthorization;
+        public readonly bool UseStandardDeveloperErrorPage;
+        public readonly bool ForceDetailsOnCustomErrorPage;
+        public readonly string InternalUsersDomain;
         //public readonly ActiveDirectoryService ActiveDirectoryService;
 
         public ApplicationSettings(
@@ -37,6 +40,9 @@ namespace DashboardCode.AdminkaV1.Injected
         {
             UnhandledExceptionLogger = unhandledExceptionLogger;
             UseAdAuthorization = bool.Parse(appSettings.GetValue("UseAdAuthorization") ?? "false");
+            UseStandardDeveloperErrorPage = bool.Parse(appSettings.GetValue("UseStandardDeveloperErrorPage") ?? "false");
+            ForceDetailsOnCustomErrorPage = bool.Parse(appSettings.GetValue("ForceDetailsOnCustomErrorPage") ?? "false");
+            InternalUsersDomain = appSettings.GetValue("InternalUsersDomain");
             //ActiveDirectoryService = new ActiveDirectoryService(appSettings.GetValue("InternalUsersAdGroup"));
             var connectionString = connectionStringMap.GetConnectionString("AdminkaConnectionString");
             AdminkaStorageConfiguration = adminkaStorageConfiguration ?? new AdminkaStorageConfiguration(connectionString, null, StorageType.SQLSERVER, null);

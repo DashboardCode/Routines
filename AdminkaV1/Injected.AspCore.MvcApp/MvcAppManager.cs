@@ -11,11 +11,37 @@ using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
+using Newtonsoft.Json;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     public static class MvcAppManager
     {
+
+        public static IActionResult GetErrorActionResult(Exception ex, string aspRequestId, bool forceDetailsOnCustomErrorPage, User internalUser)
+        {
+            var json = GetErrorActionJson(ex, aspRequestId, forceDetailsOnCustomErrorPage || (internalUser != null && internalUser.HasPrivilege(Privilege.VerboseLogging)));
+            return new ContentResult { Content = json, StatusCode = 500, ContentType = "application/json" };
+        }
+
+        public static string GetErrorActionJson(Exception ex, string aspRequestId, bool isAdminPrivilege)
+        {
+            var content = default(string);
+            if (isAdminPrivilege)
+            {
+                var markdownMessage = InjectedManager.Markdown(ex);
+                var htmlMessage = InjectedManager.ToHtmlException(markdownMessage);
+                var source = new { isAdminPrivilege = true, aspRequestId, htmlMessage };
+                content = JsonConvert.SerializeObject(source);
+            }
+            else
+            {
+                var source = new { isAdminPrivilege = false, message = "There was been a problem with the website. We are working on resolving it." };
+                content = JsonConvert.SerializeObject(source);
+            }
+            return content;
+        }
+
         public static ComplexRoutineHandler<PerCallContainer<TUserContext>, TUserContext> GetContainerHandler<TUserContext>(
                     ContainerFactory containerFactory,
                     MemberTag memberTag,

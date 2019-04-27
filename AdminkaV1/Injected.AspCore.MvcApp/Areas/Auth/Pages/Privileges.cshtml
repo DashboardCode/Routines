@@ -54,19 +54,19 @@
             <td>
                 @foreach (var r in item.GetRoles())
                     {
-                <a class="badge" asp-area="Auth" asp-page="Role"  asp-route-id="@r.RoleId">@r.RoleName</a>
+                        <a class="badge @(!r.Item2?"scratched":"")" asp-area="Auth" asp-page="Role"  asp-route-id="@r.Item1.RoleId">@r.Item1.RoleName</a>
                     }
             </td>
             <td>
                 @foreach (var u in item.GetUsers())
                     {
-                <a class="badge" asp-area="Auth" asp-page="User"  asp-route-id="@u.UserId">@u.LoginName</a>
+                <a class="badge @(!u.Item2?"scratched":"")" asp-area="Auth" asp-page="User"  asp-route-id="@u.Item1.UserId">@u.Item1.LoginName</a>
                     }
             </td>
             <td>
                 @foreach (var g in item.GetGroups())
                     {
-                <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.GroupId">@g.GroupName</a>
+                <a class="badge @(!g.Item2?"scratched":"")" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId">@g.Item1.GroupName</a>
                     }
             </td>
         </tr>

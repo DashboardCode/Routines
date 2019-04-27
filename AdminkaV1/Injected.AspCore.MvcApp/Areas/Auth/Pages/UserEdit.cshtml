@@ -12,84 +12,85 @@
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.Entity.UserId)
-    @Html.HiddenFor(model => model.Entity.RowVersion)
+    <input asp-for="@Model.Entity.UserId" hidden type="search" />
+    <input asp-for="@Model.Entity.RowVersion" hidden type="search" />
+    <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
 
-<div>
-    <hr />
-    @section Messages{
-        @if (!Model.ModelState.IsValid)
-        {
-            <div asp-validation-summary="All" class="container alert alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+    <div>
+        <hr />
+        @section Messages{
+            @if (!Model.ModelState.IsValid)
+            {
+                <div asp-validation-summary="All" class="container alert alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            }
         }
-    }
 
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-user-login-id">Login</label>
-        <div class="col-sm-10">
-            @Html.EditorFor(model => model.Entity.LoginName, new { htmlAttributes = new { @id = "edit-user-login-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
-            @Html.ValidationMessageFor(model => model.Entity.LoginName, "", new { @class = "text-danger" })
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-user-login-id">Login</label>
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Entity.LoginName, new { htmlAttributes = new { @id = "edit-user-login-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Entity.LoginName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-user-first-name-id">First Name</label>
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Entity.FirstName, new { htmlAttributes = new { @id = "edit-user-first-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Entity.FirstName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-user-second-name-id">Second Name</label>
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Entity.SecondName, new { htmlAttributes = new { @id = "edit-user-second-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Entity.SecondName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-user-privileges-allowed-id">Privileges Allowed</label>
+            <div class="col-sm-10">
+                @Html.ListBox("PrivilegesAllowed", ViewBag.PrivilegesAllowedMultiSelectList as MultiSelectList, new { @id = "edit-user-privileges-allowed-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("PrivilegesAllowed", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row  adminka-form-group-bsmultiselect-scratched">
+            <label class="col-form-label col-sm-2" for="edit-user-privileges-denied-id">Privileges Denied</label>
+            <div class="col-sm-10">
+                @Html.ListBox("PrivilegesDenied", ViewBag.PrivilegesDeniedMultiSelectList as MultiSelectList, new { @id = "edit-user-privileges-denied-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("PrivilegesDenied", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="control-label col-sm-2" for="edit-user-roles-id">Roles</label>
+            <div class="col-sm-10">
+                @Html.ListBox("Roles", ViewBag.RolesMultiSelectList as MultiSelectList, new { @id = "edit-user-roles-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("Roles", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="control-label col-sm-2" for="edit-user-groups-id">Groups</label>
+            <div class="col-sm-10">
+                @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "edit-user-groups-id", @class = "form-control d-none bootstrap-multiselect", @readonly = "readonly", @disabled = "disabled" })
+                @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <h4>Are you sure you want to save changes?</h4>
+        <div class="form-group">
+            <div class="d-flex flex-row align-self">
+                <input type="submit" value="Save" class="btn adminka-btn-ok" />
+                <a class="adminka-btn adminka-navigation-back mx-3" href="@Model.BackwardUrl">Go Back</a>
+            </div>
         </div>
     </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-user-first-name-id">First Name</label>
-        <div class="col-sm-10">
-            @Html.EditorFor(model => model.Entity.FirstName, new { htmlAttributes = new { @id = "edit-user-first-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
-            @Html.ValidationMessageFor(model => model.Entity.FirstName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-user-second-name-id">Second Name</label>
-        <div class="col-sm-10">
-            @Html.EditorFor(model => model.Entity.SecondName, new { htmlAttributes = new { @id = "edit-user-second-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
-            @Html.ValidationMessageFor(model => model.Entity.SecondName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-user-privileges-allowed-id">Privileges Allowed</label>
-        <div class="col-sm-10">
-            @Html.ListBox("PrivilegesAllowed", ViewBag.PrivilegesAllowedMultiSelectList as MultiSelectList, new { @id = "edit-user-privileges-allowed-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("PrivilegesAllowed", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row  adminka-form-group-bsmultiselect-scratched">
-        <label class="col-form-label col-sm-2" for="edit-user-privileges-denied-id">Privileges Denied</label>
-        <div class="col-sm-10">
-            @Html.ListBox("PrivilegesDenied", ViewBag.PrivilegesDeniedMultiSelectList as MultiSelectList, new { @id = "edit-user-privileges-denied-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("PrivilegesDenied", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="control-label col-sm-2" for="edit-user-roles-id">Roles</label>
-        <div class="col-sm-10">
-            @Html.ListBox("Roles", ViewBag.RolesMultiSelectList as MultiSelectList, new { @id = "edit-user-roles-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("Roles", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="control-label col-sm-2" for="edit-user-groups-id">Groups</label>
-        <div class="col-sm-10">
-            @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "edit-user-groups-id", @class = "form-control d-none bootstrap-multiselect", @readonly = "readonly", @disabled = "disabled" })
-            @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <h4>Are you sure you want to save changes?</h4>
-    <div class="form-group">
-        <div class="d-flex flex-row align-self">
-            <input type="submit" value="Save" class="btn adminka-btn-ok" />
-            <a class="adminka-btn adminka-navigation-list mx-3" href="@Model.BackwardUrl">Back to List</a>
-        </div>
-    </div>
-</div>
 }
 @section scripts {
     <script type="text/javascript">

@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Diagnostics;
-
-using DashboardCode.Routines.AspNetCore;
-using DashboardCode.Routines.Configuration.Standard;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
+
+using DashboardCode.Routines.Configuration.Standard;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -48,7 +45,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
             // for section real time update
             serviceCollection.Configure<List<RoutineResolvable>>(Configuration.GetSection("Routines"));
-            // todo test alternative: 
+            // todo: configuration container should be builded from "snapshot" that is acessed by 
             //serviceCollection.AddScoped(sp => sp.GetService<Microsoft.Extensions.Options.IOptionsSnapshot<List<RoutineResolvable>>>().Value);
 
             serviceCollection.AddMemoryCache(); // AddDistributedMemoryCache();
@@ -63,12 +60,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 app.UseBrowserLink();
             }
 
-
-            if (false /*env.IsDevelopment()*/)
+            if (applicationSettings.UseStandardDeveloperErrorPage)
             {
-
                 app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
+                // FYI: DatabaseErrorPageExtensions from Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore assembly
+                //DatabaseErrorPageExtensions.UseDatabaseErrorPage(app);
             }
             else
             {
@@ -76,27 +72,26 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
                 app.UseExceptionHandler(errorPath);
 
-                // 
                 //app.UseStatusCodePages((statusCodeContext)=> {
                 //    statusCodeContext.HttpContext
                 //    return Task.CompletedTask;
                 //});
+                //app.UseStatusCodePagesWithReExecute("/Error");
 
-                app.UseStatusCodePagesWithReExecute("/Error");
                 app.Use(async (context, next) =>
                 {
                     if (context.Request.Path == errorPath)
                     {
-                        //var ex = context.Features.Get<IExceptionHandlerFeature>().Error;
-                        //var originalFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                        var ex = context.Features.Get<IExceptionHandlerFeature>().Error;
+                        var originalFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-                        //if (originalFeature != null && originalFeature.Path != null && originalFeature.Path.Contains("Api/")) // TODO: regex
-                        //{
-                        //    context.Response.ContentType = "application/json";
-                        //    var aspRequestId = System.Diagnostics.Activity.Current?.Id ?? context.TraceIdentifier;
-                        //    await context.Response.WriteAsync(AspCoreManager.GetErrorActionJson(ex, aspRequestId, applicationSettings.ForceDetailsOnCustomErrorPage));
-                        //    return;
-                        //}
+                        if (originalFeature != null && originalFeature.Path != null && originalFeature.Path.Contains("Api/")) // TODO: regex
+                        {
+                            context.Response.ContentType = "application/json";
+                            var aspRequestId = System.Diagnostics.Activity.Current?.Id ?? context.TraceIdentifier;
+                            await context.Response.WriteAsync(MvcAppManager.GetErrorActionJson(ex, aspRequestId, applicationSettings.ForceDetailsOnCustomErrorPage));
+                            return;
+                        }
                     }
 
                     // Request.Path is not for /Error *or* this isn't an API call.

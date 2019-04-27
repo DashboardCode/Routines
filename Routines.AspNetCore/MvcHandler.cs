@@ -49,7 +49,6 @@ namespace DashboardCode.Routines.AspNetCore
                 > action
             ) where TEntity : class
         {
-            //throw new ApplicationException("AAAAAAAAAAA");
             Func<
                 Func<bool>,
                 Func<HttpRequest, IComplexBinderResult<TEntity>>,
@@ -73,9 +72,10 @@ namespace DashboardCode.Routines.AspNetCore
                     
                     if (getEntityResult.IsOk() && getRelatedResult.IsOk())
                     {
-                        void publishException(Exception ex) { addViewData("Exception", ex); }
-                        try
-                        {
+                        // TODO: open hidden layout Error dialog
+                        //void publishException(Exception ex) { addViewData("Exception", ex); }
+                        //try
+                        //{
                             var storageResult = storage.Handle(
                                 batch =>
                                 {
@@ -84,13 +84,13 @@ namespace DashboardCode.Routines.AspNetCore
                                 });
                             if (storageResult.IsOk())
                                 return successView();
-                            publishException(storageResult.Exception);
+                            //publishException(storageResult.Exception);
                             PublishResult(storageResult.Message, publishStorageError);
-                        }
-                        catch (Exception ex)
-                        {
-                            publishException(ex);
-                        }
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    publishException(ex);
+                        //}
                     }
                     prepareViewData.Invoke();
                     return view(entity);
@@ -139,21 +139,22 @@ namespace DashboardCode.Routines.AspNetCore
                         return badRequestView("Empty request");
                     if (getEntityResult.IsOk())
                     {
-                        Action<Exception> publishException = (ex) => addViewData("Exception", ex);
-                        try
-                        {
+                        // TODO: open hidden layout Error dialog
+                        //Action<Exception> publishException = (ex) => addViewData("Exception", ex);
+                        //try
+                        //{
                             var storageResult = storage.Handle(
                                 batch => save(entity, batch)
                             );
                             if (storageResult.IsOk())
                                 return successView();
-                            publishException(storageResult.Exception);
+                            //publishException(storageResult.Exception);
                             PublishResult(storageResult.Message, publishStorageError);
-                        }
-                        catch (Exception ex)
-                        {
-                            publishException(ex);
-                        }
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    publishException(ex);
+                        //}
                     }
                     return view(entity);
                 };
@@ -163,6 +164,7 @@ namespace DashboardCode.Routines.AspNetCore
         public static IActionResult MakeActionResultOnRequest<TKey, TEntity>(
           IRepository<TEntity> repository,
           Action<string, object> addViewData,
+          Func<IActionResult> unauthorized,
           HttpRequest request,
           Func<TEntity, IActionResult> view,
           Func<string, IActionResult> badRequestView,
@@ -171,6 +173,7 @@ namespace DashboardCode.Routines.AspNetCore
               IRepository<TEntity>,
               Func<
                   Func<
+                      Func<bool>,
                       Func<string, ValuableResult<TKey>>, 
                       Func<TKey, TEntity>,
                       Action<TEntity, Action<string, object>>,
@@ -180,8 +183,10 @@ namespace DashboardCode.Routines.AspNetCore
           ) where TEntity: class
         {
             return action(repository)(
-                (keyConverter, getEntity, publishViewData) =>
+                (authorize, keyConverter, getEntity, publishViewData) =>
                 {
+                    if (!authorize())
+                        return unauthorized();
                     var valuableResult = MvcHandler.BindId(request, keyConverter);
                     if (!valuableResult.IsOk())
                         return badRequestView("Incorrect ID");
@@ -197,6 +202,7 @@ namespace DashboardCode.Routines.AspNetCore
 
         public static IActionResult MakeActionResultOnRequest<TKey, TEntity>(
           IRepository<TEntity> repository,
+          Func<IActionResult> unauthorized,
           HttpRequest request,
           Func<TEntity, IActionResult> view,
           Func<string, IActionResult> badRequestView,
@@ -205,6 +211,7 @@ namespace DashboardCode.Routines.AspNetCore
               IRepository<TEntity>,
               Func<
                   Func<
+                      Func<bool>,
                       Func<string, ValuableResult<TKey>>,
                       Func<TKey, TEntity>,
                       IActionResult>,
@@ -213,8 +220,10 @@ namespace DashboardCode.Routines.AspNetCore
           ) where TEntity : class
         {
             return action(repository)(
-                (keyConverter, getEntity) =>
+                (authorize, keyConverter, getEntity) =>
                 {
+                    if (!authorize())
+                        return unauthorized();
                     var valuableResult = MvcHandler.BindId(request, keyConverter);
                     if (!valuableResult.IsOk())
                         return badRequestView("Incorrect ID");
@@ -230,12 +239,14 @@ namespace DashboardCode.Routines.AspNetCore
         public static IActionResult MakeActionResultOnCreate<TEntity>(
             IRepository<TEntity> repository,
             Action<string, object> addViewData,
+            Func<IActionResult> unauthorized,
             HttpRequest request,
             Func<TEntity, IActionResult> view,
             Func<
                 IRepository<TEntity>,
                 Func<
                     Func<
+                        Func<bool>,
                         Func<TEntity>,
                         Action<TEntity, Action<string, object>>,
                         IActionResult>,
@@ -244,8 +255,10 @@ namespace DashboardCode.Routines.AspNetCore
         ) where TEntity : class
         {
             return action(repository)(
-                (getEntity, publishViewData) =>
+                (authorize, getEntity, publishViewData) =>
                 {
+                    if (!authorize())
+                        return unauthorized();
                     var entity = getEntity();
                     publishViewData.Invoke(entity, addViewData);
                     return view(entity);
@@ -255,12 +268,14 @@ namespace DashboardCode.Routines.AspNetCore
 
         public static IActionResult MakeActionResultOnCreate<TEntity>(
             IRepository<TEntity> repository,
+            Func<IActionResult> unauthorized,
             HttpRequest request,
             Func<TEntity, IActionResult> view,
             Func<
                 IRepository<TEntity>,
                 Func<
                     Func<
+                        Func<bool>,
                         Func<TEntity>,
                         IActionResult>,
                     IActionResult>
@@ -268,8 +283,10 @@ namespace DashboardCode.Routines.AspNetCore
         ) where TEntity : class
         {
             return action(repository)(
-                (getEntity) =>
+                (authorize, getEntity) =>
                 {
+                    if (!authorize())
+                        return unauthorized();
                     var entity = getEntity();
                     return view(entity);
                 }
@@ -278,15 +295,27 @@ namespace DashboardCode.Routines.AspNetCore
 
         public static ValuableResult<T> BindId<T>(this HttpRequest request, Func<string, ValuableResult<T>> converter) //  Func<string, ValuableResult<TKey> >
         {
-            bool value = false;
-            PathString pathString = request.Path;
-            if (pathString.HasValue)
+
+            // TODO: route to url like /User/5/
+            if (request.Query.TryGetValue("id", out var stringValues))
             {
-                var path = pathString.Value;
-                var idText = path.Substring(path.LastIndexOf("/") + 1);
-                if (value = !string.IsNullOrEmpty(idText))
-                    return converter(idText);
+                if (stringValues.Count > 0)
+                {
+                    var idText = stringValues.ToString();
+                    if (!string.IsNullOrEmpty(idText))
+                           return converter(idText);
+                }
             }
+
+            //bool value = false;
+            //PathString pathString = request.Path;
+            //if (pathString.HasValue)
+            //{
+            //    var path = pathString.Value;
+            //    var idText = path.Substring(path.LastIndexOf("/") + 1);
+            //    if (value = !string.IsNullOrEmpty(idText))
+            //        return converter(idText);
+            //}
             return new ValuableResult<T>(default,false);
         }
 

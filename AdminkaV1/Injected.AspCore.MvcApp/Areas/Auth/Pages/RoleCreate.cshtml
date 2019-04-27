@@ -10,6 +10,7 @@
 
 @using (Html.BeginForm())
 {
+    <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
     @Html.AntiForgeryToken()
     <div>
         <hr />
@@ -51,7 +52,7 @@
         <div class="form-group">
             <div class="d-flex flex-row align-self">
                 <input type="submit" value="Create" class="btn adminka-btn-ok" />
-                <a class="adminka-btn adminka-navigation-list mx-3" href="@Model.BackwardUrl">Back to List</a>
+                <a class="adminka-btn adminka-navigation-back mx-3" href="@Model.BackwardUrl">Go Back</a>
             </div>
         </div>
     </div>

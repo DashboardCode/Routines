@@ -21,40 +21,90 @@
             @Html.DisplayFor(model => model.Entity.PrivilegeName)
         </dd>
 
+        @{var roles = Model.Entity.GetRoles();}
         <dt class="col-sm-2 mb-sm-4">
-            Roles
+            Roles (Allowed)
         </dt>
-
         <dd class="col-sm-10 mb-sm-4">
-            @foreach (var r in Model.Entity.GetRoles())
+            @foreach (var r in roles)
             {
-            <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId">@r.RoleName</a>
+                if (r.Item2)
+                {
+                    <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId">@r.Item1.RoleName</a>
+                }
             }
         </dd>
 
         <dt class="col-sm-2 mb-sm-4">
-            Users
+            Roles (Denied)
         </dt>
 
         <dd class="col-sm-10 mb-sm-4">
-            @foreach (var u in Model.Entity.GetUsers())
+            @foreach (var r in roles)
             {
-            <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId">@u.LoginName</a>
+                if (!r.Item2)
+                {
+                    <a class="badge scratched" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId">@r.Item1.RoleName</a>
+                }
+            }
+        </dd>
+
+        @{var users = Model.Entity.GetUsers();}
+        <dt class="col-sm-2 mb-sm-4">
+            Users (Allowed)
+        </dt>
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var u in users)
+            {
+                if (u.Item2)
+                {
+                    <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId">@u.Item1.LoginName</a>
+                }
             }
         </dd>
 
         <dt class="col-sm-2 mb-sm-4">
-            Groups
+            Users (Denied)
         </dt>
 
         <dd class="col-sm-10 mb-sm-4">
-            @foreach (var g in Model.Entity.GetGroups())
+            @foreach (var u in users)
             {
-            <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.GroupId">@g.GroupName</a>
+                if (!u.Item2)
+                {
+                    <a class="badge scratched" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId">@u.Item1.LoginName</a>
+                }
+            }
+        </dd>
+        @{var groups = Model.Entity.GetGroups();}
+        <dt class="col-sm-2 mb-sm-4">
+            Groups (Allowed)
+        </dt>
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var g in groups)
+            {
+                if (g.Item2)
+                {
+                    <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId">@g.Item1.GroupName</a>
+                }
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Groups (Denied)
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var g in groups)
+            {
+                if (!g.Item2)
+                {
+                    <a class="badge scratched" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId">@g.Item1.GroupName</a>
+                }
             }
         </dd>
     </dl>
     <div class="d-flex flex-row align-self">
-        <a class="adminka-btn adminka-navigation-list" href="@Model.BackwardUrl">Back to List</a>
+        <a class="adminka-btn adminka-navigation-back" href="@Model.BackwardUrl">Go Back</a>
     </div>
 </div>

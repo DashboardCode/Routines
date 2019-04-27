@@ -38,8 +38,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 )
         {
             // TODO reload configuration on changed
-            var trackedConfigurationSnapshot = (IOptionsSnapshot<List<RoutineResolvable>>)pageModel.HttpContext.RequestServices.GetService(typeof(IOptionsSnapshot<List<RoutineResolvable>>));
-            var trackedConfiguration = trackedConfigurationSnapshot.Value;
+            //var trackedConfigurationSnapshot = (IOptionsSnapshot<List<RoutineResolvable>>)pageModel.HttpContext.RequestServices.GetService(typeof(IOptionsSnapshot<List<RoutineResolvable>>));
+            //var trackedConfiguration = trackedConfigurationSnapshot.Value;
             this.PageModel = pageModel;
         }
 
@@ -48,8 +48,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  Action<TEntity> setPageEntity,
                  Func<
                     IRepository<TEntity>,
+                    RoutineClosure<UserContext>,
                     Func<
                         Func<
+                            Func<bool>,
                             Func<string, ValuableResult<TKey>>,
                             Func<TKey, TEntity>,
                             Action<TEntity, Action<string, object>>,
@@ -62,7 +64,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                        Task.Run(() =>
                            MvcHandler.MakeActionResultOnRequest(
                                    repository,
+
                                    (n, v) => PageModel.ViewData[n] = v,
+                                   () => PageModel.Unauthorized(),
                                    PageModel.HttpContext.Request,
                                    o => {
                                             setPageEntity(o);
@@ -72,7 +76,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                                        return PageModel.BadRequest();
                                    },
                                    PageModel.NotFound,
-                                   action
+                                   (r) => action(r, closure)
                                 )
                            )
                     )
@@ -82,8 +86,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  Action<TEntity> setPageEntity,
                  Func<
                     IRepository<TEntity>,
+                    RoutineClosure<UserContext>,
                     Func<
                         Func<
+                            Func<bool>,
                             Func<string, ValuableResult<TKey>>,
                             Func<TKey, TEntity>,
                             IActionResult>,
@@ -95,6 +101,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                    Task.Run(() =>
                       MvcHandler.MakeActionResultOnRequest(
                                repository,
+                               () => PageModel.Unauthorized(),
                                PageModel.HttpContext.Request,
                                o => {
                                    setPageEntity(o);
@@ -104,7 +111,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                                    return PageModel.BadRequest();
                                },
                                PageModel.NotFound,
-                               action
+                               (r) => action(r, closure)
                             )
                     ))
                 );
@@ -113,8 +120,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  Action<TEntity> setPageEntity,
                  Func<
                     IRepository<TEntity>,
+                    RoutineClosure<UserContext>,
                     Func<
                         Func<
+                            Func<bool>,
                             Func<TEntity>,
                             Action<TEntity, Action<string, object>>,
                             IActionResult>,
@@ -127,12 +136,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                           MvcHandler.MakeActionResultOnCreate(
                                   repository,
                                   (n, v) => PageModel.ViewData[n] = v,
+                                  () => PageModel.Unauthorized(),
                                   PageModel.HttpContext.Request,
                                   o => {
                                       setPageEntity(o);
                                       return PageModel.Page();
                                   },
-                                  action
+                                  (r) => action(r, closure)
                                )
                            ))
                         );
@@ -141,8 +151,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  Action<object> setPageEntity,
                  Func<
                     IRepository<TEntity>,
+                    RoutineClosure<UserContext>,
                     Func<
                         Func<
+                            Func<bool>,
                             Func<TEntity>,
                             //Action<TEntity, Action<string, object>>,
                             IActionResult>,
@@ -154,12 +166,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         Task.Run(
                            () => MvcHandler.MakeActionResultOnCreate(
                                    repository,
+                                   () => PageModel.Unauthorized(),
                                    PageModel.HttpContext.Request,
                                    o => {
                                        setPageEntity(o);
                                        return PageModel.Page();
                                    },
-                                   action
+                                   (r) => action(r, closure)
                                 ))
                             )
                         );
@@ -223,7 +236,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  > action
                 ) where TEntity : class =>
                     HandleAsync(async (container, closure) =>
-                    await container.ResolveAdminkaDbContextHandler().HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                    await container.ResolveAdminkaDbContextHandler()
+                        .HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
                                Task.Run(
                                     () => MvcHandler.MakeActionResultOnSave(
                                     repository,

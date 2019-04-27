@@ -17,38 +17,24 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     class CrudRoutinePageConsumer<TEntity, TKey> where TEntity : class, new()
     {
-        readonly PageModel pageModel;
-        readonly string indexPage;
-        readonly Action<TEntity> setPageEntity;
-        readonly MvcMeta<TEntity, TKey> meta;
-        readonly Func<string, UserContext, bool> authorize;
-        public CrudRoutinePageConsumer(
-            PageModel pageModel,
-            string indexPage,
-            Action<TEntity> setPageEntity,
-            MvcMeta<TEntity, TKey> meta,
-            Func<string, UserContext, bool> authorize
-            )
-        {
-            this.pageModel = pageModel;
-            this.indexPage = indexPage;
-            this.setPageEntity = setPageEntity;
-            this.meta = meta;
-            this.authorize = authorize;
-        }
-
         #region Compose
         public static Func<PageModel, Action<PageRoutineFeature>, string, string,  Task<IActionResult>> Compose(Func<MetaPageRoutineHandler, Task<IActionResult>> func)
             => (p, onPageRoutineFeature, defaultBackwardUrl, member) => func(
                 new MetaPageRoutineHandler(p, onPageRoutineFeature, defaultBackwardUrl, member));
 
-        public static Func<PageModel, Action<PageRoutineFeature>, string, string, Task<IActionResult>> ComposeAsync(Func<IRepository<TEntity>, Task<IActionResult>> func)
+        public static Func<PageModel, Action<PageRoutineFeature>, string, string, Task<IActionResult>> ComposeAsync(Func<IRepository<TEntity>, RoutineClosure<UserContext>, Task<IActionResult>> func)
             => Compose(
                  routineHandler =>
-                     routineHandler.HandleAsync( async (container,b) => await container.ResolveAdminkaDbContextHandler().HandleStorageAsync<IActionResult, TEntity>(
-                        repository => func(repository)
+                     routineHandler.HandleAsync( async (container, closure) => await container.ResolveAdminkaDbContextHandler().HandleStorageAsync<IActionResult, TEntity>(
+                        repository => func(repository, closure)
                     ))
             );
+        public static Func<Func<IEnumerable<TEntity>, IActionResult>, Func<PageModel, Action<PageRoutineFeature>, string, string, Task<IActionResult>>>
+            ComposeAsync(
+            Func<Func<IEnumerable<TEntity>, IActionResult>, Func<IRepository<TEntity>, RoutineClosure<UserContext>, Task<IActionResult>>> func)
+            => view => ComposeAsync(func(view));
+
+        
 
         public static Func<PageModel, Action<PageRoutineFeature>, string, string, Task<IActionResult>> ComposePageSaveAsync(
             Action<TEntity> setPageEntity,
@@ -101,8 +87,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Action<TEntity> setPageEntity,
             Func<
                 IRepository<TEntity>,
+                RoutineClosure<UserContext>,
                 Func<
                 Func<
+                    Func<bool>,
                     Func<string, ValuableResult<TKey>>,
                     Func<TKey, TEntity>,
                     Action<TEntity, Action<string, object>>,
@@ -122,8 +110,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Action<TEntity> setPageEntity,
             Func<
                 IRepository<TEntity>,
+                RoutineClosure<UserContext>,
                 Func<
                 Func<
+                    Func<bool>,
                     Func<string, ValuableResult<TKey>>,
                     Func<TKey, TEntity>,
                     IActionResult>,
@@ -142,8 +132,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  Action<TEntity> setPageEntity,
                  Func<
                     IRepository<TEntity>,
+                    RoutineClosure<UserContext>,
                     Func<
                         Func<
+                            Func<bool>,
                             Func<TEntity>,
                             Action<TEntity, Action<string, object>>,
                             IActionResult>,
@@ -161,8 +153,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  Action<object> setPageEntity,
                  Func<
                     IRepository<TEntity>,
+                    RoutineClosure<UserContext>,
                     Func<
                         Func<
+                            Func<bool>,
                             Func<TEntity>,
                             IActionResult>,
                         IActionResult>
@@ -176,9 +170,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             );
 
 
-        public static Func<Func<IEnumerable<TEntity>, IActionResult>, Func<PageModel, Action<PageRoutineFeature>, string, string, Task<IActionResult>>> ComposeAsync(
-            Func<Func<IEnumerable<TEntity>, IActionResult>, Func<IRepository<TEntity>, Task<IActionResult>>> func)
-            => view => ComposeAsync(func(view));
 
         #endregion
 
@@ -229,13 +220,17 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         #endregion
 
         #region Compose MVC Controlelr methods
+
         public static Func<Task<IActionResult>> ComposeIndex(
-            PageModel pageModel, 
+            PageModel pageModel,
             Action<IEnumerable<TEntity>> setPageEntity,
             Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl, 
+            string defaultBackwardUrl,
+            Func<string, UserContext, bool> authorize,
             Include<TEntity> indexIncludes) =>
-             () => ComposeAsync(view => async repository => {
+             () => ComposeAsync(view => async (repository, state) => {
+                 if (! (authorize?.Invoke("Index", state.UserContext)??true))
+                     return pageModel.Unauthorized();
                  var entities = await repository.ListAsync(indexIncludes);
                  return view(entities);
              })(o => { setPageEntity(o); return pageModel.Page(); })(pageModel, onPageRoutineFeature, defaultBackwardUrl, "Index");
@@ -245,14 +240,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Action<TEntity> setPageEntity,
             Action<PageRoutineFeature> onPageRoutineFeature,
             string defaultBackwardUrl,
+            Func<string, UserContext, bool> authorize,
             Include<TEntity> detailsIncludes,
             Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate
             ) =>
                () => ComposePageRequestAsync(
                     setPageEntity,
-                    repository => steps =>
+                    (repository, state) => steps =>
                         steps(
+                            () => authorize?.Invoke("Details", state.UserContext) ?? true,
                             keyConverter,
                             key => repository.Find(findPredicate(key), detailsIncludes)
                             )
@@ -263,12 +260,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Action<TEntity> setPageEntity,
             Action<PageRoutineFeature> onPageRoutineFeature,
             string defaultBackwardUrl,
+            Func<string, UserContext, bool> authorize,
             Action<Action<string, object>, IRepository<TEntity>> prepareEmptyOptions
             ) =>
                 () => ComposePageCreateAsync(
                     setPageEntity,
-                    repository => steps =>
+                    (repository, state) => steps =>
                         steps(
+                            () => authorize?.Invoke("Create", state.UserContext) ?? true,
                             () => default,
                             (entity, addViewData) => prepareEmptyOptions(addViewData, repository)
                             )
@@ -288,7 +287,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 () => ComposePageSaveAsync(setPageEntity, /* defaultBackwardUrl,*/
                 (repository, state) => steps =>
                     steps(
-                         () => authorize("Create", state.UserContext),
+                         () => authorize?.Invoke("Create", state.UserContext) ?? true,
                          request => MvcHandler.Bind(request, constructor, formFields, hiddenFormFields),
                          (request, entity, addViewData) => parseRelated(addViewData, request, repository, entity),
                          (entity, batch) => batch.Add(entity)
@@ -300,14 +299,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Action<TEntity> setPageEntity,
             Action<PageRoutineFeature> onPageRoutineFeature,
             string defaultBackwardUrl,
+            Func<string, UserContext, bool> authorize,
             Include<TEntity> editIncludes,
             Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate,
             Func<Action<string, object>, IRepository<TEntity>, Action<TEntity>> parseRelated
             ) =>
                 () => ComposePageRequestAsync(setPageEntity,
-                    repository => steps =>
+                    (repository, state) => steps =>
                         steps(
+                            () => authorize?.Invoke("Edit", state.UserContext) ?? true,
                             keyConverter,
                             key => repository.Find(findPredicate(key), editIncludes),
                             (entity, addViewData) => parseRelated(addViewData, repository)(entity)
@@ -329,7 +330,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 () => ComposePageSaveAsync(setPageEntity, /* defaultBackwardUrl,*/
                     (repository, state) => steps =>
                         steps(
-                            () => authorize("Edit", state.UserContext),
+                            () => authorize?.Invoke("Edit", state.UserContext)??true,
                             request => MvcHandler.Bind(request, constructor, formFields, hiddenFormFields),
                             (request, entity, addViewData) => parseRelated(addViewData, request, repository, entity),
                             (entity, batch) => batch.Modify(entity, disabledFormFields)
@@ -341,13 +342,15 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Action<TEntity> setPageEntity,
             Action<PageRoutineFeature> onPageRoutineFeature,
             string defaultBackwardUrl,
+            Func<string, UserContext, bool> authorize,
             Include<TEntity> deleteIncludes,
             Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate
             ) =>
                 () => ComposePageRequestAsync(setPageEntity,
-                    repository => steps =>
+                    (repository, state) => steps =>
                         steps(
+                            () => authorize?.Invoke("Delete", state.UserContext) ?? true,
                             keyConverter,
                             key => repository.Find(findPredicate(key), deleteIncludes)
                         )
@@ -365,7 +368,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 () => ComposePageSaveAsync(setPageEntity,/* defaultBackwardUrl,*/
                     (repository, state) => steps =>
                         steps(
-                            () => authorize("Delete", state.UserContext),
+                            () => authorize?.Invoke("Delete", state.UserContext)??true,
                             request => MvcHandler.Bind(request, constructor, null, hiddenFormFields),
                             (entity, batch) => batch.Remove(entity)
                     )

@@ -160,6 +160,17 @@ a.adminka-navigation-list::before {
   font-feature-settings: "liga" 1;
 }
 
+a.adminka-navigation-back::before {
+  font-family: "Material Icons";
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: "arrow_back";
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga" 1;
+}
+
 a.adminka-navigation-edit::before {
   font-family: "Material Icons";
   font-size: 170%;
@@ -248,7 +259,7 @@ a.badge::before {
   text-decoration: line-through;
 }
 
-.adminka-form-group-bsmultiselect-scratched .badge span {
+.adminka-form-group-bsmultiselect-scratched .badge > span {
   text-decoration: line-through;
 }
 

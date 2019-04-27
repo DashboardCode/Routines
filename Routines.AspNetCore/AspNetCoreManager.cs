@@ -12,6 +12,8 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public static class AspNetCoreManager
     {
+        
+
         public static string GetQueryString(this IQueryCollection queryCollection, string pairName)
         {
             string @value = default;

@@ -11,14 +11,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
         public Group Entity { get; private set; }
         public string BackwardUrl { get; set; }
 
-        readonly Func<string, UserContext, bool> authorize;
-        readonly GroupMeta meta;
-
-        public GroupCreateModel()
-        {
-            authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
-            meta = Meta.GroupMeta;
-        }
+        readonly static GroupMeta meta = Meta.GroupMeta;
 
         public Task<IActionResult> OnGetAsync()
         {
@@ -27,12 +20,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
                 (e) => this.Entity = e,
                 prf => BackwardUrl = prf.BackwardUrl,
                 "Groups",
+                authorize: null,
                 meta.ReferencesCollection.PrepareEmptyOptions);
             return insert();
         }
 
         public Task<IActionResult> OnPostAsync()
         {
+            Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
             var insertConfirmed = CrudRoutinePageConsumer<Group, int>.ComposeCreateConfirmed(
                 this,
                 (e) => this.Entity = e,

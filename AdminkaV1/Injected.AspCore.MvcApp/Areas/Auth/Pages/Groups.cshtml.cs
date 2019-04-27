@@ -12,21 +12,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
         public string BackwardUrl  { get; private set; }
         public IEnumerable<Group> List { get; private set; }
 
-        Func<Task<IActionResult>> index;
-
-        public GroupsModel()
-        {
-            var meta = Meta.GroupMeta;
-            Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
-            index = CrudRoutinePageConsumer<Group, int>.ComposeIndex(this,
-                l => List = l,
-                prf=> BackwardUrl= prf.BackwardUrl,
-                defaultBackwardUrl: null,
-                meta.IndexIncludes);
-        }
+        static readonly GroupMeta meta = Meta.GroupMeta;
 
         public Task<IActionResult> OnGet()
         {
+            var index = CrudRoutinePageConsumer<Group, int>.ComposeIndex(this,
+                l => List = l,
+                prf => BackwardUrl = prf.BackwardUrl,
+                defaultBackwardUrl: null,
+                authorize: null,
+                meta.IndexIncludes);
             return index();
         }
     }

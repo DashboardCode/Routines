@@ -4,6 +4,11 @@ using System;
 
 namespace DashboardCode.AdminkaV1.AuthenticationDom
 {
+    public enum UserPrivilegeOption
+    {
+        ConfigureSystem, VerboseLogging
+    }
+
     public class Privilege : IVersioned
     {
         public const string ConfigureSystem = "CFGS";
@@ -21,31 +26,31 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
         public ICollection<RolePrivilege>  RolePrivilegeMap  { get; set; }
 
         #region Many to Many
-        public IReadOnlyCollection<User> GetUsers()
+        public IReadOnlyCollection<(User, bool)> GetUsers()
         {
-            IReadOnlyCollection<User> @value = null;
+            IReadOnlyCollection<(User, bool)> @value = null;
             if (UserPrivilegeMap != null)
             {
-                @value = UserPrivilegeMap.Select(e => e.User).ToList();
+                @value = UserPrivilegeMap.Select(e => (e.User, e.IsAllowed)).ToList();
             }
             return @value;
         }
-        public IReadOnlyCollection<Role> GetRoles()
+        public IReadOnlyCollection<(Role, bool)> GetRoles()
         {
-            IReadOnlyCollection<Role> @value = null;
+            IReadOnlyCollection<(Role, bool)> @value = null;
             if (RolePrivilegeMap != null)
             {
-                @value = RolePrivilegeMap.Select(e => e.Role).ToList();
+                @value = RolePrivilegeMap.Select(e => (e.Role, e.IsAllowed)).ToList();
             }
             return @value;
         }
 
-        public IReadOnlyCollection<Group> GetGroups()
+        public IReadOnlyCollection<(Group, bool)> GetGroups()
         {
-            IReadOnlyCollection<Group> @value = null;
+            IReadOnlyCollection<(Group, bool)> @value = null;
             if (GroupPrivilegeMap != null)
             {
-                @value = GroupPrivilegeMap.Select(e => e.Group).ToList();
+                @value = GroupPrivilegeMap.Select(e => (e.Group, e.IsAllowed)).ToList();
             }
             return @value;
         }

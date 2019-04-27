@@ -6,8 +6,8 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public class ReferencesCollection<TEntity, TDAL, TDST> where TEntity : class 
     {
-        Dictionary<string, IManyToMany<TEntity, TDAL, TDST>> ManyToManyBinders = new Dictionary<string, IManyToMany<TEntity, TDAL, TDST>>();
-        Dictionary<string, IOneToMany<TEntity, TDAL>> OneToManyBinders = new Dictionary<string, IOneToMany<TEntity, TDAL>>();
+        readonly Dictionary<string, IManyToMany<TEntity, TDAL, TDST>> ManyToManyBinders = new Dictionary<string, IManyToMany<TEntity, TDAL, TDST>>();
+        readonly Dictionary<string, IOneToMany<TEntity, TDAL>> OneToManyBinders = new Dictionary<string, IOneToMany<TEntity, TDAL>>();
         public ReferencesCollection(Dictionary<string, IOneToMany<TEntity, TDAL>> OneToManyBinders, Dictionary<string, IManyToMany<TEntity, TDAL, TDST>> ManyToManyBinders)
         {
             this.OneToManyBinders = OneToManyBinders;

@@ -609,11 +609,11 @@ function () {
   _createClass(ErrorDialog, [{
     key: "Show",
     value: function Show(erorDetails) {
-        this.$errodDialog.find('.adminka-error-title').text(erorDetails.title);
+      this.$errodDialog.find('.adminka-error-title').text(erorDetails.title);
 
       if (erorDetails.correlationToken) {
-          this.$errodDialog.find('.adminka-error-text-field-correlation-token').text(erorDetails.correlationToken);
-          this.$errodDialog.find('.adminka-error-text-field-correlation-token').parent().show();
+        this.$errodDialog.find('.adminka-error-text-field-correlation-token').text(erorDetails.correlationToken);
+        this.$errodDialog.find('.adminka-error-text-field-correlation-token').parent().show();
       } else this.$errodDialog.find('.adminka-error-text-field-correlation-token').parent().hide();
 
       if (erorDetails.showAdvanced) {
@@ -882,7 +882,7 @@ $(document).ready(function () {
   });
 });
 window.AdminkaApp = new _Application__WEBPACK_IMPORTED_MODULE_0__["default"](window);
-        window.AdminkaApp.Es8TranspilerTest();
+window.AdminkaApp.Es8TranspilerTest();
 
 /***/ })
 

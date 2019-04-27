@@ -69,7 +69,7 @@
             {
                 if (!p.Item2)
                 {
-                    <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>
@@ -86,7 +86,7 @@
         </dd>
     </dl>
     <div class="d-flex flex-row align-self">
-        <a class="adminka-btn adminka-navigation-list" href="@Model.BackwardUrl">Back to List</a>
+        <a class="adminka-btn adminka-navigation-back" href="@Model.BackwardUrl">Go back</a>
     </div>
 </div>
 

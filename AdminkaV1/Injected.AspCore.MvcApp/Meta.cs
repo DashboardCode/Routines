@@ -34,37 +34,88 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             hiddenFormFields => hiddenFormFields.Add(e => e.PrivilegeId).Add(e => e.RowVersion),
             null,
             manyToMany => manyToMany
-                .Add("Roles", "RolesMultiSelectList",
-                     repository => repository.Clone<Role>().List(),
-                     e => e.RolePrivilegeMap,
-                     mm => mm.RoleId,
-                     mm => mm.PrivilegeId,
-                     e => e.RoleId,
-                     nameof(Role.RoleId),
-                     nameof(Role.RoleName),
-                     (ep, ef) => new RolePrivilege() { PrivilegeId = ep.PrivilegeId, RoleId = ef.RoleId },
-                     s => int.Parse(s)
-                )
-                .Add("Groups", "GroupsMultiSelectList",
-                     repository => repository.Clone<Group>().List(),
-                     e => e.GroupPrivilegeMap,
-                     mm => mm.GroupId,
-                     mm => mm.PrivilegeId,
-                     e => e.GroupId,
-                     nameof(Group.GroupId),
-                     nameof(Group.GroupName),
-                     (ep, ef) => new GroupPrivilege() { PrivilegeId = ep.PrivilegeId, GroupId = ef.GroupId }
-                )
+                //.Add("Roles", "RolesMultiSelectList",
+                //     repository => repository.Clone<Role>().List(),
+                //     e => e.RolePrivilegeMap,
+                //     mm => mm.RoleId,
+                //     mm => mm.PrivilegeId,
+                //     e => e.RoleId,
+                //     nameof(Role.RoleId),
+                //     nameof(Role.RoleName),
+                //     (ep, ef) => new RolePrivilege() { PrivilegeId = ep.PrivilegeId, RoleId = ef.RoleId },
+                //     s => int.Parse(s)
+                //)
                 .Add(
-                    "Users", "UsersMultiSelectList",
+                    "RolesDenied",
+                    "RolesAllowed",
+                    "RolesDeniedMultiSelectList",
+                    "RolesAllowedMultiSelectList",
+                    repository => repository.Clone<Role>().List(),
+                    e => e.RolePrivilegeMap,
+                    mm => mm.RoleId,
+                    mm => mm.PrivilegeId,
+                    mm => mm.IsAllowed,
+                    e => e.RoleId,
+                    (mm1, mm2) => mm1.IsAllowed == mm2.IsAllowed,
+                    (mm1, mm2) => mm2.IsAllowed = mm1.IsAllowed,
+                    nameof(Role.RoleId),
+                    nameof(Role.RoleName),
+                    (ep, ef, v) => new RolePrivilege() { PrivilegeId = ep.PrivilegeId, RoleId = ef.RoleId, IsAllowed = v }
+                )
+            //.Add("Groups", "GroupsMultiSelectList",
+            //     repository => repository.Clone<Group>().List(),
+            //     e => e.GroupPrivilegeMap,
+            //     mm => mm.GroupId,
+            //     mm => mm.PrivilegeId,
+            //     e => e.GroupId,
+            //     nameof(Group.GroupId),
+            //     nameof(Group.GroupName),
+            //     (ep, ef) => new GroupPrivilege() { PrivilegeId = ep.PrivilegeId, GroupId = ef.GroupId }
+            //)
+            .Add(
+                    "GroupsDenied",
+                    "GroupsAllowed",
+                    "GroupsDeniedMultiSelectList",
+                    "GroupsAllowedMultiSelectList",
+                    repository => repository.Clone<Group>().List(),
+                    e => e.GroupPrivilegeMap,
+                    mm => mm.GroupId,
+                    mm => mm.PrivilegeId,
+                    mm => mm.IsAllowed,
+                    e => e.GroupId,
+                    (mm1, mm2) => mm1.IsAllowed == mm2.IsAllowed,
+                    (mm1, mm2) => mm2.IsAllowed = mm1.IsAllowed,
+                    nameof(Group.GroupId),
+                    nameof(Group.GroupName),
+                    (ep, ef, v) => new GroupPrivilege() { PrivilegeId = ep.PrivilegeId, GroupId = ef.GroupId, IsAllowed = v }
+                )
+            //.Add(
+            //    "Users", "UsersMultiSelectList",
+            //    repository => repository.Clone<User>().List(),
+            //    e => e.UserPrivilegeMap,
+            //    mm => mm.UserId,
+            //    mm => mm.PrivilegeId,
+            //    e => e.UserId,
+            //    nameof(AuthenticationDom.User.UserId),
+            //    nameof(AuthenticationDom.User.LoginName),
+            //    (ep, ef) => new UserPrivilege() { PrivilegeId = ep.PrivilegeId, UserId = ef.UserId }
+            //)
+            .Add(
+                    "UsersDenied",
+                    "UsersAllowed",
+                    "UsersDeniedMultiSelectList",
+                    "UsersAllowedMultiSelectList",
                     repository => repository.Clone<User>().List(),
                     e => e.UserPrivilegeMap,
                     mm => mm.UserId,
                     mm => mm.PrivilegeId,
+                    mm => mm.IsAllowed,
                     e => e.UserId,
-                    nameof(AuthenticationDom.User.UserId),
-                    nameof(AuthenticationDom.User.LoginName),
-                    (ep, ef) => new UserPrivilege() { PrivilegeId = ep.PrivilegeId, UserId = ef.UserId }
+                    (mm1, mm2) => mm1.IsAllowed == mm2.IsAllowed,
+                    (mm1, mm2) => mm2.IsAllowed = mm1.IsAllowed,
+                    nameof(User.UserId),
+                    nameof(User.LoginName),
+                    (ep, ef, v) => new UserPrivilege() { PrivilegeId = ep.PrivilegeId, UserId = ef.UserId, IsAllowed = v }
                 )
             )
         {

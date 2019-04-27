@@ -11,36 +11,30 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
         public string BackwardUrl { get; private set; }
         public Role Entity { get; private set; }
 
-        readonly Func<Task<IActionResult>> delete;
-        readonly Func<Task<IActionResult>> deleteConfirmed;
-
-        public RoleDeleteModel()
-        {
-            Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
-            var meta = Meta.RoleMeta;
-            delete = CrudRoutinePageConsumer<Role, int>.ComposeDelete(
-                this,
-                (e) => this.Entity = e,
-                prf => BackwardUrl = prf.BackwardUrl,
-                "Roles",
-                meta.DeleteIncludes, meta.KeyConverter, 
-                meta.FindPredicate);
-
-            deleteConfirmed = CrudRoutinePageConsumer<Role, int>.ComposeDeleteConfirmed(
-                this,
-                (e) => this.Entity = e,
-                prf => BackwardUrl = prf.BackwardUrl,
-                "Roles",
-                authorize, meta.Constructor,  meta.HiddenFormFields);
-        }
+        readonly static RoleMeta meta = Meta.RoleMeta;
 
         public Task<IActionResult> OnGetAsync()
         {
+            var delete = CrudRoutinePageConsumer<Role, int>.ComposeDelete(
+                this,
+                (e) => this.Entity = e,
+                prf => BackwardUrl = prf.BackwardUrl,
+                "Roles",
+                authorize: null,
+                meta.DeleteIncludes, meta.KeyConverter,
+                meta.FindPredicate);
             return delete();
         }
 
         public Task<IActionResult> OnPostAsync()
         {
+            Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
+            var deleteConfirmed = CrudRoutinePageConsumer<Role, int>.ComposeDeleteConfirmed(
+                this,
+                (e) => this.Entity = e,
+                prf => BackwardUrl = prf.BackwardUrl,
+                "Roles",
+                authorize, meta.Constructor, meta.HiddenFormFields);
             return deleteConfirmed();
         }
     }

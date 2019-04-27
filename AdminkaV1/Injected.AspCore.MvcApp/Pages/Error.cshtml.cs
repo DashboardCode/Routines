@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.Routines.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Pages
@@ -120,7 +119,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Pages
             }
 
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            if (environment == "Development")
+            if (environment == "Development" || applicationSettings.ForceDetailsOnCustomErrorPage)
             {
                 ShowAdvancedInformation = true;
             }

@@ -7239,6 +7239,15 @@ a.adminka-navigation-list::before {
   -webkit-font-feature-settings: 'liga' 1;
   font-feature-settings: 'liga' 1; }
 
+a.adminka-navigation-back::before {
+  font-family: 'Material Icons';
+  font-size: 170%;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: 'arrow_back';
+  -webkit-font-feature-settings: 'liga' 1;
+  font-feature-settings: 'liga' 1; }
+
 a.adminka-navigation-edit::before {
   font-family: 'Material Icons';
   font-size: 170%;
