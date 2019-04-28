@@ -1,46 +1,27 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
-using DashboardCode.Routines.AspNetCore;
-using DashboardCode.Routines.Configuration.Standard;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
+namespace DashboardCode.Routines.AspNetCore
 {
-    public class MetaPageRoutineHandler : PageRoutineHandler
+    public class MetaPageRoutineHandler<TUserContext, TUser> 
     {
+
         // TODO: support SessionState
         // public readonly SessionState SessionState;
-
+        public readonly PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser> PageRoutineHandler;
         public readonly PageModel PageModel;
         public MetaPageRoutineHandler(
-            PageModel pageModel,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            [CallerMemberName] string member = null
-            ) :
-            base(
-                pageModel,
-                onPageRoutineFeature,
-                defaultBackwardUrl,
-                (ApplicationSettings)pageModel.HttpContext.RequestServices.GetService(typeof(ApplicationSettings)),
-                (IMemoryCache)pageModel.HttpContext.RequestServices.GetService(typeof(IMemoryCache)),
-                member
-                )
+            PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser> pageRoutineHandler
+            )
         {
-            // TODO reload configuration on changed
-            //var trackedConfigurationSnapshot = (IOptionsSnapshot<List<RoutineResolvable>>)pageModel.HttpContext.RequestServices.GetService(typeof(IOptionsSnapshot<List<RoutineResolvable>>));
-            //var trackedConfiguration = trackedConfigurationSnapshot.Value;
-            this.PageModel = pageModel;
+            this.PageModel = pageRoutineHandler.PageModel;
+            this.PageRoutineHandler = pageRoutineHandler;
         }
 
         #region MVC
@@ -48,7 +29,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  Action<TEntity> setPageEntity,
                  Func<
                     IRepository<TEntity>,
-                    RoutineClosure<UserContext>,
+                    RoutineClosure<TUserContext>,
                     Func<
                         Func<
                             Func<bool>,
@@ -59,34 +40,35 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                    HandleAsync( async (container, closure) =>
-                    await container.ResolveAdminkaDbContextHandler().HandleStorageAsync<IActionResult, TEntity>(repository =>
-                       Task.Run(() =>
-                           MvcHandler.MakeActionResultOnRequest(
-                                   repository,
 
-                                   (n, v) => PageModel.ViewData[n] = v,
-                                   () => PageModel.Unauthorized(),
-                                   PageModel.HttpContext.Request,
-                                   o => {
-                                            setPageEntity(o);
-                                            return PageModel.Page();
-                                   },
-                                   (m) => {
-                                       return PageModel.BadRequest();
-                                   },
-                                   PageModel.NotFound,
-                                   (r) => action(r, closure)
-                                )
-                           )
-                    )
+                    PageRoutineHandler.HandleAsync(async (container, closure) =>
+                       await container.Handle( s=>s.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                           Task.Run(() =>
+                               MvcHandler.MakeActionResultOnRequest(
+                                  repository,
+
+                                  (n, v) => PageModel.ViewData[n] = v,
+                                  () => PageModel.Unauthorized(),
+                                  PageModel.HttpContext.Request,
+                                  o => {
+                                      setPageEntity(o);
+                                      return PageModel.Page();
+                                  },
+                                  (m) => {
+                                      return PageModel.BadRequest();
+                                  },
+                                  PageModel.NotFound,
+                                  (r) => action(r, closure)
+                               )
+                          ))
+                   )
         );
 
         public Task<IActionResult> HandlePageRequestAsync<TKey, TEntity>(
                  Action<TEntity> setPageEntity,
                  Func<
                     IRepository<TEntity>,
-                    RoutineClosure<UserContext>,
+                    RoutineClosure<TUserContext>,
                     Func<
                         Func<
                             Func<bool>,
@@ -96,10 +78,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                    HandleAsync(async (container, closure) =>
-                   await container.ResolveAdminkaDbContextHandler().HandleStorageAsync<IActionResult, TEntity>(repository =>
-                   Task.Run(() =>
-                      MvcHandler.MakeActionResultOnRequest(
+                   PageRoutineHandler.HandleAsync(async (container, closure) =>
+                        await container.Handle(s => s.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                         Task.Run(() =>
+                           MvcHandler.MakeActionResultOnRequest(
                                repository,
                                () => PageModel.Unauthorized(),
                                PageModel.HttpContext.Request,
@@ -113,14 +95,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                                PageModel.NotFound,
                                (r) => action(r, closure)
                             )
-                    ))
+                    )))
                 );
 
         public Task<IActionResult> HandlePageCreateAsync<TEntity>(
                  Action<TEntity> setPageEntity,
                  Func<
                     IRepository<TEntity>,
-                    RoutineClosure<UserContext>,
+                    RoutineClosure<TUserContext>,
                     Func<
                         Func<
                             Func<bool>,
@@ -130,10 +112,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                    HandleAsync(async (container, closure) =>
-                   await container.ResolveAdminkaDbContextHandler().HandleStorageAsync<IActionResult, TEntity>(repository =>
+                   PageRoutineHandler.HandleAsync(async (container, closure) =>
+                        await container.Handle(s => s.HandleStorageAsync<IActionResult, TEntity>(repository =>
                            Task.Run(() =>
-                          MvcHandler.MakeActionResultOnCreate(
+                                MvcHandler.MakeActionResultOnCreate(
                                   repository,
                                   (n, v) => PageModel.ViewData[n] = v,
                                   () => PageModel.Unauthorized(),
@@ -144,14 +126,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                                   },
                                   (r) => action(r, closure)
                                )
-                           ))
+                           )))
                         );
 
         public Task<IActionResult> HandlePageCreateAsync<TEntity>(
                  Action<object> setPageEntity,
                  Func<
                     IRepository<TEntity>,
-                    RoutineClosure<UserContext>,
+                    RoutineClosure<TUserContext>,
                     Func<
                         Func<
                             Func<bool>,
@@ -161,8 +143,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         IActionResult>
                     > action
                 ) where TEntity : class =>
-                    HandleAsync(async (container, closure) =>
-                   await container.ResolveAdminkaDbContextHandler().HandleStorageAsync<IActionResult, TEntity>(repository =>
+                   PageRoutineHandler.HandleAsync(async (container, closure) =>
+                   await container.Handle(s => s.HandleStorageAsync<IActionResult, TEntity>(repository =>
                         Task.Run(
                            () => MvcHandler.MakeActionResultOnCreate(
                                    repository,
@@ -174,7 +156,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                                    },
                                    (r) => action(r, closure)
                                 ))
-                            )
+                            ))
                         );
 
         public Task<IActionResult> HandlePageSaveAsync<TEntity>(
@@ -182,9 +164,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  //string indexPage,
                  Func<
                     IRepository<TEntity>,
-                    RoutineClosure<UserContext>,
+                    RoutineClosure<TUserContext>,
                     Func<
                        Func<
+                            PageRoutineFeature,
                             Func<bool>,
                             Func<HttpRequest, IComplexBinderResult<TEntity>>,
                             Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
@@ -194,28 +177,28 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     >
                  > action
                 ) where TEntity : class =>
-                    HandleAsync(async (container, closure) =>
-                    await container.ResolveAdminkaDbContextHandler().HandleStorageAsync<IActionResult, TEntity>( (repository,storage,state) =>
-                       Task.Run(
-                            () => MvcHandler.MakeActionResultOnSave(
-                                repository,
-                                storage,
-                                state,
-                                () => PageModel.Unauthorized(),
-                                PageModel.HttpContext.Request,
-                                (n, v) => PageModel.ViewData[n] = v,
-                                (n, v) => PageModel.ModelState.AddModelError(n, v),
-                                () => PageModel.RedirectToPage(this.PageRoutineFeature.BackwardUrl),
-                                (m) => {
-                                    return PageModel.BadRequest();
-                                },
-                                o => {
-                                    setPageEntity(o);
-                                    return PageModel.Page();
-                                },
-                                action
-                            )
-                         ))
+                    PageRoutineHandler.HandleAsync(async (container, closure) =>
+                    await container.Handle(s=>s.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                      Task.Run(
+                           () => MvcHandler.MakeActionResultOnSave(
+                               repository,
+                               storage,
+                               state,
+                               () => PageModel.Unauthorized(),
+                               PageModel.HttpContext.Request,
+                               (n, v) => PageModel.ViewData[n] = v,
+                               (n, v) => PageModel.ModelState.AddModelError(n, v),
+                               (prf) => PageModel.RedirectToPage(prf),
+                               (m) => {
+                                   return PageModel.BadRequest();
+                               },
+                               o => {
+                                   setPageEntity(o);
+                                   return PageModel.Page();
+                               },
+                               action
+                           )
+                        )))
                     );
 
         public Task<IActionResult> HandlePageSaveAsync<TEntity>(
@@ -223,9 +206,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                  //string indexPage,
                  Func<
                     IRepository<TEntity>,
-                    RoutineClosure<UserContext>,
+                    RoutineClosure<TUserContext>,
                     Func<
                        Func<
+                            PageRoutineFeature,
                             Func<bool>,
                             Func<HttpRequest, IComplexBinderResult<TEntity>>,
                             //Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
@@ -235,29 +219,30 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     >
                  > action
                 ) where TEntity : class =>
-                    HandleAsync(async (container, closure) =>
-                    await container.ResolveAdminkaDbContextHandler()
-                        .HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
-                               Task.Run(
+                    PageRoutineHandler.HandleAsync(async (container, closure) =>
+                     await container.Handle(s => s.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                                 Task.Run(
                                     () => MvcHandler.MakeActionResultOnSave(
-                                    repository,
-                                    storage,
-                                    state,
-                                    () => PageModel.Unauthorized(),
-                                    PageModel.HttpContext.Request,
-                                    (n, v) => PageModel.ViewData[n] = v,
-                                    (n, v) => PageModel.ModelState.AddModelError(n, v),
-                                    () => PageModel.RedirectToPage(this.PageRoutineFeature.BackwardUrl),
-                                    (m) => {
-                                        return PageModel.BadRequest();
-                                    },
-                                    o => {
-                                        setPageEntity(o);
-                                        return PageModel.Page();
-                                    },
-                                    action
-                                )
-                           ))
+                                        repository,
+                                        storage,
+                                        state,
+                                        () => PageModel.Unauthorized(),
+                                        PageModel.HttpContext.Request,
+                                        (n, v) => PageModel.ViewData[n] = v,
+                                        (n, v) => PageModel.ModelState.AddModelError(n, v),
+                                        (prf) => PageModel.RedirectToPage(prf),
+                                        (m) => {
+                                            return PageModel.BadRequest();
+                                        },
+                                        o => {
+                                            setPageEntity(o);
+                                            return PageModel.Page();
+                                        },
+                                        action
+                                    )
+                           )
+
+                        ))
                     );
         #endregion
     }

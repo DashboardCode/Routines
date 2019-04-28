@@ -10,7 +10,8 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public class PageRoutineHandler<TServiceContainer, TUserContext, TUser>
     {
-        public PageRoutineFeature PageRoutineFeature { get; private set; }
+        public readonly PageModel PageModel;
+        public readonly PageRoutineFeature PageRoutineFeature;
 
         readonly Func<Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync;
         readonly Func<TUser, ContainerFactory, ComplexRoutineHandler<TServiceContainer, TUserContext>> getContainerHandler;
@@ -23,6 +24,7 @@ namespace DashboardCode.Routines.AspNetCore
             Action<PageRoutineFeature> onPageRoutineFeature
             )
         {
+            PageModel = pageModel;
             var r = AspNetCoreManager.GetAspRoutineFeature(pageModel);
             Func<object> o = () => AspNetCoreManager.GetRequest(pageModel.HttpContext.Request);
             PageRoutineFeature = AspNetCoreManager.GetPageRoutineFeature(pageModel.HttpContext.Request, backward);

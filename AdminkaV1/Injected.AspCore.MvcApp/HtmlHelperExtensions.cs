@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
+    // sample of @Html.InsertIt extenstion
+    // general politics - prefer clean html to razor - if impossible prefer razor TagHelpers over extensions
     public static class HtmlHelperExtensions
     {
         public static HtmlString MarkdownException(this IHtmlHelper helper, Exception exception)

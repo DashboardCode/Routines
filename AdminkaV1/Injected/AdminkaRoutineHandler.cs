@@ -265,7 +265,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     hasVerboseLoggingPrivilege,
                     input)
                 )
-        {
+        { 
         }
 
         // final

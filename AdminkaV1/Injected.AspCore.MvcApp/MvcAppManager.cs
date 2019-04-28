@@ -4,19 +4,75 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Newtonsoft.Json;
 
 using DashboardCode.Routines;
+using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines.Configuration;
+
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
-using Newtonsoft.Json;
+using DashboardCode.AdminkaV1.Injected.Logging;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     public static class MvcAppManager
     {
+        public static PageRoutineHandler<StorageRoutineHandler<UserContext>, UserContext, User> CreateMetaPageRoutineHandler(
+            PageModel pageModel, Action<PageRoutineFeature> onPageRoutineFeature, string defaultBackwardUrl, string member)
+        {
+            var applicationSettings = (ApplicationSettings)pageModel.HttpContext.RequestServices.GetService(typeof(ApplicationSettings));
+            var memoryCache =(IMemoryCache)pageModel.HttpContext.RequestServices.GetService(typeof(IMemoryCache));
+            var memberTag = new MemberTag(pageModel.GetType().Namespace, pageModel.GetType().Name, member);
+            PageRoutineHandler<StorageRoutineHandler<UserContext>, UserContext, User> pageRoutineHandler = new
+                PageRoutineHandler<StorageRoutineHandler<UserContext>, UserContext, User>(
+                    pageModel,
+                    backward: ("BackwardUrl", defaultBackwardUrl, useReferer: true),
+                    getUserAndFailedActionResultInitialisedAsync: (aspRoutineFeature) =>
+                        GetUserAndFailedActionResultInitialisedAsync(
+                            applicationSettings,
+                            memberTag,
+                            pageModel,
+                            aspRoutineFeature,
+                            memoryCache),
+                    getContainerHandler:  GetContainerHandler2,
+                    onPageRoutineFeature: onPageRoutineFeature
+                );
+            return pageRoutineHandler;
+        }
+
+        public static ComplexRoutineHandler<StorageRoutineHandler<UserContext>, TUserContext> GetContainerHandler2<TUserContext>(
+                    ContainerFactory containerFactory,
+                    MemberTag memberTag,
+                    AspRoutineFeature aspRoutineFeature,
+                    Func<object> getInput,
+                    TUserContext userContext,
+                    ApplicationSettings applicationSettings,
+                    Func<TUserContext, string> getConfigurationFor,
+                    Func<TUserContext, string> getAuditStamp
+            )
+        {
+            var routineHandler = new AdminkaRoutineHandlerFactory<TUserContext>(
+                    correlationToken,
+                    InjectedManager.DefaultRoutineTagTransformException,
+                    InjectedManager.ComposeNLogMemberLoggerFactory(traceDocumentBuilder),
+                    applicationSettings.PerformanceCounters)
+                        .CreateLoggingHandler(
+                            memberTag,
+                            InjectedManager.CreateContainerFactory(
+                                applicationSettings.ConfigurationContainerFactory
+                                ).CreateContainer(memberTag, configurationFor),
+                            userContext,
+                            hasVerboseLoggingPrivilege,
+                            getInput());
+                )
+            return new ComplexRoutineHandler<StorageRoutineHandler<UserContext>, TUserContext>/*AdminkaRoutineHandlerBase<TUserContext>*/(
+                    closure => new StorageRoutineHandler<UserContext>(repositoryHandlerGFactory, ormHandlerGFactory, routineHandle),
+                    routineHandler
+                );
+        }
 
         public static IActionResult GetErrorActionResult(Exception ex, string aspRequestId, bool forceDetailsOnCustomErrorPage, User internalUser)
         {
@@ -41,6 +97,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             }
             return content;
         }
+
+        
 
         public static ComplexRoutineHandler<PerCallContainer<TUserContext>, TUserContext> GetContainerHandler<TUserContext>(
                     ContainerFactory containerFactory,
