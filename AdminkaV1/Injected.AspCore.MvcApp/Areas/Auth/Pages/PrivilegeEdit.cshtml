@@ -5,83 +5,84 @@
 }
 <div class="d-flex flex-row justify-content-between align-self">
     <h3>Privilege (@Model.Entity.PrivilegeId)</h3>
-    <a class="adminka-navigation adminka-navigation-clear" asp-area="Auth" asp-page="Privilege"  asp-route-id="@Model.Entity.PrivilegeId"></a>
+    <a class="adminka-navigation adminka-navigation-clear" asp-area="Auth" asp-page="Privilege" asp-route-id="@Model.Entity.PrivilegeId"></a>
 </div>
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
-<div>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.Entity.PrivilegeId)
-    @Html.HiddenFor(model => model.Entity.RowVersion)
-    <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
+    <input hidden asp-for="@Model.Entity.PrivilegeId" name="PrivilegeId" type="hidden" />
+    <input hidden asp-for="@Model.Entity.RowVersion" name="RowVersion" type="hidden" />
+    <input hidden asp-for="@Model.BackwardUrl" type="hidden" />
 
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-privilege-name-id">Name</label>
-        <div class="col-sm-10">
-            @Html.EditorFor(model => model.Entity.PrivilegeName, new { htmlAttributes = new { @id = "edit-privilege-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
-            @Html.ValidationMessageFor(model => model.Entity.PrivilegeName, "", new { @class = "text-danger" })
+    <div>
+        <hr />
+
+        <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-name-id">Name</label>
+            <div class="col-sm-10">
+                @Html.EditorFor(model => model.Entity.PrivilegeName, new { htmlAttributes = new { @id = "edit-privilege-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Entity.PrivilegeName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-allowed-users-id">Users (Allowed)</label>
+            <div class="col-sm-10">
+                @Html.ListBox("UsersAllowed", ViewBag.UsersAllowedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-allowed-users-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("UsersAllowed", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-denied-users-id">Users (Denied)</label>
+            <div class="col-sm-10">
+                @Html.ListBox("UsersDenied", ViewBag.UsersDeniedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-denied-users-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("UsersDenied", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-allowed-roles-id">Roles (Allowed)</label>
+            <div class="col-sm-10">
+                @Html.ListBox("RolesAllowed", ViewBag.RolesAllowedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-allowed-roles-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("RolesAllowed", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-denied-roles-id">Roles (Denied)</label>
+            <div class="col-sm-10">
+                @Html.ListBox("RolesDenied", ViewBag.RolesDeniedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-denied-roles-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("RolesDenied", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-allowed-groups-id">Groups (Allowed)</label>
+            <div class="col-sm-10">
+                @Html.ListBox("GroupsAllowed", ViewBag.GroupsAllowedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-allowed-groups-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("GroupsAllowed", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-denied-groups-id">Groups (Denied)</label>
+            <div class="col-sm-10">
+                @Html.ListBox("GroupsDenied", ViewBag.GroupsDeniedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-denied-groups-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("GroupsDenied", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <h4>Are you sure you want to save changes?</h4>
+        <div class="form-group">
+            <div class="d-flex flex-row align-self">
+                <input type="submit" value="Save" class="btn adminka-btn-ok" />
+                <a class="adminka-btn adminka-navigation-back mx-3" href="@Model.BackwardUrl">Go Back</a>
+            </div>
         </div>
     </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-privilege-allowed-users-id">Users (Allowed)</label>
-        <div class="col-sm-10">
-            @Html.ListBox("UsersAllowed", ViewBag.UsersAllowedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-allowed-users-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("UsersAllowed", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-privilege-denied-users-id">Users (Denied)</label>
-        <div class="col-sm-10">
-            @Html.ListBox("UsersDenied", ViewBag.UsersDeniedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-denied-users-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("UsersDenied", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-privilege-allowed-roles-id">Roles (Allowed)</label>
-        <div class="col-sm-10">
-            @Html.ListBox("RolesAllowed", ViewBag.RolesAllowedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-allowed-roles-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("RolesAllowed", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-privilege-denied-roles-id">Roles (Denied)</label>
-        <div class="col-sm-10">
-            @Html.ListBox("RolesDenied", ViewBag.RolesDeniedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-denied-roles-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("RolesDenied", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-privilege-allowed-groups-id">Groups (Allowed)</label>
-        <div class="col-sm-10">
-            @Html.ListBox("GroupsAllowed", ViewBag.GroupsAllowedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-allowed-groups-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("GroupsAllowed", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-form-label col-sm-2" for="edit-privilege-denied-groups-id">Groups (Denied)</label>
-        <div class="col-sm-10">
-            @Html.ListBox("GroupsDenied", ViewBag.GroupsDeniedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-denied-groups-id", @class = "form-control d-none bootstrap-multiselect" })
-            @Html.ValidationMessage("GroupsDenied", "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <h4>Are you sure you want to save changes?</h4>
-    <div class="form-group">
-        <div class="d-flex flex-row align-self">
-            <input type="submit" value="Save" class="btn adminka-btn-ok" />
-            <a class="adminka-btn adminka-navigation-back mx-3" href="@Model.BackwardUrl">Go Back</a>
-        </div>
-    </div>
-</div>
 }
 @section scripts {
     <script type="text/javascript">

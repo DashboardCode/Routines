@@ -1,71 +1,113 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Caching.Memory;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.AspNetCore;
+using DashboardCode.Routines.Configuration;
+using DashboardCode.Routines.Storage;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
-    public class PageRoutineHandler : PageRoutineHandler<PerCallContainer<UserContext>, UserContext, User>
+    public class PageContainerRoutineHandler : PageContainerRoutineHandler<UserContext, User>
     {
-        // TODO reload configuration on changed
-        // var trackedConfigurationSnapshot = (IOptionsSnapshot<List<RoutineResolvable>>)pageModel.HttpContext.RequestServices.GetService(typeof(IOptionsSnapshot<List<RoutineResolvable>>));
-        // var trackedConfiguration = trackedConfigurationSnapshot.Value;
-
-        // PageRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext, TUser> 
-        public PageRoutineHandler(
+        public PageContainerRoutineHandler(
             PageModel pageModel,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
+            PageRoutineFeature pageRoutineFeature,
             [CallerMemberName] string member = null) : this(
                 pageModel,
-                onPageRoutineFeature,
-                defaultBackwardUrl,
+                pageRoutineFeature,
                 (ApplicationSettings)pageModel.HttpContext.RequestServices.GetService(typeof(ApplicationSettings)),
                 (IMemoryCache)pageModel.HttpContext.RequestServices.GetService(typeof(IMemoryCache)),
-                new MemberTag(pageModel.GetType().Namespace, pageModel.GetType().Name, member)
+                new MemberTag(pageModel.GetType().Namespace, pageModel.GetType().Name, member),
+                u=> new UserContext(u)
                 )
         {
         }
 
-        private PageRoutineHandler(
+        public PageContainerRoutineHandler(
             PageModel pageModel,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
+            PageRoutineFeature pageRoutineFeature,
             ApplicationSettings applicationSettings,
             IMemoryCache memoryCache,
-            MemberTag memberTag) :
-            base(
-                pageModel, 
-                ("BackwardUrl", defaultBackwardUrl, useReferer: true),
-                (aspRoutineFeature) =>
-                    MvcAppManager.GetUserAndFailedActionResultInitialisedAsync(
-                        applicationSettings, 
-                        memberTag, 
-                        pageModel, 
-                        aspRoutineFeature, 
-                        memoryCache),
-                (aspRoutineFeature, getInput, user, containerFactory) =>
-                    {
-                        var userContext = new UserContext(user);
-                        pageModel.ViewData["UserContext"] = userContext;
-                        return MvcAppManager.GetContainerHandler(
-                            containerFactory,
-                            memberTag,
-                            aspRoutineFeature,
-                            getInput,
-                            userContext, 
-                            applicationSettings,
-                            uc => uc.AuditStamp,
-                            uc => uc.AuditStamp
-                        );
-                    },
-                onPageRoutineFeature
+            MemberTag memberTag,
+            Func<User, UserContext> createUserContext
+            ) : base(
+                    pageModel,
+                    pageRoutineFeature,
+                    applicationSettings,
+                    memoryCache,
+                    memberTag,
+                    uc => uc.AuditStamp,
+                    uc => uc.AuditStamp,
+                    (aspRoutineFeature) =>
+                     MvcAppManager.GetUserAndFailedActionResultInitialisedAsync(
+                         applicationSettings,
+                         memberTag,
+                         pageModel,
+                         aspRoutineFeature,
+                         memoryCache,
+                         pageRoutineFeature),
+                    createUserContext
                 )
+        {
+        }
+    }
+
+    public class PageContainerRoutineHandler<TUserContext, TUser> : PageRoutineHandler<PerCallContainer<TUserContext>, TUserContext, TUser>
+    {
+        public PageContainerRoutineHandler(
+            PageModel pageModel,
+            PageRoutineFeature pageRoutineFeature,
+            ApplicationSettings applicationSettings,
+            IMemoryCache memoryCache,
+            MemberTag memberTag,
+            Func<TUserContext, string> getConfigurationFor,
+            Func<TUserContext, string> getAuditStamp,
+            Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
+            Func<TUser, TUserContext> createUnitContext
+            ) : base(
+                pageModel,
+                getUserAndFailedActionResultInitialisedAsync,
+                createUnitContext,
+                (aspRoutineFeature, getInput, userContext, containerFactory) =>
+                {
+                    //var userContext = new UserContext(user);
+                    //pageModel.ViewData["UserContext"] = userContext;
+                    return MvcAppManager.GetContainerHandler(
+                    containerFactory,
+                    memberTag,
+                    aspRoutineFeature,
+                    getInput,
+                    userContext,
+                    applicationSettings,
+                    getConfigurationFor,
+                    getAuditStamp
+                );
+                }
+            )
+        {
+        }
+    }
+
+    public class PageStorageRoutineHandler<TUserContext, TUser> : PageRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext, TUser>
+    {
+        public PageStorageRoutineHandler(
+            PageModel pageModel,
+            Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
+            Func<TUser, TUserContext> createUnitContext,
+            Func<AspRoutineFeature, Func<object>, TUserContext, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler
+            ) : base(
+                pageModel,
+                getUserAndFailedActionResultInitialisedAsync,
+                createUnitContext,
+                getContainerHandler
+            )
         {
         }
     }
@@ -73,16 +115,15 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     public class PageRoutineAnonymousHandler : PageRoutineAnonymousHandler<PerCallContainer<AnonymousUserContext>, AnonymousUserContext>
     {
         public PageRoutineAnonymousHandler(
-            ApplicationSettings applicationSettings, 
             PageModel pageModel,
+            PageRoutineFeature pageRoutineFeature,
             AnonymousUserContext anonymousUserContext,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl = null,
+            ApplicationSettings applicationSettings,
             bool logRequest = false,
             [CallerMemberName] string member = null)
             : base(     
-                      pageModel, 
-                      ("BackwardUrl", defaultBackwardUrl, useReferer: true), 
+                      pageModel,
+                      pageRoutineFeature,
                       (aspRoutineFeature, getInput) => {
                            var input = logRequest ? getInput() : default;
                            return
@@ -96,8 +137,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                                    controllerName: pageModel.GetType().Name,
                                    member: member
                                );
-                      }, 
-                      onPageRoutineFeature
+                      }
                   )
         {
         }

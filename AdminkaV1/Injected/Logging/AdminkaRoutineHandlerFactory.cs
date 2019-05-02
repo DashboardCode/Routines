@@ -7,7 +7,7 @@ using DashboardCode.AdminkaV1.Injected.Telemetry;
 namespace DashboardCode.AdminkaV1.Injected.Logging
 {
     public class AdminkaRoutineHandlerFactory<TUserContext> : RoutineHandlerFactory
-    {
+    { 
         readonly Func<Guid, MemberTag, IMemberLogger> composeLoggers;
         readonly Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException;
         readonly IPerformanceCounters performanceCounters;

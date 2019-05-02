@@ -11,16 +11,16 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public class MetaPageRoutineHandler<TUserContext, TUser> 
     {
-
         // TODO: support SessionState
         // public readonly SessionState SessionState;
-        public readonly PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser> PageRoutineHandler;
         public readonly PageModel PageModel;
+        public readonly PageRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext, TUser> PageRoutineHandler;
         public MetaPageRoutineHandler(
-            PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser> pageRoutineHandler
+            PageModel pageModel,
+            PageRoutineHandler<StorageRoutineHandler<TUserContext>,TUserContext, TUser> pageRoutineHandler
             )
         {
-            this.PageModel = pageRoutineHandler.PageModel;
+            this.PageModel = pageModel;
             this.PageRoutineHandler = pageRoutineHandler;
         }
 
@@ -42,7 +42,7 @@ namespace DashboardCode.Routines.AspNetCore
                 ) where TEntity : class =>
 
                     PageRoutineHandler.HandleAsync(async (container, closure) =>
-                       await container.Handle( s=>s.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                       await container.HandleStorageAsync<IActionResult, TEntity>(repository =>
                            Task.Run(() =>
                                MvcHandler.MakeActionResultOnRequest(
                                   repository,
@@ -60,7 +60,7 @@ namespace DashboardCode.Routines.AspNetCore
                                   PageModel.NotFound,
                                   (r) => action(r, closure)
                                )
-                          ))
+                          )
                    )
         );
 
@@ -79,7 +79,7 @@ namespace DashboardCode.Routines.AspNetCore
                     > action
                 ) where TEntity : class =>
                    PageRoutineHandler.HandleAsync(async (container, closure) =>
-                        await container.Handle(s => s.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                        await container.HandleStorageAsync<IActionResult, TEntity>(repository =>
                          Task.Run(() =>
                            MvcHandler.MakeActionResultOnRequest(
                                repository,
@@ -95,7 +95,7 @@ namespace DashboardCode.Routines.AspNetCore
                                PageModel.NotFound,
                                (r) => action(r, closure)
                             )
-                    )))
+                    ))
                 );
 
         public Task<IActionResult> HandlePageCreateAsync<TEntity>(
@@ -113,7 +113,7 @@ namespace DashboardCode.Routines.AspNetCore
                     > action
                 ) where TEntity : class =>
                    PageRoutineHandler.HandleAsync(async (container, closure) =>
-                        await container.Handle(s => s.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                        await container.HandleStorageAsync<IActionResult, TEntity>(repository =>
                            Task.Run(() =>
                                 MvcHandler.MakeActionResultOnCreate(
                                   repository,
@@ -126,7 +126,7 @@ namespace DashboardCode.Routines.AspNetCore
                                   },
                                   (r) => action(r, closure)
                                )
-                           )))
+                           ))
                         );
 
         public Task<IActionResult> HandlePageCreateAsync<TEntity>(
@@ -144,7 +144,7 @@ namespace DashboardCode.Routines.AspNetCore
                     > action
                 ) where TEntity : class =>
                    PageRoutineHandler.HandleAsync(async (container, closure) =>
-                   await container.Handle(s => s.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                   await container.HandleStorageAsync<IActionResult, TEntity>(repository =>
                         Task.Run(
                            () => MvcHandler.MakeActionResultOnCreate(
                                    repository,
@@ -156,7 +156,7 @@ namespace DashboardCode.Routines.AspNetCore
                                    },
                                    (r) => action(r, closure)
                                 ))
-                            ))
+                            )
                         );
 
         public Task<IActionResult> HandlePageSaveAsync<TEntity>(
@@ -178,7 +178,7 @@ namespace DashboardCode.Routines.AspNetCore
                  > action
                 ) where TEntity : class =>
                     PageRoutineHandler.HandleAsync(async (container, closure) =>
-                    await container.Handle(s=>s.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                    await container.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
                       Task.Run(
                            () => MvcHandler.MakeActionResultOnSave(
                                repository,
@@ -188,7 +188,7 @@ namespace DashboardCode.Routines.AspNetCore
                                PageModel.HttpContext.Request,
                                (n, v) => PageModel.ViewData[n] = v,
                                (n, v) => PageModel.ModelState.AddModelError(n, v),
-                               (prf) => PageModel.RedirectToPage(prf),
+                               (pageRoutineFeature) => PageModel.RedirectToPage(pageRoutineFeature.BackwardUrl),
                                (m) => {
                                    return PageModel.BadRequest();
                                },
@@ -198,7 +198,7 @@ namespace DashboardCode.Routines.AspNetCore
                                },
                                action
                            )
-                        )))
+                        ))
                     );
 
         public Task<IActionResult> HandlePageSaveAsync<TEntity>(
@@ -212,7 +212,6 @@ namespace DashboardCode.Routines.AspNetCore
                             PageRoutineFeature,
                             Func<bool>,
                             Func<HttpRequest, IComplexBinderResult<TEntity>>,
-                            //Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
                             Action<TEntity, IBatch<TEntity>>,
                             IActionResult>,
                        IActionResult
@@ -220,7 +219,7 @@ namespace DashboardCode.Routines.AspNetCore
                  > action
                 ) where TEntity : class =>
                     PageRoutineHandler.HandleAsync(async (container, closure) =>
-                     await container.Handle(s => s.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
+                     await container.HandleStorageAsync<IActionResult, TEntity>((repository, storage, state) =>
                                  Task.Run(
                                     () => MvcHandler.MakeActionResultOnSave(
                                         repository,
@@ -230,7 +229,7 @@ namespace DashboardCode.Routines.AspNetCore
                                         PageModel.HttpContext.Request,
                                         (n, v) => PageModel.ViewData[n] = v,
                                         (n, v) => PageModel.ModelState.AddModelError(n, v),
-                                        (prf) => PageModel.RedirectToPage(prf),
+                                        (pageRoutineFeature) => PageModel.RedirectToPage(pageRoutineFeature.BackwardUrl),
                                         (m) => {
                                             return PageModel.BadRequest();
                                         },
@@ -241,8 +240,7 @@ namespace DashboardCode.Routines.AspNetCore
                                         action
                                     )
                            )
-
-                        ))
+                        )
                     );
         #endregion
     }

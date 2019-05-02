@@ -12,12 +12,12 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public class AdminkaAnonymousRoutineHandler : AdminkaRoutineHandlerBase<AnonymousUserContext>
     {
-        public AdminkaAnonymousRoutineHandler
-            ( ApplicationSettings applicationSettings,
-              Func<Guid, MemberTag, IMemberLogger> loggingTransientsFactory,
-              MemberTag memberTag,
-              string auditStamp,
-              object input ):base(
+        public AdminkaAnonymousRoutineHandler( 
+            ApplicationSettings applicationSettings,
+            Func<Guid, MemberTag, IMemberLogger> loggingTransientsFactory,
+            MemberTag memberTag,
+            string auditStamp,
+            object input ):base(
                   applicationSettings,
                   (u)=> auditStamp,
                   new AdminkaRoutineHandlerFactory<AnonymousUserContext>(
@@ -78,9 +78,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 documentBuilder: documentBuilder,
                 hasVerboseLoggingPrivilege: false,
                 configurationFor: anonymousUserContext.AuditStamp,
-                controllerNamespace: controllerNamespace,
-                controllerName: controllerName,
-                member: member
+                memberTag: new MemberTag(controllerNamespace, controllerName, member)
             )
         {
         }
@@ -112,7 +110,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
     }
 
-    public class AdminkaInternalUserRoutineHandler : AdminkaRoutineHandlerBase<UserContext>
+    public class AdminkaInternalUserRoutineHandler : AdminkaRoutineHandlerBase<UserContext> 
     {
         public AdminkaInternalUserRoutineHandler(
             ApplicationSettings applicationSettings,
@@ -127,14 +125,12 @@ namespace DashboardCode.AdminkaV1.Injected
                 applicationSettings,
                 internalUserContext,
                 u => u.AuditStamp,
-                new { },
+                null,
                 correlationToken: correlationToken,
                 documentBuilder: documentBuilder,
                 hasVerboseLoggingPrivilege: false,
                 configurationFor: internalUserContext.User.LoginName,
-                controllerNamespace: controllerNamespace,
-                controllerName: controllerName,
-                member: member
+                memberTag: new MemberTag(controllerNamespace, controllerName, member)
             )
         {
         }
@@ -152,26 +148,6 @@ namespace DashboardCode.AdminkaV1.Injected
                 ITraceDocumentBuilder documentBuilder,
                 bool hasVerboseLoggingPrivilege,
                 string configurationFor,
-                string controllerNamespace,
-                string controllerName,
-                [CallerMemberName] string member = null
-            ) : this(
-                applicationSettings, userContext, getAuditStamp, input, correlationToken,
-                documentBuilder, hasVerboseLoggingPrivilege, configurationFor,
-                new MemberTag(controllerNamespace, controllerName, member)
-                )
-        {
-        }
-
-        public AdminkaRoutineHandlerBase(
-                ApplicationSettings applicationSettings,
-                TUserContext userContext,
-                Func<TUserContext, string> getAuditStamp,
-                object input,
-                Guid correlationToken,
-                ITraceDocumentBuilder traceDocumentBuilder,
-                bool hasVerboseLoggingPrivilege,
-                string configurationFor,
                 MemberTag memberTag
             ) : this( // to final
                 applicationSettings,
@@ -179,7 +155,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 new AdminkaRoutineHandlerFactory<TUserContext>(
                     correlationToken,
                     InjectedManager.DefaultRoutineTagTransformException,
-                    InjectedManager.ComposeNLogMemberLoggerFactory(traceDocumentBuilder),
+                    InjectedManager.ComposeNLogMemberLoggerFactory(documentBuilder),
                     applicationSettings.PerformanceCounters)
                         .CreateLoggingHandler(
                             memberTag,
@@ -237,7 +213,10 @@ namespace DashboardCode.AdminkaV1.Injected
             object input
         ) : this(
                 applicationSettings,
-                new AdminkaRoutineHandlerFactory<TUserContext>(correaltionToken, routineTransformException, composeLoggers, performanceCounters),
+                new AdminkaRoutineHandlerFactory<TUserContext>(correaltionToken, 
+                    routineTransformException, 
+                    composeLoggers, 
+                    performanceCounters),
                 container,
                 memberTag,
                 userContext,

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http.Extensions;
 using Newtonsoft.Json;
 
 using DashboardCode.Routines;
@@ -15,71 +17,12 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.Injected.Logging;
+using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     public static class MvcAppManager
     {
-        public static PageRoutineHandler<StorageRoutineHandler<UserContext>, UserContext, User> CreateMetaPageRoutineHandler(
-            PageModel pageModel, Action<PageRoutineFeature> onPageRoutineFeature, string defaultBackwardUrl, string member)
-        {
-            var applicationSettings = (ApplicationSettings)pageModel.HttpContext.RequestServices.GetService(typeof(ApplicationSettings));
-            var memoryCache =(IMemoryCache)pageModel.HttpContext.RequestServices.GetService(typeof(IMemoryCache));
-            var memberTag = new MemberTag(pageModel.GetType().Namespace, pageModel.GetType().Name, member);
-            PageRoutineHandler<StorageRoutineHandler<UserContext>, UserContext, User> pageRoutineHandler = new
-                PageRoutineHandler<StorageRoutineHandler<UserContext>, UserContext, User>(
-                    pageModel,
-                    backward: ("BackwardUrl", defaultBackwardUrl, useReferer: true),
-                    getUserAndFailedActionResultInitialisedAsync: (aspRoutineFeature) =>
-                        GetUserAndFailedActionResultInitialisedAsync(
-                            applicationSettings,
-                            memberTag,
-                            pageModel,
-                            aspRoutineFeature,
-                            memoryCache),
-                    getContainerHandler:  GetContainerHandler2,
-                    onPageRoutineFeature: onPageRoutineFeature
-                );
-            return pageRoutineHandler;
-        }
-
-        public static ComplexRoutineHandler<StorageRoutineHandler<UserContext>, TUserContext> GetContainerHandler2<TUserContext>(
-                    ContainerFactory containerFactory,
-                    MemberTag memberTag,
-                    AspRoutineFeature aspRoutineFeature,
-                    Func<object> getInput,
-                    TUserContext userContext,
-                    ApplicationSettings applicationSettings,
-                    Func<TUserContext, string> getConfigurationFor,
-                    Func<TUserContext, string> getAuditStamp
-            )
-        {
-            var routineHandler = new AdminkaRoutineHandlerFactory<TUserContext>(
-                    correlationToken,
-                    InjectedManager.DefaultRoutineTagTransformException,
-                    InjectedManager.ComposeNLogMemberLoggerFactory(traceDocumentBuilder),
-                    applicationSettings.PerformanceCounters)
-                        .CreateLoggingHandler(
-                            memberTag,
-                            InjectedManager.CreateContainerFactory(
-                                applicationSettings.ConfigurationContainerFactory
-                                ).CreateContainer(memberTag, configurationFor),
-                            userContext,
-                            hasVerboseLoggingPrivilege,
-                            getInput());
-                )
-            return new ComplexRoutineHandler<StorageRoutineHandler<UserContext>, TUserContext>/*AdminkaRoutineHandlerBase<TUserContext>*/(
-                    closure => new StorageRoutineHandler<UserContext>(repositoryHandlerGFactory, ormHandlerGFactory, routineHandle),
-                    routineHandler
-                );
-        }
-
-        public static IActionResult GetErrorActionResult(Exception ex, string aspRequestId, bool forceDetailsOnCustomErrorPage, User internalUser)
-        {
-            var json = GetErrorActionJson(ex, aspRequestId, forceDetailsOnCustomErrorPage || (internalUser != null && internalUser.HasPrivilege(Privilege.VerboseLogging)));
-            return new ContentResult { Content = json, StatusCode = 500, ContentType = "application/json" };
-        }
-
         public static string GetErrorActionJson(Exception ex, string aspRequestId, bool isAdminPrivilege)
         {
             var content = default(string);
@@ -98,7 +41,45 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             return content;
         }
 
-        
+        public static ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext> GetContainerStorageHandler<TUserContext>(
+                    ContainerFactory containerFactory,
+                    MemberTag memberTag,
+                    AspRoutineFeature aspRoutineFeature,
+                    Func<object> getInput,
+                    TUserContext userContext,
+                    ApplicationSettings applicationSettings,
+                    Func<TUserContext, string> getConfigurationFor,
+                    Func<TUserContext, string> getAuditStamp
+            )
+        {
+            var adminkaRoutineHandlerFactory = new AdminkaRoutineHandlerFactory<TUserContext>(
+                        correlationToken: Guid.NewGuid(),
+                        InjectedManager.DefaultRoutineTagTransformException,
+                        InjectedManager.ComposeNLogMemberLoggerFactory(null),
+                        applicationSettings.PerformanceCounters);
+  
+            IHandler<RoutineClosure<TUserContext>> loggingHandler = adminkaRoutineHandlerFactory.CreateLoggingHandler(
+                            memberTag,
+                            containerFactory.CreateContainer(memberTag, getAuditStamp(userContext)),
+                            userContext,
+                            hasVerboseLoggingPrivilege: false,
+                            getInput());
+
+            return new ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>/*AdminkaRoutineHandlerBase<TUserContext>*/(
+                    closure => new AdminkaStorageRoutineHandler<TUserContext>(
+                        applicationSettings.AdminkaStorageConfiguration,
+                        userContext,
+                        InjectedManager.EntityMetaServiceContainer,
+                        null,
+                        new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                              () => closure,
+                              closure
+                        ),
+                        getAudit: uc => getAuditStamp(uc)
+                    ),
+                    loggingHandler
+                );
+        }
 
         public static ComplexRoutineHandler<PerCallContainer<TUserContext>, TUserContext> GetContainerHandler<TUserContext>(
                     ContainerFactory containerFactory,
@@ -117,7 +98,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     getAuditStamp: getAuditStamp,
                     input: getInput(),
                     correlationToken: aspRoutineFeature.CorrelationToken,
-                    traceDocumentBuilder: aspRoutineFeature.TraceDocument.Builder,
+                    documentBuilder: aspRoutineFeature.TraceDocument.Builder,
                     hasVerboseLoggingPrivilege: false,
                     configurationFor: getAuditStamp(userContext),
                     memberTag: memberTag
@@ -131,7 +112,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 MemberTag memberTag,
                 PageModel pageModel,
                 AspRoutineFeature aspRoutineFeature,
-                IMemoryCache memoryCache
+                IMemoryCache memoryCache,
+                PageRoutineFeature pageRoutineFeature
             )
         {
             return GetUserAndFailedActionResultInitialisedAsync(applicationSettings, memberTag,
@@ -140,8 +122,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     aspRoutineFeature,
                     memoryCache,
                     getForbiddenActionResult: () => pageModel.RedirectToPage(
-                    "AccessDenied",
-                    new {/* area = null,*/ returnUrl = pageModel.Request.Path + pageModel.Request.QueryString }),
+                        "AccessDenied",
+                        new { pageRoutineFeature.BackwardUrl }),
                     exceptionToActionResult: null
                 );
         }
@@ -261,70 +243,53 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             return (forbiddenAsActionResult, user, containerFactory);
         }
 
-        //public static Guid SetupCorrelationToken(this HttpContext httpContext)
-        //{
-        //    var @value = default(Guid);
-        //    var correlationToken = httpContext.Request.Headers["X-CorrelationToken"].FirstOrDefault();
-        //    if (correlationToken == null)
-        //    {
-        //        @value = Guid.NewGuid();
-        //        httpContext.Request.Headers.Add("X-CorrelationToken", @value.ToString());
-        //    }
-        //    else
-        //    {
-        //        @value = Guid.Parse(correlationToken);
-        //    }
-        //    return @value;
-        //}
+        public static UserContext SetAndGetUserContext(PageModel pageModel, User user)
+        {
+            var userContext = new UserContext(user);
+            pageModel.ViewData["UserContext"] = userContext;
+            return userContext;
+        }
 
-        // TODO: add user context to session,
-        // for this there should be service that tracks user privileges changes 
-        // in db and reset sessions if there are changes
-
-        //public static UserContext GetUserContext(
-        //    HttpContext httpContext,
-        //    MemberTag   memberTag,
-        //    IIdentity   identity,
-        //    CultureInfo cultureInfo,
-        //    string connectionString,
-        //    AdminkaStorageConfiguration adminkaStorageConfiguration,
-        //    AdminkaRoutineLogger routineLogger,
-        //    Func<Guid, MemberTag, (IMemberLogger, IAuthenticationLogging)> loggingTransientsFactory,
-        //    ContainerFactory configurationContainerFactory
-        //    )
-        //{
-        //    // get userContextGuid from session
-        //    // search in cash for userContextGuid
-
-        //    UserContext userContext = null;
-        //    var userJson = httpContext.Session.GetString("User");
-        //    if (userJson != null)
-        //    {
-        //        var user = InjectedManager.DeserializeJson<AuthenticationDom.User>(userJson);
-        //        userContext = new UserContext(user);
-        //    }
-        //    else
-        //    {
-        //        //var authenticationSerivce = new UserContextFactory(
-        //        //    loggingTransientsFactory,
-        //        //    storageRoutineTransitions,
-        //        //    adminkaStorageConfiguration,
-        //        //    configurationContainerFactory);
-        //        //userContext = authenticationSerivce.Create(routineTag, identity, cultureInfo);
-
-        //        userContext = InjectedManager.GetUserContext(
-        //            routineLogger,
-        //            loggingTransientsFactory,
-        //            adminkaStorageConfiguration,
-        //            configurationContainerFactory,
-        //            memberTag, 
-        //            identity, CultureInfo.CurrentCulture
-        //            );
-
-        //        userJson = InjectedManager.SerializeToJson(userContext.User, 1, false);
-        //        httpContext.Session.SetString("User", userJson);
-        //    }
-        //    return userContext;
-        //}
+        public static PageRoutineFeature SetAndGetPageRoutineFeature(PageModel pageModel, string defaultUrl, Action<string> setBackward, bool useReferer, string requestPairName)
+        {
+            var httpRequest = pageModel.HttpContext.Request;
+            var backwardUrl = default(string);
+            if (requestPairName != default)
+            {
+                if (httpRequest.Method == "POST" && httpRequest.HasFormContentType && httpRequest.Form != null && httpRequest.Form.Count() > 0)
+                    backwardUrl = httpRequest.Form[requestPairName];
+                else
+                    backwardUrl = httpRequest.Query?.GetQueryString(requestPairName);
+            }
+            if (backwardUrl == default)
+            {
+                // referer is URI (by HTTP stadadrd URI:= scheme:[//authority]path[?query][#fragment] e.g http://localhost:7894/Path/To/Data?Filter=abc)
+                if (httpRequest.Headers.TryGetValue("Referer", out var nameValuePairs))
+                {
+                    var referer = nameValuePairs.ToString();
+                    if (string.IsNullOrEmpty(referer))
+                    {
+                        backwardUrl = defaultUrl;
+                    }
+                    else if (useReferer)
+                    {
+                        // transform absolute to relaive URL
+                        var currentUrl = httpRequest.GetDisplayUrl();
+                        if (!string.IsNullOrEmpty(currentUrl))
+                        {
+                            var refererUri = new Uri(referer);
+                            var currentUri = new Uri(currentUrl);
+                            backwardUrl = currentUri.MakeRelativeUri(refererUri).ToString();
+                        }
+                    }
+                }
+            }
+            if (string.IsNullOrEmpty(backwardUrl))
+                backwardUrl = "/";
+            var pageRoutineFeature = new PageRoutineFeature() { BackwardUrl = backwardUrl };
+            pageModel.HttpContext.Features.Set(pageRoutineFeature);
+            setBackward(pageRoutineFeature.BackwardUrl);
+            return pageRoutineFeature;
+        }
     }
 }

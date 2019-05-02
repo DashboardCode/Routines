@@ -12,8 +12,6 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public static class AspNetCoreManager
     {
-        
-
         public static string GetQueryString(this IQueryCollection queryCollection, string pairName)
         {
             string @value = default;
@@ -78,42 +76,6 @@ namespace DashboardCode.Routines.AspNetCore
             return traceList;
         }
 
-        public static PageRoutineFeature GetPageRoutineFeature(this HttpRequest httpRequest, (string requestPairName, string defaultUrl, bool useReferer) backward)
-        {
-            var backwardUrl = default(string);
-            if (backward.requestPairName != default)
-            {
-                if (httpRequest.Method == "POST" && httpRequest.HasFormContentType && httpRequest.Form != null && httpRequest.Form.Count() > 0)
-                    backwardUrl = httpRequest.Form[backward.requestPairName];
-                else
-                    backwardUrl = httpRequest.Query?.GetQueryString(backward.requestPairName);
-            }
-            if (backwardUrl == default)
-            {
-                // referer is URI (by HTTP stadadrd URI:= scheme:[//authority]path[?query][#fragment] e.g http://localhost:7894/Path/To/Data?Filter=abc)
-                if (httpRequest.Headers.TryGetValue("Referer", out var nameValuePairs))
-                {
-                    var referer = nameValuePairs.ToString();
-                    if (string.IsNullOrEmpty(referer))
-                    {
-                        backwardUrl = backward.defaultUrl;
-                    }
-                    else if (backward.useReferer)
-                    {
-                        // transform absolute to relaive URL
-                        var currentUrl = httpRequest.GetDisplayUrl();
-                        if (!string.IsNullOrEmpty(currentUrl))
-                        {
-                            var refererUri = new Uri(referer);
-                            var currentUri = new Uri(currentUrl);
-                            backwardUrl = currentUri.MakeRelativeUri(refererUri).ToString();
-                        }
-                    }
-                }
-            }
-            if (string.IsNullOrEmpty(backwardUrl))
-                backwardUrl = "/";
-            return new PageRoutineFeature() { BackwardUrl = backwardUrl };
-        }
+       
     }
 }

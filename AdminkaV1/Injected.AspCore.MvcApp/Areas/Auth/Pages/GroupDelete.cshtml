@@ -81,10 +81,9 @@
     <h4>Are you sure you want to delete this?</h4>
     @using (Html.BeginForm())
     {
-        @Html.AntiForgeryToken()
-        @Html.HiddenFor(model => model.Entity.GroupId)
-        @Html.HiddenFor(model => model.Entity.RowVersion)
-        <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
+        <input hidden asp-for="@Model.Entity.GroupId" name="GroupId" type="hidden" />
+        <input hidden asp-for="@Model.Entity.RowVersion" name="RowVersion" type="hidden" />
+        <input hidden asp-for="@Model.BackwardUrl" type="hidden" />
 
         <div class="form-group">
             <div class="d-flex flex-row align-self">

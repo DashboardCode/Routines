@@ -10,8 +10,8 @@
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
-    <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
+    <input hidden asp-for="@Model.BackwardUrl" type="hidden" />
+
     <div>
         <hr />
         @section Messages{
@@ -86,8 +86,4 @@
             var select = $('.bootstrap-multiselect').bsMultiSelect();
         })();
     </script>
-}
-
-@section scripts {
-    <partial name="_ValidationScriptsPartial" />
 }

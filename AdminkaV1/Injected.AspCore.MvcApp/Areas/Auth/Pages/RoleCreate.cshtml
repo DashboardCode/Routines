@@ -10,8 +10,8 @@
 
 @using (Html.BeginForm())
 {
-    <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
-    @Html.AntiForgeryToken()
+    <input hidden asp-for="@Model.BackwardUrl" type="hidden" />
+
     <div>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })

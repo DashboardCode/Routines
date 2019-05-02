@@ -1,12 +1,11 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using DashboardCode.Routines.AspNetCore;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
+    [ValidateAntiForgeryToken]
     public class GroupDeleteModel : PageModel
     {
         public string BackwardUrl { get; private set; }
@@ -16,29 +15,25 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGetAsync()
         {
-            var delete = CrudRoutinePageConsumer<UserContext, User, Group, int>.ComposeDelete(
-                this,
-                (e) => this.Entity = e,
-                prf => BackwardUrl = prf.BackwardUrl,
-                "Groups",
+            var crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultUrl: "Groups", backwardUrl => BackwardUrl = backwardUrl);
+            return crud.ComposeDelete(
+                e => Entity = e,
                 authorize: null,
-                meta.DeleteIncludes, meta.KeyConverter,
-                meta.FindPredicate,
-                MvcAppManager.CreateMetaPageRoutineHandler);
-            return delete();
+                meta.DeleteIncludes, 
+                meta.KeyConverter,
+                meta.FindPredicate
+            );
         }
 
         public Task<IActionResult> OnPostAsync()
         {
-            Func<string, UserContext, bool> authorize = (action, userContext) => userContext.HasPrivilege(Privilege.ConfigureSystem);
-            var deleteConfirmed = CrudRoutinePageConsumer<UserContext, User, Group, int>.ComposeDeleteConfirmed(
-                this,
-                (e) => this.Entity = e,
-                prf => BackwardUrl = prf.BackwardUrl,
-                "Groups",
-                authorize, meta.Constructor, meta.HiddenFormFields,
-                MvcAppManager.CreateMetaPageRoutineHandler);
-            return deleteConfirmed();
+            var crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultUrl: "Groups", backwardUrl => BackwardUrl = backwardUrl);
+            return crud.ComposeDeleteConfirmed(
+                e => Entity = e,
+                authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem), 
+                meta.Constructor, 
+                meta.HiddenFormFields
+            );
         }
     }
 }

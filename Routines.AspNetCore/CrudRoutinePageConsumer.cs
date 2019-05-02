@@ -14,37 +14,42 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public class CrudRoutinePageConsumer<TUserContext, TUser, TEntity, TKey> where TEntity : class, new()
     {
+        readonly PageModel pageModel;
+        readonly PageRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext, TUser> pageRoutineHandler;
+        readonly PageRoutineFeature pageRoutineFeature;
+        public CrudRoutinePageConsumer(
+            PageModel pageModel,
+            PageRoutineFeature pageRoutineFeature,
+            PageRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext, TUser> pageRoutineHandler
+            )
+        {
+            this.pageModel = pageModel;
+            this.pageRoutineHandler = pageRoutineHandler;
+            this.pageRoutineFeature = pageRoutineFeature;
+        }
+
         #region Compose
-        public static Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> Compose(
+        public Task<IActionResult> Compose(
             Func<MetaPageRoutineHandler<TUserContext, TUser>, Task<IActionResult>> func
         )
         {
-            Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> x = (pageRoutineHandler) =>
-            {
-                return func(
-                  new MetaPageRoutineHandler<TUserContext, TUser>(pageRoutineHandler));
-            };
-            return x;
+            return func(new MetaPageRoutineHandler<TUserContext, TUser>(pageModel, pageRoutineHandler));
         }
 
-        public static Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> ComposeAsync(
-            Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task<IActionResult>> func
+        public Task<IActionResult> ComposeAsync(Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task<IActionResult>> func
         )
         {
-            return Compose(
-                 metaRoutineHandler =>
-                     metaRoutineHandler.PageRoutineHandler.HandleAsync(async (container, closure) => await container.Handle(s=>s.HandleStorageAsync<IActionResult, TEntity>(
+            return pageRoutineHandler.HandleAsync(async (container, closure) => await container.HandleStorageAsync<IActionResult, TEntity>(
                        repository => func(repository, closure)
-                   )))
-            );
+                   ));
         }
 
-        public static Func<Func<IEnumerable<TEntity>, IActionResult>, Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>>>
+        public  Func<Func<IEnumerable<TEntity>, IActionResult>, Task<IActionResult>>
             ComposeAsync(
             Func<Func<IEnumerable<TEntity>, IActionResult>, Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task<IActionResult>>> func)
             => view => ComposeAsync(func(view));
 
-        public static Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> ComposePageSaveAsync(
+        public Task<IActionResult> ComposePageSaveAsync(
             Action<TEntity> setPageEntity,
             //string indexPage,
             Func<
@@ -69,12 +74,12 @@ namespace DashboardCode.Routines.AspNetCore
                     )
             );
 
-        public static Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> ComposePageSaveAsync(
+        public Task<IActionResult> ComposePageSaveAsync(
             Action<TEntity> setPageEntity,
             //string indexPage,
             Func<
                 IRepository<TEntity>,
-                RoutineClosure<TUserContext>,
+                RoutineClosure<TUserContext>, 
                 Func<
                     Func<
                          PageRoutineFeature,
@@ -93,7 +98,7 @@ namespace DashboardCode.Routines.AspNetCore
                     )
             );
 
-        public static Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> ComposePageRequestAsync(
+        public  Task<IActionResult> ComposePageRequestAsync(
             Action<TEntity> setPageEntity,
             Func<
                 IRepository<TEntity>,
@@ -116,7 +121,7 @@ namespace DashboardCode.Routines.AspNetCore
                     )
             );
 
-        public static Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> ComposePageRequestAsync(
+        public  Task<IActionResult> ComposePageRequestAsync(
             Action<TEntity> setPageEntity,
             Func<
                 IRepository<TEntity>,
@@ -138,7 +143,7 @@ namespace DashboardCode.Routines.AspNetCore
                     )
             );
 
-        public static Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> ComposePageCreateAsync(
+        public Task<IActionResult> ComposePageCreateAsync(
                  Action<TEntity> setPageEntity,
                  Func<
                     IRepository<TEntity>,
@@ -159,193 +164,161 @@ namespace DashboardCode.Routines.AspNetCore
                     )
             );
 
-        public static Func<PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>, Task<IActionResult>> ComposePageCreateAsync(
-                 Action<object> setPageEntity,
-                 Func<
-                    IRepository<TEntity>,
-                    RoutineClosure<TUserContext>,
-                    Func<
-                        Func<
-                            Func<bool>,
-                            Func<TEntity>,
-                            IActionResult>,
-                        IActionResult>
-                    > action)
-            => Compose(
-                async routine =>
-                    await routine.HandlePageCreateAsync(
-                        setPageEntity,
-                        action
-                    )
-            );
+        //public Task<IActionResult> ComposePageCreateAsync(
+        //         Action<object> setPageEntity,
+        //         Func<
+        //            IRepository<TEntity>,
+        //            RoutineClosure<TUserContext>,
+        //            Func<
+        //                Func<
+        //                    Func<bool>,
+        //                    Func<TEntity>,
+        //                    IActionResult>,
+        //                IActionResult>
+        //            > action)
+        //    => Compose(
+        //        async routine =>
+        //            await routine.HandlePageCreateAsync(
+        //                setPageEntity,
+        //                action
+        //            )
+        //    );
         #endregion
 
         #region Compose MVC Controlelr methods
 
-        public static Func<Task<IActionResult>> ComposeIndex(
-            PageModel pageModel,
+        public Task<IActionResult> ComposeIndex(
             Action<IEnumerable<TEntity>> setPageEntity,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            Func<string, TUserContext, bool> authorize,
-            Include<TEntity> indexIncludes,
-            Func<PageModel, Action<PageRoutineFeature>, string, string, PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>> createPageRoutineHandler
+            Func<TUserContext, bool> authorize,
+            Include<TEntity> indexIncludes
             ) =>
-             () => ComposeAsync(view => async (repository, state) => {
-                 if (!(authorize?.Invoke("Index", state.UserContext) ?? true))
+             ComposeAsync(view => async (repository, state) => {
+                 if (!(authorize?.Invoke(state.UserContext) ?? true))
                      return pageModel.Unauthorized();
                  var entities = await repository.ListAsync(indexIncludes);
                  return view(entities);
-             })(o => { setPageEntity(o); return pageModel.Page(); })(createPageRoutineHandler(pageModel, onPageRoutineFeature, defaultBackwardUrl, "Index"));
+             })(o => { setPageEntity(o); return pageModel.Page(); });
 
-        public static Func<Task<IActionResult>> ComposeDetails(
-            PageModel pageModel,
+        public Task<IActionResult> ComposeDetails(
             Action<TEntity> setPageEntity,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            Func<string, TUserContext, bool> authorize,
+            Func<TUserContext, bool> authorize,
             Include<TEntity> detailsIncludes,
             Func<string, ValuableResult<TKey>> keyConverter,
-            Func<TKey, Expression<Func<TEntity, bool>>> findPredicate,
-            Func<PageModel, Action<PageRoutineFeature>, string, string, PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>> createPageRoutineHandler
+            Func<TKey, Expression<Func<TEntity, bool>>> findPredicate
             ) =>
-               () => ComposePageRequestAsync(
+               ComposePageRequestAsync(
                     setPageEntity,
                     (repository, state) => steps =>
                         steps(
-                            () => authorize?.Invoke("Details", state.UserContext) ?? true,
+                            () => authorize?.Invoke(state.UserContext) ?? true,
                             keyConverter,
                             key => repository.Find(findPredicate(key), detailsIncludes)
                             )
-                    )(createPageRoutineHandler(pageModel, onPageRoutineFeature, defaultBackwardUrl, "Details"));
+                    );
 
-        public static Func<Task<IActionResult>> ComposeCreate(
-            PageModel pageModel,
+        public Task<IActionResult> ComposeCreate(
             Action<TEntity> setPageEntity,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            Func<string, TUserContext, bool> authorize,
-            Action<Action<string, object>, IRepository<TEntity>> prepareEmptyOptions,
-            Func<PageModel, Action<PageRoutineFeature>, string, string, PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>> createPageRoutineHandler
+            Func<TUserContext, bool> authorize,
+            Action<Action<string, object>, IRepository<TEntity>> prepareEmptyOptions
             ) =>
-                () => ComposePageCreateAsync(
+                ComposePageCreateAsync(
                     setPageEntity,
                     (repository, state) => steps =>
                         steps(
-                            () => authorize?.Invoke("Create", state.UserContext) ?? true,
+                            () => authorize?.Invoke(state.UserContext) ?? true,
                             () => default,
                             (entity, addViewData) => prepareEmptyOptions(addViewData, repository)
                             )
-                    )(createPageRoutineHandler(pageModel, onPageRoutineFeature, defaultBackwardUrl, "Create"));
+                    );
 
-        public static Func<Task<IActionResult>> ComposeCreateConfirmed(
-            PageModel pageModel,
+        public Task<IActionResult> ComposeCreateConfirmed(
             Action<TEntity> setPageEntity,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            Func<string, TUserContext, bool> authorize,
+            Func<TUserContext, bool> authorize,
             Func<TEntity> constructor,
             Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>> formFields,
             Dictionary<string, Func<TEntity, Action<StringValues>>> hiddenFormFields,
-            Func<Action<string, object>, HttpRequest, IRepository<TEntity>, TEntity, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>> parseRelated,
-            Func<PageModel, Action<PageRoutineFeature>, string, string, PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>> createPageRoutineHandler
+            Func<Action<string, object>, HttpRequest, IRepository<TEntity>, TEntity, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>> parseRelated
             ) =>
-                () => ComposePageSaveAsync(setPageEntity, /* defaultBackwardUrl,*/
-                (repository, state) => steps =>
+                ComposePageSaveAsync(setPageEntity, /* defaultBackwardUrl,*/
+                (repository, closure) => steps =>
                     steps(
-                         null, // !! TODO
-                         () => authorize?.Invoke("Create", state.UserContext) ?? true,
+                         pageRoutineFeature,
+                         () => authorize?.Invoke(closure.UserContext) ?? true,
                          request => MvcHandler.Bind(request, constructor, formFields, hiddenFormFields),
                          (request, entity, addViewData) => parseRelated(addViewData, request, repository, entity),
                          (entity, batch) => batch.Add(entity)
                     )
-                )(createPageRoutineHandler(pageModel, onPageRoutineFeature, defaultBackwardUrl, "CreateConfirmed"));
+                );
 
-        public static Func<Task<IActionResult>> ComposeEdit(
-            PageModel pageModel,
+        public Task<IActionResult> ComposeEdit(
             Action<TEntity> setPageEntity,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            Func<string, TUserContext, bool> authorize,
+            Func< TUserContext, bool> authorize,
             Include<TEntity> editIncludes,
             Func<string, ValuableResult<TKey>> keyConverter,
             Func<TKey, Expression<Func<TEntity, bool>>> findPredicate,
-            Func<Action<string, object>, IRepository<TEntity>, Action<TEntity>> parseRelated,
-            Func<PageModel, Action<PageRoutineFeature>, string, string, PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>> createPageRoutineHandler
+            Func<Action<string, object>, IRepository<TEntity>, Action<TEntity>> parseRelated
             ) =>
-                () => ComposePageRequestAsync(setPageEntity,
+                ComposePageRequestAsync(setPageEntity,
                     (repository, state) => steps =>
                         steps(
-                            () => authorize?.Invoke("Edit", state.UserContext) ?? true,
+                            () => authorize?.Invoke(state.UserContext) ?? true,
                             keyConverter,
                             key => repository.Find(findPredicate(key), editIncludes),
                             (entity, addViewData) => parseRelated(addViewData, repository)(entity)
                         )
-                )(createPageRoutineHandler(pageModel, onPageRoutineFeature, defaultBackwardUrl, "Edit"));
+                );
 
-        public static Func<Task<IActionResult>> ComposeEditConfirmed(
-            PageModel pageModel,
+        public Task<IActionResult> ComposeEditConfirmed(
             Action<TEntity> setPageEntity,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            Func<string, TUserContext, bool> authorize,
+            Func<TUserContext, bool> authorize,
             Func<TEntity> constructor,
             Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>> formFields,
             Dictionary<string, Func<TEntity, Action<StringValues>>> hiddenFormFields,
             Include<TEntity> disabledFormFields,
-            Func<Action<string, object>, HttpRequest, IRepository<TEntity>, TEntity, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>> parseRelated,
-            Func<PageModel, Action<PageRoutineFeature>, string, string, PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>> createPageRoutineHandler
+            Func<Action<string, object>, HttpRequest, IRepository<TEntity>, TEntity, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>> parseRelated
             ) =>
-                () => ComposePageSaveAsync(setPageEntity, /* defaultBackwardUrl,*/
-                    (repository, state) => steps =>
+                ComposePageSaveAsync(setPageEntity, /* defaultBackwardUrl,*/
+                    (repository, closure) => steps =>
                         steps(
-                            null, // !! TODO
-                            () => authorize?.Invoke("Edit", state.UserContext) ?? true,
+                            pageRoutineFeature, 
+                            () => authorize?.Invoke(closure.UserContext) ?? true,
                             request => MvcHandler.Bind(request, constructor, formFields, hiddenFormFields),
                             (request, entity, addViewData) => parseRelated(addViewData, request, repository, entity),
                             (entity, batch) => batch.Modify(entity, disabledFormFields)
                          )
-                )(createPageRoutineHandler(pageModel, onPageRoutineFeature, defaultBackwardUrl, "EditConfirmed"));
+                );
 
-        public static Func<Task<IActionResult>> ComposeDelete(
-            PageModel pageModel,
+        public Task<IActionResult> ComposeDelete(
             Action<TEntity> setPageEntity,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            Func<string, TUserContext, bool> authorize,
+            Func< TUserContext, bool> authorize,
             Include<TEntity> deleteIncludes,
             Func<string, ValuableResult<TKey>> keyConverter,
-            Func<TKey, Expression<Func<TEntity, bool>>> findPredicate,
-            Func<PageModel, Action<PageRoutineFeature>, string, string, PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>> createPageRoutineHandler
+            Func<TKey, Expression<Func<TEntity, bool>>> findPredicate
             ) =>
-                () => ComposePageRequestAsync(setPageEntity,
+                ComposePageRequestAsync(setPageEntity,
                     (repository, state) => steps =>
                         steps(
-                            () => authorize?.Invoke("Delete", state.UserContext) ?? true,
+                            () => authorize?.Invoke(state.UserContext) ?? true,
                             keyConverter,
                             key => repository.Find(findPredicate(key), deleteIncludes)
                         )
-                )(createPageRoutineHandler(pageModel, onPageRoutineFeature, defaultBackwardUrl, "Delete"));
+                );
 
-        public static Func<Task<IActionResult>> ComposeDeleteConfirmed(
-            PageModel pageModel,
+        public Task<IActionResult> ComposeDeleteConfirmed(
             Action<TEntity> setPageEntity,
-            Action<PageRoutineFeature> onPageRoutineFeature,
-            string defaultBackwardUrl,
-            Func<string, TUserContext, bool> authorize,
+            Func< TUserContext, bool> authorize,
             Func<TEntity> constructor,
-            Dictionary<string, Func<TEntity, Action<StringValues>>> hiddenFormFields,
-            Func<PageModel, Action<PageRoutineFeature>, string, string, PageRoutineHandler<ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>, TUserContext, TUser>> createPageRoutineHandler
+            Dictionary<string, Func<TEntity, Action<StringValues>>> hiddenFormFields
             ) =>
-                () => ComposePageSaveAsync(setPageEntity,/* defaultBackwardUrl,*/
+                ComposePageSaveAsync(setPageEntity,/* defaultBackwardUrl,*/
                     (repository, state) => steps =>
                         steps(
-                            null, // !! TODO
-                            () => authorize?.Invoke("Delete", state.UserContext) ?? true,
+                            pageRoutineFeature, 
+                            () => authorize?.Invoke(state.UserContext) ?? true,
                             request => MvcHandler.Bind(request, constructor, null, hiddenFormFields),
                             (entity, batch) => batch.Remove(entity)
                     )
-                )(createPageRoutineHandler(pageModel, onPageRoutineFeature, defaultBackwardUrl, "DeleteConfirmed"));
+                );
         #endregion
 
     }

@@ -11,10 +11,9 @@
 
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
-    @Html.HiddenFor(model => model.Entity.RoleId)
-    @Html.HiddenFor(model => model.Entity.RowVersion)
-    <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
+    <input hidden asp-for="@Model.Entity.RoleId" name="RoleId" type="hidden" />
+    <input hidden asp-for="@Model.Entity.RowVersion" name="RowVersion" type="hidden" />
+    <input hidden asp-for="@Model.BackwardUrl" type="hidden" />
 
     <div>
         <hr />
