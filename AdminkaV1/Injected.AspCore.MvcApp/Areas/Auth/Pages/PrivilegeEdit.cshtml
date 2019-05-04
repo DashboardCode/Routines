@@ -5,41 +5,22 @@
 }
 <div class="d-flex flex-row justify-content-between align-self">
     <h3>Privilege (@Model.Entity.PrivilegeId)</h3>
-    <a class="adminka-navigation adminka-navigation-clear" asp-area="Auth" asp-page="Privilege" asp-route-id="@Model.Entity.PrivilegeId"></a>
+    <a class="adminka-navigation adminka-navigation-clear" asp-area="Auth" asp-page="Privilege" asp-route-id="@Model.Entity.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Internal"></a>
 </div>
 
 @using (Html.BeginForm())
 {
-    <input hidden asp-for="@Model.Entity.PrivilegeId" name="PrivilegeId" type="hidden" />
-    <input hidden asp-for="@Model.Entity.RowVersion" name="RowVersion" type="hidden" />
-    <input hidden asp-for="@Model.BackwardUrl" type="hidden" />
+    <input hidden asp-for="@Model.Entity.PrivilegeId" type="hidden" />
+    <input hidden asp-for="@Model.Entity.RowVersion" type="hidden" />
+    <input hidden asp-for="@Model.Crud.Referrer.GoBack" name="Referrer" type="hidden" />
 
     <div>
         <hr />
-
-        <input asp-for="@Model.BackwardUrl" hidden class="form-control" type="search" />
-
         <div class="form-group row">
             <label class="col-form-label col-sm-2" for="edit-privilege-name-id">Name</label>
             <div class="col-sm-10">
                 @Html.EditorFor(model => model.Entity.PrivilegeName, new { htmlAttributes = new { @id = "edit-privilege-name-id", @class = "form-control", @readonly = "readonly", @disabled = "disabled" } })
                 @Html.ValidationMessageFor(model => model.Entity.PrivilegeName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="edit-privilege-allowed-users-id">Users (Allowed)</label>
-            <div class="col-sm-10">
-                @Html.ListBox("UsersAllowed", ViewBag.UsersAllowedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-allowed-users-id", @class = "form-control d-none bootstrap-multiselect" })
-                @Html.ValidationMessage("UsersAllowed", "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="edit-privilege-denied-users-id">Users (Denied)</label>
-            <div class="col-sm-10">
-                @Html.ListBox("UsersDenied", ViewBag.UsersDeniedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-denied-users-id", @class = "form-control d-none bootstrap-multiselect" })
-                @Html.ValidationMessage("UsersDenied", "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -75,11 +56,27 @@
             </div>
         </div>
 
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-allowed-users-id">Users (Allowed)</label>
+            <div class="col-sm-10">
+                @Html.ListBox("UsersAllowed", ViewBag.UsersAllowedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-allowed-users-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("UsersAllowed", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-form-label col-sm-2" for="edit-privilege-denied-users-id">Users (Denied)</label>
+            <div class="col-sm-10">
+                @Html.ListBox("UsersDenied", ViewBag.UsersDeniedMultiSelectList as MultiSelectList, new { @id = "edit-privilege-denied-users-id", @class = "form-control d-none bootstrap-multiselect" })
+                @Html.ValidationMessage("UsersDenied", "", new { @class = "text-danger" })
+            </div>
+        </div>
+
         <h4>Are you sure you want to save changes?</h4>
         <div class="form-group">
             <div class="d-flex flex-row align-self">
                 <input type="submit" value="Save" class="btn adminka-btn-ok" />
-                <a class="adminka-btn adminka-navigation-back mx-3" href="@Model.BackwardUrl">Go Back</a>
+                <a class="adminka-btn adminka-navigation-back mx-3" href="@Model.Crud.Referrer.GoBack">Go Back</a>
             </div>
         </div>
     </div>

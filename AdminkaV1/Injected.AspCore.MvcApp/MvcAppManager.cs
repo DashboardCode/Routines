@@ -18,6 +18,7 @@ using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
 using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.DataAccessEfCore;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -123,7 +124,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     memoryCache,
                     getForbiddenActionResult: () => pageModel.RedirectToPage(
                         "AccessDenied",
-                        new { pageRoutineFeature.BackwardUrl }),
+                        new { pageRoutineFeature.Referrer }),
                     exceptionToActionResult: null
                 );
         }
@@ -250,45 +251,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             return userContext;
         }
 
-        public static PageRoutineFeature SetAndGetPageRoutineFeature(PageModel pageModel, string defaultUrl, Action<string> setBackward, bool useReferer, string requestPairName)
+        public static PageRoutineFeature SetAndGetPageRoutineFeature(PageModel pageModel, Referrer referrer)
         {
-            var httpRequest = pageModel.HttpContext.Request;
-            var backwardUrl = default(string);
-            if (requestPairName != default)
-            {
-                if (httpRequest.Method == "POST" && httpRequest.HasFormContentType && httpRequest.Form != null && httpRequest.Form.Count() > 0)
-                    backwardUrl = httpRequest.Form[requestPairName];
-                else
-                    backwardUrl = httpRequest.Query?.GetQueryString(requestPairName);
-            }
-            if (backwardUrl == default)
-            {
-                // referer is URI (by HTTP stadadrd URI:= scheme:[//authority]path[?query][#fragment] e.g http://localhost:7894/Path/To/Data?Filter=abc)
-                if (httpRequest.Headers.TryGetValue("Referer", out var nameValuePairs))
-                {
-                    var referer = nameValuePairs.ToString();
-                    if (string.IsNullOrEmpty(referer))
-                    {
-                        backwardUrl = defaultUrl;
-                    }
-                    else if (useReferer)
-                    {
-                        // transform absolute to relaive URL
-                        var currentUrl = httpRequest.GetDisplayUrl();
-                        if (!string.IsNullOrEmpty(currentUrl))
-                        {
-                            var refererUri = new Uri(referer);
-                            var currentUri = new Uri(currentUrl);
-                            backwardUrl = currentUri.MakeRelativeUri(refererUri).ToString();
-                        }
-                    }
-                }
-            }
-            if (string.IsNullOrEmpty(backwardUrl))
-                backwardUrl = "/";
-            var pageRoutineFeature = new PageRoutineFeature() { BackwardUrl = backwardUrl };
+            var pageRoutineFeature = new PageRoutineFeature() { Referrer = referrer.GoBack };
             pageModel.HttpContext.Features.Set(pageRoutineFeature);
-            setBackward(pageRoutineFeature.BackwardUrl);
             return pageRoutineFeature;
         }
     }

@@ -7,15 +7,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     public class UserModel : PageModel
     {
-        public string BackwardUrl { get; private set; }
+        readonly static UserMeta meta = Meta.UserMeta;
+
         public User Entity { get; private set; }
 
-        readonly static UserMeta meta = Meta.UserMeta;
+        public AdminkaCrudRoutinePageConsumer<User, int> Crud;
 
         public Task<IActionResult> OnGetAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, defaultUrl: "Users", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeDetails(
+            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, () => $"{nameof(User)}?id={Entity.UserId}", defaultUrl: "Users", true);
+            return Crud.HandleDetailsAsync(
                 e => Entity = e,
                 authorize: null,
                 meta.DetailsIncludes, meta.KeyConverter, meta.FindPredicate);

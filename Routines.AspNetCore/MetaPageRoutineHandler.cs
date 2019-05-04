@@ -161,13 +161,12 @@ namespace DashboardCode.Routines.AspNetCore
 
         public Task<IActionResult> HandlePageSaveAsync<TEntity>(
                  Action<TEntity> setPageEntity,
-                 //string indexPage,
+                 PageRoutineFeature pageRoutineFeature,
                  Func<
                     IRepository<TEntity>,
                     RoutineClosure<TUserContext>,
                     Func<
                        Func<
-                            PageRoutineFeature,
                             Func<bool>,
                             Func<HttpRequest, IComplexBinderResult<TEntity>>,
                             Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
@@ -188,7 +187,7 @@ namespace DashboardCode.Routines.AspNetCore
                                PageModel.HttpContext.Request,
                                (n, v) => PageModel.ViewData[n] = v,
                                (n, v) => PageModel.ModelState.AddModelError(n, v),
-                               (pageRoutineFeature) => PageModel.RedirectToPage(pageRoutineFeature.BackwardUrl),
+                               () => PageModel.RedirectToPage(pageRoutineFeature.Referrer),
                                (m) => {
                                    return PageModel.BadRequest();
                                },
@@ -203,13 +202,12 @@ namespace DashboardCode.Routines.AspNetCore
 
         public Task<IActionResult> HandlePageSaveAsync<TEntity>(
                  Action<TEntity> setPageEntity,
-                 //string indexPage,
+                 PageRoutineFeature pageRoutineFeature,
                  Func<
                     IRepository<TEntity>,
                     RoutineClosure<TUserContext>,
                     Func<
                        Func<
-                            PageRoutineFeature,
                             Func<bool>,
                             Func<HttpRequest, IComplexBinderResult<TEntity>>,
                             Action<TEntity, IBatch<TEntity>>,
@@ -229,7 +227,7 @@ namespace DashboardCode.Routines.AspNetCore
                                         PageModel.HttpContext.Request,
                                         (n, v) => PageModel.ViewData[n] = v,
                                         (n, v) => PageModel.ModelState.AddModelError(n, v),
-                                        (pageRoutineFeature) => PageModel.RedirectToPage(pageRoutineFeature.BackwardUrl),
+                                        () => PageModel.RedirectToPage(pageRoutineFeature.Referrer),
                                         (m) => {
                                             return PageModel.BadRequest();
                                         },

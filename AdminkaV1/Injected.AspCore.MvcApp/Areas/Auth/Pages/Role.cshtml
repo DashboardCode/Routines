@@ -8,8 +8,8 @@
 <div class="d-flex flex-row align-self justify-content-between">
     <h3>Role (@Model.Entity.RoleId)</h3>
     <div>
-        <a class="ml-4 adminka-navigation adminka-navigation-delete" asp-area="Auth" asp-page="RoleDelete" asp-route-id="@Model.Entity.RoleId">Delete</a>
-        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="Auth" asp-page="RoleEdit" asp-route-id="@Model.Entity.RoleId">Edit</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-delete" asp-area="Auth" asp-page="RoleDelete" asp-route-id="@Model.Entity.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">Delete</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="Auth" asp-page="RoleEdit" asp-route-id="@Model.Entity.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">Edit</a>
     </div>
 </div>
 
@@ -34,7 +34,7 @@
             {
                 if (p.Item2)
                 {
-                    <a class="badge" asp-area="Auth" asp-page="Privilege"  asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge" asp-area="Auth" asp-page="Privilege"  asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>
@@ -48,7 +48,7 @@
             {
                 if (!p.Item2)
                 {
-                    <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>
@@ -60,7 +60,7 @@
         <dd class="col-sm-9 mb-sm-4">
             @foreach (var g in Model.Entity.GetGroups())
             {
-                <a class="badge" asp-area="Auth" asp-page="Group"  asp-route-id="@g.GroupId">@g.GroupName</a>
+                <a class="badge" asp-area="Auth" asp-page="Group"  asp-route-id="@g.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@g.GroupName</a>
             }
         </dd>
 
@@ -71,12 +71,12 @@
         <dd class="col-sm-10 mb-sm-2">
             @foreach (var u in Model.Entity.GetUsers())
             {
-                <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId">@u.LoginName</a>
+                <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.LoginName</a>
             }
         </dd>
     </dl>
     <div class="d-flex flex-row align-self">
-        <a class="adminka-btn adminka-navigation-back" href="@Model.BackwardUrl">Go Back</a>
+        <a class="adminka-btn adminka-navigation-back" href="@Model.Crud.Referrer.GoBack">Go Back</a>
     </div>
 </div>
 

@@ -7,15 +7,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     public class GroupModel : PageModel
     {
-        public Group Entity { get; private set; }
-        public string BackwardUrl { get; private set; }
-
         readonly static GroupMeta meta = Meta.GroupMeta;
-        
+
+        public Group Entity { get; private set; }
+
+        public AdminkaCrudRoutinePageConsumer<Group, int> Crud;
+
         public Task<IActionResult> OnGetAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultUrl: "Groups", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeDetails(
+            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, () => $"{nameof(Group)}?id={Entity.GroupId}", "Groups", true);
+            return Crud.HandleDetailsAsync(
                 e => Entity = e,
                 userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),
                 meta.DetailsIncludes,

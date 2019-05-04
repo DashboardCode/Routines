@@ -8,15 +8,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     public class RolesModel : PageModel
     {
-        public string BackwardUrl { get; private set; }
+        static readonly RoleMeta meta = Meta.RoleMeta;
+
         public IEnumerable<Role> List { get; private set; }
 
-        static readonly RoleMeta meta = Meta.RoleMeta;
+        public AdminkaCrudRoutinePageConsumer<Role, int> Crud;
 
         public Task<IActionResult> OnGet()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, defaultUrl: null, backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeIndex(
+            Crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, null, defaultUrl: null, true);
+            return Crud.HandleIndexAsync(
                 l => List = l,
                 authorize: null,
                 meta.IndexIncludes);

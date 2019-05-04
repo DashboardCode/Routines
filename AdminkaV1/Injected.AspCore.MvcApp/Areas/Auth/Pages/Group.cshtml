@@ -7,12 +7,14 @@
 <div class="d-flex flex-row align-self justify-content-between">
     <h3>Group (@Model.Entity.GroupId)</h3>
     <div>
-        <a class="ml-4 adminka-navigation adminka-navigation-delete" asp-area="Auth"  asp-page="GroupDelete" asp-route-id="@Model.Entity.GroupId">Delete</a>
-        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="Auth"  asp-page="GroupEdit" asp-route-id="@Model.Entity.GroupId">Edit</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-delete" 
+            asp-area="Auth" asp-page="GroupDelete" asp-route-id="@Model.Entity.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">Delete</a>
+        <a class="ml-4 adminka-navigation adminka-navigation-edit" 
+            asp-area="Auth" asp-page="GroupEdit" asp-route-id="@Model.Entity.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">Edit</a>
     </div>
 </div>
 <div>
-    <hr />
+    <hr /> 
     <dl class="row">
         <dt class="col-sm-2 mb-sm-4">
             Name
@@ -30,6 +32,28 @@
             @Html.DisplayFor(model => model.Entity.GroupAdName)
         </dd>
 
+        <dt class="col-sm-2 mb-sm-4">
+            Users
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var u in Model.Entity.GetUsers())
+            {
+                <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.LoginName</a>
+            }
+        </dd>
+
+        <dt class="col-sm-2 mb-sm-4">
+            Roles
+        </dt>
+
+        <dd class="col-sm-10 mb-sm-4">
+            @foreach (var r in Model.Entity.GetRoles())
+            {
+                <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.RoleName</a>
+            }
+        </dd>
+
         @{var privleges = Model.Entity.GetPrivileges();}
         <dt class="col-sm-2 mb-sm-4">
             Privileges Allowed
@@ -39,7 +63,7 @@
             {
                 if (p.Item2)
                 {
-                    <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
                 }
             }
         </dd>
@@ -53,35 +77,13 @@
             {
                 if (!p.Item2)
                 {
-                    <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
+                    <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
                 }
-            }
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Roles
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var r in Model.Entity.GetRoles())
-            {
-                <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId">@r.RoleName</a>
-            }
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Users
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var u in Model.Entity.GetUsers())
-            {
-                <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId">@u.LoginName</a>
             }
         </dd>
     </dl>
     <div class="d-flex flex-row align-self">
-        <a class="adminka-btn adminka-navigation-back" href="@Model.BackwardUrl">Go Back</a>
+        <a class="adminka-btn adminka-navigation-back" href="@Model.Crud.Referrer.GoBack">Go Back</a>
     </div>
 </div>
 

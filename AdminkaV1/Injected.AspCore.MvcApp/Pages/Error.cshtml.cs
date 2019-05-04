@@ -62,7 +62,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Pages
 
             // TODO: create url tree (where to go on error) and url to title (button name) map
             if (pageRoutineFeature != null)
-                ReturnUrl = pageRoutineFeature.BackwardUrl;
+                ReturnUrl = pageRoutineFeature.Referrer;
 
             var unhandledException = exceptionHandler?.Error;
             string detailsMarkdown = default;

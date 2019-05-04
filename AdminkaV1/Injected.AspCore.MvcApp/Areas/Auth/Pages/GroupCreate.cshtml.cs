@@ -2,21 +2,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.Routines.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     [ValidateAntiForgeryToken]
     public class GroupCreateModel : PageModel
     {
-        public Group Entity { get; private set; }
-        public string BackwardUrl { get; set; }
-
         readonly static GroupMeta meta = Meta.GroupMeta;
+
+        public Group Entity { get; private set; }
+
+        public AdminkaCrudRoutinePageConsumer<Group, int> Crud;
 
         public Task<IActionResult> OnGetAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultUrl: "Groups", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeCreate(
+            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, null, "Groups", true);
+            return Crud.HandleCreateAsync(
                 e => Entity = e,
                 authorize: null,
                 meta.ReferencesCollection.PrepareEmptyOptions
@@ -25,11 +27,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultUrl: "Groups", (backwardUrl) => BackwardUrl = backwardUrl);
-            return crud.ComposeCreateConfirmed(
+            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, null, "Groups", true);
+            return Crud.HandleCreateConfirmedAsync(
                 e => Entity = e,
                 authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),
-                meta.Constructor, meta.FormFields, meta.HiddenFormFields, meta.ReferencesCollection.ParseRelatedOnInsert
+                nameof(Entity), meta.Constructor, meta.FormFields, meta.HiddenFormFields, meta.ReferencesCollection.ParseRelatedOnInsert
             );
         }
     }

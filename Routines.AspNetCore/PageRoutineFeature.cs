@@ -2,8 +2,8 @@
 {
     public class PageRoutineFeature
     {
-        public string BackwardUrl { get; set; }
-        public string BackwardTitle { get; set; }
-        public string BackwardErrorDialogTitle { get; set; }
+        public string Referrer { get; set; }
+        public string ReferrerTitle { get; set; }
+        public string UnhandledErrorDialogTitle { get; set; }
     }
 }

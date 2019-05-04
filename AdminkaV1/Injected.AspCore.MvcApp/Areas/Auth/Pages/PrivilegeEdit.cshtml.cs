@@ -8,15 +8,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
     [ValidateAntiForgeryToken]
     public class PrivilegeEditModel : PageModel
     {
-        public string BackwardUrl { get; private set; }
+        readonly static PrivilegeMeta meta = Meta.PrivilegeMeta;
+        
         public Privilege Entity { get; private set; }
 
-        readonly static PrivilegeMeta meta = Meta.PrivilegeMeta;
+        public AdminkaCrudRoutinePageConsumer<Privilege, string> Crud;
 
         public Task<IActionResult> OnGetAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, defaultUrl: "Privileges", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeEdit(
+            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, null, defaultUrl: "Privileges", true);
+            return Crud.HandleEditAsync(
                 e => Entity = e,
                 authorize: null,
                 meta.EditIncludes, 
@@ -28,11 +29,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, defaultUrl: "Privileges", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeEditConfirmed(
+            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, null, defaultUrl: "Privileges", true);
+            return Crud.HandleEditConfirmedAsync(
                 e => Entity = e,
-                authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem), 
-                meta.Constructor, 
+                authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),
+                nameof(Entity),
+                meta.Constructor,
                 meta.FormFields, 
                 meta.HiddenFormFields, 
                 meta.DisabledFormFields, 

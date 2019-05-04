@@ -20,17 +20,28 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     // var trackedConfiguration = trackedConfigurationSnapshot.Value;
     public class AdminkaCrudRoutinePageConsumer<TEntity, TKey> : AdminkaCrudRoutinePageConsumer<UserContext, User, TEntity, TKey> where TEntity : class, new()
     {
-        public AdminkaCrudRoutinePageConsumer(PageModel pageModel, string defaultUrl, Action<string> setBackward, [CallerMemberName] string member = null) :
-            this(pageModel,
-                MvcAppManager.SetAndGetPageRoutineFeature(pageModel, defaultUrl, setBackward, useReferer: true, requestPairName: "BackwardUrl"),
+        public readonly IReferrer Referrer;
+
+        public AdminkaCrudRoutinePageConsumer(
+            PageModel pageModel, Func<string> getId, string defaultUrl, bool useHeaderReferrer,
+            [CallerMemberName] string member = null) :
+            this(pageModel, new Referrer("Referrer", getId, pageModel.HttpContext.Request, defaultUrl, useHeaderReferrer))
+        {
+        }
+
+        public AdminkaCrudRoutinePageConsumer(
+            PageModel pageModel, Referrer referrer,
+            [CallerMemberName] string member = null) :
+            this(pageModel, referrer,
+                MvcAppManager.SetAndGetPageRoutineFeature(pageModel, referrer),
                 u => MvcAppManager.SetAndGetUserContext(pageModel, u),
                 (ApplicationSettings)pageModel.HttpContext.RequestServices.GetService(typeof(ApplicationSettings)),
                 (IMemoryCache)pageModel.HttpContext.RequestServices.GetService(typeof(IMemoryCache)),
                 new MemberTag(pageModel.GetType().Namespace, pageModel.GetType().Name, member))
         {
         }
-
-        public AdminkaCrudRoutinePageConsumer(PageModel pageModel, PageRoutineFeature pageRoutineFeature,
+        public AdminkaCrudRoutinePageConsumer(PageModel pageModel, Referrer referrer,
+             PageRoutineFeature pageRoutineFeature,
              Func<User, UserContext> createUserContext, 
              ApplicationSettings applicationSettings, IMemoryCache memoryCache, MemberTag memberTag) :
              base(pageModel, pageRoutineFeature,
@@ -59,6 +70,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 },
                 memberTag)
         {
+            this.Referrer = referrer;
         }
     }
 

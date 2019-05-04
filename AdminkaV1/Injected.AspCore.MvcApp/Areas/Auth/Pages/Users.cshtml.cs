@@ -3,20 +3,21 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.Routines.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     public class UsersModel : PageModel
     {
-        public string BackwardUrl { get; private set; }
+        readonly static UserMeta meta = Meta.UserMeta;
         public IEnumerable<User> List { get; private set; }
 
-        readonly static UserMeta meta = Meta.UserMeta;
+        public AdminkaCrudRoutinePageConsumer<User, int> Crud;
 
         public Task<IActionResult> OnGet()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, defaultUrl: null, backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeIndex(
+            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, null, defaultUrl: null, useHeaderReferrer: true);
+            return Crud.HandleIndexAsync(
                 l => List = l,
                 authorize: null,
                 meta.IndexIncludes

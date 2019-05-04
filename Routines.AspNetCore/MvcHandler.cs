@@ -32,7 +32,7 @@ namespace DashboardCode.Routines.AspNetCore
             HttpRequest request,
             Action<string, object> addViewData,
             Action<string, string> publishStorageError,
-            Func<PageRoutineFeature, IActionResult> successView,
+            Func<IActionResult> successView,
             Func<string, IActionResult> badRequestView,
             Func<TEntity, IActionResult> view,
             Func<
@@ -40,7 +40,6 @@ namespace DashboardCode.Routines.AspNetCore
                 TState,
                 Func<
                     Func<
-                        PageRoutineFeature,
                         Func<bool>, 
                         Func<HttpRequest, IComplexBinderResult<TEntity>>,
                         Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
@@ -51,12 +50,11 @@ namespace DashboardCode.Routines.AspNetCore
             ) where TEntity : class
         {
             Func<
-                PageRoutineFeature,
                 Func<bool>,
                 Func<HttpRequest, IComplexBinderResult<TEntity>>,
                 Func<HttpRequest, TEntity, Action<string, object>, IComplexBinderResult<ValueTuple<Action<IBatch<TEntity>>, Action>>>,
                 Action<TEntity, IBatch<TEntity>>,
-                IActionResult> steps = (pageRoutineFeature, authorize, getEntity, getRelated, save) =>
+                IActionResult> steps = (authorize, getEntity, getRelated, save) =>
                 {
                     if (!authorize())
                         return unauthorized();
@@ -85,7 +83,7 @@ namespace DashboardCode.Routines.AspNetCore
                                     modifyRelated(batch);
                                 });
                             if (storageResult.IsOk())
-                                return successView(pageRoutineFeature);
+                                return successView();
                             //publishException(storageResult.Exception);
                             PublishResult(storageResult.Message, publishStorageError);
                         //}
@@ -109,7 +107,7 @@ namespace DashboardCode.Routines.AspNetCore
             HttpRequest request,
             Action<string, object> addViewData,
             Action<string, string> publishStorageError,
-            Func<PageRoutineFeature, IActionResult> successView,
+            Func< IActionResult> successView,
             Func<string, IActionResult> badRequestView,
             Func<TEntity, IActionResult> view,
             Func<
@@ -118,7 +116,6 @@ namespace DashboardCode.Routines.AspNetCore
                 TState,
                 Func<
                     Func<
-                        PageRoutineFeature,
                         Func<bool>,
                         Func<HttpRequest, IComplexBinderResult<TEntity>>,
                         Action<TEntity, IBatch<TEntity>>,
@@ -128,11 +125,10 @@ namespace DashboardCode.Routines.AspNetCore
             ) where TEntity : class
         {
             Func<
-                PageRoutineFeature,
                 Func<bool>,
                 Func<HttpRequest, IComplexBinderResult<TEntity>>,
                 Action<TEntity, IBatch<TEntity>>,
-                IActionResult> steps = (pageRoutineFeature, authorize, getEntity, save) =>
+                IActionResult> steps = (authorize, getEntity, save) =>
                 {
                     if (!authorize())
                         return unauthorized();
@@ -152,7 +148,7 @@ namespace DashboardCode.Routines.AspNetCore
                                 batch => save(entity, batch)
                             );
                             if (storageResult.IsOk())
-                                return successView(pageRoutineFeature);
+                                return successView();
                             //publishException(storageResult.Exception);
                             PublishResult(storageResult.Message, publishStorageError);
                         //}
@@ -326,6 +322,7 @@ namespace DashboardCode.Routines.AspNetCore
 
         public static IComplexBinderResult<T> Bind<T>(
             this HttpRequest request,
+            string formEntityPrefix, 
             Func<T> constructor,
             Dictionary<string, Func<T, Func<StringValues, IVerboseResult<List<string>>>>> propertyBinders,
             Dictionary<string, Func<T, Action<StringValues>>> propertySetters)
@@ -334,7 +331,7 @@ namespace DashboardCode.Routines.AspNetCore
             var messages = new List<ValueTuple<string, List<string>>>();
             foreach (var pair in propertyBinders)
             {
-                var propertyName = pair.Key;
+                var propertyName = string.IsNullOrEmpty(formEntityPrefix)? pair.Key: formEntityPrefix+"."+ pair.Key;
                 if (request.Form.TryGetValue(propertyName, out StringValues stringValues))
                 {
                     Func<T, Func<StringValues, IVerboseResult<List<string>>>> func = pair.Value;
@@ -347,7 +344,7 @@ namespace DashboardCode.Routines.AspNetCore
             {
                 foreach (var pair in propertySetters)
                 {
-                    var propertyName = pair.Key;
+                    var propertyName = string.IsNullOrEmpty(formEntityPrefix) ? pair.Key : formEntityPrefix + "." + pair.Key;
                     if (request.Form.TryGetValue(propertyName, out StringValues stringValues))
                     {
                         var action = pair.Value;

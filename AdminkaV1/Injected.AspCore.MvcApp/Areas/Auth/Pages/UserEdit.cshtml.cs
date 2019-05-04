@@ -2,21 +2,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.Routines.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     [ValidateAntiForgeryToken]
     public class UserEditModel : PageModel
     {
-        public string BackwardUrl { get; private set; }
+        readonly static UserMeta meta = Meta.UserMeta;
+
         public User Entity { get; private set; }
 
-        readonly static UserMeta meta = Meta.UserMeta;
+        public AdminkaCrudRoutinePageConsumer<User, int> Crud;
 
         public Task<IActionResult> OnGetAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, defaultUrl: "Users", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeEdit(
+            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, null, defaultUrl: "Users", true);
+            return Crud.HandleEditAsync(
                 e => Entity = e,
                 authorize: null,
                 meta.EditIncludes, meta.KeyConverter, meta.FindPredicate, 
@@ -25,11 +27,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, defaultUrl: "Users", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeEditConfirmed(
+            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, null, defaultUrl: "Users", true);
+            return Crud.HandleEditConfirmedAsync(
                 e => Entity = e,
-                authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem), 
-                meta.Constructor, meta.FormFields, meta.HiddenFormFields, meta.DisabledFormFields, meta.ReferencesCollection.ParseRelatedOnUpdate);
+                authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),
+                nameof(Entity), meta.Constructor, meta.FormFields, meta.HiddenFormFields, meta.DisabledFormFields, 
+                meta.ReferencesCollection.ParseRelatedOnUpdate);
         }
     }
 }

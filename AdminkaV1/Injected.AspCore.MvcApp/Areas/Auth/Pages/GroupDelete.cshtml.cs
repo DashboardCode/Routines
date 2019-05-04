@@ -2,21 +2,23 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using DashboardCode.Routines.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     [ValidateAntiForgeryToken]
     public class GroupDeleteModel : PageModel
     {
-        public string BackwardUrl { get; private set; }
+        readonly static GroupMeta meta = Meta.GroupMeta;
+
         public Group Entity { get; private set; }
 
-        readonly static GroupMeta meta = Meta.GroupMeta;
+        public AdminkaCrudRoutinePageConsumer<Group, int> Crud;
 
         public Task<IActionResult> OnGetAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultUrl: "Groups", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeDelete(
+            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, null, "Groups", true);
+            return Crud.HandleDeleteAsync(
                 e => Entity = e,
                 authorize: null,
                 meta.DeleteIncludes, 
@@ -27,11 +29,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultUrl: "Groups", backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeDeleteConfirmed(
+            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, null, "Groups", true);
+            return Crud.HandleDeleteConfirmedAsync(
                 e => Entity = e,
-                authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem), 
-                meta.Constructor, 
+                authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),
+                nameof(Entity), 
+                meta.Constructor,
                 meta.HiddenFormFields
             );
         }

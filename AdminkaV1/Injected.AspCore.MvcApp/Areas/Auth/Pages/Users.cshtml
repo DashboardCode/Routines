@@ -27,69 +27,69 @@
                 Second Name
             </th>
             <th>
+                Groups
+            </th>
+            <th>
                 Roles
             </th>
             <th>
                 Privileges
-            </th>
-            <th>
-                Groups
             </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.List)
         {
-            <tr>
-                <td class="adminka-action-button-group">
-                    <div class="d-flex flex-row">
-                        <a class="btn-sm" asp-area="Auth" asp-page="User" asp-route-id="@item.UserId"><span class="material-icons">insert_drive_file</span></a>
-                        @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
-                        {
-                            <div class="d-flex flex-column">
-                                <a class="btn-xsm" asp-area="Auth" asp-page="UserEdit" asp-route-id="@item.UserId"><span class="material-icons">edit</span></a>
-                            </div>
-                        }
-                    </div>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LoginName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SecondName)
-                </td>
-                <td>
-                    @foreach (var r in item.GetRoles())
+        <tr>
+            <td class="adminka-action-button-group">
+                <div class="d-flex flex-row">
+                    <a class="btn-sm" asp-area="Auth" asp-page="User" asp-route-id="@item.UserId"><span class="material-icons">insert_drive_file</span></a>
+                    @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                     {
-                        <a class="badge" asp-area="Auth" asp-page="Role"  asp-route-id="@r.RoleId">@r.RoleName</a>
+                        <div class="d-flex flex-column">
+                            <a class="btn-xsm" asp-area="Auth" asp-page="UserEdit" asp-route-id="@item.UserId"><span class="material-icons">edit</span></a>
+                        </div>
                     }
-                </td>
-                <td>
-                    @foreach (var p in item.GetPrivileges())
+                </div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LoginName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SecondName)
+            </td>
+            <td>
+                @foreach (var g in item.GetGroups())
+                {
+                    <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.GroupId">@g.GroupName</a>
+                }
+            </td>
+            <td>
+                @foreach (var r in item.GetRoles())
+                {
+                    <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId">@r.RoleName</a>
+                }
+            </td>
+            <td>
+                @foreach (var p in item.GetPrivileges())
+                {
+                    if (p.Item2)
                     {
-                        if (p.Item2)
-                        {
-                            <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
-                        }
-                        else
-                        {
-                            <a class="badge scratched" asp-area="Auth" asp-page="Privilege"  asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
-                        }
+                        <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                     }
-                </td>
-                <td>
-                    @foreach (var g in item.GetGroups())
+                    else
                     {
-                        <a class="badge" asp-area="Auth" asp-page="Group"  asp-route-id="@g.GroupId">@g.GroupName</a>
+                        <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                     }
-                </td>
-            </tr>
+                }
+            </td>
+        </tr>
         }
     </tbody>
 </table>

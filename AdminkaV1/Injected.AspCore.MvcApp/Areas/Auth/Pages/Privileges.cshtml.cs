@@ -8,15 +8,16 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     public class PrivilegesModel : PageModel
     {
-        public string BackwardUrl { get; private set; }
+        readonly static PrivilegeMeta meta = Meta.PrivilegeMeta;
+
         public IEnumerable<Privilege> List { get; private set; }
 
-        readonly static PrivilegeMeta meta = Meta.PrivilegeMeta;
+        public AdminkaCrudRoutinePageConsumer<Privilege, string> Crud;
 
         public Task<IActionResult> OnGet()
         {
-            var crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, defaultUrl: null, backwardUrl => BackwardUrl = backwardUrl);
-            return crud.ComposeIndex(
+            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, null, defaultUrl: null, true);
+            return Crud.HandleIndexAsync(
                 l => List = l,
                 authorize: null,
                 meta.IndexIncludes
