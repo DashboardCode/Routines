@@ -20,7 +20,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     // var trackedConfiguration = trackedConfigurationSnapshot.Value;
     public class AdminkaCrudRoutinePageConsumer<TEntity, TKey> : AdminkaCrudRoutinePageConsumer<UserContext, User, TEntity, TKey> where TEntity : class, new()
     {
-        public readonly IReferrer Referrer;
+        public readonly Referrer Referrer;
 
         public AdminkaCrudRoutinePageConsumer(
             PageModel pageModel, Func<string> getId, string defaultUrl, bool useHeaderReferrer,

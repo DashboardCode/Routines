@@ -6,14 +6,7 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace DashboardCode.Routines.AspNetCore
 {
-    public interface IReferrer
-    {
-        string GoBack { get; }
-        string Self { get; }
-        string Internal { get; }
-    }
-
-    public class Referrer : IReferrer
+    public class Referrer
     {
         public string GoBack { get; private set; }
         readonly string requestPairName;
