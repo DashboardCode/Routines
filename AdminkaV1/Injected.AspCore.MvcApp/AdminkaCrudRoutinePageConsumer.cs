@@ -40,6 +40,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 new MemberTag(pageModel.GetType().Namespace, pageModel.GetType().Name, member))
         {
         }
+
         public AdminkaCrudRoutinePageConsumer(PageModel pageModel, Referrer referrer,
              PageRoutineFeature pageRoutineFeature,
              Func<User, UserContext> createUserContext, 
@@ -55,7 +56,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                          aspRoutineFeature,
                          memoryCache,
                          pageRoutineFeature),
-                getContainerHandler: (aspRoutineFeature, getInput, userContext, containerFactory) =>
+                getContainerHandler: (aspRoutineFeature, getInput, user, userContext, containerFactory) =>
                 {
                     return MvcAppManager.GetContainerStorageHandler(
                         containerFactory,
@@ -81,7 +82,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             PageRoutineFeature pageRoutineFeature,
             Func<TUser, TUserContext> createUserContext,
             Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
-            Func<AspRoutineFeature, Func<object>, TUserContext, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler,
+            Func<AspRoutineFeature, Func<object>, TUser, TUserContext, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler,
             MemberTag memberTag) :
             base(
                 pageModel,

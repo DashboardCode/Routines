@@ -75,7 +75,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 pageModel,
                 getUserAndFailedActionResultInitialisedAsync,
                 createUnitContext,
-                (aspRoutineFeature, getInput, userContext, containerFactory) =>
+                (aspRoutineFeature, getInput, user, userContext, containerFactory) =>
                 {
                     //var userContext = new UserContext(user);
                     //pageModel.ViewData["UserContext"] = userContext;
@@ -101,7 +101,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             PageModel pageModel,
             Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
             Func<TUser, TUserContext> createUnitContext,
-            Func<AspRoutineFeature, Func<object>, TUserContext, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler
+            Func<AspRoutineFeature, Func<object>, TUser, TUserContext, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler
             ) : base(
                 pageModel,
                 getUserAndFailedActionResultInitialisedAsync,
@@ -123,7 +123,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             [CallerMemberName] string member = null)
             : base(     
                       pageModel,
-                      pageRoutineFeature,
                       (aspRoutineFeature, getInput) => {
                            var input = logRequest ? getInput() : default;
                            return

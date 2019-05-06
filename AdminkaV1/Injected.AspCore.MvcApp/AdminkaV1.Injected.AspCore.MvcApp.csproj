@@ -52,6 +52,7 @@
     <Folder Include="Areas\Forms\" />
     <Folder Include="dist\css\" />
     <Folder Include="dist\js\" />
+    <Folder Include="logs\" />
   </ItemGroup>
   
   <ItemGroup>
