@@ -19,7 +19,6 @@ namespace DashboardCode.Routines.AspNetCore
         public readonly Include<TEntity> DeleteIncludes;
         public readonly Include<TEntity> EditIncludes;
         public readonly Func<TKey, Expression<Func<TEntity, bool>>> FindPredicate;
-        public readonly string formPrefix;
 
         public readonly Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>> FormFields;
         public readonly Dictionary<string, Func<TEntity, Action<StringValues>>> HiddenFormFields;
@@ -497,7 +496,6 @@ namespace DashboardCode.Routines.AspNetCore
             this.EditIncludes = editIncludes;
             this.FindPredicate = findByIdPredicate;
             this.DisabledFormFields = disabledProperties;
-            this.formPrefix = formPrefix;
 
             var manyToManyBinders = new Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>, IBatch<TEntity>>>();
             addManyToMany?.Invoke(new ManyToManyScorer(manyToManyBinders));
