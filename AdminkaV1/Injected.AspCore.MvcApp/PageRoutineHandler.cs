@@ -74,11 +74,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             ) : base(
                 pageModel,
                 getUserAndFailedActionResultInitialisedAsync,
-                createUnitContext,
-                (aspRoutineFeature, getInput, user, userContext, containerFactory) =>
+                (aspRoutineFeature, getInput, user, containerFactory) =>
                 {
-                    //var userContext = new UserContext(user);
-                    //pageModel.ViewData["UserContext"] = userContext;
+                    var userContext = createUnitContext(user);
                     return MvcAppManager.GetContainerHandler(
                     containerFactory,
                     memberTag,
@@ -100,12 +98,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public PageStorageRoutineHandler(
             PageModel pageModel,
             Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
-            Func<TUser, TUserContext> createUnitContext,
-            Func<AspRoutineFeature, Func<object>, TUser, TUserContext, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler
+            Func<AspRoutineFeature, Func<object>, TUser,  ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler
             ) : base(
                 pageModel,
                 getUserAndFailedActionResultInitialisedAsync,
-                createUnitContext,
                 getContainerHandler
             )
         {

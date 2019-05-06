@@ -11,22 +11,19 @@ namespace DashboardCode.Routines.AspNetCore
     public class PageRoutineHandler<TServiceContainer, TUserContext, TUser>
     {
         readonly Func<Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync;
-        readonly Func<TUser, TUserContext, ContainerFactory, ComplexRoutineHandler<TServiceContainer, TUserContext>> getContainerHandler;
-        readonly Func<TUser, TUserContext> createUnitContext;
+        readonly Func<TUser, ContainerFactory, ComplexRoutineHandler<TServiceContainer, TUserContext>> getContainerHandler;
 
         public PageRoutineHandler(
             PageModel pageModel,
             Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
-            Func<TUser, TUserContext> createUnitContext,
-            Func<AspRoutineFeature, Func<object>, TUser, TUserContext, ContainerFactory, ComplexRoutineHandler<TServiceContainer, TUserContext>> getContainerHandler
+            Func<AspRoutineFeature, Func<object>, TUser, ContainerFactory, ComplexRoutineHandler<TServiceContainer, TUserContext>> getContainerHandler
             )
         {
             var aspRoutineFeature = AspNetCoreManager.GetAspRoutineFeature(pageModel);
             Func<object> getInput = () => AspNetCoreManager.GetRequest(pageModel.HttpContext.Request);
 
             this.getUserAndFailedActionResultInitialisedAsync = () => getUserAndFailedActionResultInitialisedAsync(aspRoutineFeature);
-            this.getContainerHandler = (user, userContext, containerFactory) => getContainerHandler(aspRoutineFeature, getInput, user, userContext, containerFactory);
-            this.createUnitContext = createUnitContext;
+            this.getContainerHandler = (user, containerFactory) => getContainerHandler(aspRoutineFeature, getInput, user, containerFactory);
         }
 
         public async Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task<IActionResult>> func)
@@ -34,8 +31,7 @@ namespace DashboardCode.Routines.AspNetCore
             var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
             if (forbiddenActionResult != null)
                 return forbiddenActionResult;
-            var userContext = createUnitContext(user);
-            var handler = getContainerHandler(user, userContext, containerFactory);
+            var handler = getContainerHandler(user, containerFactory);
             var actionResult = await handler.HandleAsync((container, closure) => func(container, closure));
             return actionResult;
         }
@@ -45,8 +41,7 @@ namespace DashboardCode.Routines.AspNetCore
             var (forbiddenActionResult, user, containerFactory) = getUserAndFailedActionResultInitialisedAsync().Result;
             if (forbiddenActionResult != null)
                 return forbiddenActionResult;
-            var userContext = createUnitContext(user);
-            var handler = getContainerHandler(user, userContext, containerFactory);
+            var handler = getContainerHandler(user, containerFactory);
             var actionResult = handler.Handle((container, closure) => func(container, closure));
             return actionResult;
         }
@@ -56,8 +51,7 @@ namespace DashboardCode.Routines.AspNetCore
             var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
             if (forbiddenActionResult != null)
                 return forbiddenActionResult;
-            var userContext = createUnitContext(user);
-            var handler = getContainerHandler(user, userContext, containerFactory);
+            var handler = getContainerHandler(user, containerFactory);
             var actionResult = await handler.HandleAsync((container, closure) => func(container, closure, user));
             return actionResult;
         }
@@ -67,8 +61,7 @@ namespace DashboardCode.Routines.AspNetCore
             var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
             if (forbiddenActionResult != null)
                 return forbiddenActionResult;
-            var userContext = createUnitContext(user);
-            var handler = getContainerHandler(user, userContext, containerFactory);
+            var handler = getContainerHandler(user, containerFactory);
             var actionResult = handler.Handle((container, closure) => func(container, closure));
             return actionResult;
         }
@@ -78,8 +71,7 @@ namespace DashboardCode.Routines.AspNetCore
             var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
             if (forbiddenActionResult != null)
                 return forbiddenActionResult;
-            var userContext = createUnitContext(user);
-            var handler = getContainerHandler(user, userContext, containerFactory);
+            var handler = getContainerHandler(user, containerFactory);
             var actionResult = handler.Handle((container, closure) => func(container, closure, user));
             return actionResult;
         }
@@ -88,22 +80,20 @@ namespace DashboardCode.Routines.AspNetCore
     public class PageRoutineHandler<TUserContext, TUser>
     {
         readonly Func<Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync;
-        readonly Func<TUser, TUserContext> createUnitContext;
-        readonly Func<TUser, TUserContext, ContainerFactory, IRoutineHandler<TUser, TUserContext>> getUserHandler;
+        readonly Func<TUser, ContainerFactory, IRoutineHandler<TUser, TUserContext>> getUserHandler;
 
         public PageRoutineHandler(
             PageModel pageModel,
             Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
-            Func<TUser, TUserContext> createUserContext,
-            Func<AspRoutineFeature, Func<object>, TUser,  TUserContext, ContainerFactory, IRoutineHandler<TUser, TUserContext>> getUserHandler
+            Func<AspRoutineFeature, Func<object>, TUser,   ContainerFactory, IRoutineHandler<TUser, TUserContext>> getUserHandler
             )
         {
             var aspRoutineFeature = AspNetCoreManager.GetAspRoutineFeature(pageModel);
             Func<object> getInput = () => AspNetCoreManager.GetRequest(pageModel.HttpContext.Request);
 
             this.getUserAndFailedActionResultInitialisedAsync = () => getUserAndFailedActionResultInitialisedAsync(aspRoutineFeature);
-            this.createUnitContext = createUserContext;
-            this.getUserHandler = (user, userContext, containerFactory) => getUserHandler(aspRoutineFeature, getInput, user, userContext,  containerFactory);
+
+            this.getUserHandler = (user,  containerFactory) => getUserHandler(aspRoutineFeature, getInput, user, containerFactory);
         }
 
         #region HandleUserAsync
@@ -112,8 +102,7 @@ namespace DashboardCode.Routines.AspNetCore
             var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
             if (forbiddenActionResult != null)
                 return forbiddenActionResult;
-            var userContext = createUnitContext(user);
-            var handler = getUserHandler(user, userContext, containerFactory);
+            var handler = getUserHandler(user, containerFactory);
             var actionResult = handler.Handle((u, closure) => func(u, closure));
             return actionResult;
         }
@@ -123,8 +112,7 @@ namespace DashboardCode.Routines.AspNetCore
             var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
             if (forbiddenActionResult != null)
                 return forbiddenActionResult;
-            var userContext = createUnitContext(user);
-            var handler = getUserHandler(user, userContext, containerFactory);
+            var handler = getUserHandler(user, containerFactory);
             var actionResult = await handler.HandleAsync((u, closure) => func(u, closure));
             return actionResult;
         }

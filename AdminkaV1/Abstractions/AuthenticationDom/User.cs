@@ -121,28 +121,28 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
                 }
             }
             if (priveleges1 != null)
-                foreach (var p in priveleges1)
+                foreach (var (privilege, isAllowed) in priveleges1)
                 {
-                    if (p.isAllowed)
-                        addPrivilege(p.privilege);
+                    if (isAllowed)
+                        addPrivilege(privilege);
                     else
-                        addDenied(p.privilege);
+                        addDenied(privilege);
                 }
             if (priveleges2 != null)
-                foreach (var p in priveleges2)
+                foreach (var (privilege, isAllowed) in priveleges2)
                 {
-                    if (p.isAllowed)
-                        addPrivilege(p.privilege);
+                    if (isAllowed)
+                        addPrivilege(privilege);
                     else
-                        addDenied(p.privilege);
+                        addDenied(privilege);
                 }
             if (priveleges3 != null)
-                foreach (var p in priveleges3)
+                foreach (var (privilege, isAllowed) in priveleges3)
                 {
-                    if (p.isAllowed)
-                        addPrivilege(p.privilege);
+                    if (isAllowed)
+                        addPrivilege(privilege);
                     else
-                        addDenied(p.privilege);
+                        addDenied(privilege);
                 }
             return priveleges;
         }

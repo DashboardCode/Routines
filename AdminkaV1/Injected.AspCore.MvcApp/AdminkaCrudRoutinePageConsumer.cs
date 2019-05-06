@@ -46,7 +46,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
              Func<User, UserContext> createUserContext, 
              ApplicationSettings applicationSettings, IMemoryCache memoryCache, MemberTag memberTag) :
              base(pageModel, pageRoutineFeature,
-                 createUserContext,
                  getUserAndFailedActionResultInitialisedAsync:
                  (aspRoutineFeature)=>
                      MvcAppManager.GetUserAndFailedActionResultInitialisedAsync(
@@ -56,8 +55,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                          aspRoutineFeature,
                          memoryCache,
                          pageRoutineFeature),
-                getContainerHandler: (aspRoutineFeature, getInput, user, userContext, containerFactory) =>
+                getContainerHandler: (aspRoutineFeature, getInput, user, containerFactory) =>
                 {
+                    var userContext = createUserContext(user);
                     return MvcAppManager.GetContainerStorageHandler(
                         containerFactory,
                         memberTag,
@@ -80,9 +80,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public AdminkaCrudRoutinePageConsumer(
             PageModel pageModel, 
             PageRoutineFeature pageRoutineFeature,
-            Func<TUser, TUserContext> createUserContext,
             Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
-            Func<AspRoutineFeature, Func<object>, TUser, TUserContext, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler,
+            Func<AspRoutineFeature, Func<object>, TUser, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler,
             MemberTag memberTag) :
             base(
                 pageModel,
@@ -90,7 +89,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 new PageStorageRoutineHandler<TUserContext, TUser>(
                     pageModel,
                     getUserAndFailedActionResultInitialisedAsync,
-                    createUserContext,
                     getContainerHandler
                     )
                 )
