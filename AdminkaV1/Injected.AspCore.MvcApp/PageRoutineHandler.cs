@@ -41,7 +41,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     pageModel,
                     pageRoutineFeature,
                     applicationSettings,
-                    memoryCache,
                     memberTag,
                     uc => uc.AuditStamp,
                     uc => uc.AuditStamp,
@@ -65,7 +64,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             PageModel pageModel,
             PageRoutineFeature pageRoutineFeature,
             ApplicationSettings applicationSettings,
-            IMemoryCache memoryCache,
             MemberTag memberTag,
             Func<TUserContext, string> getConfigurationFor,
             Func<TUserContext, string> getAuditStamp,
@@ -78,15 +76,15 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 {
                     var userContext = createUnitContext(user);
                     return MvcAppManager.GetContainerHandler(
-                    containerFactory,
-                    memberTag,
-                    aspRoutineFeature,
-                    getInput,
-                    userContext,
-                    applicationSettings,
-                    getConfigurationFor,
-                    getAuditStamp
-                );
+                        containerFactory,
+                        memberTag,
+                        aspRoutineFeature,
+                        getInput,
+                        userContext,
+                        applicationSettings,
+                        getConfigurationFor,
+                        getAuditStamp
+                    );
                 }
             )
         {

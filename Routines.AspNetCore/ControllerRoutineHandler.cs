@@ -91,7 +91,6 @@ namespace DashboardCode.Routines.AspNetCore
             Func<object> getInput = () => AspNetCoreManager.GetRequest(controllerBase.HttpContext.Request);
 
             this.getUserAndFailedActionResultInitialisedAsync = () => getUserAndFailedActionResultInitialisedAsync(aspRoutineFeature);
-
             this.getUserHandler = (user, containerFactory) => getUserHandler(aspRoutineFeature, getInput, user, containerFactory);
         }
 
