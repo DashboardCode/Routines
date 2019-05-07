@@ -102,7 +102,7 @@
     "sourcemap-cs": "node ./node_modules/source-map-explorer --html wwwroot/dist/main.css wwwroot/dist/main.css.map > ./wwwroot/dist/sourcemap_css.html",
     "sourcemap-js": "node ./node_modules/source-map-explorer --html wwwroot/dist/main.js wwwroot/dist/main.js.map > ./wwwroot/dist/sourcemapjs.html",
     "bundlesize": "dir .\\wwwroot\\dist\\*.js .\\wwwroot\\dist\\*.css",
-    "dist": "npm-run-all gulp dev webpack sourcemap-cs sourcemap-js size ",
+    "dist": "npm-run-all gulp dev webpack sourcemap-cs sourcemap-js ",
     "size": "size-limit"
   },
   "keywords": [
@@ -111,20 +111,20 @@
   "author": "Roman Pokrovskij",
   "size-limit": [
     {
-      "path": "./wwwroot/dist/main.css"
-    },
-    {
-      "path": "./wwwroot/dist/main.css",
-      "gzip": false,
-      "limit": "250 KB"
-    },
-    {
       "path": "./wwwroot/dist/main.js"
     },
     {
       "path": "./wwwroot/dist/main.js",
       "gzip": false,
       "limit": "200 KB"
+    },
+    {
+      "path": "./wwwroot/dist/main.css"
+    },
+    {
+      "path": "./wwwroot/dist/main.css",
+      "gzip": false,
+      "limit": "250 KB"
     },
     {
       "path": "./wwwroot/dist/vendor.css"
