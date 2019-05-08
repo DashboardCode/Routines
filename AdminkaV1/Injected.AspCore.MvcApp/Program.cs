@@ -7,7 +7,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static void Main(string[] args) 
         {
             #if  DEBUG
                 TestDependencies();  // fail early test

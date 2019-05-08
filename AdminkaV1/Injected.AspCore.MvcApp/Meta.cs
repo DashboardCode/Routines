@@ -270,7 +270,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     e => e.GroupId,
                     nameof(Group.GroupId),
                     nameof(Group.GroupName),
-                    (ep, ef) => new UserGroup() { GroupId = ep.UserId, UserId = ef.GroupId }
+                    (ep, ef) => new UserGroup() { UserId = ep.UserId, GroupId = ef.GroupId }
                 )
             )
         {

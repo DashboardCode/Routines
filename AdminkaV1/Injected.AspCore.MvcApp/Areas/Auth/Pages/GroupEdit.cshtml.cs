@@ -1,9 +1,7 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.Routines.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
