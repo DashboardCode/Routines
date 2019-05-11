@@ -43,59 +43,59 @@
     <tbody>
         @foreach (var item in Model.List)
         {
-            <tr>
-                <td class="adminka-action-button-group">
-                    <div class="d-flex flex-row">
-                        <a class="btn-sm" asp-area="Auth" asp-page="Group" asp-route-id="@item.GroupId"><span class="material-icons">insert_drive_file</span></a>
-                        @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
-                        {
-                            <div class="d-flex flex-column">
-                                <a class="btn-xsm" asp-area="Auth" asp-page="GroupEdit" asp-route-id="@item.GroupId"><span class="material-icons">edit</span></a>
-                                <a class="btn-xsm" asp-area="Auth" asp-page="GroupDelete" asp-route-id="@item.GroupId"><span class="material-icons">delete</span></a>
-                            </div>
-                        }
-                    </div>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GroupId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GroupName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GroupAdName)
-                </td>
-                <td>
-                    @foreach (var p in item.GetPrivileges())
+        <tr>
+            <td class="adminka-action-button-group">
+                <div class="d-flex flex-row">
+                    <a class="btn-sm" asp-area="Auth" asp-page="Group" asp-route-id="@item.GroupId"><span class="material-icons">insert_drive_file</span></a>
+                    @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                     {
-                        if (p.Item2)
-                        {
-                            <a class="badge" asp-area="Auth" asp-page="Privilege"  asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
-                        }
-                        else
-                        {
-                            <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" style="text-decoration:line-through" >@p.Item1.PrivilegeName</a>
-                        }
+                        <div class="d-flex flex-column">
+                            <a class="btn-xsm" asp-area="Auth" asp-page="GroupEdit" asp-route-id="@item.GroupId"><span class="material-icons">edit</span></a>
+                            <a class="btn-xsm" asp-area="Auth" asp-page="GroupDelete" asp-route-id="@item.GroupId"><span class="material-icons">delete</span></a>
+                        </div>
                     }
-                </td>
-                <td>
-                    @foreach (var r in item.GetRoles())
+                </div>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GroupId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GroupName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GroupAdName)
+            </td>
+            <td>
+                @foreach (var u in item.GetUsers())
+                {
+                    <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId">@u.LoginName</a>
+                }
+            </td>
+            <td>
+                @foreach (var r in item.GetRoles())
+                {
+                    <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId">@r.RoleName</a>
+                }
+            </td>
+            <td>
+                @foreach (var p in item.GetPrivileges())
+                {
+                    if (p.Item2)
                     {
-                        <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId">@r.RoleName</a>
+                        <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId">@p.Item1.PrivilegeName</a>
                     }
-                </td>
-                <td>
-                    @foreach (var u in item.GetUsers())
+                    else
                     {
-                        <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId">@u.LoginName</a>
+                        <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" style="text-decoration:line-through">@p.Item1.PrivilegeName</a>
                     }
-                </td>
-            </tr>
+                }
+            </td>
+        </tr>
         }
     </tbody>
 </table>
 
-@section scripts {
+@section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
             var tableId = '#' + '@tableId';

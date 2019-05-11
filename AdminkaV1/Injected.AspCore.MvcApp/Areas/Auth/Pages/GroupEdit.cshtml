@@ -1,32 +1,29 @@
 ﻿@page
 @model DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages.GroupEditModel
 @{
-    ViewData["SubTitle"] = "Edit Group";
+    ViewData["SubTitle"] = $"Edit Group ({Model.Entity.GroupId})";
 }
 
-<div class="d-flex flex-row justify-content-between align-self">
-    <h3>Group (@Model.Entity.GroupId)</h3>
-    <a class="adminka-navigation adminka-navigation-clear" asp-area="Auth" asp-page="Group" asp-route-id="@Model.Entity.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Internal" ></a>
-</div>
+@section Messages{
+    @if (!Model.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="container alert alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+    }
+}
 
+<form method="post">
+    <input hidden type="hidden" asp-for="@Model.Entity.GroupId"  />
+    <input hidden type="hidden" asp-for="@Model.Entity.RowVersion" />
+    <input hidden type="hidden" asp-for="@Model.Crud.Referrer.GoBack" name="Referrer" />
+      
+    <div class="adminka-title d-flex flex-row justify-content-between align-items-center"> 
+        <h3>Group (@Model.Entity.GroupId)</h3>
+        <a class="adminka-navigation adminka-icon-before adminka-icon-before-clear" asp-area="Auth" asp-page="Group" asp-route-id="@Model.Entity.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Internal"></a>
+    </div>
 
-@using (Html.BeginForm())
-{
-    <input hidden asp-for="@Model.Entity.GroupId" type="hidden" />
-    <input hidden asp-for="@Model.Entity.RowVersion" type="hidden" />
-    <input hidden asp-for="@Model.Crud.Referrer.GoBack" name="Referrer" type="hidden" />
-
-    <div>
-        <hr />
-        @section Messages{
-            @if (!Model.ModelState.IsValid)
-            {
-                <div asp-validation-summary="All" class="container alert alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-            }
-        }
-
+    <div class="adminka-form-container">
         <div class="form-group row">
             <label class="col-form-label col-sm-2" for="edit-group-name-id">Name</label>
             <div class="col-sm-10">
@@ -75,16 +72,18 @@
             </div>
         </div>
 
-        <h4>Are you sure you want to save changes?</h4>
-        <div class="form-group">
-            <div class="d-flex flex-row align-self">
-                <input type="submit" value="Save" class="btn adminka-btn-ok" />
-                <a class="adminka-btn adminka-navigation-back mx-3" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+        <div class="adminka-buttons adminka-buttons-update">
+            <div class="form-group">
+                <div class="d-flex flex-row">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back ml-3" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+                </div>
             </div>
         </div>
     </div>
-}
-@section scripts {
+</form>
+
+@section Scripts {
     <script type="text/javascript">
         document.addEventListener("DOMContentLoaded", function (event) {
             (function () {

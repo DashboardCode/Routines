@@ -1,112 +1,113 @@
 ﻿@page
 @model DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages.PrivilegeModel
 @{
-    ViewData["SubTitle"] = "Privilege";
+    ViewData["SubTitle"] = $"Privilege (${Model.Entity.PrivilegeId})";
 }
 
-<div class="d-flex flex-row align-self justify-content-between">
-    <h3>Privilege (@Model.Entity.PrivilegeId)</h3>
-    <div>
-        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="Auth" asp-page="PrivilegeEdit" asp-route-id="@Model.Entity.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">Edit</a>
+<div class="adminka-panel">
+    <div class="adminka-title d-flex flex-row justify-content-between align-items-center">
+        <h3>Privilege (@Model.Entity.PrivilegeId)</h3>
+        <div>
+            <a class="adminka-navigation adminka-icon-before adminka-icon-before-edit" asp-area="Auth" asp-page="PrivilegeEdit" asp-route-id="@Model.Entity.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">Edit</a>
+        </div>
     </div>
-</div>
-
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2 mb-sm-4">
-            Name
-        </dt>
-        <dd class="col-sm-10 mb-sm-4">
-            @Html.DisplayFor(model => model.Entity.PrivilegeName)
-        </dd>
-
-        @{var roles = Model.Entity.GetRoles();}
-        <dt class="col-sm-2 mb-sm-4">
-            Roles (Allowed)
-        </dt>
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var r in roles)
-            {
-                if (r.Item2)
+    
+    <div class="adminka-container">
+        <dl class="row">
+            <dt class="col-sm-2 mb-sm-4">
+                Name
+            </dt>
+            <dd class="col-sm-10 mb-sm-4">
+                @Html.DisplayFor(model => model.Entity.PrivilegeName)
+            </dd>
+    
+            @{var roles = Model.Entity.GetRoles();}
+            <dt class="col-sm-2 mb-sm-4">
+                Roles (Allowed)
+            </dt>
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var r in roles)
                 {
-                    <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.Item1.RoleName</a>
+                    if (r.Item2)
+                    {
+                        <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.Item1.RoleName</a>
+                    }
                 }
-            }
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Roles (Denied)
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var r in roles)
-            {
-                if (!r.Item2)
+            </dd>
+    
+            <dt class="col-sm-2 mb-sm-4">
+                Roles (Denied)
+            </dt>
+    
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var r in roles)
                 {
-                    <a class="badge scratched" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.Item1.RoleName</a>
+                    if (!r.Item2)
+                    {
+                        <a class="badge scratched" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.Item1.RoleName</a>
+                    }
                 }
-            }
-        </dd>
-
-        @{var groups = Model.Entity.GetGroups();}
-        <dt class="col-sm-2 mb-sm-4">
-            Groups (Allowed)
-        </dt>
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var g in groups)
-            {
-                if (g.Item2)
+            </dd>
+    
+            @{var groups = Model.Entity.GetGroups();}
+            <dt class="col-sm-2 mb-sm-4">
+                Groups (Allowed)
+            </dt>
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var g in groups)
                 {
-                    <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@g.Item1.GroupName</a>
+                    if (g.Item2)
+                    {
+                        <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@g.Item1.GroupName</a>
+                    }
                 }
-            }
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Groups (Denied)
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var g in groups)
-            {
-                if (!g.Item2)
+            </dd>
+    
+            <dt class="col-sm-2 mb-sm-4">
+                Groups (Denied)
+            </dt>
+    
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var g in groups)
                 {
-                    <a class="badge scratched" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@g.Item1.GroupName</a>
+                    if (!g.Item2)
+                    {
+                        <a class="badge scratched" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@g.Item1.GroupName</a>
+                    }
                 }
-            }
-        </dd>
-
-        @{var users = Model.Entity.GetUsers();}
-        <dt class="col-sm-2 mb-sm-4">
-            Users (Allowed)
-        </dt>
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var u in users)
-            {
-                if (u.Item2)
+            </dd>
+    
+            @{var users = Model.Entity.GetUsers();}
+            <dt class="col-sm-2 mb-sm-4">
+                Users (Allowed)
+            </dt>
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var u in users)
                 {
-                    <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.Item1.LoginName</a>
+                    if (u.Item2)
+                    {
+                        <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.Item1.LoginName</a>
+                    }
                 }
-            }
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Users (Denied)
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var u in users)
-            {
-                if (!u.Item2)
+            </dd>
+    
+            <dt class="col-sm-2 mb-sm-4">
+                Users (Denied)
+            </dt>
+    
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var u in users)
                 {
-                    <a class="badge scratched" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.Item1.LoginName</a>
+                    if (!u.Item2)
+                    {
+                        <a class="badge scratched" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.Item1.LoginName</a>
+                    }
                 }
-            }
-        </dd>
+            </dd>
+        </dl>
 
-    </dl>
-    <div class="d-flex flex-row align-self">
-        <a class="adminka-btn adminka-navigation-back" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+        <div class="adminka-buttons d-flex flex-row">
+            <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+        </div>
     </div>
 </div>

@@ -1,2 +1,28 @@
 @import "customBootstrapVariables";
 @import "./../node_modules/bootstrap/scss/bootstrap";
+
+.btn-primary {
+    color: white;
+    background-color: black;
+    border: 1px solid black;
+}
+
+.btn-primary:hover {
+    color: white;
+    border: 1px solid $primary;
+}
+
+.btn-secondary {
+    color: #333333;
+    background-color: #DDDDDD;
+    border: 1px solid #DDDDDD;
+}
+    /*a.adminka-btn {
+    color: #333333;
+    border: 1px solid #DDDDDD;
+    background-color: #DDDDDD;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    border-radius: 3px;
+    text-decoration: none;
+}*/

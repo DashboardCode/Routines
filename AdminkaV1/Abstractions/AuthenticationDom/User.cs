@@ -108,7 +108,7 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
             var denied = new List<Privilege>();
             void addPrivilege(Privilege privilege)
             {
-                if (denied.Any(e => e.PrivilegeId == privilege.PrivilegeId))
+                if (!denied.Any(e => e.PrivilegeId == privilege.PrivilegeId))
                     if (!priveleges.Any(e => e.PrivilegeId == privilege.PrivilegeId))
                         priveleges.Add(privilege);
             }

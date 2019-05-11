@@ -80,30 +80,6 @@
   margin-bottom: 0px;
 }
 
-a.adminka-btn {
-  color: #333333;
-  border: 1px solid #DDDDDD;
-  background-color: #DDDDDD;
-  padding-left: 0.4rem;
-  padding-right: 0.4rem;
-  border-radius: 3px;
-  text-decoration: none;
-}
-
-a.adminka-btn:hover {
-  color: #007bff;
-}
-
-.adminka-btn-ok {
-  color: white;
-  background-color: black;
-}
-
-.adminka-btn-ok:hover {
-  color: white;
-  background-color: #007bff;
-}
-
 .btn-logo {
   padding: 0 0;
   margin: 0 0 !important;
@@ -138,81 +114,6 @@ a.adminka-btn:hover {
 
 .dropdown-toggle {
   color: black;
-}
-
-.adminka-navigation {
-  color: black;
-}
-
-.adminka-navigation:hover {
-  color: #007bff;
-  text-decoration: none;
-}
-
-a.adminka-navigation-list::before {
-  font-family: "Material Icons";
-  font-size: 170%;
-  vertical-align: middle;
-  margin-right: 0.2rem;
-  content: "view_list";
-  -webkit-font-feature-settings: "liga" 1;
-  -moz-font-feature-settings: "liga" 1;
-  font-feature-settings: "liga" 1;
-}
-
-a.adminka-navigation-back::before {
-  font-family: "Material Icons";
-  font-size: 170%;
-  vertical-align: middle;
-  margin-right: 0.2rem;
-  content: "arrow_back";
-  -webkit-font-feature-settings: "liga" 1;
-  -moz-font-feature-settings: "liga" 1;
-  font-feature-settings: "liga" 1;
-}
-
-a.adminka-navigation-edit::before {
-  font-family: "Material Icons";
-  font-size: 170%;
-  vertical-align: middle;
-  margin-right: 0.2rem;
-  content: "edit";
-  -webkit-font-feature-settings: "liga" 1;
-  -moz-font-feature-settings: "liga" 1;
-  font-feature-settings: "liga" 1;
-}
-
-a.adminka-navigation-delete::before {
-  font-family: "Material Icons";
-  font-size: 170%;
-  vertical-align: middle;
-  margin-right: 0.2rem;
-  content: "delete";
-  -webkit-font-feature-settings: "liga" 1;
-  -moz-font-feature-settings: "liga" 1;
-  font-feature-settings: "liga" 1;
-}
-
-a.adminka-navigation-details::before {
-  font-family: "Material Icons";
-  font-size: 170%;
-  vertical-align: middle;
-  margin-right: 0.2rem;
-  content: "insert_drive_file";
-  -webkit-font-feature-settings: "liga" 1;
-  -moz-font-feature-settings: "liga" 1;
-  font-feature-settings: "liga" 1;
-}
-
-a.adminka-navigation-clear::before {
-  font-family: "Material Icons";
-  font-size: 170%;
-  vertical-align: middle;
-  margin-right: 0.2rem;
-  content: "clear";
-  -webkit-font-feature-settings: "liga" 1;
-  -moz-font-feature-settings: "liga" 1;
-  font-feature-settings: "liga" 1;
 }
 
 .dropdown-item:hover {
@@ -284,6 +185,78 @@ dl.row > dt {
 
 .paginate_button {
   font-size: small;
+}
+
+.adminka-title {
+  border-bottom: 1px solid #e5e3e3;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.adminka-buttons::before {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+  font-size: 1.5rem;
+}
+
+.adminka-buttons-create::before {
+  content: "Are you sure you want to create this?";
+}
+
+.adminka-buttons-update::before {
+  content: "Are you sure you want to save changes?";
+}
+
+.adminka-buttons-delete::before {
+  content: "Are you sure you want to delete this?";
+}
+
+.adminka-icon-before {
+  position: relative;
+}
+
+.adminka-icon-before::before {
+  font-family: "Material Icons";
+  font-size: 150%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.2rem;
+  content: "arrow_back";
+  line-height: 0;
+  -webkit-font-feature-settings: "liga" 1;
+  -moz-font-feature-settings: "liga" 1;
+  font-feature-settings: "liga" 1;
+}
+
+.adminka-icon-before-back::before {
+  content: "arrow_back";
+  margin-bottom: 0.3rem;
+}
+
+.adminka-icon-before-edit::before {
+  content: "edit";
+  margin-bottom: 0.3rem;
+}
+
+.adminka-icon-before-delete::before {
+  content: "delete";
+  margin-bottom: 0.3rem;
+}
+
+.adminka-icon-before-clear::before {
+  content: "clear";
+  margin-bottom: 0.3rem;
+}
+
+a.adminka-navigation {
+  color: #000;
+}
+
+a.adminka-navigation:hover {
+  color: #007bff;
+  text-decoration: none;
 }
 
 /*# sourceMappingURL=site.css.map */

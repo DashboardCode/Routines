@@ -61,7 +61,7 @@ namespace DashboardCode.Routines.AspNetCore
             if (url == default)
             {
                 // referer is URI (by HTTP stadadrd URI:= scheme:[//authority]path[?query][#fragment] e.g http://localhost:7894/Path/To/Data?Filter=abc)
-                if (httpRequest.Headers.TryGetValue("Referer", out var nameValuePairs))
+                if (httpRequest.Headers.TryGetValue("Referer", out var nameValuePairs)) // referer is misspeling in HTTP standard
                 {
                     var referer = nameValuePairs.ToString();
                     if (string.IsNullOrEmpty(referer))

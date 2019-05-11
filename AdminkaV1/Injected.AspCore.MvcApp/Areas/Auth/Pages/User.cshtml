@@ -4,89 +4,89 @@
     ViewData["SubTitle"] = "User";
 }
 
-<div class="d-flex flex-row align-self justify-content-between">
-    <h3>User (@Model.Entity.UserId)</h3>
-    <div>
-        <a class="ml-4 adminka-navigation adminka-navigation-edit" asp-area="Auth" asp-page="UserEdit" asp-route-id="@Model.Entity.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">Edit</a>
+<div class="adminka-panel">
+    <div class="adminka-title d-flex flex-row justify-content-between align-items-center">
+        <h3>User (@Model.Entity.UserId)</h3>
+        <div>
+            <a class="adminka-navigation adminka-icon-before adminka-icon-before-edit" asp-area="Auth" asp-page="UserEdit" asp-route-id="@Model.Entity.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">Edit</a>
+        </div>
+    </div>
+    
+    <div class="adminka-container"> 
+        <dl class="row">
+            <dt class="col-sm-2 mb-sm-4">
+                Login
+            </dt>
+            <dd class="col-sm-10 mb-sm-4">
+                @Html.DisplayFor(model => model.Entity.LoginName)
+            </dd>
+    
+            <dt class="col-sm-2 mb-sm-4">
+                First Name
+            </dt>
+            <dd class="col-sm-10 mb-sm-4">
+                @Html.DisplayFor(model => model.Entity.FirstName)
+            </dd>
+    
+            <dt class="col-sm-2 mb-sm-4">
+                Second Name
+            </dt>
+            <dd class="col-sm-10 mb-sm-4">
+                @Html.DisplayFor(model => model.Entity.SecondName)
+            </dd>
+    
+            <dt class="col-sm-2 mb-sm-4">
+                Groups
+            </dt>
+    
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var r in Model.Entity.GetGroups())
+                {
+                    <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@r.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.GroupName</a>
+                }
+            </dd>
+    
+            <dt class="col-sm-2 mb-sm-4">
+                Roles
+            </dt>
+    
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var r in Model.Entity.GetRoles())
+                {
+                    <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.RoleName</a>
+                }
+            </dd>
+    
+            @{var privleges = Model.Entity.GetPrivileges();}
+            <dt class="col-sm-2 mb-sm-4">
+                Privileges Allowed
+            </dt>
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var p in privleges)
+                {
+                    if (p.Item2)
+                    {
+                        <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
+                    }
+                }
+            </dd>
+    
+            <dt class="col-sm-2 mb-sm-4">
+                Privileges Denied
+            </dt>
+    
+            <dd class="col-sm-10 mb-sm-4">
+                @foreach (var p in privleges)
+                {
+                    if (!p.Item2)
+                    {
+                        <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
+                    }
+                }
+            </dd>
+        </dl>
+        <div class="adminka-buttons d-flex flex-row">
+            <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back" href="@Model.Crud.Referrer.GoBack">Go back</a>
+        </div>
     </div>
 </div>
-
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2 mb-sm-4">
-            Login
-        </dt>
-        <dd class="col-sm-10 mb-sm-4">
-            @Html.DisplayFor(model => model.Entity.LoginName)
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            First Name
-        </dt>
-        <dd class="col-sm-10 mb-sm-4">
-            @Html.DisplayFor(model => model.Entity.FirstName)
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Second Name
-        </dt>
-        <dd class="col-sm-10 mb-sm-4">
-            @Html.DisplayFor(model => model.Entity.SecondName)
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Groups
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var r in Model.Entity.GetGroups())
-            {
-                <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@r.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.GroupName</a>
-            }
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Roles
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var r in Model.Entity.GetRoles())
-            {
-                <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.RoleName</a>
-            }
-        </dd>
-
-        @{var privleges = Model.Entity.GetPrivileges();}
-        <dt class="col-sm-2 mb-sm-4">
-            Privileges Allowed
-        </dt>
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var p in privleges)
-            {
-                if (p.Item2)
-                {
-                    <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
-                }
-            }
-        </dd>
-
-        <dt class="col-sm-2 mb-sm-4">
-            Privileges Denied
-        </dt>
-
-        <dd class="col-sm-10 mb-sm-4">
-            @foreach (var p in privleges)
-            {
-                if (!p.Item2)
-                {
-                    <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
-                }
-            }
-        </dd>
-    </dl>
-    <div class="d-flex flex-row align-self">
-        <a class="adminka-btn adminka-navigation-back" href="@Model.Crud.Referrer.GoBack">Go back</a>
-    </div>
-</div>
-

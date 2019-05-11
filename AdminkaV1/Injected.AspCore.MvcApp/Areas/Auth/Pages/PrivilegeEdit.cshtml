@@ -1,21 +1,29 @@
 ﻿@page
 @model DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages.PrivilegeEditModel
 @{
-    ViewData["SubTitle"] = "Edit Privilege";
+    ViewData["SubTitle"] = $"Edit Privilege ({Model.Entity.PrivilegeId})";
 }
-<div class="d-flex flex-row justify-content-between align-self">
-    <h3>Privilege (@Model.Entity.PrivilegeId)</h3>
-    <a class="adminka-navigation adminka-navigation-clear" asp-area="Auth" asp-page="Privilege" asp-route-id="@Model.Entity.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Internal"></a>
-</div>
 
-@using (Html.BeginForm())
-{
-    <input hidden asp-for="@Model.Entity.PrivilegeId" type="hidden" />
-    <input hidden asp-for="@Model.Entity.RowVersion" type="hidden" />
-    <input hidden asp-for="@Model.Crud.Referrer.GoBack" name="Referrer" type="hidden" />
+@section Messages{
+    @if (!Model.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" class="container alert alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+    }
+} 
 
-    <div>
-        <hr />
+<form method="post">
+    <input hidden type="hidden" asp-for="@Model.Entity.PrivilegeId"  />
+    <input hidden type="hidden" asp-for="@Model.Entity.RowVersion" />
+    <input hidden type="hidden" asp-for="@Model.Crud.Referrer.GoBack" name="Referrer"/>
+
+    <div class="adminka-title d-flex flex-row justify-content-between align-items-center">
+        <h3>Privilege (@Model.Entity.PrivilegeId)</h3>
+        <a class="adminka-navigation adminka-icon-before adminka-icon-before-clear" asp-area="Auth" asp-page="Privilege" asp-route-id="@Model.Entity.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Internal"></a>
+    </div>
+
+    <div class="adminka-form-container">
         <div class="form-group row">
             <label class="col-form-label col-sm-2" for="edit-privilege-name-id">Name</label>
             <div class="col-sm-10">
@@ -72,16 +80,18 @@
             </div>
         </div>
 
-        <h4>Are you sure you want to save changes?</h4>
-        <div class="form-group">
-            <div class="d-flex flex-row align-self">
-                <input type="submit" value="Save" class="btn adminka-btn-ok" />
-                <a class="adminka-btn adminka-navigation-back mx-3" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+        <div class="adminka-buttons adminka-buttons-update">
+            <div class="form-group">
+                <div class="d-flex flex-row">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back ml-3" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+                </div>
             </div>
         </div>
     </div>
-}
-@section scripts {
+</form>
+
+@section Scripts {
     <script type="text/javascript">
         (function () {
             var select = $('.bootstrap-multiselect').bsMultiSelect();
