@@ -6,7 +6,7 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     [ValidateAntiForgeryToken]
-    public class GroupCreateModel : PageModel
+    public class GroupCreateModel : PageModel, IGroupEditPartialModel
     {
         readonly static GroupMeta meta = Meta.GroupMeta;
 

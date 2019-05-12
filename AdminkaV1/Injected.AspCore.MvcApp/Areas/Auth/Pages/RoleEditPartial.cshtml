@@ -1,0 +1,45 @@
+﻿@model IRoleEditPartialModel
+
+<div class="form-group row">
+    <label class="col-form-label col-sm-2" for="edit-role-name-id">Name</label>
+    <div class="col-sm-10">
+        <input asp-for="Entity.RoleName" class="form-control" autocomplete="off" id="edit-role-name-id" />
+        <span asp-validation-for="Entity.RoleName" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-form-label col-sm-2" for="edit-privileges-allowed-id">Privileges Allowed</label>
+    <div class="col-sm-10">
+        <select multiple="multiple" id="edit-role-privileges-allowed-id" class="form-control d-none bootstrap-multiselect"
+                name="PrivilegesAllowed" asp-items="@ViewBag.PrivilegesAllowedMultiSelectList"></select>
+        @Html.ValidationMessage("PrivilegesAllowed", "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row  adminka-form-group-bsmultiselect-scratched">
+    <label class="col-form-label col-sm-2" for="edit-privileges-denied-id">Privileges Denied</label>
+    <div class="col-sm-10">
+        <select multiple="multiple" id="edit-role-privileges-denied-id" class="form-control d-none bootstrap-multiselect"
+                name="PrivilegesDenied" asp-items="@ViewBag.PrivilegesDeniedMultiSelectList"></select>
+        @Html.ValidationMessage("PrivilegesDenied", "", new { @class = "text-danger" })
+
+    </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-form-label col-sm-2" for="edit-groups-id">Groups</label>
+    <div class="col-sm-10">
+        <select multiple="multiple" id="edit-groups-id" class="form-control d-none bootstrap-multiselect"
+                name="Groups" asp-items="@ViewBag.GroupsMultiSelectList"></select>
+        @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group row">
+    <label class="col-form-label col-sm-2" for="edit-users-id">Users</label>
+    <div class="col-sm-10">
+        <select multiple="multiple" id="edit-users-id" class="form-control d-none bootstrap-multiselect"
+                name="Users" asp-items="@ViewBag.UsersMultiSelectList"></select>
+    </div>
+</div>

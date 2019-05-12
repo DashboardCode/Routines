@@ -4,22 +4,17 @@
     ViewData["SubTitle"] = $"Edit User ({Model.Entity.UserId})";
 }
 
-@section Messages{
-    @if (!Model.ModelState.IsValid)
-    {
-        <div asp-validation-summary="All" class="container alert alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
-    }
+@section Messages {
+    <partial name="_MessagesPartial" />
 }
 
-<form method="post" class="adminka-form">
+<form method="post" class="adminka-panel">
     <input hidden type="hidden" asp-for="@Model.Entity.UserId" />
     <input hidden type="hidden" asp-for="@Model.Entity.RowVersion" />
     <input hidden type="hidden" asp-for="@Model.Crud.Referrer.GoBack" name="Referrer" />
-    
+
     <div class="adminka-title d-flex flex-row justify-content-between">
-        <h3>Users (@Model.Entity.UserId)</h3>
+        <h3>Edit User (@Model.Entity.UserId)</h3>
         <a class="adminka-navigation adminka-icon-before adminka-icon-before-clear" asp-area="Auth" asp-page="User" asp-route-id="@Model.Entity.UserId" asp-route-Referrer="@Model.Crud.Referrer.Internal"></a>
     </div>
 
@@ -92,9 +87,5 @@
 </form>
 
 @section Scripts {
-    <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function (event) {
-            var select = $('.bootstrap-multiselect').bsMultiSelect();
-        });
-    </script>
+    <partial name="_MultiSelectScriptPartial" />
 }

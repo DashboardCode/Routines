@@ -6,7 +6,7 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
     [ValidateAntiForgeryToken]
-    public class RoleCreateModel : PageModel
+    public class RoleCreateModel : PageModel, IRoleEditPartialModel
     {
         readonly static RoleMeta meta = Meta.RoleMeta;
 

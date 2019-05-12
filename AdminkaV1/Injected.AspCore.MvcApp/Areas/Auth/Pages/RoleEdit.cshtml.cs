@@ -5,8 +5,13 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
+    public interface IRoleEditPartialModel
+    {
+        Role Entity { get; }
+    }
+
     [ValidateAntiForgeryToken]
-    public class RoleEditModel : PageModel
+    public class RoleEditModel : PageModel, IRoleEditPartialModel
     {
         readonly static RoleMeta meta = Meta.RoleMeta;
 

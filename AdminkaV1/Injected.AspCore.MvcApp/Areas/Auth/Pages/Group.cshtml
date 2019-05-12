@@ -15,73 +15,7 @@
         </div>
     </div>
     <div class="adminka-container">
-        <dl class="row">
-            <dt class="col-sm-2 mb-sm-4">
-                Name
-            </dt>
-    
-            <dd class="col-sm-10 mb-sm-4">
-                @Html.DisplayFor(model => model.Entity.GroupName)
-            </dd>
-    
-            <dt class="col-sm-2 mb-sm-4">
-                AD Group
-            </dt>
-    
-            <dd class="col-sm-10 mb-sm-4">
-                @Html.DisplayFor(model => model.Entity.GroupAdName)
-            </dd>
-    
-            <dt class="col-sm-2 mb-sm-4">
-                Users
-            </dt>
-    
-            <dd class="col-sm-10 mb-sm-4">
-                @foreach (var u in Model.Entity.GetUsers())
-                {
-                    <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.LoginName</a>
-                }
-            </dd>
-    
-            <dt class="col-sm-2 mb-sm-4">
-                Roles
-            </dt>
-    
-            <dd class="col-sm-10 mb-sm-4">
-                @foreach (var r in Model.Entity.GetRoles())
-                {
-                    <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.RoleName</a>
-                }
-            </dd>
-    
-            @{var privleges = Model.Entity.GetPrivileges();}
-            <dt class="col-sm-2 mb-sm-4">
-                Privileges Allowed
-            </dt>
-            <dd class="col-sm-10 mb-sm-4">
-                @foreach (var p in Model.Entity.GetPrivileges())
-                {
-                    if (p.Item2)
-                    {
-                        <a class="badge" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
-                    }
-                }
-            </dd>
-    
-            <dt class="col-sm-2 mb-sm-4">
-                Privileges Denied
-            </dt>
-    
-            <dd class="col-sm-10 mb-sm-4">
-                @foreach (var p in Model.Entity.GetPrivileges())
-                {
-                    if (!p.Item2)
-                    {
-                        <a class="badge scratched" asp-area="Auth" asp-page="Privilege" asp-route-id="@p.Item1.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">@p.Item1.PrivilegeName</a>
-                    }
-                }
-            </dd>
-        </dl>
+        <partial name="GroupPartial.cshtml" />
 
         <div class="adminka-buttons d-flex flex-row">
             <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back" href="@Model.Crud.Referrer.GoBack">Go Back</a>

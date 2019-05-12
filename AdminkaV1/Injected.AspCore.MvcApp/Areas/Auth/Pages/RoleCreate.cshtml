@@ -4,65 +4,20 @@
     ViewData["SubTitle"] = "Create Role";
 }
 
-@section Messages{
-    @if (!Model.ModelState.IsValid)
-    {
-        <div asp-validation-summary="All" class="container alert alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        </div>
-    }
+@section Messages {
+    <partial name="_MessagesPartial"/>
 }
 
-<form method="post">
+<form method="post" class="adminka-panel">
     <input hidden asp-for="@Model.Crud.Referrer.GoBack" name="Referrer" type="hidden" />
 
     <div class="adminka-title d-flex flex-row justify-content-between align-items-center">
-        <h3>Create Group</h3>
+        <h3>Create Role</h3>
         <a class="adminka-navigation adminka-icon-before adminka-icon-before-clear" href="@Model.Crud.Referrer.GoBack"></a>
     </div>
 
     <div class="adminka-form-container">
-
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="create-role-name-id">Name</label>
-            <div class="col-sm-10">
-                @Html.EditorFor(model => model.Entity.RoleName, new { htmlAttributes = new { @id = "create-role-name-id", @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Entity.RoleName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="create-role-privileges-id">Privileges Allowed</label>
-            <div class="col-sm-10">
-                @Html.ListBox("PrivilegesAllowed", ViewBag.PrivilegesAllowedMultiSelectList as MultiSelectList, new { @id = "create-role-privileges-allowed-id", @class = "form-control d-none bootstrap-multiselect" })
-                @Html.ValidationMessage("PrivilegesAllowed", "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group row adminka-form-group-bsmultiselect-scratched">
-            <label class="col-form-label col-sm-2" for="create-role-privileges-id">Privileges Denied</label>
-            <div class="col-sm-10">
-                @Html.ListBox("PrivilegesDenied", ViewBag.PrivilegesDeniedMultiSelectList as MultiSelectList, new { @id = "create-role-privileges-denied-id", @class = "form-control d-none bootstrap-multiselect" })
-                @Html.ValidationMessage("PrivilegesDenied", "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="create-groups-id">Groups</label>
-            <div class="col-sm-10">
-                @Html.ListBox("Groups", ViewBag.GroupsMultiSelectList as MultiSelectList, new { @id = "create-groups-id", @class = "form-control d-none bootstrap-multiselect" })
-                @Html.ValidationMessage("Groups", "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label class="col-form-label col-sm-2" for="edit-users-id">Users</label>
-            <div class="col-sm-10">
-                @Html.ListBox("Users", ViewBag.UsersMultiSelectList as MultiSelectList, new { @id = "edit-users-id", @class = "form-control d-none bootstrap-multiselect" })
-                @Html.ValidationMessage("Users", "", new { @class = "text-danger" })
-            </div>
-        </div>
-
+        <partial name="RoleEditPartial" />
         <div class="adminka-buttons adminka-buttons-create">
             <div class="form-group">
                 <div class="d-flex flex-row">
@@ -75,9 +30,5 @@
 </form>
 
 @section Scripts {
-    <script type="text/javascript">
-        (function () {
-            var select = $('.bootstrap-multiselect').bsMultiSelect();
-        })();
-    </script>
+    <partial name="_MultiSelectScriptPartial" />
 }

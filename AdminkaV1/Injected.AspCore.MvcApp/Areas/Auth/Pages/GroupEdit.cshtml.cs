@@ -5,8 +5,13 @@ using DashboardCode.AdminkaV1.AuthenticationDom;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 {
+    public interface IGroupEditPartialModel
+    {
+        Group Entity { get; }
+    }
+
     [ValidateAntiForgeryToken]
-    public class GroupEditModel : PageModel
+    public class GroupEditModel : PageModel, IGroupEditPartialModel
     {
         readonly static GroupMeta meta = Meta.GroupMeta;
 
