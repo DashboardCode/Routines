@@ -19,7 +19,8 @@
 <div class="form-group row">
     <label class="col-form-label col-sm-2" for="edit-group-users-id">Users</label>
     <div class="col-sm-10">
-        @Html.ListBox("Users", ViewBag.UsersMultiSelectList as MultiSelectList, new { @id = "edit-group-users-id", @readonly = "readonly", @disabled = "disabled", @class = "form-control d-none bootstrap-multiselect" })
+        @*@readonly = "readonly", @disabled = "disabled",*@
+        @Html.ListBox("Users", ViewBag.UsersMultiSelectList as MultiSelectList, new { @id = "edit-group-users-id", @class = "form-control d-none bootstrap-multiselect" })
         @Html.ValidationMessage("Users", "", new { @class = "text-danger" })
     </div>
 </div>

@@ -20,6 +20,7 @@ namespace DashboardCode.Routines.AspNetCore
         private readonly Func<TF, TfID> getTfId;
         private readonly Func<TEntity, TF, TMM> construct;
         private readonly Func<string, TfID> parseId;
+        //private readonly bool disabled;
 
         public ManyToMany(
             string formFieldName,
@@ -34,6 +35,7 @@ namespace DashboardCode.Routines.AspNetCore
 
             Func<TF, TfID> getTfId,
             Func<TEntity, TF, TMM> construct,
+            //bool disabled,
             Func<string, TfID> parseId = null
             )
         {
@@ -53,6 +55,7 @@ namespace DashboardCode.Routines.AspNetCore
             this.formFieldName = formFieldName;
             this.getTfId = getTfId;
             this.construct = construct;
+            //this.disabled = disabled;
             this.parseId = parseId ?? Converters.GetParser<TfID>();
         }
 
@@ -102,11 +105,52 @@ namespace DashboardCode.Routines.AspNetCore
             {
                 foreach (var s in stringValues)
                     selectedIds.Add(parseId(s));
-                options.Where(e => selectedIds.Any(e2 => EqualityComparer<TfID>.Default.Equals(e2, getTfId(e))))
-                    .ToList()
-                    .ForEach(e => selected.Add(construct(entity, e)));
+                var existed = options.Where(e => selectedIds.Any(e2 => EqualityComparer<TfID>.Default.Equals(e2, getTfId(e))))
+                    .ToList();
+                existed.ForEach(e => selected.Add(construct(entity, e)));
             }
             return (selected, options, selectedIds);
+        }
+    }
+
+    public class ManyToManyDisabled<TEntity, TF, TMM, TfID, TDAL, TDST> : IManyToManyDisabled<TEntity, TDAL, TDST> where TEntity : class where TF : class where TMM : class
+    {
+        private readonly Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>> addViewData;
+        private readonly Func<TDAL, IReadOnlyCollection<TF>> getOptions;
+        private readonly Func<TEntity, ICollection<TMM>> getRelated;
+        private readonly Func<TMM, TfID> getTmmTfId;
+
+        public ManyToManyDisabled(
+            Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>> addViewData,
+            Func<TDAL, IReadOnlyCollection<TF>> getOptions,
+            Func<TEntity, ICollection<TMM>> getTmm,
+            Func<TMM, TfID> getTmmTfId
+            )
+        {
+            // common
+            this.addViewData = addViewData;
+            this.getOptions = getOptions;
+
+            // used only in PreparePersistedOptions
+            this.getRelated = getTmm;
+            this.getTmmTfId = getTmmTfId;
+        }
+
+        public void PrepareDefaultOptions(Action<string, object> addViewData, TDAL repository)
+        {
+            var options = getOptions(repository);
+            this.addViewData(addViewData, options, new List<TfID>());
+        }
+
+        public void PreparePersistedOptions(Action<string, object> addViewData, TDAL repository, out Action<TEntity> addViewDataMultiSelectList)
+        {
+            var options = getOptions(repository);
+            addViewDataMultiSelectList = (entity) =>
+            {
+                var tmm = getRelated(entity);
+                var selected = tmm?.Select(getTmmTfId);
+                this.addViewData(addViewData, options, selected);
+            };
         }
     }
 }

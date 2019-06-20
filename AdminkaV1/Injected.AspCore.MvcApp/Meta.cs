@@ -191,17 +191,14 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 nameof(Role.RoleId),
                 nameof(Role.RoleName),
                 (ep, ef) => new GroupRole() { GroupId = ep.GroupId, RoleId = ef.RoleId }
-            ).Add(
+            ).AddDisabled(
                 "Users",
                 "UsersMultiSelectList",
                 repository => repository.Clone<User>().List(),
                 e => e.UserGroupMap,
                 mm => mm.UserId,
-                mm => mm.GroupId,
-                e => e.UserId,
                 nameof(AuthenticationDom.User.UserId),
-                nameof(AuthenticationDom.User.LoginName),
-                (ep, ef) => new UserGroup() { GroupId = ep.GroupId, UserId = ef.UserId }
+                nameof(AuthenticationDom.User.LoginName)
             )
 
             )
@@ -262,15 +259,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     nameof(Role.RoleId),
                     nameof(Role.RoleName),
                     (ep, ef) => new UserRole() { UserId = ep.UserId, RoleId = ef.RoleId }
-                ).Add("Groups", "GroupsMultiSelectList",
+                ).AddDisabled("Groups", "GroupsMultiSelectList",
                     repository => repository.Clone<Group>().List(),
                     e => e.UserGroupMap,
                     mm => mm.GroupId,
-                    mm => mm.UserId,
-                    e => e.GroupId,
                     nameof(Group.GroupId),
-                    nameof(Group.GroupName),
-                    (ep, ef) => new UserGroup() { UserId = ep.UserId, GroupId = ef.GroupId }
+                    nameof(Group.GroupName)
                 )
             )
         {

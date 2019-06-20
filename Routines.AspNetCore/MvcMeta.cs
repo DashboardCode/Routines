@@ -308,9 +308,15 @@ namespace DashboardCode.Routines.AspNetCore
         public class ManyToManyScorer
         {
             readonly Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>, IBatch<TEntity>>> manyToManyDictionary;
+            readonly Dictionary<string, IManyToManyDisabled<TEntity, IRepository<TEntity>, IBatch<TEntity>>> manyToManyDisabledDictionary;
 
-            public ManyToManyScorer(Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>, IBatch<TEntity>>> manyToManyDictionary) =>
+            public ManyToManyScorer(
+                Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>, IBatch<TEntity>>> manyToManyDictionary,
+                Dictionary<string, IManyToManyDisabled<TEntity, IRepository<TEntity>, IBatch<TEntity>>> manyToManyDisabledDictionary)
+            {
                 this.manyToManyDictionary = manyToManyDictionary;
+                this.manyToManyDisabledDictionary = manyToManyDisabledDictionary;
+            }
 
             public ManyToManyScorer Add<TF, TMM, TfID>(
                 string formFieldName,
@@ -359,6 +365,35 @@ namespace DashboardCode.Routines.AspNetCore
                     getTmmExpression.Compile(), 
                     getTmmTfId, getTfId, construct, toId);
                 manyToManyDictionary.Add(formFieldName, manyToMany);
+                return this;
+            }
+
+            public ManyToManyScorer AddDisabled<TF, TMM, TfID>(
+                string formFieldName,
+                string viewDataMultiSelectListKey,
+                Func<IRepository<TEntity>, IReadOnlyCollection<TF>> getOptions,
+
+                Expression<Func<TEntity, ICollection<TMM>>> getTmmExpression,
+
+                Func<TMM, TfID> getTmmTfId,
+                string multiSelectListOptionValuePropertyName,
+                string multiSelectListOptionTextPropertyName
+                ) where TF : class where TMM : class
+            {
+                Func<TMM, TMM, bool> equalsById = (e1, e2) => getTmmTfId(e1).Equals(getTmmTfId(e2));
+
+                Action<Action<string, object>, IReadOnlyCollection<TF>, IEnumerable<TfID>> addViewData2 =
+                    (addViewData, options, selectedIds) =>
+                        addViewData(viewDataMultiSelectListKey,
+                        new MultiSelectList(options, multiSelectListOptionValuePropertyName, multiSelectListOptionTextPropertyName, selectedIds.ToList()));
+
+                var manyToMany = new ManyToManyDisabled<TEntity, TF, TMM, TfID, IRepository<TEntity>, IBatch<TEntity>>(
+                    addViewData2, getOptions,
+                    getTmmExpression.Compile(),
+                    getTmmTfId);
+
+
+                manyToManyDisabledDictionary.Add(formFieldName, manyToMany);
                 return this;
             }
 
@@ -498,11 +533,12 @@ namespace DashboardCode.Routines.AspNetCore
             this.DisabledFormFields = disabledProperties;
 
             var manyToManyBinders = new Dictionary<string, IManyToMany<TEntity, IRepository<TEntity>, IBatch<TEntity>>>();
-            addManyToMany?.Invoke(new ManyToManyScorer(manyToManyBinders));
+            var manyToManyDisabledBinders = new Dictionary<string, IManyToManyDisabled<TEntity, IRepository<TEntity>, IBatch<TEntity>>>();
+            addManyToMany?.Invoke(new ManyToManyScorer(manyToManyBinders, manyToManyDisabledBinders));
             var oneToManyBinders = new Dictionary<string, IOneToMany<TEntity, IRepository<TEntity>>>();
             addOneToMany?.Invoke(new OneToManyScorer(oneToManyBinders));
 
-            this.ReferencesCollection = new ReferencesCollection<TEntity, IRepository<TEntity>, IBatch<TEntity>>(oneToManyBinders, manyToManyBinders);
+            this.ReferencesCollection = new ReferencesCollection<TEntity, IRepository<TEntity>, IBatch<TEntity>>(oneToManyBinders, manyToManyBinders, manyToManyDisabledBinders);
 
             this.FormFields = new Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>>();
             addFieldBinders?.Invoke(new FormFieldsScorer(FormFields));

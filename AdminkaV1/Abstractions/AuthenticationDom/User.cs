@@ -20,15 +20,30 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
         public ICollection<UserRole> UserRoleMap { get; set; }
         public ICollection<UserPrivilege> UserPrivilegeMap { get; set; }
 
-        public bool HasPrivilege(string privilegeId)
+        public bool HasPrivilege(params string[] privileges)
         {
-            var @value = UserPrivilegeMap != null && UserPrivilegeMap.Any(e => e.PrivilegeId == privilegeId);
-            if (!@value)
-                @value = (UserRoleMap != null && UserRoleMap.Any(e => e.Role.RolePrivilegeMap != null && e.Role.RolePrivilegeMap.Any(e2 => e2.PrivilegeId == privilegeId)));
-            if (!@value)
-                @value = (UserGroupMap != null && UserGroupMap.Any(e => e.Group.GroupPrivilegeMap != null && e.Group.GroupPrivilegeMap.Any(e2 => e2.PrivilegeId == privilegeId)));
-            if (!@value)
-                @value = (UserGroupMap != null && UserGroupMap.Any(e => e.Group.GroupRoleMap != null && e.Group.GroupRoleMap.Any(e2 => e2.Role.RolePrivilegeMap!=null && e2.Role.RolePrivilegeMap.Any(e3 => e3.PrivilegeId == privilegeId))));
+            var @value = true;
+            foreach (var privilegeId in privileges)
+            {
+                var hasPrivilege = UserPrivilegeMap != null && UserPrivilegeMap.Any(e => e.PrivilegeId == privilegeId);
+                if (!hasPrivilege)
+                {
+                    hasPrivilege = UserRoleMap != null && UserRoleMap.Any(e => e.Role.RolePrivilegeMap != null && e.Role.RolePrivilegeMap.Any(e2 => e2.PrivilegeId == privilegeId));
+                    if (!hasPrivilege)
+                    {
+                        hasPrivilege = UserGroupMap != null && UserGroupMap.Any(e => e.Group.GroupPrivilegeMap != null && e.Group.GroupPrivilegeMap.Any(e2 => e2.PrivilegeId == privilegeId));
+                        if (!hasPrivilege)
+                        {
+                            hasPrivilege = UserGroupMap != null && UserGroupMap.Any(e => e.Group.GroupRoleMap != null && e.Group.GroupRoleMap.Any(e2 => e2.Role.RolePrivilegeMap != null && e2.Role.RolePrivilegeMap.Any(e3 => e3.PrivilegeId == privilegeId)));
+                            if (!hasPrivilege)
+                            {
+                                @value = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
             return @value;
         }
 
@@ -98,11 +113,23 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
             }
             return @value;
         }
+        public IReadOnlyCollection<(Privilege, bool)> GetGroupsRolesPrivileges()
+        {
+            IReadOnlyCollection<(Privilege, bool)> @value = null;
+            if (UserGroupMap != null)
+            {
+                @value = UserGroupMap
+                    .SelectMany(e => e.Group.GroupRoleMap)
+                        .SelectMany(e => e.Role.RolePrivilegeMap).Select(e => (e.Privilege, e.IsAllowed)).Distinct().ToList();
+            }
+            return @value;
+        }
         public IReadOnlyCollection<Privilege> GetAllPrivileges()
         {
             IReadOnlyCollection<(Privilege privilege, bool isAllowed)> priveleges1 = GetPrivileges();
             IReadOnlyCollection<(Privilege privilege, bool isAllowed)> priveleges2 = GetRolesPrivileges();
             IReadOnlyCollection<(Privilege privilege, bool isAllowed)> priveleges3 = GetGroupsPrivileges();
+            IReadOnlyCollection<(Privilege privilege, bool isAllowed)> priveleges4 = GetGroupsRolesPrivileges();
 
             var priveleges = new List<Privilege>();
             var denied = new List<Privilege>();
@@ -120,6 +147,7 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
                     denied.Add(privilege);
                 }
             }
+
             if (priveleges1 != null)
                 foreach (var (privilege, isAllowed) in priveleges1)
                 {
@@ -138,6 +166,14 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom
                 }
             if (priveleges3 != null)
                 foreach (var (privilege, isAllowed) in priveleges3)
+                {
+                    if (isAllowed)
+                        addPrivilege(privilege);
+                    else
+                        addDenied(privilege);
+                }
+            if (priveleges4 != null)
+                foreach (var (privilege, isAllowed) in priveleges4)
                 {
                     if (isAllowed)
                         addPrivilege(privilege);
