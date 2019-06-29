@@ -1,6 +1,6 @@
 ﻿// webpack.config interpretated by node and node by default do not support ES6 (that means import etc.)
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const PathModule = require('path');
 

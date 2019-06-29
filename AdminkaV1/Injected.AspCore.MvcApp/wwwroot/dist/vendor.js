@@ -30496,11 +30496,11 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
- * jQuery Validation Plugin v1.19.0
+ * jQuery Validation Plugin v1.19.1
  *
  * https://jqueryvalidation.org/
  *
- * Copyright (c) 2018 Jörn Zaefferer
+ * Copyright (c) 2019 Jörn Zaefferer
  * Released under the MIT license
  */
 (function( factory ) {
@@ -31116,7 +31116,7 @@ $.extend( $.validator, {
 				try {
 					$( this.findLastActive() || this.errorList.length && this.errorList[ 0 ].element || [] )
 					.filter( ":visible" )
-					.focus()
+					.trigger( "focus" )
 
 					// Manually trigger focusin event; without it, focusin handler isn't called, findLastActive won't have anything to find
 					.trigger( "focusin" );
