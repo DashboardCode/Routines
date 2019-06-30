@@ -1,14 +1,14 @@
 {
+  "runtime.js": "/dist/runtime.js",
+  "runtime.js.map": "/dist/runtime.js.map",
   "main.css": "/dist/main.css",
   "main.js": "/dist/main.js",
   "main.css.map": "/dist/main.css.map",
   "main.js.map": "/dist/main.js.map",
-  "polyfill_io.js": "/dist/polyfill_io.js",
-  "polyfill_io.js.map": "/dist/polyfill_io.js.map",
-  "runtime.js": "/dist/runtime.js",
-  "runtime.js.map": "/dist/runtime.js.map",
   "vendor.css": "/dist/vendor.css",
   "vendor.js": "/dist/vendor.js",
   "vendor.css.map": "/dist/vendor.css.map",
-  "vendor.js.map": "/dist/vendor.js.map"
+  "vendor.js.map": "/dist/vendor.js.map",
+  "polyfill_io.js": "/dist/polyfill_io.js",
+  "polyfill_io.js.map": "/dist/polyfill_io.js.map"
 }

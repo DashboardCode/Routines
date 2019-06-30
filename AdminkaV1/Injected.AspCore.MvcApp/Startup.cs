@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
+using DashboardCode.AspNetCore.Http;
 using DashboardCode.Routines.Configuration.Standard;
+using System;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -22,7 +24,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 .SetBasePath(hostingEnvironment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", optional: true)
-                .AddJsonFile($"./wwwroot/dist/manifest.json", optional: false, reloadOnChange: true)
+                // TODO: with a lot of chunks may be we will need to loop through manifest.json
+                //.AddJsonFile($"./wwwroot/dist/manifest.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
             // TODO:
             // updatable configuration https://stackoverflow.com/questions/40970944/how-to-update-values-into-appsetting-json
@@ -50,6 +53,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
             serviceCollection.AddMemoryCache(); // AddDistributedMemoryCache();
             serviceCollection.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            serviceCollection.AddSingleton(new DevProxyMiddlewareSettings(new PathString("/dist"), new Uri("http://localhost:55510")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +63,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
+                app.UseMiddleware<DevProxyMiddleware>();
             }
 
             if (applicationSettings.UseStandardDeveloperErrorPage)

@@ -41,7 +41,7 @@ console.log('process.env.npm_package_version: ' + process.env.npm_package_versio
 // ts loader
 // http://leruplund.dk/2017/04/15/setting-up-asp-net-core-in-visual-studio-2017-with-npm-webpack-and-typescript-part-ii/
 
-module.exports = {
+var config = {
     // TODO: ref "Vendor" files from CDN (externals, vendor options)
     // TODO: entry should be empty (npm run webuild used to define entry point and this should be enough)
     // TODO: HMR 'hot module replacement' as it is desribed in https://codeburst.io/how-to-use-webpack-in-asp-net-core-projects-a-basic-react-template-sample-25a3681a5fc2
@@ -243,4 +243,16 @@ module.exports = {
             }
         ]
     }
+};
+
+module.exports = (env, argv) => {
+    if (argv.mode === 'development') {
+        console.log('!!! devServer started');
+
+        // main app port is 63557
+        config.devServer = {
+            port: 63558 
+        };
+    }
+    return config;
 };
