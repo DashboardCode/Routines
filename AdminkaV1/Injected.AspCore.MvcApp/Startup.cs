@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Http;
 
 using DashboardCode.AspNetCore.Http;
 using DashboardCode.Routines.Configuration.Standard;
-using System;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -54,7 +54,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             serviceCollection.AddMemoryCache(); // AddDistributedMemoryCache();
             serviceCollection.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            serviceCollection.AddSingleton(new DevProxyMiddlewareSettings(new PathString("/dist"), new Uri("http://localhost:55510")));
+            serviceCollection.AddSingleton(new DevProxyMiddlewareSettings(
+                new PathString("/dist"), 
+                new Uri("http://localhost:63558"))
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +66,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
-                app.UseMiddleware<DevProxyMiddleware>();
+                //app.UseMiddleware<DevProxyMiddleware>();
             }
 
             if (applicationSettings.UseStandardDeveloperErrorPage)

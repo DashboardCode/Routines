@@ -251,7 +251,8 @@ module.exports = (env, argv) => {
 
         // main app port is 63557
         config.devServer = {
-            port: 63558 
+            port: 63558,
+            writeToDisk: true 
         };
     }
     return config;

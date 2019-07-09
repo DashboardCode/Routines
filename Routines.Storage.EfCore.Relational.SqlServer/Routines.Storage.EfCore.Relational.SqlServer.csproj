@@ -5,7 +5,7 @@
     <AssemblyName>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</AssemblyName>
     <RootNamespace>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</RootNamespace>
     <PackageId>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</PackageId>
-    <Version>2.0.58</Version>
+    <Version>2.0.60</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
@@ -17,8 +17,8 @@
     <PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>2.0.58.0</AssemblyVersion>
-    <FileVersion>2.0.58.0</FileVersion>
+    <AssemblyVersion>2.0.60.0</AssemblyVersion>
+    <FileVersion>2.0.60.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -32,7 +32,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
   </ItemGroup>
 
   <ItemGroup>
