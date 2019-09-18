@@ -90,7 +90,9 @@ namespace DashboardCode.Routines.Storage
                 });
             });
         }
-        public void HandleRepository<TEntity>(
+
+        // ----------------------------------------------------------------------
+        public void HandleRepository2<TEntity>(
             Action<IRepository<TEntity>, RoutineClosure<TUserContext>> action
         ) where TEntity : class
         {
@@ -104,7 +106,7 @@ namespace DashboardCode.Routines.Storage
             });
         }
 
-        public TOutput HandleRepository<TOutput, TEntity>(
+        public TOutput HandleRepository2<TOutput, TEntity>(
             Func<IRepository<TEntity>, RoutineClosure<TUserContext>, TOutput> func
             ) where TEntity : class
         {
@@ -118,7 +120,7 @@ namespace DashboardCode.Routines.Storage
             });
         }
 
-        public Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
+        public Task<TOutput> HandleRepositoryAsync2<TOutput, TEntity>(
             Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task<TOutput>> func
             ) where TEntity : class
         {
@@ -133,7 +135,7 @@ namespace DashboardCode.Routines.Storage
             });
         }
 
-        public Task HandleRepositoryAsync<TEntity>(
+        public Task HandleRepositoryAsync2<TEntity>(
             Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task> func
             ) where TEntity : class
         {

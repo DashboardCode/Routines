@@ -5,7 +5,7 @@ $SolutionFolderPath = $PSScriptRoot
 cd $SolutionFolderPath
 
 $sign = Read-Host 'Enter sign'
-$ver = '2.0.64'
+$ver = '2.0.65'
 
 cd $SolutionFolderPath\Routines\bin\Release
 nuget push DashboardCode.Routines.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
