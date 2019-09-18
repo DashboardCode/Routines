@@ -16,7 +16,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGetAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, null, defaultUrl: "Roles", true);
+            Crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, defaultReferrer: "Roles");
             return Crud.HandleCreateAsync(
                 (e) => Entity = e,
                 authorize: null,
@@ -25,7 +25,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, null, defaultUrl: "Roles", true);
+            Crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, defaultReferrer: "Roles");
             return Crud.HandleCreateConfirmedAsync(
                 (e) => Entity = e,
                 authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),

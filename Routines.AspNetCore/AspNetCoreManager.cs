@@ -12,6 +12,51 @@ namespace DashboardCode.Routines.AspNetCore
 {
     public static class AspNetCoreManager
     {
+        public static string GetReferrer(HttpRequest httpRequest, string requestPairName, string defaultUrl, bool useHttpReferer) // referer is misspeling in HTTP standard
+        {
+            var url = default(string);
+            if (requestPairName != default)
+            {
+                if (httpRequest.Method == "POST" && httpRequest.HasFormContentType && httpRequest.Form != null && httpRequest.Form.Count() > 0)
+                    url = httpRequest.Form[requestPairName];
+                else
+                    url = httpRequest.Query?.GetQueryString(requestPairName);
+            }
+            if (url == default)
+            {
+                if (useHttpReferer)
+                {
+                    // referer is URI (by HTTP stadadrd URI:= scheme:[//authority]path[?query][#fragment] e.g http://localhost:7894/Path/To/Data?Filter=abc)
+                    if (httpRequest.Headers.TryGetValue("Referer", out var nameValuePairs)) // referer is misspeling in HTTP standard
+                    {
+                        var referer = nameValuePairs.ToString();
+                        if (string.IsNullOrEmpty(referer))
+                        {
+                            url = defaultUrl;
+                        }
+                        else 
+                        {
+                            // transform absolute to relaive URL
+                            var currentUrl = httpRequest.GetDisplayUrl();
+                            if (!string.IsNullOrEmpty(currentUrl))
+                            {
+                                var refererUri = new Uri(referer);
+                                var currentUri = new Uri(currentUrl);
+                                url = currentUri.MakeRelativeUri(refererUri).ToString();
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    url = defaultUrl;
+                }
+            }
+            if (string.IsNullOrEmpty(url))
+                url = "/";
+            return url;
+        }
+
         public static string GetQueryString(this IQueryCollection queryCollection, string pairName)
         {
             string @value = default;

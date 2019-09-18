@@ -21,7 +21,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGetAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, () => $"{nameof(Group)}?id={Entity.GroupId}", "Groups", true);
+            var referrer = new AdminkaReferrer(this.HttpContext.Request, "Groups", () => Entity.GroupId.ToString(), "Group");
+            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(
+                this,
+                referrer
+                );
             return Crud.HandleDetailsAsync(
                 e => Entity = e,
                 userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),

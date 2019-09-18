@@ -9,16 +9,16 @@
         <h3>Group (@Model.Entity.GroupId)</h3>
         <div>
             <a class="adminka-navigation adminka-icon-before adminka-icon-before-delete" 
-                asp-area="Auth" asp-page="GroupDelete" asp-route-id="@Model.Entity.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">Delete</a>
+                asp-area="Auth" asp-page="GroupDelete" asp-route-id="@Model.Entity.GroupId" asp-route-Referrer="@Model.Crud.Referrer.CurrentWithReferrer">Delete</a>
             <a class="ml-4 adminka-navigation adminka-icon-before adminka-icon-before-edit" 
-                asp-area="Auth" asp-page="GroupEdit" asp-route-id="@Model.Entity.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">Edit</a>
+                asp-area="Auth" asp-page="GroupEdit" asp-route-id="@Model.Entity.GroupId" asp-route-Referrer="@Model.Crud.Referrer.CurrentWithReferrer">Edit</a>
         </div>
     </div>
     <div class="adminka-container">
         <partial name="GroupPartial.cshtml" />
 
         <div class="adminka-buttons d-flex flex-row">
-            <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+            <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back" href="@Model.Crud.Referrer.Href">To Groups</a> 
         </div>
     </div>
 </div>

@@ -43,14 +43,15 @@ namespace DashboardCode.Routines.AspNetCore
         }
 
         public void PrepareParsedOptions(Action<string, object> addViewData, HttpRequest request, TP entity, TDAL repository,
-            out Action addViewDataMultiSelectList)
+            out Action addViewDataSelectList)
         {
             var options = getOptions(repository);
 
             var stringValues = request.Form[formFieldName];
             var textValue = stringValues.ToString();
             var id = parseId(textValue);
-            addViewDataMultiSelectList = () => this.addViewData(addViewData, options, id);
+            addViewDataSelectList = () => this.addViewData(addViewData, options, id);
         }
     }
+
 }

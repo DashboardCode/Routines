@@ -11,11 +11,12 @@
 <form method="post" class="adminka-panel">
     <input hidden type="hidden" asp-for="@Model.Entity.UserId" />
     <input hidden type="hidden" asp-for="@Model.Entity.RowVersion" />
-    <input hidden type="hidden" asp-for="@Model.Crud.Referrer.GoBack" name="Referrer" />
+    <input hidden type="hidden" asp-for="@Model.Crud.Referrer.Href" name="Referrer" />
 
     <div class="adminka-title d-flex flex-row justify-content-between">
         <h3>Edit User (@Model.Entity.UserId)</h3>
-        <a class="adminka-navigation adminka-icon-before adminka-icon-before-clear" asp-area="Auth" asp-page="User" asp-route-id="@Model.Entity.UserId" asp-route-Referrer="@Model.Crud.Referrer.Internal"></a>
+        <a class="adminka-navigation adminka-icon-before adminka-icon-before-clear" 
+           href="@Model.Crud.Referrer.Href"></a>
     </div>
 
     <div class="adminka-form-container">
@@ -79,7 +80,7 @@
             <div class="form-group">
                 <div class="d-flex flex-row">
                     <button type="submit" class="btn btn-primary">Save</button>
-                    <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back ml-3" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+                    <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back ml-3" href="@Model.Crud.Referrer.Href">Go Back</a>
                 </div>
             </div>
         </div>

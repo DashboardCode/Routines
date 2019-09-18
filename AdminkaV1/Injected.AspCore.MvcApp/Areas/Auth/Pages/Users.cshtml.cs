@@ -15,7 +15,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGet()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, null, defaultUrl: null, useHeaderReferrer: true);
+            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, defaultReferrer:"/");
             return Crud.HandleIndexAsync(
                 l => List = l,
                 authorize: null,

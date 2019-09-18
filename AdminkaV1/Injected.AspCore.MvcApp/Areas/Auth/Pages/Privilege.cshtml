@@ -8,7 +8,8 @@
     <div class="adminka-title d-flex flex-row justify-content-between align-items-center">
         <h3>Privilege (@Model.Entity.PrivilegeId)</h3>
         <div>
-            <a class="adminka-navigation adminka-icon-before adminka-icon-before-edit" asp-area="Auth" asp-page="PrivilegeEdit" asp-route-id="@Model.Entity.PrivilegeId" asp-route-Referrer="@Model.Crud.Referrer.Self">Edit</a>
+            <a class="adminka-navigation adminka-icon-before adminka-icon-before-edit" asp-area="Auth" asp-page="PrivilegeEdit" asp-route-id="@Model.Entity.PrivilegeId" 
+               asp-route-Referrer="@Model.Crud.Referrer.CurrentWithReferrer">Edit</a>
         </div>
     </div>
     
@@ -30,7 +31,7 @@
                 {
                     if (r.Item2)
                     {
-                        <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.Item1.RoleName</a>
+                        <a class="badge" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId" >@r.Item1.RoleName</a>
                     }
                 }
             </dd>
@@ -43,7 +44,7 @@
                 {
                     if (!r.Item2)
                     {
-                        <a class="badge scratched" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId" asp-route-Referrer="@Model.Crud.Referrer.Self">@r.Item1.RoleName</a>
+                        <a class="badge scratched" asp-area="Auth" asp-page="Role" asp-route-id="@r.Item1.RoleId" >@r.Item1.RoleName</a>
                     }
                 }
             </dd>
@@ -57,7 +58,7 @@
                 {
                     if (g.Item2)
                     {
-                        <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@g.Item1.GroupName</a>
+                        <a class="badge" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId" >@g.Item1.GroupName</a>
                     }
                 }
             </dd>
@@ -70,7 +71,7 @@
                 {
                     if (!g.Item2)
                     {
-                        <a class="badge scratched" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId" asp-route-Referrer="@Model.Crud.Referrer.Self">@g.Item1.GroupName</a>
+                        <a class="badge scratched" asp-area="Auth" asp-page="Group" asp-route-id="@g.Item1.GroupId" >@g.Item1.GroupName</a>
                     }
                 }
             </dd>
@@ -84,7 +85,7 @@
                 {
                     if (u.Item2)
                     {
-                        <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.Item1.LoginName</a>
+                        <a class="badge" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId" >@u.Item1.LoginName</a>
                     }
                 }
             </dd>
@@ -97,14 +98,14 @@
                 {
                     if (!u.Item2)
                     {
-                        <a class="badge scratched" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId" asp-route-Referrer="@Model.Crud.Referrer.Self">@u.Item1.LoginName</a>
+                        <a class="badge scratched" asp-area="Auth" asp-page="User" asp-route-id="@u.Item1.UserId" >@u.Item1.LoginName</a>
                     }
                 }
             </dd>
         </dl>
 
         <div class="adminka-buttons d-flex flex-row">
-            <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+            <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back" href="@Model.Crud.Referrer.Href">To Privileges</a>
         </div>
     </div>
 </div>

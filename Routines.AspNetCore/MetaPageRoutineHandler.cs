@@ -187,7 +187,8 @@ namespace DashboardCode.Routines.AspNetCore
                                PageModel.HttpContext.Request,
                                (n, v) => PageModel.ViewData[n] = v,
                                (n, v) => PageModel.ModelState.AddModelError(n, v),
-                               () => PageModel.RedirectToPage(pageRoutineFeature.Referrer),
+                                //Redirect(BackwardString);
+                               () => new RedirectResult(pageRoutineFeature.Referrer), 
                                (m) => {
                                    return PageModel.BadRequest();
                                },
@@ -227,7 +228,8 @@ namespace DashboardCode.Routines.AspNetCore
                                         PageModel.HttpContext.Request,
                                         (n, v) => PageModel.ViewData[n] = v,
                                         (n, v) => PageModel.ModelState.AddModelError(n, v),
-                                        () => PageModel.RedirectToPage(pageRoutineFeature.Referrer),
+
+                                        () => new RedirectResult(pageRoutineFeature.Referrer),
                                         (m) => {
                                             return PageModel.BadRequest();
                                         },

@@ -7,12 +7,12 @@
     <Copyright>2018 Roman Pokrokvsij (Github user rpokrovskij)</Copyright>
     <PackageId>DashboardCode.Routines.Storage.EfCore</PackageId>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
-    <AssemblyVersion>2.0.60.0</AssemblyVersion>
-    <FileVersion>2.0.60.0</FileVersion>
+    <AssemblyVersion>2.0.61.0</AssemblyVersion>
+    <FileVersion>2.0.61.0</FileVersion>
     <Description>Routines Repository pattern realisation for EF Core</Description>
     <RootNamespace>DashboardCode.Routines.Storage.EfCore</RootNamespace>
     <AssemblyName>DashboardCode.Routines.Storage.EfCore</AssemblyName>
-    <Version>2.0.60</Version>
+    <Version>2.0.61</Version>
     <PackageLicenseUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/DashboardCode/Routines</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>

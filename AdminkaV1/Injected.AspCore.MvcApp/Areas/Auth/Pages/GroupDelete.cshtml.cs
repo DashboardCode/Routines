@@ -16,7 +16,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGetAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, () => $"{nameof(Group)}?id={Entity.GroupId}", "Groups", true);
+            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultReferrer: "Groups");
             return Crud.HandleDeleteAsync(
                 e => Entity = e,
                 authorize: null,
@@ -28,7 +28,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, () => $"{nameof(Group)}?id={Entity.GroupId}", "Groups", true);
+            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultReferrer: "Groups");
             return Crud.HandleDeleteConfirmedAsync(
                 e => Entity = e,
                 authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),

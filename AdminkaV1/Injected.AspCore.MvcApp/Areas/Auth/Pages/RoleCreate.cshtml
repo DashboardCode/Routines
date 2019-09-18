@@ -9,11 +9,11 @@
 }
 
 <form method="post" class="adminka-panel">
-    <input hidden asp-for="@Model.Crud.Referrer.GoBack" name="Referrer" type="hidden" />
+    <input hidden asp-for="@Model.Crud.Referrer.Href" name="Referrer" type="hidden" />
 
     <div class="adminka-title d-flex flex-row justify-content-between align-items-center">
         <h3>Create Role</h3>
-        <a class="adminka-navigation adminka-icon-before adminka-icon-before-clear" href="@Model.Crud.Referrer.GoBack"></a>
+        <a class="adminka-navigation adminka-icon-before adminka-icon-before-clear" href="@Model.Crud.Referrer.Href"></a>
     </div>
 
     <div class="adminka-form-container">
@@ -22,7 +22,7 @@
             <div class="form-group">
                 <div class="d-flex flex-row">
                     <button type="submit" class="btn btn-primary">Create</button>
-                    <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back ml-3" href="@Model.Crud.Referrer.GoBack">Go Back</a>
+                    <a class="btn btn-secondary adminka-icon-before adminka-icon-before-back ml-3" href="@Model.Crud.Referrer.Href">Go Back</a>
                 </div>
             </div>
         </div>

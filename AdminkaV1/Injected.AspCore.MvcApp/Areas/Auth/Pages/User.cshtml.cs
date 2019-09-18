@@ -15,7 +15,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGetAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, () => $"{nameof(User)}?id={Entity.UserId}", defaultUrl: "Users", true);
+            var referrer = new AdminkaReferrer(this.HttpContext.Request, "Users", () => Entity.UserId.ToString(), "User");
+            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, referrer);
             return Crud.HandleDetailsAsync(
                 e => Entity = e,
                 authorize: null,

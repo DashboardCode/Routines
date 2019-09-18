@@ -12,9 +12,20 @@ using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using Microsoft.AspNetCore.Http;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
+    public class AdminkaReferrer : Referrer
+    {
+        public AdminkaReferrer(HttpRequest request, string defaultReferrer, Func<string> getId,
+            string entityName ) : base(
+            AspNetCoreManager.GetReferrer(request, "Referrer", defaultReferrer, false), getId, entityName, "Referrer"
+            ) 
+        {
+
+        }
+    }
     // TODO reload configuration on changed
     // var trackedConfigurationSnapshot = (IOptionsSnapshot<List<RoutineResolvable>>)pageModel.HttpContext.RequestServices.GetService(typeof(IOptionsSnapshot<List<RoutineResolvable>>));
     // var trackedConfiguration = trackedConfigurationSnapshot.Value;
@@ -23,9 +34,17 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         public readonly Referrer Referrer;
 
         public AdminkaCrudRoutinePageConsumer(
-            PageModel pageModel, Func<string> getId, string defaultUrl, bool useHeaderReferrer,
+            PageModel pageModel,
+            string defaultReferrer,
             [CallerMemberName] string member = null) :
-            this(pageModel, new Referrer("Referrer", getId, pageModel.HttpContext.Request, defaultUrl, useHeaderReferrer))
+            this(pageModel,
+                 new AdminkaReferrer(
+                     pageModel.Request,
+                     defaultReferrer, 
+                     null,
+                     null
+                 )
+            )
         {
         }
 

@@ -253,7 +253,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
         public static PageRoutineFeature SetAndGetPageRoutineFeature(PageModel pageModel, Referrer referrer)
         {
-            var pageRoutineFeature = new PageRoutineFeature() { Referrer = referrer.GoBack };
+            var pageRoutineFeature = new PageRoutineFeature() { Referrer = referrer.Href };
             pageModel.HttpContext.Features.Set(pageRoutineFeature);
             return pageRoutineFeature;
         }

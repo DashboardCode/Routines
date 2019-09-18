@@ -406,6 +406,30 @@ namespace DashboardCode.Routines.Storage
         }
 
         public Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
+            Func<IRepository<TEntity>, Task<TOutput>> func
+            ) where TEntity : class
+        {
+            var repositoryHandler = ormHandlerGFactory.Create<TEntity>(closure);
+            return repositoryHandler.HandleAsync((repository, store) =>
+            {
+                var output = func(repository);
+                return output;
+            });
+        }
+
+        public Task HandleRepositoryAsync<TEntity>(
+            Func<IRepository<TEntity>, Task> func
+            ) where TEntity : class
+        {
+            var repositoryHandler = ormHandlerGFactory.Create<TEntity>(closure);
+            return repositoryHandler.HandleAsync((repository, store) =>
+            {
+                var output = func(repository);
+                return output;
+            });
+        }
+
+        public Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
             Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task<TOutput>> func
             ) where TEntity : class
         {

@@ -93,12 +93,36 @@
         }
     </tbody>
 </table>
-
+asdassaa 
 @section Scripts {
     <script type="text/javascript">
         $(document).ready(function () {
-            var tableId = '#' + '@tableId';
-            var $table = $(tableId).dataTable(
+            var tableId = '@tableId';
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            const urlNameValuePair = 'filter';
+            // TODO: add page num, per page, order (desc)
+            // TODO: alternatively add scroll to page
+            const filter = urlSearchParams.get(urlNameValuePair);
+            if (filter) {
+                
+                var localStorageKey = 'DataTables_' + tableId + '_' + window.location.pathname; 
+                var localStorageTextValue = window.localStorage.getItem(localStorageKey);
+                var newValue = null;
+                if (localStorageTextValue) {
+                    var localStorageValue = JSON.parse(localStorageTextValue);
+                    if (localStorageValue.search) {
+                        localStorageValue.search.search = filter;
+                    } else {
+                        localStorageValue.search = { 'search': filter };
+                    }
+                    newValue = JSON.stringify(localStorageValue);
+                     
+                } else {
+                    newValue = JSON.stringify({ 'search': { 'search': filter } });
+                }
+                window.localStorage.setItem(localStorageKey, newValue);
+            }
+            var $table = $('#' +tableId).dataTable(
                 {
                     language: { search: "", searchPlaceholder: "Filter", lengthMenu:"_MENU_" },
                     stateSave: true,
@@ -109,6 +133,32 @@
                     ]
                 }
             );
+            $table.on('draw.dt', function () {
+                console.log('draw');
+                $table.find('td.adminka-action-button-group a').each(
+                    function (i, e) {
+                        e.href;
+                    }
+                );
+            }).on('search.dt', function () {
+                console.log('search');
+                var filter = $table.api().search(); // without parameters return filter box the value
+                // TODO: add page num, per page, order (desc)
+                var locationWithoutQuery = location.toString().replace(location.search, "")
+                var pageName = locationWithoutQuery.split("/").pop();
+                var pageNameSearchParams = new URLSearchParams(window.location.search);
+                if (filter) {
+                    pageNameSearchParams.set(urlNameValuePair, filter)
+                }
+                else {
+                    pageNameSearchParams.delete(urlNameValuePair);
+                }
+                var newPageNameWithQuery = pageName;
+                var newParams = pageNameSearchParams.toString();
+                if (newParams)
+                    newPageNameWithQuery += '?' + newParams;
+                history.replaceState(history.state /*old state, TODO: check null as alternative*/, null /*no titile*/, newPageNameWithQuery);
+            });
         });
     </script>
 }

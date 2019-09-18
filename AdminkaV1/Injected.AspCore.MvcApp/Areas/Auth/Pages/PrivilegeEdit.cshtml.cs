@@ -16,7 +16,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGetAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, null, defaultUrl: "Privileges", true);
+            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, defaultReferrer: "Privileges");
             return Crud.HandleEditAsync(
                 e => Entity = e,
                 authorize: null,
@@ -29,7 +29,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, null, defaultUrl: "Privileges", true);
+            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, defaultReferrer: "Privileges");
             return Crud.HandleEditConfirmedAsync(
                 e => Entity = e,
                 authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),
