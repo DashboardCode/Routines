@@ -21,6 +21,27 @@ namespace DashboardCode.Routines.Storage
             this.ormEntitySchemaAdapter = ormEntitySchemaAdapter;
         }
 
+        public void Handle(Action<IRepository<TEntity>> action)
+        {
+            action(repository);
+        }
+
+        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, TOutput> func)
+        {
+            return func(repository);
+        }
+
+        public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, Task<TOutput>> func)
+        {
+            return func(repository);
+        }
+
+        public Task HandleAsync(Func<IRepository<TEntity>, Task> func)
+        {
+            return func(repository);
+        }
+
+        // --------------
         public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action)
         {
             action(repository, ormStorage);
@@ -32,6 +53,11 @@ namespace DashboardCode.Routines.Storage
         }
 
         public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task<TOutput>> func)
+        {
+            return func(repository, ormStorage);
+        }
+
+        public Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func)
         {
             return func(repository, ormStorage);
         }
@@ -50,11 +76,6 @@ namespace DashboardCode.Routines.Storage
         public Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task<TOutput>> func)
         {
             return func(repository, ormStorage, ormEntitySchemaAdapter);
-        }
-
-        public Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func)
-        {
-            return func(repository, ormStorage);
         }
 
         public Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task> func)

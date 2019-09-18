@@ -45,6 +45,41 @@ namespace DashboardCode.Routines.Storage
             this.dbContextFactoryForStorage = dbContextFactoryForStorage;
         }
 
+        public void Handle(Action<IRepository<TEntity>> action)
+        {
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
+            using (dbContext)
+                action(createRepository(dbContext, noTracking)
+                );
+        }
+
+        public TOutput Handle<TOutput>(Func<IRepository<TEntity>, TOutput> func)
+        {
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
+            using (dbContext)
+                return func(
+                    createRepository(dbContext, noTracking)
+                );
+        }
+
+        public async Task<TOutput> HandleAsync<TOutput>(Func<IRepository<TEntity>, Task<TOutput>> func)
+        {
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
+            using (dbContext)
+                return await func(
+                    createRepository(dbContext, noTracking)
+                );
+        }
+
+        public async Task HandleAsync(Func<IRepository<TEntity>, Task> func)
+        {
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
+            using (dbContext)
+                await func(
+                    createRepository(dbContext, noTracking)
+                );
+        }
+
         public void Handle(Action<IRepository<TEntity>, IOrmStorage<TEntity>> action)
         {
             var (dbContext, auditVisitor) = dbContextFactoryForStorage();
@@ -69,6 +104,16 @@ namespace DashboardCode.Routines.Storage
             var (dbContext, auditVisitor) = dbContextFactoryForStorage();
             using (dbContext)
                 return await func(
+                    createRepository(dbContext, noTracking),
+                    createOrmStorage(dbContext, analyzeException, auditVisitor)
+                );
+        }
+
+        public async Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func)
+        {
+            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
+            using (dbContext)
+                await func(
                     createRepository(dbContext, noTracking),
                     createOrmStorage(dbContext, analyzeException, auditVisitor)
                 );
@@ -106,15 +151,7 @@ namespace DashboardCode.Routines.Storage
                 );
         }
 
-        public async Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func)
-        {
-            var (dbContext, auditVisitor) = dbContextFactoryForStorage();
-            using (dbContext)
-                await func(
-                    createRepository(dbContext, noTracking),
-                    createOrmStorage(dbContext, analyzeException, auditVisitor)
-                );
-        }
+       
 
         public async Task HandleAsync(Func<IRepository<TEntity>, IOrmStorage<TEntity>, IOrmEntitySchemaAdapter<TEntity>, Task> func)
         {
