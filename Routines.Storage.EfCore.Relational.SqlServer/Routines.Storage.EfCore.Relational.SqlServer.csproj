@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</AssemblyName>
     <RootNamespace>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</RootNamespace>
     <PackageId>DashboardCode.Routines.Storage.EfCore.Relational.SqlServer</PackageId>
-    <Version>2.0.61</Version>
+    <Version>2.0.62</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Roman Pokrovskij (Github user rpokrovskij)</Authors>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
@@ -17,8 +17,8 @@
     <PackageIconUrl>https://raw.githubusercontent.com/DashboardCode/Routines/master/Routines.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/DashboardCode/Routines</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>2.0.61.0</AssemblyVersion>
-    <FileVersion>2.0.61.0</FileVersion>
+    <AssemblyVersion>2.0.62.0</AssemblyVersion>
+    <FileVersion>2.0.62.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
