@@ -42,7 +42,7 @@ namespace DashboardCode.Routines.AspNetCore
                 ) where TEntity : class =>
 
                     PageRoutineHandler.HandleAsync(async (container, closure) =>
-                       await container.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                       await container.HandleRepositoryAsync<IActionResult, TEntity>(repository =>
                            Task.Run(() =>
                                MvcHandler.MakeActionResultOnRequest(
                                   repository,
@@ -79,7 +79,7 @@ namespace DashboardCode.Routines.AspNetCore
                     > action
                 ) where TEntity : class =>
                    PageRoutineHandler.HandleAsync(async (container, closure) =>
-                        await container.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                        await container.HandleRepositoryAsync<IActionResult, TEntity>(repository =>
                          Task.Run(() =>
                            MvcHandler.MakeActionResultOnRequest(
                                repository,
@@ -113,7 +113,7 @@ namespace DashboardCode.Routines.AspNetCore
                     > action
                 ) where TEntity : class =>
                    PageRoutineHandler.HandleAsync(async (container, closure) =>
-                        await container.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                        await container.HandleRepositoryAsync<IActionResult, TEntity>(repository =>
                            Task.Run(() =>
                                 MvcHandler.MakeActionResultOnCreate(
                                   repository,
@@ -144,7 +144,7 @@ namespace DashboardCode.Routines.AspNetCore
                     > action
                 ) where TEntity : class =>
                    PageRoutineHandler.HandleAsync(async (container, closure) =>
-                   await container.HandleStorageAsync<IActionResult, TEntity>(repository =>
+                   await container.HandleRepositoryAsync<IActionResult, TEntity>(repository =>
                         Task.Run(
                            () => MvcHandler.MakeActionResultOnCreate(
                                    repository,

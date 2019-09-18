@@ -60,36 +60,7 @@ namespace DashboardCode.Routines.Storage
             });
         }
 
-        public Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task<TOutput>> func
-            ) where TEntity : class
-        {
-            return routineHandler.HandleAsync(closure =>
-            {
-                var repositoryHandler = ormHandlerGFactory.Create<TEntity>(closure);
-                return repositoryHandler.HandleAsync((repository, store) =>
-                {
-                    var output = func(repository, store);
-                    return output;
-                });
-            });
-        }
-
-        public Task HandleRepositoryAsync<TEntity>(
-            Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func
-            ) where TEntity : class
-        {
-            return routineHandler.HandleAsync(closure =>
-            {
-                var repositoryHandler = ormHandlerGFactory.Create<TEntity>(closure);
-                return repositoryHandler.HandleAsync((repository, store) =>
-                {
-                    var output = func(repository, store);
-                    return output;
-                });
-            });
-        }
-
+ 
         public Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
             Func<IRepository<TEntity>,  Task<TOutput>> func
             ) where TEntity : class
@@ -178,6 +149,7 @@ namespace DashboardCode.Routines.Storage
         }
 
 
+        // -------------------------------------------------
         public void HandleStorage<TEntity>(
             Action<IRepository<TEntity>, IOrmStorage<TEntity>> action
         ) where TEntity : class
@@ -221,20 +193,7 @@ namespace DashboardCode.Routines.Storage
             });
         }
 
-        public Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, Task<TOutput>> func
-            ) where TEntity : class
-        {
-            return routineHandler.HandleAsync(closure =>
-            {
-                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
-                return repositoryHandler.HandleAsync(repository =>
-                {
-                    var output = func(repository);
-                    return output;
-                });
-            });
-        }
+
 
         public Task HandleStorageAsync<TEntity>(
             Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func
@@ -251,20 +210,7 @@ namespace DashboardCode.Routines.Storage
             });
         }
 
-        public Task HandleStorageAsync<TEntity>(
-            Func<IRepository<TEntity>, Task> func
-            ) where TEntity : class
-        {
-            return routineHandler.HandleAsync(closure =>
-            {
-                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
-                return repositoryHandler.HandleAsync(repository =>
-                {
-                    var output = func(repository);
-                    return output;
-                });
-            });
-        }
+        
 
         public void HandleStorage<TEntity>(
             Action<IRepository<TEntity>, IOrmStorage<TEntity>, RoutineClosure<TUserContext>> action
@@ -458,29 +404,6 @@ namespace DashboardCode.Routines.Storage
             });
         }
 
-        public Task<TOutput> HandleRepositoryAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task<TOutput>> func
-            ) where TEntity : class
-        {
-            var repositoryHandler = ormHandlerGFactory.Create<TEntity>(closure);
-            return repositoryHandler.HandleAsync((repository, store) =>
-            {
-                var output = func(repository, store);
-                return output;
-            });
-        }
-
-        public Task HandleRepositoryAsync<TEntity>(
-            Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func
-            ) where TEntity : class
-        {
-            var repositoryHandler = ormHandlerGFactory.Create<TEntity>(closure);
-            return repositoryHandler.HandleAsync((repository, store) =>
-            {
-                var output = func(repository, store);
-                return output;
-            });
-        }
 
         public void HandleRepository<TEntity>(
             Action<IRepository<TEntity>, RoutineClosure<TUserContext>> action
@@ -563,17 +486,7 @@ namespace DashboardCode.Routines.Storage
             });
         }
 
-        public Task<TOutput> HandleStorageAsync<TOutput, TEntity>(
-            Func<IRepository<TEntity>, Task<TOutput>> func
-            ) where TEntity : class
-        {
-                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
-                return repositoryHandler.HandleAsync(repository =>
-                {
-                    var output = func(repository);
-                    return output;
-                });
-        }
+        
 
         public Task HandleStorageAsync<TEntity>(
             Func<IRepository<TEntity>, IOrmStorage<TEntity>, Task> func
@@ -587,17 +500,7 @@ namespace DashboardCode.Routines.Storage
                 });
         }
 
-        public Task HandleStorageAsync<TEntity>(
-            Func<IRepository<TEntity>, Task> func
-            ) where TEntity : class
-        {
-                var repositoryHandler = repositoryHandlerGFactory.Create<TEntity>(closure);
-                return repositoryHandler.HandleAsync(repository =>
-                {
-                    var output = func(repository);
-                    return output;
-                });
-        }
+
 
         public void HandleStorage<TEntity>(
             Action<IRepository<TEntity>, IOrmStorage<TEntity>, RoutineClosure<TUserContext>> action

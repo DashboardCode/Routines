@@ -40,7 +40,7 @@ namespace DashboardCode.Routines.AspNetCore
         public Task<IActionResult> HandleAsync(Func<IRepository<TEntity>, RoutineClosure<TUserContext>, Task<IActionResult>> func
         )
         {
-            return pageRoutineHandler.HandleAsync(async (container, closure) => await container.HandleStorageAsync<IActionResult, TEntity>(
+            return pageRoutineHandler.HandleAsync(async (container, closure) => await container.HandleRepositoryAsync<IActionResult, TEntity>(
                        repository => func(repository, closure)
                    ));
         }
