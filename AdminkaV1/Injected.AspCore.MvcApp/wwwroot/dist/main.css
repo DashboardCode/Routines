@@ -7132,8 +7132,7 @@ a.text-dark:hover, a.text-dark:focus {
   /* Support for Firefox. */
   -moz-osx-font-smoothing: grayscale;
   /* Support for IE. */
-  -webkit-font-feature-settings: 'liga';
-          font-feature-settings: 'liga'; }
+  font-feature-settings: 'liga'; }
 
 .dc-exception {
   cursor: pointer;
@@ -7242,7 +7241,6 @@ a.badge::before {
   margin-right: 0.2rem;
   vertical-align: bottom;
   content: 'insert_drive_file';
-  -webkit-font-feature-settings: 'liga' 1;
   font-feature-settings: 'liga' 1; }
 
 .scratched {
@@ -7301,7 +7299,6 @@ dl.row > dt {
   margin-right: 0.2rem;
   content: 'arrow_back';
   line-height: 0;
-  -webkit-font-feature-settings: 'liga' 1;
   font-feature-settings: 'liga' 1; }
 
 .adminka-icon-before-back::before {
