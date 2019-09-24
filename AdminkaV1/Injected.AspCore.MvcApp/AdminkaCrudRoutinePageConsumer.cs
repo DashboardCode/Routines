@@ -86,8 +86,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         applicationSettings,
                         uc => uc.AuditStamp
                     );
-                },
-                memberTag)
+                })
         {
             this.Referrer = referrer;
         }
@@ -99,8 +98,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             PageModel pageModel, 
             PageRoutineFeature pageRoutineFeature,
             Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
-            Func<AspRoutineFeature, Func<object>, TUser, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler,
-            MemberTag memberTag) :
+            Func<AspRoutineFeature, Func<object>, TUser, ContainerFactory, ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>> getContainerHandler) :
             base(
                 pageModel,
                 pageRoutineFeature,
