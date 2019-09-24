@@ -43,7 +43,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                      defaultReferrer, 
                      null,
                      null
-                 )
+                 ), 
+                 member
             )
         {
         }

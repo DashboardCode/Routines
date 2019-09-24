@@ -167,10 +167,10 @@ namespace DashboardCode.AdminkaV1.Injected
             MemberTag memberTag, 
             Func<Exception, string> markdownException)
         {
-            exception.Data["CorrelationToken"] = correlationToken;
+            exception.Data["CorrelationToken"]          = correlationToken;
             exception.Data[nameof(MemberTag.Namespace)] = memberTag.Namespace;
-            exception.Data[nameof(MemberTag.Type)] = memberTag.Type;
-            exception.Data[nameof(MemberTag.Member)] = memberTag.Member;
+            exception.Data[nameof(MemberTag.Type)]      = memberTag.Type;
+            exception.Data[nameof(MemberTag.Member)]    = memberTag.Member;
             return exception;
         }
 
