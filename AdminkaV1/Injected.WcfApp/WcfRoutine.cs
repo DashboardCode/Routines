@@ -35,7 +35,7 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
                   applicationSettings: applicationSettings,
                   performanceCounters: ApplicationSettings.PerformanceCounters,
                   configurationContainerFactory: configurationContainerFactory,
-                  transformException: (ex, g, mt, md) => TransformException(ex, g, mt, faultCodeNamespace, md),
+                  transformException: (ex, g, mt/*, md*/) => TransformException(ex, g, mt, faultCodeNamespace/*, md*/),
                   correlationToken: correlationToken,
                   documentBuilder: null,
                   memberTag: memberTag,
@@ -47,10 +47,10 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 
         public static Exception TransformException(
             Exception exception, 
-            Guid correlationToken, Routines.MemberTag memberTag, string faultCodeNamespace, Func<Exception, string> markdownException)
+            Guid correlationToken, Routines.MemberTag memberTag, string faultCodeNamespace/*, Func<Exception, string> markdownException*/)
         {
-            var message = default(string);
             var code = default(string);
+            string message;
             if (exception is AdminkaException adminkaException)
             {
                 message = adminkaException.Message;
@@ -74,7 +74,8 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
                 },
                 Message = message,
                 AdminkaExceptionCode = code,
-                Details = markdownException(exception)
+                
+                Details = InjectedManager.Markdown(exception)
             };
 
             if (exception.Data.Count>0)

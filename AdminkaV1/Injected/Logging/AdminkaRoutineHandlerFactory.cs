@@ -9,11 +9,11 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
     public class AdminkaRoutineHandlerFactory<TUserContext> : RoutineHandlerFactory
     { 
         readonly Func<Guid, MemberTag, IMemberLogger> composeLoggers;
-        readonly Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException;
+        readonly Func<Exception, Guid, MemberTag, /*Func<Exception, string>,*/ Exception> routineTransformException;
         readonly IPerformanceCounters performanceCounters;
         public AdminkaRoutineHandlerFactory(
             Guid correlationToken,
-            Func<Exception, Guid, MemberTag, Func<Exception, string>, Exception> routineTransformException,
+            Func<Exception, Guid, MemberTag, /*Func<Exception, string>,*/ Exception> routineTransformException,
             Func<Guid, MemberTag, IMemberLogger> composeLoggers,
             IPerformanceCounters performanceCounters
             ) : base(correlationToken)
@@ -60,7 +60,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
                    performanceCounters.CountError();
                    exceptionLogger.LogException(DateTime.Now, ex);
                },
-               ex => routineTransformException(ex, base.CorrelationToken, memberTag, InjectedManager.Markdown)
+               ex => routineTransformException(ex, base.CorrelationToken, memberTag/*, InjectedManager.Markdown*/)
             );
             var enableVerbose = hasVerboseLoggingPrivilege;
             if (!enableVerbose)

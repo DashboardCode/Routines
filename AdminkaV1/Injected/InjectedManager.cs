@@ -164,8 +164,10 @@ namespace DashboardCode.AdminkaV1.Injected
         public static Exception DefaultRoutineTagTransformException(
             Exception exception, 
             Guid correlationToken,
-            MemberTag memberTag, 
-            Func<Exception, string> markdownException)
+            MemberTag memberTag
+            //, 
+            //Func<Exception, string> markdownException
+            )
         {
             exception.Data["CorrelationToken"]          = correlationToken;
             exception.Data[nameof(MemberTag.Namespace)] = memberTag.Namespace;
