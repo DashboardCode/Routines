@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using DashboardCode.Routines.Storage;
+﻿using DashboardCode.Routines.Storage;
 using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
+namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
 {
     public class AdminkaCSharpHelper : CSharpHelper
     {
@@ -16,15 +15,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
         {
             if (value is Constraint[] constraints)
             {
-                var type = typeof(Constraint);
-                var outuput = $"new  {type.FullName}[]{{";
-                foreach (var c in constraints)
-                {
-                    var fields = string.Join(',', c.Fields.Select(e => "\"" + e + "\""));
-                    outuput += $"new {type.FullName}(){{Name=\"{c.Name}\", Body=@\"{c.Body}\", Message=@\"{c.Message}\", Fields=new[] {{{fields}}}}},";
-                }
-                outuput += "}";
-                return outuput;
+                return ConstraintManager.ProcessConstraintLiteral(constraints);
             }
             return base.UnknownLiteral(value);
         }

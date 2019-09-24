@@ -2,9 +2,11 @@
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
-using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.LoggingDom.WcfClient;
+using DashboardCode.AdminkaV1.TestDom.DataAccessEfCore;
+using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
+using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -23,14 +25,12 @@ namespace DashboardCode.AdminkaV1.Injected
             this.applicationSettings = applicationSettings;
             this.getAuditStamp = getAuditStamp;
         }
-        // TraceServiceHandler
 
-        public MetaStorageRoutineHandler<TUserContext, AdminkaDbContext> ResolveAdminkaDbContextHandler()
+        public MetaStorageRoutineHandler<TUserContext, LoggingDomDbContext> ResolveLoggingDomDbContextHandler()
         {
-            var adminkaDbContextHandler = new AdminkaStorageRoutineHandler<TUserContext>(
+            var adminkaDbContextHandler = new LoggingDomStorageRoutineHandler<TUserContext>(
                     applicationSettings.AdminkaStorageConfiguration,
                     closure.UserContext,
-                    InjectedManager.EntityMetaServiceContainer,
                     null,
                     new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
                         () => closure,
@@ -39,6 +39,36 @@ namespace DashboardCode.AdminkaV1.Injected
                     getAuditStamp
                 );
             return adminkaDbContextHandler;
+        }
+
+        public MetaStorageRoutineHandler<TUserContext, TestDomDbContext> ResolveTestDomDbContextHandler()
+        {
+            var testDomDbContextHandler = new TestDomStorageRoutineHandler<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return testDomDbContextHandler;
+        }
+
+        public MetaStorageRoutineHandler<TUserContext, AuthenticationDomDbContext> ResolveAuthenticationDomDbContextHandler()
+        {
+            var authenticationDomDbContextHandler = new AuthenticationDomStorageRoutineHandler<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return authenticationDomDbContextHandler;
         }
 
         public IHandler<ITraceService> ResolveTraceServiceHandler()

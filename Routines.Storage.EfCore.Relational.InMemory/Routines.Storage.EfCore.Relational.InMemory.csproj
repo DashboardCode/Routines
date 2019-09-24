@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DashboardCode.Routines.Storage.EfCore.Relational.InMemory</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="2.2.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj" />
+    <ProjectReference Include="..\Routines\Routines.csproj" />
+  </ItemGroup>
+
+</Project>

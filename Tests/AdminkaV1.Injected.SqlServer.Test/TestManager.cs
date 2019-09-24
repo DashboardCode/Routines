@@ -15,9 +15,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();
 #endif
 
-        public static void Reset(string databaseName = "AdminkaV1")
+        public static void Reset()
         {
-            Clear(databaseName);
+            Clear();
 
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
@@ -26,7 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag(typeof(TestManager)), "UnitTest", new { input = "Input text" });
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var typeRecord1 = new TypeRecord()
                 {
@@ -156,7 +156,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             }));
         }
 
-        public static void Clear(string databaseName = "AdminkaV1")
+        public static void Clear()
         {
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
@@ -166,7 +166,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 loggingTransientsFactory,
                 new MemberTag(typeof(TestManager)), "UnitTest",
                 new { input = "Input text" });
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 ormHandlerFactory.Create<ChildRecord>().Handle((repository, storage) =>
                 {

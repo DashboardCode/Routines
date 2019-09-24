@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         {
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
-            var record = routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
+            var record = routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)

@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
-    <ProjectReference Include="..\..\AdminkaV1\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\DataAccessEfCore\AdminkaV1.LoggingDom.DataAccessEfCore.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
 	<ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj" />
 	

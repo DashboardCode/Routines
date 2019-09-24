@@ -1,14 +1,14 @@
-﻿using Ascon.NetMemoryProfiler;
-using System.Collections.Generic;
+﻿using System.Text;
 using System.Linq;
-using System.Text;
+using System.Collections.Generic;
 
+using Ascon.NetMemoryProfiler;
 
 namespace ProfilerAutomation
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             using (var session = Profiler.AttachToProcess("DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Sandbox"))
             {

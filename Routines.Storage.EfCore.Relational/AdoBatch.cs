@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+
 namespace DashboardCode.Routines.Storage.EfCore.Relational
 {
     public class AdoBatch : IAdoBatch

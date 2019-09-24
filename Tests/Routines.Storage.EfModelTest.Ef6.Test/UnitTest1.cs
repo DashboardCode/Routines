@@ -10,7 +10,6 @@ namespace DashboardCode.Routines.Storage.Ef6.Test.NETFramework
         [TestMethod]
         public void TestMethod1()
         {
-            var i = 0; i++;
         }
     }
 }

@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>DashboardCode.AdminkaV1.TestDom.DataAccessEfCore</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Routines.Storage.EfCore.Relational.InMemory\Routines.Storage.EfCore.Relational.InMemory.csproj" />
+    <ProjectReference Include="..\..\Routines.Storage.EfCore.Relational.SqlServer\Routines.Storage.EfCore.Relational.SqlServer.csproj" />
+    <ProjectReference Include="..\..\Routines.Storage.EfCore\Routines.Storage.EfCore.csproj" />
+    <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
+    <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
+  </ItemGroup>
+
+</Project>

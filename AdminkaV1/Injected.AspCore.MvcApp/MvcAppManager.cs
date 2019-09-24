@@ -15,10 +15,10 @@ using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
-using DashboardCode.AdminkaV1.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.Injected.Logging;
-using DashboardCode.AdminkaV1.DataAccessEfCore;
 using Microsoft.AspNetCore.WebUtilities;
+using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore.Services;
+using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -26,7 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     {
         public static string GetErrorActionJson(Exception ex, string aspRequestId, bool isAdminPrivilege)
         {
-            var content = default(string);
+            string content;
             if (isAdminPrivilege)
             {
                 var markdownMessage = InjectedManager.Markdown(ex);
@@ -49,7 +49,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     Func<object> getInput,
                     TUserContext userContext,
                     ApplicationSettings applicationSettings,
-                    Func<TUserContext, string> getConfigurationFor,
+                    //Func<TUserContext, string> getConfigurationFor,
                     Func<TUserContext, string> getAuditStamp
             )
         {
@@ -67,10 +67,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                             getInput());
 
             return new ComplexRoutineHandler<StorageRoutineHandler<TUserContext>, TUserContext>/*AdminkaRoutineHandlerBase<TUserContext>*/(
-                    closure => new AdminkaStorageRoutineHandler<TUserContext>(
+                    closure => new AuthenticationDomStorageRoutineHandler<TUserContext>(
                         applicationSettings.AdminkaStorageConfiguration,
                         userContext,
-                        InjectedManager.EntityMetaServiceContainer,
                         null,
                         new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
                               () => closure,
@@ -83,7 +82,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
 
         public static ComplexRoutineHandler<PerCallContainer<TUserContext>, TUserContext> GetContainerHandler<TUserContext>(
-                    ContainerFactory containerFactory,
+                    //ContainerFactory containerFactory,
                     MemberTag memberTag,
                     AspRoutineFeature aspRoutineFeature,
                     Func<object> getInput,
@@ -101,7 +100,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                     correlationToken: aspRoutineFeature.CorrelationToken,
                     documentBuilder: aspRoutineFeature.TraceDocument.Builder,
                     hasVerboseLoggingPrivilege: false,
-                    configurationFor: getAuditStamp(userContext),
+                    configurationFor: getConfigurationFor(userContext),
                     memberTag: memberTag
                 );
         }
@@ -183,7 +182,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         var secondName = default(string);
                         //var (firstName, secondName) = ActiveDirectoryManager.GetUserData(windowsIdentity);
 
-                        return await container.ResolveAdminkaDbContextHandler().HandleDbContextAsync(
+                        return await container.ResolveAuthenticationDomDbContextHandler().HandleDbContextAsync(
                             async (db) =>
                             {
                                 return await memoryCache.GetOrCreateAsync(
@@ -211,7 +210,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 
                         closure.Verbose?.Invoke($"useAdAuthorization:{useAdAuthorization}, adUserName: {userNameWithDomain}");
 
-                        return await container.ResolveAdminkaDbContextHandler().HandleDbContextAsync(
+                        return await container.ResolveAuthenticationDomDbContextHandler().HandleDbContextAsync(
                             async (db) =>
                             {
                                 var authenticationService = new AuthenticationService(db);

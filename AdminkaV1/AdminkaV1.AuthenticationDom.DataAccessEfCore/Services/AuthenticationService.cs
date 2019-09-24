@@ -5,22 +5,21 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
-using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
+namespace DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
-        readonly AdminkaDbContext adminkaDbContext;
-        public AuthenticationService(AdminkaDbContext adminkaDbContext)
-            => this.adminkaDbContext = adminkaDbContext;
+        readonly AuthenticationDomDbContext dbContext;
+        public AuthenticationService(AuthenticationDomDbContext dbContext)
+            => this.dbContext = dbContext;
 
         public async Task<User> GetUserAsync(string loginName, string firstName, string secondName, IEnumerable<string> adGroupsNames)
         {
-            using (var transaction = await adminkaDbContext.Database.BeginTransactionAsync())
+            using (var transaction = await dbContext.Database.BeginTransactionAsync())
             {
                 var needCommit = false;
-                var userEntity = await adminkaDbContext.Users
+                var userEntity = await dbContext.Users
                     .Include(e => e.UserPrivilegeMap).ThenInclude(e2 => e2.Privilege)
                     .Include(e => e.UserRoleMap)
                     .Include(e => e.UserRoleMap).ThenInclude(e2 => e2.Role)
@@ -37,36 +36,36 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
                     .Where(e => e.LoginName == loginName).SingleOrDefaultAsync();
                 if (userEntity != null)
                 {
-                    var adGroups = await adminkaDbContext.Groups.Where(e => adGroupsNames.Contains(e.GroupAdName)).ToListAsync();
+                    var adGroups = await dbContext.Groups.Where(e => adGroupsNames.Contains(e.GroupAdName)).ToListAsync();
                     needCommit = userEntity.UpdateGroups(adGroups);
                 }
                 else
                 {
                     userEntity = new User() { LoginName = loginName, FirstName = firstName, SecondName = secondName };
-                    await adminkaDbContext.Users.AddAsync(userEntity);
+                    await dbContext.Users.AddAsync(userEntity);
                     if (userEntity.UserGroupMap == null)
                         userEntity.UserGroupMap = new List<UserGroup>();
-                    var groups = await adminkaDbContext.Groups.Where(e => adGroupsNames.Contains(e.GroupAdName)).ToListAsync();
+                    var groups = await dbContext.Groups.Where(e => adGroupsNames.Contains(e.GroupAdName)).ToListAsync();
                     foreach (var g in groups)
                         userEntity.UserGroupMap.Add(new UserGroup() { UserId = userEntity.UserId, GroupId = g.GroupId });
                     needCommit = true;
                 }
                 if (needCommit)
                 {
-                    await adminkaDbContext.SaveChangesAsync();
+                    await dbContext.SaveChangesAsync();
                     transaction.Commit();
                 }
-                adminkaDbContext.Entry(userEntity).State = EntityState.Detached;
+                dbContext.Entry(userEntity).State = EntityState.Detached;
                 return userEntity;
             }
         }
 
         public async Task<User> GetUserAsync(string loginName, string firstName, string secondName, Func<string, bool> isInRole)
         {
-            using (var transaction = await adminkaDbContext.Database.BeginTransactionAsync())
+            using (var transaction = await dbContext.Database.BeginTransactionAsync())
             {
                 var needCommit = false;
-                var userEntity = await adminkaDbContext.Users
+                var userEntity = await dbContext.Users
                     .Include(e => e.UserPrivilegeMap).ThenInclude(e2 => e2.Privilege)
                     .Include(e => e.UserRoleMap)
                     .Include(e => e.UserRoleMap).ThenInclude(e2 => e2.Role)
@@ -83,17 +82,17 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
                     .Where(e => e.LoginName == loginName).SingleOrDefaultAsync();
                 if (userEntity != null)
                 {
-                    var adGroupsAll = await adminkaDbContext.Groups.ToListAsync();
+                    var adGroupsAll = await dbContext.Groups.ToListAsync();
                     var adGroups = adGroupsAll.Where(e => isInRole(e.GroupAdName));
                     needCommit = userEntity.UpdateGroups(adGroups);
                 }
                 else
                 {
                     userEntity = new User() { LoginName = loginName, FirstName = firstName, SecondName = secondName };
-                    await adminkaDbContext.Users.AddAsync(userEntity);
+                    await dbContext.Users.AddAsync(userEntity);
                     if (userEntity.UserGroupMap == null)
                         userEntity.UserGroupMap = new List<UserGroup>();
-                    var adGroupsAll = await adminkaDbContext.Groups.ToListAsync();
+                    var adGroupsAll = await dbContext.Groups.ToListAsync();
                     var groups = adGroupsAll.Where(e => isInRole(e.GroupAdName));
                     foreach (var g in groups)
                         userEntity.UserGroupMap.Add(new UserGroup() { UserId = userEntity.UserId, GroupId = g.GroupId });
@@ -101,10 +100,10 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
                 }
                 if (needCommit)
                 {
-                    await adminkaDbContext.SaveChangesAsync();
+                    await dbContext.SaveChangesAsync();
                     transaction.Commit();
                 }
-                adminkaDbContext.Entry(userEntity).State = EntityState.Detached;
+                dbContext.Entry(userEntity).State = EntityState.Detached;
                 return userEntity;
             }
         }

@@ -1,8 +1,7 @@
-﻿using DashboardCode.Routines.Storage.EfCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
+namespace DashboardCode.Routines.Storage.EfCore.Relational.SqlServer
 {
     // TODO: support sql express
     // optionsBuilder.UseSqlite("Filename=./blog.db");
@@ -10,10 +9,18 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
     {
         readonly string connectionString;
         readonly string migrationAssembly;
-        public SqlServerAdminkaOptionsFactory(string connectionString, string migrationAssembly)
+        readonly string migrationsHistoryTable;
+        readonly string migrationsHistoryTableSchema;
+        public SqlServerAdminkaOptionsFactory(
+            string connectionString, 
+            string migrationAssembly,
+            string migrationsHistoryTable,
+            string migrationsHistoryTableSchema="dbo")
         {
             this.connectionString = connectionString;
             this.migrationAssembly = migrationAssembly;
+            this.migrationsHistoryTable = migrationsHistoryTable;
+            this.migrationsHistoryTableSchema = migrationsHistoryTableSchema;
         }
 
         public void Create(DbContextOptionsBuilder optionsBuilder) 
@@ -22,12 +29,12 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.SqlServer
                 optionsBuilder.UseSqlServer(connectionString, 
                     sqlServerDbContextOptionsBuilder => sqlServerDbContextOptionsBuilder
                     .MigrationsAssembly(migrationAssembly)
-                    .MigrationsHistoryTable("AdminkaDbContextMigrationHistory", "ef"));
+                    .MigrationsHistoryTable(migrationsHistoryTable, migrationsHistoryTableSchema));
             else
                 optionsBuilder.UseSqlServer(connectionString,
                     sqlServerDbContextOptionsBuilder =>
                     sqlServerDbContextOptionsBuilder
-                        .MigrationsHistoryTable("AdminkaDbContextMigrationHistory", "ef")
+                        .MigrationsHistoryTable(migrationsHistoryTable, migrationsHistoryTableSchema)
                         );
 
             var relationalOptions = RelationalOptionsExtension.Extract(optionsBuilder.Options);

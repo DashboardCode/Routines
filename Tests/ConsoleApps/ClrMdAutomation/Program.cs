@@ -51,7 +51,7 @@ namespace ClrMdAutomation
             return true;
         }
 
-        static void Main(string[] args)
+        static void Main()
         {
             //var serializerExpression = StaticCompose();
             var serializerExpression = DynamicCompose<Point, int>(p => p.X, p => p.Y, "X", "Y");

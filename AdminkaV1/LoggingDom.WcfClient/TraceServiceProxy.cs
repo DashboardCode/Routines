@@ -11,30 +11,34 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
     {
         public Trace GetTrace(Guid correlationToken)
         {
-            var client = new TraceServiceClient();
-            try
+            using (var client = new TraceServiceClient())
             {
-                var task = client.GetTraceAsync(correlationToken);
-                var trace = task.Result;
-                return trace;
-            }
-            catch (AggregateException ex)
-            {
-                if (ex.InnerExceptions.Count > 0 && ex.InnerExceptions[0] is FaultException<RoutineError> faultException)
+                try
                 {
-                    if (faultException.Detail.AdminkaExceptionCode != null)
-                    {
-                        var baseException = new AdminkaException(
-                            faultException.Message, faultException, faultException.Detail.AdminkaExceptionCode);
-                        baseException.CopyData(faultException.Detail.Data);
-                        throw baseException;
-                    }
-                    else
-                    {
-                        ex.CopyData(faultException.Detail.Data);
-                    }
+#pragma warning disable AsyncFixer04 // A disposable object used in a fire & forget async call
+                    var task = client.GetTraceAsync(correlationToken);
+#pragma warning restore AsyncFixer04 // A disposable object used in a fire & forget async call
+                    var trace = task.Result;
+                    return trace;
                 }
-                throw;
+                catch (AggregateException ex)
+                {
+                    if (ex.InnerExceptions.Count > 0 && ex.InnerExceptions[0] is FaultException<RoutineError> faultException)
+                    {
+                        if (faultException.Detail.AdminkaExceptionCode != null)
+                        {
+                            var baseException = new AdminkaException(
+                                faultException.Message, faultException, faultException.Detail.AdminkaExceptionCode);
+                            baseException.CopyData(faultException.Detail.Data);
+                            throw baseException;
+                        }
+                        else
+                        {
+                            ex.CopyData(faultException.Detail.Data);
+                        }
+                    }
+                    throw;
+                }
             }
         }
     }

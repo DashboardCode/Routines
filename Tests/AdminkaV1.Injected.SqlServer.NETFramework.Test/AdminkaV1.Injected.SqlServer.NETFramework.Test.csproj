@@ -179,9 +179,13 @@
       <Project>{0afbd8ee-9049-4b87-bd18-5fb925d38352}</Project>
       <Name>AdminkaV1</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\AdminkaV1\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj">
+    <ProjectReference Include="..\..\AdminkaV1\AdminkaV1.TestDom.DataAccessEfCore\AdminkaV1.TestDom.DataAccessEfCore.csproj">
+      <Project>{EF371506-5A89-4888-A66B-D1CF9B1F7E68}</Project>
+      <Name>AdminkaV1.TestDom.DataAccessEfCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\AdminkaV1\DataAccessEfCore\AdminkaV1.LoggingDom.DataAccessEfCore.csproj">
       <Project>{bf9fb9b0-baee-457a-8c8e-d82dc68e0710}</Project>
-      <Name>AdminkaV1.DataAccessEfCore</Name>
+      <Name>AdminkaV1.LoggingDom.DataAccessEfCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj">
       <Project>{a186e18c-a446-4218-a2a8-6b126daba983}</Project>

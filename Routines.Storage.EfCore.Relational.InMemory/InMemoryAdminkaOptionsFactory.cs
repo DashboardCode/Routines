@@ -1,10 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-using DashboardCode.Routines.Storage.EfCore;
-
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.InMemory
-{
+namespace DashboardCode.Routines.Storage.EfCore.Relational.InMemory
+{ 
     public class InMemoryAdminkaOptionsFactory: IDbContextOptionsFactory
     {
         readonly string databaseName;

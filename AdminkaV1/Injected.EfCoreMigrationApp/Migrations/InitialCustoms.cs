@@ -1,20 +1,18 @@
 ﻿using System;
 using System.IO;
-using System.Globalization;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-using DashboardCode.Routines;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.AdminkaV1.DataAccessEfCore;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
 using DashboardCode.Routines.Storage;
+using DashboardCode.Routines.Storage.EfCore.Relational;
 
-namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
+namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
 {
     static class InitialCustoms
     {
@@ -26,7 +24,6 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
             var config = builder.Build();
             var adminkaDbInstallGroups = new List<AdminkaDbInstallGroup>();
             config.GetSection("AdminkaDbInstallGroups").Bind(adminkaDbInstallGroups);
-
 
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
@@ -40,6 +37,10 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
 
             routine.Handle(
                 (container,closure) => {
+                    EfCoreRelationalManager.ProcessTargetModel(migrationBuilder, targetModel); 
+                    
+
+
                     string loginName = null;
                     // string groupAdName = "FakeDomain\\Testers";
                     var adConfiguration = closure.Resolve<AdConfiguration>();
@@ -56,34 +57,6 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                     }
                     if (loginName == null)
                         throw new Exception("login name can't be null");
-
-                    var entityTypes = targetModel.GetEntityTypes();
-                    foreach(var entityType in entityTypes)
-                    {
-                        var relationalEntityTypeAnnotations = entityType.Relational();
-                        var schema = relationalEntityTypeAnnotations.Schema;
-                        var tableName = relationalEntityTypeAnnotations.TableName;
-
-                        if (entityType.FindProperty("RowVersion") != null && entityType.FindProperty("RowVersionAt") != null && entityType.FindProperty("RowVersionBy") != null)
-                        {
-                            migrationBuilder.Sql(
-                                $"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT DF_{schema}_{tableName}_RowVersionAt DEFAULT GETDATE() FOR RowVersionAt;");
-                            migrationBuilder.Sql(
-                                $"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT DF_{schema}_{tableName}_RowVersionBy DEFAULT SUSER_SNAME() FOR RowVersionBy;");
-                            migrationBuilder.Sql($"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT CK_{schema}_{tableName}_RowVersionBy CHECK(RowVersionBy NOT LIKE '%[^a-z!.!-!_!\\!@]%' ESCAPE '!');");
-                        }
-
-                        var annotation = entityType.FindAnnotation(Constraint.AnnotationName);
-                        if (annotation != null)
-                        {
-                            var constraints = (Constraint[])annotation.Value;
-                            foreach (var c in constraints)
-                            {
-                                var s = $"ALTER TABLE {schema}.{tableName} ADD CONSTRAINT {c.Name} {c.Body};";
-                                migrationBuilder.Sql(s);
-                            }
-                        }
-                    }
                     // 'FakeDomain\\\\Administrators', 'FakeDomain\\\\Testers'
                     // Create privileges
                     var sql = 

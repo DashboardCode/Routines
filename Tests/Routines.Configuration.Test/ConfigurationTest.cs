@@ -20,7 +20,9 @@ namespace DashboardCode.Routines.Configuration.Test
         public void CreateConfigurationSmokeTest()
         {
             var loader = ZoningSharedSourceProjectManager.GetLoader();
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             var container = new ConfigurationContainerTest(loader.GetGetRoutineConfigurationRecords(), new Deserializer(), new MemberTag("Namespace1", "Class1", "Member1"));
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
         }
 
 

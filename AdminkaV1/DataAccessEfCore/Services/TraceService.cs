@@ -1,21 +1,20 @@
 ﻿using System;
 
-using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.Routines;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
+namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.Services
 {
     public class TraceService : ITraceService
     {
-        readonly RoutineDisposeHandler<AdminkaDbContext, UserContext> dbContextHandler;
-        public TraceService(RoutineDisposeHandler<AdminkaDbContext, UserContext> dbContextHandler)
+        readonly RoutineDisposeHandler<LoggingDomDbContext, UserContext> dbContextHandler;
+        public TraceService(RoutineDisposeHandler<LoggingDomDbContext, UserContext> dbContextHandler)
             => this.dbContextHandler = dbContextHandler;
 
         public Trace GetTrace(Guid correlationToken)
         {
             return dbContextHandler.Handle<Trace>(
                 (dbContext,closure) =>
-                    throw new AdminkaDataAccessEfCoreException($"User exception from '{nameof(GetTrace)}'", closure,  "TEST")
+                    throw new LoggingDomDataAccessEfCoreException($"User exception from '{nameof(GetTrace)}'", closure,  "TEST")
                 );
         }
 
@@ -23,7 +22,7 @@ namespace DashboardCode.AdminkaV1.DataAccessEfCore.Services
         {
             dbContextHandler.Handle(
                 (dbContext, closure) =>
-                    throw new AdminkaDataAccessEfCoreException($"User exception from '{nameof(ResetTrace)}'", closure, "TEST")
+                    throw new LoggingDomDataAccessEfCoreException($"User exception from '{nameof(ResetTrace)}', guid '{correlationToken}'", closure, "TEST")
                 );
         }
     }

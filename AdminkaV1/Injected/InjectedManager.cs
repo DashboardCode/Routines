@@ -2,7 +2,6 @@
 using System.Text;
 using System.Reflection;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Security.Principal;
 
 using DashboardCode.Routines;
@@ -12,13 +11,14 @@ using DashboardCode.Routines.Configuration;
 
 using DashboardCode.AdminkaV1.LoggingDom.WcfClient;
 using DashboardCode.AdminkaV1.AuthenticationDom;
-using DashboardCode.AdminkaV1.DataAccessEfCore;
 
 using DashboardCode.AdminkaV1.Injected.Logging;
-using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
 using DashboardCode.Routines.ActiveDirectory;
 using DashboardCode.Routines.Logging;
 using DashboardCode.Routines.Storage.EfCore.Relational.SqlServer;
+using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore;
+using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
+using DashboardCode.AdminkaV1.TestDom.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -46,19 +46,6 @@ namespace DashboardCode.AdminkaV1.Injected
               WcfClientManager.AppendWcfClientFaultException(new StringBuilder(), new Exception());
 #endif
         }
-
-        #region Meta
-        public readonly static IEntityMetaServiceContainer EntityMetaServiceContainer = new EntityMetaServiceContainer(
-            (exception, entityType, ormEntitySchemaAdapter, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(
-                  exception, entityType, ormEntitySchemaAdapter, genericErrorField,
-                  (ex, storageResultBuilder) => {
-                      DataAccessEfCoreManager.Analyze(ex, storageResultBuilder);
-                      SqlServerManager.Analyze(ex, storageResultBuilder);
-                  }
-            ),
-            (modelBuilder) => AdminkaDbContext.BuildModel(modelBuilder)
-        ); 
-#endregion
 
         public static IIdentity GetDefaultIdentity()
         {
@@ -107,7 +94,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     if (ex is AdminkaException)
                         sb.AppendUserContextException((AdminkaException)ex);
                     WcfClientManager.AppendWcfClientFaultException(sb, ex);
-                    DataAccessEfCoreManager.Append(sb, ex);
+                    LoggingDomDataAccessEfCoreManager.Append(sb, ex);
                     SqlServerManager.Append(sb, ex);
                     ActiveDirectoryManager.Append(sb, ex);
                     appender?.Invoke(sb, ex);

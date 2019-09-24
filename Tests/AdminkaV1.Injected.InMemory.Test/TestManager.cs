@@ -22,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                 logger,
                 new MemberTag(typeof(TestManager)),
                 new { input = "Input text" }, databaseName);
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var typeRecord1 = new TypeRecord()
                 {

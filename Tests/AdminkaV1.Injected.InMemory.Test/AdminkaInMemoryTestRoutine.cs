@@ -29,7 +29,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             object input,
             string name)
             : base(
-                 ApplicationSettings.CreateInMemoryApplicationSettings(),
+                 ApplicationSettings.CreateInMemoryApplicationSettings(name),
                  loggingTransientsFactory, 
                  memberTag,
                  "UnitTest", 

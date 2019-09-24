@@ -41,14 +41,16 @@ namespace DashboardCode.Routines.Test
         {
             sb.Append("["); foreach (var i in t) sb.Append(i).Append(",");
             if (t.Length > 0) sb.Length--;
-            sb.Append("]"); return true;
+            sb.Append("]");
+            return true;
         }
 
         private static bool GetSumFormatter(StringBuilder sb, int[] t)
         {
             var sum = 0;
-            foreach (var i in t) sum = sum + i;
-            sb.Append(sum); return true;
+            foreach (var i in t) sum += i;
+            sb.Append(sum);
+            return true;
         }
 
         private static bool GetStringGuidFormatter(StringBuilder sb, IEnumerable<Guid> t)
@@ -63,7 +65,8 @@ namespace DashboardCode.Routines.Test
                 if (moveNext)
                     sb.Append(",");
             }
-            sb.Append("]"); return true;
+            sb.Append("]");
+            return true;
         }
 
         [TestMethod]

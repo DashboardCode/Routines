@@ -19,7 +19,10 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
             
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleDbContext(dbContext =>
+            routine.Handle((container, closure) => 
+                container
+                    .ResolveTestDomDbContextHandler()
+                    .HandleDbContext(dbContext =>
             {
                 var list = dbContext.ParentRecords
                     .Include(e => e.ParentRecordHierarchyRecordMap)
@@ -36,7 +39,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
-            var record = routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
+            var record = routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<TypeRecord>();
                 return repositoryHandler.Handle((repository, storage) =>
@@ -62,7 +65,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
                             .ThenInclude(y => y.HierarchyRecord)
                        .IncludeAll(y => y.ChildRecords)
                             .ThenInclude(y => y.TypeRecord);
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var repositoryHandler = ormHandlerFactory.Create<ParentRecord>();
                 repositoryHandler.Handle((repository, storage) =>

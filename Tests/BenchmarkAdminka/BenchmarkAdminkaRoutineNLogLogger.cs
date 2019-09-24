@@ -31,7 +31,7 @@ namespace BenchmarkAdminka
                 loggingTransientsFactory,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNLog)), 
                 "Anonymous",new { });
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().Handle(repository =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().Handle(repository =>
             {
 
             }));
@@ -45,7 +45,7 @@ namespace BenchmarkAdminka
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNoAuthorizationNLog)), "UnitTest", new { });
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().Handle(repository =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().Handle(repository =>
             {
 
             }));
@@ -64,7 +64,7 @@ namespace BenchmarkAdminka
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryNLog)), 
                 "Anonymous", new { });
             IReadOnlyCollection<ParentRecord> parentRecords;
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleRepository<ParentRecord>(repository =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleRepository<ParentRecord>(repository =>
             {
                 parentRecords = repository.List();
                 closure.Verbose?.Invoke("sample");
@@ -87,7 +87,7 @@ namespace BenchmarkAdminka
             try
             {
                 IReadOnlyCollection<ParentRecord> parentRecords;
-                routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleRepository<ParentRecord>(repository =>
+                routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleRepository<ParentRecord>(repository =>
                 {
                     parentRecords = repository.List();
                     closure.Verbose?.Invoke("sample");
@@ -117,7 +117,7 @@ namespace BenchmarkAdminka
             try
             {
                 IReadOnlyCollection<ParentRecord> parentRecords;
-                routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleRepository<ParentRecord>(repository =>
+                routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleRepository<ParentRecord>(repository =>
                 {
                     parentRecords = repository.List();
                     closure.Verbose?.Invoke("sample");
@@ -143,7 +143,7 @@ namespace BenchmarkAdminka
                 , "Anonymous", 
                 new { });
             IReadOnlyCollection<ParentRecord> parentRecords=
-                routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleRepository<IReadOnlyCollection<ParentRecord>, ParentRecord>(repository =>
+                routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleRepository<IReadOnlyCollection<ParentRecord>, ParentRecord>(repository =>
                 {
                     var output = repository.List();
                     closure.Verbose?.Invoke("sample");

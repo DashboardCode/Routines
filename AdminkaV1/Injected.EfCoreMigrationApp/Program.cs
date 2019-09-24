@@ -1,21 +1,14 @@
-﻿using System.Globalization;
+﻿
 using Microsoft.EntityFrameworkCore;
 
-using DashboardCode.Routines;
-
-namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
+namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
 {
-    public class AdminkaDbInstallGroup
-    {
-        public string Name { get; set; }
-        public string[] Priveleges { get; set; }
-    }
 
     public class Program
     {
         public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsStandard();
         public static readonly string MigrationAssembly = typeof(Program).Assembly.GetName().Name;
-        static void Main(string[] args)
+        static void Main()
         {
             var migrationApplicationSettings = ApplicationSettings.CreateMigrationApplicationSettings(MigrationAssembly);
 
@@ -29,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
                 controllerName: nameof(Program)
                 );
 
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleDbContext(
+            routine.Handle((container, closure) => container.ResolveLoggingDomDbContextHandler().HandleDbContext(
                 dbContext => {
                     dbContext.Database.Migrate();
                 }));

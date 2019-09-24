@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp
+namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
 {
     /// <summary>
     /// Make AdminkaCSharpHelper available for Add-Migration ps command

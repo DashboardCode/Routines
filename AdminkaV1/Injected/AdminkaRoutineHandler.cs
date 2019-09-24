@@ -12,6 +12,20 @@ namespace DashboardCode.AdminkaV1.Injected
 {
     public class AdminkaAnonymousRoutineHandler : AdminkaRoutineHandlerBase<AnonymousUserContext>
     {
+        public AdminkaAnonymousRoutineHandler(
+            ApplicationSettings applicationSettings,
+            MemberTag memberTag,
+            string auditStamp,
+            object input) : this(
+                  applicationSettings,
+                  InjectedManager.ComposeNLogMemberLoggerFactory(null),
+                  memberTag,
+                  auditStamp,
+                  input
+                )
+        {
+
+        }
         public AdminkaAnonymousRoutineHandler( 
             ApplicationSettings applicationSettings,
             Func<Guid, MemberTag, IMemberLogger> loggingTransientsFactory,
@@ -23,7 +37,7 @@ namespace DashboardCode.AdminkaV1.Injected
                   new AdminkaRoutineHandlerFactory<AnonymousUserContext>(
                     correlationToken: Guid.NewGuid(),
                     InjectedManager.DefaultRoutineTagTransformException,
-                    InjectedManager.ComposeNLogMemberLoggerFactory(null),
+                    loggingTransientsFactory,
                     applicationSettings.PerformanceCounters)
                         .CreateLoggingHandler(
                             memberTag,
@@ -73,7 +87,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 applicationSettings,
                 anonymousUserContext,
                 getAuditStamp: u => u.AuditStamp,
-                new { },
+                input,
                 correlationToken: correlationToken,
                 documentBuilder: documentBuilder,
                 hasVerboseLoggingPrivilege: false,
@@ -125,7 +139,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 applicationSettings,
                 internalUserContext,
                 u => u.AuditStamp,
-                null,
+                input,
                 correlationToken: correlationToken,
                 documentBuilder: documentBuilder,
                 hasVerboseLoggingPrivilege: false,

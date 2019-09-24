@@ -28,7 +28,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 loggingTransientsFactory,
                 new MemberTag(this), "UnitTest", new { input = "Input text" });
             // check constraint on UPDATE
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var t0 = new TypeRecord()
                 {
@@ -43,7 +43,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 });
             }));
 
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 var t1 = new TypeRecord()
                 {

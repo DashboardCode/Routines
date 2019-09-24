@@ -16,7 +16,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void EfCoreTestStoreUpdateRelationsErrorNoTracking()
         {
-            TestManager.Reset(Guid.NewGuid().ToString());
+            TestManager.Reset();
 
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
@@ -29,7 +29,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(
@@ -70,7 +70,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            TestManager.Reset(Guid.NewGuid().ToString());
+            TestManager.Reset();
 
             var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
@@ -80,7 +80,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
             {
                 var rh = ormHandlerFactory.Create<ParentRecord>(false);
                 rh.Handle(

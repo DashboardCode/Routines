@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         {
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
-            routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlersFactory =>
+            routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlersFactory =>
             {
                 closure.Verbose("Test message");
                 return "Output text";
@@ -28,7 +28,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { input = "Input text" }, readonlyDatabaseName);
             try
             {
-                var x = routine.Handle((container, closure) => container.ResolveAdminkaDbContextHandler().HandleOrmFactory(ormHandlersFactory =>
+                var x = routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlersFactory =>
                 {
                     closure.Verbose("Test message");
                     throw new Exception("Test exception");

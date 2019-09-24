@@ -10,8 +10,8 @@
     <AssemblyVersion>1.0.12.0</AssemblyVersion>
     <FileVersion>1.0.12.0</FileVersion>
     <Description />
-    <RootNamespace>DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp</RootNamespace>
-    <AssemblyName>DashboardCode.AdminkaV1.Injected.NETStandard.EfCoreMigrationApp</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp</AssemblyName>
     <ApplicationIcon />
     <OutputType>Exe</OutputType>
     <StartupObject />
@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="TestDomMigrations\" />
     <Folder Include="Properties\" />
     <Folder Include="Properties\" />
     <Folder Include="Properties\" />
@@ -50,8 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Routines\Routines.csproj" />
-    <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.DataAccessEfCore.csproj" />
+    <ProjectReference Include="..\..\Routines.Storage.EfCore.Relational\Routines.Storage.EfCore.Relational.csproj" />
     <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj" />
   </ItemGroup>
 </Project>

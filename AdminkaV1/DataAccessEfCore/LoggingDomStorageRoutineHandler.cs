@@ -3,36 +3,34 @@ using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore
+namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore
 {
-    public class AdminkaStorageRoutineHandler<TUserContext> : EfCoreStorageRoutineHandler<TUserContext, AdminkaDbContext>
+    public class LoggingDomStorageRoutineHandler<TUserContext> : EfCoreStorageRoutineHandler<TUserContext, LoggingDomDbContext>
     {
-        public AdminkaStorageRoutineHandler(
+        public LoggingDomStorageRoutineHandler(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             TUserContext userContext,
-
-            IEntityMetaServiceContainer entityMetaServiceContainer,
             Action<string> efDbContextVerbose,
             IHandler<RoutineClosure<TUserContext>> routineHandler,
             Func<TUserContext, string> getAudit) :
             this(
-                entityMetaServiceContainer,
+                LoggingDomDataAccessEfCoreManager.LoggingDomEntityMetaServiceContainer,
                 userContext,
-                () => DataAccessEfCoreManager.CreateAdminkaDbContext(adminkaStorageConfiguration, efDbContextVerbose),
+                () => LoggingDomDataAccessEfCoreManager.CreateLoggingDomDbContext(adminkaStorageConfiguration, efDbContextVerbose),
                 routineHandler, getAudit)
         {
         }
 
-        private AdminkaStorageRoutineHandler(
+        private LoggingDomStorageRoutineHandler(
             IEntityMetaServiceContainer entityMetaServiceContainer,
             TUserContext userContext,
-            Func<AdminkaDbContext> createDbContext,
+            Func<LoggingDomDbContext> createDbContext,
             IHandler<RoutineClosure<TUserContext>> routineHandler,
             Func<TUserContext, string> getAudit) :
             base(
                 entityMetaServiceContainer,
                 createDbContext,
-                () => new ValueTuple<AdminkaDbContext, IAuditVisitor>(
+                () => new ValueTuple<LoggingDomDbContext, IAuditVisitor>(
                     createDbContext(),
                     new AuditVisitor<IVersioned>(
                         (e)=> { e.RowVersionAt = DateTime.Now; e.RowVersionBy = getAudit(userContext); })

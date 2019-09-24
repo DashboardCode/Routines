@@ -39,7 +39,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             Func<User, UserContext> createUserContext
             ) : base(
                     pageModel,
-                    pageRoutineFeature,
                     applicationSettings,
                     memberTag,
                     uc => uc.AuditStamp,
@@ -62,21 +61,22 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     {
         public PageContainerRoutineHandler(
             PageModel pageModel,
-            PageRoutineFeature pageRoutineFeature,
             ApplicationSettings applicationSettings,
             MemberTag memberTag,
             Func<TUserContext, string> getConfigurationFor,
             Func<TUserContext, string> getAuditStamp,
-            Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
+            Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> 
+                getUserAndFailedActionResultInitialisedAsync,
             Func<TUser, TUserContext> createUnitContext
             ) : base(
                 pageModel,
                 getUserAndFailedActionResultInitialisedAsync,
+                // TODO remove containerFactory
                 (aspRoutineFeature, getInput, user, containerFactory) =>
                 {
                     var userContext = createUnitContext(user);
                     return MvcAppManager.GetContainerHandler(
-                        containerFactory,
+                        //containerFactory,
                         memberTag,
                         aspRoutineFeature,
                         getInput,
@@ -110,7 +110,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
     {
         public PageRoutineAnonymousHandler(
             PageModel pageModel,
-            PageRoutineFeature pageRoutineFeature,
+
             AnonymousUserContext anonymousUserContext,
             ApplicationSettings applicationSettings,
             bool logRequest = false,

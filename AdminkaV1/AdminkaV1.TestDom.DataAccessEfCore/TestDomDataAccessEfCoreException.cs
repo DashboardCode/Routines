@@ -1,7 +1,7 @@
 ﻿using System;
 using DashboardCode.Routines;
 
-namespace DashboardCode.AdminkaV1.DataAccessEfCore
+namespace DashboardCode.AdminkaV1.TestDom.DataAccessEfCore
 {
     public class AdminkaDataAccessEfCoreException : AdminkaException
     {

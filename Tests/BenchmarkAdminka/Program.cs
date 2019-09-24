@@ -10,7 +10,7 @@ namespace BenchmarkAdminka
 #else
         public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();
 #endif
-        static void Main(string[] args)
+        static void Main()
         {
             //var b = new BenchmarkAdminkaRoutineListLogger();
             //b.MeasureRoutineRepositoryErrorLogList();

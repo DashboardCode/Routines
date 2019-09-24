@@ -16,7 +16,7 @@ namespace DashboardCode.AdminkaV1.Injected
     public class ApplicationSettings
     {
         public readonly Func<string, ApplicationSettings> CreateMigrationApplicationSettings;
-        public readonly Func<ApplicationSettings> CreateInMemoryApplicationSettings;
+        public readonly Func<string, ApplicationSettings> CreateInMemoryApplicationSettings;
 
         public readonly Func<string, AdminkaStorageConfiguration> CreateMigrationAdminkaStorageConfiguration;
         public AdminkaStorageConfiguration AdminkaStorageConfiguration { get; private set; }
@@ -67,7 +67,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 PerformanceCounters = new PerformanceCountersStub();
             }
 
-            CreateInMemoryApplicationSettings = () =>
+            CreateInMemoryApplicationSettings = (name) =>
                 new ApplicationSettings(
                     connectionStringMap, appSettings,
                     configurationContainerFactory,

@@ -99,7 +99,7 @@ namespace DashboardCode.Routines.Json
             }
             else
             {
-                stringBuilder.Length = stringBuilder.Length - commas;
+                stringBuilder.Length -= commas;
             }
             stringBuilder.Append(']');
             return @value;

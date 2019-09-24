@@ -84,7 +84,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                         getInput,
                         userContext,
                         applicationSettings,
-                        uc => uc.AuditStamp,
                         uc => uc.AuditStamp
                     );
                 },

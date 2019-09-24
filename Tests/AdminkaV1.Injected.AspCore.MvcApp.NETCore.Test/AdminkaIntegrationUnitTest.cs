@@ -26,29 +26,31 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
         readonly HttpClient httpClient;
         public AdminkaIntegrationUnitTest()
         {
-            var customWebApplicationFactory = new CustomWebApplicationFactory<Startup>();
-            
-            httpClient = customWebApplicationFactory.CreateClient();
-            testServer = customWebApplicationFactory.Server;
+            using (var customWebApplicationFactory = new CustomWebApplicationFactory<Startup>())
+            {
 
-            //var hostBuilder = new WebHostBuilder()
-            //    .UseContentRoot(TestManager.GetContentRoot())
-            //    // TODO: should I use it and when?
-            //    //  .UseEnvironment("Development")
-            //    .ConfigureServices(TestManager.InitializeServices)
-            //    .UseStartup<Startup>()
-            //    // TODO: should I do configuration in place (or trust that one from Start)
-            //    // to overwrite configuration for test
-            //    /*.UseConfiguration(
-            //        new Microsoft.Extensions.Configuration.ConfigurationBuilder()
-            //        .SetBasePath(System.IO.Path.GetFullPath(@"../../../../APIProjectFolder/"))
-            //        .AddJsonFile("appsettings.json", optional: false)
-            //        .AddUserSecrets<Startup>()
-            //        .Build()
-            //    )*/;
-            //testServer = new TestServer(hostBuilder);
+                httpClient = customWebApplicationFactory.CreateClient();
+                testServer = customWebApplicationFactory.Server;
 
-            //httpClient = testServer.CreateClient();
+                //var hostBuilder = new WebHostBuilder()
+                //    .UseContentRoot(TestManager.GetContentRoot())
+                //    // TODO: should I use it and when?
+                //    //  .UseEnvironment("Development")
+                //    .ConfigureServices(TestManager.InitializeServices)
+                //    .UseStartup<Startup>()
+                //    // TODO: should I do configuration in place (or trust that one from Start)
+                //    // to overwrite configuration for test
+                //    /*.UseConfiguration(
+                //        new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+                //        .SetBasePath(System.IO.Path.GetFullPath(@"../../../../APIProjectFolder/"))
+                //        .AddJsonFile("appsettings.json", optional: false)
+                //        .AddUserSecrets<Startup>()
+                //        .Build()
+                //    )*/;
+                //testServer = new TestServer(hostBuilder);
+
+                //httpClient = testServer.CreateClient();
+            }
         }
 
         [TestMethod]
@@ -104,7 +106,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
 
 
             var x = await routine.HandleAsync(async (container, closure) => 
-            await container.ResolveAdminkaDbContextHandler().HandleRepositoryAsync<List<Role>,Role>(repository =>
+            await container.ResolveTestDomDbContextHandler().HandleRepositoryAsync<List<Role>,Role>(repository =>
             {
                 //Task.Delay(10000);
                 var xx = repository.ListAsync();
@@ -113,7 +115,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                 return xx;
             }));
 
-            await routine.HandleAsync(async (container, closure) => await container.ResolveAdminkaDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
+            await routine.HandleAsync(async (container, closure) => await container.ResolveAuthenticationDomDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
             {
                 var routineOrmHandler = ormHandlerFactory.Create<Role>();
                 await routineOrmHandler.HandleAsync(async (repository, storage) =>
@@ -218,7 +220,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
                 loggingTransientsFactory,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), "UnitTest",
                 new { input = "Input text" });
-            await routine.HandleAsync(async (container, closure) => await container.ResolveAdminkaDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
+            await routine.HandleAsync(async (container, closure) => await container.ResolveAuthenticationDomDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
             {
                 await ormHandlerFactory.Create<Role>().HandleAsync(async (repository, storage) =>
                 {

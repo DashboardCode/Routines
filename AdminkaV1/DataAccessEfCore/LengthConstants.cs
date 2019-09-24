@@ -1,4 +1,4 @@
-﻿namespace DashboardCode.AdminkaV1.DataAccessEfCore
+﻿namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore
 {
     public static class LengthConstants
     {
