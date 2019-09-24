@@ -91,7 +91,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Routines.Configuration.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Configuration.NETCore.Test", "Tests\Routines.Configuration.NETCore.Test\Routines.Configuration.NETCore.Test.csproj", "{CBDD98C8-D927-4AA9-B01A-DDA710C0EA56}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.DataAccessEfCore.OdataToEntity", "AdminkaV1\DataAccessEfCore.OdataToEntity\AdminkaV1.DataAccessEfCore.OdataToEntity.csproj", "{5ED3E687-00B3-4C18-B4C3-5D0903C29E05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.LoggingDom.DataAccessEfCore.OdataToEntity", "AdminkaV1\DataAccessEfCore.OdataToEntity\AdminkaV1.LoggingDom.DataAccessEfCore.OdataToEntity.csproj", "{5ED3E687-00B3-4C18-B4C3-5D0903C29E05}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.InMemory.NETCore.Test", "Tests\AdminkaV1.Injected.InMemory.NETCore.Test\AdminkaV1.Injected.InMemory.NETCore.Test.csproj", "{93598276-98A4-4BFC-A266-F3F48F9277D0}"
 EndProject
@@ -155,11 +155,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClrMdAutomation", "Tests\Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore.Relational.SqlServer", "Routines.Storage.EfCore.Relational.SqlServer\Routines.Storage.EfCore.Relational.SqlServer.csproj", "{2DE5625C-331C-4E8B-86CA-A9A11D480435}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.TestDom.DataAccessEfCore", "AdminkaV1\AdminkaV1.TestDom.DataAccessEfCore\AdminkaV1.TestDom.DataAccessEfCore.csproj", "{EF371506-5A89-4888-A66B-D1CF9B1F7E68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.TestDom.DataAccessEfCore", "AdminkaV1\AdminkaV1.TestDom.DataAccessEfCore\AdminkaV1.TestDom.DataAccessEfCore.csproj", "{EF371506-5A89-4888-A66B-D1CF9B1F7E68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.EfCore.Relational.InMemory", "Routines.Storage.EfCore.Relational.InMemory\Routines.Storage.EfCore.Relational.InMemory.csproj", "{8F917BFA-51D5-4714-BE42-DB3F2E20DC7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore.Relational.InMemory", "Routines.Storage.EfCore.Relational.InMemory\Routines.Storage.EfCore.Relational.InMemory.csproj", "{8F917BFA-51D5-4714-BE42-DB3F2E20DC7F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.AuthenticationDom.DataAccessEfCore", "AdminkaV1\AdminkaV1.AuthenticationDom.DataAccessEfCore\AdminkaV1.AuthenticationDom.DataAccessEfCore.csproj", "{8C38689E-DCD9-4EFD-8A59-E5EB324D9AE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.AuthenticationDom.DataAccessEfCore", "AdminkaV1\AdminkaV1.AuthenticationDom.DataAccessEfCore\AdminkaV1.AuthenticationDom.DataAccessEfCore.csproj", "{8C38689E-DCD9-4EFD-8A59-E5EB324D9AE7}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
