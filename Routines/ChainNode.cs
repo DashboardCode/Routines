@@ -13,7 +13,7 @@ namespace DashboardCode.Routines
 
     public class ChainMemberNode : ChainNode
     {
-        public readonly LambdaExpression Expression;
+        public readonly LambdaExpression Expression; 
         public readonly string MemberName;
         public readonly bool IsEnumerable;
         public readonly ChainNode Parent;

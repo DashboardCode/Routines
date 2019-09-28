@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DashboardCode.Routines.Storage.EfModelTest;
-
-namespace DashboardCode.Routines.Storage.Ef6.Test.NETFramework
+﻿namespace DashboardCode.Routines.Storage.EfModelTest.Ef6.Test
 {
     public static class TestIsland
     {

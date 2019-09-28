@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DashboardCode.Routines.Storage.EfModelTest;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DashboardCode.Routines.Storage.Ef6.Test.NETFramework
+namespace DashboardCode.Routines.Storage.EfModelTest.Ef6.Test
 {
     [TestClass]
     public class UnitTest1

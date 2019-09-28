@@ -11,11 +11,14 @@ $SolutionFolderPath = $PSScriptRoot #or enter it manually there
 
 
 # STEP 2. find projects
-$CoreProjects = @('Routines','Routines.ActiveDirectory','Routines.AspNetCore', 'Routines.Configuration.Classic', 'Routines.Configuration.Standard',
-'Routines.Storage.EfCore', 'Routines.Storage.EfCore.Relational', 'Routines.Storage.EfCore.Relational.SqlServer', 'Routines.Storage.SqlServer' );
+$CoreProjects = @('Routines.Storage.EfCore.Relational.InMemory',
+'Routines','Routines.ActiveDirectory','Routines.AspNetCore', 'Routines.Configuration.Classic', 'Routines.Configuration.Standard',
+'Routines.Storage.EfCore', 'Routines.Storage.EfCore.Relational', 'Routines.Storage.EfCore.Relational.SqlServer', 
+'Routines.Storage.SqlServer' 
+);
 
 
-$ver = '2.0.67'
+$ver = '2.0.70'
 Function UpdateVersion ($projectFile)
 {
     Get-Content -path $projectFile | % { $_ `
@@ -29,19 +32,20 @@ Function UpdateVersion ($projectFile)
 
 ForEach ($name in $CoreProjects) {UpdateVersion("$SolutionFolderPath\$name\$name.csproj")}
 
+cd $SolutionFolderPath
 & dotnet build --configuration Release
 
 
 $sign = Read-Host 'Enter sign'
-$ver = '2.0.65'
 
-Function PushToNuget ($projectFile)
+
+Function PushToNuget ($name)
 {
-    cd "$projectFile\Routines\bin\Release"
+    cd $SolutionFolderPath\$name\bin\Release
     nuget push "DashboardCode.$name.$ver.nupkg" $sign -Source https://api.nuget.org/v3/index.json
 }
 
-ForEach ($name in $CoreProjects) {PushToNuget("$name","$SolutionFolderPath\$name\$name.csproj")}
+ForEach ($name in $CoreProjects) {PushToNuget("$name")}
 
 
 #cd $SolutionFolderPath\Routines\bin\Release

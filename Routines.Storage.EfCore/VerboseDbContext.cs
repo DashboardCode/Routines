@@ -8,12 +8,11 @@ namespace DashboardCode.Routines.Storage.EfCore
         static VerboseDbContext()
         {
             // load EF DbContext dependent assemblies explicitly otherwise other tools can load "older" or "newer" versions and this can become a problem
-            var loadit = new[]
-            {
-                typeof(Remotion.Linq.DefaultQueryProvider),
-                typeof(System.Collections.Generic.AsyncEnumerator),
-                typeof(Remotion.Linq.DefaultQueryProvider)
-            };
+            //var loadit = new[]
+            //{
+            //    //typeof(Remotion.Linq.DefaultQueryProvider),
+            //    //typeof(System.Collections.Generic.),
+            //};
         }
 
         readonly Action<DbContextOptionsBuilder> buildOptionsBuilder;

@@ -7,9 +7,8 @@ using System.Data.Entity.Infrastructure.Interception;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DashboardCode.Routines.Storage.EfModelTest;
 
-namespace DashboardCode.Routines.Storage.Ef6.Test.NETFramework
+namespace DashboardCode.Routines.Storage.EfModelTest.Ef6.Test
 {
     public class MyDbContext : DbContext
     {

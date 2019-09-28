@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.2;net47</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;net48</TargetFrameworks>
+    <!--<TargetFrameworks>netcoreapp3.0;net48</TargetFrameworks>-->
 	<LangVersion>latest</LangVersion>
 	</PropertyGroup>
   
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net47'">
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
     <DebugType>pdbonly</DebugType>
-	<DebugSymbols>true</DebugSymbols>
+	  <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.0|AnyCPU'">
@@ -24,10 +25,17 @@
     <PackageReference Include="ServiceStack.Text" Version="5.6.0" />
   </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)' == 'net47'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.11.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Net.Primitives" Version="4.3.0">
+    </PackageReference>
+    <PackageReference Include="Microsoft.Win32.Primitives" Version="4.3.0">
+    </PackageReference>
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
 	<ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />

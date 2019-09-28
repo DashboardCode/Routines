@@ -11,9 +11,9 @@ namespace DashboardCode.Routines.Storage.EfCore.Relational
             var entityTypes = targetModel.GetEntityTypes();
             foreach (var entityType in entityTypes)
             {
-                var relationalEntityTypeAnnotations = entityType.Relational();
-                var schema = relationalEntityTypeAnnotations.Schema;
-                var tableName = relationalEntityTypeAnnotations.TableName;
+                //var relationalEntityTypeAnnotations = entityType.Relational();
+                var schema = entityType.GetSchema(); // relationalEntityTypeAnnotations.Schema;
+                var tableName = entityType.GetTableName(); // relationalEntityTypeAnnotations.TableName;
 
                 if (entityType.FindProperty("RowVersion") != null
                     && entityType.FindProperty("RowVersionAt") != null

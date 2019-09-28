@@ -13,9 +13,9 @@ namespace DashboardCode.Routines.Storage.EfCore.Relational
         public void RemoveAll<TEntity>() where TEntity : class
         {
             var entityType = context.Model.FindEntityType(typeof(TEntity));
-            var relationalEntityTypeAnnotations = entityType.Relational();
-            var schema = relationalEntityTypeAnnotations.Schema;
-            var tableName = relationalEntityTypeAnnotations.TableName;
+            //var relationalEntityTypeAnnotations = entityType.Relational();
+            var schema = entityType.GetSchema();
+            var tableName = entityType.GetTableName();
 
             var dml = string.IsNullOrEmpty(schema)? $"DELETE FROM {tableName}" : $"DELETE FROM {schema}.{tableName}";
 #pragma warning disable EF1000

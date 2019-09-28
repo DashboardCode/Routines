@@ -30,7 +30,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             // TODO:
             // updatable configuration https://stackoverflow.com/questions/40970944/how-to-update-values-into-appsetting-json
             Configuration = builder.Build();
-            IConfiguration c = Configuration;
             if (hostingEnvironment.IsDevelopment())
                 builder.AddUserSecrets<Startup>();
         }
@@ -52,7 +51,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             //serviceCollection.AddScoped(sp => sp.GetService<Microsoft.Extensions.Options.IOptionsSnapshot<List<RoutineResolvable>>>().Value);
 
             serviceCollection.AddMemoryCache(); // AddDistributedMemoryCache();
-            serviceCollection.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            serviceCollection.AddMvc((options) => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             serviceCollection.AddSingleton(new DevProxyMiddlewareSettings(
                 new PathString("/dist"), 

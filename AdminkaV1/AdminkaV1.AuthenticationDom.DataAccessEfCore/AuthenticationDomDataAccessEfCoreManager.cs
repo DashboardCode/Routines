@@ -3,6 +3,7 @@ using System.Text;
 
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
+using DashboardCode.Routines.Storage.EfCore.Relational;
 using DashboardCode.Routines.Storage.EfCore.Relational.InMemory;
 using DashboardCode.Routines.Storage.EfCore.Relational.SqlServer;
 using DashboardCode.Routines.Storage.SqlServer;
@@ -21,6 +22,7 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore
                       SqlServerManager.Analyze(ex, storageResultBuilder);
                   }
             ),
+            (entityType) =>new SqlServerOrmEntitySchemaAdapter(entityType),
             (modelBuilder) => AuthenticationDomDbContext.BuildModel(modelBuilder)
         );
         // just proxy which role is stop DashboardCode.Routines.Storage.EfCore reference propogation to the DashboardCode.AdminkaV1.Injected project

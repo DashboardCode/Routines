@@ -8,7 +8,10 @@ namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
     /// </summary>
     public class AdminkaDesignTimeServices : IDesignTimeServices
     {
-        public void ConfigureDesignTimeServices(IServiceCollection serviceCollection) =>
-            serviceCollection.AddSingleton<ICSharpHelper, AdminkaCSharpHelper>();
+        // TODO ICSharpHelper
+        public void ConfigureDesignTimeServices(IServiceCollection serviceCollection)
+        {
+            //serviceCollection.AddSingleton<ICSharpHelper, AdminkaCSharpHelper>();
+        }
     }
 }

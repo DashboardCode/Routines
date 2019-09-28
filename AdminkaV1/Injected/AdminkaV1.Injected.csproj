@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
     <Product>DashboardCode.AdminkaV1.Injected.NETStandard</Product>
     <Copyright>Copyright ©  2016</Copyright>
@@ -33,7 +33,8 @@
     <PackageReference Include="DashboardCode.NLogTools" Version="1.0.12" />
     <PackageReference Include="DynamicExpresso.Core" Version="2.3.1" />
     <PackageReference Include="Markdown" Version="2.2.1" />
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.5.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>
