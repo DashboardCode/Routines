@@ -18,7 +18,7 @@ namespace DashboardCode.Routines.Logging.Test
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(memberTag, log);
 
-            bool testInputOutput(object input2, object output, TimeSpan duration) => true;
+            static bool testInputOutput(object input2, object output, TimeSpan duration) => true;
             var routineLogger = new RoutineHandlerFactory(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
@@ -67,7 +67,7 @@ namespace DashboardCode.Routines.Logging.Test
             IRepositoryHandlerGFactory<UserContext> testRepositoryHandlerFactory = null;
             var userContext = new UserContext { CultureInfo = CultureInfo.InvariantCulture };
 
-            bool testInputOutput(object input2, object output, TimeSpan duration) => true;
+            static bool testInputOutput(object input2, object output, TimeSpan duration) => true;
             var routineLogger = new RoutineHandlerFactory(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
@@ -119,7 +119,7 @@ namespace DashboardCode.Routines.Logging.Test
             var log = new List<string>();
             var loggingTransients = new LoggingTransients(memberTag, log);
 
-            bool testInputOutput(object input2, object output, TimeSpan duration) => true;
+            static bool testInputOutput(object input2, object output, TimeSpan duration) => true;
             var routineLogger = new RoutineHandlerFactory(correlationToken);
             var exceptionHandler = new ExceptionHandler(
                 ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),
@@ -176,7 +176,7 @@ namespace DashboardCode.Routines.Logging.Test
             var input = new { };
             try
             {
-                bool testInputOutput(object input2, object output, TimeSpan duration) => true;
+                static bool testInputOutput(object input2, object output, TimeSpan duration) => true;
                 var routineLogger = new RoutineHandlerFactory(correlationToken);
                 var exceptionHandler = new ExceptionHandler(
                     ex => loggingTransients.BasicRoutineLoggingAdapter.LogException(DateTime.Now, ex),

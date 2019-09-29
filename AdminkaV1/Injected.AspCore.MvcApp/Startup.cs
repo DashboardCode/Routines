@@ -10,27 +10,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
 using DashboardCode.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using DashboardCode.Routines.Configuration.Standard;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment hostingEnvironment)
+        public Startup(IWebHostEnvironment iwebHostEnvironment)
         {
             // monitor configuration on changes
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/primitives/change-tokens?view=aspnetcore-2.1
             var builder = new ConfigurationBuilder()
-                .SetBasePath(hostingEnvironment.ContentRootPath)
+                .SetBasePath(iwebHostEnvironment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", optional: true)
+                .AddJsonFile($"appsettings.{iwebHostEnvironment.EnvironmentName}.json", optional: true)
                 // TODO: with a lot of chunks may be we will need to loop through manifest.json
                 //.AddJsonFile($"./wwwroot/dist/manifest.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
             // TODO:
             // updatable configuration https://stackoverflow.com/questions/40970944/how-to-update-values-into-appsetting-json
             Configuration = builder.Build();
-            if (hostingEnvironment.IsDevelopment())
+            if (iwebHostEnvironment.IsDevelopment())
                 builder.AddUserSecrets<Startup>();
         }
 
@@ -51,7 +52,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             //serviceCollection.AddScoped(sp => sp.GetService<Microsoft.Extensions.Options.IOptionsSnapshot<List<RoutineResolvable>>>().Value);
 
             serviceCollection.AddMemoryCache(); // AddDistributedMemoryCache();
-            serviceCollection.AddMvc((options) => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+            serviceCollection.AddRazorPages();
+            // NOTE: alternatively for MVC
+            // services.AddControllersWithViews();
+            // NOTE: legacy ASP Core 
+            // serviceCollection.AddMvc((options) => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             serviceCollection.AddSingleton(new DevProxyMiddlewareSettings(
                 new PathString("/dist"), 
@@ -60,12 +66,17 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceCollection services)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, ILoggerFactory loggerFactory, IServiceCollection services*/)
         {
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
                 //app.UseMiddleware<DevProxyMiddleware>();
+            } 
+            else
+            {
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
             }
 
             if (applicationSettings.UseStandardDeveloperErrorPage)
@@ -76,7 +87,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             }
             else
             {
-                const string errorPath = "/Error";
+                const string errorPath = "/Error"; // NOTE: "/Home/Error" for MVC
 
                 app.UseExceptionHandler(errorPath);
 
@@ -107,18 +118,36 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
                 });
             }
 
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            // TODO: know details ASP CORE 3
+            app.UseRouting();
+
+            //app.UseAuthorization();
 
             //app.UseSession();
 
             //app.UseMiddleware<DurationMiddleware>("X-AdminkaV1-Duration-MSec");
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "defaultArea",
-                    template: "{area:exists}/{controller}/{action}");
+                endpoints.MapRazorPages();
+
+                //NOTE: for MVC 
+                //TODO: how to configure area
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                //    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            // legacy, important because there is area in the template
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "defaultArea",
+            //        template: "{area:exists}/{controller}/{action}");
+            //});
         }
     }
 }

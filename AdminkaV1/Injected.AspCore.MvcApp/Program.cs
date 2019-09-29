@@ -1,7 +1,6 @@
 ﻿using DashboardCode.Routines;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-
+using Microsoft.Extensions.Hosting;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
 {
@@ -15,25 +14,29 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                //.ConfigureLogging((hostingContext, logging) =>
-                //{
-                //    // need those usings: Microsoft.Extensions.Logging, Microsoft.Extensions.Logging.Console;
-                //    ConsoleLoggerExtensions.AddConsole(logging)
-                //        .AddFilter<ConsoleLoggerProvider>
-                //            (category: null, level: LogLevel.Information)
-                //       .AddFilter<ConsoleLoggerProvider>
-                //           ((category, level) => category == "A" ||
-                //               level == LogLevel.Critical);
-                //})
-            //.UseKestrel()
-            //.UseContentRoot(System.IO.Directory.GetCurrentDirectory())
-            //.UseIISIntegration()
-            //.UseStartup<Startup>()
-            //.UseApplicationInsights()
-            ;
+        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                    //.ConfigureLogging((hostingContext, logging) =>
+                    //{
+                    //    // need those usings: Microsoft.Extensions.Logging, Microsoft.Extensions.Logging.Console;
+                    //    ConsoleLoggerExtensions.AddConsole(logging)
+                    //        .AddFilter<ConsoleLoggerProvider>
+                    //            (category: null, level: LogLevel.Information)
+                    //       .AddFilter<ConsoleLoggerProvider>
+                    //           ((category, level) => category == "A" ||
+                    //               level == LogLevel.Critical);
+                    //})
+                    //.UseKestrel()
+                    //.UseContentRoot(System.IO.Directory.GetCurrentDirectory())
+                    //.UseIISIntegration()
+                    //.UseStartup<Startup>()
+                    //.UseApplicationInsights()
+                });
+              
+            
 
         public static void TestDependencies()
         {

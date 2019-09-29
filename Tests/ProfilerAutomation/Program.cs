@@ -10,12 +10,10 @@ namespace ProfilerAutomation
     {
         static void Main()
         {
-            using (var session = Profiler.AttachToProcess("DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Sandbox"))
-            {
-                var objects = session.GetAliveObjects(x => x.Type == "Microsoft.Extensions.Logging.LoggingFactory");
-                var retentions = session.FindRetentions(objects);
-                System.Console.WriteLine(DumpRetentions(retentions));
-            }
+            using var session = Profiler.AttachToProcess("DashboardCode.Routines.Storage.EfModelTest.EfCore.NETFramework.Sandbox");
+            var objects = session.GetAliveObjects(x => x.Type == "Microsoft.Extensions.Logging.LoggingFactory");
+            var retentions = session.FindRetentions(objects);
+            System.Console.WriteLine(DumpRetentions(retentions));
         }
 
         // https://habrahabr.ru/company/ascon/blog/343684/

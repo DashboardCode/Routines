@@ -96,8 +96,8 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
         {
             var count = verboseMessages.Count();
             var i = 1;
-            var list = new List<AsyncLogEventInfo>();
-            int originalThreadId = Thread.CurrentThread.ManagedThreadId;
+            //var list = new List<AsyncLogEventInfo>();
+            //int originalThreadId = Thread.CurrentThread.ManagedThreadId;
             foreach (var verbose in verboseMessages)
             {
                 var logEventInfo = new LogEventInfo()

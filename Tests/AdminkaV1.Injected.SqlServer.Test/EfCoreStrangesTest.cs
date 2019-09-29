@@ -26,7 +26,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 loggingTransientsFactory,
                 new MemberTag(this), "UnitTest",
                 new { input = "Input text" });
-            void includes(Chain<ParentRecord> includable) => includable
+
+            static void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
@@ -77,7 +78,8 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 loggingTransientsFactory,
                 new MemberTag(this), "UnitTest",
                 new { input = "Input text" });
-            void includes(Chain<ParentRecord> includable) => includable
+
+            static void includes(Chain<ParentRecord> includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>
