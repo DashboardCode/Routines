@@ -11,7 +11,7 @@
 <table id="@tableId" class="table table-hover table-bordered mainTable">
     <thead>
         <tr>
-            <th class="adminka-action-button-group" width="1rem">
+            <th class="adminka-action-button-group">
                 @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                 {
                     var urlCreateAction = @Url.Action("Create", "Groups");

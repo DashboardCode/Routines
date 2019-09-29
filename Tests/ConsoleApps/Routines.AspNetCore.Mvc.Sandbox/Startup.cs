@@ -5,21 +5,31 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+
+
 namespace Routines.AspNetCore.Mvc.Sandbox
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddMvc();
             serviceCollection.AddSingleton(serviceCollection);
+            serviceCollection.AddControllersWithViews();
             serviceCollection.AddLogging(loggingBuilder =>
             {
                 loggingBuilder.AddDebug();
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceCollection serviceCollection, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceCollection serviceCollection, ILoggerFactory loggerFactory)
         {
             var logger = loggerFactory.CreateLogger("Startup");
             logger.LogWarning("Logger configured!");
@@ -27,12 +37,14 @@ namespace Routines.AspNetCore.Mvc.Sandbox
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
-            app.UseMvc(routes =>
-            {
+            app.UseStaticFiles();
+            app.UseRouting();
 
-                routes.MapRoute(
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
 
@@ -65,6 +77,8 @@ namespace Routines.AspNetCore.Mvc.Sandbox
                 stringBuilder.Append("</body></html>");
                 await httpContext.Response.WriteAsync(stringBuilder.ToString());
             });
+
+
         }
     }
 }

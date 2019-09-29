@@ -11,10 +11,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             #if  DEBUG
                 TestDependencies();  // fail early test
             #endif
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateWebHostBuilder(string[] args) =>
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

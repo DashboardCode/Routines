@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.Extensions.PlatformAbstractions;
+//using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.AspNetCore.Hosting;
@@ -25,7 +25,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
         /// <returns></returns>
         public static string GetContentRoot()
         {
-            var path = PlatformServices.Default.Application.ApplicationBasePath;
+            // alternatively
+            //var path = System.AppContext.BaseDirectory;
+            var path = System.AppDomain.CurrentDomain.BaseDirectory;
+                
             var contentRoot = Path.GetFullPath(Path.Combine(path, ".\\..\\..\\..\\..\\..\\AdminkaV1\\Injected.AspCore.MvcApp"));
             return contentRoot;
         }

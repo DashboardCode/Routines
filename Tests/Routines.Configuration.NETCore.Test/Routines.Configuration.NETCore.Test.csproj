@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
-    <ProjectReference Include="..\..\Routines\Routines.csproj" />
   </ItemGroup>
 
   <ItemGroup>

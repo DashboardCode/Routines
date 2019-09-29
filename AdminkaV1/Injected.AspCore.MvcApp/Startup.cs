@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
-using DashboardCode.AspNetCore.Http;
+//using DashboardCode.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using DashboardCode.Routines.Configuration.Standard;
 
@@ -59,10 +59,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
             // NOTE: legacy ASP Core 
             // serviceCollection.AddMvc((options) => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            serviceCollection.AddSingleton(new DevProxyMiddlewareSettings(
-                new PathString("/dist"), 
-                new Uri("http://localhost:63558"))
-            );
+            //serviceCollection.AddSingleton(new DevProxyMiddlewareSettings(
+            //    new PathString("/dist"), 
+            //    new Uri("http://localhost:63558"))
+            //);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,7 +70,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
         {
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
+                //app.UseBrowserLink();
                 //app.UseMiddleware<DevProxyMiddleware>();
             } 
             else
