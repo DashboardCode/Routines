@@ -5,20 +5,13 @@ using System.Collections.Generic;
 using System.Security.Principal;
 
 using DashboardCode.Routines;
-using DashboardCode.Routines.Storage;
+
 using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.Routines.Configuration;
-
-using DashboardCode.AdminkaV1.LoggingDom.WcfClient;
 using DashboardCode.AdminkaV1.AuthenticationDom;
-
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.Routines.ActiveDirectory;
 using DashboardCode.Routines.Logging;
-using DashboardCode.Routines.Storage.EfCore.Relational.SqlServer;
-using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore;
-using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
-using DashboardCode.AdminkaV1.TestDom.DataAccessEfCore;
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -42,8 +35,8 @@ namespace DashboardCode.AdminkaV1.Injected
               as version number, therefore app.config bindingRedirect should be adjusted - pointed to 4.2.0.0 (or just deleted, sicne default 
               bindingRedirect "no bindingRedirect" works well in such cases) 
             */
-              
-              WcfClientManager.AppendWcfClientFaultException(new StringBuilder(), new Exception());
+             // TODO test it again, for this I need new use case: wcf service should call other wcf service through client
+             // WcfClientManager.AppendWcfClientFaultException(new StringBuilder(), new Exception());
 #endif
         }
 
@@ -93,8 +86,10 @@ namespace DashboardCode.AdminkaV1.Injected
                 {
                     if (ex is AdminkaException)
                         sb.AppendUserContextException((AdminkaException)ex);
-                    WcfClientManager.AppendWcfClientFaultException(sb, ex);
-                    LoggingDomDataAccessEfCoreManager.Append(sb, ex);
+#if NETSTANDARD2_1
+                    DashboardCode.AdminkaV1.LoggingDom.WcfClient.WcfClientManager.AppendWcfClientFaultException(sb, ex);
+                    DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.LoggingDomDataAccessEfCoreManager.Append(sb, ex);
+#endif
                     SqlServerManager.Append(sb, ex);
                     ActiveDirectoryManager.Append(sb, ex);
                     appender?.Invoke(sb, ex);
@@ -191,9 +186,9 @@ namespace DashboardCode.AdminkaV1.Injected
                 return listLoggingAdapter;
             };
         }
-        #endregion
+#endregion
 
-        #region ApplicationSettings
+#region ApplicationSettings
 
         readonly static Routines.Configuration.Classic.DeserializerClassic deserializerClassic = 
             new Routines.Configuration.Classic.DeserializerClassic(
@@ -237,7 +232,7 @@ namespace DashboardCode.AdminkaV1.Injected
             var unhandledExceptionLogging = new NUnhandledExceptionLogging();
             return new ApplicationSettings(connectionStringMap, appSettings, configurationContainerFactory, unhandledExceptionLogging);
         }
-        #endregion
+#endregion
 
         public static ContainerFactory CreateContainerFactory(IConfigurationContainerFactory configurationFactory)
         {
@@ -347,7 +342,7 @@ namespace DashboardCode.AdminkaV1.Injected
         //    return new UserContext(user, cultureInfo);
         //}
 
-        #region DependencyInjection interface
+#region DependencyInjection interface
         //public static void MvcConfigure(IApplicationBuilder applicationBuilder)
 //        {
 //            DatabaseErrorPageExtensions.UseDatabaseErrorPage(applicationBuilder);
@@ -386,6 +381,6 @@ namespace DashboardCode.AdminkaV1.Injected
 //            serviceCollection.AddSingleton(typeof(ApplicationSettings), applicationSettings);
 //        }
 
-        #endregion
+#endregion
     }
 }

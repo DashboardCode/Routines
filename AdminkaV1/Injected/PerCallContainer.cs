@@ -2,11 +2,14 @@
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
+
+#if NETSTANDARD2_1
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.LoggingDom.WcfClient;
 using DashboardCode.AdminkaV1.TestDom.DataAccessEfCore;
 using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
 using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore;
+#endif
 
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -26,6 +29,7 @@ namespace DashboardCode.AdminkaV1.Injected
             this.getAuditStamp = getAuditStamp;
         }
 
+#if NETSTANDARD2_1
         public MetaStorageRoutineHandler<TUserContext, LoggingDomDbContext> ResolveLoggingDomDbContextHandler()
         {
             var adminkaDbContextHandler = new LoggingDomStorageRoutineHandler<TUserContext>(
@@ -78,5 +82,7 @@ namespace DashboardCode.AdminkaV1.Injected
                 );
             return traceServiceHandler;
         }
+#endif
     }
+
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>net48;netstandard2.1</TargetFrameworks>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
     <Product>DashboardCode.AdminkaV1.Injected.NETStandard</Product>
     <Copyright>Copyright ©  2016</Copyright>
@@ -41,12 +41,18 @@
     <ProjectReference Include="..\..\Routines.ActiveDirectory\Routines.ActiveDirectory.csproj" />
     <ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />
     <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
-    <ProjectReference Include="..\..\Routines.Storage.EfCore.Relational.SqlServer\Routines.Storage.EfCore.Relational.SqlServer.csproj" />
     <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+    <ProjectReference Include="..\LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj" />
     <ProjectReference Include="..\AdminkaV1.AuthenticationDom.DataAccessEfCore\AdminkaV1.AuthenticationDom.DataAccessEfCore.csproj" />
     <ProjectReference Include="..\AdminkaV1.TestDom.DataAccessEfCore\AdminkaV1.TestDom.DataAccessEfCore.csproj" />
     <ProjectReference Include="..\DataAccessEfCore\AdminkaV1.LoggingDom.DataAccessEfCore.csproj" />
-    <ProjectReference Include="..\LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <ProjectReference Include="..\LoggingDom.DataAccessEf6\AdminkaV1.LoggingDom.DataAccessEf6.csproj" />
   </ItemGroup>
 </Project>

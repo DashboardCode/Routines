@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.12" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.14" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />

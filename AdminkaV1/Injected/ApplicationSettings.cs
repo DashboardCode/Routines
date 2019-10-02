@@ -1,7 +1,5 @@
 ﻿using System;
-
 using DashboardCode.Routines.Configuration;
-
 using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.Injected.Telemetry;
 

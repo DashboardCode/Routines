@@ -161,6 +161,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore.Rel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.AuthenticationDom.DataAccessEfCore", "AdminkaV1\AdminkaV1.AuthenticationDom.DataAccessEfCore\AdminkaV1.AuthenticationDom.DataAccessEfCore.csproj", "{8C38689E-DCD9-4EFD-8A59-E5EB324D9AE7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.LoggingDom.DataAccessEf6", "AdminkaV1\LoggingDom.DataAccessEf6\AdminkaV1.LoggingDom.DataAccessEf6.csproj", "{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Tests\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems*{0ff86a9d-f8de-4029-843f-5029519e0b92}*SharedItemsImports = 13
@@ -1665,6 +1667,38 @@ Global
 		{8C38689E-DCD9-4EFD-8A59-E5EB324D9AE7}.Release|x64.Build.0 = Release|Any CPU
 		{8C38689E-DCD9-4EFD-8A59-E5EB324D9AE7}.Release|x86.ActiveCfg = Release|Any CPU
 		{8C38689E-DCD9-4EFD-8A59-E5EB324D9AE7}.Release|x86.Build.0 = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Android.Build.0 = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|iOS.Build.0 = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Debug|x86.Build.0 = Debug|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Android.ActiveCfg = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Android.Build.0 = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|iOS.ActiveCfg = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|iOS.Build.0 = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|x64.Build.0 = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|x86.ActiveCfg = Release|Any CPU
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1717,6 +1751,7 @@ Global
 		{E53D8FA4-CBF3-45A8-9891-87F4BED6A5FD} = {0A13BD11-5233-4DFE-8ADD-88CBC4F597DD}
 		{EF371506-5A89-4888-A66B-D1CF9B1F7E68} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
 		{8C38689E-DCD9-4EFD-8A59-E5EB324D9AE7} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
+		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14B58345-1A5E-4882-9F6F-DC259439D43A}
