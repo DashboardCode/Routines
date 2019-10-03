@@ -2,10 +2,6 @@
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.Ef6;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6
 {

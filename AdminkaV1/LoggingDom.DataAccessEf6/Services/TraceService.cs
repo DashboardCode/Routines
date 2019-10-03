@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.Services
+namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6.Services
 {
     public class TraceService<TUserContext> : ITraceService
     {

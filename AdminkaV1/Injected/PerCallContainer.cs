@@ -2,17 +2,21 @@
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Storage;
-
-#if NETSTANDARD2_1
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.LoggingDom.WcfClient;
+
+#if NETSTANDARD2_1
+using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore;
+using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.Services;
+
 using DashboardCode.AdminkaV1.TestDom.DataAccessEfCore;
 using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
-using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore;
+
 #endif
 
 #if NET48
 using DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6;
+using DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6.Services;
 #endif
 namespace DashboardCode.AdminkaV1.Injected
 {
@@ -33,7 +37,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 
 #if NETSTANDARD2_1
-        public MetaStorageRoutineHandler<TUserContext, LoggingDomDbContext> ResolveLoggingDomDbContextHandler()
+        public LoggingDomStorageRoutineHandler<TUserContext> ResolveLoggingDomDbContextHandler()
         {
             var adminkaDbContextHandler = new LoggingDomStorageRoutineHandler<TUserContext>(
                     applicationSettings.AdminkaStorageConfiguration,
@@ -48,7 +52,7 @@ namespace DashboardCode.AdminkaV1.Injected
             return adminkaDbContextHandler;
         }
 
-        public MetaStorageRoutineHandler<TUserContext, TestDomDbContext> ResolveTestDomDbContextHandler()
+        public TestDomStorageRoutineHandler<TUserContext> ResolveTestDomDbContextHandler()
         {
             var testDomDbContextHandler = new TestDomStorageRoutineHandler<TUserContext>(
                     applicationSettings.AdminkaStorageConfiguration,
@@ -63,7 +67,7 @@ namespace DashboardCode.AdminkaV1.Injected
             return testDomDbContextHandler;
         }
 
-        public MetaStorageRoutineHandler<TUserContext, AuthenticationDomDbContext> ResolveAuthenticationDomDbContextHandler()
+        public AuthenticationDomStorageRoutineHandler<TUserContext> ResolveAuthenticationDomDbContextHandler()
         {
             var authenticationDomDbContextHandler = new AuthenticationDomStorageRoutineHandler<TUserContext>(
                     applicationSettings.AdminkaStorageConfiguration,
@@ -77,18 +81,10 @@ namespace DashboardCode.AdminkaV1.Injected
                 );
             return authenticationDomDbContextHandler;
         }
-
-        public IHandler<ITraceService> ResolveTraceServiceHandler()
-        {
-            var traceServiceHandler = new HandlerUno<ITraceService>(
-                    () => new TraceServiceProxy()
-                );
-            return traceServiceHandler;
-        }
 #endif
 
 #if NET48
-        public MetaStorageRoutineHandler<TUserContext, LoggingDomDbContext> ResolveLoggingDomDbContextHandler()
+        public LoggingDomStorageRoutineHandler<TUserContext> ResolveLoggingDomDbContextHandler()
         {
             var adminkaDbContextHandler = new LoggingDomStorageRoutineHandler<TUserContext>(
                     applicationSettings.AdminkaStorageConfiguration,
@@ -102,7 +98,18 @@ namespace DashboardCode.AdminkaV1.Injected
                 );
             return adminkaDbContextHandler;
         }
-#endif        
+
+#endif
+        public ITraceService ResolveTraceServiceWcf()
+        {
+            return new TraceServiceProxy();
+        }
+
+        public ITraceService ResolveTraceService()
+        {
+            return new TraceService<TUserContext>(ResolveLoggingDomDbContextHandler());
+        }
+
     }
 
 }
