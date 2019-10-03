@@ -5,7 +5,7 @@ using Atata;
 
 namespace AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test
 {
-    [Url("Roles/Delete")]
+    [Url("Auth/RoleDelete")]
     [VerifyTitle]
     [VerifyH1]
     public class DeleteRolePage : Page<DeleteRolePage>

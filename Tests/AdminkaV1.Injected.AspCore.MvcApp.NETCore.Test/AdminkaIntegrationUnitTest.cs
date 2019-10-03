@@ -56,14 +56,20 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
         [TestMethod]
         public async Task TestRoot()
         {
-            var response = await testServer
+            using (var customWebApplicationFactory = new CustomWebApplicationFactory<Startup>())
+            {
+
+                var httpClient = customWebApplicationFactory.CreateClient();
+                var testServer = customWebApplicationFactory.Server;
+                var response = await testServer
                 .CreateRequest("/")
                 .SendAsync("GET");
 
-            //response.EnsureSuccessStatusCode();
-            //var content = await response.Content.ReadAsStringAsync();
-            //Assert.IsTrue(content.Contains("<html"));
-            Assert.IsTrue(response.StatusCode==HttpStatusCode.Redirect);
+                //response.EnsureSuccessStatusCode();
+                //var content = await response.Content.ReadAsStringAsync();
+                //Assert.IsTrue(content.Contains("<html"));
+                Assert.IsTrue(response.StatusCode == HttpStatusCode.Redirect);
+            }
         }
 
         [TestMethod]

@@ -5,7 +5,7 @@ using Atata;
 
 namespace AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test
 {
-   [Url("Roles/Create")]
+   [Url("Auth/RoleCreate")]
    [VerifyTitle]
    [VerifyH1]
    public class CreateRolePage : Page<CreateRolePage>
