@@ -102,22 +102,22 @@ namespace DashboardCode.Routines.Storage.EfCore
     public class Batch : IBatch
     {
         private readonly DbContext context;
-        private readonly Action<object> setAuditProperties;
+        private readonly IAuditVisitor auditVisitor;
 
-        public Batch(DbContext context, Action<object> setAuditProperties)
+        public Batch(DbContext context, IAuditVisitor auditVisitor)
         {
             this.context = context;
-            this.setAuditProperties = setAuditProperties;
+            this.auditVisitor = auditVisitor;
         }
         public void Add<TEntity>(TEntity entity) where TEntity : class
         {
-            setAuditProperties(entity);
+            auditVisitor.SetAuditProperties(entity);
             context.Set<TEntity>().Add(entity);
         }
 
         public void Modify<TEntity>(TEntity entity) where TEntity : class
         {
-            setAuditProperties(entity);
+            auditVisitor.SetAuditProperties(entity);
             context.Entry(entity).State = EntityState.Modified;
         }
 

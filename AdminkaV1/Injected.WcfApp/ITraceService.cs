@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 using DashboardCode.AdminkaV1.LoggingDom;
 
@@ -17,6 +18,6 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
     {
         [OperationContract]
         [FaultContract(typeof(RoutineError)), FaultContract(typeof(AuthenticationFault))]
-        Trace GetTrace(Guid correlationToken);
+        List<VerboseRecord> GetTrace(Guid correlationToken);
     }
 }

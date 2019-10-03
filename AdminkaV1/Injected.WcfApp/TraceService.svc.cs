@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 
-using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.LoggingDom;
 
 namespace DashboardCode.AdminkaV1.Injected.WcfApp
 {
     public class TraceService : ITraceService
     {
-        public Trace GetTrace(Guid searchForCorrelationToken)
+        public List<VerboseRecord> GetTrace(Guid searchForCorrelationToken)
         {
             var routine = new WcfRoutine(new DashboardCode.Routines.MemberTag(this), RoutineErrorDataContractConstants.FaultCodeNamespace, new { searchForCorrelationToken });
-            return routine.Handle((container, closure) => container.ResolveTraceServiceHandler().Handle( traceService =>
+            return routine.Handle((container, closure) => container.ResolveLoggingDomDbContextHandler().HandleRepository<List< VerboseRecord >, VerboseRecord>( rep =>
             {
-                return traceService.GetTrace(searchForCorrelationToken);
+                return rep.Query().Where(e=>e.CorrelationToken== searchForCorrelationToken).ToList();
             }));
         }
     }

@@ -30,7 +30,7 @@ namespace DashboardCode.Ef6.Sandbox
 
         public static IOrmStorage CreateStorage(MyDbContext dbContext)
         {
-            return new OrmStorage(dbContext, null, (o) => { });
+            return new OrmStorage(dbContext, null, NoAuditVisitor.Singleton);
         }
     }
 }

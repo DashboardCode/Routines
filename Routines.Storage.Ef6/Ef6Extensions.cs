@@ -28,7 +28,7 @@ namespace DashboardCode.Routines.Storage.Ef6
 
         public static Include<T> AppendModelProperties<T>(this Include<T> include, DbContext context) where T : class
         {
-            void appendModelFieldsRecursive(ChainNode node, ObjectContext model)
+            static void appendModelFieldsRecursive(ChainNode node, ObjectContext model)
             {
                 foreach (var n in node.Children)
                     appendModelFieldsRecursive(n.Value, model);
@@ -52,7 +52,7 @@ namespace DashboardCode.Routines.Storage.Ef6
 
         public static Include<T> AppendModelPropertiesIfEmpty<T>(this Include<T> include, DbContext context) where T : class
         {
-            void appendModelFieldsRecursive(ChainNode node, ObjectContext model)
+            static void appendModelFieldsRecursive(ChainNode node, ObjectContext model)
             {
                 foreach (var n in node.Children)
                     appendModelFieldsRecursive(n.Value, model);

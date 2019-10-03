@@ -6,19 +6,6 @@ namespace DashboardCode.Routines.Storage.EfCore
 {
     public class OrmStorage<TEntity> : IOrmStorage<TEntity> where TEntity : class
     {
-        static NoAuditVisitor noAuditVisitor = new NoAuditVisitor();
-        private class NoAuditVisitor : IAuditVisitor
-        {
-            public bool HasAuditProperties(object o)
-            {
-                return false;
-            }
-
-            public void SetAuditProperties(object o)
-            {
-            }
-        }
-
         private readonly DbContext dbContext;
         private readonly Func<Exception, StorageResult> analyzeException;
         private readonly IAuditVisitor auditVisitor;
@@ -30,7 +17,7 @@ namespace DashboardCode.Routines.Storage.EfCore
         {
             this.dbContext = dbContext;
             this.analyzeException = analyzeException;
-            this.auditVisitor = auditVisitor ?? noAuditVisitor;
+            this.auditVisitor = auditVisitor ?? NoAuditVisitor.Singleton;
         }
 
         public StorageResult Handle(Action<IBatch<TEntity>> action)
@@ -86,20 +73,16 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public void HandleCommit(Action action)
         {
-            using (var transaction = dbContext.Database.BeginTransaction())
-            {
-                  action();
-                  transaction.Commit();
-            }
+            using var transaction = dbContext.Database.BeginTransaction();
+            action();
+            transaction.Commit();
         }
 
         public async Task HandleCommitAsync(Func<Task> func)
         {
-            using (var transaction = await dbContext.Database.BeginTransactionAsync())
-            {
-                await func();
-                transaction.Commit();
-            }
+            using var transaction = await dbContext.Database.BeginTransactionAsync();
+            await func();
+            await transaction.CommitAsync();
         }
 
         public void HandleSave(Action<IBatch<TEntity>> action)
@@ -119,21 +102,21 @@ namespace DashboardCode.Routines.Storage.EfCore
     {
         private readonly DbContext context;
         private readonly Func<Exception, StorageResult> analyzeException;
-        private readonly Action<object> setAuditProperties;
+        private readonly IAuditVisitor auditVisitor;
 
         public OrmStorage(
             DbContext context,
             Func<Exception, StorageResult> analyzeException,
-            Action<object> setAuditProperties)
+            IAuditVisitor auditVisitor)
         {
             this.context = context;
             this.analyzeException = analyzeException;
-            this.setAuditProperties = setAuditProperties;
+            this.auditVisitor = auditVisitor;
         }
 
         public StorageResult Handle(Action<IBatch> action) 
         {
-            var batch = new Batch(context, setAuditProperties);
+            var batch = new Batch(context, auditVisitor);
             try
             {
                 action(batch);

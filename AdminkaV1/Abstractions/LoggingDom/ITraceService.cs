@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.LoggingDom
 {
     public interface ITraceService
     {
-        Trace GetTrace(Guid correlationToken);
+        List<VerboseRecord> GetTrace(Guid correlationToken);
     }
 }

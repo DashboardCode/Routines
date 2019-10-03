@@ -1,7 +1,21 @@
 ﻿{
   "ProviderId": "Microsoft.VisualStudio.ConnectedService.Wcf",
-  "Version": "0.5.10808.800",
-  "GettingStartedDocument": {
-    "Uri": "http://go.microsoft.com/fwlink/?LinkId=843369"
+  "Version": "15.0.30730.948",
+  "ExtendedData": {
+    "inputs": [
+      "http://localhost:64220/TraceService.svc?wsdl"
+    ],
+    "collectionTypes": [
+      "System.Collections.Generic.Dictionary`2",
+      "System.Collections.Generic.List`1"
+    ],
+    "internalTypeAccess": true,
+    "namespaceMappings": [
+      "http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.LoggingDom, DashboardCode.AdminkaV1.LoggingDom",
+      "*, TraceServiceReference"
+    ],
+    "sync": true,
+    "targetFramework": "netstandard2.0",
+    "typeReuseMode": "None"
   }
 }

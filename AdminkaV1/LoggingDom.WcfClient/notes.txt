@@ -1,4 +1,28 @@
-﻿1. Proxy was generated using Microsoft WCF Web Service Reference Provider ver 0.5.10808.800
+﻿FOR CORE 2
+
+1. Proxy was generated using Microsoft WCF Web Service Reference Provider ver 0.5.10808.800
 	https://marketplace.visualstudio.com/items?itemName=WCFCORETEAM.VisualStudioWCFConnectedService  
 2. AdminkaV1 were referenced as "file" since VS2017 only then its types can be reused (vitaly important)
+
+csproj:
+  <ItemGroup">
+    <Reference Include="DashboardCode.AdminkaV1">
+      <HintPath>..\Abstractions\bin\Debug\netstandard2.0\DashboardCode.AdminkaV1.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
 2b. Keep "Copy Local" property for AdminakV1.Abstractions.dll  off
+
+
+FOR CORE 3 
+1. Type resuing doesn't work for "multiple" target destiantion. Conditionals in csproj doesn't help - this is Service Provider Limitation (informs with an error)
+2. Only one way edit after references after generation:
+   To simplifyEdit ConnectedService.json to add something like this
+
+    "namespaceMappings": [
+      "http://schemas.datacontract.org/2004/07/DashboardCode.AdminkaV1.LoggingDom, DashboardCode.AdminkaV1.LoggingDom",
+      "*, TraceServiceReference"
+    ],
+
+

@@ -4,15 +4,16 @@ using System.ServiceModel;
 using DashboardCode.Routines;
 
 using TraceServiceReference;
+using System.Collections.Generic;
 
 namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
 {
     // TODO: this code can be generated with T4
     public class TraceServiceAsyncProxy : ITraceServiceAsync
     {
-        public async Task<Trace> GetTrace(Guid correlationToken)
+        public async Task<List<VerboseRecord>> GetTrace(Guid correlationToken)
         {
-            var client = new TraceServiceClient();
+            using var client = new TraceServiceClient();
             try
             {
                 return await client.GetTraceAsync(correlationToken);

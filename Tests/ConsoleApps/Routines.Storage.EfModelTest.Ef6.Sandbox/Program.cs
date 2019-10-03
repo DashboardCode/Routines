@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.Ef6;
 using DashboardCode.Routines.Storage.EfModelTest;
 
@@ -20,7 +20,7 @@ namespace DashboardCode.Ef6.Sandbox
             using (var dbContext = new MyDbContext(connectionStringName, verbose))
             {
                 TestService.Clear(new AdoBatch(dbContext));
-                TestService.Reset(new OrmStorage(dbContext, null, (o) => { }));
+                TestService.Reset(new OrmStorage(dbContext, null, NoAuditVisitor.Singleton ));
             }
             using (var dbContext = new MyDbContext(connectionStringName, verbose))
             {

@@ -20,6 +20,6 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             );
 
         public static IOrmStorage CreateStorage(MyDbContext dbContext) =>
-            new OrmStorage(dbContext, (ex)=> Analyze(ex, null, null, (ex2) => { }/*SqlServerManager.Analyze(ex2, null, null)*/), (o) => { });
+            new OrmStorage(dbContext, (ex)=> Analyze(ex, null, null, (ex2) => { }/*SqlServerManager.Analyze(ex2, null, null)*/), NoAuditVisitor.Singleton);
     }
 }

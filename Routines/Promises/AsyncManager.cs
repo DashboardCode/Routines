@@ -14,44 +14,43 @@ namespace DashboardCode.Routines
 
         public static void Handle(Func<Task> func)
         {
-            using (var asyncTaskScheduler = new AsyncTaskScheduler())
-            {
-                var asyncTaskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.HideScheduler, TaskContinuationOptions.HideScheduler, asyncTaskScheduler);
+            using var asyncTaskScheduler = new AsyncTaskScheduler();
+            var asyncTaskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.HideScheduler, TaskContinuationOptions.HideScheduler, asyncTaskScheduler);
 
-                var asyncSynchronizationContext = new AsyncSynchronizationContext(asyncTaskScheduler, 
-                    (SendOrPostCallback callback, object state) => {
-                            var actionTask = asyncTaskFactory.StartNew(() => callback(state), asyncTaskFactory.CancellationToken, TaskCreationOptions.HideScheduler | TaskCreationOptions.DenyChildAttach, asyncTaskScheduler);
-                               return actionTask;
-                    });
+            var asyncSynchronizationContext = new AsyncSynchronizationContext(asyncTaskScheduler,
+                (SendOrPostCallback callback, object state) =>
                 {
-                    SynchronizationContext oldContext = SynchronizationContext.Current;
-                    SynchronizationContext.SetSynchronizationContext(asyncSynchronizationContext);
+                    var actionTask = asyncTaskFactory.StartNew(() => callback(state), asyncTaskFactory.CancellationToken, TaskCreationOptions.HideScheduler | TaskCreationOptions.DenyChildAttach, asyncTaskScheduler);
+                    return actionTask;
+                });
+            {
+                SynchronizationContext oldContext = SynchronizationContext.Current;
+                SynchronizationContext.SetSynchronizationContext(asyncSynchronizationContext);
 
-                    asyncTaskScheduler.Increment();
+                asyncTaskScheduler.Increment();
 #pragma warning disable AsyncFixer04
-                    var funcTask = asyncTaskFactory.StartNew(func, asyncTaskFactory.CancellationToken, 
-                        TaskCreationOptions.HideScheduler | TaskCreationOptions.DenyChildAttach, 
-                        asyncTaskScheduler).Unwrap();
+                var funcTask = asyncTaskFactory.StartNew(func, asyncTaskFactory.CancellationToken,
+                    TaskCreationOptions.HideScheduler | TaskCreationOptions.DenyChildAttach,
+                    asyncTaskScheduler).Unwrap();
 
-                    var continuationTask = funcTask.ContinueWith(t =>
-                    {
-                        asyncTaskScheduler.Decrement();
+                var continuationTask = funcTask.ContinueWith(t =>
+                {
+                    asyncTaskScheduler.Decrement();
+                    t.GetAwaiter().GetResult();
+                }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, asyncTaskScheduler);
+#pragma warning restore AsyncFixer04
+
+                var tasks = asyncTaskScheduler.GetConsumingEnumerable();
+                foreach (var (hasAwait, t) in tasks)
+                {
+                    asyncTaskScheduler.PublicTryExecuteTask(t);
+                    if (hasAwait)
                         t.GetAwaiter().GetResult();
-                    }, CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, asyncTaskScheduler);
-#pragma warning restore AsyncFixer04 
-                    
-                    var tasks = asyncTaskScheduler.GetConsumingEnumerable();
-                    foreach (var (hasAwait, t) in tasks)
-                    {
-                        asyncTaskScheduler.PublicTryExecuteTask(t);
-                        if (hasAwait)
-                            t.GetAwaiter().GetResult();
-                    }
-                    // wait till continuationTask end - means we can use asyncTaskScheduler in the using block
-                    continuationTask.GetAwaiter().GetResult();
-
-                    SynchronizationContext.SetSynchronizationContext(oldContext);
                 }
+                // wait till continuationTask end - means we can use asyncTaskScheduler in the using block
+                continuationTask.GetAwaiter().GetResult();
+
+                SynchronizationContext.SetSynchronizationContext(oldContext);
             }
         }
     }

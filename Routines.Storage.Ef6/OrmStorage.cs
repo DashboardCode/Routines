@@ -9,16 +9,16 @@ namespace DashboardCode.Routines.Storage.Ef6
     {
         private readonly DbContext dbContext;
         private readonly Func<Exception, StorageResult> analyzeException;
-        private readonly Action<object> setAuditProperties;
+        private readonly IAuditVisitor auditVisitor;
 
         public OrmStorage(
             DbContext dbContext,
             Func<Exception, StorageResult> analyzeException,
-            Action<object> setAuditProperties)
+            IAuditVisitor auditVisitor)
         {
             this.dbContext          = dbContext;
             this.analyzeException   = analyzeException;
-            this.setAuditProperties = setAuditProperties;
+            this.auditVisitor = auditVisitor;
         }
 
         public StorageResult Handle(Action<IBatch<TEntity>> action)
@@ -57,22 +57,20 @@ namespace DashboardCode.Routines.Storage.Ef6
 
         public void HandleCommit(Action action)
         {
-            using (var transaction = dbContext.Database.BeginTransaction())
-            {
-                action();
-                transaction.Commit();
-            }
+            using var transaction = dbContext.Database.BeginTransaction();
+            action();
+            transaction.Commit();
         }
 
         public void HandleSave(Action<IBatch<TEntity>> action)
         {
-            action(new Batch<TEntity>(dbContext, setAuditProperties));
+            action(new Batch<TEntity>(dbContext, auditVisitor));
             dbContext.SaveChanges();
         }
 
         public async Task HandleSaveAsync(Func<IBatch<TEntity>, Task> action)
         {
-            await action(new Batch<TEntity>(dbContext, setAuditProperties));
+            await action(new Batch<TEntity>(dbContext, auditVisitor));
             await dbContext.SaveChangesAsync();
         }
 
@@ -112,29 +110,27 @@ namespace DashboardCode.Routines.Storage.Ef6
     {
         private readonly DbContext context;
         private readonly Func<Exception, List<FieldMessage>> analyzeException;
-        private readonly Action<object> setAuditProperties;
+        private readonly IAuditVisitor auditVisitor = null;
 
         public OrmStorage(
             DbContext context,
             Func<Exception, List<FieldMessage>> analyzeException,
-            Action<object> setAuditProperties)
+            IAuditVisitor auditVisitor = null)
         {
             this.context = context;
             this.analyzeException = analyzeException;
-            this.setAuditProperties = setAuditProperties;
+            this.auditVisitor = auditVisitor ?? NoAuditVisitor.Singleton;
         }
 
         public StorageResult Handle(Action<IBatch> action)
         {
-            var batch = new Batch(context, setAuditProperties);
+            var batch = new Batch(context, auditVisitor);
             try
             {
-                using (var transaction = context.Database.BeginTransaction())
-                {
-                    action(batch);
-                    context.SaveChanges();
-                    transaction.Commit();
-                }
+                using var transaction = context.Database.BeginTransaction();
+                action(batch);
+                context.SaveChanges();
+                transaction.Commit();
             }
             catch (Exception exception)
             {

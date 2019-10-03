@@ -13,13 +13,11 @@ namespace DashboardCode.AdminkaV1.Injected
         public static T DeserializeXml<T>(string xmlText, IEnumerable<Type> knownTypes = null)
         {
             var stringReader = new StringReader(xmlText);
-            using (var xmlTextReader = XmlReader.Create(stringReader))
-            {
-                var serializer = new DataContractSerializer(typeof(T), knownTypes);
-                var o = serializer.ReadObject(xmlTextReader);
-                var t = (T)o;
-                return t;
-            }
+            using var xmlTextReader = XmlReader.Create(stringReader);
+            var serializer = new DataContractSerializer(typeof(T), knownTypes);
+            var o = serializer.ReadObject(xmlTextReader);
+            var t = (T)o;
+            return t;
         }
         public static string SerializeToXml(object o, Type rootType, IEnumerable<Type> knownTypes = null)
         {

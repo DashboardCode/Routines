@@ -11,6 +11,7 @@ namespace DashboardCode.Routines.Storage
     public class AuditVisitor<T> : IAuditVisitor
     {
         readonly Action<T> setAudited;
+        
 
         public AuditVisitor(Action<T> setAudited)
         {
@@ -22,10 +23,28 @@ namespace DashboardCode.Routines.Storage
 
         public void SetAuditProperties(object o)
         {
-            if (o is T versionedEntity)
+            if (o is T auditableEntity)
             {
-                setAudited(versionedEntity);
+                setAudited(auditableEntity);
             }
+        }
+    }
+
+    public class NoAuditVisitor : IAuditVisitor
+    {
+        public static NoAuditVisitor Singleton = new NoAuditVisitor();
+
+        private NoAuditVisitor()
+        {
+
+        }
+        public bool HasAuditProperties(object o)
+        {
+            return false;
+        }
+
+        public void SetAuditProperties(object o)
+        {
         }
     }
 }

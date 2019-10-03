@@ -15,8 +15,8 @@ namespace DashboardCode.Routines.Storage.Ef6
                 AnalyzeInvalidOperationException(invalidOperationException, erorrBuilder);
         }
 
-        static Regex fieldPkOrUniqueConstraintNullRegexV1 = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
-        static Regex fieldPkOrUniqueConstraintNullRegexV2 = new Regex("Unable to track an entity of type '(?<entity>.*?)' because alternate key property '(?<field>.*?)' is null.");
+        static readonly Regex fieldPkOrUniqueConstraintNullRegexV1 = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
+        static readonly Regex fieldPkOrUniqueConstraintNullRegexV2 = new Regex("Unable to track an entity of type '(?<entity>.*?)' because alternate key property '(?<field>.*?)' is null.");
 
         public static void AnalyzeInvalidOperationException(InvalidOperationException ex, IStorageResultBuilder erorrBuilder)
         {

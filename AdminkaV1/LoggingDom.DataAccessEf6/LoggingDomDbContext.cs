@@ -1,16 +1,14 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure.Annotations;
 
 namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6
 {
-    public class MyDbContext : DbContext
+    public class LoggingDomDbContext : DbContext
     {
-        internal MyDbContext(string connectionStringName, Action<string> verbose)
+        internal LoggingDomDbContext(string connectionStringName, Action<string> verbose)
             : base(connectionStringName)
         {
-            Database.SetInitializer(new MyCreateDatabaseIfNotExists());
+            Database.SetInitializer(new LoggingDomCreateDatabaseIfNotExists());
 
             if (verbose != null)
                 this.Database.Log += message =>
@@ -37,9 +35,9 @@ namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6
         
     }
 
-    public class MyCreateDatabaseIfNotExists : CreateDatabaseIfNotExists<MyDbContext>
+    public class LoggingDomCreateDatabaseIfNotExists : CreateDatabaseIfNotExists<LoggingDomDbContext>
     {
-        protected override void Seed(MyDbContext context)
+        protected override void Seed(LoggingDomDbContext context)
         {
             base.Seed(context);
         }

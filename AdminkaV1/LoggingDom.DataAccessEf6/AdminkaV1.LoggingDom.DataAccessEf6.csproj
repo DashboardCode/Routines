@@ -11,6 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Routines.Storage.Ef6\Routines.Storage.Ef6.csproj" />
+    <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
   </ItemGroup>
 

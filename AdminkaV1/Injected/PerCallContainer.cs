@@ -11,6 +11,9 @@ using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
 using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore;
 #endif
 
+#if NET48
+using DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6;
+#endif
 namespace DashboardCode.AdminkaV1.Injected
 {
     public class PerCallContainer<TUserContext>
@@ -83,6 +86,23 @@ namespace DashboardCode.AdminkaV1.Injected
             return traceServiceHandler;
         }
 #endif
+
+#if NET48
+        public MetaStorageRoutineHandler<TUserContext, LoggingDomDbContext> ResolveLoggingDomDbContextHandler()
+        {
+            var adminkaDbContextHandler = new LoggingDomStorageRoutineHandler<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return adminkaDbContextHandler;
+        }
+#endif        
     }
 
 }
