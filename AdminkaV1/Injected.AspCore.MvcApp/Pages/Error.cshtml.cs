@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.Routines.AspNetCore;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Pages
 {
     public class ErrorModel : PageModel
     {

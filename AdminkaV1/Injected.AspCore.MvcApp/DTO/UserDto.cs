@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.DTO
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.DTO
 {
     public class UserDto
     {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.Routines.AspNetCore;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 {
     public interface IGroupEditPartialModel
     {

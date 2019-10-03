@@ -48,7 +48,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.NETFramework"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore", "Routines.AspNetCore\Routines.AspNetCore.csproj", "{06CEAC59-C96C-4F84-B1D6-14AA5753BB43}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.MvcApp", "AdminkaV1\Injected.AspCore.MvcApp\AdminkaV1.Injected.AspCore.MvcApp.csproj", "{E306B786-C40E-4FD1-99EF-8AF99C9CBA3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp", "AdminkaV1\Injected.AspCore.MvcApp\AdminkaV1.Injected.AspCore.WebApp.csproj", "{E306B786-C40E-4FD1-99EF-8AF99C9CBA3B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tour", "Tour", "{90E0E81A-4CDA-43B8-A302-8430519EEA90}"
 	ProjectSection(SolutionItems) = preProject

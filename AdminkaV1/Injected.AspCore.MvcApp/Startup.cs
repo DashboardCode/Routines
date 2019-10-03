@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using DashboardCode.Routines.Configuration.Standard;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public class Startup
     {

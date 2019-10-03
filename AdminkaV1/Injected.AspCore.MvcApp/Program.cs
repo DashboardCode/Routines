@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public class Program
     {

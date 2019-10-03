@@ -20,7 +20,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore.Services;
 using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public static class MvcAppManager
     {

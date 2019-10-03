@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 {
     [ValidateAntiForgeryToken]
     public class RoleCreateModel : PageModel, IRoleEditPartialModel

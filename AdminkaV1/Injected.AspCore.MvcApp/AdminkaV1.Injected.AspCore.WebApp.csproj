@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.MvcApp</AssemblyName>
-    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.MvcApp</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.WebApp</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.WebApp</RootNamespace>
     <UserSecretsId>a6ef2ebe-eb8f-4132-89cb-03648daa76e3</UserSecretsId>
   </PropertyGroup>
 

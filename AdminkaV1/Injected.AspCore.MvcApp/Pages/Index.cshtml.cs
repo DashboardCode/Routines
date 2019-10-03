@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
           
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Pages
 {
     public class IndexModel : PageModel
     {
