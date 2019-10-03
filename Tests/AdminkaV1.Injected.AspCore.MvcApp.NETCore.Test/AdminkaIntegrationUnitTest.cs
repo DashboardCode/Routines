@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
 {
     // TODO: put <PreserveCompilationContext>true</PreserveCompilationContext> to the proj file (instead of copy)
     /// <summary>

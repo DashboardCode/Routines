@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
 {
     public static class HttpClientExtensions
     {

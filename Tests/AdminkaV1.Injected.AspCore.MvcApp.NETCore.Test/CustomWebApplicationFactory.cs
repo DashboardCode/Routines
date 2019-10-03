@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 //using Web.Api.Infrastructure.Data;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
 {
     public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<Startup>
     {

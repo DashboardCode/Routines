@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Razor;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
 {
     public static class TestManager
     {

@@ -5,9 +5,9 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test</AssemblyName>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test</AssemblyName>
 
-    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test</RootNamespace>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test</RootNamespace>
 
     <StartupObject></StartupObject>
   </PropertyGroup>
