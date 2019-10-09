@@ -26,6 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(this), "UnitTest", new { input = "Input text" });
             // check constraint on UPDATE
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>

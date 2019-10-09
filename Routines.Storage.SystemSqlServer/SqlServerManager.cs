@@ -3,11 +3,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Data.Common;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
-
-namespace DashboardCode.Routines.Storage.SqlServer
+namespace DashboardCode.Routines.Storage.SystemSqlServer
 {
     public static class SqlServerManager
     {
@@ -55,7 +54,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
         public static void Append(StringBuilder stringBuilder, Exception exception)
         {
             if (exception is SqlException sqlException)
-                 AppendSqlException(stringBuilder, sqlException);
+                AppendSqlException(stringBuilder, sqlException);
         }
 
         public static void AppendSqlException(this StringBuilder stringBuilder, SqlException exception)
@@ -131,12 +130,12 @@ namespace DashboardCode.Routines.Storage.SqlServer
                     return;
                 }
             }
-            
+
             if (message.Contains("Violation of PRIMARY KEY constraint"))
             {
-                errorBuilder.AddPkDuplicateError(); 
+                errorBuilder.AddPkDuplicateError();
             }
-            
+
 
             {
                 var matchCollection = fieldUniqueIndexRegex.Matches(message);
@@ -189,7 +188,6 @@ namespace DashboardCode.Routines.Storage.SqlServer
             return false;
         }
 
-        
         public static RemoteServerErrorType QuickAnalyze(Exception unhandledException)
         {
             var remoteServerErrorType = RemoteServerErrorType.SPECIFIC;
@@ -218,6 +216,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                         remoteServerErrorType = RemoteServerErrorType.OVERLOADED;
                         break;
                 }
+                
             }
             return remoteServerErrorType;
         }

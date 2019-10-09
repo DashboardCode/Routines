@@ -20,6 +20,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 
             var routine = new AdminkaInMemoryTestRoutine(
                 logger,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(typeof(TestManager)),
                 new { input = "Input text" }, databaseName);
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>

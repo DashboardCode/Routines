@@ -15,11 +15,13 @@ namespace DashboardCode.AdminkaV1.Injected
     {
         public AdminkaAnonymousRoutineHandler(
             ApplicationSettings applicationSettings,
+            bool hasVerboseLoggingPrivilege,
             MemberTag memberTag,
             string auditStamp,
             object input) : this(
                   applicationSettings,
                   InjectedManager.ComposeNLogMemberLoggerFactory(null),
+                  hasVerboseLoggingPrivilege,
                   memberTag,
                   auditStamp,
                   input
@@ -30,6 +32,7 @@ namespace DashboardCode.AdminkaV1.Injected
         public AdminkaAnonymousRoutineHandler( 
             ApplicationSettings applicationSettings,
             Func<Guid, MemberTag, IMemberLogger> loggingTransientsFactory,
+            bool hasVerboseLoggingPrivilege,
             MemberTag memberTag,
             string auditStamp,
             object input ):base(
@@ -46,7 +49,7 @@ namespace DashboardCode.AdminkaV1.Injected
                                 applicationSettings.ConfigurationContainerFactory
                                 ).CreateContainer(memberTag, auditStamp),
                             new AnonymousUserContext(auditStamp),
-                            hasVerboseLoggingPrivilege:false,
+                            hasVerboseLoggingPrivilege: hasVerboseLoggingPrivilege,
                             input)
                 )
         {

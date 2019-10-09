@@ -24,7 +24,7 @@ namespace AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test
                     //WithArguments("start-maximized").
                     .WithFixOfCommandExecutionDelay()
                     .WithLocalDriverPath().
-                UseBaseUrl("http://localhost:63558").
+                UseBaseUrl("http://localhost:63557").
                 //UseCulture("en-us").
                 //UseNUnitTestName().
                 //AddNUnitTestContextLogging().
@@ -42,7 +42,7 @@ namespace AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test
         public void CreateRolePage()
         {
             Go.To<CreateRolePage>()
-                .RoleName.Set("TestIsland99").Create.Click();
+                .Name.Set("TestIsland99").Create.Click();
         }
     }
 }

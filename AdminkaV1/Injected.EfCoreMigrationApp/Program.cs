@@ -1,19 +1,16 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
 {
 
     public class Program
     {
-        public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsStandard();
-        public static readonly string MigrationAssembly = typeof(Program).Assembly.GetName().Name;
+        public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsStandard(); // used for seeding
+        public readonly static ApplicationSettings MigrationApplicationSettings = InjectedManager.CreateApplicationSettingsStandard(migrationAssembly: typeof(Program).Assembly.GetName().Name);
         static void Main()
         {
-            var migrationApplicationSettings = ApplicationSettings.CreateMigrationApplicationSettings(MigrationAssembly);
-
             var routine = new AdminkaAnonymousRoutineHandler(
-                migrationApplicationSettings,
+                MigrationApplicationSettings,
                 "EFCoreMigrations",
                 new { },
                 correlationToken: System.Guid.NewGuid(),

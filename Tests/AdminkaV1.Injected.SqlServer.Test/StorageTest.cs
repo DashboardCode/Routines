@@ -26,6 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(this), "UnitTest", new { input = "Input text" });
             int newParentRecordId = 0;
             byte[] newRowVersion = null;
@@ -141,6 +142,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(this), "UnitTest", new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
@@ -249,6 +251,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(this), "UnitTest", new { input = "Input text" });
             Include<ParentRecord> includes
                 = includable => includable
@@ -262,7 +265,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     {
                         var parentRecord = repository.Find(e => e.FieldA == "1_A", includes);
                         var count1 = parentRecord.ParentRecordHierarchyRecordMap.Count();
-                        var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2);
+                        var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2).ToList(); // without ToList this we get detach exception
                         var count2 = only2.Count();
                         // detach 2 elements with the goal "emulate" new collection
                         // so I expect to have only two child elements in result

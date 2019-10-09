@@ -8,7 +8,7 @@
     <partial name="_MessagesPartial" />
 }
 
-<form method="post" class="adminka-panel">
+<form method="post" class="adminka-panel" id="adminka-form-user-edit-id">
     <input hidden type="hidden" asp-for="@Model.Entity.UserId" />
     <input hidden type="hidden" asp-for="@Model.Entity.RowVersion" />
     <input hidden type="hidden" asp-for="@Model.Crud.Referrer.Href" name="Referrer" />

@@ -17,21 +17,21 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public class Startup
     {
-        public Startup(IWebHostEnvironment iwebHostEnvironment)
+        public Startup(IWebHostEnvironment webHostEnvironment) 
         {
             // monitor configuration on changes
             // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/primitives/change-tokens?view=aspnetcore-2.1
             var builder = new ConfigurationBuilder()
-                .SetBasePath(iwebHostEnvironment.ContentRootPath)
+                .SetBasePath(webHostEnvironment.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{iwebHostEnvironment.EnvironmentName}.json", optional: true)
+                .AddJsonFile($"appsettings.{webHostEnvironment.EnvironmentName}.json", optional: true)
                 // TODO: with a lot of chunks may be we will need to loop through manifest.json
                 //.AddJsonFile($"./wwwroot/dist/manifest.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
             // TODO:
             // updatable configuration https://stackoverflow.com/questions/40970944/how-to-update-values-into-appsetting-json
             Configuration = builder.Build();
-            if (iwebHostEnvironment.IsDevelopment())
+            if (webHostEnvironment.IsDevelopment())
                 builder.AddUserSecrets<Startup>();
         }
 
@@ -104,17 +104,20 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
                         var ex = context.Features.Get<IExceptionHandlerFeature>().Error;
                         var originalFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-                        if (originalFeature != null && originalFeature.Path != null && originalFeature.Path.Contains("Api/")) // TODO: regex
+                        if (originalFeature != null && originalFeature.Path != null && originalFeature.Path.Contains("Api/", StringComparison.Ordinal)) // TODO: regex
                         {
                             context.Response.ContentType = "application/json";
                             var aspRequestId = System.Diagnostics.Activity.Current?.Id ?? context.TraceIdentifier;
-                            await context.Response.WriteAsync(MvcAppManager.GetErrorActionJson(ex, aspRequestId, applicationSettings.ForceDetailsOnCustomErrorPage));
+                            await context.Response
+                                .WriteAsync(MvcAppManager.GetErrorActionJson(ex, aspRequestId, applicationSettings.ForceDetailsOnCustomErrorPage))
+                                // about ConfigureAwait read there https://stackoverflow.com/questions/13489065/best-practice-to-call-configureawait-for-all-server-side-code
+                                .ConfigureAwait(false); 
                             return;
                         }
                     }
 
                     // Request.Path is not for /Error *or* this isn't an API call.
-                    await next();
+                    await next().ConfigureAwait(false);
                 });
             }
 

@@ -6,7 +6,7 @@ using System.Security.Principal;
 
 using DashboardCode.Routines;
 
-using DashboardCode.Routines.Storage.SqlServer;
+//using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.Logging;
@@ -90,7 +90,12 @@ namespace DashboardCode.AdminkaV1.Injected
                     DashboardCode.AdminkaV1.LoggingDom.WcfClient.WcfClientManager.AppendWcfClientFaultException(sb, ex);
                     DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.LoggingDomDataAccessEfCoreManager.Append(sb, ex);
 #endif
-                    SqlServerManager.Append(sb, ex);
+
+#if NETSTANDARD2_1
+                    DashboardCode.Routines.Storage.SqlServer.SqlServerManager.Append(sb, ex);
+#else
+                    DashboardCode.Routines.Storage.SystemSqlServer.SqlServerManager.Append(sb, ex);
+#endif
                     ActiveDirectoryManager.Append(sb, ex);
                     appender?.Invoke(sb, ex);
                 }
@@ -190,33 +195,34 @@ namespace DashboardCode.AdminkaV1.Injected
 
 #region ApplicationSettings
 
-        readonly static Routines.Configuration.Classic.DeserializerClassic deserializerClassic = 
-            new Routines.Configuration.Classic.DeserializerClassic(
-                (j,o)=> Newtonsoft.Json.JsonConvert.SerializeObject(o)
-                );
 
-        public static IConfigurationContainerFactory ResetConfigurationContainerFactoryClassic()
-        {
-            return new ConfigurationContainerFactory<string>(new Routines.Configuration.Classic.ConfigurationManagerLoader(), deserializerClassic);
-        }
-                                          
-        public static ApplicationSettings CreateApplicationSettingsClassic()
-        {
-            return new ApplicationSettings(new Routines.Configuration.Classic.ConnectionStringMap(), 
-                new Routines.Configuration.Classic.AppSettings(), 
-                ResetConfigurationContainerFactoryClassic(),
-                new NUnhandledExceptionLogging()
-                );
-        }
 
+
+#if NETSTANDARD
         readonly static Routines.Configuration.Standard.DeserializerStandard deserializer = new Routines.Configuration.Standard.DeserializerStandard();
+        public static ApplicationSettings CreateInMemoryApplicationSettingsStandard(string name)
+        {
+            //if (configurationRoot == null)
+            //{
+                var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
+                Microsoft.Extensions.Configuration.JsonConfigurationExtensions.AddJsonFile(configurationBuilder, "appsettings.json", optional: false, reloadOnChange: true);
+                Microsoft.Extensions.Configuration.IConfiguration configurationRoot = configurationBuilder.Build();
+            //}
+            var appSettings = new Routines.Configuration.Standard.AppSettings(configurationRoot);
 
+            var configurationManagerLoader = new Routines.Configuration.Standard.ConfigurationManagerLoader(configurationRoot);
+            var configurationContainerFactory = ResetConfigurationContainerFactoryStandard(configurationManagerLoader);
+            var unhandledExceptionLogging = new NUnhandledExceptionLogging();
+            return new ApplicationSettings(appSettings, configurationContainerFactory, unhandledExceptionLogging, new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY, null));
+        }
+
+        
         public static IConfigurationContainerFactory ResetConfigurationContainerFactoryStandard(IConfigurationManagerLoader<Microsoft.Extensions.Configuration.IConfigurationSection> configurationManagerLoader)
         {
             return new ConfigurationContainerFactory<Microsoft.Extensions.Configuration.IConfigurationSection>(configurationManagerLoader, deserializer);
         }
 
-        public static ApplicationSettings CreateApplicationSettingsStandard(Microsoft.Extensions.Configuration.IConfiguration configurationRoot=null)
+        public static ApplicationSettings CreateApplicationSettingsStandard(Microsoft.Extensions.Configuration.IConfiguration configurationRoot=null, string migrationAssembly=null)
         {
             if (configurationRoot == null)
             {
@@ -225,14 +231,54 @@ namespace DashboardCode.AdminkaV1.Injected
                 configurationRoot = configurationBuilder.Build();
             }
             var connectionStringMap = new Routines.Configuration.Standard.ConnectionStringMap(configurationRoot);
+            var connectionString = connectionStringMap.GetConnectionString("AdminkaConnectionString");
+            var adminkaStorageConfiguration = new AdminkaStorageConfiguration(connectionString, migrationAssembly, StorageType.SQLSERVER, migrationAssembly==null?default(int?):5*60);
+
             var appSettings = new Routines.Configuration.Standard.AppSettings(configurationRoot);
 
             var configurationManagerLoader = new Routines.Configuration.Standard.ConfigurationManagerLoader(configurationRoot);
             var configurationContainerFactory = ResetConfigurationContainerFactoryStandard(configurationManagerLoader);
             var unhandledExceptionLogging = new NUnhandledExceptionLogging();
-            return new ApplicationSettings(connectionStringMap, appSettings, configurationContainerFactory, unhandledExceptionLogging);
+            return new ApplicationSettings(appSettings, configurationContainerFactory, unhandledExceptionLogging, adminkaStorageConfiguration);
         }
-#endregion
+#else
+        readonly static Routines.Configuration.Classic.DeserializerClassic deserializerClassic = 
+            new Routines.Configuration.Classic.DeserializerClassic(
+                (j,o)=> Newtonsoft.Json.JsonConvert.SerializeObject(o)
+                );
+                public static IConfigurationContainerFactory ResetConfigurationContainerFactoryClassic()
+        {
+            return new ConfigurationContainerFactory<string>(new Routines.Configuration.Classic.ConfigurationManagerLoader(), deserializerClassic);
+        }
+
+        public static ApplicationSettings CreateInMemoryApplicationSettingsClassic(string name)
+        {
+            return 
+                new ApplicationSettings(
+                    new Routines.Configuration.Classic.AppSettings(),
+                    ResetConfigurationContainerFactoryClassic(),
+                    new NUnhandledExceptionLogging(),
+                    new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY, null)
+                    );
+        }
+        public static ApplicationSettings CreateApplicationSettingsClassic()
+        {
+            var connectionStringMap = new Routines.Configuration.Classic.ConnectionStringMap();
+            var connectionString = connectionStringMap.GetConnectionString("AdminkaConnectionString");
+            var adminkaStorageConfiguration = new AdminkaStorageConfiguration(connectionString, null, StorageType.SQLSERVER, null);
+            return new ApplicationSettings(
+                new Routines.Configuration.Classic.AppSettings(), 
+                ResetConfigurationContainerFactoryClassic(),
+                new NUnhandledExceptionLogging(),
+                adminkaStorageConfiguration
+                );
+        }
+#endif
+
+
+
+
+        #endregion
 
         public static ContainerFactory CreateContainerFactory(IConfigurationContainerFactory configurationFactory)
         {

@@ -28,7 +28,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.OdataToEntity
         public void AppendStream(Stream responceStream, Uri query)
         {
             //Query
-            var uri = new Uri("http://dummy/Users?$select=Name");
+            //svar uri = new Uri("http://dummy/Users?$select=Name");
             //The result of the query
             //Execute query
             parser.ExecuteGetAsync(query, OeRequestHeaders.JsonDefault, responceStream, CancellationToken.None);

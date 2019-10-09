@@ -12,3 +12,7 @@ Therefore all NUGET packages should be referenced in the WCF project directly.
 https://github.com/NuGet/Home/issues/4488
 
 empty .svc file added for 1) simple browse in browser (folder browsinf is allowed in web.config ) 2) simple "discover in project" referencing (for clients)
+
+
+WCF on Core (currently not released)
+https://github.com/CoreWCF/CoreWCF

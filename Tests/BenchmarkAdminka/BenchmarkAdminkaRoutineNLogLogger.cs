@@ -29,6 +29,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNLog)), 
                 "Anonymous",new { });
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().Handle(repository =>
@@ -44,6 +45,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineNoAuthorizationNLog)), "UnitTest", new { });
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().Handle(repository =>
             {
@@ -61,6 +63,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryNLog)), 
                 "Anonymous", new { });
             IReadOnlyCollection<ParentRecord> parentRecords;
@@ -82,6 +85,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionNLog)), 
                 "Anonymous", new { });
             try
@@ -112,6 +116,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryExceptionMailNLog)), 
                 "Anonymous", new { });
             try
@@ -139,6 +144,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineNLogLogger), nameof(MeasureRoutineRepositoryErrorNLog))
                 , "Anonymous", 
                 new { });

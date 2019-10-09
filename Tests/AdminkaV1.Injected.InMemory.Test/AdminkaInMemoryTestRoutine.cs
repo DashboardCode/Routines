@@ -8,15 +8,15 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     public class AdminkaInMemoryTestRoutine : AdminkaAnonymousRoutineHandler
     {
-        public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();
-
         public AdminkaInMemoryTestRoutine(
             List<string> logger, 
+            bool hasVerboseLoggingPrivilege,
             MemberTag memberTag, 
             object input, 
             string name = "adminka")
             : this(
                   InjectedManager.ComposeListMemberLoggerFactory(logger),
+                  hasVerboseLoggingPrivilege,
                   memberTag,
                   input,
                   name)
@@ -25,12 +25,18 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 
         private AdminkaInMemoryTestRoutine(
             Func<Guid, MemberTag, IMemberLogger> loggingTransientsFactory,
+            bool hasVerboseLoggingPrivilege,
             MemberTag memberTag,
             object input,
             string name)
             : base(
-                 ApplicationSettings.CreateInMemoryApplicationSettings(name),
-                 loggingTransientsFactory, 
+#if NETCOREAPP
+                 InjectedManager.CreateInMemoryApplicationSettingsStandard(name),
+#else
+                  InjectedManager.CreateInMemoryApplicationSettingsClassic(name),
+#endif
+                 loggingTransientsFactory,
+                 hasVerboseLoggingPrivilege: hasVerboseLoggingPrivilege,
                  memberTag,
                  "UnitTest", 
                  input)

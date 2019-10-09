@@ -12,7 +12,7 @@
 
     <div class="adminka-container">
         <partial name="RolePartial.cshtml" />
-        <form method="post">
+        <form method="post"  id="adminka-form-role-delete-id">
             <input hidden type="hidden" asp-for="@Model.Entity.RoleId" />
             <input hidden type="hidden" asp-for="@Model.Entity.RowVersion" />
             <input hidden type="hidden" asp-for="@Model.Crud.Referrer.Href" name="Referrer" />

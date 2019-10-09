@@ -17,7 +17,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public void TestRepositoryInMemory()
         {
             var logger = new List<string>();
-            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
+            var routine = new AdminkaInMemoryTestRoutine(logger, hasVerboseLoggingPrivilege: true, new MemberTag(this), new { }, readonlyDatabaseName);
             
             routine.Handle((container, closure) => 
                 container
@@ -35,7 +35,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public virtual void TestProblematicDetachUsage()
         {
             var logger = new List<string>();
-            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
+            var routine = new AdminkaInMemoryTestRoutine(logger, hasVerboseLoggingPrivilege: true, new MemberTag(this), new { }, readonlyDatabaseName);
             Include<TypeRecord> include = includable =>
                        includable.IncludeAll(y => y.ChildRecords)
                        .ThenInclude(y => y.TypeRecord);
@@ -57,7 +57,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public virtual void TestDetach()
         {
             var logger = new List<string>();
-            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
+            var routine = new AdminkaInMemoryTestRoutine(logger, hasVerboseLoggingPrivilege: true, new MemberTag(this), new { }, readonlyDatabaseName);
 
             Include<ParentRecord> include = includable =>
                        includable

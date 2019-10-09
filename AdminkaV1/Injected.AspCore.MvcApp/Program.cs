@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args) 
         {
@@ -40,10 +40,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 
         public static void TestDependencies()
         {
+
             var t0 = typeof(UserContext);
             var t1 = typeof(RoutineClosure<UserContext>);
             var identity = InjectedManager.GetDefaultIdentity();
-            var html = InjectedManager.Markdown($"*** test {t1.GetType().Name} ***");
+            InjectedManager.Markdown($"*** fail early {t1.GetType().Name} {t0.Assembly} {identity}***");
         }
     }
 }

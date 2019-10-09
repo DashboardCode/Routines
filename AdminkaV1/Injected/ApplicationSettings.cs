@@ -13,12 +13,7 @@ namespace DashboardCode.AdminkaV1.Injected
     // track changes (means share one instance between all processes)
     public class ApplicationSettings
     {
-        public readonly Func<string, ApplicationSettings> CreateMigrationApplicationSettings;
-        public readonly Func<string, ApplicationSettings> CreateInMemoryApplicationSettings;
-
-        public readonly Func<string, AdminkaStorageConfiguration> CreateMigrationAdminkaStorageConfiguration;
         public AdminkaStorageConfiguration AdminkaStorageConfiguration { get; private set; }
-
         public IPerformanceCounters PerformanceCounters { get; private set; }
         public IConfigurationContainerFactory ConfigurationContainerFactory { get; private set; }
         public readonly IUnhandledExceptionLogging UnhandledExceptionLogger;
@@ -29,11 +24,11 @@ namespace DashboardCode.AdminkaV1.Injected
         //public readonly ActiveDirectoryService ActiveDirectoryService;
 
         public ApplicationSettings(
-            IConnectionStringMap connectionStringMap,
+            //IConnectionStringMap connectionStringMap,
             IAppSettings appSettings,
             IConfigurationContainerFactory configurationContainerFactory,
             IUnhandledExceptionLogging unhandledExceptionLogger,
-            AdminkaStorageConfiguration adminkaStorageConfiguration=null
+            AdminkaStorageConfiguration adminkaStorageConfiguration
             )
         {
             UnhandledExceptionLogger = unhandledExceptionLogger;
@@ -42,9 +37,7 @@ namespace DashboardCode.AdminkaV1.Injected
             ForceDetailsOnCustomErrorPage = bool.Parse(appSettings.GetValue("ForceDetailsOnCustomErrorPage") ?? "false");
             InternalUsersDomain = appSettings.GetValue("InternalUsersDomain");
             //ActiveDirectoryService = new ActiveDirectoryService(appSettings.GetValue("InternalUsersAdGroup"));
-            var connectionString = connectionStringMap.GetConnectionString("AdminkaConnectionString");
-            AdminkaStorageConfiguration = adminkaStorageConfiguration ?? new AdminkaStorageConfiguration(connectionString, null, StorageType.SQLSERVER, null);
-
+            AdminkaStorageConfiguration = adminkaStorageConfiguration;
             ConfigurationContainerFactory = configurationContainerFactory;
 
             //AuthenticationLogging = new NLogAuthenticationLogging();
@@ -64,25 +57,6 @@ namespace DashboardCode.AdminkaV1.Injected
             {
                 PerformanceCounters = new PerformanceCountersStub();
             }
-
-            CreateInMemoryApplicationSettings = (name) =>
-                new ApplicationSettings(
-                    connectionStringMap, appSettings,
-                    configurationContainerFactory,
-                    unhandledExceptionLogger,
-                    new AdminkaStorageConfiguration(connectionString, null, StorageType.INMEMORY, null)
-                    );
-
-            CreateMigrationAdminkaStorageConfiguration = (migrationAssembly) =>
-                 new AdminkaStorageConfiguration(connectionString, migrationAssembly, StorageType.SQLSERVER, 5 * 60);
-
-            CreateMigrationApplicationSettings = (migrationAssembly) =>
-                 new ApplicationSettings(
-                     connectionStringMap, appSettings, 
-                     configurationContainerFactory,
-                     unhandledExceptionLogger,
-                     CreateMigrationAdminkaStorageConfiguration(migrationAssembly)
-                     );
         }
     }
 }

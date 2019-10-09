@@ -25,6 +25,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                  TestManager.ApplicationSettings,  
                  loggingTransientsFactory,
+                 hasVerboseLoggingPrivilege: true,
                  new MemberTag(this),
                  "UnitTest", 
                  input: new { input = "Input text" });

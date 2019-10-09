@@ -294,7 +294,10 @@ namespace DashboardCode.Routines.AspNetCore
                     (repository, closure) => steps =>
                         steps(
                             () => authorize?.Invoke(closure.UserContext) ?? true,
-                            request => MvcHandler.Bind(request, formEntityPrefix, constructor, null, hiddenFormFields),
+                            request => MvcHandler.Bind(request, formEntityPrefix, constructor, 
+                                // TODO: convert to Empty instance
+                                new Dictionary<string, Func<TEntity, Func<StringValues, IVerboseResult<List<string>>>>>(), 
+                                hiddenFormFields),
                             (entity, batch) => batch.Remove(entity)
                     )
                 );

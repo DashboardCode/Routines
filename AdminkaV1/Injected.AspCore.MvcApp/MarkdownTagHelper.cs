@@ -18,7 +18,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
     {
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            var c = (await output.GetChildContentAsync()).GetContent();
+            var c = (await output.GetChildContentAsync().ConfigureAwait(false)).GetContent();
             var html = InjectedManager.Markdown(c);
             var htmlString = new HtmlString(html);
             output.Content.SetHtmlContent(htmlString);

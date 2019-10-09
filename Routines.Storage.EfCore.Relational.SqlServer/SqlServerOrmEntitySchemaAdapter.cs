@@ -16,8 +16,8 @@ namespace DashboardCode.Routines.Storage.EfCore.Relational.SqlServer
         readonly Dictionary<string, string[]> Uniques;
         public SqlServerOrmEntitySchemaAdapter(IEntityType entityType)
         {
-            SchemaName = entityType.GetTableName();
-            TableName = entityType.GetSchema();
+            SchemaName = entityType.GetSchema();
+            TableName = entityType.GetTableName(); 
             // ----------------------------------------------------------------------------------------------------------
             var requireds = new List<string>();
             var keys = new List<string>();

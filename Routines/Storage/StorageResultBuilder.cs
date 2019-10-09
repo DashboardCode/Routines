@@ -44,7 +44,8 @@ namespace DashboardCode.Routines.Storage
 
         public virtual void AddPkDuplicateError(string constraint, string table)
         {
-            if (table.Contains(relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName) && relationalEntitySchemaAdapter.GetKeys() != null)
+            var tableSchemaName = relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName;
+            if (table.Contains(tableSchemaName) && relationalEntitySchemaAdapter.GetKeys() != null)
             {
                 if (relationalEntitySchemaAdapter.GetKeys().Length == 1)
                 {
@@ -76,7 +77,8 @@ namespace DashboardCode.Routines.Storage
 
         public virtual void AddNullError(string column, string table)
         {
-            if (table.Contains(relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName))
+            var tableSchemaName = relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName;
+            if (table.Contains(tableSchemaName))
             {
                 if (relationalEntitySchemaAdapter.GetRequireds() != null && relationalEntitySchemaAdapter.GetRequireds().Contains(column))
                 {
@@ -87,7 +89,8 @@ namespace DashboardCode.Routines.Storage
 
         public virtual void AddUniqueIndexViolations(string index, string table)
         {
-            if (table.Contains(relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName))
+            var tableSchemaName = relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName;
+            if (table.Contains(tableSchemaName))
             {
                 var properties = relationalEntitySchemaAdapter.GetUnique(index);
                 if (properties != null)
@@ -108,7 +111,8 @@ namespace DashboardCode.Routines.Storage
 
         public virtual void AddUniqueConstraintViolations(string constraint, string table)
         {
-            if (table.Contains(relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName))
+            var tableSchemaName = relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName;
+            if (table.Contains(tableSchemaName))
             {
                 var properties = relationalEntitySchemaAdapter.GetUnique(constraint);
                 if (properties != null)
@@ -127,7 +131,8 @@ namespace DashboardCode.Routines.Storage
 
         public virtual void AddCheckConstraintViolations(string constraintName, string table)
         {
-            if (table == relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName)
+            var tableSchemaName = relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName;
+            if (table == tableSchemaName)
             {
                 var (Attributes, Message) = relationalEntitySchemaAdapter.GetConstraint(constraintName);
                 if (Attributes != null)

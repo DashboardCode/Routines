@@ -9,12 +9,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.AuthenticationDom;
+using AngleSharp.Html.Dom;
+using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
 {
     // TODO: put <PreserveCompilationContext>true</PreserveCompilationContext> to the proj file (instead of copy)
     /// <summary>
-    /// Integration unit tests. 
+    /// Integration testing sample. 
     /// Further readings:
     /// add/remove request/ headers https://andrewlock.net/adding-default-security-headers-in-asp-net-core/ 
     /// hhtps https://andrewlock.net/introduction-to-integration-testing-with-xunit-and-testserver-in-asp-net-core/
@@ -22,54 +24,36 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
     [TestClass]
     public class AdminkaIntegrationUnitTest
     {
+        readonly CustomWebApplicationFactory<Startup> customWebApplicationFactory;
         readonly TestServer testServer;
         readonly HttpClient httpClient;
         public AdminkaIntegrationUnitTest()
         {
-            using (var customWebApplicationFactory = new CustomWebApplicationFactory<Startup>())
+            customWebApplicationFactory = new CustomWebApplicationFactory<Startup>();
+
+            var clientOptions = new WebApplicationFactoryClientOptions
             {
+                AllowAutoRedirect = false
+            };
+            //clientOptions.BaseAddress = new Uri("http://localhost");
+            //clientOptions.HandleCookies = true;
+            //clientOptions.MaxAutomaticRedirections = 7;
 
-                httpClient = customWebApplicationFactory.CreateClient();
-                testServer = customWebApplicationFactory.Server;
-
-                //var hostBuilder = new WebHostBuilder()
-                //    .UseContentRoot(TestManager.GetContentRoot())
-                //    // TODO: should I use it and when?
-                //    //  .UseEnvironment("Development")
-                //    .ConfigureServices(TestManager.InitializeServices)
-                //    .UseStartup<Startup>()
-                //    // TODO: should I do configuration in place (or trust that one from Start)
-                //    // to overwrite configuration for test
-                //    /*.UseConfiguration(
-                //        new Microsoft.Extensions.Configuration.ConfigurationBuilder()
-                //        .SetBasePath(System.IO.Path.GetFullPath(@"../../../../APIProjectFolder/"))
-                //        .AddJsonFile("appsettings.json", optional: false)
-                //        .AddUserSecrets<Startup>()
-                //        .Build()
-                //    )*/;
-                //testServer = new TestServer(hostBuilder);
-
-                //httpClient = testServer.CreateClient();
-            }
+            httpClient = customWebApplicationFactory.CreateClient(clientOptions);
+            testServer = customWebApplicationFactory.Server;
         }
 
         [TestMethod]
         public async Task TestRoot()
         {
-            using (var customWebApplicationFactory = new CustomWebApplicationFactory<Startup>())
-            {
+            var response = await testServer
+            .CreateRequest("/")
+            .SendAsync("GET");
 
-                var httpClient = customWebApplicationFactory.CreateClient();
-                var testServer = customWebApplicationFactory.Server;
-                var response = await testServer
-                .CreateRequest("/")
-                .SendAsync("GET");
-
-                //response.EnsureSuccessStatusCode();
-                //var content = await response.Content.ReadAsStringAsync();
-                //Assert.IsTrue(content.Contains("<html"));
-                Assert.IsTrue(response.StatusCode == HttpStatusCode.Redirect);
-            }
+            //response.EnsureSuccessStatusCode();
+            //var content = await response.Content.ReadAsStringAsync();
+            //Assert.IsTrue(content.Contains("<html"));
+            Assert.IsTrue(response.StatusCode == HttpStatusCode.Redirect);
         }
 
         [TestMethod]
@@ -107,12 +91,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)),"UnitTest",
                 new { input = "Input text" });
 
 
             var x = await routine.HandleAsync(async (container, closure) => 
-            await container.ResolveTestDomDbContextHandler().HandleRepositoryAsync<List<Role>,Role>(repository =>
+            await container.ResolveAuthenticationDomDbContextHandler().HandleRepositoryAsync<List<Role>,Role>(repository =>
             {
                 //Task.Delay(10000);
                 var xx = repository.ListAsync();
@@ -145,60 +130,72 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
             var createHttpResponseMessage = await httpClient.GetAsync("/Auth/RoleCreate");
             createHttpResponseMessage.EnsureSuccessStatusCode();
             httpClient.TransferAntiforgeryCookie(createHttpResponseMessage);
+
+
+            var content = await HtmlHelpers.GetDocumentAsync(createHttpResponseMessage);
+            // Method 1
             var createHtmlDocument = await createHttpResponseMessage.GetDocument();
-
             var (tokenkKey1, token1) = createHtmlDocument.GetRequestVerificationToken();
-
             var formData1 = new Dictionary<string, string>
             {
                 {tokenkKey1, token1},
-                {"RoleName", roleName},
+                {"Entity.RoleName", roleName},
                 {"Groups", "1"},
-                {"Privileges", "CFGS,VLOG"},
+                {"PrivilegesAllowed", "CFGS,VLOG"},
+                {"PrivilegesDenied", "VLOG"}
             };
 
             var formUrlEncodedContentC = new FormUrlEncodedContent(formData1);
             var postRequest1 = new HttpRequestMessage(HttpMethod.Post, "/Auth/RoleCreate") { Content = formUrlEncodedContentC };
 
             var createConfirmHttpResponseMessage = await httpClient.SendAsync(postRequest1);
-            Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
+            // Method 2
+            //var htmlFormElement = (IHtmlFormElement)content.QuerySelector("form[id='adminka-form-role-create-id']");
+            //var submitButton = (IHtmlButtonElement)htmlFormElement.QuerySelector("button[type='submit']");
+            //var roleNameHtmlInputElement = (IHtmlInputElement)htmlFormElement.QuerySelector("input[id='edit-role-name-id']");
+            //roleNameHtmlInputElement.Value = roleName;
+            //var groupsHtmlSelectElement = (IHtmlSelectElement)htmlFormElement.QuerySelector("select[id='edit-groups-id']");
+            //var createConfirmHttpResponseMessage = await httpClient.SendAsync(htmlFormElement, submitButton); 
+
+            Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
             var location = createConfirmHttpResponseMessage.Headers.Location;
 
             var listHttpResponseMessage = await httpClient.GetAsync("/Auth/Roles");
             listHttpResponseMessage.EnsureSuccessStatusCode();
             var listHtmlDocument = await listHttpResponseMessage.GetDocument();
 
-            var id = listHtmlDocument.GetTableCell("adminka-roles-table-id", 2, cell => cell == roleName, 1);
+            var id = listHtmlDocument.GetTableCell("adminka-table-roles-id", 2, cell => cell == roleName, 1);
 
             var editHttpResponseMessage = await httpClient.GetAsync("/Auth/RoleEdit?id=" + id);
             editHttpResponseMessage.EnsureSuccessStatusCode();
             var editHtmlDocument = await editHttpResponseMessage.GetDocument();
 
             var (tokenkKeyE, tokenE) = editHtmlDocument.GetRequestVerificationToken();
-            var (rowVersionKeyE, rowVersionE) = editHtmlDocument.GetField("RowVersion");
-            var (roleIdKeyE, roleIdE) = editHtmlDocument.GetField("RoleId");
+            var (rowVersionKeyE, rowVersionE) = editHtmlDocument.GetField("Entity.RowVersion");
+            var (roleIdKeyE, roleIdE) = editHtmlDocument.GetField("Entity.RoleId");
             var formDataE = new Dictionary<string, string>
             {
                 {tokenkKeyE, tokenE},
                 {rowVersionKeyE, rowVersionE},
                 {roleIdKeyE, roleIdE},
-                {"RoleName", roleName},
+                {"Entity.RoleName", roleName},
                 {"Groups", "1"},
-                {"Privileges", "CFGS"},
+                {"PrivilegesAllowed", "CFGS,VLOG"}
+                
             };
             var formUrlEncodedContentE = new FormUrlEncodedContent(formDataE);
             var postRequestEC = new HttpRequestMessage(HttpMethod.Post, "/Auth/RoleEdit") { Content = formUrlEncodedContentE };
             var editConfirmHttpResponseMessage = await httpClient.SendAsync(postRequestEC);
             //var doc = editConfirmHttpResponseMessage.GetDocument();
-            Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
 
             var deleteHttpResponseMessage = await httpClient.GetAsync("/Auth/RoleDelete?id=" + id);
             deleteHttpResponseMessage.EnsureSuccessStatusCode();
             var deleteHtmlDocument = await deleteHttpResponseMessage.GetDocument();
 
             var (tokenkKeyD, tokenD) = deleteHtmlDocument.GetRequestVerificationToken();
-            var (rowVersionKeyD, rowVersionD) = deleteHtmlDocument.GetField("RowVersion");
-            var (roleIdKeyD, roleIdD) = deleteHtmlDocument.GetField("RoleId");
+            var (rowVersionKeyD, rowVersionD) = deleteHtmlDocument.GetField("Entity.RowVersion");
+            var (roleIdKeyD, roleIdD) = deleteHtmlDocument.GetField("Entity.RoleId");
 
             var formDataD = new Dictionary<string, string>
             {
@@ -210,7 +207,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
             var formUrlEncodedContentD = new FormUrlEncodedContent(formDataD);
             var postRequestD = new HttpRequestMessage(HttpMethod.Post, "/Auth/RoleDelete") { Content = formUrlEncodedContentD };
             var deleteConfirmHttpResponseMessage = await httpClient.SendAsync(postRequestD);
-            Assert.IsTrue(deleteConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(deleteConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
         }
 
         [TestMethod]
@@ -224,6 +221,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), "UnitTest",
                 new { input = "Input text" });
             await routine.HandleAsync(async (container, closure) => await container.ResolveAuthenticationDomDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
@@ -241,12 +239,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
                 });
             }));
 
-            var detailsHttpResponseMessage = await httpClient.GetAsync("/Auth/Roles/Details/1");
+            var detailsHttpResponseMessage = await httpClient.GetAsync("/Auth/Role?id=1");
             detailsHttpResponseMessage.EnsureSuccessStatusCode();
             var contentDetails = await detailsHttpResponseMessage.Content.ReadAsStringAsync();
             Assert.IsTrue(contentDetails.Contains("<html"));
 
-            var createHttpResponseMessage = await httpClient.GetAsync("/Auth/Roles/Create");
+            var createHttpResponseMessage = await httpClient.GetAsync("/Auth/RoleCreate");
             createHttpResponseMessage.EnsureSuccessStatusCode();
             httpClient.TransferAntiforgeryCookie(createHttpResponseMessage);
             var createHtmlDocument = await createHttpResponseMessage.GetDocument();
@@ -256,53 +254,55 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
             var formData1 = new Dictionary<string, string>
             {
                 {tokenkKey1, token1},
-                {"RoleName", roleName},
+                {"Entity.RoleName", roleName},
                 {"Groups", "1"},
-                {"Privileges", "CFGS,VLOG"},
+                {"PrivilegesAllowed", "CFGS,VLOG"}
             };
 
             var formUrlEncodedContentC = new FormUrlEncodedContent(formData1);
-            var postRequest1 = new HttpRequestMessage(HttpMethod.Post, "/Auth/Roles/Create") { Content = formUrlEncodedContentC };
+            var postRequest1 = new HttpRequestMessage(HttpMethod.Post, "/Auth/RoleCreate") { Content = formUrlEncodedContentC };
+            
+            //httpClient.BaseAddress = createHttpResponseMessage.RequestMessage.RequestUri;
 
             var createConfirmHttpResponseMessage = await httpClient.SendAsync(postRequest1);
-            Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(createConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
             var location = createConfirmHttpResponseMessage.Headers.Location;
 
             var listHttpResponseMessage = await httpClient.GetAsync("/Auth/Roles");
             listHttpResponseMessage.EnsureSuccessStatusCode();
             var listHtmlDocument = await listHttpResponseMessage.GetDocument();
 
-            var id = listHtmlDocument.GetTableCell("adminka-roles-table-id", 2, cell => cell == roleName, 1);
+            var id = listHtmlDocument.GetTableCell("adminka-table-roles-id", 2, cell => cell == roleName, 1);
 
-            var editHttpResponseMessage = await httpClient.GetAsync("/Auth/Roles/Edit/" + id);
+            var editHttpResponseMessage = await httpClient.GetAsync("/Auth/RoleEdit?id=" + id);
             editHttpResponseMessage.EnsureSuccessStatusCode();
             var editHtmlDocument = await editHttpResponseMessage.GetDocument();
 
             var (tokenkKeyE, tokenE) = editHtmlDocument.GetRequestVerificationToken();
-            var (rowVersionKeyE, rowVersionE) = editHtmlDocument.GetField("RowVersion");
-            var (roleIdKeyE, roleIdE) = editHtmlDocument.GetField("RoleId");
+            var (rowVersionKeyE, rowVersionE) = editHtmlDocument.GetField("Entity.RowVersion");
+            var (roleIdKeyE, roleIdE) = editHtmlDocument.GetField("Entity.RoleId");
             var formDataE = new Dictionary<string, string>
             {
                 {tokenkKeyE, tokenE},
                 {rowVersionKeyE, rowVersionE},
                 {roleIdKeyE, roleIdE},
-                {"RoleName", roleName},
+                {"Entity.RoleName", roleName},
                 {"Groups", "1"},
-                {"Privileges", "CFGS"},
+                {"PrivilegesAllowed", "CFGS"}
             };
             var formUrlEncodedContentE = new FormUrlEncodedContent(formDataE);
-            var postRequestEC = new HttpRequestMessage(HttpMethod.Post, "/Auth/Roles/Edit") { Content = formUrlEncodedContentE };
+            var postRequestEC = new HttpRequestMessage(HttpMethod.Post, "/Auth/RoleEdit") { Content = formUrlEncodedContentE };
             var editConfirmHttpResponseMessage = await httpClient.SendAsync(postRequestEC);
             //var doc = editConfirmHttpResponseMessage.GetDocument();
-            Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(editConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
 
-            var deleteHttpResponseMessage = await httpClient.GetAsync("/Auth/Roles/Delete/" + id);
+            var deleteHttpResponseMessage = await httpClient.GetAsync("/Auth/RoleDelete?id=" + id);
             deleteHttpResponseMessage.EnsureSuccessStatusCode();
             var deleteHtmlDocument = await deleteHttpResponseMessage.GetDocument();
 
             var (tokenkKeyD, tokenD) = deleteHtmlDocument.GetRequestVerificationToken();
-            var (rowVersionKeyD, rowVersionD) = deleteHtmlDocument.GetField("RowVersion");
-            var (roleIdKeyD, roleIdD) = deleteHtmlDocument.GetField("RoleId");
+            var (rowVersionKeyD, rowVersionD) = deleteHtmlDocument.GetField("Entity.RowVersion");
+            var (roleIdKeyD, roleIdD) = deleteHtmlDocument.GetField("Entity.RoleId");
 
             var formDataD = new Dictionary<string, string>
             {
@@ -312,9 +312,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
             };
 
             var formUrlEncodedContentD = new FormUrlEncodedContent(formDataD);
-            var postRequestD = new HttpRequestMessage(HttpMethod.Post, "/Auth/Roles/Delete") { Content = formUrlEncodedContentD };
+            var postRequestD = new HttpRequestMessage(HttpMethod.Post, "/Auth/RoleDelete") { Content = formUrlEncodedContentD };
             var deleteConfirmHttpResponseMessage = await httpClient.SendAsync(postRequestD);
-            Assert.IsTrue(deleteConfirmHttpResponseMessage.StatusCode == HttpStatusCode.OK);
+            Assert.IsTrue(deleteConfirmHttpResponseMessage.StatusCode == HttpStatusCode.Found);
         }
     }
 }

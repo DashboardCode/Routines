@@ -13,7 +13,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public virtual void TestSerializtionRecursion()
         {
             var logger = new List<string>();
-            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
+            var routine = new AdminkaInMemoryTestRoutine(logger, hasVerboseLoggingPrivilege:true, new MemberTag(this), new { }, readonlyDatabaseName);
             var record = routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
                 Include<TypeRecord> include = includable =>

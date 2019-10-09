@@ -25,6 +25,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(typeof(TestManager)), "UnitTest", new { input = "Input text" });
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
@@ -164,6 +165,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             var routine = new AdminkaAnonymousRoutineHandler(
                 ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag(typeof(TestManager)), "UnitTest",
                 new { input = "Input text" });
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>

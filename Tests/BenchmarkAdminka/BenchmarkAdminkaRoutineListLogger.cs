@@ -31,6 +31,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineLogList)),
                 "Anonymous",
                 new { });
@@ -48,6 +49,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineNoAuthorizationLogList)), "UnitTest", new { });
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlerFactory =>
             {
@@ -65,6 +67,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryLogList)),
                 "Anonymous",
                 new { });
@@ -89,6 +92,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryExceptionLogList)), 
                 "Anonymous",
                 new { });
@@ -119,6 +123,7 @@ namespace BenchmarkAdminka
             var routine = new AdminkaAnonymousRoutineHandler(
                 Program.ApplicationSettings,
                 loggingTransientsFactory,
+                hasVerboseLoggingPrivilege: true,
                 new MemberTag("Test", nameof(BenchmarkAdminkaRoutineListLogger), nameof(MeasureRoutineRepositoryErrorLogList)),
                 "Anonymous",
                 new { });

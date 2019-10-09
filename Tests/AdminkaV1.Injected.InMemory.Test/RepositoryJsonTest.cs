@@ -14,7 +14,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
         public void TestStorageJson()
         {
             var logger = new List<string>();
-            var routine = new AdminkaInMemoryTestRoutine(logger, new MemberTag(this), new { }, readonlyDatabaseName);
+            var routine = new AdminkaInMemoryTestRoutine(logger, hasVerboseLoggingPrivilege: true, new MemberTag(this), new { }, readonlyDatabaseName);
             routine.Handle( (container,closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory(ormHandlersFactory =>
             {
                 var ormHandler = ormHandlersFactory.Create<ParentRecord>();

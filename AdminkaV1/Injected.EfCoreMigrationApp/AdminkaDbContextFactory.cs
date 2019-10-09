@@ -11,9 +11,8 @@ namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
         // TOSTU: how args can be used to configure e.g. current culture.
         public LoggingDomDbContext CreateDbContext(string[] args)
         {
-            var adminkaStorageConfiguration = Program.ApplicationSettings.CreateMigrationAdminkaStorageConfiguration(Program.MigrationAssembly);
             var adminkaDbContext =
-                LoggingDomDataAccessEfCoreManager.CreateLoggingDomDbContext(adminkaStorageConfiguration);
+                LoggingDomDataAccessEfCoreManager.CreateLoggingDomDbContext(Program.MigrationApplicationSettings.AdminkaStorageConfiguration);
             return adminkaDbContext;
         }
     }

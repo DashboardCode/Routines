@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.Rendering; // SelectList and MultySelectList
 using Microsoft.Extensions.Primitives;
+using Microsoft.Extensions.WebEncoders;
 
 using DashboardCode.Routines.Storage;
 using System.Linq;
@@ -62,7 +63,10 @@ namespace DashboardCode.Routines.AspNetCore
                 }
                 else if (propertyType == typeof(byte[]))
                 {
-                    Func<StringValues, byte[]> f = sv => Convert.FromBase64String(sv);
+                    Microsoft.Extensions.WebEncoders.Testing.HtmlTestEncoder.Default.
+                    Func<StringValues, byte[]> f = sv =>
+                        
+                    //Convert.FromBase64String(sv);
                     converter = (Func<StringValues, TProperty>)(Delegate)f;
                 }
                 else

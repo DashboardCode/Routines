@@ -193,12 +193,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
                                                    .SetSlidingExpiration(TimeSpan.FromMinutes(5));
                                              var authenticationService = new AuthenticationService(db);
                                              
-                                             var u = await authenticationService.GetUserAsync(userNameWithDomain, firstName, secondName, isInRole);
+                                             var u = await authenticationService.GetUserAsync(userNameWithDomain, firstName, secondName, isInRole).ConfigureAwait(false);
                                              return u;
                                          }
-                                    );
+                                    ).ConfigureAwait(false);
                             }
-                        );
+                        ).ConfigureAwait(false);
                     }
                     else
                     {
@@ -214,10 +214,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
                             {
                                 var authenticationService = new AuthenticationService(db);
                                 var userEntity = await authenticationService.GetUserAsync(
-                                          fakeAdConfiguration.FakeAdUser, "Anonymous", "Anonymous", isInRole);
+                                          fakeAdConfiguration.FakeAdUser, "Anonymous", "Anonymous", isInRole).ConfigureAwait(false);
                                 return userEntity;
                             }
-                        );
+                        ).ConfigureAwait(false);
                     }
                 }
                 catch (Exception ex)
@@ -232,7 +232,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
                         throw new AdminkaException("User authetication and authorization service generates an error because of configuration or network connection problems", ex);
                     }
                 }
-            });
+            }).ConfigureAwait(false); 
 
             if (user == default && forbiddenAsActionResult == default)
             {

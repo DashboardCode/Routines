@@ -2,15 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-
+using DashboardCode.Routines.Storage.EfCore.Relational;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using DashboardCode.AdminkaV1.Injected.ActiveDirectory;
-using DashboardCode.Routines.Storage;
-using DashboardCode.Routines.Storage.EfCore.Relational;
 
 namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
 {
@@ -26,13 +23,13 @@ namespace DashboardCode.AdminkaV1.Injected.EfCoreMigrationApp
             config.GetSection("AdminkaDbInstallGroups").Bind(adminkaDbInstallGroups);
 
             var routine = new AdminkaAnonymousRoutineHandler(
-                Program.ApplicationSettings,
-                "EFCoreMigrations",
-                new { },
-                correlationToken: System.Guid.NewGuid(),
-                documentBuilder: null,
-                controllerNamespace: null,
-                controllerName: nameof(InitialCustoms)
+                    Program.ApplicationSettings,
+                    "EFCoreMigrations",
+                    new { },
+                    correlationToken: System.Guid.NewGuid(),
+                    documentBuilder: null,
+                    controllerNamespace: null,
+                    controllerName: nameof(InitialCustoms)
                 );
 
             routine.Handle(

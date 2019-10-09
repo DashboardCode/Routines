@@ -18,6 +18,15 @@ namespace DashboardCode.Routines.Storage
         void Add(TEntity t);
         void Remove(TEntity t);
         void Modify(TEntity t, Include<TEntity> include=null);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TRelationEntity"></typeparam>
+        /// <param name="entity">Should be trackable</param>
+        /// <param name="getRelated"></param>
+        /// <param name="releatedCollection"></param>
+        /// <param name="equalsById"></param>
         void LoadAndModifyRelated<TRelationEntity>(
                 TEntity entity,
                 Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelated,
