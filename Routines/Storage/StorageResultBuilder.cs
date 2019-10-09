@@ -6,8 +6,8 @@ namespace DashboardCode.Routines.Storage
 {
     public class StorageResultBuilder : IStorageResultBuilder
     {
-        List<FieldMessage> fieldMessages;
-        IOrmEntitySchemaAdapter relationalEntitySchemaAdapter;
+        readonly List<FieldMessage> fieldMessages;
+        readonly IOrmEntitySchemaAdapter relationalEntitySchemaAdapter;
         readonly string genericErrorField;
         readonly Type entityType;
         readonly Exception exception;

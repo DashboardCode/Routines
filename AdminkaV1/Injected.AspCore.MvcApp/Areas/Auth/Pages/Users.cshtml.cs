@@ -11,7 +11,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
         readonly static UserMeta meta = Meta.UserMeta;
         public IEnumerable<User> List { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<User, int> Crud;
+        public AdminkaCrudRoutinePageConsumer<User, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGet()
         {

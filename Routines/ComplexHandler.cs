@@ -106,58 +106,58 @@ namespace DashboardCode.Routines
         public void Handle(Action<TClosure> action) =>
             handler.Handle(superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    action(resource);
+                using var resource = createClosure(superClosure);
+                action(resource);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             handler.Handle(superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    return func(resource);
+                using var resource = createClosure(superClosure);
+                return func(resource);
             });
 
 
         public void Handle(Action<TClosure, TSuperClosure> action) =>
             handler.Handle(superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    action(resource, superClosure);
+                using var resource = createClosure(superClosure);
+                action(resource, superClosure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TSuperClosure, TOutput> func) =>
             handler.Handle(superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    return func(resource, superClosure);
+                using var resource = createClosure(superClosure);
+                return func(resource, superClosure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             handler.HandleAsync(async superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    return await func(resource);
+                using var resource = createClosure(superClosure);
+                return await func(resource);
             });
 
         public Task HandleAsync(Func<TClosure, Task> func) =>
             handler.HandleAsync(async superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    await func(resource);
+                using var resource = createClosure(superClosure);
+                await func(resource);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func) =>
             handler.HandleAsync(async superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    return await func(resource, superClosure);
+                using var resource = createClosure(superClosure);
+                return await func(resource, superClosure);
             });
 
         public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func) =>
             handler.HandleAsync(async superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    await func(resource, superClosure);
+                using var resource = createClosure(superClosure);
+                await func(resource, superClosure);
             });
     }
 
@@ -179,57 +179,57 @@ namespace DashboardCode.Routines
         public void Handle(Action<TClosure> action) =>
             routineHandler.Handle(superClosure =>
             {
-                using (var closure = createClosure(superClosure))
-                    action(closure);
+                using var closure = createClosure(superClosure);
+                action(closure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             routineHandler.Handle(superClosure =>
             {
-                using (var resource = createClosure(superClosure))
-                    return func(resource);
+                using var resource = createClosure(superClosure);
+                return func(resource);
             });
 
         public void Handle(Action<TClosure, TSuperClosure> action) =>
             routineHandler.Handle(superClosure =>
             {
-                using (var closure = createClosure(superClosure))
-                    action(closure, superClosure);
+                using var closure = createClosure(superClosure);
+                action(closure, superClosure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TSuperClosure, TOutput> func) =>
             routineHandler.Handle(superClosure =>
             {
-                using (var closure = createClosure(superClosure))
-                    return func(closure, superClosure);
+                using var closure = createClosure(superClosure);
+                return func(closure, superClosure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async superClosure =>
             {
-                using (var closure = createClosure(superClosure))
-                    return await func(closure);
+                using var closure = createClosure(superClosure);
+                return await func(closure);
             });
 
         public Task HandleAsync(Func<TClosure, Task> func) =>
             routineHandler.HandleAsync(async superClosure =>
             {
-                using (var closure = createClosure(superClosure))
-                    await func(closure);
+                using var closure = createClosure(superClosure);
+                await func(closure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async superClosure =>
             {
-                using (var closure = createClosure(superClosure))
-                    return await func(closure, superClosure);
+                using var closure = createClosure(superClosure);
+                return await func(closure, superClosure);
             });
 
         public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func) =>
             routineHandler.HandleAsync(async superClosure =>
             {
-                using (var closure = createClosure(superClosure))
-                    await func(closure, superClosure);
+                using var closure = createClosure(superClosure);
+                await func(closure, superClosure);
             });
     }
 
@@ -322,58 +322,58 @@ namespace DashboardCode.Routines
         public void Handle(Action<TClosure> action) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    action(resource);
+                using var resource = createResource(closure).Result;
+                action(resource);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    return func(resource);
+                using var resource = createResource(closure).Result;
+                return func(resource);
             });
 
 
         public void Handle(Action<TClosure, TSuperClosure> action) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    action(resource, closure);
+                using var resource = createResource(closure).Result;
+                action(resource, closure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TSuperClosure, TOutput> func) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    return func(resource, closure);
+                using var resource = createResource(closure).Result;
+                return func(resource, closure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    return await func(resource);
+                using var resource = await createResource(closure);
+                return await func(resource);
             });
 
         public Task HandleAsync(Func<TClosure, Task> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    await func(resource);
+                using var resource = await createResource(closure);
+                await func(resource);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    return await func(resource, closure);
+                using var resource = await createResource(closure);
+                return await func(resource, closure);
             });
 
         public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    await func(resource, closure);
+                using var resource = await createResource(closure);
+                await func(resource, closure);
             });
     }
 
@@ -395,57 +395,57 @@ namespace DashboardCode.Routines
         public void Handle(Action<TClosure> action) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    action(resource);
+                using var resource = createResource(closure).Result;
+                action(resource);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    return func(resource);
+                using var resource = createResource(closure).Result;
+                return func(resource);
             });
 
         public void Handle(Action<TClosure, TSuperClosure> action) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    action(resource, closure);
+                using var resource = createResource(closure).Result;
+                action(resource, closure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TSuperClosure, TOutput> func) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    return func(resource, closure);
+                using var resource = createResource(closure).Result;
+                return func(resource, closure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    return await func(resource);
+                using var resource = await createResource(closure);
+                return await func(resource);
             });
 
         public Task HandleAsync(Func<TClosure, Task> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    await func(resource);
+                using var resource = await createResource(closure);
+                await func(resource);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    return await func(resource, closure);
+                using var resource = await createResource(closure);
+                return await func(resource, closure);
             });
 
         public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    await func(resource, closure);
+                using var resource = await createResource(closure);
+                await func(resource, closure);
             });
     }
 
@@ -541,58 +541,58 @@ namespace DashboardCode.Routines
         public void Handle(Action<TClosure> action) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure))
-                    action(resource);
+                using var resource = createResource(closure);
+                action(resource);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure))
-                    return func(resource);
+                using var resource = createResource(closure);
+                return func(resource);
             });
 
 
         public void Handle(Action<TClosure, TSuperClosure> action) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure))
-                    action(resource, closure);
+                using var resource = createResource(closure);
+                action(resource, closure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TSuperClosure, TOutput> func) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure))
-                    return func(resource, closure);
+                using var resource = createResource(closure);
+                return func(resource, closure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = createResource(closure))
-                    return await func(resource);
+                using var resource = createResource(closure);
+                return await func(resource);
             });
 
         public Task HandleAsync(Func<TClosure, Task> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = createResource(closure))
-                    await func(resource);
+                using var resource = createResource(closure);
+                await func(resource);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = createResource(closure))
-                    return await func(resource, closure);
+                using var resource = createResource(closure);
+                return await func(resource, closure);
             });
 
         public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = createResource(closure))
-                    await func(resource, closure);
+                using var resource = createResource(closure);
+                await func(resource, closure);
             });
     }
 
@@ -614,57 +614,57 @@ namespace DashboardCode.Routines
         public void Handle(Action<TClosure> action) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure))
-                    action(resource);
+                using var resource = createResource(closure);
+                action(resource);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure))
-                    return func(resource);
+                using var resource = createResource(closure);
+                return func(resource);
             });
 
         public void Handle(Action<TClosure, TSuperClosure> action) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure))
-                    action(resource, closure);
+                using var resource = createResource(closure);
+                action(resource, closure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TSuperClosure, TOutput> func) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure))
-                    return func(resource, closure);
+                using var resource = createResource(closure);
+                return func(resource, closure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = createResource(closure))
-                    return await func(resource);
+                using var resource = createResource(closure);
+                return await func(resource);
             });
 
         public Task HandleAsync(Func<TClosure, Task> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = createResource(closure))
-                    await func(resource);
+                using var resource = createResource(closure);
+                await func(resource);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = createResource(closure))
-                    return await func(resource, closure);
+                using var resource = createResource(closure);
+                return await func(resource, closure);
             });
 
         public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = createResource(closure))
-                    await func(resource, closure);
+                using var resource = createResource(closure);
+                await func(resource, closure);
             });
     }
 
@@ -757,58 +757,58 @@ namespace DashboardCode.Routines
         public void Handle(Action<TClosure> action) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    action(resource);
+                using var resource = createResource(closure).Result;
+                action(resource);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    return func(resource);
+                using var resource = createResource(closure).Result;
+                return func(resource);
             });
 
 
         public void Handle(Action<TClosure, TSuperClosure> action) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    action(resource, closure);
+                using var resource = createResource(closure).Result;
+                action(resource, closure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TSuperClosure, TOutput> func) =>
             handler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    return func(resource, closure);
+                using var resource = createResource(closure).Result;
+                return func(resource, closure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    return await func(resource);
+                using var resource = await createResource(closure);
+                return await func(resource);
             });
 
         public Task HandleAsync(Func<TClosure, Task> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    await func(resource);
+                using var resource = await createResource(closure);
+                await func(resource);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    return await func(resource, closure);
+                using var resource = await createResource(closure);
+                return await func(resource, closure);
             });
 
         public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func) =>
             handler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    await func(resource, closure);
+                using var resource = await createResource(closure);
+                await func(resource, closure);
             });
     }
 
@@ -830,57 +830,57 @@ namespace DashboardCode.Routines
         public void Handle(Action<TClosure> action) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    action(resource);
+                using var resource = createResource(closure).Result;
+                action(resource);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TOutput> func) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    return func(resource);
+                using var resource = createResource(closure).Result;
+                return func(resource);
             });
 
         public void Handle(Action<TClosure, TSuperClosure> action) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    action(resource, closure);
+                using var resource = createResource(closure).Result;
+                action(resource, closure);
             });
 
         public TOutput Handle<TOutput>(Func<TClosure, TSuperClosure, TOutput> func) =>
             routineHandler.Handle(closure =>
             {
-                using (var resource = createResource(closure).Result)
-                    return func(resource, closure);
+                using var resource = createResource(closure).Result;
+                return func(resource, closure);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    return await func(resource);
+                using var resource = await createResource(closure);
+                return await func(resource);
             });
 
         public Task HandleAsync(Func<TClosure, Task> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    await func(resource);
+                using var resource = await createResource(closure);
+                await func(resource);
             });
 
         public Task<TOutput> HandleAsync<TOutput>(Func<TClosure, TSuperClosure, Task<TOutput>> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    return await func(resource, closure);
+                using var resource = await createResource(closure);
+                return await func(resource, closure);
             });
 
         public Task HandleAsync(Func<TClosure, TSuperClosure, Task> func) =>
             routineHandler.HandleAsync(async closure =>
             {
-                using (var resource = await createResource(closure))
-                    await func(resource, closure);
+                using var resource = await createResource(closure);
+                await func(resource, closure);
             });
     }
 }

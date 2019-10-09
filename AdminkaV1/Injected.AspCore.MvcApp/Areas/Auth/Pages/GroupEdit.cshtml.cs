@@ -18,7 +18,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Group Entity { get; private set; }
         
-        public AdminkaCrudRoutinePageConsumer<Group, int> Crud;
+        public AdminkaCrudRoutinePageConsumer<Group, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGetAsync()
         {

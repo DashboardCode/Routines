@@ -1,13 +1,15 @@
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
+
 namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 {
     public interface IRolePartialModel
     {
-         Role Entity { get; }
+        Role Entity { get; }
         AdminkaCrudRoutinePageConsumer<Role, int> Crud { get; }
     }
 
@@ -21,7 +23,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGetAsync()
         {
-            var referrer = new AdminkaReferrer(this.HttpContext.Request, "Roles", () => Entity.RoleId.ToString(), "Role");
+            var referrer = new AdminkaReferrer(this.HttpContext.Request, "Roles", () => Entity.RoleId.ToString(CultureInfo.InvariantCulture), "Role");
             Crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, referrer);
             return Crud.HandleDetailsAsync(
                 e => Entity = e,

@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -21,7 +22,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnGetAsync()
         {
-            var referrer = new AdminkaReferrer(this.HttpContext.Request, "Groups", () => Entity.GroupId.ToString(), "Group");
+            var referrer = new AdminkaReferrer(this.HttpContext.Request, "Groups", () => Entity.GroupId.ToString(CultureInfo.InvariantCulture), "Group");
             Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(
                 this,
                 referrer

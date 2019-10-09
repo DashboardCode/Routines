@@ -12,7 +12,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public IEnumerable<Privilege> List { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<Privilege, string> Crud;
+        public AdminkaCrudRoutinePageConsumer<Privilege, string> Crud { get; private set; }
 
         public Task<IActionResult> OnGet()
         {

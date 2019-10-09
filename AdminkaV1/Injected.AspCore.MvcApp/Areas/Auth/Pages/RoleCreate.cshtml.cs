@@ -12,7 +12,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Role Entity { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<Role, int> Crud;
+        public AdminkaCrudRoutinePageConsumer<Role, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGetAsync()
         {

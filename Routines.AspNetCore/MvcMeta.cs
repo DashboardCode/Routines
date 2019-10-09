@@ -63,13 +63,10 @@ namespace DashboardCode.Routines.AspNetCore
                 }
                 else if (propertyType == typeof(byte[]))
                 {
-                    Microsoft.Extensions.WebEncoders.Testing.HtmlTestEncoder.Default.
-                    Func<StringValues, byte[]> f = sv =>
-                        
-                    //Convert.FromBase64String(sv);
+                    Func<StringValues, byte[]> f = sv => Convert.FromBase64String(System.Net.WebUtility.HtmlDecode(sv));
                     converter = (Func<StringValues, TProperty>)(Delegate)f;
                 }
-                else
+                else 
                 {
                     throw new NotSupportedException($"Type '{propertyType.Name}' is not supported by automation on '{nameof(HiddenFormFieldsScorer)}' controller's meta configuration");
                 }
