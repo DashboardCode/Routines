@@ -82,12 +82,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Pages
 
             if (remoteServerErrorType == RemoteServerErrorType.DOWN)
             {
-                Message = "Downloads are currently down for maintenance. Back soon.";
+                Message = "Adminka is currently down for maintenance. Back soon.";
                 Title = "Maintenance";
             }
             else if (remoteServerErrorType == RemoteServerErrorType.OVERLOADED)
             {
-                Message = "Downloads are a bit overloaded right now... We are sorry asking you try again later";
+                Message = "Adminka is a bit overloaded right now... We are sorry asking you try again later";
                 Title = "Maintenance";
             }
             

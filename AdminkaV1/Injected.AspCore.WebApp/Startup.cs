@@ -17,6 +17,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public class Startup
     {
+        private IConfiguration Configuration { get; } // is updatable on change
+        
+        ApplicationSettings applicationSettings;
+
         public Startup(IWebHostEnvironment webHostEnvironment) 
         {
             // monitor configuration on changes
@@ -35,10 +39,9 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
                 builder.AddUserSecrets<Startup>();
         }
 
-        private IConfiguration Configuration { get; } // is updatable on change
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        ApplicationSettings applicationSettings;
         public void ConfigureServices(IServiceCollection serviceCollection)
         {
             applicationSettings = InjectedManager.CreateApplicationSettingsStandard(Configuration);
@@ -131,7 +134,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
             app.UseRouting();
 
             //app.UseAuthorization();
-
+            //app.UseCookiePolicy();
             //app.UseSession();
 
             //app.UseMiddleware<DurationMiddleware>("X-AdminkaV1-Duration-MSec");
