@@ -15,7 +15,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 #if DEBUG
                 TestDependencies();  // fail early test
 #endif
-                CreateWebHostBuilder(args).Build().Run();
+                CreateWebHostBuilder(args).Build().Run(); 
             }
             finally
             {
