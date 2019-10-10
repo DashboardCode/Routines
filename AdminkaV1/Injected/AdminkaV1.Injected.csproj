@@ -41,7 +41,6 @@
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
     <ProjectReference Include="..\LoggingDom.WcfClient\AdminkaV1.LoggingDom.WcfClient.csproj" />
     <ProjectReference Include="..\..\Routines.ActiveDirectory\Routines.ActiveDirectory.csproj" />
-
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">

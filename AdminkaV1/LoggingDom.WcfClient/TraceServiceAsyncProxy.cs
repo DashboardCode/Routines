@@ -11,9 +11,19 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient
     // TODO: this code can be generated with T4
     public class TraceServiceAsyncProxy : ITraceServiceAsync
     {
+        private readonly Func<TraceServiceClient> clientFactory;
+        private readonly Action<string, object> verbose;
+
+        public TraceServiceAsyncProxy(TraceServiceConfiguration traceServiceConfiguration, Action<string, object> verbose)
+        {
+            var endpointConfiguration = TraceServiceClient.EndpointConfiguration.BasicHttpBinding_TraceService;
+            clientFactory = () => new TraceServiceClient(endpointConfiguration, traceServiceConfiguration.RemoteAddress);
+            this.verbose = verbose;
+        }
+
         public async Task<List<VerboseRecord>> GetTrace(Guid correlationToken)
         {
-            using var client = new TraceServiceClient();
+            using var client = clientFactory();
             try
             {
                 return await client.GetTraceAsync(correlationToken);

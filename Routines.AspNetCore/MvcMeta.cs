@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc.Rendering; // SelectList and MultySelectList
 using Microsoft.Extensions.Primitives;
-using Microsoft.Extensions.WebEncoders;
 
 using DashboardCode.Routines.Storage;
 using System.Linq;

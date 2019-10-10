@@ -75,8 +75,6 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Pages
                 Guid.TryParse(correlationTokenRequest, out var correlationToken);
                 applicationSettings.UnhandledExceptionLogger.TraceError(correlationToken, detailsMarkdown);
             }
-            bool isDown = false;
-            bool isOverloaded = false;
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
 
             //SqlException sqlException = null;

@@ -87,11 +87,10 @@ namespace DashboardCode.Routines.Storage.Ef6
                 context.Detach(entity, include);
         }
 
-
-
         public IQueryable<TEntity> Query(Include<TEntity> include = null)
         {
-            throw new NotImplementedException();
+            var queryable = MakeQueryable(include);
+            return queryable;
         }
 
         public void LoadCollection<TRelationEntity>(TEntity entity, Expression<Func<TEntity, IEnumerable<TRelationEntity>>> getTmmExpression) where TRelationEntity : class

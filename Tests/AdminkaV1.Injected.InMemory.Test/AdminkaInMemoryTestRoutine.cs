@@ -33,7 +33,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 #if NETCOREAPP
                  InjectedManager.CreateInMemoryApplicationSettingsStandard(name),
 #else
-                  InjectedManager.CreateInMemoryApplicationSettingsClassic(name),
+                 InjectedManager.CreateInMemoryApplicationSettingsClassic(name),
 #endif
                  loggingTransientsFactory,
                  hasVerboseLoggingPrivilege: hasVerboseLoggingPrivilege,

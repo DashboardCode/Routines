@@ -13,7 +13,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
         [TestMethod]
         public void GetTrace()
         {
-            var traceService = new TraceServiceProxy();
+            var traceService = new TraceServiceProxy(new TraceServiceConfiguration { RemoteAddress= "http://localhost:64220/TraceService.svc" }, null);
             var guid = Guid.NewGuid();
             try
             {
@@ -29,7 +29,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
         [TestMethod]
         public void GetTraceAsync()
         {
-            var traceService = new TraceServiceAsyncProxy();
+            var traceService = new TraceServiceAsyncProxy(new TraceServiceConfiguration { RemoteAddress = "http://localhost:64220/TraceService.svc" }, null);
             var guid = Guid.NewGuid();
             try
             {
@@ -51,7 +51,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
         [TestMethod]
         public void GetTraceAsyncQueued()
         {
-            var traceService = new TraceServiceAsyncProxy();
+            var traceService = new TraceServiceAsyncProxy(new TraceServiceConfiguration { RemoteAddress = "http://localhost:64220/TraceService.svc" }, null);
             var guid = Guid.NewGuid();
             Task.Run(async () =>
             {

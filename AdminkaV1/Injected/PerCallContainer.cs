@@ -102,7 +102,7 @@ namespace DashboardCode.AdminkaV1.Injected
 #endif
         public ITraceService ResolveTraceServiceWcf()
         {
-            return new TraceServiceProxy();
+            return new TraceServiceProxy(closure.Resolve<TraceServiceConfiguration>(), closure.Verbose);
         }
 
         public ITraceService ResolveTraceService()

@@ -22,9 +22,9 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             }
         }
 
-        public static int[] ParallelTestImpl(int parallelTaskCount, string connectionString)
+        public static List<(int c, List<string> l)> ParallelTestImpl(int parallelTaskCount, string connectionString)
         {
-            List<List<string>> buffers = new List<List<string>>();
+            var buffers = new System.Collections.Concurrent.ConcurrentBag<List<string>>();
 
             var seria = Enumerable.Range(1, parallelTaskCount).ToList();
             Parallel.ForEach(seria, t =>
@@ -32,9 +32,12 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                 var messages = new List<string>();
                 buffers.Add(messages);
                 Action<string> verbose = (text) => {
-                    messages.Add(text);
-                    Console.WriteLine(t+") "+text);
-                    Console.WriteLine();
+                    if (!text.Contains("Microsoft.EntityFrameworkCore.Query.QueryExecutionPlanned"))
+                    {
+                        messages.Add(text);
+                        Console.WriteLine(t + ") " + text);
+                        Console.WriteLine();
+                    }
                 };
 
                 using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString), verbose))
@@ -47,8 +50,8 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                     //StraightEfTests.TestHierarchy(dbContext);
                 }
             });
-
-            return buffers.Select(b => b.Count).ToArray();
+            
+            return buffers.Select(b => (b.Count, b)).ToList();
         }
 
         public static void TestHierarchy(MyDbContext dbContext)
@@ -214,29 +217,34 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
         internal static void ParallelTest(string connectionString)
         {
             DbContextTests.Reset(connectionString);
-            int parallelTaskCount = 32;
-            var c1 = DbContextTests.ParallelTestImpl(parallelTaskCount, connectionString);
+            int parallelTaskCount = 64;
+            var x1 = DbContextTests.ParallelTestImpl(parallelTaskCount, connectionString);
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            var c2 = DbContextTests.ParallelTestImpl(parallelTaskCount, connectionString);
+            var x2 = DbContextTests.ParallelTestImpl(parallelTaskCount, connectionString);
             GC.Collect();
             GC.WaitForPendingFinalizers();
             var instancesInPoolCount = StatefullLoggerFactoryPool.Instance.Count();
-            if (c1.Length != c2.Length || c1.Length != parallelTaskCount)
+            if (x1.Count() != x2.Count() || x1.Count() != parallelTaskCount)
                 throw new Exception("Some log messages are not in correct buffers");
-            int[] union = c1.Concat(c2).ToArray();
+            int[] union = x1.Select(e=>e.c).Concat(x2.Select(e => e.c)).ToArray();
             var distinctLengths = union.Distinct().ToList();
-            if (distinctLengths.Count != 2)
-                throw new Exception("Something unexpected 1. There should be two types of buffers: with new and with pooled StatefullLoggerFactories");
-            var k0 = distinctLengths[0];
-            var k1 = distinctLengths[1];
+            // core3
+            if (distinctLengths.Count != 1)
+               throw new Exception("Different count of messages???");
+            //var k0 = distinctLengths[0];
+            //core 2
+            //if (distinctLengths.Count != 2)
+            //    throw new Exception("Something unexpected 1. There should be two types of buffers: with new and with pooled StatefullLoggerFactories");
+            //var k0 = distinctLengths[0];
+            //var k1 = distinctLengths[1];
 
-            var countK0 = union.Where(e => e == k0).Count();
-            var countK1 = union.Where(e => e == k1).Count();
-            if (!(countK0 == instancesInPoolCount || countK1 == instancesInPoolCount
-                || countK1 - 1 == instancesInPoolCount
-                || countK1 - 1 == instancesInPoolCount))
-                throw new Exception("Something unexpected 2. cound of dbcontext with pooled messages should be equal to number of StatefullLoggerFactories instances (one can created by other tests) ");
+                //var countK0 = union.Where(e => e == k0).Count();
+                //var countK1 = union.Where(e => e == k1).Count();
+                //if (!(countK0 == instancesInPoolCount || countK1 == instancesInPoolCount
+                //    || countK1 - 1 == instancesInPoolCount
+                //    || countK1 - 1 == instancesInPoolCount))
+                //    throw new Exception("Something unexpected 2. cound of dbcontext with pooled messages should be equal to number of StatefullLoggerFactories instances (one can created by other tests) ");
         }
 
 

@@ -16,3 +16,8 @@ empty .svc file added for 1) simple browse in browser (folder browsinf is allowe
 
 WCF on Core (currently not released)
 https://github.com/CoreWCF/CoreWCF
+
+EntityFramework should be installed there to avoid this:  FaultException`1: Remote server error: No Entity Framework provider found for the ADO.NET 
+provider with invariant name 'System.Data.SqlClient'. Make sure the provider is registered 
+in the 'entityFramework' section of the application config file. 
+See http://go.microsoft.com/fwlink/?LinkId=260882 for more information.(System.InvalidOperationException)

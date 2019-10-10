@@ -44,12 +44,6 @@
                         FieldCB2 = "3_3"
                     };
 
-                    //factory<ParentRecordHierarchyRecord>(batch =>
-                    //    {
-                    //    }
-                    //);
-
-
                     batch.Add(typeRecord1);
                     batch.Add(typeRecord2);
 
@@ -59,16 +53,16 @@
 
                     var childRecord1 = new ChildRecord()
                     {
-                        ParentRecordId = parentRecord1.ParentRecordId,
-                        TypeRecordId = typeRecord1.TestTypeRecordId,
+                        ParentRecord = parentRecord1,
+                        TypeRecord = typeRecord1,
                         XmlField1 = "notxml",
                         XmlField2 = "notxml"
                     };
 
                     var childRecord2 = new ChildRecord()
                     {
-                        ParentRecordId = parentRecord1.ParentRecordId,
-                        TypeRecordId = typeRecord2.TestTypeRecordId,
+                        ParentRecord = parentRecord1,
+                        TypeRecord = typeRecord2,
                         XmlField1 = "<xml></xml>",
                         XmlField2 = "<xml></xml>"
                     };
@@ -76,23 +70,28 @@
                     batch.Add(childRecord1);
                     batch.Add(childRecord2);
 
-                    var hierarchyRecord1 = new HierarchyRecord(){
+                    var hierarchyRecord1 = new HierarchyRecord()
+                    {
                         HierarchyRecordTitle = "Chierarchy 1"
                     };
 
-                    var hierarchyRecord2 = new HierarchyRecord(){
+                    var hierarchyRecord2 = new HierarchyRecord()
+                    {
                         HierarchyRecordTitle = "Chierarchy 2"
                     };
 
-                    var hierarchyRecord3 = new HierarchyRecord(){
+                    var hierarchyRecord3 = new HierarchyRecord()
+                    {
                         HierarchyRecordTitle = "Chierarchy 3"
                     };
 
-                    var hierarchyRecord4 = new HierarchyRecord(){
+                    var hierarchyRecord4 = new HierarchyRecord()
+                    {
                         HierarchyRecordTitle = "Chierarchy 4"
                     };
 
-                    var hierarchyRecord5 = new HierarchyRecord(){
+                    var hierarchyRecord5 = new HierarchyRecord()
+                    {
                         HierarchyRecordTitle = "Chierarchy 5"
                     };
 
@@ -102,11 +101,11 @@
                     batch.Add(hierarchyRecord4);
                     batch.Add(hierarchyRecord5);
 
-                    var parentRecordHierarchyRecord1 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord1.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
-                    var parentRecordHierarchyRecord2 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord2.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
-                    var parentRecordHierarchyRecord3 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord3.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
-                    var parentRecordHierarchyRecord4 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord4.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
-                    var parentRecordHierarchyRecord5 = new ParentRecordHierarchyRecord() { HierarchyRecordId = hierarchyRecord5.HierarchyRecordId, ParentRecordId = parentRecord1.ParentRecordId };
+                    var parentRecordHierarchyRecord1 = new ParentRecordHierarchyRecord() { HierarchyRecord = hierarchyRecord1, ParentRecord = parentRecord1 };
+                    var parentRecordHierarchyRecord2 = new ParentRecordHierarchyRecord() { HierarchyRecord = hierarchyRecord2, ParentRecord = parentRecord1 };
+                    var parentRecordHierarchyRecord3 = new ParentRecordHierarchyRecord() { HierarchyRecord = hierarchyRecord3, ParentRecord = parentRecord1 };
+                    var parentRecordHierarchyRecord4 = new ParentRecordHierarchyRecord() { HierarchyRecord = hierarchyRecord4, ParentRecord = parentRecord1 };
+                    var parentRecordHierarchyRecord5 = new ParentRecordHierarchyRecord() { HierarchyRecord = hierarchyRecord5, ParentRecord = parentRecord1 };
 
                     batch.Add(parentRecordHierarchyRecord1);
                     batch.Add(parentRecordHierarchyRecord2);

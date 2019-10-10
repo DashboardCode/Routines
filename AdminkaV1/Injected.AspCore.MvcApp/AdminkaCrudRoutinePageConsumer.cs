@@ -31,7 +31,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
     // var trackedConfiguration = trackedConfigurationSnapshot.Value;
     public class AdminkaCrudRoutinePageConsumer<TEntity, TKey> : AdminkaCrudRoutinePageConsumer<UserContext, User, TEntity, TKey> where TEntity : class, new()
     {
-        public readonly Referrer Referrer;
+        public Referrer Referrer { get; private set; }
 
         public AdminkaCrudRoutinePageConsumer(
             PageModel pageModel,
