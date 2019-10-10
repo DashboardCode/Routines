@@ -141,7 +141,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Mvc.San
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkAdminka", "Tests\BenchmarkAdminka\BenchmarkAdminka.csproj", "{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test\AdminkaV1.Injected.AspCore.WebApp.NETCore.Test.csproj", "{5E79C527-3337-4F7C-9AA3-D71E75E3915B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test\AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test.csproj", "{5E79C527-3337-4F7C-9AA3-D71E75E3915B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test\AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test.csproj", "{69AF60A9-17D7-4A77-AF3A-DBFB4CABAFF0}"
 EndProject
@@ -163,7 +163,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.AuthenticationDom
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.LoggingDom.DataAccessEf6", "AdminkaV1\LoggingDom.DataAccessEf6\AdminkaV1.LoggingDom.DataAccessEf6.csproj", "{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.SystemSqlServer", "Routines.Storage.SystemSqlServer\Routines.Storage.SystemSqlServer.csproj", "{C20535E5-F8E4-44D4-A517-555147A25C13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.SystemSqlServer", "Routines.Storage.SystemSqlServer\Routines.Storage.SystemSqlServer.csproj", "{C20535E5-F8E4-44D4-A517-555147A25C13}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test</AssemblyName>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test</AssemblyName>
 
     <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test</RootNamespace>
 
