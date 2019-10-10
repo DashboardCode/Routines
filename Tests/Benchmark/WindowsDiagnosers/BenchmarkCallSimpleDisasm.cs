@@ -76,7 +76,7 @@ namespace Benchmark
             #endregion
 
             #region Save Lambda
-#if NET47
+#if NET48
             // some 
             var assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("testLambda"),System.Reflection.Emit.AssemblyBuilderAccess.Save);
             var modelBuilder = assemblyBuilder.DefineDynamicModule("testLambda_module", "testLambda.dll");

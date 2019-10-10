@@ -19,7 +19,7 @@ namespace Benchmark
     {
         public CoreToolchain2JobConfig()
         {
-            Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp21));
+            Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp30));
             Add(Job.Clr); // do not add .With(CsProjClassicNetToolchain.Net472) - this doesn't work somehow !!!
         }
     }
