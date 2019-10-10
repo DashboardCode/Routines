@@ -7,7 +7,7 @@
 
     <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test</AssemblyName>
 
-    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test</RootNamespace>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test</RootNamespace>
 
     <StartupObject></StartupObject>
   </PropertyGroup>
@@ -45,7 +45,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
-    <ProjectReference Include="..\..\AdminkaV1\Injected.AspCore.MvcApp\AdminkaV1.Injected.AspCore.WebApp.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\Injected.AspCore.WebApp\AdminkaV1.Injected.AspCore.WebApp.csproj" />
     <ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
   </ItemGroup>

@@ -48,7 +48,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serialization.NETFramework"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore", "Routines.AspNetCore\Routines.AspNetCore.csproj", "{06CEAC59-C96C-4F84-B1D6-14AA5753BB43}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp", "AdminkaV1\Injected.AspCore.MvcApp\AdminkaV1.Injected.AspCore.WebApp.csproj", "{E306B786-C40E-4FD1-99EF-8AF99C9CBA3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp", "AdminkaV1\Injected.AspCore.WebApp\AdminkaV1.Injected.AspCore.WebApp.csproj", "{E306B786-C40E-4FD1-99EF-8AF99C9CBA3B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tour", "Tour", "{90E0E81A-4CDA-43B8-A302-8430519EEA90}"
 	ProjectSection(SolutionItems) = preProject
@@ -141,9 +141,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.AspNetCore.Mvc.San
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkAdminka", "Tests\BenchmarkAdminka\BenchmarkAdminka.csproj", "{E5A4E800-DA66-4192-9B5A-92EE89E73C2D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.NETCore.Test\AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test.csproj", "{5E79C527-3337-4F7C-9AA3-D71E75E3915B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test\AdminkaV1.Injected.AspCore.WebApp.Integration.NETCore.Test.csproj", "{5E79C527-3337-4F7C-9AA3-D71E75E3915B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test\AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test.csproj", "{69AF60A9-17D7-4A77-AF3A-DBFB4CABAFF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test", "Tests\AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test\AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test.csproj", "{69AF60A9-17D7-4A77-AF3A-DBFB4CABAFF0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EfCore.NETCore.Sandbox", "Tests\ConsoleApps\Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox\EfCore.NETCore.Sandbox.csproj", "{52F84ED0-2BEB-42C9-A314-7ABA8E510240}"
 EndProject
