@@ -19,7 +19,9 @@ namespace DashboardCode.AdminkaV1.TestDom.DataAccessEfCore
        
         public DbSet<ParentRecord> ParentRecords { get; set; }
         public DbSet<ChildRecord> ChildRecords { get; set; }
-        public DbSet<HierarchyRecord> TestRecords { get; set; }
+        public DbSet<HierarchyRecord> HierarchyRecords { get; set; }
+        public DbSet<ParentRecordHierarchyRecord> ParentRecordHierarchyRecords { get; set; }
+        public DbSet<TypeRecord> TypeRecords { get; set; }
 
         private static string GetEntityTableName(string value)
         {
@@ -66,7 +68,7 @@ namespace DashboardCode.AdminkaV1.TestDom.DataAccessEfCore
             modelBuilder.Entity<ParentRecord>()
                 .HasAlternateKey(e => new { e.FieldCB1, e.FieldCB2 });
 
-            modelBuilder.Entity<ChildRecord>().Property(e => e.ParentRecordId).HasMaxLength(LengthConstants.GoodForKey);
+            modelBuilder.Entity<ChildRecord>().Property(e => e.ParentRecordId);
             modelBuilder.Entity<ChildRecord>().Property(e => e.TypeRecordId).HasMaxLength(LengthConstants.GoodForKey);
             modelBuilder.Entity<ChildRecord>().Property(e => e.XmlField1).HasColumnType("xml");
             modelBuilder.Entity<ChildRecord>().Property(e => e.XmlField2).HasColumnType("xml");

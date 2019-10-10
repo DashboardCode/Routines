@@ -15,6 +15,7 @@ using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
 #endif
 
 #if NET48
+using DashboardCode.AdminkaV1.TestDom.DataAccessEf6;
 using DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6;
 using DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6.Services;
 #endif
@@ -99,6 +100,20 @@ namespace DashboardCode.AdminkaV1.Injected
             return adminkaDbContextHandler;
         }
 
+        public TestDomStorageRoutineHandler<TUserContext> ResolveTestDomDbContextHandler()
+        {
+            var testDomDbContextHandler = new TestDomStorageRoutineHandler<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return testDomDbContextHandler;
+        }
 #endif
         public ITraceService ResolveTraceServiceWcf()
         {

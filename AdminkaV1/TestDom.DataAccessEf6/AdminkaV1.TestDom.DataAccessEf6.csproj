@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>DashboardCode.AdminkaV1.TestDom.DataAccessEf6</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.TestDom.DataAccessEf6</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Routines.Storage.Ef6\Routines.Storage.Ef6.csproj" />
+    <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
+    <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
+  </ItemGroup>
+</Project>

@@ -165,6 +165,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminkaV1.LoggingDom.DataAc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.SystemSqlServer", "Routines.Storage.SystemSqlServer\Routines.Storage.SystemSqlServer.csproj", "{C20535E5-F8E4-44D4-A517-555147A25C13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminkaV1.TestDom.DataAccessEf6", "AdminkaV1\TestDom.DataAccessEf6\AdminkaV1.TestDom.DataAccessEf6.csproj", "{EB30599C-60A9-4AC8-A2CB-81739654417A}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Tests\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems*{0ff86a9d-f8de-4029-843f-5029519e0b92}*SharedItemsImports = 13
@@ -174,7 +176,6 @@ Global
 		Tests\AdminkaV1.LoggingDom.WcfClient.Test\AdminkaV1.LoggingDom.WcfClient.Test.projitems*{b83c8d67-b9ad-46de-a91b-3808e7c35cbf}*SharedItemsImports = 4
 		Tests\AdminkaV1.Injected.SqlServer.Test\Vse.AdminkaV1.Injected.SqlServer.Test.projitems*{b9077909-87f9-494b-9d6b-5e4f18a7325b}*SharedItemsImports = 13
 		Tests\AdminkaV1.Injected.InMemory.Test\AdminkaV1.Injected.InMemory.Test.projitems*{ba5a3565-25cc-4e51-b32e-714e71c9f37e}*SharedItemsImports = 13
-		Tests\AdminkaV1.Injected.SqlServer.Test\Vse.AdminkaV1.Injected.SqlServer.Test.projitems*{c48fdd29-c5ed-4a7d-bdf0-e5487caaaf88}*SharedItemsImports = 4
 		Tests\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems*{eb32496f-b021-4179-a593-ba8eb7631bc2}*SharedItemsImports = 4
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{fbf79d09-bd37-41fc-b7d0-df2e3d306d2c}*SharedItemsImports = 4
 	EndGlobalSection
@@ -1733,6 +1734,38 @@ Global
 		{C20535E5-F8E4-44D4-A517-555147A25C13}.Release|x64.Build.0 = Release|Any CPU
 		{C20535E5-F8E4-44D4-A517-555147A25C13}.Release|x86.ActiveCfg = Release|Any CPU
 		{C20535E5-F8E4-44D4-A517-555147A25C13}.Release|x86.Build.0 = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Android.Build.0 = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|iOS.ActiveCfg = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|iOS.Build.0 = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Windows-ARM.ActiveCfg = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Windows-ARM.Build.0 = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Windows-x64.ActiveCfg = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Windows-x64.Build.0 = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Windows-x86.ActiveCfg = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|Windows-x86.Build.0 = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|x64.Build.0 = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Debug|x86.Build.0 = Debug|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Android.ActiveCfg = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Android.Build.0 = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|iOS.ActiveCfg = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|iOS.Build.0 = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Windows-ARM.ActiveCfg = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Windows-ARM.Build.0 = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Windows-x64.ActiveCfg = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Windows-x64.Build.0 = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Windows-x86.ActiveCfg = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|Windows-x86.Build.0 = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|x64.ActiveCfg = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|x64.Build.0 = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|x86.ActiveCfg = Release|Any CPU
+		{EB30599C-60A9-4AC8-A2CB-81739654417A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1786,6 +1819,7 @@ Global
 		{EF371506-5A89-4888-A66B-D1CF9B1F7E68} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
 		{8C38689E-DCD9-4EFD-8A59-E5EB324D9AE7} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
 		{DEB7686D-71E0-4E77-9808-FEDDA50FB9F3} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
+		{EB30599C-60A9-4AC8-A2CB-81739654417A} = {321B262B-54AF-4039-A4B5-08F234FF4B5C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14B58345-1A5E-4882-9F6F-DC259439D43A}

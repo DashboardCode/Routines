@@ -54,6 +54,7 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />
     <ProjectReference Include="..\..\Routines.Storage.SystemSqlServer\Routines.Storage.SystemSqlServer.csproj" />
+    <ProjectReference Include="..\TestDom.DataAccessEf6\AdminkaV1.TestDom.DataAccessEf6.csproj" />
     <ProjectReference Include="..\LoggingDom.DataAccessEf6\AdminkaV1.LoggingDom.DataAccessEf6.csproj" />
   </ItemGroup>
 </Project>
