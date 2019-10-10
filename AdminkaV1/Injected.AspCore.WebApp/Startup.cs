@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
-//using DashboardCode.AspNetCore.Http;
+using DashboardCode.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using DashboardCode.Routines.Configuration.Standard;
 
@@ -59,6 +59,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
             // NOTE: legacy ASP Core 
             // serviceCollection.AddMvc((options) => { options.EnableEndpointRouting = false; }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
+            // supports webpack real time server
             //serviceCollection.AddSingleton(new DevProxyMiddlewareSettings(
             //    new PathString("/dist"), 
             //    new Uri("http://localhost:63558"))
@@ -71,8 +72,10 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
             if (env.IsDevelopment())
             {
                 //app.UseBrowserLink();
+
+                // supports webpack real time server
                 //app.UseMiddleware<DevProxyMiddleware>();
-            } 
+            }
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

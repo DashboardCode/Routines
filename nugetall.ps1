@@ -14,11 +14,11 @@ $SolutionFolderPath = $PSScriptRoot #or enter it manually there
 $CoreProjects = @('Routines.Storage.EfCore.Relational.InMemory',
 'Routines','Routines.ActiveDirectory','Routines.AspNetCore', 'Routines.Configuration.Classic', 'Routines.Configuration.Standard',
 'Routines.Storage.EfCore', 'Routines.Storage.EfCore.Relational', 'Routines.Storage.EfCore.Relational.SqlServer', 
-'Routines.Storage.SqlServer' 
+'Routines.Storage.SqlServer', 'Routines.Storage.SystemSqlServer','Routines.Storage.Ef6'
 );
 
 
-$ver = '2.0.70'
+$ver = '3.0.0'
 Function UpdateVersion ($projectFile)
 {
     Get-Content -path $projectFile | % { $_ `
@@ -33,7 +33,8 @@ Function UpdateVersion ($projectFile)
 ForEach ($name in $CoreProjects) {UpdateVersion("$SolutionFolderPath\$name\$name.csproj")}
 
 cd $SolutionFolderPath
-& dotnet build --configuration Release
+ForEach ($name in $CoreProjects) {& dotnet build $name --configuration Release}
+
 
 
 $sign = Read-Host 'Enter sign'
@@ -48,29 +49,3 @@ Function PushToNuget ($name)
 ForEach ($name in $CoreProjects) {PushToNuget("$name")}
 
 
-#cd $SolutionFolderPath\Routines\bin\Release
-#nuget push DashboardCode.Routines.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.AspNetCore\bin\Release
-#nuget push DashboardCode.Routines.AspNetCore.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.Configuration.Standard\bin\Release
-#nuget push DashboardCode.Routines.Configuration.Standard.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.Storage.SqlServer\bin\Release
-#nuget push DashboardCode.Routines.Storage.SqlServer.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.Storage.EfCore.Relational\bin\Release
-#nuget push DashboardCode.Routines.Storage.EfCore.Relational.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.Storage.EfCore.Relational.SqlServer\bin\Release
-#nuget push DashboardCode.Routines.Storage.EfCore.Relational.SqlServer.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.Storage.EfCore\bin\Release
-#nuget push DashboardCode.Routines.Storage.EfCore.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.ActiveDirectory\bin\Release
-#nuget push DashboardCode.Routines.ActiveDirectory.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
-
-#cd $SolutionFolderPath\Routines.Configuration.Classic\bin\Release
-#nuget push DashboardCode.Routines.Configuration.Classic.$ver.nupkg $sign -Source https://api.nuget.org/v3/index.json
