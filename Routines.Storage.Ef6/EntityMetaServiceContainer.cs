@@ -10,19 +10,22 @@ namespace DashboardCode.Routines.Storage.Ef6
 {
     public class EntityMetaServiceContainer : IEntityMetaServiceContainer
     {
-        //readonly Dictionary<string, IOrmEntitySchemaAdapter> relationDbSchemaAdapters;
-        //readonly IMutableModel mutableModel;
+        readonly Dictionary<string, IOrmEntitySchemaAdapter> relationDbSchemaAdapters;
+        readonly DbContext model;
         readonly Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
         
 
         public EntityMetaServiceContainer(
+            DbContext model,
             Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze//,
             //Func<IMutableEntityType, IOrmEntitySchemaAdapter> ormEntitySchemaAdapterFactory,
             //Action<ModelBuilder> buildModel 
             )
         {
+            this.model = model;
             this.analyze = analyze;
-            //this.relationDbSchemaAdapters = new Dictionary<string, IOrmEntitySchemaAdapter>();
+
+            this.relationDbSchemaAdapters = new Dictionary<string, IOrmEntitySchemaAdapter>();
 
             ////TODO:  constraints and unique indexes list should be integrated with configuration files or get from db directly
 
@@ -42,31 +45,30 @@ namespace DashboardCode.Routines.Storage.Ef6
 
         public IEntityMetaService<TEntity> Resolve<TEntity>() where TEntity : class
         {
-            throw new NotImplementedException(nameof(Resolve));
-            //var type = typeof(TEntity);
+            var type = typeof(TEntity);
             //var ormEntitySchemaAdapter = relationDbSchemaAdapters[type.FullName];
 
-            //var ormEntitySchemaAdapter2 = new OrmEntitySchemaAdapter<TEntity>(mutableModel, ormEntitySchemaAdapter);
-            //var entityStorageMetaService = new EntityStorageMetaService<TEntity>(ormEntitySchemaAdapter2, type, mutableModel, analyze);
-            //return entityStorageMetaService;
+            var ormEntitySchemaAdapter2 = new OrmEntitySchemaAdapter<TEntity>(model, new SqlServerOrmEntitySchemaAdapter(model, type ));
+            var entityStorageMetaService = new EntityStorageMetaService<TEntity>(ormEntitySchemaAdapter2, type, model, analyze);
+            return entityStorageMetaService;
         }
 
         class EntityStorageMetaService<TEntity> : IEntityMetaService<TEntity> where TEntity : class
         {
             readonly OrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter;
             readonly Type type;
-            //readonly IMutableModel mutableModel;
+            readonly DbContext model;
             readonly Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze;
             public EntityStorageMetaService(
                 OrmEntitySchemaAdapter<TEntity> ormEntitySchemaAdapter,
                 Type type,
-                //IMutableModel mutableModel,
+                DbContext model,
                 Func<Exception, Type, IOrmEntitySchemaAdapter, string, StorageResult> analyze)
             {
                 this.ormEntitySchemaAdapter = ormEntitySchemaAdapter;
                 this.type = type;
                 this.analyze = analyze;
-                //this.mutableModel = mutableModel;
+                this.model = model;
             }
 
             public StorageResult Analyze(Exception ex)
@@ -77,9 +79,8 @@ namespace DashboardCode.Routines.Storage.Ef6
 
             public IOrmEntitySchemaAdapter<TEntity> GetOrmEntitySchemaAdapter()
             {
-                throw new NotImplementedException(nameof(GetOrmEntitySchemaAdapter));
-                //var @output = new OrmEntitySchemaAdapter<TEntity>(mutableModel, ormEntitySchemaAdapter);
-                //return @output;
+                var @output = new OrmEntitySchemaAdapter<TEntity>(model, ormEntitySchemaAdapter);
+                return @output;
             }
         }
     }

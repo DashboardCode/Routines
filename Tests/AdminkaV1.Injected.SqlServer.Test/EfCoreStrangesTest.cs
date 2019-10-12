@@ -28,7 +28,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 new MemberTag(this), "UnitTest",
                 new { input = "Input text" });
 
-            static void includes(Chain<ParentRecord> includable) => includable
+            Include<ParentRecord> includes= (includable) => includable
                     .IncludeAll(y => y.ParentRecordHierarchyRecordMap)
                         .ThenInclude(y => y.HierarchyRecord);
             routine.Handle((container, closure) => container.ResolveTestDomDbContextHandler().HandleOrmFactory((ormHandlerFactory) =>

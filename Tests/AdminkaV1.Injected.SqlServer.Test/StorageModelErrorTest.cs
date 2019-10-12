@@ -15,6 +15,9 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
             TestManager.Clear();
         }
 
+        // they works different for ef 6 and ef core
+        // first of all because ef 6 do the model check when ef core do not check against the model
+        // read this: https://www.thereformedprogrammer.net/entity-framework-core-validating-data-and-catching-sql-errors/ 
         [TestMethod]
         public void TestDatabaseFieldRequiredError()
         {

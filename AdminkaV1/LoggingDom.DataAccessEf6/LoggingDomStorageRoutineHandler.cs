@@ -14,9 +14,9 @@ namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6
             IHandler<RoutineClosure<TUserContext>> routineHandler,
             Func<TUserContext, string> getAudit) :
             this(
-                LoggingDomDataAccessEfCoreManager.LoggingDomEntityMetaServiceContainer,
+                LoggingDomDataAccessEfCoreManager.CreateLoggingDomEntityMetaServiceContainer(adminkaStorageConfiguration.ConnectionString),
                 userContext,
-                () => LoggingDomDataAccessEfCoreManager.CreateLoggingDomDbContext(adminkaStorageConfiguration, efDbContextVerbose),
+                () => LoggingDomDataAccessEfCoreManager.CreateDbContext(adminkaStorageConfiguration, efDbContextVerbose),
                 routineHandler, getAudit)
         {
         }

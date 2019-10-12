@@ -62,13 +62,12 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                        batch =>
                        {
                            batch.Add(parentRecord);
-                           batch.LoadAndModifyRelated(
-                               parentRecord,
-                               e => e.ParentRecordHierarchyRecordMap,
-                               selectedPrivileges,
-                               (e1, e2) => e1.ParentRecordId == e2.ParentRecordId
-                           );
-                       }).ThrowIfFailed("Test failed");
+                           parentRecord.ParentRecordHierarchyRecordMap = new List<ParentRecordHierarchyRecord>();
+                           batch.ModifyRelated(parentRecord,
+                               parentRecord.ParentRecordHierarchyRecordMap, selectedPrivileges,
+                               (e1, e2) => e1.ParentRecordId == e2.ParentRecordId);
+
+                    }).ThrowIfFailed("Test failed");
                    newParentRecordId = parentRecord.ParentRecordId;
                    newRowVersion = parentRecord.RowVersion;
                });

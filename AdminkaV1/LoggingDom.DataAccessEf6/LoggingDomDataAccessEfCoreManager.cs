@@ -9,7 +9,8 @@ namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6
 {
     public static class LoggingDomDataAccessEfCoreManager
     {
-        public readonly static IEntityMetaServiceContainer LoggingDomEntityMetaServiceContainer = new EntityMetaServiceContainer(
+        public static IEntityMetaServiceContainer CreateLoggingDomEntityMetaServiceContainer(string connectionString) => new EntityMetaServiceContainer(
+            new LoggingDomDbContext("x", null),
             (exception, entityType, ormEntitySchemaAdapter, genericErrorField) => StorageResultBuilder.AnalyzeExceptionRecursive(
                   exception, entityType, ormEntitySchemaAdapter, genericErrorField,
                   (ex, storageResultBuilder) =>
@@ -19,7 +20,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6
                       SqlServerManager.Analyze(ex, storageResultBuilder);
                   }
             )
-            //(entityType) => new SqlServerOrmEntitySchemaAdapter(entityType),
+            //(entityType) => new SqlServerOrmEntitySchemaAdapter( entityType),
             //(modelBuilder) => LoggingDomDbContext.BuildModel(modelBuilder)
         );
 
@@ -31,7 +32,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEf6
         public static void Append(StringBuilder sb, Exception ex)
            => Ef6Manager.Append(sb, ex);
 
-        public static LoggingDomDbContext CreateLoggingDomDbContext(
+        public static LoggingDomDbContext CreateDbContext(
             AdminkaStorageConfiguration adminkaStorageConfiguration,
             Action<string> verbose = null) {
             string connectionString;

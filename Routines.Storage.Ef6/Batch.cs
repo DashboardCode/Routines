@@ -44,22 +44,33 @@ namespace DashboardCode.Routines.Storage.Ef6
 
         public void LoadAndModifyRelated<TRelationEntity>(
             TEntity entity,
-            Expression<Func<TEntity, ICollection<TRelationEntity>>> getRelated,
+            Expression<Func<TEntity, ICollection<TRelationEntity>>> getTmmExpression,
             IEnumerable<TRelationEntity> newRelations,
             Func<TRelationEntity, TRelationEntity, bool> equalsById
             ) where TRelationEntity : class
         {
             DbEntityEntry<TEntity> entry = context.Entry(entity);
-            var name = getRelated.GetMemberName();
+            var name = getTmmExpression.GetMemberName();
             var col = entry.Collection(name);
             col.Load();
 
-            var getRelationFunc = getRelated.Compile();
-            var oldRelations = getRelationFunc(entity);
+            var getTmm = getTmmExpression.Compile();
+            var oldRelations = getTmm(entity);
             ModifyRelated(entity, oldRelations, newRelations, equalsById);
+
+            // Expression<Func<TEntity, IEnumerable<TRelationEntity>>> getRelationAsEnumerable = getTmmExpression.ContravarianceToIEnumerable();
+            // DbContextExtensions.LoadCollection(context, entity, getRelationAsEnumerable);
+            // var getTmm = getTmmExpression.Compile();
+            // var oldRelations = getTmm(entity);
+            // ModifyRelated(
+            //    entity, oldRelations, newRelations, equalsById
+            // );
         }
 
-        public void ModifyRelated<TRelationEntity>(TEntity entity, ICollection<TRelationEntity> oldRelations, IEnumerable<TRelationEntity> newRelations, Func<TRelationEntity, TRelationEntity, bool> equalsById) where TRelationEntity : class
+
+        public void ModifyRelated<TRelationEntity>(
+            TEntity entity, ICollection<TRelationEntity> oldRelations, IEnumerable<TRelationEntity> newRelations, 
+            Func<TRelationEntity, TRelationEntity, bool> equalsById) where TRelationEntity : class
         {
             auditVisitor.SetAuditProperties(entity); 
             EntityExtensions.UpdateCollection(

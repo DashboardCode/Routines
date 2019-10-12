@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 using DashboardCode.Routines.Storage.EfCore;
-using DashboardCode.AdminkaV1.TestDom;
 using DashboardCode.Routines.Storage;
 
 namespace DashboardCode.AdminkaV1.TestDom.DataAccessEfCore
@@ -94,10 +93,12 @@ namespace DashboardCode.AdminkaV1.TestDom.DataAccessEfCore
             modelBuilder.Entity<TypeRecord>()
                 .HasIndex(e => e.TypeRecordName).IsUnique();
 
-            modelBuilder.Entity<HierarchyRecord>().Property(e => e.HierarchyRecordTitle).IsRequired().HasMaxLength(LengthConstants.GoodForLongTitle);
+            
             modelBuilder.Entity<HierarchyRecord>()
                .ToTable(GetEntityTableName(nameof(HierarchyRecord)), schema: testIslandSchema)
                .HasKey(e => e.HierarchyRecordId);
+            modelBuilder.Entity<HierarchyRecord>().Property(e => e.ParentHierarchyRecordId).HasColumnType("varbinary").HasMaxLength(892);
+            modelBuilder.Entity<HierarchyRecord>().Property(e => e.HierarchyRecordTitle).IsRequired().HasMaxLength(LengthConstants.GoodForLongTitle);
 
             #region ParentRecordHierarchyRecord
 

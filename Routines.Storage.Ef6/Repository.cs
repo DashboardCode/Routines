@@ -27,7 +27,8 @@ namespace DashboardCode.Routines.Storage.Ef6
                 query = dbSet.AsNoTracking();
             else
                 query = dbSet.AsQueryable();
-            query = query.Include(include);
+            if (include!=null)
+                query = query.Include(include);
             return query;
         }
 

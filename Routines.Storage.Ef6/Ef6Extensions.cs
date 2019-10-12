@@ -215,5 +215,7 @@ namespace DashboardCode.Routines.Storage.Ef6
             //var schema = entitySet.MetadataProperties["Schema"].Value as string;
             //return (string.IsNullOrEmpty(schema)) ? table : (schema + "." + table);
         }
+
+
     }
 }
