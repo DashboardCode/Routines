@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
 
 namespace DashboardCode.Routines.Storage.Ef6
 {
@@ -9,10 +10,31 @@ namespace DashboardCode.Routines.Storage.Ef6
     {
         public static void Analyze(Exception exception, IStorageResultBuilder erorrBuilder)
         {
+            if (exception is DbEntityValidationException dbEntityValidationException)
+                AnalyzeDbEntityValidationException(dbEntityValidationException, erorrBuilder);
             if (exception is DbUpdateConcurrencyException dbUpdateConcurrencyException)
                 AnalyzeDbUpdateConcurrencyException(dbUpdateConcurrencyException, erorrBuilder);
             if (exception is InvalidOperationException invalidOperationException)
                 AnalyzeInvalidOperationException(invalidOperationException, erorrBuilder);
+        }
+
+
+        public static void AnalyzeDbEntityValidationException(DbEntityValidationException ex, IStorageResultBuilder erorrBuilder)
+        {
+            foreach(var eve in ex.EntityValidationErrors)
+            {
+                foreach (var ve in eve.ValidationErrors)
+                {
+                    erorrBuilder.AddValidation(eve.Entry.Entity.GetType().Name, ve.PropertyName, ve.ErrorMessage);
+                }
+                //if (matchCollectionV1.Count > 0)
+                //{
+                //    var entity = matchCollectionV1[0].Groups["entity"].Value;
+                //    erorrBuilder.AddNullPrimaryOrAlternateKey(entity);
+                //    return;
+                //}
+            }
+
         }
 
         static readonly Regex fieldPkOrUniqueConstraintNullRegexV1 = new Regex("Unable to create or track an entity of type '(?<entity>.*?)' because it has a null primary or alternate key value.");
@@ -47,7 +69,8 @@ namespace DashboardCode.Routines.Storage.Ef6
 
         public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, IStorageResultBuilder erorrBuilder)
         {
-            erorrBuilder.AddConcurrencyError();
+            foreach(var e in exception.Entries)
+                erorrBuilder.AddConcurrencyError(e.Entity.GetType().Name);
         }
 
         public static void Append(StringBuilder sb, Exception ex)

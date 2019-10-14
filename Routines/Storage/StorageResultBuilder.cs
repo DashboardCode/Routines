@@ -6,72 +6,80 @@ namespace DashboardCode.Routines.Storage
 {
     public class StorageResultBuilder : IStorageResultBuilder
     {
-        readonly List<FieldMessage> fieldMessages;
+        readonly FormMessages formMessages;
+
         readonly IOrmEntitySchemaAdapter relationalEntitySchemaAdapter;
         readonly string genericErrorField;
-        readonly Type entityType;
+        //readonly Type entityType;
+        readonly string entityTypeName;
         readonly Exception exception;
         public StorageResultBuilder(Exception exception, Type entityType, IOrmEntitySchemaAdapter relationalEntitySchemaAdapter, string genericErrorField)
         {
-            this.entityType = entityType;
+            //this.entityType = entityType;
+            this.entityTypeName = entityType.Name;
             this.exception = exception;
-            this.fieldMessages = new List<FieldMessage>(); ;
+            this.formMessages = new FormMessages();
             this.relationalEntitySchemaAdapter = relationalEntitySchemaAdapter;
             this.genericErrorField = genericErrorField;
         }
 
+        public void AddValidation(string entityName, string field, string message)
+        {
+            formMessages.Add(entityName, field, message);
+        }
         public virtual void AddNullPrimaryOrAlternateKey(string entityName)
         {
-            if (this.entityType.Name == entityName)
-                fieldMessages.Add(genericErrorField, "ID or alternate id has no value");
+            //if (this.entityTypeName == entityName)
+                formMessages.Add(entityName, genericErrorField, "ID or alternate id has no value");
         }
 
         public virtual void AddNullPrimaryOrAlternateKey(string entityName, string field)
         {
-            if (this.entityType.Name == entityName)
-                fieldMessages.Add(field, "ID or alternate id has no value");
+            if (this.entityTypeName == entityName)
+                formMessages.Add(entityName, field, "ID or alternate id has no value");
         }
 
-        public virtual void AddConcurrencyError()
+        public virtual void AddConcurrencyError(string entityName)
         {
-            fieldMessages.Add(genericErrorField, "The record you are attempted to edit is currently being modified by another user. The save operation was canceled! Refresh page and reload form before continue.");
+            formMessages.Add(entityName, genericErrorField, "The record you are attempted to edit is currently being modified by another user. The save operation was canceled! Refresh page and reload form before continue.");
         }
 
-        public virtual void AddTruncationError()
+        public virtual void AddTruncationError(string entityName)
         {
-            fieldMessages.Add("", "Some of text " + (relationalEntitySchemaAdapter.GetBinaries() != null ? "" : "(or binaries) ") + "fields cannot fit into DB");
+            formMessages.Add(entityName, null ,"Some of text " + (relationalEntitySchemaAdapter.GetBinaries() != null ? "" : "(or binaries) ") + "fields cannot fit into DB");
         }
 
         public virtual void AddPkDuplicateError(string constraint, string table)
         {
             var tableSchemaName = relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName;
+            
             if (table.Contains(tableSchemaName) && relationalEntitySchemaAdapter.GetKeys() != null)
             {
                 if (relationalEntitySchemaAdapter.GetKeys().Length == 1)
                 {
-                    fieldMessages.Add(relationalEntitySchemaAdapter.GetKeys()[0], $"Allready exists in DB");
+                    formMessages.Add(entityTypeName, relationalEntitySchemaAdapter.GetKeys()[0], $"Allready exists in DB");
                 }
                 else
                 {
                     var csv = string.Join(",", relationalEntitySchemaAdapter.GetKeys());
                     foreach (var f in relationalEntitySchemaAdapter.GetKeys())
-                        fieldMessages.Add(f, "Allready exists is DB (multicolumn key: " + csv + ")");
+                        formMessages.Add(entityTypeName, f, "Allready exists is DB (multicolumn key: " + csv + ")");
                 }
             }
         }
 
-        public virtual void AddPkDuplicateError()
+        public virtual void AddPkDuplicateError(string entityName)
         {
             if (relationalEntitySchemaAdapter.GetKeys() != null)
                 if (relationalEntitySchemaAdapter.GetKeys().Length == 1)
                 {
-                    fieldMessages.Add(relationalEntitySchemaAdapter.GetKeys()[0], $"ID exists in database");
+                    formMessages.Add(entityName, relationalEntitySchemaAdapter.GetKeys()[0], $"ID exists in database");
                 }
                 else
                 {
                     var csv = string.Join(",", relationalEntitySchemaAdapter.GetKeys());
                     foreach (var a in relationalEntitySchemaAdapter.GetKeys())
-                        fieldMessages.Add(a, "ID exists in database (multiple fields: " + csv + ")");
+                        formMessages.Add(entityName, a, "ID exists in database (multiple fields: " + csv + ")");
                 }
         }
 
@@ -82,7 +90,7 @@ namespace DashboardCode.Routines.Storage
             {
                 if (relationalEntitySchemaAdapter.GetRequireds() != null && relationalEntitySchemaAdapter.GetRequireds().Contains(column))
                 {
-                    fieldMessages.Add(column, $"Is required!");
+                    formMessages.Add(entityTypeName, column, $"Is required!");
                 }
             }
         }
@@ -97,19 +105,19 @@ namespace DashboardCode.Routines.Storage
                 {
                     if (properties.Length == 1)
                     {
-                        fieldMessages.Add(properties[0], $"Allready used");
+                        formMessages.Add(entityTypeName, properties[0], $"Allready used");
                     }
                     else
                     {
                         var csv = string.Join(",", properties);
                         foreach (var p in properties)
-                            fieldMessages.Add(p, "Allready used (multiple fields: " + csv + ")");
+                            formMessages.Add(entityTypeName, p, "Allready used (multiple fields: " + csv + ")");
                     }
                 }
             }
         }
 
-        public virtual void AddUniqueConstraintViolations(string constraint, string table)
+        public virtual void AddUniqueConstraintViolations(string constraint, string table, string value)
         {
             var tableSchemaName = relationalEntitySchemaAdapter.GetTableName().SchemaName + "." + relationalEntitySchemaAdapter.GetTableName().TableName;
             if (table.Contains(tableSchemaName))
@@ -118,12 +126,14 @@ namespace DashboardCode.Routines.Storage
                 if (properties != null)
                 {
                     if (properties.Length == 1)
-                        fieldMessages.Add(properties[0], $"Allready used");
+                        formMessages.Add(entityTypeName, properties[0], $"Allready used"+ ((value==null)?"":$". The duplicate value is {value}"));
                     else
                     {
                         var csv = string.Join(",", properties);
-                        foreach (var p in properties)
-                            fieldMessages.Add(p, "Allready used (multiple fields: " + csv + ")");
+                        foreach (var p in properties) {
+                            // TODO: parse values
+                            formMessages.Add(entityTypeName, p, "Allready used (multiple fields: " + csv + ")" + ((value == null) ? "" : $". The duplicate value is {value}"));
+                        }
                     }
                 }
             }
@@ -138,12 +148,12 @@ namespace DashboardCode.Routines.Storage
                 if (Attributes != null)
                 {
                     if (Attributes.Length == 1)
-                        fieldMessages.Add(Attributes[0], Message);
+                        formMessages.Add(entityTypeName, Attributes[0], Message);
                     else
                     {
                         var csv = string.Join(",", Attributes);
                         foreach (var f in Attributes)
-                            fieldMessages.Add(f, Message);
+                            formMessages.Add(entityTypeName, f, Message);
                     }
                 }
             }
@@ -168,7 +178,7 @@ namespace DashboardCode.Routines.Storage
 
         public StorageResult Build()
         {
-            return new StorageResult(exception, fieldMessages);
+            return new StorageResult(exception, formMessages);
         }
     }
 }

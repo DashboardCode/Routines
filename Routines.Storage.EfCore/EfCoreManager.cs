@@ -49,7 +49,8 @@ namespace DashboardCode.Routines.Storage.EfCore
 
         public static void AnalyzeDbUpdateConcurrencyException(DbUpdateConcurrencyException exception, IStorageResultBuilder storageResultBuilder /*List<FieldMessage> fieldsErrors*/)
         {
-            storageResultBuilder.AddConcurrencyError();
+            foreach(var e in exception.Entries)
+                storageResultBuilder.AddConcurrencyError(e.Entity.GetType().Name);
         }
 
         public static void Append(StringBuilder sb, Exception ex)

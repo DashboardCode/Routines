@@ -15,7 +15,9 @@ namespace DashboardCode.AdminkaV1.TestDom.DataAccessEf6
         public TestDomDbContext(string connectionStringName, Action<string> verbose)
             : base(connectionStringName)
         {
-            //Database.SetInitializer(new LoggingDomCreateDatabaseIfNotExists());
+            // some imortant options
+            // Database.SetInitializer(new LoggingDomCreateDatabaseIfNotExists());
+            // this.Configuration.ValidateOnSaveEnabled = false; // could be used for WCF ?
             if (verbose != null)
                 this.Database.Log += message =>
                        verbose(message);

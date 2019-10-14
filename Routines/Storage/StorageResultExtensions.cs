@@ -26,8 +26,9 @@ namespace DashboardCode.Routines.Storage
         {
             if (!storageResult.IsOk())
             {
-                if (storageResult.Message.Count == number)
+                if (storageResult.GetCount() == number)
                 {
+                    if (string.IsNullOrEmpty(field) && storageResult.ContainsLike(messageFragment)) return;
                     if (messageFragment == null && storageResult.Contains(field)) return;
                     if (messageFragment != null && storageResult.ContainsLike(field, messageFragment)) return;
                 }
@@ -39,7 +40,7 @@ namespace DashboardCode.Routines.Storage
         {
             if (!storageResult.IsOk())
             {
-                if (storageResult.Message.Count == number)
+                if (storageResult.GetCount() == number)
                 {
                     if (messageFragment == null && storageResult.Contains(fields)) return;
                     if (messageFragment != null && storageResult.ContainsLike(fields, messageFragment)) return;
@@ -53,7 +54,7 @@ namespace DashboardCode.Routines.Storage
             var @value = false;
             if (!storageResult.IsOk())
             {
-                @value = storageResult.Message.Any(e => e.Field == field);
+                @value = storageResult.GetAllFieldMessages().Any(e => e.Field == field);
             }
             return @value;
         }
@@ -65,7 +66,7 @@ namespace DashboardCode.Routines.Storage
             {
                 foreach (var field in fields)
                 {
-                    bool success = storageResult.Message.Any(e => e.Field == field);
+                    bool success = storageResult.GetAllFieldMessages().Any(e => e.Field == field);
                     if (!success)
                         break;
                 }
@@ -80,7 +81,7 @@ namespace DashboardCode.Routines.Storage
             {
                 foreach (var field in fields)
                 {
-                    bool success = storageResult.Message.Any(e => e.Field == field && e.Message.StartsWith(message));
+                    bool success = storageResult.GetAllFieldMessages().Any(e => e.Field == field && e.Message.StartsWith(message));
                     if (!success)
                         break;
                 }
@@ -89,12 +90,21 @@ namespace DashboardCode.Routines.Storage
             return @value;
         }
 
+        public static bool ContainsLike(this StorageResult storageResult, string message)
+        {
+            var @value = false;
+            if (!storageResult.IsOk())
+            {
+                @value = storageResult.GetAllMessages().Any(e => e.StartsWith(message));
+            }
+            return @value;
+        }
         public static bool ContainsLike(this StorageResult storageResult, string field, string message)
         {
             var @value = false;
             if (!storageResult.IsOk())
             {
-                @value = storageResult.Message.Any(e => e.Field == field && e.Message.StartsWith(message));
+                @value = storageResult.GetAllFieldMessages().Any(e => e.Field == field && e.Message.StartsWith(message));
             }
             return @value;
         }
@@ -103,13 +113,13 @@ namespace DashboardCode.Routines.Storage
         {
             var @value = 0;
             if (!storageResult.IsOk())
-                @value = storageResult.Message.Count();
+                @value = storageResult.GetCount();
             return @value;
         }
 
-        public static void Add(this List<FieldMessage> fieldErrors, string field, string message)
+        public static void Add(this List<FieldValidationMessage> fieldErrors, string field, string message)
         {
-            fieldErrors.Add(new FieldMessage(field, message));
+            fieldErrors.Add(new FieldValidationMessage(field, message));
         }
 
         public static StorageResult AnalyzeExceptionRecursive(Exception exception, Func<Action<IStorageResultBuilder>, StorageResult> analyzeException,  Action<Exception, IStorageResultBuilder> parser = null)

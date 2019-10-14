@@ -223,7 +223,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                 repositoryHandler.Handle((repository, storage) =>
                 {
                     var storageError = storage.Handle(batch => batch.Add(t0));
-                    storageError.Assert(1, "", null, "Case 8");
+                    storageError.Assert(1, "", "Some of text fields cannot fit into DB", "Case 8");
                 });
             }));
 

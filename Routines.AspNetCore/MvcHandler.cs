@@ -18,10 +18,18 @@ namespace DashboardCode.Routines.AspNetCore
                     publishStorageError(messageItem.Item1, errorText /*string.Join("; ", m.Item2.ToArray())*/);
         }
 
-        public static void PublishResult(List<FieldMessage> message, Action<string, string> publishStorageError)
+        public static void PublishResult(FormMessages message, Action<string, string> publishStorageError)
         {
-            foreach (var errorField in message)
-                publishStorageError(errorField.Field, errorField.Message);
+            foreach (var errorField in message.DirectMessages)
+                publishStorageError("", errorField);
+            foreach (var errorField in message.EntityValidationMessages)
+            {
+                foreach (var errorField2 in errorField.Value.Messages)
+                    publishStorageError("", errorField2);
+                foreach (var errorField2 in errorField.Value.FieldMessages)
+                    publishStorageError(errorField2.Field, errorField2.Message);
+            }
+
         }
 
         public static IActionResult MakeActionResultOnSave<TEntity, TState>(

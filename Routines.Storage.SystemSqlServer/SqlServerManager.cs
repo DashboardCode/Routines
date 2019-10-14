@@ -104,7 +104,7 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
                 var matchCollection = fieldLengthRegex.Matches(message);
                 if (matchCollection.Count > 0)
                 {
-                    errorBuilder.AddTruncationError();
+                    errorBuilder.AddTruncationError(null);
                     return;
                 }
             };
@@ -133,7 +133,7 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
 
             if (message.Contains("Violation of PRIMARY KEY constraint"))
             {
-                errorBuilder.AddPkDuplicateError();
+                errorBuilder.AddPkDuplicateError(null);
             }
 
 
@@ -154,7 +154,7 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
                 {
                     var constraint = matchCollection[0].Groups["constraint"].Value;
                     var table = matchCollection[0].Groups["table"].Value;
-                    errorBuilder.AddUniqueConstraintViolations(constraint, table);
+                    errorBuilder.AddUniqueConstraintViolations(constraint, table, null);
                     return;
                 }
             }

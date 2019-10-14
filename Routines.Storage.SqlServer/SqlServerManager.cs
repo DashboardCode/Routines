@@ -95,8 +95,9 @@ namespace DashboardCode.Routines.Storage.SqlServer
         static readonly Regex fieldLengthRegex = new Regex("String or binary data would be truncated.");
         static readonly Regex fieldRequiredRegex = new Regex("Cannot insert the value NULL into column '(?<column>.*?)', table '(?<table>.*?)'; column does not allow nulls. (?<statementType>.*?) fails.");
         static readonly Regex fieldUniqueIndexRegex = new Regex(@"Cannot insert duplicate key row in object '(?<table>.*?)' with unique index '(?<index>.*?)'. The duplicate key value is ((?<value>.*?)).");
-        static readonly Regex fieldUniqueConstraintRegex = new Regex("Violation of UNIQUE KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'");
-        static readonly Regex fieldPkConstraintRegex = new Regex(@"Violation of PRIMARY KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'. The duplicate key value is ((?<value>.*?)).");
+        
+        static readonly Regex fieldUniqueConstraintRegex = new Regex(@"Violation of UNIQUE KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'. The duplicate key value is \((?<value>.*?)\).");
+        static readonly Regex fieldPkConstraintRegex = new Regex(@"Violation of PRIMARY KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'. The duplicate key value is (?<value>.*?).");
         static readonly Regex fieldCkRegex = new Regex("The (?<statementType>.*?) statement conflicted with the CHECK constraint \"(?<constraint>.*?)\". The conflict occurred in database \"(?<database>.*?)\", table \"(?<table>.*?)\", column '(?<column>.*?)'.");
         public static void AnalyzeSqlException(this SqlException exception, IStorageResultBuilder errorBuilder)
         {
@@ -105,7 +106,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
                 var matchCollection = fieldLengthRegex.Matches(message);
                 if (matchCollection.Count > 0)
                 {
-                    errorBuilder.AddTruncationError();
+                    errorBuilder.AddTruncationError(null);
                     return;
                 }
             };
@@ -134,7 +135,7 @@ namespace DashboardCode.Routines.Storage.SqlServer
             
             if (message.Contains("Violation of PRIMARY KEY constraint"))
             {
-                errorBuilder.AddPkDuplicateError(); 
+                errorBuilder.AddPkDuplicateError(null); 
             }
             
 
@@ -155,7 +156,8 @@ namespace DashboardCode.Routines.Storage.SqlServer
                 {
                     var constraint = matchCollection[0].Groups["constraint"].Value;
                     var table = matchCollection[0].Groups["table"].Value;
-                    errorBuilder.AddUniqueConstraintViolations(constraint, table);
+                    var value = matchCollection[0].Groups["value"].Value;
+                    errorBuilder.AddUniqueConstraintViolations(constraint, table, value);
                     return;
                 }
             }

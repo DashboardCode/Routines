@@ -109,12 +109,12 @@ namespace DashboardCode.Routines.Storage.Ef6
     public class OrmStorage : IOrmStorage
     {
         private readonly DbContext context;
-        private readonly Func<Exception, List<FieldMessage>> analyzeException;
+        private readonly Func<Exception, FormMessages> analyzeException;
         private readonly IAuditVisitor auditVisitor = null;
 
         public OrmStorage(
             DbContext context,
-            Func<Exception, List<FieldMessage>> analyzeException,
+            Func<Exception, FormMessages> analyzeException,
             IAuditVisitor auditVisitor = null)
         {
             this.context = context;
@@ -134,9 +134,9 @@ namespace DashboardCode.Routines.Storage.Ef6
             }
             catch (Exception exception)
             {
-                var list = analyzeException(exception);
-                if (list.Count > 0)
-                    return new StorageResult(exception, list);
+                var formMessages = analyzeException(exception);
+                if (formMessages != null && formMessages.DirectMessages.Count > 0 && formMessages.EntityValidationMessages.Count > 0)
+                    return new StorageResult(exception, formMessages);
                 throw;
             }
             return new StorageResult();

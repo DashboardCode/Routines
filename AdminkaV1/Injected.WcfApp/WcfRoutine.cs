@@ -27,10 +27,11 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
 
         protected WcfRoutine(
             Guid correlationToken,
-            DashboardCode.Routines.MemberTag memberTag,
+            Routines.MemberTag memberTag,
             string faultCodeNamespace,
             ApplicationSettings applicationSettings,
-            IConfigurationContainerFactory configurationContainerFactory, object input)
+            IConfigurationContainerFactory configurationContainerFactory, 
+            object input)
             : base(
                   applicationSettings: applicationSettings,
                   performanceCounters: ApplicationSettings.PerformanceCounters,
@@ -44,10 +45,12 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
         {
         }
 
-
+        
         public static Exception TransformException(
             Exception exception, 
-            Guid correlationToken, Routines.MemberTag memberTag, string faultCodeNamespace/*, Func<Exception, string> markdownException*/)
+            Guid correlationToken, 
+            Routines.MemberTag memberTag, 
+            string faultCodeNamespace/*, Func<Exception, string> markdownException*/)
         {
             var code = default(string);
             string message;
