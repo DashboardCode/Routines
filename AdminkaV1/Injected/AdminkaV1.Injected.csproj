@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DashboardCode.NLogTools" Version="3.0.0" />
+    <PackageReference Include="DashboardCode.NLogTools" Version="3.0.1" />
     <PackageReference Include="DynamicExpresso.Core" Version="2.3.1" />
     <PackageReference Include="Markdown" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
