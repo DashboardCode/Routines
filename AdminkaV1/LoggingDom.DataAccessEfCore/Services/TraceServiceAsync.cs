@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.Services
 {
@@ -15,6 +17,21 @@ namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.Services
             return storageRoutineHandler.HandleRepository<List<VerboseRecord>, VerboseRecord>(rep =>
             {
                 return rep.Query().Where(e => e.CorrelationToken == correlationToken).ToList();
+            });
+        }
+    }
+
+    public class TraceServiceAsync<TUserContext> : ITraceServiceAsync
+    {
+        readonly LoggingDomStorageRoutineHandlerAsync<TUserContext> storageRoutineHandler;
+        public TraceServiceAsync(LoggingDomStorageRoutineHandlerAsync<TUserContext> storageRoutineHandler)
+            => this.storageRoutineHandler = storageRoutineHandler;
+
+        public async Task<List<VerboseRecord>> GetTraceAsync(Guid correlationToken)
+        {
+            return await storageRoutineHandler.HandleRepositoryAsync<List<VerboseRecord>, VerboseRecord>(async rep =>
+            {
+                return await rep.Query().Where(e => e.CorrelationToken == correlationToken).ToListAsync();
             });
         }
     }

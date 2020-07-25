@@ -107,3 +107,7 @@ webpack     : default values means webpack --mode development ./src/index.js --o
 
 TODO hot reloading 
 https://markus.oberlehner.net/blog/setting-up-a-vue-project-with-webpack-4-and-babel-7/
+
+TODO
+//using AspNetCore.RouteAnalyzer; // list all routes
+//but is still not migrated for Core 3.

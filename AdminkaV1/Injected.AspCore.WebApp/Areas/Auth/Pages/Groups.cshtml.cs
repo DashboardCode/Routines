@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     public class GroupsModel : PageModel
     {
@@ -12,11 +12,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public IEnumerable<Group> List { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<Group, int> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<Group, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGet()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultReferrer: "/");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<Group, int>(this, defaultReferrer: "/");
             return Crud.HandleIndexAsync(
                 l => List = l,
                 authorize: null,

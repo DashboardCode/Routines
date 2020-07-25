@@ -18,7 +18,7 @@ $CoreProjects = @('Routines.Storage.EfCore.Relational.InMemory',
 );
 
 
-$ver = '3.0.0'
+$ver = '3.0.5'
 Function UpdateVersion ($projectFile)
 {
     Get-Content -path $projectFile | % { $_ `

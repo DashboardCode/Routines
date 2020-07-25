@@ -15,11 +15,9 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
     {
         public static void Reset(string connectionString)
         {
-            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString)))
-            {
-                TestService.Clear(new AdoBatch(dbContext));
-                TestService.Reset(StorageFactory.CreateStorage(dbContext));
-            }
+            using var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString));
+            TestService.Clear(new AdoBatch(dbContext));
+            TestService.Reset(StorageFactory.CreateStorage(dbContext));
         }
 
         public static List<(int c, List<string> l)> ParallelTestImpl(int parallelTaskCount, string connectionString)
@@ -40,15 +38,13 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
                     }
                 };
 
-                using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString), verbose))
-                {
-                    var parentRecords = dbContext.ParentRecords
-                       .Include(e => e.ParentRecordHierarchyRecordMap)
-                       .ThenInclude(e => e.HierarchyRecord).ToList();
-                    var parentRecord = parentRecords.
-                       First(e => e.FieldA == "1_A");
-                    //StraightEfTests.TestHierarchy(dbContext);
-                }
+                using var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString), verbose);
+                var parentRecords = dbContext.ParentRecords
+                   .Include(e => e.ParentRecordHierarchyRecordMap)
+                   .ThenInclude(e => e.HierarchyRecord).ToList();
+                var parentRecord = parentRecords.
+                   First(e => e.FieldA == "1_A");
+                //StraightEfTests.TestHierarchy(dbContext);
             });
             
             return buffers.Select(b => (b.Count, b)).ToList();
@@ -167,16 +163,14 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             int id = 0;
             // it is impossible to use verbose logger with InMemory provider
             // read this: https://github.com/aspnet/EntityFrameworkCore/issues/10420
-            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString, inMemory), inMemory ? null : verbose))
-            {
-                var parentRecords = dbContext.ParentRecords
-                   .Include(e => e.ParentRecordHierarchyRecordMap)
-                   .ThenInclude(e => e.HierarchyRecord).ToList();
-                var parentRecord = parentRecords.First(e => e.FieldA == "1_A");
-                id = parentRecord.ParentRecordId;
+            using var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString, inMemory), inMemory ? null : verbose);
+            var parentRecords = dbContext.ParentRecords
+               .Include(e => e.ParentRecordHierarchyRecordMap)
+               .ThenInclude(e => e.HierarchyRecord).ToList();
+            var parentRecord = parentRecords.First(e => e.FieldA == "1_A");
+            id = parentRecord.ParentRecordId;
 
-                DbContextTests.TestHierarchy(dbContext);
-            }
+            DbContextTests.TestHierarchy(dbContext);
         }
 
         internal static void Try(string connectionString)
@@ -251,25 +245,21 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
         #region JSON
         internal static void SqlServerNavigation(string connectionString)
         {
-            using (var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString)))
-            {
-                TestService.Clear(new AdoBatch(dbContext));
-                TestService.Reset(StorageFactory.CreateStorage(dbContext));
+            using var dbContext = new MyDbContext(MyDbContext.BuildOptionsBuilder(connectionString));
+            TestService.Clear(new AdoBatch(dbContext));
+            TestService.Reset(StorageFactory.CreateStorage(dbContext));
 
-                Include<ParentRecord> include = chain => chain
-                    .IncludeAll(e => (e as ParentRecord).ChildRecords)
-                    .ThenIncluding(e => e.ParentRecord)
-                    .ThenIncluding(e => e.TypeRecord);
+            Include<ParentRecord> include = chain => chain
+                .IncludeAll(e => (e as ParentRecord).ChildRecords)
+                .ThenIncluding(e => e.ParentRecord)
+                .ThenIncluding(e => e.TypeRecord);
 
-                var list = dbContext.ParentRecords.Include(include).ToList();
-                 
-            }
+            var list = dbContext.ParentRecords.Include(include).ToList();
 
         }
 
         static readonly CachedFormatter cachedJsonFormatter1 = new CachedFormatter();
         static readonly CachedFormatter cachedJsonFormatter2 = new CachedFormatter();
-        static readonly CachedFormatter cachedJsonFormatter2b = new CachedFormatter();
         static readonly CachedFormatter cachedJsonFormatter3 = new CachedFormatter();
         static readonly CachedFormatter cachedJsonFormatter4 = new CachedFormatter();
         static readonly CachedFormatter cachedJsonFormatter5 = new CachedFormatter();
@@ -280,11 +270,9 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore
             {
                 TestService.Clear(new AdoBatch(dbContext));
                 TestService.Reset(StorageFactory.CreateStorage(dbContext));
-                using (var c = dbContext.Database.GetDbConnection())
-                {
-                    c.Open();
-                    var x = Routines.Storage.SqlServer.SqlServerManager.GetApproximateRowCount(c, "tst.ParentRecords");
-                }
+                using var c = dbContext.Database.GetDbConnection();
+                c.Open();
+                var x = Routines.Storage.SqlServer.SqlServerManager.GetApproximateRowCount(c, "tst.ParentRecords");
             }
 
             var messages = new List<string>();

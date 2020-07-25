@@ -1,13 +1,14 @@
 ﻿using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Toolchains.CsProj;
+//using BenchmarkDotNet.Toolchains.CsProj;
+using BenchmarkDotNet.Environments;
 
 namespace Benchmark
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             //var x = new BenchmarkComposeFormatter();
             //var a = x.dslComposeFormatter_FastCompile();
@@ -19,8 +20,10 @@ namespace Benchmark
     {
         public CoreToolchain2JobConfig()
         {
-            Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp30));
-            Add(Job.Clr); // do not add .With(CsProjClassicNetToolchain.Net472) - this doesn't work somehow !!!
+            AddJob(Job.Default.WithRuntime(CoreRuntime.Core31));
+            AddJob(Job.Default.WithRuntime(ClrRuntime.Net48));
+            
+            //AddJob(Cor); // do not add .With(CsProjClassicNetToolchain.Net472) - this doesn't work somehow !!!
         }
     }
 

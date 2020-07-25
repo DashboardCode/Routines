@@ -9,14 +9,16 @@ namespace Benchmark
     [MemoryDiagnoser]
 #if !NETCOREAPP
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [DisassemblyDiagnoser(/*printAsm: true,*/ printSource: true)]
     [RyuJitX64Job]
-    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
+    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser(true,false)]
 #endif
     public class BenchmarkConverAllDisasm
     {
-        IReadOnlyCollection<string[]> testCol;
-        List<string[]> testArray;
+#pragma warning disable IDE0052 // Remove unread private members
+        readonly IReadOnlyCollection<string[]> testCol;
+#pragma warning restore IDE0052 // Remove unread private members
+        readonly List<string[]> testArray;
         public BenchmarkConverAllDisasm()
         {
             var testData = new List<string[]>();

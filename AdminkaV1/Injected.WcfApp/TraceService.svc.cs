@@ -10,8 +10,8 @@ namespace DashboardCode.AdminkaV1.Injected.WcfApp
     {
         public List<VerboseRecord> GetTrace(Guid searchForCorrelationToken)
         {
-            var routine = new WcfRoutine(new DashboardCode.Routines.MemberTag(this), RoutineErrorDataContractConstants.FaultCodeNamespace, new { searchForCorrelationToken });
-            return routine.Handle((container, closure) => container.ResolveTraceService().GetTrace(searchForCorrelationToken));
+            var routine = new WcfRoutineAsync(new Routines.MemberTag(this), RoutineErrorDataContractConstants.FaultCodeNamespace, new { searchForCorrelationToken });
+            return routine.HandleAsync(async (container, closure) => await container.ResolveTraceServiceAsync().GetTraceAsync(searchForCorrelationToken)).Result; // TODO: block on unclear context?
         }
     }
 }

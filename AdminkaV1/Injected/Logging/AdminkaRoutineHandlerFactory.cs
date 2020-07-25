@@ -23,7 +23,7 @@ namespace DashboardCode.AdminkaV1.Injected.Logging
             this.performanceCounters = performanceCounters;
         }
 
-        public IHandler<RoutineClosure<TUserContext>> CreateLoggingHandler(
+        public IHandlerOmni<RoutineClosure<TUserContext>> CreateLoggingHandler(
             MemberTag memberTag,
             IContainer container,
             TUserContext userContext,

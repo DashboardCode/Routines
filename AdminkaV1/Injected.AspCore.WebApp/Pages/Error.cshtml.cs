@@ -8,7 +8,7 @@ using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.Routines.Storage;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Pages
 {
     public class ErrorModel : PageModel
     {

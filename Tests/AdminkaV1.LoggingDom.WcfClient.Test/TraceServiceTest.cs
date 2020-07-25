@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
 {
@@ -10,21 +10,6 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
     [TestClass]
     public class TraceServiceTest 
     {
-        [TestMethod]
-        public void GetTrace()
-        {
-            var traceService = new TraceServiceProxy(new TraceServiceConfiguration { RemoteAddress= "http://localhost:64220/TraceService.svc" }, null);
-            var guid = Guid.NewGuid();
-            try
-            {
-                var trace = traceService.GetTrace(guid);
-            }
-            catch (AdminkaException ex)
-            {
-                if (ex.Code != "TEST")
-                    throw;
-            }
-        }
 
         [TestMethod]
         public void GetTraceAsync()
@@ -33,7 +18,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
             var guid = Guid.NewGuid();
             try
             {
-                var task = traceService.GetTrace(guid);
+                var task = traceService.GetTraceAsync(guid);
                 var trace = task.Result;
             }
             catch(AggregateException ex)
@@ -57,7 +42,7 @@ namespace DashboardCode.AdminkaV1.LoggingDom.WcfClient.Test
             {
                 try
                 {
-                    var trace = await traceService.GetTrace(guid);
+                    var trace = await traceService.GetTraceAsync(guid);
                 }
                 catch (AdminkaException ex)
                 {

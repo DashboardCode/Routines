@@ -11,6 +11,7 @@ using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using AngleSharp.Html.Dom;
 using Microsoft.AspNetCore.Mvc.Testing;
+using DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
 {
@@ -88,7 +89,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaAnonymousRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandlerAsync(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 hasVerboseLoggingPrivilege: true,
@@ -97,7 +98,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
 
 
             var x = await routine.HandleAsync(async (container, closure) => 
-            await container.ResolveAuthenticationDomDbContextHandler().HandleRepositoryAsync<List<Role>,Role>(repository =>
+            await container.ResolveAuthenticationDomDbContextHandlerAsync().HandleRepositoryAsync<List<Role>,Role>(repository =>
             {
                 //Task.Delay(10000);
                 var xx = repository.ListAsync();
@@ -106,7 +107,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
                 return xx;
             }));
 
-            await routine.HandleAsync(async (container, closure) => await container.ResolveAuthenticationDomDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
+            await routine.HandleAsync(async (container, closure) => await container.ResolveAuthenticationDomDbContextHandlerAsync().HandleOrmFactoryAsync(async ormHandlerFactory =>
             {
                 var routineOrmHandler = ormHandlerFactory.Create<Role>();
                 await routineOrmHandler.HandleAsync(async (repository, storage) =>
@@ -218,13 +219,13 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
-            var routine = new AdminkaAnonymousRoutineHandler(
+            var routine = new AdminkaAnonymousRoutineHandlerAsync(
                 TestManager.ApplicationSettings,
                 loggingTransientsFactory,
                 hasVerboseLoggingPrivilege: true,
                 new MemberTag(typeof(AdminkaIntegrationUnitTest)), "UnitTest",
                 new { input = "Input text" });
-            await routine.HandleAsync(async (container, closure) => await container.ResolveAuthenticationDomDbContextHandler().HandleOrmFactoryAsync(async ormHandlerFactory =>
+            await routine.HandleAsync(async (container, closure) => await container.ResolveAuthenticationDomDbContextHandlerAsync().HandleOrmFactoryAsync(async ormHandlerFactory =>
             {
                 await ormHandlerFactory.Create<Role>().HandleAsync(async (repository, storage) =>
                 {

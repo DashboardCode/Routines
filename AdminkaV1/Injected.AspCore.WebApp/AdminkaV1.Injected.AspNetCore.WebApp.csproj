@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
-	<AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
-	<TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
+	  <TypeScriptToolsVersion>3.6</TypeScriptToolsVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.WebApp</AssemblyName>
-    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.WebApp</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp</RootNamespace>
     <UserSecretsId>a6ef2ebe-eb8f-4132-89cb-03648daa76e3</UserSecretsId>
   </PropertyGroup>
 
@@ -33,11 +33,11 @@
     <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
+    <ProjectReference Include="..\Injected.AspNetCore\AdminkaV1.Injected.AspNetCore.csproj" />
     <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj" />
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Areas\Forms\" />
     <Folder Include="dist\css\" />
     <Folder Include="dist\js\" />
     <Folder Include="logs\" />
@@ -51,8 +51,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="DashboardCode.AspNetCore.Http" Version="3.0.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6">
+    <PackageReference Include="DashboardCode.AspNetCore" Version="3.0.4" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     public interface IRoleEditPartialModel
     {
@@ -16,11 +16,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
         readonly static RoleMeta meta = Meta.RoleMeta;
         public Role Entity { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<Role, int> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<Role, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGetAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, defaultReferrer: "Roles");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<Role, int>(this, defaultReferrer: "Roles");
             return Crud.HandleEditAsync(
                 e => Entity = e,
                 authorize: null,
@@ -29,7 +29,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Role, int>(this, defaultReferrer: "Roles");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<Role, int>(this, defaultReferrer: "Roles");
             return Crud.HandleEditConfirmedAsync(
                 e => Entity = e,
                 authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.Injected;
 using DashboardCode.Routines.AspNetCore;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Pages
 {
     public class AccessDeniedModel : PageModel
     {

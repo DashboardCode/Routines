@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     public class UserModel : PageModel
     {
@@ -12,12 +12,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public User Entity { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<User, int> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<User, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGetAsync()
         {
             var referrer = new AdminkaReferrer(this.HttpContext.Request, "Users", () => Entity.UserId.ToString(CultureInfo.InvariantCulture), "User");
-            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, referrer);
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<User, int>(this, referrer);
             return Crud.HandleDetailsAsync(
                 e => Entity = e,
                 authorize: null,

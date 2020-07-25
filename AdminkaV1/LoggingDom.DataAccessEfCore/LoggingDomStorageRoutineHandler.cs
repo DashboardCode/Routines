@@ -39,4 +39,39 @@ namespace DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore
         {
         }
     }
+
+    public class LoggingDomStorageRoutineHandlerAsync<TUserContext> : EfCoreStorageRoutineHandlerAsync<TUserContext, LoggingDomDbContext>
+    {
+        public LoggingDomStorageRoutineHandlerAsync(
+            AdminkaStorageConfiguration adminkaStorageConfiguration,
+            TUserContext userContext,
+            Action<string> efDbContextVerbose,
+            IHandlerAsync<RoutineClosure<TUserContext>> routineHandler,
+            Func<TUserContext, string> getAudit) :
+            this(
+                LoggingDomDataAccessEfCoreManager.LoggingDomEntityMetaServiceContainer,
+                userContext,
+                () => LoggingDomDataAccessEfCoreManager.CreateLoggingDomDbContext(adminkaStorageConfiguration, efDbContextVerbose),
+                routineHandler, getAudit)
+        {
+        }
+
+        private LoggingDomStorageRoutineHandlerAsync(
+            IEntityMetaServiceContainer entityMetaServiceContainer,
+            TUserContext userContext,
+            Func<LoggingDomDbContext> createDbContext,
+            IHandlerAsync<RoutineClosure<TUserContext>> routineHandler,
+            Func<TUserContext, string> getAudit) :
+            base(
+                entityMetaServiceContainer,
+                createDbContext,
+                () => new ValueTuple<LoggingDomDbContext, IAuditVisitor>(
+                    createDbContext(),
+                    new AuditVisitor<IVersioned>(
+                        (e) => { e.RowVersionAt = DateTime.Now; e.RowVersionBy = getAudit(userContext); })
+                ),
+                routineHandler)
+        {
+        }
+    }
 }

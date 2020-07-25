@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     [ValidateAntiForgeryToken]
     public class GroupCreateModel : PageModel, IGroupEditPartialModel
@@ -12,11 +12,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Group Entity { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<Group, int> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<Group, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGetAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultReferrer: "Groups");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<Group, int>(this, defaultReferrer: "Groups");
             return Crud.HandleCreateAsync(
                 e => Entity = e,
                 authorize: null,
@@ -26,7 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(this, defaultReferrer:"Groups");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<Group, int>(this, defaultReferrer:"Groups");
             return Crud.HandleCreateConfirmedAsync(
                 e => Entity = e,
                 authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),

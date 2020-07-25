@@ -16,18 +16,20 @@ namespace Benchmark
     [MemoryDiagnoser]
 #if !NETCOREAPP
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [DisassemblyDiagnoser(/*printAsm: true,*/ printSource: true)]
     [RyuJitX64Job]
-    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
+    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser(logFailuresOnly : true,  filterByNamespace: false)]
 #endif
     public class BenchmarkComposeFormatterDisasm
     {
-        static Box box;
-        static List<Row> testData = new List<Row>();
-        static Func<Box, string> composeFormatterDelegate;
-        static Func<StringBuilder, Box, bool> dslRoutineExpressionManuallyConstruted;
-        static Func<StringBuilder, Box, bool> dslRoutineDelegateManuallyConstrutedFormatter;
+        static readonly Box box;
+        static readonly List<Row> testData = new List<Row>();
+        static readonly Func<Box, string> composeFormatterDelegate;
+        static readonly Func<StringBuilder, Box, bool> dslRoutineExpressionManuallyConstruted;
+        static readonly Func<StringBuilder, Box, bool> dslRoutineDelegateManuallyConstrutedFormatter;
+#pragma warning disable CA1810 // Initialize reference type static fields inline
         static BenchmarkComposeFormatterDisasm()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
         {
             for (int i = 0; i < 600; i++)
             {
@@ -112,7 +114,9 @@ namespace Benchmark
         }
 
         [Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public string fake_expressionManuallyConstruted()
+#pragma warning restore CA1822 // Mark members as static
         {
             var sb = new StringBuilder();
             dslRoutineExpressionManuallyConstruted(sb, box);
@@ -122,7 +126,9 @@ namespace Benchmark
 
 
         [Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public string dslComposeFormatter()
+#pragma warning restore CA1822 // Mark members as static
         {
             var json = composeFormatterDelegate(box);
             return json;
@@ -130,7 +136,9 @@ namespace Benchmark
 
 
         [Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public string fake_delegateManuallyConstruted()
+#pragma warning restore CA1822 // Mark members as static
         {
             var sb = new StringBuilder();
             dslRoutineDelegateManuallyConstrutedFormatter(sb, box);

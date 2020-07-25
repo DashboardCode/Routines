@@ -4,18 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     public class UsersModel : PageModel
     {
         readonly static UserMeta meta = Meta.UserMeta;
         public IEnumerable<User> List { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<User, int> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<User, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGet()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, defaultReferrer:"/");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<User, int>(this, defaultReferrer:"/");
             return Crud.HandleIndexAsync(
                 l => List = l,
                 authorize: null,

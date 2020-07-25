@@ -25,6 +25,24 @@ namespace DashboardCode.Routines.Storage.Ef6
         }
     }
 
+    public class Ef6StorageRoutineHandlerAsync<TUserContext, TDbContext> : MetaStorageRoutineHandlerAsync<TUserContext, TDbContext>
+        where TDbContext : DbContext
+    {
+        static readonly RepositoryContainer<TDbContext> repositoryContainer = new RepositoryContainer<TDbContext>();
+        static readonly OrmContainer<TDbContext> ormContainer = new OrmContainer<TDbContext>();
+
+        public Ef6StorageRoutineHandlerAsync(
+            IEntityMetaServiceContainer entityMetaServiceContainer,
+            Func<TDbContext> createDbContext,
+            Func<(TDbContext, IAuditVisitor)> createDbContextForStorage,
+            IHandlerAsync<RoutineClosure<TUserContext>> routineHandler
+            ) :
+                base(entityMetaServiceContainer, createDbContext, createDbContextForStorage, repositoryContainer, ormContainer,
+                     routineHandler)
+        {
+        }
+    }
+
     public class RepositoryContainer<TDbContext> : IRepositoryContainer<TDbContext> where TDbContext : DbContext
     {
         public Func<TDbContext, bool, IRepository<TEntity>> ResolveCreateRepository<TEntity>() where TEntity : class =>

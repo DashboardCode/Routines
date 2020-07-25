@@ -25,16 +25,6 @@ namespace DashboardCode.Routines.AspNetCore
             this.getContainerHandler = (user, containerFactory) => getContainerHandler(aspRoutineFeature, getInput, user, containerFactory);
         }
 
-        public async Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task<IActionResult>> func)
-        {
-            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
-            if (forbiddenActionResult != null)
-                return forbiddenActionResult;
-            var handler = getContainerHandler(user, containerFactory);
-            var actionResult = await handler.HandleAsync((container, closure) => func(container, closure));
-            return actionResult;
-        }
-
         public IActionResult Handle(Func<TServiceContainer, RoutineClosure<TUserContext>, IActionResult> func)
         {
             var (forbiddenActionResult, user, containerFactory) = getUserAndFailedActionResultInitialisedAsync().Result;
@@ -42,16 +32,6 @@ namespace DashboardCode.Routines.AspNetCore
                 return forbiddenActionResult;
             var handler = getContainerHandler(user, containerFactory);
             var actionResult = handler.Handle((container, closure) => func(container, closure));
-            return actionResult;
-        }
-
-        public async Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, TUser, Task<IActionResult>> func)
-        {
-            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
-            if (forbiddenActionResult != null)
-                return forbiddenActionResult;
-            var handler = getContainerHandler(user, containerFactory);
-            var actionResult = await handler.HandleAsync((container, closure) => func(container, closure, user));
             return actionResult;
         }
 
@@ -105,15 +85,6 @@ namespace DashboardCode.Routines.AspNetCore
             return actionResult;
         }
 
-        public async Task<IActionResult> HandleAsync(Func<TUser, RoutineClosure<TUserContext>, Task<IActionResult>> func)
-        {
-            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
-            if (forbiddenActionResult != null)
-                return forbiddenActionResult;
-            var handler = getUserHandler(user, containerFactory);
-            var actionResult = await handler.HandleAsync((u, closure) => func(u, closure));
-            return actionResult;
-        }
         #endregion
     }
 
@@ -131,16 +102,106 @@ namespace DashboardCode.Routines.AspNetCore
                 () => AspNetCoreManager.GetRequest(controllerBase.HttpContext.Request));
         }
 
-        public Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task<IActionResult>> func)
-        {
-            return getContainerHandler()
-                .HandleAsync((container, closure) => func(container, closure));
-        }
-
         public IActionResult Handle(Func<TServiceContainer, RoutineClosure<TUserContext>, IActionResult> func)
         {
             return getContainerHandler()
                 .Handle((container, closure) => func(container, closure));
+        }
+
+    }
+
+   
+    public class ControllerRoutineHandlerAsync<TServiceContainer, TUserContext, TUser>
+    {
+        readonly Func<Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync;
+        readonly Func<TUser, ContainerFactory, ComplexRoutineHandlerAsync<TServiceContainer, TUserContext>> getContainerHandler;
+
+        public ControllerRoutineHandlerAsync(
+            ControllerBase controllerBase,
+            Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
+            Func<AspRoutineFeature, Func<object>, TUser, ContainerFactory, ComplexRoutineHandlerAsync<TServiceContainer, TUserContext>> getContainerHandler
+            )
+        {
+            var aspRoutineFeature = AspNetCoreManager.GetAspRoutineFeature(controllerBase);
+            Func<object> getInput = () => AspNetCoreManager.GetRequest(controllerBase.HttpContext.Request);
+
+            this.getUserAndFailedActionResultInitialisedAsync = () => getUserAndFailedActionResultInitialisedAsync(aspRoutineFeature);
+            this.getContainerHandler = (user, containerFactory) => getContainerHandler(aspRoutineFeature, getInput, user, containerFactory);
+        }
+
+        public async Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task<IActionResult>> func)
+        {
+            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
+            if (forbiddenActionResult != null)
+                return forbiddenActionResult;
+            var handler = getContainerHandler(user, containerFactory);
+            var actionResult = await handler.HandleAsync((container, closure) => func(container, closure));
+            return actionResult;
+        }
+
+
+        public async Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, TUser, Task<IActionResult>> func)
+        {
+            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
+            if (forbiddenActionResult != null)
+                return forbiddenActionResult;
+            var handler = getContainerHandler(user, containerFactory);
+            var actionResult = await handler.HandleAsync((container, closure) => func(container, closure, user));
+            return actionResult;
+        }
+
+    }
+
+    public class ControllerRoutineHandlerAsync<TUserContext, TUser>
+    {
+        readonly Func<Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync;
+        readonly Func<TUser, ContainerFactory, IRoutineHandlerAsync<TUser, TUserContext>> getUserHandler;
+
+        public ControllerRoutineHandlerAsync(
+            ControllerBase controllerBase,
+            Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
+            Func<AspRoutineFeature, Func<object>, TUser, ContainerFactory, IRoutineHandlerAsync<TUser, TUserContext>> getUserHandler
+            )
+        {
+            var aspRoutineFeature = AspNetCoreManager.GetAspRoutineFeature(controllerBase);
+            Func<object> getInput = () => AspNetCoreManager.GetRequest(controllerBase.HttpContext.Request);
+
+            this.getUserAndFailedActionResultInitialisedAsync = () => getUserAndFailedActionResultInitialisedAsync(aspRoutineFeature);
+            this.getUserHandler = (user, containerFactory) => getUserHandler(aspRoutineFeature, getInput, user, containerFactory);
+        }
+
+        #region HandleUserAsync
+
+        public async Task<IActionResult> HandleAsync(Func<TUser, RoutineClosure<TUserContext>, Task<IActionResult>> func)
+        {
+            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
+            if (forbiddenActionResult != null)
+                return forbiddenActionResult;
+            var handler = getUserHandler(user, containerFactory);
+            var actionResult = await handler.HandleAsync((u, closure) => func(u, closure));
+            return actionResult;
+        }
+        #endregion
+    }
+
+    public class ControllerRoutineAnonymousHandlerAsync<TServiceContainer, TUserContext>
+    {
+        readonly Func<ComplexRoutineHandlerAsync<TServiceContainer, TUserContext>> getContainerHandler;
+
+        public ControllerRoutineAnonymousHandlerAsync(
+            ControllerBase controllerBase,
+            Func<AspRoutineFeature, Func<object>, ComplexRoutineHandlerAsync<TServiceContainer, TUserContext>> getContainerHandler)
+        {
+            var aspRoutineFeature = AspNetCoreManager.GetAspRoutineFeature(controllerBase);
+            this.getContainerHandler = () => getContainerHandler(
+                aspRoutineFeature,
+                () => AspNetCoreManager.GetRequest(controllerBase.HttpContext.Request));
+        }
+
+        public Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task<IActionResult>> func)
+        {
+            return getContainerHandler()
+                .HandleAsync((container, closure) => func(container, closure));
         }
 
         public Task HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task> func)
@@ -149,4 +210,107 @@ namespace DashboardCode.Routines.AspNetCore
                 .HandleAsync((container, closure) => func(container, closure));
         }
     }
+
+    /*
+    public class ControllerRoutineHandlerAsync2<TServiceContainer, TUserContext, TUser>
+    {
+        readonly Func<Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync;
+        readonly Func<TUser, ContainerFactory, ComplexRoutineHandlerAsync2<TServiceContainer, TUserContext>> getContainerHandler;
+
+        public ControllerRoutineHandlerAsync2(
+            ControllerBase controllerBase,
+            Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
+            Func<AspRoutineFeature, Func<object>, TUser, ContainerFactory, ComplexRoutineHandlerAsync2<TServiceContainer, TUserContext>> getContainerHandler
+            )
+        {
+            var aspRoutineFeature = AspNetCoreManager.GetAspRoutineFeature(controllerBase);
+            Func<object> getInput = () => AspNetCoreManager.GetRequest(controllerBase.HttpContext.Request);
+
+            this.getUserAndFailedActionResultInitialisedAsync = () => getUserAndFailedActionResultInitialisedAsync(aspRoutineFeature);
+            this.getContainerHandler = (user, containerFactory) => getContainerHandler(aspRoutineFeature, getInput, user, containerFactory);
+        }
+
+        public async Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task<IActionResult>> func)
+        {
+            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
+            if (forbiddenActionResult != null)
+                return forbiddenActionResult;
+            var handler = getContainerHandler(user, containerFactory);
+            var actionResult = await handler.HandleAsync((container, closure) => func(container, closure));
+            return actionResult;
+        }
+
+
+        public async Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, TUser, Task<IActionResult>> func)
+        {
+            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
+            if (forbiddenActionResult != null)
+                return forbiddenActionResult;
+            var handler = getContainerHandler(user, containerFactory);
+            var actionResult = await handler.HandleAsync((container, closure) => func(container, closure, user));
+            return actionResult;
+        }
+
+    }
+
+    public class ControllerRoutineHandlerAsync2<TUserContext, TUser>
+    {
+        readonly Func<Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync;
+        readonly Func<TUser, ContainerFactory, IRoutineHandlerAsync<TUser, TUserContext>> getUserHandler;
+
+        public ControllerRoutineHandlerAsync2(
+            ControllerBase controllerBase,
+            Func<AspRoutineFeature, Task<(IActionResult forbiddenActionResult, TUser user, ContainerFactory containerFactory)>> getUserAndFailedActionResultInitialisedAsync,
+            Func<AspRoutineFeature, Func<object>, TUser, ContainerFactory, IRoutineHandlerAsync<TUser, TUserContext>> getUserHandler
+            )
+        {
+            var aspRoutineFeature = AspNetCoreManager.GetAspRoutineFeature(controllerBase);
+            Func<object> getInput = () => AspNetCoreManager.GetRequest(controllerBase.HttpContext.Request);
+
+            this.getUserAndFailedActionResultInitialisedAsync = () => getUserAndFailedActionResultInitialisedAsync(aspRoutineFeature);
+            this.getUserHandler = (user, containerFactory) => getUserHandler(aspRoutineFeature, getInput, user, containerFactory);
+        }
+
+        #region HandleUserAsync
+
+        public async Task<IActionResult> HandleAsync(Func<TUser, RoutineClosure<TUserContext>, Task<IActionResult>> func)
+        {
+            var (forbiddenActionResult, user, containerFactory) = await getUserAndFailedActionResultInitialisedAsync();
+            if (forbiddenActionResult != null)
+                return forbiddenActionResult;
+            var handler = getUserHandler(user, containerFactory);
+            var actionResult = await handler.HandleAsync((u, closure) => func(u, closure));
+            return actionResult;
+        }
+        #endregion
+    }
+
+    public class ControllerRoutineAnonymousHandlerAsync2<TServiceContainer, TUserContext>
+    {
+        readonly Func<ComplexRoutineHandlerAsync2<TServiceContainer, TUserContext>> getContainerHandler;
+
+        public ControllerRoutineAnonymousHandlerAsync2(
+            ControllerBase controllerBase,
+            Func<AspRoutineFeature, Func<object>, ComplexRoutineHandlerAsync2<TServiceContainer, TUserContext>> getContainerHandler)
+        {
+            var aspRoutineFeature = AspNetCoreManager.GetAspRoutineFeature(controllerBase);
+            this.getContainerHandler = () => getContainerHandler(
+                aspRoutineFeature,
+                () => AspNetCoreManager.GetRequest(controllerBase.HttpContext.Request));
+        }
+
+        public Task<IActionResult> HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task<IActionResult>> func)
+        {
+            return getContainerHandler()
+                .HandleAsync((container, closure) => func(container, closure));
+        }
+
+        public Task HandleAsync(Func<TServiceContainer, RoutineClosure<TUserContext>, Task> func)
+        {
+            return getContainerHandler()
+                .HandleAsync((container, closure) => func(container, closure));
+        }
+    }
+    */
+
 }

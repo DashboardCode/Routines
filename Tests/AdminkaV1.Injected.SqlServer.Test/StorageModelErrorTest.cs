@@ -21,7 +21,6 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
         [TestMethod]
         public void TestDatabaseFieldRequiredError()
         {
-
             var logger = new List<string>();
             var loggingTransientsFactory = InjectedManager.ComposeListMemberLoggerFactory(logger);
 
@@ -40,6 +39,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                     var t0 = new ParentRecord() { };
                     var storageResult = storage.Handle(batch => batch.Add(t0));
                     storageResult.Assert(1, "FieldCA", "ID or alternate id has no value", "Case ID absent");
+                    // TODO: errors in EF6 (another order of messages, another texts)
                     // NOTE 1 : for ef core v1 - returns generic error (can't say which field is errored)
                     // NOTE 2 : id is incremented int (so there are no error that it was not setuped)
                 });

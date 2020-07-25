@@ -267,12 +267,36 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                         var only2 = parentRecord.ParentRecordHierarchyRecordMap.Take(2).ToList(); // without ToList this we get detach exception
                         var count2 = only2.Count();
                         // detach 2 elements with the goal "emulate" new collection
-                        // so I expect to have only two child elements in result
+                        // as a result I expect to have only 3 child elements left
                         repository.Clone<ParentRecordHierarchyRecord>().Detach(only2, 
                             (i) => i.Include(e => e.RowVersion).Include(e => e.HierarchyRecordId).Include(e => e.ParentRecordId));
-                        // Core 3
-                        if (parentRecord.ParentRecordHierarchyRecordMap.Count() != 3)
+
+                        // Core 3.1
+                        if (parentRecord.ParentRecordHierarchyRecordMap.Count() != 5)
                             throw new Exception("Detach dependent in core 3 somehow remove items from the parentRecord.ParentRecordHierarchyRecordMap");
+                        batch.Handle(
+                            (storage) =>
+                            {
+                                storage.LoadAndModifyRelated(
+                                    parentRecord,
+                                    e => e.ParentRecordHierarchyRecordMap,
+                                    only2,
+                                    (e1, e2) => e1.HierarchyRecordId == e2.HierarchyRecordId);
+                            });
+                        var count1b = parentRecord.ParentRecordHierarchyRecordMap.Count();
+                        if (count1b != 2)
+                            throw new Exception("This is strange. Only two should be left");
+                        // now I "find" the same entity
+                        var parentRecordB = repository.Find(e => e.FieldA == "1_A", includes);
+                        var count1c = parentRecordB.ParentRecordHierarchyRecordMap.Count();
+                        // and I found there 4 elements (when should be 2, e.g. in db you will find two elements)
+                        // that is because elements that was detached was not fully removed from child collections trackers
+                        if (count1c != 4)
+                            throw new Exception("This is strange. EF Core have changed something");
+
+                        // Core 3.0
+                        //if (parentRecord.ParentRecordHierarchyRecordMap.Count() != 3)
+                        //    throw new Exception("Detach dependent in core 3 somehow remove items from the parentRecord.ParentRecordHierarchyRecordMap");
 
                         // Core 2
                         /*
@@ -285,7 +309,7 @@ namespace DashboardCode.AdminkaV1.Injected.SqlServer.Test
                                     only2,
                                     (e1, e2) => e1.HierarchyRecordId == e2.HierarchyRecordId);
                             });
-
+                        
                         var count1b = parentRecord.ParentRecordHierarchyRecordMap.Count();
                         if (count1b != 2)
                             throw new Exception("This is strange. Only two should be left");

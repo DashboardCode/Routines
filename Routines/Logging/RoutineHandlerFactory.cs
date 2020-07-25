@@ -25,7 +25,7 @@ namespace DashboardCode.Routines.Logging
             return new BufferedMemberLogger(memberLogger, buffer.LogVerbose, startActivity);
         }
 
-        public (IHandler<TClosure>, TClosure) CreateRoutineHandler<TClosure>(
+        public (IHandlerOmni<TClosure>, TClosure) CreateRoutineHandler<TClosure>(
                 bool veroseEnabled,
                 Func<Action<DateTime, string>, TClosure> createClosure,
                 IExceptionHandler exceptionHandler,
@@ -43,7 +43,7 @@ namespace DashboardCode.Routines.Logging
                 Action<long> performanceCounter
             )
         {
-            IHandler<TClosure> routineHandler = null;
+            IHandlerOmni<TClosure> routineHandler = null;
             TClosure closure = default;
             //var  exceptionHandler = (transformException == null) ? 
             //    new ExceptionAbsorbHandler(handleException)  : new ExceptionHandler(handleException, transformException) as IExceptionHandler;
@@ -64,7 +64,9 @@ namespace DashboardCode.Routines.Logging
                     testInputOutput
                 );
                 closure = createClosure(logVerbose);
-                routineHandler = new HandlerVerbose<TClosure>(closure, exceptionHandler, start);
+                var handlerVerbose = new HandlerVerbose<TClosure>(closure, exceptionHandler, start);
+                routineHandler = handlerVerbose;
+
             }
             else
             {
@@ -77,7 +79,8 @@ namespace DashboardCode.Routines.Logging
                     logInput
                 );
                 closure = createClosure(null/*logVerbose*/);
-                routineHandler = new HandlerSilent<TClosure>(closure, exceptionHandler, silentStart);
+                var handlerSilent = new HandlerSilent<TClosure>(closure, exceptionHandler, silentStart);
+                routineHandler = handlerSilent;
             };
             return (routineHandler, closure);
         }

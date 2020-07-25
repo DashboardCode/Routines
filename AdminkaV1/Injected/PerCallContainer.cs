@@ -82,12 +82,75 @@ namespace DashboardCode.AdminkaV1.Injected
                 );
             return authenticationDomDbContextHandler;
         }
+
+        // -------------
+
+        public LoggingDomStorageRoutineHandlerAsync<TUserContext> ResolveLoggingDomDbContextHandlerAsync()
+        {
+            var adminkaDbContextHandler = new LoggingDomStorageRoutineHandlerAsync<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return adminkaDbContextHandler;
+        }
+
+        public TestDomStorageRoutineHandlerAsync<TUserContext> ResolveTestDomDbContextHandlerAsync()
+        {
+            var testDomDbContextHandler = new TestDomStorageRoutineHandlerAsync<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return testDomDbContextHandler;
+        }
+
+        public AuthenticationDomStorageRoutineHandlerAsync<TUserContext> ResolveAuthenticationDomDbContextHandlerAsync()
+        {
+            var authenticationDomDbContextHandler = new AuthenticationDomStorageRoutineHandlerAsync<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return authenticationDomDbContextHandler;
+        }
+
 #endif
 
 #if NET48
         public LoggingDomStorageRoutineHandler<TUserContext> ResolveLoggingDomDbContextHandler()
         {
             var adminkaDbContextHandler = new LoggingDomStorageRoutineHandler<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return adminkaDbContextHandler;
+        }
+
+        public LoggingDomStorageRoutineHandlerAsync<TUserContext> ResolveLoggingDomDbContextHandlerAsync()
+        {
+            var adminkaDbContextHandler = new LoggingDomStorageRoutineHandlerAsync<TUserContext>(
                     applicationSettings.AdminkaStorageConfiguration,
                     closure.UserContext,
                     null,
@@ -114,17 +177,40 @@ namespace DashboardCode.AdminkaV1.Injected
                 );
             return testDomDbContextHandler;
         }
+
+        public TestDomStorageRoutineHandlerAsync<TUserContext> ResolveTestDomDbContextHandlerAsync()
+        {
+            var testDomDbContextHandler = new TestDomStorageRoutineHandlerAsync<TUserContext>(
+                    applicationSettings.AdminkaStorageConfiguration,
+                    closure.UserContext,
+                    null,
+                    new Handler<RoutineClosure<TUserContext>, RoutineClosure<TUserContext>>(
+                        () => closure,
+                        closure
+                    ),
+                    getAuditStamp
+                );
+            return testDomDbContextHandler;
+        }
 #endif
+        public ITraceServiceAsync ResolveTraceServiceAsyncWcf()
+        {
+            return new TraceServiceAsyncProxy(closure.Resolve<TraceServiceConfiguration>(), closure.Verbose);
+        }
+
+        public ITraceServiceAsync ResolveTraceServiceAsync()
+        {
+            return new TraceServiceAsync<TUserContext>(ResolveLoggingDomDbContextHandlerAsync());
+        }
+
         public ITraceService ResolveTraceServiceWcf()
         {
             return new TraceServiceProxy(closure.Resolve<TraceServiceConfiguration>(), closure.Verbose);
         }
 
-        public ITraceService ResolveTraceService()
+        public ITraceServiceAsync ResolveTraceService()
         {
-            return new TraceService<TUserContext>(ResolveLoggingDomDbContextHandler());
+            return new TraceServiceAsync<TUserContext>(ResolveLoggingDomDbContextHandlerAsync());
         }
-
     }
-
 }

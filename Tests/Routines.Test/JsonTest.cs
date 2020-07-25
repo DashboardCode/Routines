@@ -73,7 +73,9 @@ namespace DashboardCode.Routines.Test
         public void JsonSerializeRootEmptyArrayLiteralOnTest()
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
+#pragma warning disable CA1825 // Avoid zero-length array allocations.
             var source = new TestModel[0];
+#pragma warning restore CA1825 // Avoid zero-length array allocations.
             var formatter = JsonManager.ComposeEnumerableFormatter(include, rootHandleEmptyLiteral: true);
             var json = formatter(source);
             if (json != "[]")
@@ -301,7 +303,7 @@ namespace DashboardCode.Routines.Test
                         .AddRule<string[]>(GetStringArrayFormatter)
                         .AddRule<int[]>((sb, l) => GetStringIntFormatter(sb, l))
                         .AddRule<IEnumerable<Guid>>(GetStringGuidFormatter),
-                        useToString: false
+                useToString: false
                 );
 
             var json = formatter(source);
@@ -369,7 +371,9 @@ namespace DashboardCode.Routines.Test
         public void JsonSerializeRootEmptyArrayLiteralOffTest()
         {
             Include<TestModel> include = (chain) => chain.Include(e => e.IntNullable1).Include(e => e.IntNullable2);
+#pragma warning disable CA1825 // Avoid zero-length array allocations.
             var source = new TestModel[0];
+#pragma warning restore CA1825 // Avoid zero-length array allocations.
             var formatter = JsonManager.ComposeEnumerableFormatter(include, rootHandleEmptyLiteral: false);
             var json = formatter(source);
             if (json != "")

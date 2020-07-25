@@ -256,7 +256,9 @@ namespace DashboardCode.Routines.Test
 
             // equalsIncludes correct,  into clone key is not included neither by include, neither by types; expected false
             var source2 = TestTool.CreateTestModel();
+#pragma warning disable CA1825 // Avoid zero-length array allocations.
             var destination2 = ObjectExtensions.Clone(source2, includes, LeafRuleManager.ComposeLeafRule(new Type[] { }));
+#pragma warning restore CA1825 // Avoid zero-length array allocations.
             if (ObjectExtensions.Equals(source2, destination2, equalsIncludes))
                 throw new ApplicationException("Eqauls doesn't working properly. Case 4");
 
@@ -386,7 +388,9 @@ namespace DashboardCode.Routines.Test
         [TestMethod]
         public void IncludesEquals()
         {
+#pragma warning disable CA1825 // Avoid zero-length array allocations.
             int[] e1 = new int[0];
+#pragma warning restore CA1825 // Avoid zero-length array allocations.
             int[] e2 = new int[1] {7};
             int[] e3 = new int[1] {7};
 

@@ -13,9 +13,9 @@ namespace Benchmark
     [MemoryDiagnoser]
 #if !(NETCOREAPP)
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
-    [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    [DisassemblyDiagnoser(printSource: true)]
     [RyuJitX64Job]
-    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser]
+    [BenchmarkDotNet.Diagnostics.Windows.Configs.InliningDiagnoser(true,true)]
 #endif
     public class BenchmarkCallSimpleDisasm
     {
@@ -39,7 +39,9 @@ namespace Benchmark
             return a + b;
         }
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
         static BenchmarkCallSimpleDisasm()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
         {
             var x = Expression.Parameter(typeof(int));
             var y = Expression.Parameter(typeof(int));
@@ -104,34 +106,50 @@ namespace Benchmark
 
 #region Call lambda
         [Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public string CallBuildedReal()
+#pragma warning restore CA1822 // Mark members as static
         {
             StringBuilder sb = new StringBuilder();
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             var b = callBuildedReal(sb, 1, 2);
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
             return sb.ToString();
         }
 
         [Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public string CallBuilded()
+#pragma warning restore CA1822 // Mark members as static
         {
             StringBuilder sb = new StringBuilder();
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             var b = callBuilded(sb, 1, 2);
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
             return sb.ToString();
         }
 
         [Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public string CallLambda()
+#pragma warning restore CA1822 // Mark members as static
         {
             StringBuilder sb = new StringBuilder();
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             var b = callLambda(sb, 1, 2);
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
             return sb.ToString();
         }
 
         [Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public string CallLambdaConst()
+#pragma warning restore CA1822 // Mark members as static
         {
             StringBuilder sb = new StringBuilder();
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             var b = callLambdaConst(sb, 1, 2);
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
             return sb.ToString();
         }
         #endregion
@@ -142,19 +160,25 @@ namespace Benchmark
         readonly static Func<int, int, int> addBuilded;
 
         //[Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public int AddBuilded()
+#pragma warning restore CA1822 // Mark members as static
         {
             return addBuilded(1, 2);
         }
 
         //[Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public int AddLambda()
+#pragma warning restore CA1822 // Mark members as static
         {
             return addLambda(1, 2);
         }
 
         //[Benchmark]
+#pragma warning disable CA1822 // Mark members as static
         public int AddLambdaConst()
+#pragma warning restore CA1822 // Mark members as static
         {
             return addLambdaConst(1, 2);
         }

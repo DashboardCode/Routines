@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -32,27 +33,25 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
                 var serviceProvider = serviceCollection.BuildServiceProvider();
 
                 // Create a scope to obtain a reference to the database contexts
-                using (var serviceScope = serviceProvider.CreateScope())
-                {
-                    var scopedServices = serviceScope.ServiceProvider;
-                    //var appDb = scopedServices.GetRequiredService<AppDbContext>();
+                using var serviceScope = serviceProvider.CreateScope();
+                var scopedServices = serviceScope.ServiceProvider;
+                //var appDb = scopedServices.GetRequiredService<AppDbContext>();
 
-                    var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
+                var logger = scopedServices.GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
 
-                    // Ensure the database is created.
-                    //appDb.Database.EnsureCreated();
+                // Ensure the database is created.
+                //appDb.Database.EnsureCreated();
 
-                    //try
-                    //{
-                    //    // Seed the database with some specific test data.
-                    //    SeedData.PopulateTestData(appDb);
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    logger.LogError(ex, "An error occurred seeding the " +
-                    //                        "database with test messages. Error: {ex.Message}");
-                    //}
-                }
+                //try
+                //{
+                //    // Seed the database with some specific test data.
+                //    SeedData.PopulateTestData(appDb);
+                //}
+                //catch (Exception ex)
+                //{
+                //    logger.LogError(ex, "An error occurred seeding the " +
+                //                        "database with test messages. Error: {ex.Message}");
+                //}
             });
         }
     }

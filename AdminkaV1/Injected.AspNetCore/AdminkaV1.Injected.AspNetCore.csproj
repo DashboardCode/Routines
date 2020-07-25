@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspNetCore</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspNetCore</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Routines.AspNetCore\Routines.AspNetCore.csproj" />
+    <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj" />
+  </ItemGroup>
+
+</Project>

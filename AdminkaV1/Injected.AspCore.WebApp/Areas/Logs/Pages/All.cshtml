@@ -1,0 +1,132 @@
+﻿@page
+@model AllModel
+@{
+    ViewData["SubTitle"] = "Records";
+
+    var userContext = ViewBag.UserContext as DashboardCode.AdminkaV1.UserContext;
+    var internalUser = userContext.User;
+    var apiCall = "";
+}
+
+
+@section Messages {
+    @if (Model.Records != null && Model.Records.Count() > 0)
+    {
+        <div class="container my-4 py-3 dashboardcode-adminka-message alert alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @foreach (var m in Model.Records)
+            {
+                <p>@Html.Raw(m)</p>
+            }
+        </div>
+    }
+}
+
+@section Filters{
+    <div class="dashboardcode-adminka-filterbar py-2">
+        <nav class="container d-flex flex-row justify-content-between"> 
+            <div class="d-flex flex-row">
+                <div class="nav-item d-inline-block align-self-center mr-1 ">
+                    <a class="btn btn-xsm " href="Files"><span class="material-icons">close</span></a>
+                </div>
+                <div>
+                    <!-- filters -->
+                </div>
+            </div>
+            <div>
+                  <!-- filters -->
+            </div> 
+            <div class="nav-item d-inline-block align-self-center container-input-dd-alined">
+                <input id="dashboardcode-adminka-table-filter" 
+                       class="input-dd-alined form-control" style="width: 10rem;" aria-controls="dashboardcode-adminka-products-id" type="search" placeholder="Search" value="@Model.Filter">
+            </div>
+        </nav>
+    </div>
+}
+
+<table id="main-table" class="table table-hover table-striped mainTable w-100">
+    <thead>
+        <tr>
+            <th class="no-sort not-colvis"></th>
+            <th data-visible="true">ID </th>
+            <th>At</th>
+            <th>Full Action Name</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+@section Scripts {
+    <script>
+        (function () {
+            var workflowManager = new window.EDeliveryApp.WorkflowManager("All");
+
+            var $dateRange = $('#dateRange');
+
+            var sinceDate = $dateRange.data('initial-since');
+            if (sinceDate == "")
+                sinceDate = null;
+            var tillDate = $dateRange.data('initial-till');
+            if (tillDate == "")
+                tillDate = null;
+
+            $dateRange.daterangepicker(
+                {
+                        "showDropdowns": true,
+                        "timePickerSeconds": false,
+                        "autoUpdateInput": false,
+                        "alwaysShowCalendars": true,
+                        "minDate": moment('2002-01-01'),
+                        "maxDate": moment().endOf('year'),
+                        "ranges": {
+                            'Today': [moment(), moment()],
+                            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                            'This Week': [moment().startOf('week'), moment().endOf('week')],
+                            'Last Week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+                            'This Month': [moment().startOf('month'), moment().endOf('month')],
+                            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                            'Year @(DateTime.Today.Year)': [moment().startOf('year'), moment().endOf('year')],
+                            'Year @(DateTime.Today.Year-1)': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                            '5 Past Years': [moment().subtract(5, 'year').endOf('year'), moment()]
+                        }
+                },
+                function (start, end, label) {
+                    var parsedUrl = new URL(window.location.href);
+                    parsedUrl.searchParams.set("Since", start.format('MM.DD.YYYY'));
+                    parsedUrl.searchParams.set("Till", end.format('MM.DD.YYYY'));
+                    window.location.href = "All?"+parsedUrl.searchParams;
+                }
+            );
+
+            $(document).ready(function () {
+
+                table = new window.EDeliveryApp.TableForMiddleTearCached(
+                    workflowManager,
+                    'main-table',
+                    0,
+                    $("#dashboardcode-adminka-table-filter"),
+                    'DataTables_main-table_/Logs/All',
+                    '@apiCall',
+                    'All',
+                    function (d) {
+
+                        d.since = sinceDate;
+                        d.till = tillDate;
+                        return d;
+                    },
+                    {
+                        "1": function (data, type, row, meta) {
+                            return 'ID' + row[0];
+                        }
+                    }, 
+                    function (id) {
+                        var t = ''; 
+                        return t;
+                    }
+                );
+                table.init();
+            });
+        })(); // IIFE
+    </script>
+}
+

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+
 using DashboardCode.Routines.Storage;
 using DashboardCode.Routines.Storage.EfCore;
 
@@ -16,7 +17,7 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore.Services
 
         public async Task<User> GetUserAsync(string loginName, string firstName, string secondName, IEnumerable<string> adGroupsNames)
         {
-            using (var transaction = await dbContext.Database.BeginTransactionAsync())
+            using var transaction = await dbContext.Database.BeginTransactionAsync();
             {
                 var needCommit = false;
                 var userEntity = await dbContext.Users
@@ -53,7 +54,7 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore.Services
                 if (needCommit)
                 {
                     await dbContext.SaveChangesAsync();
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                 }
                 dbContext.Entry(userEntity).State = EntityState.Detached;
                 return userEntity;
@@ -62,7 +63,7 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore.Services
 
         public async Task<User> GetUserAsync(string loginName, string firstName, string secondName, Func<string, bool> isInRole)
         {
-            using (var transaction = await dbContext.Database.BeginTransactionAsync())
+            using var transaction = await dbContext.Database.BeginTransactionAsync();
             {
                 var needCommit = false;
                 var userEntity = await dbContext.Users
@@ -101,7 +102,7 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore.Services
                 if (needCommit)
                 {
                     await dbContext.SaveChangesAsync();
-                    transaction.Commit();
+                    await transaction.CommitAsync();
                 }
                 dbContext.Entry(userEntity).State = EntityState.Detached;
                 return userEntity;

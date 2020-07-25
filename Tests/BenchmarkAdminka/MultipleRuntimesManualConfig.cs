@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Toolchains.CsProj;
+using BenchmarkDotNet.Environments;
 
 namespace BenchmarkAdminka
 {
@@ -8,8 +8,8 @@ namespace BenchmarkAdminka
     {
         public MultipleRuntimesManualConfig()
         {
-            Add(Job.Core.With(CsProjCoreToolchain.NetCoreApp20));
-            Add(Job.Clr);
+            AddJob(Job.Default.WithRuntime(CoreRuntime.Core31));
+            AddJob(Job.Default.WithRuntime(ClrRuntime.Net48));
 
             //read this: https://github.com/dotnet/BenchmarkDotNet/issues/697
             //Add(Job.Default.With(CsProjClassicNetToolchain.Net47));

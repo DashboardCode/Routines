@@ -10,8 +10,10 @@ namespace AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test
 
     // Ignore because of error
     // Message: OpenQA.Selenium.DriverServiceNotFoundException : 
-    // The file D:\cot\DashboardCode\Routines\Tests\AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test\bin\Debug\netcoreapp2.1\chromedriver.exe 
+
+    // The file D:\cot\DashboardCode\Routines\Tests\AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test\bin\Debug\netcoreapp3.1 
     // does not exist. The driver can be downloaded at http://chromedriver.storage.googleapis.com/index.html
+    // place to D:\cot\DashboardCode\Routines\Tests\AdminkaV1.Injected.AspCore.WebApp.Automation.NETCore.Test\
     public class RolesAutomatedTest
     {
         [SetUp]
@@ -42,7 +44,7 @@ namespace AdminkaV1.Injected.AspCore.MvcApp.Automation.NETCore.Test
         public void CreateRolePage()
         {
             Go.To<CreateRolePage>()
-                .Name.Set("TestIsland99").Create.Click();
+                .Name.Set("TestIsland999").Create.Click();
         }
     }
 }

@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.3.0" />
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
   </ItemGroup>
 
   <Import Project="..\..\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems" Label="Shared" />

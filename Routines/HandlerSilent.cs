@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace DashboardCode.Routines
 {
-    public class HandlerSilent<TClosure> : IHandler<TClosure>
+    public class HandlerSilent<TClosure> : IHandlerOmni<TClosure>
     {
         private readonly TClosure closure;
         private readonly IExceptionHandler exceptionHandler;

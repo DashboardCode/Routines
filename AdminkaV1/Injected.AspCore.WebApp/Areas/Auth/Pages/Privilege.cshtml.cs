@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     public class PrivilegeModel : PageModel
     {
@@ -11,12 +11,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Privilege Entity { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<Privilege, string> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<Privilege, string> Crud { get; private set; }
 
         public Task<IActionResult> OnGetAsync()
         {
             var referrer = new AdminkaReferrer(this.HttpContext.Request, "Privileges", () => Entity.PrivilegeId.ToString(), "Privilege");
-            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, referrer);
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<Privilege, string>(this, referrer);
             return Crud.HandleDetailsAsync(
                 e => Entity = e,
                 userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),

@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     public interface IGroupPartialModel
     {
         Group Entity { get; }
-        AdminkaCrudRoutinePageConsumer<Group, int> Crud { get; }
+        AdminkaCrudRoutinePageConsumerAsync<Group, int> Crud { get; }
     }
 
     public class GroupModel : PageModel, IGroupPartialModel
@@ -18,12 +18,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Group Entity { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<Group, int> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<Group, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGetAsync()
         {
             var referrer = new AdminkaReferrer(this.HttpContext.Request, "Groups", () => Entity.GroupId.ToString(CultureInfo.InvariantCulture), "Group");
-            Crud = new AdminkaCrudRoutinePageConsumer<Group, int>(
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<Group, int>(
                 this,
                 referrer
                 );

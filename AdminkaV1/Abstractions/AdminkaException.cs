@@ -7,6 +7,24 @@ namespace DashboardCode.AdminkaV1
     public class AdminkaException : Exception
     {
         public readonly string Code;
+
+        protected AdminkaException(SerializationInfo info, StreamingContext context): base(info, context)
+        { 
+
+        }
+        protected AdminkaException():base()
+        {
+
+        }
+
+        protected AdminkaException(string message) : base(message)
+        {
+
+        }
+        protected AdminkaException(string message, Exception innerException) : base(message, innerException)
+        {
+
+        }
         public AdminkaException(string message, Exception ex, string code = "USER")
             : base(message, ex)
         {

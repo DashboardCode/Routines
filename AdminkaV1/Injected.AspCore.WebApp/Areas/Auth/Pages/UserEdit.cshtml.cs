@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     [ValidateAntiForgeryToken]
     public class UserEditModel : PageModel
@@ -12,11 +12,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public User Entity { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<User, int> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<User, int> Crud { get; private set; }
 
         public Task<IActionResult> OnGetAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, defaultReferrer: "Users");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<User, int>(this, defaultReferrer: "Users");
             return Crud.HandleEditAsync(
                 e => Entity = e,
                 authorize: null,
@@ -26,7 +26,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public Task<IActionResult> OnPostAsync()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<User, int>(this, defaultReferrer: "Users");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<User, int>(this, defaultReferrer: "Users");
             return Crud.HandleEditConfirmedAsync(
                 e => Entity = e,
                 authorize: userContext => userContext.HasPrivilege(Privilege.ConfigureSystem),

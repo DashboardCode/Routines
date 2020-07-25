@@ -7,6 +7,6 @@ namespace DashboardCode.AdminkaV1.LoggingDom
 {
     public interface ITraceServiceAsync
     {
-        Task<List<VerboseRecord>> GetTrace(Guid correlationToken);
+        Task<List<VerboseRecord>> GetTraceAsync(Guid correlationToken);
     }
 }

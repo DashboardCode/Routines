@@ -9,11 +9,10 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
-using DashboardCode.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using DashboardCode.Routines.Configuration.Standard;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp
 {
     public class Startup
     {
@@ -115,15 +114,15 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
                             context.Response.ContentType = "application/json";
                             var aspRequestId = System.Diagnostics.Activity.Current?.Id ?? context.TraceIdentifier;
                             await context.Response
-                                .WriteAsync(MvcAppManager.GetErrorActionJson(ex, aspRequestId, applicationSettings.ForceDetailsOnCustomErrorPage))
-                                // about ConfigureAwait read there https://stackoverflow.com/questions/13489065/best-practice-to-call-configureawait-for-all-server-side-code
-                                .ConfigureAwait(false); 
+                                .WriteAsync(MvcAppManager.GetErrorActionJson(ex, aspRequestId, applicationSettings.ForceDetailsOnCustomErrorPage));
+                            // about ConfigureAwait read there https://stackoverflow.com/questions/13489065/best-practice-to-call-configureawait-for-all-server-side-code
+
                             return;
                         }
                     }
 
                     // Request.Path is not for /Error *or* this isn't an API call.
-                    await next().ConfigureAwait(false);
+                    await next();
                 });
             }
 

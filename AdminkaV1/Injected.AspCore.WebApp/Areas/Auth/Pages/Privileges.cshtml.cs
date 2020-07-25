@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Auth.Pages
 {
     public class PrivilegesModel : PageModel
     {
@@ -12,11 +12,11 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Auth.Pages
 
         public IEnumerable<Privilege> List { get; private set; }
 
-        public AdminkaCrudRoutinePageConsumer<Privilege, string> Crud { get; private set; }
+        public AdminkaCrudRoutinePageConsumerAsync<Privilege, string> Crud { get; private set; }
 
         public Task<IActionResult> OnGet()
         {
-            Crud = new AdminkaCrudRoutinePageConsumer<Privilege, string>(this, defaultReferrer:"/");
+            Crud = new AdminkaCrudRoutinePageConsumerAsync<Privilege, string>(this, defaultReferrer:"/");
             return Crud.HandleIndexAsync(
                 l => List = l,
                 authorize: null,
