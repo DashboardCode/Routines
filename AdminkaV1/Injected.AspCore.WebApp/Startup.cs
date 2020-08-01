@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Http;
 
 using Microsoft.Extensions.Hosting;
 using DashboardCode.Routines.Configuration.Standard;
+using Microsoft.Extensions.WebEncoders;
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 
 namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp
 {
@@ -56,6 +59,12 @@ namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp
             serviceCollection.AddMemoryCache(); // AddDistributedMemoryCache();
 
             serviceCollection.AddRazorPages();
+
+            // NOTE: without this unicode characters (non-english) are serialized as HTML char entities (&#x00..)
+            serviceCollection.Configure<WebEncoderOptions>(webEncoderOptions => {
+                webEncoderOptions.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
+            });
+
             // NOTE: alternatively for MVC
             // services.AddControllersWithViews();
             // NOTE: legacy ASP Core 
