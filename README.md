@@ -1,8 +1,7 @@
 # Routines
 *Fixing abstractions*
 
-Functional framework to compose functions parametrized by object navigation expression (such functions as "clone", "compare", "serialize" etc.) and 
-provide some popular but missed in standard framework abstractions.
+Functional framework to compose functions parametrized by object navigation expression (such functions as "clone", "compare", "serialize" etc.). Provides additional abstractions for function's composition.
 
 
 It is based on DSL Include idea:

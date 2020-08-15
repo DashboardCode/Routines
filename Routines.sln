@@ -129,7 +129,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfCore.Rel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfModelTest.EfCore.NETCore.Test", "Tests\Routines.Storage.EfModelTest.EfCore.NETCore.Test\Routines.Storage.EfModelTest.EfCore.NETCore.Test.csproj", "{3A845F98-B313-4CCF-B06C-605E7F1E44A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Routines.Storage.EfModelTest.EfCore.NETFramework.Test", "Tests\Routines.Storage.EfModelTest.EfCore.NETFramework.Test\Routines.Storage.EfModelTest.EfCore.NETFramework.Test.csproj", "{FA89405B-83F0-4C41-A6E7-0AA65A5991BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Routines.Storage.EfModelTest.EfCore.NETFramework.Test", "Tests\Routines.Storage.EfModelTest.EfCore.NETFramework.Test\Routines.Storage.EfModelTest.EfCore.NETFramework.Test.csproj", "{FA89405B-83F0-4C41-A6E7-0AA65A5991BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfilerAutomation", "Tests\ProfilerAutomation\ProfilerAutomation.csproj", "{C29284E1-6331-4D20-905F-322FA0321B49}"
 EndProject
@@ -184,12 +184,16 @@ Global
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{9176634f-e2be-45e3-ac2e-e268887c9989}*SharedItemsImports = 13
 		Tests\AdminkaV1.Injected.InMemory.Test\AdminkaV1.Injected.InMemory.Test.projitems*{93598276-98a4-4bfc-a266-f3f48f9277d0}*SharedItemsImports = 5
 		Tests\AdminkaV1.Injected.SqlServer.Test\Vse.AdminkaV1.Injected.SqlServer.Test.projitems*{9d51f259-288c-4560-b404-87dec5a3b6c1}*SharedItemsImports = 5
+		Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems*{ac5c1c59-1611-4a6b-9e88-9e85bc4d22d8}*SharedItemsImports = 4
+		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{ac5c1c59-1611-4a6b-9e88-9e85bc4d22d8}*SharedItemsImports = 4
 		Tests\AdminkaV1.LoggingDom.WcfClient.Test\AdminkaV1.LoggingDom.WcfClient.Test.projitems*{b83c8d67-b9ad-46de-a91b-3808e7c35cbf}*SharedItemsImports = 4
 		Tests\AdminkaV1.Injected.SqlServer.Test\Vse.AdminkaV1.Injected.SqlServer.Test.projitems*{b9077909-87f9-494b-9d6b-5e4f18a7325b}*SharedItemsImports = 13
 		Tests\AdminkaV1.Injected.InMemory.Test\AdminkaV1.Injected.InMemory.Test.projitems*{ba5a3565-25cc-4e51-b32e-714e71c9f37e}*SharedItemsImports = 13
 		Tests\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems*{cbdd98c8-d927-4aa9-b01a-dda710c0ea56}*SharedItemsImports = 5
 		Tests\Routines.Configuration.Test\DashboardCode.Routines.Configuration.Test.projitems*{eb32496f-b021-4179-a593-ba8eb7631bc2}*SharedItemsImports = 4
 		Tests\AdminkaV1.Injected.SqlServer.Test\Vse.AdminkaV1.Injected.SqlServer.Test.projitems*{f9facaf7-b93d-4157-8f0b-69bd1ed3e4d0}*SharedItemsImports = 4
+		Tests\Routines.Storage.EfModelTest.EfCore\Routines.Storage.EfModelTest.EfCore.projitems*{fa89405b-83f0-4c41-a6e7-0aa65a5991bf}*SharedItemsImports = 5
+		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{fa89405b-83f0-4c41-a6e7-0aa65a5991bf}*SharedItemsImports = 5
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{faeea516-2296-4c52-9be5-525b56f50880}*SharedItemsImports = 5
 		Tests\Routines.Storage.EfModelTest\Routines.Storage.EfModelTest.projitems*{fbf79d09-bd37-41fc-b7d0-df2e3d306d2c}*SharedItemsImports = 4
 	EndGlobalSection
