@@ -6,7 +6,7 @@ Functional framework to compose functions parametrized by object navigation expr
 
 It is based on DSL Include idea:
 
-
+ 
 Serialization to JSON:
 
 ```
