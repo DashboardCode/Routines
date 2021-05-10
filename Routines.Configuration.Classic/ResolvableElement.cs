@@ -7,7 +7,7 @@ namespace DashboardCode.Routines.Configuration.Classic
 {
     [DebuggerDisplay("{Namespace}.{Type}; {InstanceCreatedAt}/{StaticCreatedAt}")]
     [DebuggerTypeProxy(typeof(ResolvableElementDebugView))]
-    public class ResolvableElement : ConfigurationElement, ICollectionMemberElement, IResolvableConfigurationRecord<string> //, IResolvableRecord
+    public class ResolvableElement : ConfigurationElement, ICollectionMemberElement, IResolvableConfigurationRecord<string> //, IResolvableRecord 
     {
         private static readonly ConfigurationProperty namespaceProperty =
             new ConfigurationProperty("namespace", typeof(string), "", ConfigurationPropertyOptions.None);

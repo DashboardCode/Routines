@@ -1,3 +1,6 @@
+# https://git-scm.com/docs 
+# http://ndpsoftware.com/git-cheatsheet.html#loc=workspace;
+
 # setup
 git --version
 git config --list
@@ -10,19 +13,24 @@ git init  // creates master branch
 git status  // show branch name and tracked files
 git add . // add all to repository
 git commit -m "commit name"// 
-git log -oneline // log of all commands
+git log --oneline // log of all commands
 git checkout 9A00ASF index.html // commit indentifier and file from this commit
 git reset HEAD index.html // HEAD replaces commit identifier, but didn't get the file (shows as modified)
 git checkout -- index.html // get the HEAD file -- get last versio 
  
 #remote
-git remote add origin http://....  // creates local repository (clone remote master)
+git init
+git remote add origin http://.../myRep.git  // creates local repository (clone remote master)
+git pull origin master
 git push -u origin master
-
 
 
 # show not pushed commits
 git log origin/master..master 
+
+#
+git clone  http://.... 
+git clone --single-branch --branch development http://....
 
 
 

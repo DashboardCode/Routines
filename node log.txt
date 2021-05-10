@@ -1,0 +1,11 @@
+node -v
+npm -v 
+get-command npm // show folder
+get-command node // show folder
+$Env:Path.Split(";") | Select-String -pattern "nodejs"
+
+npm init
+
+npx package_name
+
+npm install <package>[@version]
