@@ -14,7 +14,6 @@
             <th class="adminka-action-button-group">
                 @if (UserContext.HasPrivilege(Privilege.ConfigureSystem))
                 {
-                    var urlCreateAction = @Url.Action("Create", "Groups");
                     <a class="btn-sm" asp-area="Auth" asp-page="GroupCreate"><span class="material-icons">note_add</span></a>
                 }
             </th>

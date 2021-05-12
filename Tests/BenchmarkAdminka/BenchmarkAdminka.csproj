@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-      <!--<TargetFrameworks>netcoreapp3.0;net48</TargetFrameworks>-->
-      <TargetFrameworks>netcoreapp3.1;</TargetFrameworks>
-	 <LangVersion>latest</LangVersion>
+      <!--<TargetFrameworks>net5.0;net48</TargetFrameworks>-->
+    <TargetFramework>net5.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   
    <ItemGroup>
@@ -24,18 +24,18 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="NLog.MailKit" Version="3.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="NLog.MailKit" Version="3.3.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
     <ProjectReference Include="..\..\AdminkaV1\LoggingDom.DataAccessEfCore\AdminkaV1.LoggingDom.DataAccessEfCore.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
-	<ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj" />
+	  <ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj" />
 	
-	<ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
-	<ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />
+	  <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
+	  <ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />
   </ItemGroup>
   
   <ItemGroup>

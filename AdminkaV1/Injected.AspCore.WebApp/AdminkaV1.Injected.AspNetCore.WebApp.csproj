@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 	  <AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
-	  <TypeScriptToolsVersion>3.6</TypeScriptToolsVersion>
+    <!--<TypeScriptToolsVersion>4.1</TypeScriptToolsVersion>-->
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <AssemblyName>DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp</AssemblyName>
     <RootNamespace>DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp</RootNamespace>
@@ -51,11 +55,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="DashboardCode.AspNetCore" Version="3.0.4" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="DashboardCode.AspNetCore" Version="3.0.5" />
   </ItemGroup>
   
   <ItemGroup>

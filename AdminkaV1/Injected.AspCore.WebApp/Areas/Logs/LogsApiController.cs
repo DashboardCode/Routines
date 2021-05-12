@@ -12,7 +12,21 @@ using DashboardCode.AspNetCore;
 
 namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Logs
 {
+
+    // API Controller could be not in the Pages folder since it is not rotable by folder structure
+    // API Controller on NET5 is routable only by attribute routing. Alternatively by HttpGet|HttpPost("[area]/api/[controller]/[action]") route pattern
+    // API Controller still requires  endpoints.MapControllers() in startup
+    // Those two methods works to get URI:
+    // var uri1 = Url.Action(new UrlActionContext() { Controller = "Values", Action = "GetValue", Values = new { area = "myarea" } });
+    // var uri2 = Url.Action(controller: "Values", action: "GetValue", values: new { area = "myarea" }); // shorter form  from extension. requires using Microsoft.AspNetCore.Mvc;
+    // Important information about routing can be obtained using
+    //var UrlList = this.actionDescriptorCollectionProvider.ActionDescriptors.Items
+    //            .Select(descriptor => '/' + string.Join('/', descriptor.RouteValues.Values.Where(v => v != null).Select(c => c).Reverse())).Distinct().ToList();
+    // alternative populare pattern is [Route("[area]/api/[controller]/[action]")]
+    // note: leading '/' will be added it is absent in the pattern.
     [Area(nameof(Logs))]
+    [Route("[area]/[controller]/[action]")]
+    [ApiController]
     public class LogsApiController : ControllerBase
     {
         private readonly IMemoryCache memoryCache;
@@ -24,7 +38,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Logs
             this.applicationSettings = applicationSettings;
         }
 
-        readonly static CachedFormatter getRecordsCachedFormatter = new CachedFormatter();
+        readonly static CachedFormatter getRecordsCachedFormatter = new();
         [HttpPost]
         public async Task<IActionResult> GetRecords()
         {
@@ -54,7 +68,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Logs
                            }
                        );
 
-                       var recordsTotal = cachedList.Count();
+                       var recordsTotal = cachedList.Count;
 
                        var (startPageAtIndex, pageLength, searchValue, columnsOrders, columnsSearches) = AspNetCoreManager.GetJQueryDataTableRequest(this);
 
@@ -95,7 +109,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Logs
                        }
 
                        var list = queryable.ToList();
-                       var recordsFiltered = list.Count();
+                       var recordsFiltered = list.Count;
 
                        var json = list
                                 .Skip(startPageAtIndex > recordsFiltered ? (recordsFiltered - pageLength < 0 ? 0 : recordsFiltered - pageLength) : startPageAtIndex)

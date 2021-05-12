@@ -150,6 +150,8 @@ namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                
+                endpoints.MapControllers();
 
                 //NOTE: for MVC 
                 //TODO: how to configure area
