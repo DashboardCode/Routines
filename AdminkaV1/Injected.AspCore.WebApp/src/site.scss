@@ -42,25 +42,19 @@
 
 $btn-padding-y-xsm: $btn-padding-y-sm*0.8;
 $btn-padding-x-xsm: $btn-padding-x-sm*0.8;
-$font-size-xsm: $font-size-sm*0.8;
-$btn-line-height-xsm: $btn-line-height-sm*0.8;
+$btn-font-size-xsm: $btn-font-size-sm*0.8;
 $btn-border-radius-xsm: $btn-border-radius-sm*0.8;
 
 .btn-xsm {
-    padding: 0 0;
-    //$btn-padding-y-xsm $btn-padding-x-xsm;
-    margin: 0 0 !important;
-    border-width: 0;
-    font-size: $font-size-xsm;
-    line-height: $btn-line-height-xsm;
-    border-radius: $btn-border-radius-xsm;
+    @include button-size($btn-padding-y-xsm, $btn-padding-x-xsm, $btn-font-size-xsm, $btn-border-radius-xsm);
 }
 
-.btn-xsm:active {
-    color: $primary;
-    border: 0px none black !important;
-    font-size: smaller;
+.btn-xsm .material-icons {
+    font-size: $btn-font-size-xsm*1.4;
+    padding: 0 0;
+    margin: 0 0;
 }
+
 
 .adminka-action-button-group .btn-sm {
     padding-left: 0px;
@@ -102,11 +96,6 @@ $btn-border-radius-xsm: $btn-border-radius-sm*0.8;
     border: 0px none black !important;
 }
 
-.btn-xsm .material-icons {
-    font-size: $font-size-xsm*1.4;
-    padding: 0 0;
-    margin: 0 0;
-}
 
 
 .table, .table th, .table td {

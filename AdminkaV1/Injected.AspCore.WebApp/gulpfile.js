@@ -20,8 +20,8 @@ gulp.task('del-lib', function () {
 
 gulp.task('copy-lib', function (done) {
 
-    gulp.src('./node_modules/@babel/polyfill/dist/polyfill.js')
-        .pipe(gulp.dest('./wwwroot/js'));
+    //gulp.src('./node_modules/@babel/polyfill/dist/polyfill.js')
+    //    .pipe(gulp.dest('./wwwroot/js'));
 
     gulp.src('./node_modules/bootstrap/dist/js/bootstrap.js')
         .pipe(gulp.dest('./wwwroot/js/'));
@@ -37,13 +37,13 @@ gulp.task('copy-lib', function (done) {
     gulp.src('./node_modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.js')
         .pipe(gulp.dest('./wwwroot/js'));
 
-    gulp.src('./node_modules/popper.js/dist/umd/popper.js')
+    gulp.src('./node_modules/@popperjs/core/dist/umd/popper.js')
         .pipe(gulp.dest('./wwwroot/js'));
 
     gulp.src('./node_modules/datatables.net/js/jquery.dataTables.js')
         .pipe(gulp.dest('./wwwroot/js'));
 
-    gulp.src('./node_modules/datatables.net-bs4/js/dataTables.bootstrap4.js')
+    gulp.src('./node_modules/datatables.net-bs5/js/dataTables.bootstrap5.js')
         .pipe(gulp.dest('./wwwroot/js'));
 
     gulp.src('./node_modules/@dashboardcode/bsmultiselect/dist/css/BsMultiSelect.css')

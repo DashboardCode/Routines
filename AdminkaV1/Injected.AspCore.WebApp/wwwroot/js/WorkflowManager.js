@@ -1,7 +1,6 @@
-import "core-js/modules/es6.array.find";
-import "core-js/modules/es6.regexp.to-string";
-import "core-js/modules/es6.object.to-string";
-import "core-js/modules/es6.regexp.replace";
+import "core-js/modules/es6.object.to-string.js";
+import "core-js/modules/es6.regexp.to-string.js";
+import "core-js/modules/es6.array.find.js";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -12,9 +11,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 //import * as $ from 'jquery';
-var WorkflowManager =
-/*#__PURE__*/
-function () {
+var WorkflowManager = /*#__PURE__*/function () {
   function WorkflowManager(workflowName) {
     _classCallCheck(this, WorkflowManager);
 
@@ -115,9 +112,7 @@ var ErorDetails = function ErorDetails(showAdvanced, title, message, htmlMessage
 //}
 
 
-export var Workflow =
-/*#__PURE__*/
-function () {
+export var Workflow = /*#__PURE__*/function () {
   //private logErrorUrl = '/Error/LogBrowserMessage';
   //private logPerfUrl  = '/Error/WriteBrowserPerfomanceCounter';
   function Workflow(operationName, errorDialog) {
@@ -145,7 +140,7 @@ function () {
     }
   }, {
     key: "HandlePromise",
-    //public LogAjaxError(errMessage: string, xhr: XMLHttpRequest, responseJSON: ExceptionDetails, textStatus: string, errorThrown: string, stack: string) {
+    value: //public LogAjaxError(errMessage: string, xhr: XMLHttpRequest, responseJSON: ExceptionDetails, textStatus: string, errorThrown: string, stack: string) {
     //    if (errMessage == null) return;
     //    if (responseJSON != null && responseJSON.IsUser) {
     //        return;
@@ -228,7 +223,7 @@ function () {
     //}
     // TODO: http://www.svlada.com/override-jquery-ajax-handler/
     // TODO: http://stackoverflow.com/questions/17582239/overriding-the-jquery-ajax-success
-    value: function HandlePromise(ajaxPromise, done, title) {
+    function HandlePromise(ajaxPromise, done, title) {
       var _this2 = this;
 
       var userError = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -460,9 +455,7 @@ function () {
   return Workflow;
 }();
 
-var ErrorDialog =
-/*#__PURE__*/
-function () {
+var ErrorDialog = /*#__PURE__*/function () {
   function ErrorDialog($errodDialog) {
     _classCallCheck(this, ErrorDialog);
 
@@ -506,9 +499,7 @@ function () {
   return ErrorDialog;
 }();
 
-var ToastFactory =
-/*#__PURE__*/
-function () {
+var ToastFactory = /*#__PURE__*/function () {
   function ToastFactory($footer, $toast) {
     _classCallCheck(this, ToastFactory);
 
@@ -538,9 +529,7 @@ function () {
   return ToastFactory;
 }();
 
-var BlockDialog =
-/*#__PURE__*/
-function () {
+var BlockDialog = /*#__PURE__*/function () {
   function BlockDialog($blockDialog) {
     _classCallCheck(this, BlockDialog);
 

@@ -40,18 +40,15 @@
 }
 
 .btn-xsm {
-  padding: 0 0;
-  margin: 0 0 !important;
-  border-width: 0;
+  padding: 0.2rem 0.4rem;
   font-size: 0.7rem;
-  line-height: 1.2;
   border-radius: 0.16rem;
 }
 
-.btn-xsm:active {
-  color: #007bff;
-  border: 0px none black !important;
-  font-size: smaller;
+.btn-xsm .material-icons {
+  font-size: 0.98rem;
+  padding: 0 0;
+  margin: 0 0;
 }
 
 .adminka-action-button-group .btn-sm {
@@ -67,11 +64,11 @@
 }
 
 .adminka-action-button-group .btn-sm:hover {
-  color: #007bff;
+  color: #0d6efd;
 }
 
 .adminka-action-button-group .btn-xsm:hover {
-  color: #007bff;
+  color: #0d6efd;
 }
 
 .adminka-action-button-group .material-icons {
@@ -87,14 +84,8 @@
 }
 
 .btn-logo:active {
-  color: #007bff;
+  color: #0d6efd;
   border: 0px none black !important;
-}
-
-.btn-xsm .material-icons {
-  font-size: 0.98rem;
-  padding: 0 0;
-  margin: 0 0;
 }
 
 .table, .table th, .table td {
@@ -103,7 +94,7 @@
 }
 
 #svg:hover {
-  fill: #007bff;
+  fill: #0d6efd;
 }
 
 .badge .material-icons {
@@ -117,7 +108,7 @@
 }
 
 .dropdown-item:hover {
-  color: #007bff;
+  color: #0d6efd;
 }
 
 .dropdown-item:active {
@@ -136,7 +127,7 @@ a.badge {
 }
 
 a.badge:hover {
-  color: #007bff;
+  color: #0d6efd;
   text-decoration: none;
 }
 
@@ -198,7 +189,12 @@ dl.row > dt {
   margin-bottom: 0.5rem;
   font-weight: 500;
   line-height: 1.2;
-  font-size: 1.5rem;
+  font-size: calc(1.275rem + 0.3vw);
+}
+@media (min-width: 1200px) {
+  .adminka-buttons::before {
+    font-size: 1.5rem;
+  }
 }
 
 .adminka-buttons-create::before {
@@ -255,7 +251,7 @@ a.adminka-navigation {
 }
 
 a.adminka-navigation:hover {
-  color: #007bff;
+  color: #0d6efd;
   text-decoration: none;
 }
 

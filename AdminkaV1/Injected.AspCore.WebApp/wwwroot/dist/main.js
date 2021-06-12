@@ -1,121 +1,22 @@
-(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[1],{
+(self["webpackChunkdashboard_code_adminka_v1_web_mvc_core_app"] = self["webpackChunkdashboard_code_adminka_v1_web_mvc_core_app"] || []).push([[0],{
 
-/***/ 0:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(bootstrap__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var datatables_net_bs4__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var datatables_net_bs4__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(datatables_net_bs4__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var datatables_net_select_bs4__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
-/* harmony import */ var datatables_net_select_bs4__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(datatables_net_select_bs4__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _node_modules_datatables_net_buttons_js_buttons_colVis__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(11);
-/* harmony import */ var _node_modules_datatables_net_buttons_js_buttons_colVis__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_node_modules_datatables_net_buttons_js_buttons_colVis__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var datatables_net_buttons_bs4__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(13);
-/* harmony import */ var datatables_net_buttons_bs4__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(datatables_net_buttons_bs4__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(14);
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var daterangepicker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(17);
-/* harmony import */ var daterangepicker__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(daterangepicker__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var jquery_validation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(18);
-/* harmony import */ var jquery_validation__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(jquery_validation__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var jquery_validation_unobtrusive__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(19);
-/* harmony import */ var jquery_validation_unobtrusive__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(jquery_validation_unobtrusive__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _dashboardcode_bsmultiselect__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(20);
-/* harmony import */ var _dashboardcode_bsmultiselect__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_dashboardcode_bsmultiselect__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var jstree__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(21);
-/* harmony import */ var jstree__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(jstree__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(22);
-/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_index_scss__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var _site__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(23);
- // this will bring jquery and popper
-
- // this will bring dataTabales.js
-
-
-
-
-
-
-
-
-
-
-
-
-
-/***/ }),
-
-/***/ 22:
-/***/ (function(module, exports, __webpack_require__) {
-
-// extracted by mini-css-extract-plugin
-
-/***/ }),
-
-/***/ 23:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ 79:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _Application__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(24);
-/* harmony import */ var popper_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6);
-/* harmony import */ var core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(123);
-/* harmony import */ var core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _polyfill_io__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(124);
-//import '@babel/polyfill';
-
- // FYI: we use webpack' preset-env 'usage' option and that means no need of direct ES polyfill loading
-// import '@babel/polyfill'; 
-// TODO: investigate why this was not handled by usage? 
-
- // FYI: web polyfills from https://cdn.polyfill.io/v3/url-builder/
-// https://polyfill.io/v3/polyfill.js?flags=always%7Cgated&features=Element.prototype.closest%2CElement.prototype.classList%2CElement.prototype.matches
-// 'Element.prototype.matches', 'Element.prototype.closest', 'Element.prototype.classList'
-// options: minify=NO, real user monitoring=no, feature detect=YES, always load=YES
-
- // TODO: wait for polyfill-injectors synchronized loading of run-time scripts (async are not compatable with inline code)
-// This is alternative to webpack configuration:
-// import main from 'webpack-polyfill-injector?{modules:["./src/index.es8.js"]}!';  // will load polyfills (if necessary) and then start your normal entry module
-
-popper_js__WEBPACK_IMPORTED_MODULE_1__["default"].Defaults.modifiers.computeStyle.gpuAcceleration = !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform));
-popper_js__WEBPACK_IMPORTED_MODULE_1__["default"].Defaults.modifiers.preventOverflow = {
-  enabled: false
-};
-popper_js__WEBPACK_IMPORTED_MODULE_1__["default"].Defaults.modifiers.flip = {
-  enabled: false
-}; // default bootstrap popover can't be setuped with dedicated element, this do the trick
-
-$(document).ready(function () {
-  $('[data-toggle="popover-content"]').popover({
-    html: true,
-    content: function content() {
-      return $('#popover-content').html();
-    }
-  });
-});
-window.AdminkaApp = new _Application__WEBPACK_IMPORTED_MODULE_0__["default"](window);
-window.AdminkaApp.Es8TranspilerTest();
-
-/***/ }),
-
-/***/ 24:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Application; });
-/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25);
-/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(53);
-/* harmony import */ var core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_values__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(75);
-/* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(98);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _WorkflowManager_ts__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(99);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ Application)
+/* harmony export */ });
+/* harmony import */ var regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(80);
+/* harmony import */ var regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(81);
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_promise_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(118);
+/* harmony import */ var core_js_modules_es_promise_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_object_values_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(162);
+/* harmony import */ var core_js_modules_es_object_values_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_values_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _WorkflowManager_ts__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(165);
 
 
 
@@ -133,9 +34,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 
-var Application =
-/*#__PURE__*/
-function () {
+var Application = /*#__PURE__*/function () {
   function Application(window) {
     _classCallCheck(this, Application);
 
@@ -144,21 +43,19 @@ function () {
     this.$ = this.window.$;
     this.console = window.console;
     this.alert = window.alert;
-    this.WorkflowManager = _WorkflowManager_ts__WEBPACK_IMPORTED_MODULE_4__["default"];
+    this.WorkflowManager = _WorkflowManager_ts__WEBPACK_IMPORTED_MODULE_4__.default;
   }
 
   _createClass(Application, [{
     key: "Es8TranspilerTest",
     value: function () {
-      var _Es8TranspilerTest = _asyncToGenerator(
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee() {
+      var _Es8TranspilerTest = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var GetMessage, message;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                GetMessage = function _ref() {
+                GetMessage = function _GetMessage() {
                   return new Promise(function (resolve) {
                     setTimeout(function () {
                       var object = {
@@ -201,28 +98,33 @@ function () {
 
 /***/ }),
 
-/***/ 99:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ 165:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return WorkflowManager; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Workflow", function() { return Workflow; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ErorDetailsTools", function() { return ErorDetailsTools; });
-/* harmony import */ var core_js_modules_es_symbol__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(100);
-/* harmony import */ var core_js_modules_es_symbol__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_symbol_description__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(110);
-/* harmony import */ var core_js_modules_es_symbol_description__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_description__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
-/* harmony import */ var core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(113);
-/* harmony import */ var core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_join__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(25);
-/* harmony import */ var core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(115);
-/* harmony import */ var core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_to_string__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(117);
-/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ WorkflowManager),
+/* harmony export */   "Workflow": () => (/* binding */ Workflow),
+/* harmony export */   "ErorDetailsTools": () => (/* binding */ ErorDetailsTools)
+/* harmony export */ });
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(166);
+/* harmony import */ var core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(170);
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(81);
+/* harmony import */ var core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_to_string_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(176);
+/* harmony import */ var core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_to_string_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es_array_find_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(177);
+/* harmony import */ var core_js_modules_es_array_find_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_find_js__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(184);
+/* harmony import */ var core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_js__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(188);
+/* harmony import */ var core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_symbol_description_js__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_es_array_join_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(189);
+/* harmony import */ var core_js_modules_es_array_join_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_join_js__WEBPACK_IMPORTED_MODULE_7__);
+
 
 
 
@@ -240,9 +142,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 //import * as $ from 'jquery';
-var WorkflowManager =
-/*#__PURE__*/
-function () {
+var WorkflowManager = /*#__PURE__*/function () {
   function WorkflowManager(workflowName) {
     _classCallCheck(this, WorkflowManager);
 
@@ -343,9 +243,7 @@ var ErorDetails = function ErorDetails(showAdvanced, title, message, htmlMessage
 //}
 
 
-var Workflow =
-/*#__PURE__*/
-function () {
+var Workflow = /*#__PURE__*/function () {
   //private logErrorUrl = '/Error/LogBrowserMessage';
   //private logPerfUrl  = '/Error/WriteBrowserPerfomanceCounter';
   function Workflow(operationName, errorDialog) {
@@ -373,7 +271,7 @@ function () {
     }
   }, {
     key: "HandlePromise",
-    //public LogAjaxError(errMessage: string, xhr: XMLHttpRequest, responseJSON: ExceptionDetails, textStatus: string, errorThrown: string, stack: string) {
+    value: //public LogAjaxError(errMessage: string, xhr: XMLHttpRequest, responseJSON: ExceptionDetails, textStatus: string, errorThrown: string, stack: string) {
     //    if (errMessage == null) return;
     //    if (responseJSON != null && responseJSON.IsUser) {
     //        return;
@@ -456,7 +354,7 @@ function () {
     //}
     // TODO: http://www.svlada.com/override-jquery-ajax-handler/
     // TODO: http://stackoverflow.com/questions/17582239/overriding-the-jquery-ajax-success
-    value: function HandlePromise(ajaxPromise, done, title) {
+    function HandlePromise(ajaxPromise, done, title) {
       var _this2 = this;
 
       var userError = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
@@ -688,9 +586,7 @@ function () {
   return Workflow;
 }();
 
-var ErrorDialog =
-/*#__PURE__*/
-function () {
+var ErrorDialog = /*#__PURE__*/function () {
   function ErrorDialog($errodDialog) {
     _classCallCheck(this, ErrorDialog);
 
@@ -734,9 +630,7 @@ function () {
   return ErrorDialog;
 }();
 
-var ToastFactory =
-/*#__PURE__*/
-function () {
+var ToastFactory = /*#__PURE__*/function () {
   function ToastFactory($footer, $toast) {
     _classCallCheck(this, ToastFactory);
 
@@ -766,9 +660,7 @@ function () {
   return ToastFactory;
 }();
 
-var BlockDialog =
-/*#__PURE__*/
-function () {
+var BlockDialog = /*#__PURE__*/function () {
   function BlockDialog($blockDialog) {
     _classCallCheck(this, BlockDialog);
 
@@ -864,7 +756,115 @@ var ErorDetailsTools = {
   }
 };
 
+/***/ }),
+
+/***/ 0:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var datatables_net_bs5__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(60);
+/* harmony import */ var datatables_net_bs5__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(datatables_net_bs5__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var datatables_net_select_bs5__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(65);
+/* harmony import */ var datatables_net_select_bs5__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(datatables_net_select_bs5__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var datatables_net_buttons_buttons_colVis__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(67);
+/* harmony import */ var datatables_net_buttons_buttons_colVis__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(datatables_net_buttons_buttons_colVis__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var datatables_net_buttons_bs5__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(69);
+/* harmony import */ var datatables_net_buttons_bs5__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(datatables_net_buttons_bs5__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(70);
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var daterangepicker__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(72);
+/* harmony import */ var daterangepicker__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(daterangepicker__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var jquery_validation__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(73);
+/* harmony import */ var jquery_validation__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(jquery_validation__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var jquery_validation_unobtrusive__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(74);
+/* harmony import */ var jquery_validation_unobtrusive__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(jquery_validation_unobtrusive__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _dashboardcode_bsmultiselect__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(75);
+/* harmony import */ var jstree__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(76);
+/* harmony import */ var jstree__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(jstree__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var _index_scss__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(77);
+/* harmony import */ var _site__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(78);
+ // this will bring jquery and popper
+
+ // this will bring dataTabales.js
+
+ //import './../node_modules/datatables.net-buttons/js/buttons.colVis';
+
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+
+/***/ 78:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _Application__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(79);
+/* harmony import */ var _popperjs_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(58);
+/* harmony import */ var core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(191);
+/* harmony import */ var core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_includes__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _polyfill_io__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(192);
+//import '@babel/polyfill';
+
+ // FYI: we use webpack' preset-env 'usage' option and that means no need of direct ES polyfill loading
+// import '@babel/polyfill'; 
+// TODO: investigate why this was not handled by usage? 
+
+ // FYI: web polyfills from https://cdn.polyfill.io/v3/url-builder/
+// https://polyfill.io/v3/polyfill.js?flags=always%7Cgated&features=Element.prototype.closest%2CElement.prototype.classList%2CElement.prototype.matches
+// 'Element.prototype.matches', 'Element.prototype.closest', 'Element.prototype.classList'
+// options: minify=NO, real user monitoring=no, feature detect=YES, always load=YES
+
+ // TODO: wait for polyfill-injectors synchronized loading of run-time scripts (async are not compatable with inline code)
+// This is alternative to webpack configuration:
+// import main from 'webpack-polyfill-injector?{modules:["./src/index.es8.js"]}!';  // will load polyfills (if necessary) and then start your normal entry module
+// TODO migrate those popper v1 to v2 settings
+//Popper.Defaults.modifiers.computeStyle.gpuAcceleration = !(window.devicePixelRatio < 1.5 && /Win/.test(navigator.platform));
+//Popper.Defaults.modifiers.preventOverflow = { enabled: false };
+//Popper.Defaults.modifiers.flip = { enabled: false };
+// default bootstrap popover can't be setuped with dedicated element, this do the trick
+
+$(document).ready(function () {
+  $('[data-toggle="popover-content"]').popover({
+    html: true,
+    content: function content() {
+      return $('#popover-content').html();
+    }
+  });
+});
+window.AdminkaApp = new _Application__WEBPACK_IMPORTED_MODULE_0__.default(window);
+window.AdminkaApp.Es8TranspilerTest();
+window.createPopper = _popperjs_core__WEBPACK_IMPORTED_MODULE_3__.createPopper;
+
+/***/ }),
+
+/***/ 77:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
 /***/ })
 
-},[[0,0,2,3]]]);
+},
+/******/ __webpack_require__ => { // webpackRuntimeModules
+/******/ "use strict";
+/******/ 
+/******/ var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
+/******/ __webpack_require__.O(0, [3,1], () => (__webpack_exec__(0)));
+/******/ var __webpack_exports__ = __webpack_require__.O();
+/******/ }
+]);
 //# sourceMappingURL=main.js.map

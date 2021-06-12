@@ -1,9 +1,7 @@
-import "core-js/modules/web.dom.iterable";
-import "core-js/modules/es6.array.iterator";
-import "core-js/modules/es7.object.values";
-import "core-js/modules/es6.promise";
-import "core-js/modules/es6.object.to-string";
-import "regenerator-runtime/runtime";
+import "regenerator-runtime/runtime.js";
+import "core-js/modules/es6.object.to-string.js";
+import "core-js/modules/es6.promise.js";
+import "core-js/modules/es7.object.values.js";
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -17,9 +15,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 import WorkflowManager from './WorkflowManager.ts';
 
-var Application =
-/*#__PURE__*/
-function () {
+var Application = /*#__PURE__*/function () {
   function Application(window) {
     _classCallCheck(this, Application);
 
@@ -34,15 +30,13 @@ function () {
   _createClass(Application, [{
     key: "Es8TranspilerTest",
     value: function () {
-      var _Es8TranspilerTest = _asyncToGenerator(
-      /*#__PURE__*/
-      regeneratorRuntime.mark(function _callee() {
+      var _Es8TranspilerTest = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
         var GetMessage, message;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                GetMessage = function _ref() {
+                GetMessage = function _GetMessage() {
                   return new Promise(function (resolve) {
                     setTimeout(function () {
                       var object = {

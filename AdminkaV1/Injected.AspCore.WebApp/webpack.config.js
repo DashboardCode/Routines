@@ -1,12 +1,15 @@
 ﻿// webpack.config interpretated by node and node by default do not support ES6 (that means import etc.)
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const PathModule = require('path');
 
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+// TODO uglify
+//const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+
+// TODO replace with css-minimizer-webpack-plugin
+//const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 
 //const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -72,6 +75,13 @@ var config = {
         filename: '[name].js',  // filename: '[name].[contenthash].js' produce main.bca50319635bfdec741b.js - also add HashedModuleIdsPlugin if you want to use "constant" hashs
         publicPath: '/dist/'
     },
+    resolve: {
+        alias: {
+           'datatables.net-buttons/buttons.colVis': 'datatables.net-buttons/js/buttons.colVis.js'
+           // 'handlebars': 'handlebars/dist/handlebars.js',
+           // 'corejs-typeahead': 'corejs-typeahead/dist/typeahead.jquery.js'
+        }
+    },
     optimization: {
         runtimeChunk: 'single',
         splitChunks: {
@@ -104,7 +114,18 @@ var config = {
         }
     },
     plugins: [
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/), // remove webpack locale files (safe 400KB space) https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+         // TODO
+        //new HtmlWebpackPlugin({
+        //    template: 'src/index.html',
+        //    filename: '../index.html',
+        //    minify: false
+        //}),
+
+        new webpack.IgnorePlugin({
+            resourceRegExp: /^\.\/locale$/,
+            contextRegExp: /moment$/,
+        }), // remove webpack locale files (safe 400KB space) https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+
         new MiniCssExtractPlugin({
             filename: "[name].css"
         }),
@@ -117,7 +138,7 @@ var config = {
         //        'Element.prototype.classList'
         //    ]
         //}),
-        new ManifestPlugin(),
+        new WebpackManifestPlugin(),
         new CleanWebpackPlugin() // defualt verbose:false
 
         // MANAGE DEPENDENCY. METHOD 1. Manage dependencies at build-time.
@@ -143,24 +164,21 @@ var config = {
             // },
 
             {
-                // MANAGE DEPENDENCY. METHOD 2. Manage dependencies at run-time. Adds modules to the global object
+                // MANAGE DEPENDENCY. METHOD 3. Manage dependencies at run-time. Adds modules to the global object
                 // https://github.com/webpack-contrib/expose-loader
                 // exposes $, jQuery, window.$, window.jQuery on global level;
                 test: require.resolve('jquery'),
-                use: [{
-                    loader: 'expose-loader',
-                    options: 'jQuery'
-                }, {
-                    loader: 'expose-loader',
-                    options: '$'
-                }]
+                loader: "expose-loader",
+                options: {
+                    exposes: ["$", "jQuery"]
+                }
             },
             {
                 test: require.resolve('moment'),
-                use: [{
-                    loader: 'expose-loader',
-                    options: 'moment'
-                }]
+                loader: "expose-loader",
+                options: {
+                    exposes: ["moment"]
+                }
             },
             {
                 test: /\.(scss|css)$/,
@@ -169,21 +187,24 @@ var config = {
                     {
                         loader: "css-loader",
                         options: {
-                            sourceMap: true
+                            sourceMap: true,
+                            url: false // not locate the file during the bundling
                         }
                     },
                     {
                         loader: "postcss-loader",
                         options: {
-                            sourceMap: true,
-                            autoprefixer: {
-                                browsers: ["last 2 versions"]
-                            },
-                            plugins: () => [
-                                //require('precss'),
-                                require('autoprefixer') // adds "vendor's" prefixes e.g. -webkit-input-placeholder , -ms-input-placeholder etc.
-
-                            ]
+                            postcssOptions: {
+                                sourceMap: true,
+                                plugins: [
+                                    [
+                                        "autoprefixer", // adds "vendor's" prefixes e.g. -webkit-input-placeholder , -ms-input-placeholder etc.
+                                        {
+                                            overrideBrowserslist: ["last 2 versions", ">1%"]
+                                        }
+                                    ],
+                                ]
+                            }
                         },
                     },
                     {
@@ -193,8 +214,8 @@ var config = {
                 ]
             },
             {
-                test: /\.(woff2|woff|ttf|svg|png|gif)$/,
-                use: 'url-loader'
+                test: /\.(woff2|woff|eot|ttf|otf|svg|png|gif|jpg)$/,
+                type: 'asset/inline'
             },
             {
                 test: /\.(tsx?)|(js)$/,
@@ -215,7 +236,7 @@ var config = {
                             // alternative to "@babel/polyfill" is "@babel/runtime":
                             // https://codersmind.com/babel-polyfill-babel-runtime-explained/
                             // https://babeljs.io/docs/en/babel-runtime-corejs2
-                            ["@babel/env",
+                            ["@babel/preset-env",
                                 {
                                     "useBuiltIns": "usage",
                                     "modules": false, // required for typescript?
