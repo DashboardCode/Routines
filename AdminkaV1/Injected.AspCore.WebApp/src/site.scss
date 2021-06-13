@@ -267,3 +267,10 @@ a.adminka-navigation:hover {
     color: $primary;
     text-decoration: none;
 }
+
+.adminka-error-header {
+    background-color: var(--bs-danger);
+    color: var(--bs-white);
+    font-weight:600;
+    text-align:center;
+}

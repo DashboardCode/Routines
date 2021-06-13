@@ -12222,4 +12222,11 @@ a.adminka-navigation:hover {
   text-decoration: none;
 }
 
+.adminka-error-header {
+  background-color: var(--bs-danger);
+  color: var(--bs-white);
+  font-weight: 600;
+  text-align: center;
+}
+
 /*# sourceMappingURL=main.css.map*/

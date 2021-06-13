@@ -339,7 +339,6 @@
     onDOMContentLoaded(() => {
       const $ = getjQuery();
       /* istanbul ignore if */
-
       if ($) {
         const name = plugin.NAME;
         const JQUERY_NO_CONFLICT = $.fn[name];

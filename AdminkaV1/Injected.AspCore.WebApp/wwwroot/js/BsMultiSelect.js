@@ -7,8 +7,7 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@popperjs/core')) :
     typeof define === 'function' && define.amd ? define(['@popperjs/core'], factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.dashboardcode = factory(global.Popper));
-}(this, (function (Popper) { 'use strict';
-
+}(this, /*factory*/ (function (Popper) { 'use strict';
     function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
     var Popper__default = /*#__PURE__*/_interopDefaultLegacy(Popper);
@@ -4348,6 +4347,7 @@
     };
 
     var BsMultiSelect = function (window, jQuery, createPopper) {
+	  console.log({msg:"BsMultiSelect constructor",window:window, jQuery:jQuery});
       return createForJQuery(window, jQuery, createPopper, 'BsMultiSelect', defaultPlugins, Bs5Plugin);
     }(window, window.jQuery, Popper__default['default']);
 

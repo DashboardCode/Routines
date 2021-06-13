@@ -77,7 +77,11 @@ var config = {
     },
     resolve: {
         alias: {
-           'datatables.net-buttons/buttons.colVis': 'datatables.net-buttons/js/buttons.colVis.js'
+            'datatables.net-buttons#buttons.colVis': 'datatables.net-buttons/js/buttons.colVis.js',
+            '@popperjs/core': '@popperjs/core/dist/umd/popper.js',
+            'bootstrap#umd': 'bootstrap/dist/js/bootstrap.js',
+            '@dashboardcode/bsmultiselect#umd':'@dashboardcode/bsmultiselect/dist/js/BsMultiSelect.js'
+            
            // 'handlebars': 'handlebars/dist/handlebars.js',
            // 'corejs-typeahead': 'corejs-typeahead/dist/typeahead.jquery.js'
         }
