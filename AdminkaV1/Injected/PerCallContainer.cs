@@ -5,7 +5,7 @@ using DashboardCode.Routines.Storage;
 using DashboardCode.AdminkaV1.LoggingDom;
 using DashboardCode.AdminkaV1.LoggingDom.WcfClient;
 
-#if NETSTANDARD2_1
+#if NET6_0
 using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore;
 using DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.Services;
 
@@ -37,7 +37,7 @@ namespace DashboardCode.AdminkaV1.Injected
             this.getAuditStamp = getAuditStamp;
         }
 
-#if NETSTANDARD2_1
+#if NET6_0
         public LoggingDomStorageRoutineHandler<TUserContext> ResolveLoggingDomDbContextHandler()
         {
             var adminkaDbContextHandler = new LoggingDomStorageRoutineHandler<TUserContext>(

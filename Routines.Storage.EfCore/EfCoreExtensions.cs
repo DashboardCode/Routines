@@ -26,7 +26,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             return iState.Queryable;
         }
 
-        public static Include<T> AppendModelFields<T>(this Include<T> include, IModel model) where T : class
+        public static Include<T> AppendModelFields<T>(this Include<T> include, IMutableModel model) where T : class
         {
             void appendModelFieldsRecursive(ChainNode node)
             {
@@ -47,7 +47,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             return @value;
         }
 
-        public static Include<T> AppendModelFieldsIfEmpty<T>(this Include<T> include, IModel model) where T : class
+        public static Include<T> AppendModelFieldsIfEmpty<T>(this Include<T> include, IMutableModel model) where T : class
         {
             void appendModelFieldsRecursive(ChainNode node)
             {
@@ -69,7 +69,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             return @value;
         }
 
-        public static Include<T> ExtractNavigationsAppendKeyLeafs<T>(this Include<T> include, IModel model) where T : class
+        public static Include<T> ExtractNavigationsAppendKeyLeafs<T>(this Include<T> include, IMutableModel model) where T : class
         {
             void extractNavigationsAppendKeyLeafsRecursive(ChainNode source, ChainNode destination)
             {
@@ -101,7 +101,7 @@ namespace DashboardCode.Routines.Storage.EfCore
             return @value;
         }
 
-        public static Include<T> ExtractNavigations<T>(this Include<T> include, IModel model) where T : class
+        public static Include<T> ExtractNavigations<T>(this Include<T> include, IMutableModel model) where T : class
         {
             void extractNavigationsAppendKeyLeafsRecursive(ChainNode source, ChainNode destination)
             {

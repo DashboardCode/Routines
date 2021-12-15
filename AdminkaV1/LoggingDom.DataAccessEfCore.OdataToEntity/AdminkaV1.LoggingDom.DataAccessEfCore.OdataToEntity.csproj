@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.OdataToEntity</AssemblyName>
     <RootNamespace>DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.OdataToEntity</RootNamespace>
   </PropertyGroup>
@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OdataToEntity.EfCore" Version="2.7.0" />
+    <PackageReference Include="OdataToEntity.EfCore" Version="2.8.0" />
   </ItemGroup>
 
   <ItemGroup>

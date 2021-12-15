@@ -28,21 +28,21 @@ namespace DashboardCode.AdminkaV1.Injected
         /// </summary>
         private static void ForceEarlyFail()
         {
-#if !NETSTANDARD
+#if !NET6_0
             /* 
               System.ServiceModel.Primitives, 4.4.1 case. Can be diagnosed by unit case: AdminkaV1.Injected.SqlServer.NETFramework.Test 
               Important: when NUGET informs that System.ServiceModel.Primitives 4.4.1 version installed, actually 4.2.0.0 specified 
               as version number, therefore app.config bindingRedirect should be adjusted - pointed to 4.2.0.0 (or just deleted, sicne default 
               bindingRedirect "no bindingRedirect" works well in such cases) 
             */
-             // TODO test it again, for this I need new use case: wcf service should call other wcf service through client
-             // WcfClientManager.AppendWcfClientFaultException(new StringBuilder(), new Exception());
+            // TODO test it again, for this I need new use case: wcf service should call other wcf service through client
+            // WcfClientManager.AppendWcfClientFaultException(new StringBuilder(), new Exception());
 #endif
         }
 
         public static IIdentity GetDefaultIdentity()
         {
-#if NETSTANDARD
+#if NET6_0
             // TODO: Core 2.1 will contains AD functionality https://github.com/dotnet/corefx/issues/2089 and 
             // there we will need update this code to get roles similar to WindowsIdentity.GetCurrent().
             return new GenericIdentity(Environment.UserDomainName + "\\" + Environment.UserName, "Anonymous");
@@ -86,12 +86,12 @@ namespace DashboardCode.AdminkaV1.Injected
                 {
                     if (ex is AdminkaException)
                         sb.AppendUserContextException((AdminkaException)ex);
-#if NETSTANDARD2_1
+#if NET6_0
                     DashboardCode.AdminkaV1.LoggingDom.WcfClient.WcfClientManager.AppendWcfClientFaultException(sb, ex);
                     DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.LoggingDomDataAccessEfCoreManager.Append(sb, ex);
 #endif
 
-#if NETSTANDARD2_1
+#if NET6_0
                     DashboardCode.Routines.Storage.SqlServer.SqlServerManager.Append(sb, ex);
 #else
                     DashboardCode.Routines.Storage.SystemSqlServer.SqlServerManager.Append(sb, ex);
@@ -145,7 +145,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public static string SerializeToJson(object o, int depth, bool ignoreDuplicates)
         {
-#if NETSTANDARD
+#if NET6_0
             var types = typeof(UserContext).GetTypeInfo().Assembly.GetTypes();
 #else
             var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
@@ -191,14 +191,14 @@ namespace DashboardCode.AdminkaV1.Injected
                 return listLoggingAdapter;
             };
         }
-#endregion
+        #endregion
 
-#region ApplicationSettings
-
-
+        #region ApplicationSettings
 
 
-#if NETSTANDARD
+
+
+#if NET6_0
         readonly static Routines.Configuration.Standard.DeserializerStandard deserializer = new Routines.Configuration.Standard.DeserializerStandard();
         public static ApplicationSettings CreateInMemoryApplicationSettingsStandard(string name)
         {

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
       <!--<TargetFrameworks>net5.0;net48</TargetFrameworks>-->
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   
@@ -23,9 +23,9 @@
    </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="NLog.MailKit" Version="3.3.0" />
+    <PackageReference Include="NLog.MailKit" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>

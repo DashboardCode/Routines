@@ -4,10 +4,10 @@ namespace DashboardCode.Routines.Storage.EfCore
 {
     public class OrmEntitySchemaAdapter<TEntity> : IOrmEntitySchemaAdapter<TEntity> where TEntity : class
     {
-        private readonly IModel model;
+        private readonly IMutableModel model;
         private readonly IOrmEntitySchemaAdapter ormEntitySchemaAdapter;
 
-        public OrmEntitySchemaAdapter(IModel model, IOrmEntitySchemaAdapter ormEntitySchemaAdapter)
+        public OrmEntitySchemaAdapter(IMutableModel model, IOrmEntitySchemaAdapter ormEntitySchemaAdapter)
         {
             this.model = model;
             this.ormEntitySchemaAdapter = ormEntitySchemaAdapter;

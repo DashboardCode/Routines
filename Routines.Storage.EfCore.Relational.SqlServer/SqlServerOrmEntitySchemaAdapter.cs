@@ -14,7 +14,7 @@ namespace DashboardCode.Routines.Storage.EfCore.Relational.SqlServer
         readonly string TableName;
         readonly Dictionary<string, (string[], string)> Constraints;
         readonly Dictionary<string, string[]> Uniques;
-        public SqlServerOrmEntitySchemaAdapter(IEntityType entityType)
+        public SqlServerOrmEntitySchemaAdapter(IMutableEntityType entityType)
         {
             SchemaName = entityType.GetSchema();
             TableName = entityType.GetTableName(); 
@@ -50,7 +50,7 @@ namespace DashboardCode.Routines.Storage.EfCore.Relational.SqlServer
                 if (index.IsUnique)
                 {
                     //var sqlServerAnnotations = index.SqlServer();
-                    var indexName = index.GetName();
+                    var indexName = index.GetDatabaseName();
                     var fields = index.Properties.Select(e => e.Name).ToArray();
                     Uniques.Add(indexName, fields);
                 }

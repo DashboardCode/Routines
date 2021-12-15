@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net48;net6.0</TargetFrameworks>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
     <Product>DashboardCode.AdminkaV1.Injected.NETStandard</Product>
     <Copyright>Copyright ©  2016</Copyright>
@@ -30,11 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DashboardCode.NLogTools" Version="3.0.6" />
-    <PackageReference Include="DynamicExpresso.Core" Version="2.4.1" />
+    <PackageReference Include="DashboardCode.NLogTools" Version="3.0.7" />
+    <PackageReference Include="DynamicExpresso.Core" Version="2.9.7" />
     <PackageReference Include="Markdown" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="5.0.1" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,7 +43,7 @@
     <ProjectReference Include="..\..\Routines.ActiveDirectory\Routines.ActiveDirectory.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
     <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\AuthenticationDom.DataAccessEfCore\AdminkaV1.AuthenticationDom.DataAccessEfCore.csproj" />
