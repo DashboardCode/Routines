@@ -11,7 +11,7 @@ namespace Benchmark
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
-#if !(NETCOREAPP)
+#if !NET6_0
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(printSource: true)]
     [RyuJitX64Job]
@@ -110,7 +110,7 @@ namespace Benchmark
         public string CallBuildedReal()
 #pragma warning restore CA1822 // Mark members as static
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
             var b = callBuildedReal(sb, 1, 2);
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
@@ -122,7 +122,7 @@ namespace Benchmark
         public string CallBuilded()
 #pragma warning restore CA1822 // Mark members as static
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
             var b = callBuilded(sb, 1, 2);
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
@@ -134,7 +134,7 @@ namespace Benchmark
         public string CallLambda()
 #pragma warning restore CA1822 // Mark members as static
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
             var b = callLambda(sb, 1, 2);
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
@@ -146,7 +146,7 @@ namespace Benchmark
         public string CallLambdaConst()
 #pragma warning restore CA1822 // Mark members as static
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
             var b = callLambdaConst(sb, 1, 2);
 #pragma warning restore IDE0059 // Unnecessary assignment of a value

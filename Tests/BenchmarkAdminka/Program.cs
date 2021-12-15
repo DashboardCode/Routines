@@ -5,7 +5,7 @@ namespace BenchmarkAdminka
 {
     class Program
     {
-#if NETCOREAPP
+#if NET6_0
         public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsStandard();
 #else
         public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();

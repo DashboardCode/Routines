@@ -8,7 +8,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
     public static class TestManager
     {
-#if NETCOREAPP
+#if NET6_0
         public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsStandard();
 #else
         public readonly static ApplicationSettingsClassic ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();

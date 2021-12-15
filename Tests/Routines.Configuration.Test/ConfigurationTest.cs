@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Configuration.Test
 {
-#if !NETCOREAPP
+#if !NET6_0
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
 #endif
     public class ConfigurationTest
     {
 
-#if NETCOREAPP
+#if NET6_0
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -26,14 +26,14 @@ namespace DashboardCode.Routines.Configuration.Test
         }
 
 
-#if NETCOREAPP
+#if NET6_0
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
 #endif
         public void TestContainerResolve()
         {
-#if NETCOREAPP
+#if NET6_0
             //var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
             //Microsoft.Extensions.Configuration.JsonConfigurationExtensions.AddJsonFile(configurationBuilder, "appsettings.json", false, true);
             //var configurationRoot = configurationBuilder.Build();
@@ -64,7 +64,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails 2");
         }
 
-#if NETCOREAPP
+#if NET6_0
         [Xunit.Fact]
         public void TestComplexResolver()
         {
@@ -82,7 +82,7 @@ namespace DashboardCode.Routines.Configuration.Test
         }
 #endif
 
-#if NETCOREAPP
+#if NET6_0
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -118,7 +118,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails. Case 4");
         }
 
-#if NETCOREAPP
+#if NET6_0
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -137,7 +137,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails. Case 2");
         }
 
-#if NETCOREAPP
+#if NET6_0
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]

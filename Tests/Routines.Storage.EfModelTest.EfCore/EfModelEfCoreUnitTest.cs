@@ -8,10 +8,10 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Test
     [TestClass]
     public class EfModelEfCoreUnitTest
     {
-        string connectionString;
+        readonly string connectionString;
         public EfModelEfCoreUnitTest()
         {
-#if NETCOREAPP
+#if NET6_0
             var configurationRoot =
                 DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Test.
                 ConfigurationManager.ResolveConfigurationRoot();

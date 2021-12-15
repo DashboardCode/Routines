@@ -14,7 +14,7 @@ namespace Benchmark
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
-#if !NETCOREAPP
+#if !NET6_0
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(/*printAsm: true,*/ printSource: true)]
     [RyuJitX64Job]
@@ -23,7 +23,7 @@ namespace Benchmark
     public class BenchmarkComposeFormatterDisasm
     {
         static readonly Box box;
-        static readonly List<Row> testData = new List<Row>();
+        static readonly List<Row> testData = new();
         static readonly Func<Box, string> composeFormatterDelegate;
         static readonly Func<StringBuilder, Box, bool> dslRoutineExpressionManuallyConstruted;
         static readonly Func<StringBuilder, Box, bool> dslRoutineDelegateManuallyConstrutedFormatter;
@@ -115,7 +115,7 @@ namespace Benchmark
 
         [Benchmark]
 #pragma warning disable CA1822 // Mark members as static
-        public string fake_expressionManuallyConstruted()
+        public string Fake_expressionManuallyConstruted()
 #pragma warning restore CA1822 // Mark members as static
         {
             var sb = new StringBuilder();
@@ -127,7 +127,7 @@ namespace Benchmark
 
         [Benchmark]
 #pragma warning disable CA1822 // Mark members as static
-        public string dslComposeFormatter()
+        public string DslComposeFormatter()
 #pragma warning restore CA1822 // Mark members as static
         {
             var json = composeFormatterDelegate(box);
@@ -137,7 +137,7 @@ namespace Benchmark
 
         [Benchmark]
 #pragma warning disable CA1822 // Mark members as static
-        public string fake_delegateManuallyConstruted()
+        public string Fake_delegateManuallyConstruted()
 #pragma warning restore CA1822 // Mark members as static
         {
             var sb = new StringBuilder();

@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
-#if NETCOREAPP
+#if NET6_0
 using Microsoft.Extensions.Configuration;
 #endif
 
@@ -9,7 +9,7 @@ namespace DashboardCode.Routines.Configuration.Test
 {
     public static class ZoningSharedSourceProjectManager
     {
-#if NETCOREAPP
+#if NET6_0
         public static IConfigurationManagerLoader<IConfigurationSection> GetLoader()
         {
             var configurationBuilder = new ConfigurationBuilder();
@@ -25,7 +25,7 @@ namespace DashboardCode.Routines.Configuration.Test
 #endif
     }
 
-#if NETCOREAPP
+#if NET6_0
     public class Deserializer : IGWithConstructorFactory<IConfigurationSection>
     {
         public TOutput Create<TOutput>(IConfigurationSection section) where TOutput : new()
