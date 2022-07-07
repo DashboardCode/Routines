@@ -16,7 +16,7 @@
     "jquery-validation": "^1.19.3",
     "jquery-validation-unobtrusive": "^3.2.12",
     "jstree": "^3.3.11",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "@popperjs/core": "^2.9.2",
     "source-map": "^0.7.3"
   },
