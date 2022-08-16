@@ -1,5 +1,5 @@
 # TODO: should I migrate to nuget (with it I still need change folder): 
-# dotnet nuget push mycomponet.1.0.0.nupkg -k 0000000000000000000000000 -s https://api.nuget.org/v3/index.json
+# nuget push "Routines.Storage.Ef6\bin\Release\DashboardCode.Routines.Storage.Ef6.3.0.6.nupkg" 'password' -Source https://api.nuget.org/v3/index.json
 
 # CONFIGURATION
 $IncludePublicableProjectsGlobbing = @('Routines.csproj','Routines.*.csproj')
