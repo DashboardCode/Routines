@@ -77,6 +77,8 @@ namespace DashboardCode.Routines.Storage.Ef6
         {
             if (ex is DbUpdateConcurrencyException dbUpdateConcurrencyException)
                 AppendDbUpdateConcurrencyException(sb, dbUpdateConcurrencyException);
+            if (ex is DbEntityValidationException dbEntityValidationException)
+                AppendDbEntityValidationException(sb, dbEntityValidationException);
         }
 
         public static void AppendDbUpdateConcurrencyException(StringBuilder stringBuilder, DbUpdateConcurrencyException ex)
@@ -90,6 +92,18 @@ namespace DashboardCode.Routines.Storage.Ef6
                 foreach (var p in propertyNames)
                     stringBuilder.AppendMarkdownProperty("   " + p, (e.CurrentValues.GetValue<object>(p)?.ToString()) ?? "(null)");
                 i++;
+            }
+        }
+
+        public static void AppendDbEntityValidationException(StringBuilder stringBuilder, DbEntityValidationException ex)
+        {
+            stringBuilder.AppendMarkdownLine("DbEntityValidationException data:");
+            foreach (var errors in ex.EntityValidationErrors)
+            {
+                foreach (var dbValidationError in errors.ValidationErrors)
+                {
+                    stringBuilder.AppendMarkdownProperty("   " + dbValidationError.PropertyName, dbValidationError.ErrorMessage);
+                }
             }
         }
     }
