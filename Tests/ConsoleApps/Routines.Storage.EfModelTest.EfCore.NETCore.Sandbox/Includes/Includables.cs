@@ -7,7 +7,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox.Includes
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Sandbox.Includes
 {
     public interface IIncludable<TRootEntity> where TRootEntity : class
     {

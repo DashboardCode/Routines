@@ -3,11 +3,15 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Core.Metadata.Edm;
+using System.Xml;
 
 namespace DashboardCode.Routines.Storage.Ef6
 {
     public class SqlServerOrmEntitySchemaAdapter : IOrmEntitySchemaAdapter
     {
+        #pragma warning disable CS0649 // disable never used 
         readonly string[] Binaries;
         readonly string[] Keys;
         readonly string[] Requireds;
@@ -19,6 +23,31 @@ namespace DashboardCode.Routines.Storage.Ef6
         {
             var metadata = ((IObjectContextAdapter)dbContext).ObjectContext.MetadataWorkspace;
 
+            var entityTypeMeta = metadata
+            .GetItems<EntityType>(DataSpace.CSpace)
+                .FirstOrDefault(e => e.Name == nameof(entityType));
+
+            if (entityType != null)
+            {
+                foreach (var property in entityTypeMeta.Properties)
+                {
+                    var annotations = property.MetadataProperties
+                        .Where(p => p.Name.StartsWith("http://schemas.microsoft.com/ado/2009/02/edm/annotation"))
+                        .ToList();
+
+                    foreach (var annotation in annotations)
+                    {
+                        //if (!annotation.IsNullable)
+                        //        requireds.Add(property.Name);
+                        //    if (property.IsKey())
+                        //        keys.Add(property.Name);
+                        //    if (property.ClrType == typeof(byte[]))
+                        //        binaries.Add(property.Name);
+                    }
+                }
+            }
+
+            
             //SchemaName = entityType.GetSchema();
             //TableName = entityType.GetTableName(); 
             // ----------------------------------------------------------------------------------------------------------
@@ -108,5 +137,6 @@ namespace DashboardCode.Routines.Storage.Ef6
                 return properties;
             return default((string[], string));
         }
+        #pragma warning restore CS0649
     }
 }

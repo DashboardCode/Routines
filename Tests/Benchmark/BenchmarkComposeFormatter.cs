@@ -7,7 +7,6 @@ using BenchmarkDotNet.Attributes;
 
 using DashboardCode.Routines;
 using DashboardCode.Routines.Json;
-using Jil;
 using FastExpressionCompiler;
 
 namespace Benchmark
@@ -292,26 +291,6 @@ namespace Benchmark
         {
             var json = ServiceStack.Text.JsonSerializer.SerializeToString(box);
             return json;
-        }
-
-        [Benchmark]
-        public string jil_excludeNulls()
-        {
-            using (var output = new System.IO.StringWriter())
-            {
-                JSON.Serialize(box, output, new Options(excludeNulls: true));
-                return output.ToString();
-            }
-        }
-
-        [Benchmark]
-        public string jil()
-        {
-            using (var output = new System.IO.StringWriter())
-            {
-                JSON.Serialize(box, output, new Options(excludeNulls: false));
-                return output.ToString();
-            }
         }
     }
 

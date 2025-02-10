@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Sandbox
 {
     public class MyDbContextFactory : IDesignTimeDbContextFactory<MyDbContext>
     {

@@ -5,11 +5,7 @@ namespace BenchmarkAdminka
 {
     class Program
     {
-#if NET6_0
-        public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsStandard();
-#else
-        public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettingsClassic();
-#endif
+        public readonly static ApplicationSettings ApplicationSettings = InjectedManager.CreateApplicationSettings();
         static void Main()
         {
             //var b = new BenchmarkAdminkaRoutineListLogger();

@@ -2,61 +2,56 @@
 <html lang='en'>
 <head>
 <meta charset='utf-8' />
-<title>Benchmark.BenchmarkComposeFormatter</title>
+<title>Benchmark.BenchmarkComposeFormatter-20250208-013610</title>
 
 <style type="text/css">
 	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
-	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
 	tr { background-color: #fff; border-top: 1px solid #ccc; }
 	tr:nth-child(even) { background: #f8f8f8; }
 </style>
 </head>
 <body>
 <pre><code>
-BenchmarkDotNet=v0.11.0, OS=Windows 10.0.17134.165 (1803/April2018Update/Redstone4)
+BenchmarkDotNet v0.14.0, Windows 10 (10.0.19045.5371/22H2/2022Update)
 Intel Core i5-2500K CPU 3.30GHz (Sandy Bridge), 1 CPU, 4 logical and 4 physical cores
-.NET Core SDK=2.1.300
-  [Host] : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
-  Clr    : .NET Framework 4.7.2 (CLR 4.0.30319.42000), 64bit RyuJIT-v4.7.3131.0
-  Core   : .NET Core 2.1.0 (CoreCLR 4.6.26515.07, CoreFX 4.6.26515.06), 64bit RyuJIT
+.NET SDK 9.0.101
+  [Host]     : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX
+  Job-JZRVEH : .NET 9.0.0 (9.0.24.52809), X64 RyuJIT AVX
 </code></pre>
 <pre><code></code></pre>
 
 <table>
-<thead><tr><th>                                        Method</th><th>Job</th><th>Runtime</th><th>Toolchain</th><th>Mean</th><th>Error</th><th>StdDev</th><th>  Min</th><th> Max</th><th>Median</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
+<thead><tr><th>Method                                        </th><th>Runtime     </th><th>Mean </th><th>Error</th><th>StdDev</th><th>Median</th><th>Min  </th><th>Max  </th><th>Rank</th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th>
 </tr>
-</thead><tbody><tr><td>dslComposeFormatter_NoInnerLambdaCompile</td><td>Clr</td><td>Clr</td><td>Default</td><td>27.391 ms</td><td>0.1350 ms</td><td>0.1197 ms</td><td>27.1759 ms</td><td>27.660 ms</td><td>27.388 ms</td><td>27</td><td>593.7500</td><td>93.7500</td><td>31.2500</td><td>2315.25 KB</td>
-</tr><tr><td>dslComposeFormatter_NoInnerLambdaCompile_FastCompile</td><td>Clr</td><td>Clr</td><td>Default</td><td>27.471 ms</td><td>0.0802 ms</td><td>0.0750 ms</td><td>27.3426 ms</td><td>27.607 ms</td><td>27.461 ms</td><td>28</td><td>593.7500</td><td>93.7500</td><td>31.2500</td><td>2315.25 KB</td>
-</tr><tr><td>dslComposeFormatter</td><td>Clr</td><td>Clr</td><td>Default</td><td>3.505 ms</td><td>0.0132 ms</td><td>0.0124 ms</td><td>3.4847 ms</td><td>3.526 ms</td><td>3.506 ms</td><td>15</td><td>292.9688</td><td>62.5000</td><td>58.5938</td><td>1096.25 KB</td>
-</tr><tr><td>dslComposeFormatter_FastCompile</td><td>Clr</td><td>Clr</td><td>Default</td><td>3.209 ms</td><td>0.0175 ms</td><td>0.0164 ms</td><td>3.1896 ms</td><td>3.244 ms</td><td>3.203 ms</td><td>11</td><td>292.9688</td><td>62.5000</td><td>58.5938</td><td>1096.25 KB</td>
-</tr><tr><td>Manually_ImperativeIdeal</td><td>Clr</td><td>Clr</td><td>Default</td><td>2.508 ms</td><td>0.0146 ms</td><td>0.0136 ms</td><td>2.4912 ms</td><td>2.531 ms</td><td>2.505 ms</td><td>8</td><td>234.3750</td><td>62.5000</td><td>58.5938</td><td>903.3 KB</td>
-</tr><tr><td>Manually_FunctionalIdeal</td><td>Clr</td><td>Clr</td><td>Default</td><td>3.340 ms</td><td>0.0178 ms</td><td>0.0167 ms</td><td>3.3218 ms</td><td>3.365 ms</td><td>3.333 ms</td><td>12</td><td>449.2188</td><td>101.5625</td><td>58.5938</td><td>1733.72 KB</td>
-</tr><tr><td>Fake_expression_CompileFast</td><td>Clr</td><td>Clr</td><td>Default</td><td>48.247 ms</td><td>0.2980 ms</td><td>0.2788 ms</td><td>47.7302 ms</td><td>48.627 ms</td><td>48.309 ms</td><td>29</td><td>636.3636</td><td>181.8182</td><td>-</td><td>2729.22 KB</td>
-</tr><tr><td>Fake_expression_Compile</td><td>Clr</td><td>Clr</td><td>Default</td><td>103.414 ms</td><td>0.6166 ms</td><td>0.5466 ms</td><td>102.5918 ms</td><td>104.591 ms</td><td>103.252 ms</td><td>31</td><td>2000.0000</td><td>200.0000</td><td>-</td><td>7107.5 KB</td>
-</tr><tr><td>JsonNet_Default</td><td>Clr</td><td>Clr</td><td>Default</td><td>3.629 ms</td><td>0.0192 ms</td><td>0.0170 ms</td><td>3.6068 ms</td><td>3.659 ms</td><td>3.627 ms</td><td>17</td><td>175.7813</td><td>58.5938</td><td>58.5938</td><td>659.09 KB</td>
-</tr><tr><td>JsonNet_NullIgnore</td><td>Clr</td><td>Clr</td><td>Default</td><td>3.462 ms</td><td>0.0168 ms</td><td>0.0140 ms</td><td>3.4351 ms</td><td>3.481 ms</td><td>3.465 ms</td><td>14</td><td>136.7188</td><td>42.9688</td><td>42.9688</td><td>565.24 KB</td>
-</tr><tr><td>JsonNet_DateFormatMMSS</td><td>Clr</td><td>Clr</td><td>Default</td><td>4.885 ms</td><td>0.0509 ms</td><td>0.0476 ms</td><td>4.8120 ms</td><td>4.991 ms</td><td>4.873 ms</td><td>22</td><td>273.4375</td><td>54.6875</td><td>54.6875</td><td>996.7 KB</td>
-</tr><tr><td>JsonNet_DateFormatMMSSFFF</td><td>Clr</td><td>Clr</td><td>Default</td><td>5.049 ms</td><td>0.0573 ms</td><td>0.0536 ms</td><td>4.9990 ms</td><td>5.186 ms</td><td>5.027 ms</td><td>23</td><td>281.2500</td><td>54.6875</td><td>54.6875</td><td>1024.82 KB</td>
-</tr><tr><td>JsonNet_Indented</td><td>Clr</td><td>Clr</td><td>Default</td><td>4.392 ms</td><td>0.0389 ms</td><td>0.0345 ms</td><td>4.3573 ms</td><td>4.491 ms</td><td>4.386 ms</td><td>21</td><td>210.9375</td><td>93.7500</td><td>93.7500</td><td>1249.02 KB</td>
-</tr><tr><td>ServiceStack_SerializeToString</td><td>Clr</td><td>Clr</td><td>Default</td><td>3.702 ms</td><td>0.0139 ms</td><td>0.0130 ms</td><td>3.6844 ms</td><td>3.726 ms</td><td>3.700 ms</td><td>18</td><td>214.8438</td><td>42.9688</td><td>42.9688</td><td>734.85 KB</td>
-</tr><tr><td>jil_excludeNulls</td><td>Clr</td><td>Clr</td><td>Default</td><td>1.364 ms</td><td>0.0124 ms</td><td>0.0097 ms</td><td>1.3464 ms</td><td>1.384 ms</td><td>1.364 ms</td><td>3</td><td>-</td><td>-</td><td>-</td><td>414.38 KB</td>
-</tr><tr><td>jil</td><td>Clr</td><td>Clr</td><td>Default</td><td>1.397 ms</td><td>0.0257 ms</td><td>0.0240 ms</td><td>1.3685 ms</td><td>1.452 ms</td><td>1.391 ms</td><td>4</td><td>-</td><td>-</td><td>-</td><td>508.27 KB</td>
-</tr><tr><td>dslComposeFormatter_NoInnerLambdaCompile</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>21.785 ms</td><td>0.0806 ms</td><td>0.0754 ms</td><td>21.6714 ms</td><td>21.906 ms</td><td>21.805 ms</td><td>25</td><td>531.2500</td><td>156.2500</td><td>31.2500</td><td>2076.02 KB</td>
-</tr><tr><td>dslComposeFormatter_NoInnerLambdaCompile_FastCompile</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>21.864 ms</td><td>0.0718 ms</td><td>0.0671 ms</td><td>21.7825 ms</td><td>21.983 ms</td><td>21.851 ms</td><td>26</td><td>531.2500</td><td>156.2500</td><td>31.2500</td><td>2076.02 KB</td>
-</tr><tr><td>dslComposeFormatter</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>2.186 ms</td><td>0.0097 ms</td><td>0.0091 ms</td><td>2.1723 ms</td><td>2.202 ms</td><td>2.186 ms</td><td>6</td><td>226.5625</td><td>62.5000</td><td>58.5938</td><td>856.92 KB</td>
-</tr><tr><td>dslComposeFormatter_FastCompile</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>2.184 ms</td><td>0.0070 ms</td><td>0.0062 ms</td><td>2.1744 ms</td><td>2.194 ms</td><td>2.183 ms</td><td>6</td><td>226.5625</td><td>62.5000</td><td>58.5938</td><td>856.92 KB</td>
-</tr><tr><td>Manually_ImperativeIdeal</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>1.558 ms</td><td>0.0082 ms</td><td>0.0073 ms</td><td>1.5424 ms</td><td>1.569 ms</td><td>1.558 ms</td><td>5</td><td>117.1875</td><td>58.5938</td><td>58.5938</td><td>504.71 KB</td>
-</tr><tr><td>Manually_FunctionalIdeal</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>2.358 ms</td><td>0.0134 ms</td><td>0.0111 ms</td><td>2.3428 ms</td><td>2.384 ms</td><td>2.360 ms</td><td>7</td><td>406.2500</td><td>78.1250</td><td>58.5938</td><td>1494.55 KB</td>
-</tr><tr><td>Fake_expression_CompileFast</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>14.615 ms</td><td>0.0404 ms</td><td>0.0377 ms</td><td>14.5629 ms</td><td>14.686 ms</td><td>14.613 ms</td><td>24</td><td>625.0000</td><td>171.8750</td><td>46.8750</td><td>2489.78 KB</td>
-</tr><tr><td>Fake_expression_Compile</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>50.226 ms</td><td>0.2860 ms</td><td>0.2676 ms</td><td>49.6023 ms</td><td>50.650 ms</td><td>50.252 ms</td><td>30</td><td>1700.0000</td><td>400.0000</td><td>-</td><td>6164.08 KB</td>
-</tr><tr><td>JsonNet_Default</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>2.934 ms</td><td>0.0104 ms</td><td>0.0097 ms</td><td>2.9209 ms</td><td>2.955 ms</td><td>2.930 ms</td><td>10</td><td>175.7813</td><td>58.5938</td><td>58.5938</td><td>658.63 KB</td>
-</tr><tr><td>JsonNet_NullIgnore</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>2.753 ms</td><td>0.0088 ms</td><td>0.0083 ms</td><td>2.7408 ms</td><td>2.771 ms</td><td>2.752 ms</td><td>9</td><td>136.7188</td><td>42.9688</td><td>42.9688</td><td>564.97 KB</td>
-</tr><tr><td>JsonNet_DateFormatMMSS</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>3.360 ms</td><td>0.0154 ms</td><td>0.0144 ms</td><td>3.3418 ms</td><td>3.398 ms</td><td>3.355 ms</td><td>13</td><td>214.8438</td><td>54.6875</td><td>54.6875</td><td>757.41 KB</td>
-</tr><tr><td>JsonNet_DateFormatMMSSFFF</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>3.775 ms</td><td>0.0105 ms</td><td>0.0098 ms</td><td>3.7616 ms</td><td>3.794 ms</td><td>3.771 ms</td><td>19</td><td>175.7813</td><td>58.5938</td><td>58.5938</td><td>785.53 KB</td>
-</tr><tr><td>JsonNet_Indented</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>3.570 ms</td><td>0.0170 ms</td><td>0.0159 ms</td><td>3.5462 ms</td><td>3.601 ms</td><td>3.567 ms</td><td>16</td><td>148.4375</td><td>97.6563</td><td>97.6563</td><td>967.24 KB</td>
-</tr><tr><td>ServiceStack_SerializeToString</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>3.884 ms</td><td>0.0267 ms</td><td>0.0250 ms</td><td>3.8563 ms</td><td>3.928 ms</td><td>3.873 ms</td><td>20</td><td>218.7500</td><td>42.9688</td><td>42.9688</td><td>805.13 KB</td>
-</tr><tr><td>jil_excludeNulls</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>1.008 ms</td><td>0.0163 ms</td><td>0.0152 ms</td><td>0.9901 ms</td><td>1.038 ms</td><td>1.002 ms</td><td>1</td><td>-</td><td>-</td><td>-</td><td>412.02 KB</td>
-</tr><tr><td>jil</td><td>Core</td><td>Core</td><td>.NET Core 2.1</td><td>1.032 ms</td><td>0.0120 ms</td><td>0.0100 ms</td><td>1.0191 ms</td><td>1.054 ms</td><td>1.031 ms</td><td>2</td><td>-</td><td>-</td><td>-</td><td>505.98 KB</td>
+</thead><tbody><tr><td>dslComposeFormatter_NoInnerLambdaCompile</td><td>.NET 9.0</td><td>17,512.0 &mu;s</td><td>284.93 &mu;s</td><td>266.52 &mu;s</td><td>17,578.1 &mu;s</td><td>17,058.6 &mu;s</td><td>17,927.1 &mu;s</td><td>9</td><td>500.0000</td><td>93.7500</td><td>31.2500</td><td>1888.54 KB</td>
+</tr><tr><td>dslComposeFormatter_NoInnerLambdaCompile_FastCompile</td><td>.NET 9.0</td><td>1,008.1 &mu;s</td><td>18.54 &mu;s</td><td>41.47 &mu;s</td><td>989.0 &mu;s</td><td>967.7 &mu;s</td><td>1,112.0 &mu;s</td><td>2</td><td>175.7813</td><td>58.5938</td><td>58.5938</td><td>669.44 KB</td>
+</tr><tr><td>dslComposeFormatter</td><td>.NET 9.0</td><td>1,065.5 &mu;s</td><td>20.87 &mu;s</td><td>28.56 &mu;s</td><td>1,060.3 &mu;s</td><td>1,024.1 &mu;s</td><td>1,129.2 &mu;s</td><td>2</td><td>175.7813</td><td>58.5938</td><td>58.5938</td><td>669.44 KB</td>
+</tr><tr><td>dslComposeFormatter_FastCompile</td><td>.NET 9.0</td><td>1,013.3 &mu;s</td><td>12.70 &mu;s</td><td>10.61 &mu;s</td><td>1,012.3 &mu;s</td><td>1,002.6 &mu;s</td><td>1,041.0 &mu;s</td><td>2</td><td>175.7813</td><td>58.5938</td><td>58.5938</td><td>669.44 KB</td>
+</tr><tr><td>Manually_ImperativeIdeal</td><td>.NET 9.0</td><td>725.0 &mu;s</td><td>6.36 &mu;s</td><td>5.64 &mu;s</td><td>725.0 &mu;s</td><td>717.2 &mu;s</td><td>737.1 &mu;s</td><td>1</td><td>117.1875</td><td>58.5938</td><td>58.5938</td><td>420.34 KB</td>
+</tr><tr><td>Manually_FunctionalIdeal</td><td>.NET 9.0</td><td>1,306.3 &mu;s</td><td>26.07 &mu;s</td><td>59.38 &mu;s</td><td>1,288.5 &mu;s</td><td>1,219.1 &mu;s</td><td>1,437.9 &mu;s</td><td>3</td><td>351.5625</td><td>60.5469</td><td>58.5938</td><td>1250.82 KB</td>
+</tr><tr><td>Fake_expression_CompileFast</td><td>.NET 9.0</td><td>9,007.6 &mu;s</td><td>39.34 &mu;s</td><td>36.80 &mu;s</td><td>9,019.4 &mu;s</td><td>8,945.8 &mu;s</td><td>9,065.3 &mu;s</td><td>8</td><td>312.5000</td><td>78.1250</td><td>46.8750</td><td>1250.81 KB</td>
+</tr><tr><td>Fake_expression_Compile</td><td>.NET 9.0</td><td>30,519.3 &mu;s</td><td>350.86 &mu;s</td><td>328.20 &mu;s</td><td>30,520.3 &mu;s</td><td>30,143.2 &mu;s</td><td>31,309.8 &mu;s</td><td>10</td><td>1218.7500</td><td>187.5000</td><td>31.2500</td><td>4035.72 KB</td>
+</tr><tr><td>JsonNet_Default</td><td>.NET 9.0</td><td>1,644.4 &mu;s</td><td>11.00 &mu;s</td><td>9.75 &mu;s</td><td>1,645.8 &mu;s</td><td>1,624.6 &mu;s</td><td>1,658.6 &mu;s</td><td>5</td><td>175.7813</td><td>58.5938</td><td>58.5938</td><td>630.52 KB</td>
+</tr><tr><td>JsonNet_NullIgnore</td><td>.NET 9.0</td><td>1,546.2 &mu;s</td><td>9.05 &mu;s</td><td>8.02 &mu;s</td><td>1,545.4 &mu;s</td><td>1,530.3 &mu;s</td><td>1,562.0 &mu;s</td><td>4</td><td>134.7656</td><td>44.9219</td><td>44.9219</td><td>536.84 KB</td>
+</tr><tr><td>JsonNet_DateFormatMMSS</td><td>.NET 9.0</td><td>1,676.1 &mu;s</td><td>32.41 &mu;s</td><td>36.02 &mu;s</td><td>1,681.1 &mu;s</td><td>1,606.6 &mu;s</td><td>1,735.0 &mu;s</td><td>5</td><td>164.0625</td><td>54.6875</td><td>54.6875</td><td>663.66 KB</td>
+</tr><tr><td>JsonNet_DateFormatMMSSFFF</td><td>.NET 9.0</td><td>1,776.1 &mu;s</td><td>16.71 &mu;s</td><td>13.96 &mu;s</td><td>1,774.7 &mu;s</td><td>1,754.3 &mu;s</td><td>1,805.6 &mu;s</td><td>6</td><td>175.7813</td><td>58.5938</td><td>58.5938</td><td>673.04 KB</td>
+</tr><tr><td>JsonNet_Indented</td><td>.NET 9.0</td><td>2,006.9 &mu;s</td><td>39.47 &mu;s</td><td>36.92 &mu;s</td><td>2,016.6 &mu;s</td><td>1,950.1 &mu;s</td><td>2,064.9 &mu;s</td><td>7</td><td>121.0938</td><td>117.1875</td><td>97.6563</td><td>939.15 KB</td>
+</tr><tr><td>ServiceStack_SerializeToString</td><td>.NET 9.0</td><td>1,770.9 &mu;s</td><td>26.90 &mu;s</td><td>25.17 &mu;s</td><td>1,771.6 &mu;s</td><td>1,740.6 &mu;s</td><td>1,819.5 &mu;s</td><td>6</td><td>171.8750</td><td>42.9688</td><td>42.9688</td><td>585.58 KB</td>
+</tr><tr><td>dslComposeFormatter_NoInnerLambdaCompile</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>dslComposeFormatter_NoInnerLambdaCompile_FastCompile</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>dslComposeFormatter</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>dslComposeFormatter_FastCompile</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>Manually_ImperativeIdeal</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>Manually_FunctionalIdeal</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>Fake_expression_CompileFast</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>Fake_expression_Compile</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>JsonNet_Default</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>JsonNet_NullIgnore</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>JsonNet_DateFormatMMSS</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>JsonNet_DateFormatMMSSFFF</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>JsonNet_Indented</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
+</tr><tr><td>ServiceStack_SerializeToString</td><td>.NET Framework 4.8</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td><td>?</td><td>NA</td><td>NA</td><td>NA</td><td>NA</td>
 </tr></tbody></table>
 </body>
 </html>

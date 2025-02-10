@@ -30,11 +30,7 @@ namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
             object input,
             string name)
             : base(
-#if NET6_0
-                 InjectedManager.CreateInMemoryApplicationSettingsStandard(name),
-#else
-                 InjectedManager.CreateInMemoryApplicationSettingsClassic(name),
-#endif
+                 InjectedManager.CreateInMemoryApplicationSettings(name),
                  loggingTransientsFactory,
                  hasVerboseLoggingPrivilege: hasVerboseLoggingPrivilege,
                  memberTag,

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox.Migrations
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Sandbox.Migrations
 {
     public partial class InitialCreate : Migration
     {

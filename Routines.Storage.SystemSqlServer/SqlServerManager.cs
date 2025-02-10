@@ -53,6 +53,7 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
 
         public static void Append(StringBuilder stringBuilder, Exception exception)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             if (exception is SqlException sqlException)
                 AppendSqlException(stringBuilder, sqlException);
         }
@@ -90,13 +91,19 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
                     AnalyzeSqlException(sqlException, storageResultBuilder);
         }
 
-        const string genericErrorField = "";
-        static readonly Regex fieldLengthRegex = new Regex("String or binary data would be truncated.");
-        static readonly Regex fieldRequiredRegex = new Regex("Cannot insert the value NULL into column '(?<column>.*?)', table '(?<table>.*?)'; column does not allow nulls. (?<statementType>.*?) fails.");
-        static readonly Regex fieldUniqueIndexRegex = new Regex(@"Cannot insert duplicate key row in object '(?<table>.*?)' with unique index '(?<index>.*?)'. The duplicate key value is ((?<value>.*?)).");
-        static readonly Regex fieldUniqueConstraintRegex = new Regex("Violation of UNIQUE KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'");
-        static readonly Regex fieldPkConstraintRegex = new Regex(@"Violation of PRIMARY KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'. The duplicate key value is ((?<value>.*?)).");
-        static readonly Regex fieldCkRegex = new Regex("The (?<statementType>.*?) statement conflicted with the CHECK constraint \"(?<constraint>.*?)\". The conflict occurred in database \"(?<database>.*?)\", table \"(?<table>.*?)\", column '(?<column>.*?)'.");
+        const string fieldLengthRegexText = "String or binary data would be truncated.";
+        const string fieldRequiredRegexText = "Cannot insert the value NULL into column '(?<column>.*?)', table '(?<table>.*?)'; column does not allow nulls. (?<statementType>.*?) fails.";
+        const string fieldUniqueIndexRegexText = @"Cannot insert duplicate key row in object '(?<table>.*?)' with unique index '(?<index>.*?)'. The duplicate key value is ((?<value>.*?)).";
+        const string fieldUniqueConstraintRegexText = "Violation of UNIQUE KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'";
+        const string fieldPkConstraintRegexText = @"Violation of PRIMARY KEY constraint '(?<constraint>.*?)'. Cannot insert duplicate key in object '(?<table>.*?)'. The duplicate key value is ((?<value>.*?)).";
+        const string fieldCkRegexText = "The (?<statementType>.*?) statement conflicted with the CHECK constraint \"(?<constraint>.*?)\". The conflict occurred in database \"(?<database>.*?)\", table \"(?<table>.*?)\", column '(?<column>.*?)'.";
+
+        static readonly Regex fieldLengthRegex = new (fieldLengthRegexText);
+        static readonly Regex fieldRequiredRegex = new (fieldRequiredRegexText);
+        static readonly Regex fieldUniqueIndexRegex = new (fieldUniqueIndexRegexText);
+        static readonly Regex fieldUniqueConstraintRegex = new (fieldUniqueConstraintRegexText);
+        static readonly Regex fieldPkConstraintRegex = new (fieldPkConstraintRegexText);
+        static readonly Regex fieldCkRegex = new (fieldCkRegexText);
         public static void AnalyzeSqlException(this SqlException exception, IStorageResultBuilder errorBuilder)
         {
             var message = exception.Message;
@@ -165,9 +172,9 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
                 {
                     var constraint = matchCollection[0].Groups["constraint"].Value;
                     var table = matchCollection[0].Groups["table"].Value;
-                    var statementType = matchCollection[0].Groups["statementType"].Value;
-                    var database = matchCollection[0].Groups["database"].Value;
-                    var column = matchCollection[0].Groups["column"].Value;
+                    //var statementType = matchCollection[0].Groups["statementType"].Value;
+                    //var database = matchCollection[0].Groups["database"].Value;
+                    //var column = matchCollection[0].Groups["column"].Value;
                     errorBuilder.AddCheckConstraintViolations(constraint, table);
                 }
             }
@@ -179,9 +186,9 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
             sqlException = null;
             foreach (var ex in aggregateException.InnerExceptions)
             {
-                if (ex is SqlException)
+                if (ex is SqlException exception)
                 {
-                    sqlException = (SqlException)ex;
+                    sqlException = exception;
                     return true;
                 }
             }
@@ -192,13 +199,13 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
         {
             var remoteServerErrorType = RemoteServerErrorType.SPECIFIC;
             SqlException sqlException = null;
-            if (unhandledException is SqlException)
+            if (unhandledException is SqlException exception)
             {
-                sqlException = (SqlException)unhandledException;
+                sqlException = exception;
             }
             else if (unhandledException is AggregateException aggregateException)
             {
-                FindSqlException((AggregateException)unhandledException, out sqlException);
+                FindSqlException(aggregateException, out sqlException);
             }
             if (sqlException != null)
             {
@@ -220,5 +227,6 @@ namespace DashboardCode.Routines.Storage.SystemSqlServer
             }
             return remoteServerErrorType;
         }
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }

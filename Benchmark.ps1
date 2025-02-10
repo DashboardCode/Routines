@@ -14,7 +14,7 @@ $BenchmarkProjectPath = "$SolutionFolderPath\Tests\Benchmark"
 
 $snapshotBefore = Get-ChildItem *.html -path "$BenchmarkReportPath"
 
-& dotnet run -c Release -f netcoreapp2.1 -p "$BenchmarkProjectPath"
+& dotnet run -c Release -f net9 --project "$BenchmarkProjectPath"
 
 $snapshotAfter = Get-ChildItem *.html -path "$BenchmarkReportPath"
 if ($snapshotBefore -eq $null -and $snapshotAfter -ne $null){

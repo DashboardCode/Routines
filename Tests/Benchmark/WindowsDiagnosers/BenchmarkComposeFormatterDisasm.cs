@@ -14,7 +14,7 @@ namespace Benchmark
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
-#if !NET6_0
+#if NET48_OR_GREATER
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(/*printAsm: true,*/ printSource: true)]
     [RyuJitX64Job]

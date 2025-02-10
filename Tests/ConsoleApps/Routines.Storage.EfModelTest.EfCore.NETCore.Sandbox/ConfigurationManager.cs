@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Sandbox
 {
     public static class ConfigurationManager
     {

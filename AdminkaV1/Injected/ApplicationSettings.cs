@@ -46,7 +46,13 @@ namespace DashboardCode.AdminkaV1.Injected
             {
                 try
                 {
-                    PerformanceCounters = new PerformanceCounters("DashboardCode Adminka", instanceName);
+                    if (InjectedManager.OperatingSystemIsWindows())
+                    {
+                        PerformanceCounters = new PerformanceCounters("DashboardCode Adminka", instanceName);
+                    } else
+                    {
+                        PerformanceCounters = new PerformanceCountersStub();
+                    }
                 }
                 catch
                 {

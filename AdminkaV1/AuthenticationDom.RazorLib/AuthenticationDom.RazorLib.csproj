@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <AssemblyName>DashboardCode.AuthenticationDom.RazorLib</AssemblyName>
     <RootNamespace>DashboardCode.AuthenticationDom.RazorLib</RootNamespace>

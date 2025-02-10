@@ -20,7 +20,7 @@ namespace Benchmark
     {
         public CoreToolchain2JobConfig()
         {
-            AddJob(Job.Default.WithRuntime(CoreRuntime.Core31));
+            AddJob(Job.Default.WithRuntime(CoreRuntime.Core90));
             AddJob(Job.Default.WithRuntime(ClrRuntime.Net48));
             
             //AddJob(Cor); // do not add .With(CsProjClassicNetToolchain.Net472) - this doesn't work somehow !!!

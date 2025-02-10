@@ -11,7 +11,7 @@ namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Test
         readonly string connectionString;
         public EfModelEfCoreUnitTest()
         {
-#if NET6_0
+#if NET9_0_OR_GREATER
             var configurationRoot =
                 DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Test.
                 ConfigurationManager.ResolveConfigurationRoot();

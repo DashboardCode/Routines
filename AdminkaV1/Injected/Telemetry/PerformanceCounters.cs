@@ -2,6 +2,7 @@
 
 namespace DashboardCode.AdminkaV1.Injected.Telemetry
 {
+#pragma warning disable CA1416 // Avoid uninstantiated internal classes
     public class PerformanceCounters : IPerformanceCounters
     {
         PerformanceCounter averageActionCounter;
@@ -27,4 +28,5 @@ namespace DashboardCode.AdminkaV1.Injected.Telemetry
         public void CountError() =>
             errorCounter.Increment();
     }
+#pragma warning restore CA1416 
 }

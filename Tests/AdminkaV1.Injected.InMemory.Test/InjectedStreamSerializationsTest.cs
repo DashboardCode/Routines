@@ -7,10 +7,11 @@ using DashboardCode.AdminkaV1.TestDom;
 
 namespace DashboardCode.AdminkaV1.Injected.InMemory.Test
 {
+    [TestClass]
     class InjectedStreamSerializationsTest : RepositoryTestBase
     {
         [TestMethod]
-        public virtual void TestSerializtionRecursion()
+        public virtual void TestSerializationRecursion()
         {
             var logger = new List<string>();
             var routine = new AdminkaInMemoryTestRoutine(logger, hasVerboseLoggingPrivilege:true, new MemberTag(this), new { }, readonlyDatabaseName);

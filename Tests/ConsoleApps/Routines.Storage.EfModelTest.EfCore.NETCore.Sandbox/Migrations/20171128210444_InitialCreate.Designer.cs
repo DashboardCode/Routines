@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.NETCore.Sandbox.Migrations
+namespace DashboardCode.Routines.Storage.EfModelTest.EfCore.Sandbox.Migrations
 {
     [DbContext(typeof(MyDbContext))]
     [Migration("20171128210444_InitialCreate")]

@@ -6,13 +6,13 @@ using System.Collections.Generic;
 
 namespace DashboardCode.Routines.Configuration.Test
 {
-#if !NET6_0
+#if !NET9_0_OR_GREATER
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
 #endif
     public class ConfigurationTest
     {
 
-#if NET6_0
+#if NET9_0_OR_GREATER
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -26,14 +26,14 @@ namespace DashboardCode.Routines.Configuration.Test
         }
 
 
-#if NET6_0
+#if NET9_0_OR_GREATER
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
 #endif
         public void TestContainerResolve()
         {
-#if NET6_0
+#if NET9_0_OR_GREATER
             //var configurationBuilder = new Microsoft.Extensions.Configuration.ConfigurationBuilder();
             //Microsoft.Extensions.Configuration.JsonConfigurationExtensions.AddJsonFile(configurationBuilder, "appsettings.json", false, true);
             //var configurationRoot = configurationBuilder.Build();
@@ -64,7 +64,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails 2");
         }
 
-#if NET6_0
+#if NET9_0_OR_GREATER
         [Xunit.Fact]
         public void TestComplexResolver()
         {
@@ -82,7 +82,7 @@ namespace DashboardCode.Routines.Configuration.Test
         }
 #endif
 
-#if NET6_0
+#if NET9_0_OR_GREATER
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -118,7 +118,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails. Case 4");
         }
 
-#if NET6_0
+#if NET9_0_OR_GREATER
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]
@@ -137,7 +137,7 @@ namespace DashboardCode.Routines.Configuration.Test
                 throw new Exception("Test fails. Case 2");
         }
 
-#if NET6_0
+#if NET9_0_OR_GREATER
         [Xunit.Fact]
 #else
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethod]

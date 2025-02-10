@@ -11,7 +11,7 @@ namespace Benchmark
     [MinColumn, MaxColumn, StdDevColumn, MedianColumn, RankColumn]
     [HtmlExporter, MarkdownExporter]
     [MemoryDiagnoser]
-#if !NET6_0
+#if NET48_OR_GREATER
     //[HardwareCounters(BenchmarkDotNet.Diagnosers.HardwareCounter.BranchMispredictions, BenchmarkDotNet.Diagnosers.HardwareCounter.BranchInstructions)]
     [DisassemblyDiagnoser(printSource: true)]
     [RyuJitX64Job]
@@ -78,7 +78,7 @@ namespace Benchmark
             #endregion
 
             #region Save Lambda
-#if NET48
+#if NET48_OR_GREATER
             // some 
             var assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(new AssemblyName("testLambda"),System.Reflection.Emit.AssemblyBuilderAccess.Save);
             var modelBuilder = assemblyBuilder.DefineDynamicModule("testLambda_module", "testLambda.dll");

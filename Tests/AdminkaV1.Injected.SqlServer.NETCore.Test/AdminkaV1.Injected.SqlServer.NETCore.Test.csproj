@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFramework>net6.0</TargetFramework>    
+    <TargetFramework>net9</TargetFramework>    
     <AssemblyName>DashboardCode.AdminkaV1.Injected.SqlServer.NETCore.Test</AssemblyName>    
     <RootNamespace>DashboardCode.AdminkaV1.Injected.SqlServer.NETCore.Test</RootNamespace>    
     <Company>Roman Pokrovskij</Company>    
@@ -28,9 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.7.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
   </ItemGroup>
 
   <ItemGroup>

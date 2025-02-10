@@ -28,7 +28,7 @@ namespace DashboardCode.AdminkaV1.Injected
         /// </summary>
         private static void ForceEarlyFail()
         {
-#if !NET6_0
+#if !NET9_0_OR_GREATER
             /* 
               System.ServiceModel.Primitives, 4.4.1 case. Can be diagnosed by unit case: AdminkaV1.Injected.SqlServer.NETFramework.Test 
               Important: when NUGET informs that System.ServiceModel.Primitives 4.4.1 version installed, actually 4.2.0.0 specified 
@@ -42,7 +42,7 @@ namespace DashboardCode.AdminkaV1.Injected
 
         public static IIdentity GetDefaultIdentity()
         {
-#if NET6_0
+#if NET9_0_OR_GREATER
             // TODO: Core 2.1 will contains AD functionality https://github.com/dotnet/corefx/issues/2089 and 
             // there we will need update this code to get roles similar to WindowsIdentity.GetCurrent().
             return new GenericIdentity(Environment.UserDomainName + "\\" + Environment.UserName, "Anonymous");
@@ -86,12 +86,12 @@ namespace DashboardCode.AdminkaV1.Injected
                 {
                     if (ex is AdminkaException)
                         sb.AppendUserContextException((AdminkaException)ex);
-#if NET6_0
+#if NET9_0_OR_GREATER
                     DashboardCode.AdminkaV1.LoggingDom.WcfClient.WcfClientManager.AppendWcfClientFaultException(sb, ex);
                     DashboardCode.AdminkaV1.LoggingDom.DataAccessEfCore.LoggingDomDataAccessEfCoreManager.Append(sb, ex);
 #endif
 
-#if NET6_0
+#if NET9_0_OR_GREATER
                     DashboardCode.Routines.Storage.SqlServer.SqlServerManager.Append(sb, ex);
 #else
                     DashboardCode.Routines.Storage.SystemSqlServer.SqlServerManager.Append(sb, ex);
@@ -145,7 +145,7 @@ namespace DashboardCode.AdminkaV1.Injected
         }
         public static string SerializeToJson(object o, int depth, bool ignoreDuplicates)
         {
-#if NET6_0
+#if NET9_0_OR_GREATER
             var types = typeof(UserContext).GetTypeInfo().Assembly.GetTypes();
 #else
             var types = Assembly.GetAssembly(typeof(UserContext)).GetTypes();
@@ -196,9 +196,16 @@ namespace DashboardCode.AdminkaV1.Injected
         #region ApplicationSettings
 
 
+        public static bool OperatingSystemIsWindows()
+        {
+#if NET9_0_OR_GREATER
+            return OperatingSystem.IsWindows();
+#else
+            return false;
+#endif
+        }
 
-
-#if NET6_0
+#if NET9_0_OR_GREATER
         readonly static Routines.Configuration.Standard.DeserializerStandard deserializer = new Routines.Configuration.Standard.DeserializerStandard();
         public static ApplicationSettings CreateInMemoryApplicationSettingsStandard(string name)
         {
@@ -261,6 +268,7 @@ namespace DashboardCode.AdminkaV1.Injected
                     new AdminkaStorageConfiguration(name, null, StorageType.INMEMORY, null)
                     );
         }
+
         public static ApplicationSettings CreateApplicationSettingsClassic()
         {
             var connectionStringMap = new Routines.Configuration.Classic.ConnectionStringMap();
@@ -275,7 +283,23 @@ namespace DashboardCode.AdminkaV1.Injected
         }
 #endif
 
+        public static ApplicationSettings CreateInMemoryApplicationSettings(string name)
+        {
+#if NET9_0_OR_GREATER
+            return CreateInMemoryApplicationSettingsStandard(name);
+#else
+            return CreateInMemoryApplicationSettingsClassic(name);
+#endif
+        }
 
+        public static ApplicationSettings CreateApplicationSettings()
+        {
+#if NET9_0_OR_GREATER
+            return CreateApplicationSettingsStandard();
+#else
+            return CreateApplicationSettingsClassic();
+#endif
+        }
 
 
         #endregion

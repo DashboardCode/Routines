@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net6.0;net48</TargetFrameworks>
+    <TargetFrameworks>net48;net9</TargetFrameworks>
 	<LangVersion>latest</LangVersion>
 	</PropertyGroup>
   
@@ -11,34 +11,43 @@
 	  <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.0|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9|AnyCPU'">
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1701;1702; IDE0079; IDE0130</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.1" />
-    <PackageReference Include="DynamicExpresso.Core" Version="2.9.7" />
-    <PackageReference Include="FastExpressionCompiler" Version="3.2.1" />
-    <PackageReference Include="Jil" Version="2.17.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="ServiceStack.Text" Version="5.13.2" />
-  </ItemGroup>
   
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.1" />
-  </ItemGroup>
-
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9|AnyCPU'">
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>1701;1702; IDE0079; IDE0130</NoWarn>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net48|AnyCPU'">
+    <NoWarn>1701;1702; IDE0079; IDE0130</NoWarn>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net48|AnyCPU'">
+    <NoWarn>1701;1702; IDE0079; IDE0130</NoWarn>
+  </PropertyGroup>
+  
   <ItemGroup>
-    <PackageReference Include="System.Net.Primitives" Version="4.3.1">
-    </PackageReference>
-    <PackageReference Include="Microsoft.Win32.Primitives" Version="4.3.0">
-    </PackageReference>
+    <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.14.0" />
+    <PackageReference Include="DynamicExpresso.Core" Version="2.17.2" />
+    <PackageReference Include="FastExpressionCompiler" Version="5.0.2" />
+    <PackageReference Include="Jil" Version="2.17.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="ServiceStack.Text" Version="8.5.2" />
+    <PackageReference Include="System.Reflection.Metadata" Version="9.0.1" />
   </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
-	<ProjectReference Include="..\..\Routines.Configuration.Classic\Routines.Configuration.Classic.csproj" />
-	<ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<None Update="app.config">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+  
 </Project>

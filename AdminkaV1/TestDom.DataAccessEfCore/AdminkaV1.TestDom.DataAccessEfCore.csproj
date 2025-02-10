@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net9</TargetFramework>
     <AssemblyName>DashboardCode.AdminkaV1.TestDom.DataAccessEfCore</AssemblyName>
   </PropertyGroup>
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net6.0</TargetFrameworks>
+    <TargetFrameworks>net48;net9</TargetFrameworks>
     <Company>Roman Pokrovskij (Github user rpokrovskij)</Company>
     <Product>DashboardCode.AdminkaV1.Injected.NETStandard</Product>
     <Copyright>Copyright ©  2016</Copyright>
@@ -43,7 +43,7 @@
     <ProjectReference Include="..\..\Routines.ActiveDirectory\Routines.ActiveDirectory.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9'">
     <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
     <ProjectReference Include="..\..\Routines.Storage.SqlServer\Routines.Storage.SqlServer.csproj" />
     <ProjectReference Include="..\AuthenticationDom.DataAccessEfCore\AdminkaV1.AuthenticationDom.DataAccessEfCore.csproj" />
