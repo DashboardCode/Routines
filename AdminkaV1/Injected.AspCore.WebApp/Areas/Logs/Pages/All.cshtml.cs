@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.AspNetCore;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Logs.Pages
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Logs.Pages
 {
     public class AllModel : PageModel
     {

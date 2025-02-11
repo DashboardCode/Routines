@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore
+namespace DashboardCode.AdminkaV1.Injected.AspCore
 {
     // sample of @Html.InsertIt extenstion
     // general politics - prefer clean html to razor - if impossible prefer razor TagHelpers over extensions

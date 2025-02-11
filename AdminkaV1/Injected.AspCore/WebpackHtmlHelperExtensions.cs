@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore
+namespace DashboardCode.AdminkaV1.Injected.AspCore
 {
     public static class WebpackHtmlHelperExtensions
     {

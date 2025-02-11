@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp;
+using DashboardCode.AdminkaV1.Injected.AspCore.WebApp;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;

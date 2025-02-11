@@ -12,7 +12,7 @@ using DashboardCode.Routines.Configuration;
 using DashboardCode.Routines.Storage;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore
+namespace DashboardCode.AdminkaV1.Injected.AspCore
 {
     public class PageContainerRoutineHandler : PageContainerRoutineHandler<UserContext, User>
     {

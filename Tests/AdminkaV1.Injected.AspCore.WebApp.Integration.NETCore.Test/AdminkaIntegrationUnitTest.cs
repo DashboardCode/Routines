@@ -11,7 +11,7 @@ using DashboardCode.Routines;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using AngleSharp.Html.Dom;
 using Microsoft.AspNetCore.Mvc.Testing;
-using DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp;
+using DashboardCode.AdminkaV1.Injected.AspCore.WebApp;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.NETCore.Test
 {

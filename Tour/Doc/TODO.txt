@@ -1,4 +1,14 @@
-﻿Chekc this 
+﻿migrate coveralls , https://github.com/csMACnz/coveralls.net/issues/107
+    dotnet tool install coveralls.net
+
+create wcfcore that can be hosted in IIS
+https://www.mobilize.net/blog/can-i-use-wcf-in-.net-core-3.1-or-.net5
+https://www.mobilize.net/blog/consuming-wcf-services-in-dotnet8
+
+create alternative to wcf app : gRPC 
+
+
+Chekc this 
 http://www.signumsoftware.com/en/Framework - heavy expresion tree framework
 Microsoft.Linq.Translations - something like parse linq expression trees? 
 Delegate Decompiler - sample of methodBody.GetILAsByteArray() function body as il 

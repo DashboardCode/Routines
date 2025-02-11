@@ -8,7 +8,7 @@ using DashboardCode.Routines.AspNetCore;
 
 using DashboardCode.AdminkaV1.AuthenticationDom;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore
+namespace DashboardCode.AdminkaV1.Injected.AspCore
 {
     //  TODO (aspRoutineFeature, ex, internalUser) => AspCoreManager.GetErrorActionResult(ex, aspRoutineFeature.AspRequestId, applicationSettings.ForceDetailsOnCustomErrorPage, internalUser)
     public class ApiRoutineHandler : ControllerRoutineHandler<PerCallContainer<UserContext>, UserContext, User>
@@ -24,7 +24,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspNetCore
                 new MemberTag(controllerBase.GetType().Namespace, controllerBase.GetType().Name, member)
              )
         {
-
+            
         }
 
         public ApiRoutineHandler(

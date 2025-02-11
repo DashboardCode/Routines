@@ -11,8 +11,8 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp</AssemblyName>
-    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.WebApp</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.WebApp</RootNamespace>
     <UserSecretsId>a6ef2ebe-eb8f-4132-89cb-03648daa76e3</UserSecretsId>
   </PropertyGroup>
 
@@ -37,7 +37,7 @@
     <ProjectReference Include="..\..\Routines.Configuration.Standard\Routines.Configuration.Standard.csproj" />
     <ProjectReference Include="..\..\Routines\Routines.csproj" />
     <ProjectReference Include="..\Abstractions\AdminkaV1.csproj" />
-    <ProjectReference Include="..\Injected.AspNetCore\AdminkaV1.Injected.AspNetCore.csproj" />
+    <ProjectReference Include="..\Injected.AspCore\AdminkaV1.Injected.AspCore.csproj" />
     <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj" />
   </ItemGroup>
   

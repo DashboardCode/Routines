@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using DashboardCode.Routines.Json;
 using DashboardCode.AspNetCore;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp.Areas.Logs
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Areas.Logs
 {
 
     // API Controller could be not in the Pages folder since it is not rotable by folder structure

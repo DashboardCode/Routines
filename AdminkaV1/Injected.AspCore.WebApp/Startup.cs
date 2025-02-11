@@ -15,7 +15,7 @@ using Microsoft.Extensions.WebEncoders;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public class Startup
     {

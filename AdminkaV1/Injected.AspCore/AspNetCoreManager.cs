@@ -17,7 +17,7 @@ using DashboardCode.AdminkaV1.Injected.Logging;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore
+namespace DashboardCode.AdminkaV1.Injected.AspCore
 {
     public static class AspNetCoreManager
     {

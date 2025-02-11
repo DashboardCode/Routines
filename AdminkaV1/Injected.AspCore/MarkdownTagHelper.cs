@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.AspNetCore.Html;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore
+namespace DashboardCode.AdminkaV1.Injected.AspCore
 {
     /// <summary>
     /// Just a sample of TagHelper. Exactly this tagHelper is not working  because it has a problem with multiline content (and exception text is multiline).

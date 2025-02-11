@@ -1,0 +1,16 @@
+/*
+    This overrides next bootstrap rule:
+        .table > :not(caption) > * > * {
+                background-color: $somecolor;
+        }
+    TODO: parametrize the color
+*/
+.table.crud-table > :not(caption) > tr.crud-table-selected-row > * {
+    background-color: mistyrose;
+}
+
+.table.crud-table > :not(caption) > tr > th > .crud-table-selected-total {
+    display: inline-flex;
+    white-space: nowrap;
+    gap: 0.5rem;
+}

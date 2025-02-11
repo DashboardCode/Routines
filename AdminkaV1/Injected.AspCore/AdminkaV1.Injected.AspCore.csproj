@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net9</TargetFramework>
-    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspNetCore</AssemblyName>
-    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspNetCore</RootNamespace>
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore</AssemblyName>
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

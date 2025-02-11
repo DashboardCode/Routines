@@ -12,7 +12,7 @@ using DashboardCode.AdminkaV1.Injected.Logging;
 using DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore;
 using System.Threading.Tasks;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public static class MvcAppManager
     {

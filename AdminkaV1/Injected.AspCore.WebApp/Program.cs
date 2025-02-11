@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using DashboardCode.Routines;
 
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public static class Program
     {

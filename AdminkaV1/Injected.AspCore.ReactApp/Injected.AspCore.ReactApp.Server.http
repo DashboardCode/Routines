@@ -1,0 +1,6 @@
+@ReactApp.Server_HostAddress = http://localhost:5130
+
+GET {{ReactApp.Server_HostAddress}}/remeltdata/
+Accept: application/json
+
+###

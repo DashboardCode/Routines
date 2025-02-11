@@ -14,7 +14,7 @@ using DashboardCode.Routines.Configuration;
 using DashboardCode.AdminkaV1.AuthenticationDom;
 using Microsoft.AspNetCore.Http;
 
-namespace DashboardCode.AdminkaV1.Injected.AspNetCore.WebApp
+namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp
 {
     public class AdminkaReferrer : Referrer
     {
