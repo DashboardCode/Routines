@@ -1,0 +1,24 @@
+{
+  "files": [
+    {
+      "path": "./wwwroot/dist/main.css",
+      "maxSize": "37 kB"
+    },
+    {
+      "path": "./wwwroot/dist/main.js",
+      "maxSize": "8 kB"
+    },
+    {
+      "path": "./wwwroot/dist/polyfill_io.js",
+      "maxSize": "7 kB"
+    },
+    {
+      "path": "./wwwroot/dist/vendor.css",
+      "maxSize": "3 kB"
+    },
+    {
+      "path": "./wwwroot/dist/vendor.js",
+      "maxSize": "441 kB"
+    }
+  ]
+}

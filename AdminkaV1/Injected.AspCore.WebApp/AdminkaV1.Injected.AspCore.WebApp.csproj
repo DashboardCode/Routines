@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="bundlewatch.config.js" />
     <Content Include=".size-limit.js" />
   </ItemGroup>
   
@@ -53,6 +52,7 @@
   </ItemGroup>
   
   <ItemGroup>
+    <None Include=".bundlewatch.config.json" />
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

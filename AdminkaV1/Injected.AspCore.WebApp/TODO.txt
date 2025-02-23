@@ -6,8 +6,16 @@ Track sass new versions https://github.com/sass/dart-sass/blob/main/CHANGELOG.md
 - quietDeps argument 
 
 ASP 
-Migration to 3.0 (gRPC, IdentityServer4 for SPA, Endpoint routing, Health Checks, Worker Service and Worker SDK)
+Migration to 3-9 (gRPC, IdentityServer4 for SPA, Endpoint routing, Health Checks, Worker Service and Worker SDK)
+ASP.NET Core metrics
+IExceptionHandler
+
 https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-3.0
+https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-9.0?view=aspnetcore-9.0
+
+Static asset delivery optimization
+https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-9.0?view=aspnetcore-9.0
+
 
 Is it possible to have a "react island" in one project with asp razor pages?
 Is it possible to have a "MVC island" in one project with asp razor pages?
@@ -24,3 +32,8 @@ and replace the https://github.com/SebastianS90/webpack-polyfill-injector
             filename: '../index.html',
             minify: false
     })
+
+GIT
+
+Bandlewatch needs integration with GitHub CI (see bootstrap as a sample)
+https://bundlewatch.io/#/reference/configuration

@@ -16,10 +16,10 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const outputFolderPath = PathModule.resolve(__dirname, 'wwwroot/dist');
 
 console.log('Node interpretates webpack config with such tools:');
-// CONSIDER OPTION: to see all environment variables
-// Object.keys(process.env).forEach(key => {console.log(`${key}: ${process.env[key]}`);});
 (['NODE', 'npm_config_npm_version', 'npm_config_global_prefix', 'npm_config_user_agent', 'npm_package_name', 'npm_package_version'])
     .forEach(key => { console.log(`${key}: ${process.env[key]}`); });
+// CONSIDER OPTION: to see all environment variables
+// Object.keys(process.env).forEach(key => {console.log(`${key}: ${process.env[key]}`);});
 
 const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default;
 
@@ -42,7 +42,6 @@ const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default;
 var config = {
     output: {
         path: outputFolderPath,
-        //mode: 'development',
         filename: '[name].js',  // CONSIDER OPTION - filename: '[name].[contenthash].js' produce main.bca50319635bfdec741b.js - add HashedModuleIdsPlugin if you need
         publicPath: '/dist/'
     },
@@ -237,6 +236,7 @@ module.exports = (env, argv) => {
             port: 63558,
             writeToDisk: true 
         };
+        config.mode = 'development' // default is 'production', other option 'none' https://webpack.js.org/configuration/mode/
     }
     return config;
 };
