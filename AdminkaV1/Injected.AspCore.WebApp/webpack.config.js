@@ -15,14 +15,13 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 const outputFolderPath = PathModule.resolve(__dirname, 'wwwroot/dist');
 
-console.log('node interpretate webpack config:');
-console.log('process.env.npm_config_shell: ' + process.env.npm_config_shell);
-console.log('process.env.npm_config_version: ' + process.env.npm_config_version);
-console.log('process.env.npm_config_script_shell: ' + process.env.npm_config_script_shell);
-console.log('process.env.npm_package_version: ' + process.env.npm_package_version);
+console.log('Node interpretates webpack config with such tools:');
+// CONSIDER OPTION: to see all environment variables
+// Object.keys(process.env).forEach(key => {console.log(`${key}: ${process.env[key]}`);});
+(['NODE', 'npm_config_npm_version', 'npm_config_global_prefix', 'npm_config_user_agent', 'npm_package_name', 'npm_package_version'])
+    .forEach(key => { console.log(`${key}: ${process.env[key]}`); });
 
-//const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default;
-
+const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default;
 
 // TODO: HashedModuleIdsPlugin
 
@@ -88,6 +87,8 @@ var config = {
             }
         }
     },
+    // Plugins that modify the build process itself are included in the "plugins" array. In contrast, some other plugins that
+    // uses standard webpack process not need to be declared in the "plugins" array.
     plugins: [
         // IgnorePlugin prevents the generation of modules and ignore some `import` or `require` statements (works both css and js)
         new webpack.IgnorePlugin({
@@ -100,7 +101,7 @@ var config = {
         new MiniCssExtractPlugin({
             filename: "[name].css"
         }),
-        new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer:false }),
+        new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer: false, reportFilename:"../reports/BundleAnalyzerReport.html" }),
 
         // WebpackManifestPlugin creates a manifest.json file in the output directory with a mapping of all source file names to their corresponding output files
         // CONSIDER OPTION: if there is a need to link the specific input file then manifest.json can be used to get the output file name
@@ -115,28 +116,13 @@ var config = {
         // more info: https://webpack.js.org/concepts/manifest/ , https://webpack.js.org/guides/output-management/#the-manifest
         new WebpackManifestPlugin(),
 
-        new CleanWebpackPlugin() // defualt verbose:false
+        new CleanWebpackPlugin(), // defualt verbose:false
 
-        //,new StatoscopeWebpackPlugin({
-        //    saveReportTo: 'wwwroot/report/statoscope-report.html', // Saves a detailed HTML report
-        //    saveStatsTo: 'wwwroot/report/statoscope-stats.json',   // Saves bundle stats JSON
-        //    open: false,  // Change to `true` to open report automatically
-        //})
-
-        //new StatoscopeWebpackPlugin({
-        //    saveReportTo: 'wwwroot/report/report-[name]-[hash].html',
-        //    saveStatsTo: 'wwwroot/report/stats-[name]-[hash].json',
-        //    normalizeStats: false,
-        //    saveOnlyStats: false,
-        //    disableReportCompression: false,
-        //    statsOptions: {
-        //    },
-        //    //additionalStats: ['stats.json'],
-        //    watchMode: false,
-        //    name: 'some-name',
-        //    open: 'file',
-        //    compressor: 'gzip',
-        //})
+        new StatoscopeWebpackPlugin({
+            saveReportTo: 'wwwroot/reports/statoscope-report.html', // Saves a detailed HTML report
+            saveStatsTo: 'wwwroot/reports/statoscope-stats.json',   // Saves bundle stats JSON
+            open: false,  // Change to `true` to open report automatically
+        })
     ],
     devtool: "source-map",
     module: {
@@ -243,8 +229,9 @@ var config = {
 
 module.exports = (env, argv) => {
     if (argv.mode === 'development') {
-        console.log('!!! devServer started');
-
+        console.log('webpack::module.exports: devServer started !!!');
+        // CONSIDER OPTION: use HMR
+        // config.plugins.push(new webpack.HotModuleReplacementPlugin());
         // main app port is 63557
         config.devServer = {
             port: 63558,
