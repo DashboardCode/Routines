@@ -1,0 +1,2 @@
+﻿Silenium need chrome driver to run the test. 
+You can download it from here: https://googlechromelabs.github.io/chrome-for-testing/#stable

@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
+    <AssemblyName>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.IntegrationTest</AssemblyName>
+
+    <RootNamespace>DashboardCode.AdminkaV1.Injected.AspCore.WebApp.IntegrationTest</RootNamespace>
+
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="appsettings.Development.json" />
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.Development.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="appsettings.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="1.2.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="9.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.7.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
+    <PackageReference Include="NLog" Version="5.4.0" />
+    <PackageReference Include="NLog.MailKit" Version="5.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\AdminkaV1\Abstractions\AdminkaV1.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\Injected.AspCore.WebApp\AdminkaV1.Injected.AspCore.WebApp.csproj" />
+    <ProjectReference Include="..\..\AdminkaV1\Injected\AdminkaV1.Injected.csproj" />
+    <ProjectReference Include="..\..\Routines\Routines.csproj" />
+  </ItemGroup>
+
+  <!--
+    Work around https://github.com/NuGet/Home/issues/4412. MVC uses DependencyContext.Load() which looks next to a .dll
+    for a .deps.json. Information isn't available elsewhere. Need the .deps.json file for all web site applications.
+  -->
+  <Target Name="CopyDepsFiles" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
+    <ItemGroup>
+      <DepsFilePaths Include="$([System.IO.Path]::ChangeExtension('%(_ResolvedProjectReferencePaths.FullPath)', '.deps.json'))" />
+    </ItemGroup>
+
+    <Copy SourceFiles="%(DepsFilePaths.FullPath)" DestinationFolder="$(OutputPath)" Condition="Exists('%(DepsFilePaths.FullPath)')" />
+  </Target>
+</Project>

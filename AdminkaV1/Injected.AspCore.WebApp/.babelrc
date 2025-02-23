@@ -1,32 +1,20 @@
 {
-  "plugins": [ "@babel/plugin-proposal-class-properties", "@babel/plugin-proposal-object-rest-spread" ],
   "presets": [
-    "@babel/preset-typescript", // this or plugin  @babel/plugin-transform-typescript
     [
-      "@babel/env",
+      "@babel/preset-env", // plugin's list: https://github.com/babel/babel/blob/main/packages/babel-preset-env/package.json
       {
+        "loose": true,
+        "modules": false,
         "useBuiltIns": "usage",
-        "modules": false, // required for typescript?
-        "targets": {
-          "browsers": [
-            "last 2 chrome versions",
-            "ie 11",
-            "safari 11",
-            "edge 15",
-            "firefox 59"
-            //  bootsrap set:
-            //  "chrome  >= 45",
-            //  "Firefox >= 38",
-            //  "Explorer >= 10",
-            //  "edge >= 12",
-            //  "iOS >= 9",
-            //  "Safari >= 9",
-            //  "Android >= 4.4",
-            //  "Opera >= 30"
-          ]
-        },
-        "debug": true
+        "corejs": 3,
+        "include": [
+
+        ],
+        "debug": true // additional information to output like plugins used
+        // exclude: ['@babel/plugin-transform-regenerator'], // use it to prevent transform into async/await into ES5 
       }
-    ]
+    ],
+    "@babel/react", // plugin's list: https://github.com/babel/babel/blob/main/packages/babel-preset-react/package.json
+    "@babel/preset-typescript" // plugin's list: https://github.com/babel/babel/blob/main/packages/babel-preset-typescript/package.json
   ]
 }

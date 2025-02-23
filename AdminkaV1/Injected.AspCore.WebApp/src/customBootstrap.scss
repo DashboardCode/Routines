@@ -1,5 +1,5 @@
-@import "customBootstrapVariables";
-@import "./../node_modules/bootstrap/scss/bootstrap";
+@import "customBootstrapVariables.scss";
+@import "./../node_modules/bootstrap/scss/bootstrap.scss";
 
 .btn-primary {
     color: white;

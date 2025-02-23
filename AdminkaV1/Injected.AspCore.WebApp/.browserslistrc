@@ -1,0 +1,37 @@
+# https://github.com/browserslist/browserslist#readme
+# based on bootstrap list
+
+>= 0.5%
+last 2 major versions
+not dead
+Chrome >= 60
+Firefox >= 60
+Firefox ESR
+iOS >= 12
+Safari >= 12
+not Explorer <= 11
+
+# this resolves to:
+# "android": "132",
+# "chrome": "60",
+# "edge": "131",
+# "firefox": "60",
+# "ios": "12",
+# "opera": "113",
+# "opera_mobile": "80",
+# "safari": "12",
+# "samsung": "26"
+
+# alternative good base from tanstack table: 
+# defaults, not ie 11, not ie_mob 11
+# this resolves to NO POLYFILL:
+# "android": "132",
+# "chrome": "109",
+# "edge": "131",
+# "firefox": "128",
+# "ios": "15.6",
+# "opera": "113",
+# "opera_mobile": "80",
+# "safari": "18.1",
+# "samsung": "26"
+

@@ -1,0 +1,26 @@
+﻿NODE
+
+Track sass new versions https://github.com/sass/dart-sass/blob/main/CHANGELOG.md#1850 
+- stay with 1.77.6 version since there are a lot of deprication warning compiling bootstrap
+- --quiet-deps param works only for styles loaded through --load-path
+- quietDeps argument 
+
+ASP 
+Migration to 3.0 (gRPC, IdentityServer4 for SPA, Endpoint routing, Health Checks, Worker Service and Worker SDK)
+https://learn.microsoft.com/en-us/aspnet/core/release-notes/aspnetcore-3.0
+
+Is it possible to have a "react island" in one project with asp razor pages?
+Is it possible to have a "MVC island" in one project with asp razor pages?
+
+WEBPACK
+- Polyfills. Have the idea how to work with polyfill-fastly.io (prev polyfill.io)
+and replace the https://github.com/SebastianS90/webpack-polyfill-injector 
+
+- consider how to use HtmlWebpackPlugin with ASP
+// HtmlWebPackPlugin
+// https://github.com/valentinogagliardi/webpack-4-quickstart/blob/master/webpack.config.js
+    HtmlWebpackPlugin({
+            template: 'src/index.html',
+            filename: '../index.html',
+            minify: false
+    })

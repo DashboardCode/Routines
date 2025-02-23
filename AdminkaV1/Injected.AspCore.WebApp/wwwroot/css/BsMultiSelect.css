@@ -4,6 +4,7 @@
   height: auto;
   min-height: calc(1.5em + 0.75rem + 2px);
   margin-bottom: 0;
+  cursor: text;
   list-style-type: none;
 }
 .dashboardcode-bsmultiselect ul.form-control input {
@@ -38,6 +39,7 @@
   padding-inline-start: 0;
   -webkit-padding-end: 0.5rem;
   padding-inline-end: 0.5rem;
+  color: var(--bs-dark);
 }
 .dashboardcode-bsmultiselect ul.form-control > li.badge button.btn-close {
   float: none;
@@ -96,16 +98,32 @@
   white-space: nowrap;
   background-color: transparent;
   border: 0;
+  cursor: pointer;
 }
 .dashboardcode-bsmultiselect div.dropdown-menu > ul > li .form-check {
+  cursor: inherit;
   justify-content: flex-start;
 }
-.dashboardcode-bsmultiselect div.dropdown-menu > ul > li .form-check-input.disabled ~ .form-check-label {
-  color: 0.5;
+.dashboardcode-bsmultiselect div.dropdown-menu > ul > li .form-check .form-check-label, .dashboardcode-bsmultiselect div.dropdown-menu > ul > li .form-check .form-check-input {
+  cursor: inherit;
 }
-.dashboardcode-bsmultiselect div.dropdown-menu > ul .hover {
-  color: var(--primary);
+.dashboardcode-bsmultiselect div.dropdown-menu > ul > li.disabled .form-check-label {
+  opacity: 0.5;
+}
+.dashboardcode-bsmultiselect div.dropdown-menu > ul > li.hover {
   background-color: #e9ecef;
+}
+.dashboardcode-bsmultiselect div.dropdown-menu > ul > li.hover:not(.disabled) {
+  color: var(--bs-primary);
+}
+.dashboardcode-bsmultiselect div.dropdown-menu > ul > li.hover.selected {
+  color: var(--bs-primary);
+}
+.dashboardcode-bsmultiselect div.dropdown-menu + div.alert-warning {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  z-index: 4;
+  font-size: small;
 }
 .dashboardcode-bsmultiselect.input-group.input-group-sm ul.form-control {
   min-height: calc(1.5em + 0.5rem + 2px);

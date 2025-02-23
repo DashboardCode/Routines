@@ -2,8 +2,7 @@
   font-family: "Material Icons";
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;
-  /* Preferred icon size */
+  font-size: 24px; /* Preferred icon size */
   display: inline-block;
   line-height: 1;
   text-transform: none;
@@ -40,9 +39,10 @@
 }
 
 .btn-xsm {
-  padding: 0.2rem 0.4rem;
-  font-size: 0.7rem;
-  border-radius: 0.16rem;
+  --bs-btn-padding-y: 0.2rem;
+  --bs-btn-padding-x: 0.4rem;
+  --bs-btn-font-size: 0.7rem;
+  --bs-btn-border-radius: calc(var(--bs-border-radius-sm) * 0.8);
 }
 
 .btn-xsm .material-icons {
@@ -189,6 +189,7 @@ dl.row > dt {
   margin-bottom: 0.5rem;
   font-weight: 500;
   line-height: 1.2;
+  color: inherit;
   font-size: calc(1.275rem + 0.3vw);
 }
 @media (min-width: 1200px) {

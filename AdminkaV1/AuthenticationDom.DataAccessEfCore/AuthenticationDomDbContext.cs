@@ -12,6 +12,7 @@ namespace DashboardCode.AdminkaV1.AuthenticationDom.DataAccessEfCore
         public AuthenticationDomDbContext(Action<DbContextOptionsBuilder> buildOptionsBuilder, Action<string> verbose = null)
             : base(buildOptionsBuilder, verbose)
         {
+            
         }
 
         #region DbSets

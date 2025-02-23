@@ -1,17 +1,16 @@
-﻿// webpack.config interpretated by node and node by default do not support ES6 (that means import etc.)
+﻿// webpack.config.js is interpretated by node;
+// but only ECMAScript modules (mjs or package.json contains {"type": "module"}) can be imported using ES6 'import' statemnet.
+// So using `import` requres additional investigation, therefore I stay with 'require'.
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const PathModule = require('path');
 
-// TODO uglify
+// CONSIDER OPTION: uglify
 //const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-// TODO replace with css-minimizer-webpack-plugin
-//const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-
-//const PolyfillInjectorPlugin = require('webpack-polyfill-injector');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const outputFolderPath = PathModule.resolve(__dirname, 'wwwroot/dist');
@@ -22,57 +21,30 @@ console.log('process.env.npm_config_version: ' + process.env.npm_config_version)
 console.log('process.env.npm_config_script_shell: ' + process.env.npm_config_script_shell);
 console.log('process.env.npm_package_version: ' + process.env.npm_package_version);
 
-// How to master "legacy js" in webpack
-// https://medium.com/webpack/how-to-cope-with-broken-modules-in-webpack-4c0427fb23a
-// https://medium.com/@stefanledin/webpack-2-jquery-plugins-and-imports-loader-e0d984650058
+//const StatoscopeWebpackPlugin = require('@statoscope/webpack-plugin').default;
 
-// TODO: devserver
-// https://medium.com/@estherfalayi/setting-up-webpack-for-bootstrap-4-and-font-awesome-eb276e04aaeb
 
-// TODO: HashedModuleIdsPlugin, CommonsChunkPlugin, LoaderOptionsPlugin, UglifyJSPlugin, ExtractTextPlugin,ManifestPlugin
-// https://github.com/sergeysolovev/webpack-aspnetcore/blob/master/samples/WebApp/webpack.prod.js
+// TODO: HashedModuleIdsPlugin
 
-// HtmlWebPackPlugin
-// https://github.com/valentinogagliardi/webpack-4-quickstart/blob/master/webpack.config.js
-
-// Typescript
+// TODO: Typescript ???
 // https://habrahabr.ru/post/328638/
-
-// awesome-typescript-loader
 // https://dotnetcore.gaprogman.com/2017/01/05/bundling-in-net-core-mvc-applications-with-webpack/
-
-// ts loader
 // http://leruplund.dk/2017/04/15/setting-up-asp-net-core-in-visual-studio-2017-with-npm-webpack-and-typescript-part-ii/
 
+// TODO: How to link "Vendor" files from CDN
+
+// TODO: HMR in ASP/webpack https://webpack.js.org/concepts/hot-module-replacement/
+//                          https://learn.microsoft.com/en-us/aspnet/core/client-side/spa-services?view=aspnetcore-3.0#hot-module-replacement
+//       Note: HMR replace modules while an application is running, without a full reload. This can significantly speed up development mode.
+//       for using HMR withs ASP, ASP should work only as proxy to webpack development server (webpack-dev-server)
+//       for configuring proxy this NUGET package https://www.nuget.org/packages/Microsoft.AspNetCore.SpaServices.Extensions should be used 
+//       more information https://youtu.be/DH2yUVQDB0I?si=MipC50BzF00TTvrn&t=2092
+
 var config = {
-    // TODO: ref "Vendor" files from CDN (externals, vendor options)
-    // TODO: entry should be empty (npm run webuild used to define entry point and this should be enough)
-    // TODO: HMR 'hot module replacement' as it is desribed in https://codeburst.io/how-to-use-webpack-in-asp-net-core-projects-a-basic-react-template-sample-25a3681a5fc2
-    // one of HMR option is https://github.com/frankwallis/WebpackAspnetMiddleware 
-    // TODO: build integration how is described with https://codeburst.io/how-to-use-webpack-in-asp-net-core-projects-a-basic-react-template-sample-25a3681a5fc2
-    // IMPORTANT: only one js should be an entry point
-
-    // TRY: https://github.com/alexpalombaro/modernizr-webpack-plugin
-
-    //entry: './src/index.js',
-
-    //entry: './src/loaders.js',
-    //entry: {
-    //    app: `webpack-polyfill-injector?${JSON.stringify({
-    //        modules: ['./src/index.es8.js'] 
-    //    })}!` // don't forget the trailing exclamation mark!
-    //},
-    //entry: {
-    //    app: [
-            
-    //        `webpack-polyfill-injector?${JSON.stringify({ modules: ['./src/index.es8.js'] })}!`,
-    //        'jquery'
-    //    ]
-    //},
     output: {
         path: outputFolderPath,
         //mode: 'development',
-        filename: '[name].js',  // filename: '[name].[contenthash].js' produce main.bca50319635bfdec741b.js - also add HashedModuleIdsPlugin if you want to use "constant" hashs
+        filename: '[name].js',  // CONSIDER OPTION - filename: '[name].[contenthash].js' produce main.bca50319635bfdec741b.js - add HashedModuleIdsPlugin if you need
         publicPath: '/dist/'
     },
     resolve: {
@@ -82,12 +54,12 @@ var config = {
             'bootstrap#umd': 'bootstrap/dist/js/bootstrap.js',
             '@dashboardcode/bsmultiselect#umd':'@dashboardcode/bsmultiselect/dist/js/BsMultiSelect.js'
             
-           // 'handlebars': 'handlebars/dist/handlebars.js',
-           // 'corejs-typeahead': 'corejs-typeahead/dist/typeahead.jquery.js'
+             // 'handlebars': 'handlebars/dist/handlebars.js',
+             // 'corejs-typeahead': 'corejs-typeahead/dist/typeahead.jquery.js'
         }
     },
-    optimization: {
-        runtimeChunk: 'single',
+    optimization: { 
+        runtimeChunk: 'single', // webpack runtime code in a separate file (runtime.js)
         splitChunks: {
             chunks: 'all',
             maxInitialRequests: Infinity,
@@ -106,71 +78,73 @@ var config = {
                 vendor: {
                     test: /[\\/]node_modules[\\/]/,
                     name: 'vendor'
-                    // file for package
-                    //name(module) {
-                    //    // RP: node_modules/packageName/not/this/part.js or node_modules/packageName
-                    //    const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+                    // CONSDIER OPTION: file for package for better control
+                    // name(module) {
+                    //    const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]; // this regexp should filter node_modules/packageName or smth like that
                     //    return `npm.${packageName.replace('@', '')}`; //  RP: actual for .NET
-                    //},
+                    // },
                 }
 
             }
         }
     },
     plugins: [
-         // TODO
-        //new HtmlWebpackPlugin({
-        //    template: 'src/index.html',
-        //    filename: '../index.html',
-        //    minify: false
-        //}),
-
+        // IgnorePlugin prevents the generation of modules and ignore some `import` or `require` statements (works both css and js)
         new webpack.IgnorePlugin({
             resourceRegExp: /^\.\/locale$/,
             contextRegExp: /moment$/,
-        }), // remove webpack locale files (safe 400KB space) https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
+        }), // here configured to ignore moment.js locale files (save 400KB space) https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
 
+        // This plugin extracts CSS into separate files. It creates a CSS file per JS file which contains CSS. 
+        // It supports On-Demand-Loading of CSS and SourceMaps.
         new MiniCssExtractPlugin({
             filename: "[name].css"
         }),
         new BundleAnalyzerPlugin({ analyzerMode: "static", openAnalyzer:false }),
-        //new PolyfillInjectorPlugin({
-        //    singleFile: true,
-        //    polyfills: [
-        //        'Element.prototype.matches',
-        //        'Element.prototype.closest',
-        //        'Element.prototype.classList'
-        //    ]
-        //}),
+
+        // WebpackManifestPlugin creates a manifest.json file in the output directory with a mapping of all source file names to their corresponding output files
+        // CONSIDER OPTION: if there is a need to link the specific input file then manifest.json can be used to get the output file name
+        // code like this should be used with Razor pages:
+        // @{
+        //    var manifest = System.IO.File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "dist", "manifest.json"));
+        //    var assets = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>> (manifest);
+        // }
+        // <!DOCTYPE html>
+        // <html><head><link rel="stylesheet" href="/dist/@assets["main.css"]"></head>
+        // <body>...
+        // more info: https://webpack.js.org/concepts/manifest/ , https://webpack.js.org/guides/output-management/#the-manifest
         new WebpackManifestPlugin(),
+
         new CleanWebpackPlugin() // defualt verbose:false
 
-        // MANAGE DEPENDENCY. METHOD 1. Manage dependencies at build-time.
-        // replaces a symbol in another source through the respective import
-        //new webpack.ProvidePlugin({
-        //    '$': 'jquery',
-        //    jQuery: 'jquery',
-        //    'window.jQuery': 'jquery',
-        //    'window.$': 'jquery'
-        // })
+        //,new StatoscopeWebpackPlugin({
+        //    saveReportTo: 'wwwroot/report/statoscope-report.html', // Saves a detailed HTML report
+        //    saveStatsTo: 'wwwroot/report/statoscope-stats.json',   // Saves bundle stats JSON
+        //    open: false,  // Change to `true` to open report automatically
+        //})
+
+        //new StatoscopeWebpackPlugin({
+        //    saveReportTo: 'wwwroot/report/report-[name]-[hash].html',
+        //    saveStatsTo: 'wwwroot/report/stats-[name]-[hash].json',
+        //    normalizeStats: false,
+        //    saveOnlyStats: false,
+        //    disableReportCompression: false,
+        //    statsOptions: {
+        //    },
+        //    //additionalStats: ['stats.json'],
+        //    watchMode: false,
+        //    name: 'some-name',
+        //    open: 'file',
+        //    compressor: 'gzip',
+        //})
     ],
     devtool: "source-map",
     module: {
         rules: [
-            // MANAGE DEPENDENCY. METHOD 1. Manage dependencies at run-time. Adds modules, require('whatever') calls, to concreate modules
-            // https://github.com/webpack-contrib/imports-loader
-            // add the require('whatever') calls, to those modules (not global) 
-            // {
-            //     test: require.resolve('jquery'), // /legacy\.js$/,
-            //     use: "imports-loader?this=>window"
-            //     //use: "imports-loader?$=jquery"
-            //     use: imports-loader?define=>false // disable AMD if you see that webpack include the same module two times: commonJS and AMD
-            // },
-
             {
-                // MANAGE DEPENDENCY. METHOD 3. Manage dependencies at run-time. Adds modules to the global object
+                // expose-loader exposes/adds modules to the global object (window for browser, otherwise self and global)
                 // https://github.com/webpack-contrib/expose-loader
-                // exposes $, jQuery, window.$, window.jQuery on global level;
+                // exposes $, jQuery, window.$, window.jQuery
                 test: require.resolve('jquery'),
                 loader: "expose-loader",
                 options: {
@@ -186,9 +160,12 @@ var config = {
             },
             {
                 test: /\.(scss|css)$/,
+                // in Webpack, loaders are processed in reverse order from how they are listed in the use array, so the firs is sass-loader
                 use: [
+                    // MiniCssExtractPlugin is used together with css-loader when you want to extract CSS into separate files instead of including it in the JavaScript bundle. 
                     MiniCssExtractPlugin.loader,
                     {
+                        // The css-loader interprets @import and url() like import/require() and will resolve them.The css-loader interprets @import and url() like import/require() and will resolve them.
                         loader: "css-loader",
                         options: {
                             sourceMap: true,
@@ -196,6 +173,7 @@ var config = {
                         }
                     },
                     {
+                        // We need to use postcss since autoprefixer is postcss plugin
                         loader: "postcss-loader",
                         options: {
                             postcssOptions: {
@@ -212,8 +190,15 @@ var config = {
                         },
                     },
                     {
-                        loader: "sass-loader",
-                        options: { sourceMap: true }
+                        loader: "sass-loader", // the default order that sass-loader will resolve the implementation: sass-embedded, sass, node-sass
+                        options: {
+                            // https://sass-lang.com/documentation/js-api/interfaces/options/
+                            sassOptions: {
+                                verbose: true,
+                                silenceDeprecations: ['mixed-decls','color-functions','import','global-builtin']
+                            },
+                            sourceMap: true
+                        }
                     }
                 ]
             },
@@ -228,40 +213,26 @@ var config = {
                 use: {
                     loader: "babel-loader",
                     options: {
-                        babelrc: false,
-                        plugins: [
-                            "@babel/plugin-proposal-class-properties",
-                            "@babel/plugin-proposal-object-rest-spread"],
+                        babelrc: false, // do not use babel config file, use only this config; babel config file left for "not bundle" compilation
                         presets: [
-                            "@babel/preset-typescript", // this preset contains plugin '@babel/plugin-transform-typescript'
-
-                            // @babel/preset-env uses "@babel/polyfill" as facade for corejs polyfills:
-                            // https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md
-                            // alternative to "@babel/polyfill" is "@babel/runtime":
-                            // https://codersmind.com/babel-polyfill-babel-runtime-explained/
-                            // https://babeljs.io/docs/en/babel-runtime-corejs2
-                            ["@babel/preset-env",
-                                {
+                            // preset options https://babeljs.io/docs/presets#preset-options ; next array is the one preset: name and second argument is options object
+                            [
+                                "@babel/preset-env", // maps javascript syntax to browsers features; uses two strategies: Babel transform plugins and core-js polyfills
+                                                     // plugin's list: https://github.com/babel/babel/blob/main/packages/babel-preset-env/package.json
+                                                     // core js is enabled through @babel/preset-env "babel-plugin-polyfill-corejs3" : facade for core-js polyfills:
+                                                     // corej js: https://github.com/zloirock/core-js/blob/master/docs/2023-02-14-so-whats-next.md
+                               {
+                                    "loose": true,
+                                    "modules": false,
                                     "useBuiltIns": "usage",
-                                    "modules": false, // required for typescript?
-                                    "corejs": 3,
-                                    "targets": {
-                                        "browsers": [
-                                            "last 2 chrome versions", "ie 11", "safari 11", "edge 15", "firefox 59"
-                                            //  bootsrap set:
-                                            //  "chrome  >= 45",
-                                            //  "Firefox >= 38",
-                                            //  "Explorer >= 10",
-                                            //  "edge >= 12",
-                                            //  "iOS >= 9",
-                                            //  "Safari >= 9",
-                                            //  "Android >= 4.4",
-                                            //  "Opera >= 30"
-                                        ]
-                                    },
-                                    "debug": true
-                                }
-                            ]
+                                    "corejs": 3, 
+                                    "include": [],
+                                    "debug": true // list of used plugins to webpack output
+                                    // exclude: ['@babel/plugin-transform-regenerator'], // use it to prevent transform into async/await into ES5 
+                               }
+                            ],
+                            "@babel/react", // plugin's list: https://github.com/babel/babel/blob/main/packages/babel-preset-react/package.json
+                            "@babel/preset-typescript" // plugin's list: https://github.com/babel/babel/blob/main/packages/babel-preset-typescript/package.json
                         ]
                     }
                 }

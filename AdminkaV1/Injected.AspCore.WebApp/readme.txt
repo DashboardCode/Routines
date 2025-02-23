@@ -5,17 +5,17 @@ npm init -y // in pr.folder creates package.json
 npm install npm@latest
 npm install webpack --save-dev
 
-# Update node.js
+# Update node.js (started from v8)
 PM> Node -v
-v8.11.1
+v22.14.0
 download "recommended" https://nodejs.org/en/ install to C:\Program Files\nodejs
 Check `PM> node -v` again; this folder should be just first in a path env.var. I'm not sure that VS utilize use the same node (there 
 is also legacy C:\Program Files (x86)\Microsoft Visual Studio 14.0\Web\External). 
 May be that VS options is responcible for: Tools>Options>Projects and Solutions>Web Package Management>External Web Tools but I left it unchanged.
 
-# Update NPM:
+# Update NPM (started from 5.8):
 npm -v
-5.8.0
+11.1.0
 npm install npm@latest -g  
 
 > Get-Command npm
@@ -24,6 +24,9 @@ C:\Program Files\nodejs\npm.cmd
 # Update packages
 check for updates
 > npm outdated
+
+# this updates file package.json with new versions
+> npx npm-check-updates -u
 
 > npm install --save-dev package
 > npm rebuild --save-dev package

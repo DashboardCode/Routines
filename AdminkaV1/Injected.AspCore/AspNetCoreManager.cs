@@ -291,7 +291,7 @@ namespace DashboardCode.AdminkaV1.Injected.AspCore
                         isInRole = g => fakeAdConfiguration.FakeAdGroups.Contains(g);
 
                         closure.Verbose?.Invoke($"useAdAuthorization:{useAdAuthorization}, adUserName: {userNameWithDomain}");
-
+                         
                         return await container.ResolveAuthenticationDomDbContextHandlerAsync().HandleDbContextAsync(
                             async (db) =>
                             {

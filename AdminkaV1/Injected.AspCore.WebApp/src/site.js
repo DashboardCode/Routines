@@ -26,6 +26,8 @@ import './polyfill_io';
 
 // default bootstrap popover can't be setuped with dedicated element, this do the trick
 $(document).ready(function () {
+
+    const a = 2 ?? 3;
     $('[data-toggle="popover-content"]').popover({
         html: true,
         content: function () {

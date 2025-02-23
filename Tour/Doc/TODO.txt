@@ -7,6 +7,14 @@ https://www.mobilize.net/blog/consuming-wcf-services-in-dotnet8
 
 create alternative to wcf app : gRPC 
 
+EF Core Power Tools
+
+How: @types/datatables.net@1.12.3: This is a stub types definition. datatables.net provides 
+its own type definitions, so you do not need this installed. ?
+
+
+----------------
+Old:
 
 Chekc this 
 http://www.signumsoftware.com/en/Framework - heavy expresion tree framework
@@ -76,7 +84,7 @@ http://stackoverflow.com/questions/36460254/vs2015-code-coverage-not-working-wit
 
 1. New nuget packages
 
- 2. T4 to generate DTO C# classes and TypeScript interfaces.
+2. T4 to generate DTO C# classes and TypeScript interfaces.
    Generate Mapper functions.
    Note: if DTO are incldued to Abstraction assembly it is become very complex to compile the assembly;
       therefore C# DTO classes should be part of wcf service assembly, the same as TypeScript interfaces should be generated in web api project.

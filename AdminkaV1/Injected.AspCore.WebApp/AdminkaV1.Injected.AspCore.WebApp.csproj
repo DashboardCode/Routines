@@ -27,6 +27,11 @@
     <Content Remove="wwwroot\images\logo.svg" />
     <Content Remove="wwwroot\js\rindex.js" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bundlewatch.config.js" />
+    <Content Include=".size-limit.js" />
+  </ItemGroup>
   
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
