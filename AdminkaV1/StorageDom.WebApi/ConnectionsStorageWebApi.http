@@ -1,0 +1,6 @@
+@ConnectionsStorageWebApi_HostAddress = http://localhost:5113
+
+GET {{ConnectionsStorageWebApi_HostAddress}}/connectionsstoragewebapi/
+Accept: application/json
+
+###

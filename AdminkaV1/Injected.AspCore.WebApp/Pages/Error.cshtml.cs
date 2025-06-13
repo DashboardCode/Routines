@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using DashboardCode.Routines.AspNetCore;
 using DashboardCode.Routines.Storage.SqlServer;
 using DashboardCode.Routines.Storage;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DashboardCode.AdminkaV1.Injected.AspCore.WebApp.Pages
 {
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    [IgnoreAntiforgeryToken]
     public class ErrorModel : PageModel
     {
         public readonly ApplicationSettings applicationSettings;

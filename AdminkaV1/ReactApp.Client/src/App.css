@@ -1,1 +1,29 @@
-﻿
+﻿.marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
+    
+    padding: 10px;
+}
+
+.marquee-text {
+    display: inline-block;
+    font-size: 12rem;
+    font-weight: bold;
+    animation: marquee-scroll 22s linear infinite;
+}
+
+@keyframes marquee-scroll {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}

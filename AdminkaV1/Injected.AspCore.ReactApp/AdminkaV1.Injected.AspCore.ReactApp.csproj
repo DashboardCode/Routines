@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ReactApp.Client\ReactApp.Client.esproj">
+    <ProjectReference Include="..\ReactApp.Client\AdminkaV1.StorageDom.ReactApp.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

@@ -1,4 +1,6 @@
-﻿//import '@babel/polyfill';
+﻿// https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+
+//import '@babel/polyfill';
 import Application from './Application';
 import { createPopper } from '@popperjs/core';
 

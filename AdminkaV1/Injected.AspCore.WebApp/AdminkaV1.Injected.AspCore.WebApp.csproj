@@ -4,6 +4,8 @@
     <TargetFramework>net9</TargetFramework>
 	<AssetTargetFallback>$(AssetTargetFallback);portable-net45+win8+wp8+wpa81;</AssetTargetFallback>
     <!--<TypeScriptToolsVersion>4.1</TypeScriptToolsVersion>-->
+	  <Nullable>enable</Nullable>
+	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -24,6 +26,8 @@
 
   <ItemGroup>
     <Content Remove="NLog.config" />
+    <Content Remove="Properties\serviceDependencies.json" />
+    <Content Remove="Properties\serviceDependencies.local.json" />
     <Content Remove="wwwroot\images\logo.svg" />
     <Content Remove="wwwroot\js\rindex.js" />
   </ItemGroup>
@@ -44,7 +48,7 @@
     <ProjectReference Include="..\Injected.AspCore\AdminkaV1.Injected.AspCore.csproj" />
     <ProjectReference Include="..\Injected\AdminkaV1.Injected.csproj" />
   </ItemGroup>
-  
+	
   <ItemGroup>
     <Folder Include="dist\css\" />
     <Folder Include="dist\js\" />
@@ -56,13 +60,22 @@
     <None Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Properties\serviceDependencies.local.json" />
     <None Include="wwwroot\images\logo.svg" />
   </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="DashboardCode.AspNetCore" Version="4.0.0" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+	<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.2" />
+	<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.2" />
+	<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.2" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2" />
+  </ItemGroup>
+	
   <ItemGroup>
     <Content Update="web.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -88,7 +101,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  
   
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
 	<!-- Ensure Node.js is installed -->

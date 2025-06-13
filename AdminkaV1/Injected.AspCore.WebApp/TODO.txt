@@ -6,6 +6,25 @@ Track sass new versions https://github.com/sass/dart-sass/blob/main/CHANGELOG.md
 - quietDeps argument 
 
 ASP 
+
+Understand lounchSettings.json:
+
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7244;http://localhost:5152",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
+
+
 Migration to 3-9 (gRPC, IdentityServer4 for SPA, Endpoint routing, Health Checks, Worker Service and Worker SDK)
 ASP.NET Core metrics
 IExceptionHandler

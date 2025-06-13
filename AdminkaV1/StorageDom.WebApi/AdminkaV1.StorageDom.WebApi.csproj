@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>c5598cb5-b731-4081-88dc-3d932abc15e8</UserSecretsId>
+	<UseSqlLite>false</UseSqlLite>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);$(ENV_DEVDEBUG)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.23.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.OData" Version="9.3.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseSqlLite)' == 'true'">
+	  <ProjectReference Include="..\ConnectionsStorage.EfCore.SqlLite\ConnectionsStorage.EfCore.SqlLite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StorageDom.EfCore.SqlServer\AdminkaV1.StorageDom.EfCore.SqlServer.csproj" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(UseSqlLite)' == 'true'">
+		<DefineConstants>SQLLITE</DefineConstants>
+  </PropertyGroup>
+</Project>
