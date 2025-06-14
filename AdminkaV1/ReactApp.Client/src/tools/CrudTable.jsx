@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import './CrudTable.css';
 import DebugMenu from './DebugMenu';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
+import * as Switch from "@radix-ui/react-switch";
 
 const CrudTable = ({ list, 
     setList, isLoading,
@@ -37,8 +38,9 @@ const CrudTable = ({ list,
     };
     
     const columns = useMemo(() => {
+        var copy = [...baseColumns];
         if (isSelectable) {
-            baseColumns.unshift({
+            copy.unshift({
                 id: "select",
                 header: ({ table }) => (<span className="crud-table-selected-total"><IndeterminateCheckbox
                     {...{
@@ -81,7 +83,7 @@ const CrudTable = ({ list,
             });
         } else
         {
-            baseColumns.unshift({
+            copy.unshift({
                 id: "actions",
                 header: () => (<button className="btn btn-sm" onClick={() => { setChoosedEntity(null); handleCreateButtonClick(); }} style={{ background: "green", color: "white" }}>
                     <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">add</span>
@@ -104,7 +106,7 @@ const CrudTable = ({ list,
                 </div>)
             });
         }
-        return baseColumns;
+        return copy;
     }, [setChoosedEntity, handleCreateButtonClick, handleUpdateButtonClick, handleDeleteButtonClick, handleDetailsButtonClick, isSelectable, baseColumns]
     );
 
@@ -113,7 +115,7 @@ const CrudTable = ({ list,
             data: list,
             columns: columns,
             state: {
-                /*rowSelection,*/ globalFilter
+                rowSelection, globalFilter
             },
             enableRowSelection: true, //enable row selection for all rows
             onRowSelectionChange: setRowSelection,
@@ -136,7 +138,7 @@ const CrudTable = ({ list,
     const { getHeaderGroups, getFooterGroups, getRowModel } = tableInstance;
 
     
-
+    multiSelectActions = 1
     const contents = isLoading
         ? <p><em>Loading... </em></p>
         : <div className="crud-panel">
@@ -161,9 +163,21 @@ const CrudTable = ({ list,
             {/* Button to toggle selectable mode multiSelectActions && */}
             
             <div className={`d-flex ${multiSelectActions ? 'justify-content-between' : 'justify-content-end'} align-items-center gap-2`}>
-                {multiSelectActions && <button className="btn btn-secondary" onClick={toggleSelectable} style={{ marginBottom: "10px" }}>
-                    {isSelectable ? "Disable Selection" : "Select"}
-                </button>}
+                {multiSelectActions &&
+                    <Switch.Root
+                        className="adminka-switch"
+                        checked={isSelectable}
+                        onCheckedChange={setIsSelectable}
+                    >
+                        <Switch.Thumb
+                            className="adminka-thumb"
+                        />
+                    </Switch.Root>
+
+                    //<button className="btn btn-light" onClick={toggleSelectable} style={{ marginBottom: "10px" }}>
+                    //{isSelectable ? (<span style={{ fontSize: '150%', verticalAlign: 'middle', }} className="material-symbols-outlined">chevron_left</span>) : (<div><span style={{ fontSize: '150%', verticalAlign: 'middle', }} className="material-symbols-outlined">done_all</span></div>)}
+                    //</button>
+                }
                 <input
                     type="text"
                     placeholder="Search..."

@@ -51,7 +51,7 @@ const App = () => {
     //}, []); // means run once on mount (empty dependicies)
 
     const rerender = React.useReducer(() => ({}), {})[1]
-    console.log(isLoggedIn)
+    
     return (
         <Router>
             <div>
@@ -115,7 +115,7 @@ const App = () => {
 
 const NavBar = ({ isLoggedIn }) => {
     const location = useLocation();
-    console.log(isLoggedIn)
+
     const navButtons = [
         {
             path: "/", label: (<div><span style={{ fontSize: '150%', verticalAlign: 'middle', marginRight: '4px', marginBottom: '4px' }} className="material-symbols-outlined">home</span>DshbX</div>)

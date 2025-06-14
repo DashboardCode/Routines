@@ -14,3 +14,33 @@
     white-space: nowrap;
     gap: 0.5rem;
 }
+
+.adminka-switch {
+    width: 2.28rem;
+    height: 1.32rem;
+    background: rgb(222, 226, 230);
+    border-radius: 999px;
+    position: relative;
+    border: 1px solid darkgrey;
+}
+
+.adminka-switch[data-state='checked'] {
+    background: rgb(13, 110, 253);
+    border-color: rgb(13, 110, 253);
+}
+
+    .adminka-switch .adminka-thumb {
+        width: 1.2rem;
+        height: 1.2rem;
+        background: white;
+        border-radius: 999px;
+        position: absolute;
+        top: 0px;
+        left: -1px;
+        transition: transform 0.1s ease;
+        border: 1px solid darkgrey;
+    }
+
+    .adminka-switch[data-state='checked'] .adminka-thumb {
+        transform: translateX(1rem);
+    }

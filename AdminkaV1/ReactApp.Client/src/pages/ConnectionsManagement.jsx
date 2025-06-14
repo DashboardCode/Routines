@@ -138,7 +138,7 @@ function ConnectionsManagement() {
             }
         ];
     
-    console.log(errors);
+    
     // TODO: form validation (e.g. react-hook-form)
     var renderFormFields = (entity, setEntity) => (
         /*<div style={{ display: 'flex', flexWrap: 'wrap', gap: '2em' }}>*/
