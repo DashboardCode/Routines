@@ -80,10 +80,10 @@ const App = () => {
                         {!isLoggedIn ?
                             <BsRibbonGroupItem  >
                                 <BsRibbonButton className="btn btn-warning mx-2" onClick={() => { setIsExpiredToken(false); loginMSAL(setIsLoggedIn, setIsLoading) }}>
-                                    <img className="icon-centered" src="login.svg" />Log in (MSAL)
+                                    <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">login</span>Log in (MSAL)
                                 </BsRibbonButton>
                                 <BsRibbonButton className="btn btn-warning mx-2" onClick={() => { setIsExpiredToken(false); setIsDialogOpen(true) } }>
-                                    <img className="icon-centered" src="login.svg" />Log in (Middleware)
+                                    <span style={{  verticalAlign: 'middle' }} className="material-symbols-outlined">login</span>Log in (Middleware)
                                 </BsRibbonButton>
                             </BsRibbonGroupItem>
                             :

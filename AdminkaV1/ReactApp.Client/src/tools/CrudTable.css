@@ -44,3 +44,19 @@
     .adminka-switch[data-state='checked'] .adminka-thumb {
         transform: translateX(1rem);
     }
+
+.slide-panel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+    .slide-panel.show {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: auto;
+    }

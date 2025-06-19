@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useReducer } from 'react';
 import CrudTableWithDialogs from '@/tools/CrudTableWithDialogs';
 import { fetchTokenized } from '@/fetchTokenized';
 import DebugMenu from '@/tools/DebugMenu';
@@ -50,15 +50,7 @@ function cloneEntity(entity){
 }
 
 function ConnectionsManagement() {
-    const [list, setList] = useState();
-    const [isLoading, setIsLoading] = useState(true);
-    const [reload, setReload] = useState(0); // Changing this triggers refetch
-
-    //const [errors, setErrors] = useState({});
-
-    const [errorMessageEdit, setErrorMessageEdit] = useState(0); 
-    const [errorMessageDelete, setErrorMessageDelete] = useState(0); 
-
+    const [, forceUpdate] = useReducer(x => x + 1, 0);
 
     // react-hook-form - state of the form with enabled zod validation
     const {
@@ -67,7 +59,7 @@ function ConnectionsManagement() {
         getValues,
         reset, // reset form before reuse dialog for other entities 
         setError /*set error for fields*/,
-        formState: { errors, isValid, dirtyFields } }
+        formState: { errors, /*isValid,*/ dirtyFields } }
         = useForm(
             {
                 resolver: zodResolver(connectionValidationSchema),
@@ -86,12 +78,14 @@ function ConnectionsManagement() {
 
     // Hook "do something after render" Data fetching, setting up a subscription, and manually changing the DOM, logging in React
     // components are all examples of side effects.
-    // UseState here, it is accesible in function's scope.
-    useEffect(() => {
-        fetchList(setList, setIsLoading); // setListData - recall the component render
-    }, [reload]);
-
-    useEffect(() => { }, [list]);
+    // useEffect here since this is fetch: async with side effects
+    //useEffect(() => {
+    //    setIsLoading(true);
+    //    fetchList(setList, setIsLoading); // setList - recalls the component render
+    //                                      // fetchList is async but we call it without await inside useEffect since this is a promise,
+    //                                      // istead useEffect fuctor can return a cleanup function
+    //    setIsLoading(false);
+    //}, [reload]);
 
     let baseColumns =
         [
@@ -140,7 +134,7 @@ function ConnectionsManagement() {
     
     
     // TODO: form validation (e.g. react-hook-form)
-    var renderFormFields = (entity, setEntity) => (
+    var renderFormFields = (/*entity, setEntity*/) => (
         /*<div style={{ display: 'flex', flexWrap: 'wrap', gap: '2em' }}>*/
         <div>
             <div className="px-2 py-2">
@@ -242,59 +236,35 @@ function ConnectionsManagement() {
         </div>
     )
 
-    /*
-    setIsLoading,
 
-    renderFormFields,
 
-    fetchCreate,
-    fetchReplace,
-    fetchDelete,
+    const contents = <CrudTableWithDialogs
+            baseColumns={baseColumns}
+            fetchList={(setList, setErrorMessageList) => fetchList(setList, setErrorMessageList)  }
 
-    errorMessageEdit,
-    setErrorMessageEdit,
-    errorMessageDelete,
-    setErrorMessageDelete,
-
-    hookFormReset,
-    hookFormTrigger,
-    hookFormGetValues
-    */
-
-    const contents = isLoading
-        ? <p><em>Loading... </em></p>
-        : <CrudTableWithDialogs list={list}
-            setList={setList}
             createDefaultEmpty={createDefaultEmpty}
             cloneEntity={cloneEntity}
-            isLoading={isLoading}
-            baseColumns={baseColumns}
-            setIsLoading={setIsLoading}
             renderFormFields={renderFormFields}
 
-            fetchCreate={(entity, data) => fetchCreate(entity, setErrorMessageEdit, setError, setList, setIsLoading, data)}
-            fetchReplace={(entity, data) => fetchReplace(entity, setErrorMessageEdit, setError, setList, setIsLoading, data, dirtyFields)}
-            fetchDelete={(entity) => fetchDelete(entity, setErrorMessageDelete, setList, setIsLoading)}
-            //fetchDetails={null/*(id) => fetch(`${ADMINKA_API_BASE_URL}/ui/connections/${id}`, { headers: { "Content-Type": "application/json" } })*/}
             
-            //multiSelectActions={null}
-            errorMessageEdit={errorMessageEdit}
-            setErrorMessageEdit={setErrorMessageEdit}
-            errorMessageDelete={errorMessageDelete}
-            setErrorMessageDelete={setErrorMessageDelete}
+            fetchCreate={(entity, data, setErrorMessageEdit) => fetchCreate(entity, setErrorMessageEdit, setError, data)}
+            fetchReplace={(entity, data, setErrorMessageEdit) => fetchReplace(entity, setErrorMessageEdit, setError,  data, dirtyFields)}
+            fetchDelete={(entity, setErrorMessageDelete) => fetchDelete(entity, setErrorMessageDelete )}
+
             hookFormReset={reset}
             hookFormTrigger={trigger}
             hookFormGetValues={getValues}
         />;
 
+    //console.log(ConnectionsManagement.name+" render") // TODO: trace.render();
     return (
         <div>
             {
-                //console.log("render " + ConnectionsManagement.name)
+                //console.log(ConnectionsManagement.name+" render.content")  // TODO: trace.renderContent();
             }
             <DebugMenu actions=
                 {[
-                    { name: "refreshData", action: () => setReload((prev) => prev + 1) }
+                    { name: "forceRerender", action: () => forceUpdate() }
                 ]} />
             <div className="my-4">
                 {contents}
@@ -304,25 +274,30 @@ function ConnectionsManagement() {
     );
 }
 
-async function fetchList(setList, setIsLoading) {
-    setIsLoading(true);
-    const response =await fetchTokenized(`/ui/connections`);
+async function fetchList(setList, setErrorMessageList) {
+    
+    const response = await fetchTokenized(`/ui/connections`);
     if (response.ok) {
         const odata = await response.json();
         setList(odata.value);
+        return true;
     }
-    setIsLoading(false);
+    else {
+        var result = await response.json();
+        setErrorMessageList(result.message);
+        return false
+    }
 }
 
-async function fetchCreate(entity, setErrorMessageEdit, setError, setList, setIsLoading, hookFormData) {
+async function fetchCreate(entity, setErrorMessageEdit, setError, hookFormData) {
     var body = JSON.stringify(hookFormData);
     console.log(body)
-    var responce = await fetchTokenized(`/ui/connections`, body, "POST");
-    if (responce.ok) {
-        await fetchList(setList, setIsLoading);
+    var response = await fetchTokenized(`/ui/connections`, body, "POST");
+    if (response.ok) {
+        //await fetchList(setList, setIsLoading);
         return true
     } else {
-        var result = await responce.json();
+        var result = await response.json();
         setErrorMessageEdit(result.message);
         //Object.entries(result.errors).forEach(([field, message]) => {
         //    setError(field, { type: 'server', message });
@@ -331,18 +306,18 @@ async function fetchCreate(entity, setErrorMessageEdit, setError, setList, setIs
     }  
 }
 
-async function fetchReplace(entity, setErrorMessageEdit, setError, setList, setIsLoading, hookFormData, dirtyFields) {
+async function fetchReplace(entity, setErrorMessageEdit, setError, hookFormData, dirtyFields) {
 
     var hookFormDelta = getDelta(hookFormData, dirtyFields)
     var delta = JSON.stringify(hookFormDelta);
     
-    var responce = await fetchTokenized(`/ui/connections/${entity.excConnectionId}`, delta, "PATCH");
-    if (responce.ok) {
-        await fetchList(setList, setIsLoading);
+    var response = await fetchTokenized(`/ui/connections/${entity.excConnectionId}`, delta, "PATCH");
+    if (response.ok) {
+        //await fetchList(setList, setIsLoading);
         return true;
     }
     else {
-        var result = await responce.json();
+        var result = await response.json();
         setErrorMessageEdit(result.message);
         //Object.entries(result.errors).forEach(([field, message]) => {
         //    setError(field, { type: 'server', message });
@@ -351,9 +326,21 @@ async function fetchReplace(entity, setErrorMessageEdit, setError, setList, setI
     }
 }
 
-async function fetchDelete(entity, setErrorMessageDelete, setList, setIsLoading) {
-    await fetchTokenized(`/ui/connections/${entity.excConnectionId}`, null, "DELETE" );
-    await fetchList(setList, setIsLoading);
+async function fetchDelete(entity, setErrorMessageDelete) {
+    var responce = await fetchTokenized(`/ui/connections/${entity.excConnectionId}`, null, "DELETE");
+    if (responce.ok) {
+  //      await fetchList(setList, setIsLoading);
+        return true;
+    }
+    else {
+        var result = await responce.json();
+        setErrorMessageDelete(result.message);
+        //Object.entries(result.errors).forEach(([field, message]) => {
+        //    setError(field, { type: 'server', message });
+        //});
+        return false
+    }
+//    await fetchList(setList, setIsLoading);
 };
 
 function getDelta(allValues, dirtyFields){

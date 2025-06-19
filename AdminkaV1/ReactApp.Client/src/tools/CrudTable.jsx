@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from 'react';
+﻿import { useMemo, useState} from 'react';
 import {
     useReactTable, getCoreRowModel, getSortedRowModel, flexRender,
     getPaginationRowModel, getFilteredRowModel
@@ -6,18 +6,20 @@ import {
 import PropTypes from "prop-types";
 import './CrudTable.css';
 import DebugMenu from './DebugMenu';
+import Pagination from './Pagination';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import * as Switch from "@radix-ui/react-switch";
 
-const CrudTable = ({ list, 
-    setList, isLoading,
+function CrudTable({
+    list,
+    setList,
+    reload,
+    isLoading,
     baseColumns,
-    setChoosedEntity,
-    multiSelectActions,
-    buttonHandlers
+    options = {}
+}){
 
-}) => {
-
+    var { multiSelectActions, buttonHandlers } = options;
     const {
         handleCreateButtonClick,
         handleUpdateButtonClick,
@@ -30,12 +32,11 @@ const CrudTable = ({ list,
     const [rowSelection, setRowSelection] = useState({})
     const [globalFilter, setGlobalFilter] = useState('');
     
-
-    const toggleSelectable = () => {
-        setIsSelectable(!isSelectable);
-        tableInstance.resetRowSelection();
-        // TODO: pass table.getState().rowSelection to the dialog
-    };
+    //const toggleSelectable = () => {
+    //    setIsSelectable(!isSelectable);
+    //    tableInstance.resetRowSelection();
+    //    // TODO: pass table.getState().rowSelection to the dialog
+    //};
     
     const columns = useMemo(() => {
         var copy = [...baseColumns];
@@ -81,33 +82,34 @@ const CrudTable = ({ list,
                         />
                 ),
             });
-        } else
+        }
+        else
         {
             copy.unshift({
                 id: "actions",
-                header: () => (<button className="btn btn-sm" onClick={() => { setChoosedEntity(null); handleCreateButtonClick(); }} style={{ background: "green", color: "white" }}>
+                header: () => (<button className="btn btn-sm" onClick={() => { handleCreateButtonClick(); }} style={{ background: "green", color: "white" }}>
                     <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">add</span>
                 </button>),
-                footer: () => (<button className="btn btn-sm" onClick={() => { setChoosedEntity(null); handleCreateButtonClick(); }} style={{ background: "green", color: "white" }}>
+                footer: () => (<button className="btn btn-sm" onClick={() => { handleCreateButtonClick(); }} style={{ background: "green", color: "white" }}>
                     <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">add</span>
                 </button>),
                 cell: ({ row }) =>
                 (<div style={{ display: "flex", gap: "5px" }}>
-                    <button className="btn btn-sm" onClick={() => { setChoosedEntity(row.original); handleUpdateButtonClick(row.original); }} style={{ color: "blue" }}>
+                    <button className="btn btn-sm" onClick={() => { handleUpdateButtonClick(row.original); }} style={{ color: "blue" }}>
                         <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">edit_document</span>
                     </button>
-                    <button className="btn btn-sm" onClick={() => { setChoosedEntity(row.original); handleDeleteButtonClick(row.original); }} style={{ color: "red" }}>
+                    <button className="btn btn-sm" onClick={() => { handleDeleteButtonClick(row.original); }} style={{ color: "red" }}>
                         <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">delete_forever</span>
                     </button>
                     
-                    {handleDetailsButtonClick && <button className="btn btn-sm" onClick={() => { setChoosedEntity(row.original); handleDetailsButtonClick(row.original); } } style={{ color: "gray" }}>
+                    {handleDetailsButtonClick && <button className="btn btn-sm" onClick={() => { handleDetailsButtonClick(row.original); } } style={{ color: "gray" }}>
                         Details
                     </button>}
                 </div>)
             });
         }
         return copy;
-    }, [setChoosedEntity, handleCreateButtonClick, handleUpdateButtonClick, handleDeleteButtonClick, handleDetailsButtonClick, isSelectable, baseColumns]
+    }, [handleCreateButtonClick, handleUpdateButtonClick, handleDeleteButtonClick, handleDetailsButtonClick, isSelectable, baseColumns]
     );
 
     const tableInstance = useReactTable(
@@ -137,12 +139,11 @@ const CrudTable = ({ list,
     );
     const { getHeaderGroups, getFooterGroups, getRowModel } = tableInstance;
 
-    
-    multiSelectActions = 1
     const contents = isLoading
         ? <p><em>Loading... </em></p>
         : <div className="crud-panel">
             <DebugMenu actions={[
+                { name: "refreshData", action: () => reload() },
                 { name: "Remove First Row", action: () => setList((l) => l.slice(1)) },
                 {
                     name: "log console table.getSelectedRowModel().flatRows", action: () => {
@@ -164,19 +165,17 @@ const CrudTable = ({ list,
             
             <div className={`d-flex ${multiSelectActions ? 'justify-content-between' : 'justify-content-end'} align-items-center gap-2`}>
                 {multiSelectActions &&
-                    <Switch.Root
-                        className="adminka-switch"
-                        checked={isSelectable}
-                        onCheckedChange={setIsSelectable}
-                    >
-                        <Switch.Thumb
-                            className="adminka-thumb"
-                        />
-                    </Switch.Root>
+                    <div className="d-flex align-items-center gap-1">
+                        <span className="text-secondary">Bulk: </span>
+                        <Switch.Root className="adminka-switch" checked={isSelectable} onCheckedChange={setIsSelectable}>
+                            <Switch.Thumb className="adminka-thumb"/>
+                        </Switch.Root>
 
-                    //<button className="btn btn-light" onClick={toggleSelectable} style={{ marginBottom: "10px" }}>
-                    //{isSelectable ? (<span style={{ fontSize: '150%', verticalAlign: 'middle', }} className="material-symbols-outlined">chevron_left</span>) : (<div><span style={{ fontSize: '150%', verticalAlign: 'middle', }} className="material-symbols-outlined">done_all</span></div>)}
-                    //</button>
+                        <div className={`slide-panel ${isSelectable ? 'show' : ''} mx-2`}>
+                            <button className="btn btn-secondary btn-sm" onClick={() => { handleCreateButtonClick(); }}  disabled={!tableInstance.getIsSomeRowsSelected()}>Edit</button>
+                            <button className="btn btn-secondary btn-sm" onClick={() => { handleDeleteButtonClick(); }}  disabled={!tableInstance.getIsSomeRowsSelected()}>Delete</button>
+                        </div>
+                    </div>
                 }
                 <input
                     type="text"
@@ -230,7 +229,7 @@ const CrudTable = ({ list,
                 </div>
             ) : (
                     tableInstance.getPreFilteredRowModel().rows.length === 0 ? 
-                        (<div className="alert alert-secondary">Empty: <button className="btn btn-sm" onClick={() => { setChoosedEntity(null); handleCreateButtonClick(true) }} style={{ background: "green", color: "white" }}>
+                        (<div className="alert alert-secondary">Empty: <button className="btn btn-sm" onClick={() => { handleCreateButtonClick() }} style={{ background: "green", color: "white" }}>
                             Add New</button></div>) :
                         (<div className="alert alert-secondary">No results match your search.</div>)
                  )   
@@ -240,75 +239,20 @@ const CrudTable = ({ list,
     return contents;
 }
 
-function Pagination({ tableInstance }) {
-    return (
-        <div className="d-flex justify-content-end align-items-center gap-2">
-            <button
-                className="border rounded p-1"
-                style={{ fontSize: 0.6 + 'rem' }}
-                onClick={() => tableInstance.setPageIndex(0)}
-                disabled={!tableInstance.getCanPreviousPage()}
-            >
-                {'<<'}
-            </button>
-            <button
-                className="border rounded p-1"
-                style={{ fontSize: 0.6 + 'rem' }}
-                onClick={() => tableInstance.previousPage()}
-                disabled={!tableInstance.getCanPreviousPage()}
-            >
-                {'<'}
-            </button>
-            <button
-                className="border rounded p-1"
-                style={{ fontSize: 0.6 + 'rem' }}
-                onClick={() => tableInstance.nextPage()}
-                disabled={!tableInstance.getCanNextPage()}
-            >
-                {'>'}
-            </button>
-            <button
-                className="border rounded p-1"
-                style={{ fontSize: 0.6 + 'rem' }}
-                onClick={() => tableInstance.setPageIndex(tableInstance.getPageCount() - 1)}
-                disabled={!tableInstance.getCanNextPage()}
-            >
-                {'>>'}
-            </button>
-            <div>Page</div>
-            <strong>
-                {tableInstance.getState().pagination.pageIndex + 1} of {tableInstance.getPageCount()}
-            </strong>
-            | Go to page:
-            <input
-                type="number"
-                min="1"
-                max={tableInstance.getPageCount()}
-                defaultValue={tableInstance.getState().pagination.pageIndex + 1}
-                onChange={e => {
-                    const page = e.target.value ? Number(e.target.value) - 1 : 0
-                    tableInstance.setPageIndex(page)
-                }}
-                className="border p-1 rounded w-16"
-            />
-            <select
-                value={tableInstance.getState().pagination.pageSize}
-                onChange={e => {
-                    tableInstance.setPageSize(Number(e.target.value))
-                }}
-            >
-                {[10, 20, 30, 40, 50].map(pageSize => (
-                    <option key={pageSize} value={pageSize}>
-                        Show {pageSize}
-                    </option>
-                ))}
-            </select>
-        </div>
-    );
+CrudTable.propTypes = {
+    list: PropTypes.array,
+    setList: PropTypes.func,
+    reload: PropTypes.func,
+    isLoading: PropTypes.bool,
+    baseColumns: PropTypes.array,
+    options: PropTypes.shape({
+        multiSelectActions: PropTypes.array,
+        buttonHandlers: PropTypes.shape({
+            handleCreateButtonClick: PropTypes.func/*.isRequired*/,
+            handleUpdateButtonClick: PropTypes.func,
+            handleDeleteButtonClick: PropTypes.func,
+            handleDetailsButtonClick: PropTypes.func
+        })
+    })
 }
-
-Pagination.propTypes = {
-    tableInstance: PropTypes.object
-};
-
 export default CrudTable;

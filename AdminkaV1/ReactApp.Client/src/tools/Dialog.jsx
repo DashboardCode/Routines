@@ -1,6 +1,6 @@
 import * as RadixDialog from "@radix-ui/react-dialog";
 import PropTypes from "prop-types";
-function Dialog({ isDialogOpen, setIsDialogOpen, errorMessage, title, okButtonTitle, okButton_onClick, children }) {
+function Dialog({ isDialogOpen, setIsDialogOpen, errorMessage, isLoading,  title, okButtonTitle, okButton_onClick, children }) {
     const isError = !!errorMessage;
 
     return (
@@ -24,7 +24,7 @@ function Dialog({ isDialogOpen, setIsDialogOpen, errorMessage, title, okButtonTi
                                 <button type="button" className="btn btn-sm btn-secondary" onClick={() => setIsDialogOpen(false)}>
                                     Cancel
                                 </button>
-                                <button type="button" className="btn btn-sm btn-danger" onClick={() => okButton_onClick()}>
+                                <button type="button" className="btn btn-sm btn-danger" disabled={isLoading} onClick={() => okButton_onClick()}>
                                     {okButtonTitle}
                                 </button>
                             </div>
@@ -40,6 +40,7 @@ Dialog.propTypes = {
     isDialogOpen: PropTypes.bool,
     setIsDialogOpen: PropTypes.func,
     errorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+    isLoading: PropTypes.bool,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     okButtonTitle: PropTypes.node,
     okButton_onClick: PropTypes.func,
