@@ -1,16 +1,21 @@
 TODO:
-- Form validation (length, required)
-- ExcTables with serever-side select
-- ExcTable and Connection landing page
+
+-  "multi actions", bulk edit, delete dialogs
+
+- Table "Hide id" functionality (more space)
+- Table "Order by colums" functionality
+
+- ExcTables with select
+- landing page
+- server side with filters and pagination
+
+- the table funcitonality but for lists (only one order! dogruzka)
 
 - "loading" and block ui on loading strategy
 
 - test token and logout on startup if token doesn't work
 - Error dialog , Messages list.
 
-- Table rows selection and "multi actions"
-- Table "Hide id" functionality (more space)
-- Table "Order by colums" functionality
 - Table Stacking filters
 
 - form update: "highlit changed values"

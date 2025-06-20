@@ -6,7 +6,7 @@
     TODO: parametrize the color
 */
 .table.crud-table > :not(caption) > tr.crud-table-selected-row > * {
-    background-color: mistyrose;
+    background-color: rgb(13, 110, 253, 0.15);
 }
 
 .table.crud-table > :not(caption) > tr > th > .crud-table-selected-total {
@@ -18,32 +18,32 @@
 .adminka-switch {
     width: 2.28rem;
     height: 1.32rem;
-    background: rgb(222, 226, 230);
+    background: rgb(13, 110, 253);
     border-radius: 999px;
     position: relative;
+    border: 1px solid rgb(13, 110, 253);
+}
+
+    .adminka-switch[data-state='checked'] {
+        background: rgb(13, 110, 253);
+        border-color: rgb(13, 110, 253);
+    }
+
+.adminka-switch .adminka-thumb {
+    width: 1.2rem;
+    height: 1.2rem;
+    background: white;
+    border-radius: 999px;
+    position: absolute;
+    top: 0px;
+    left: -1px;
+    transition: transform 0.1s ease;
     border: 1px solid darkgrey;
 }
 
-.adminka-switch[data-state='checked'] {
-    background: rgb(13, 110, 253);
-    border-color: rgb(13, 110, 253);
+.adminka-switch[data-state='checked'] .adminka-thumb {
+    transform: translateX(1rem);
 }
-
-    .adminka-switch .adminka-thumb {
-        width: 1.2rem;
-        height: 1.2rem;
-        background: white;
-        border-radius: 999px;
-        position: absolute;
-        top: 0px;
-        left: -1px;
-        transition: transform 0.1s ease;
-        border: 1px solid darkgrey;
-    }
-
-    .adminka-switch[data-state='checked'] .adminka-thumb {
-        transform: translateX(1rem);
-    }
 
 .slide-panel {
     display: flex;
@@ -55,8 +55,23 @@
     pointer-events: none;
 }
 
-    .slide-panel.show {
-        opacity: 1;
-        transform: translateX(0);
-        pointer-events: auto;
-    }
+.slide-panel.show {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+input.form-check-input {
+    border-color: #0d6efd; /*--bs-blue:*/
+}
+table button.btn {
+    padding: 2px;
+    
+}
+table span.material-symbols-outlined {
+    width: 1.4rem;
+    height: 1.4rem;
+    font-size: 1.4rem;
+    margin: 0px 2px 1px 2px;
+    padding: 0px 0px 0px 0px;
+}

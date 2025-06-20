@@ -4,7 +4,10 @@ import SettingsPage1 from './SettingsPage1';
 import SettingsPage2 from './SettingsPage2';
 
 const Settings = () => (
-            <div style={styles.container}>
+    <div style={styles.container}>
+        {
+            console.log(Settings.name + " render.content")  // TODO: trace.renderContent();
+        }
                 <nav style={styles.sidebar}>
                     <h2 style={styles.logo}>Settings</h2>
                     <ul style={styles.menu}>

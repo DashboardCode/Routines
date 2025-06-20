@@ -51,7 +51,7 @@ const App = () => {
     //}, []); // means run once on mount (empty dependicies)
 
     const rerender = React.useReducer(() => ({}), {})[1]
-    
+    console.log("App render")
     return (
         <Router>
             <div>

@@ -1,34 +1,32 @@
 import { useEffect, useRef } from 'react';
 import PropTypes from "prop-types";
+import Form from 'react-bootstrap/Form';
 
-function IndeterminateCheckbox({
-    indeterminate,
-    className = '',
-    ...rest
-}) {
+function IndeterminateCheckbox({ checked, indeterminate, onChange, label }) {
     const ref = useRef(null);
 
     useEffect(() => {
-        if (typeof indeterminate === 'boolean') {
-            ref.current.indeterminate = !rest.checked && indeterminate
+        if (ref.current) {
+            ref.current.indeterminate = indeterminate;
         }
-    }, [ref, indeterminate, rest])
+    }, [indeterminate]);
 
     return (
-        <input
+        <Form.Check
             type="checkbox"
             ref={ref}
-            className={className + ' cursor-pointer'}
-            {...rest}
+            checked={checked}
+            onChange={onChange}
+            label={<div className="badge bg-secondary">{label}</div>}
         />
-    )
+    );
 }
 
 IndeterminateCheckbox.propTypes = {
+    checked: PropTypes.bool,
+    label: PropTypes.string,
     indeterminate: PropTypes.bool,
-    className: PropTypes.string,
-    getRowSelectionLength: PropTypes.func,
-    getRowTotalLength: PropTypes.func
+    onChange: PropTypes.func
 };
 
 export default IndeterminateCheckbox;

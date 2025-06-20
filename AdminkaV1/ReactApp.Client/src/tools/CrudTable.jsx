@@ -1,4 +1,4 @@
-﻿import { useMemo, useState} from 'react';
+﻿import { useMemo, useState, useEffect } from 'react';
 import {
     useReactTable, getCoreRowModel, getSortedRowModel, flexRender,
     getPaginationRowModel, getFilteredRowModel
@@ -8,7 +8,11 @@ import './CrudTable.css';
 import DebugMenu from './DebugMenu';
 import Pagination from './Pagination';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
-import * as Switch from "@radix-ui/react-switch";
+
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import Form from 'react-bootstrap/Form';
 
 function CrudTable({
     list,
@@ -19,97 +23,124 @@ function CrudTable({
     options = {}
 }){
 
-    var { multiSelectActions, buttonHandlers } = options;
+    var { multiSelectActions, buttonHandlers = {} } = options;
     const {
         handleCreateButtonClick,
         handleUpdateButtonClick,
         handleDeleteButtonClick,
         handleDetailsButtonClick
     } = buttonHandlers;
-
+    
+    var hasRowActions = !(handleCreateButtonClick == null && handleUpdateButtonClick == null && handleDeleteButtonClick == null && handleDetailsButtonClick==null );
+    
     // UseMemo is for caching constants and "non side effects calculations"
-    const [isSelectable, setIsSelectable] = useState(false);
+    const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
     const [rowSelection, setRowSelection] = useState({})
     const [globalFilter, setGlobalFilter] = useState('');
+
+
     
-    //const toggleSelectable = () => {
-    //    setIsSelectable(!isSelectable);
-    //    tableInstance.resetRowSelection();
-    //    // TODO: pass table.getState().rowSelection to the dialog
-    //};
-    
+
+   
     const columns = useMemo(() => {
         var copy = [...baseColumns];
-        if (isSelectable) {
+        if (isMultiSelectEnabled) {
             copy.unshift({
                 id: "select",
-                header: ({ table }) => (<span className="crud-table-selected-total"><IndeterminateCheckbox
+                header: ({ table }) => (<span className="crud-table-selected-total">
+                    {/*<Form.Check*/}
+                    {/*    type="checkbox"*/}
+                    
+                    {/*    checked={table.getIsAllRowsSelected()}*/}
+                    {/*    onChange={table.getToggleAllRowsSelectedHandler()}*/}
+                    {/*/>*/}
+
+                    <IndeterminateCheckbox
+                        {...{
+                            checked: table.getIsAllRowsSelected(),
+                            indeterminate: table.getIsSomeRowsSelected(),
+                            onChange: table.getToggleAllRowsSelectedHandler(),
+                            //label:
+                               
+                            
+                            // with page and filter from https://tanstack.com/table/v8/docs/framework/react/examples/row-selection
+                            //checked: table.getIsAllPageRowsSelected(),
+                            //indeterminate: table.getIsSomePageRowsSelected(),
+                            //onChange: table.getToggleAllPageRowsSelectedHandler()
+
+                        }}
+                    />
+
+                    </span>),
+                footer: ({ table }) => <IndeterminateCheckbox
                     {...{
                         checked: table.getIsAllRowsSelected(),
                         indeterminate: table.getIsSomeRowsSelected(),
                         onChange: table.getToggleAllRowsSelectedHandler(),
+                        //label:
+
 
                         // with page and filter from https://tanstack.com/table/v8/docs/framework/react/examples/row-selection
                         //checked: table.getIsAllPageRowsSelected(),
                         //indeterminate: table.getIsSomePageRowsSelected(),
                         //onChange: table.getToggleAllPageRowsSelectedHandler()
 
-                    }} />{Object.keys(table.getState().rowSelection).length + "/" +
-                        table.getPreFilteredRowModel().rows.length    
-                    }</span>),
-                footer: ({ table }) => (<span className="crud-table-selected-total"><IndeterminateCheckbox
-                    {...{
-                        checked: table.getIsAllRowsSelected(),
-                        indeterminate: table.getIsSomeRowsSelected(),
-                        onChange: table.getToggleAllRowsSelectedHandler()
-
-                        // with page and filter from https://tanstack.com/table/v8/docs/framework/react/examples/row-selection
-                        //checked: table.getIsAllPageRowsSelected(),
-                        //indeterminate: table.getIsSomePageRowsSelected(),
-                        //onChange: table.getToggleAllPageRowsSelectedHandler()
-
-                    }} />{Object.keys(table.getState().rowSelection).length + "/" +
-                        table.getPreFilteredRowModel().rows.length
-                    }</span>),
+                    }}
+                />,
                 cell: ({ row }) => (
-                        <IndeterminateCheckbox
-                            {...{
-                                checked: row.getIsSelected(),
-                                disabled: !row.getCanSelect(),
-                                indeterminate: row.getIsSomeSelected(),
-                                onChange: row.getToggleSelectedHandler(),
-                            }}
-                        />
+                    <Form.Check
+                        type="checkbox"
+                        checked={row.getIsSelected()}
+                        onChange={row.getToggleSelectedHandler()}
+                         />
                 ),
             });
         }
         else
         {
-            copy.unshift({
-                id: "actions",
-                header: () => (<button className="btn btn-sm" onClick={() => { handleCreateButtonClick(); }} style={{ background: "green", color: "white" }}>
-                    <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">add</span>
-                </button>),
-                footer: () => (<button className="btn btn-sm" onClick={() => { handleCreateButtonClick(); }} style={{ background: "green", color: "white" }}>
-                    <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">add</span>
-                </button>),
-                cell: ({ row }) =>
-                (<div style={{ display: "flex", gap: "5px" }}>
-                    <button className="btn btn-sm" onClick={() => { handleUpdateButtonClick(row.original); }} style={{ color: "blue" }}>
-                        <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">edit_document</span>
-                    </button>
-                    <button className="btn btn-sm" onClick={() => { handleDeleteButtonClick(row.original); }} style={{ color: "red" }}>
-                        <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">delete_forever</span>
-                    </button>
-                    
-                    {handleDetailsButtonClick && <button className="btn btn-sm" onClick={() => { handleDetailsButtonClick(row.original); } } style={{ color: "gray" }}>
-                        Details
-                    </button>}
-                </div>)
-            });
+            if (hasRowActions) {
+                copy.unshift({
+                    id: "actions",
+                    header: () => (<button className="btn  btn-sm btn-outline-primary" onClick={() => { handleCreateButtonClick(); }} >
+                        <span style={{ verticalAlign: 'middle',  }} className="material-symbols-outlined">add</span>
+                    </button>),
+                    footer: () => (<button className="btn btn-sm btn-outline-primary" onClick={() => { handleCreateButtonClick(); }} >
+                        <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">add</span>
+                    </button>),
+                    cell: ({ row }) =>
+                    (<div style={{ display: "flex", gap: "5px" }}>
+
+                        <Dropdown as={ButtonGroup}>
+                            <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { handleUpdateButtonClick(row.original); }}>
+                                <span style={{ verticalAlign: 'middle'}} className="material-symbols-outlined">edit_document</span>
+                            </Button>
+                            <Dropdown.Toggle split variant="outline-primary" id="dropdown-split-basic" />
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item><Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { handleUpdateButtonClick(row.original); }}>
+                                    <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">edit_document</span>
+                                </Button> Edit</Dropdown.Item>
+                                <Dropdown.Item onClick={() => { handleDeleteButtonClick(row.original); }}>
+                                    <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" >
+                                        <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">delete_forever</span>
+                                    </Button> Delete
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <button type="button" className="btn btn-primary btn-sm" >
+                            <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">draft</span>
+                        </button>
+      
+
+                        {handleDetailsButtonClick && <button className="btn  btn-sm" onClick={() => { handleDetailsButtonClick(row.original); }} style={{ color: "gray" }}>
+                            Details
+                        </button>}
+                    </div>)
+                });
+            }
         }
         return copy;
-    }, [handleCreateButtonClick, handleUpdateButtonClick, handleDeleteButtonClick, handleDetailsButtonClick, isSelectable, baseColumns]
+    }, [handleCreateButtonClick, handleUpdateButtonClick, handleDeleteButtonClick, handleDetailsButtonClick, isMultiSelectEnabled, baseColumns, hasRowActions]
     );
 
     const tableInstance = useReactTable(
@@ -137,11 +168,19 @@ function CrudTable({
             }
         }
     );
-    const { getHeaderGroups, getFooterGroups, getRowModel } = tableInstance;
 
+    useEffect(() => {
+        if (!isMultiSelectEnabled) {
+            tableInstance.resetRowSelection();
+        }
+    }, [isMultiSelectEnabled, tableInstance]);
+
+    const { getHeaderGroups, getFooterGroups, getRowModel } = tableInstance;
+    
     const contents = isLoading
-        ? <p><em>Loading... </em></p>
+        ? <p> {console.log("CrudTable render.content.isLoading")} <em>Loading... </em></p>
         : <div className="crud-panel">
+            {console.log("CrudTable render.content.Loaded")}
             <DebugMenu actions={[
                 { name: "refreshData", action: () => reload() },
                 { name: "Remove First Row", action: () => setList((l) => l.slice(1)) },
@@ -161,19 +200,32 @@ function CrudTable({
                         );
                     }
                 }]} />
-            {/* Button to toggle selectable mode multiSelectActions && */}
+           
             
             <div className={`d-flex ${multiSelectActions ? 'justify-content-between' : 'justify-content-end'} align-items-center gap-2`}>
                 {multiSelectActions &&
                     <div className="d-flex align-items-center gap-1">
-                        <span className="text-secondary">Bulk: </span>
-                        <Switch.Root className="adminka-switch" checked={isSelectable} onCheckedChange={setIsSelectable}>
-                            <Switch.Thumb className="adminka-thumb"/>
-                        </Switch.Root>
+                        <Form.Check 
+                            type="switch"
+                            id="custom-switch"
+                            label={
+                                <div>{isMultiSelectEnabled ? <div className="badge bg-dark"><span >{Object.keys(tableInstance.getState().rowSelection).length}</span> / <span>{tableInstance.getPreFilteredRowModel().rows.length}</span> </div>:<div>Bulk!</div>}</div>
+                            }
+                            className="mx-2"
+                            checked={isMultiSelectEnabled} onChange={(e) => setIsMultiSelectEnabled(e.target.checked)}
+                        />
 
-                        <div className={`slide-panel ${isSelectable ? 'show' : ''} mx-2`}>
-                            <button className="btn btn-secondary btn-sm" onClick={() => { handleCreateButtonClick(); }}  disabled={!tableInstance.getIsSomeRowsSelected()}>Edit</button>
-                            <button className="btn btn-secondary btn-sm" onClick={() => { handleDeleteButtonClick(); }}  disabled={!tableInstance.getIsSomeRowsSelected()}>Delete</button>
+                        <div className={`slide-panel ${isMultiSelectEnabled ? 'show' : ''} mx-2`}>
+                            <div>
+                                {multiSelectActions.map(item => (
+                                    <button key={item.buttonTitle}
+                                        className="btn btn-outline-primary btn-sm mx-1"
+                                        onClick={() => item.handleButtonClick()}
+                                        disabled={tableInstance.getSelectedRowModel().rows.length ==  0}>
+                                        {item.buttonTitle}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 }

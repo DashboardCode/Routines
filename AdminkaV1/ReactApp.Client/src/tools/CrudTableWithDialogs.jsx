@@ -11,21 +11,24 @@ function CrudTableWithDialogs({
     createDefaultEmpty,
     cloneEntity,
     renderFormFields,
-    
+
     fetchCreate,
     fetchReplace,
     fetchDelete,
 
     hookFormReset,
     hookFormTrigger,
-    hookFormGetValues
+    hookFormGetValues,
+
+    isMultiSelectEdit,
+    isMultiSelectDelete
 }) {
 
     const [errorMessageEdit, setErrorMessageEdit] = useState("");
-    const [errorMessageDelete, setErrorMessageDelete] = useState(""); 
+    const [errorMessageDelete, setErrorMessageDelete] = useState("");
 
-    const [isLoadingEdit, setIsLoadingEdit] = useState(false); 
-    const [isLoadingDelete, setIsLoadingDelete] = useState(false); 
+    const [isLoadingEdit, setIsLoadingEdit] = useState(false);
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -38,11 +41,11 @@ function CrudTableWithDialogs({
             setIsForNew(true);
             var copy = createDefaultEmpty();
             setEntity(copy);
-            hookFormReset(copy, {
-                keepErrors: false,
-                keepDirty: false,
-                keepTouched: false,
-            }); // Set form to the selected item
+            //hookFormReset(copy, {
+            //    keepErrors: false,
+            //    keepDirty: false,
+            //    keepTouched: false,
+            //}); // Set form to the selected item
             setErrorMessageEdit(null);
             setIsEditDialogOpen(true);
 
@@ -66,22 +69,34 @@ function CrudTableWithDialogs({
             setIsDeleteDialogOpen(true);
         },
         handleDetailsButtonClick: null
-    //        (entity) => {
-    //        // TODO await? get id
-    //        //var id = getId(entity);
-    //        //fetch(`${ADMINKA_API_BASE_URL}/ui/connections/${id}`, { headers: { "Content-Type": "application/json" } });
-    //    }
+        //        (entity) => {
+        //        // TODO await? get id
+        //        //var id = getId(entity);
+        //        //fetch(`${ADMINKA_API_BASE_URL}/ui/connections/${id}`, { headers: { "Content-Type": "application/json" } });
+        //    }
     }
 
-    var { crudTableProps, reload } = useCrudTable(
-        fetchList,
-        baseColumns,
-        /*options*/{
-            multiSelectActions: [],
-            buttonHandlers
+    var multiSelectActions = null;
+    if (isMultiSelectEdit) {
+        if (multiSelectActions == null)
+            multiSelectActions = [];
+        multiSelectActions.push({ handleButtonClick: () => { buttonHandlers.handleCreateButtonClick() }, buttonTitle: "Edit" });
+    }
+    if (isMultiSelectDelete) {
+        if (multiSelectActions == null)
+            multiSelectActions = [];
+        multiSelectActions.push({ handleButtonClick: () => { buttonHandlers.handleCreateButtonClick() }, buttonTitle: "Delete" });
+    }
+
+    var { crudTableProps, reload } = useCrudTable({
+            fetchList,
+            baseColumns,
+            options: {
+                multiSelectActions,
+                buttonHandlers
+            }
         }
     );
-
 
     return (
         <div>
@@ -164,7 +179,10 @@ CrudTableWithDialogs.propTypes = {
 
     hookFormReset: PropTypes.func,
     hookFormTrigger:PropTypes.func,
-    hookFormGetValues: PropTypes.func
+    hookFormGetValues: PropTypes.func,
+
+    isMultiSelectEdit: PropTypes.bool,
+    isMultiSelectDelete: PropTypes.bool
 };
 
 export default CrudTableWithDialogs;

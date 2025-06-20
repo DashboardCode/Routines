@@ -1,14 +1,18 @@
 import { useState, useEffect, useCallback} from 'react';
 
 function useCrudTable(
-    fetchList,
-    baseColumns,
-    options = { multiSelectActions:[], buttonHandlers: {} }        
+    useCrudTableOptions
 ) {
+
+    var { fetchList,
+        baseColumns,
+        options
+    } = useCrudTableOptions;
+
+
     const [list, setList] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessageList, setErrorMessageList] = useState(0);
-    
 
     /*
     const isMountedRef = useRef(true);
