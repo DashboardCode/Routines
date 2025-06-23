@@ -6,10 +6,9 @@ function EditDialog(
     {isDialogOpen,
      setIsDialogOpen,
      isForNew,
-     renderFormFields,
-     errorMessage,
-     isLoadingEdit,
-     okButton_onClick}) {
+     okButton_onClick,
+     setDialogApi,
+     children }) {
     const title = isForNew ? (<div>Add</div>) : (<div>Edit</div>) ;
     const okButtonTitle = isForNew ? "Create" : "Update";
 
@@ -17,18 +16,17 @@ function EditDialog(
         <Dialog
             isDialogOpen={isDialogOpen}
             setIsDialogOpen={setIsDialogOpen}
-            errorMessage={errorMessage}
-            isLoading={isLoadingEdit}
             title={title}
             okButtonTitle={okButtonTitle}
             okButton_onClick={okButton_onClick}
+            setDialogApi={setDialogApi}
         >
-            {renderFormFields()}
+            {children}
         </Dialog>
     )
 }
 
-function DeleteDialog({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onClick, errorMessage, isLoadingDelete}) {
+function DeleteDialog({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onClick, setDialogApi }) {
     const title = "Are you sure you want to delete this item?";
     const okButtonTitle = "Delete";
 
@@ -36,11 +34,10 @@ function DeleteDialog({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onCl
         <Dialog
             isDialogOpen={isDeleteDialogOpen}
             setIsDialogOpen={setIsDeleteDialogOpen}
-            errorMessage={errorMessage}
-            isLoading={isLoadingDelete}
             title={title}
             okButtonTitle={okButtonTitle}
-            okButton_onClick= {okButton_onClick}
+            okButton_onClick={okButton_onClick}
+            setDialogApi={setDialogApi}
         />
     )
 }
@@ -49,20 +46,16 @@ EditDialog.propTypes = {
     isDialogOpen: PropTypes.bool,
     setIsDialogOpen: PropTypes.func,
     isForNew: PropTypes.bool,
-    renderFormFields: PropTypes.func,
-    entity: PropTypes.object,
-    setEntity: PropTypes.func,
-    errorMessage: PropTypes.node,
     okButton_onClick: PropTypes.func,
-    isLoadingEdit: PropTypes.bool
+    setDialogApi: PropTypes.func,
+    children: PropTypes.element
 };
 
 DeleteDialog.propTypes = {
     isDeleteDialogOpen: PropTypes.bool,
     setIsDeleteDialogOpen: PropTypes.func,
     okButton_onClick: PropTypes.func,
-    errorMessage: PropTypes.node,
-    isLoadingDelete: PropTypes.bool
+    setDialogApi: PropTypes.func
 };
 
 export { EditDialog, DeleteDialog };

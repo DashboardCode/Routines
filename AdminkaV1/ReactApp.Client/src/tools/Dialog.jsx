@@ -1,7 +1,17 @@
+import { useState, useEffect } from 'react';
+
 import * as RadixDialog from "@radix-ui/react-dialog";
 import PropTypes from "prop-types";
-function Dialog({ isDialogOpen, setIsDialogOpen, errorMessage, isLoading,  title, okButtonTitle, okButton_onClick, children }) {
-    const isError = !!errorMessage;
+function Dialog({ isDialogOpen, setIsDialogOpen, title, okButtonTitle, okButton_onClick, setDialogApi, children }) {
+    const [errorMessage, setErrorMessage] = useState("");
+    const [isLoading, setIsLoading] = useState("");
+    const isError = !!errorMessage;    
+
+    useEffect(() => {
+        setDialogApi({
+            setErrorMessage
+        });
+    }, [setDialogApi, setErrorMessage]);
 
     return (
             <RadixDialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -24,7 +34,7 @@ function Dialog({ isDialogOpen, setIsDialogOpen, errorMessage, isLoading,  title
                                 <button type="button" className="btn btn-sm btn-secondary" onClick={() => setIsDialogOpen(false)}>
                                     Cancel
                                 </button>
-                                <button type="button" className="btn btn-sm btn-danger" disabled={isLoading} onClick={() => okButton_onClick()}>
+                                <button type="button" className="btn btn-sm btn-danger" disabled={isLoading} onClick={() => okButton_onClick(setErrorMessage, setIsLoading)}>
                                     {okButtonTitle}
                                 </button>
                             </div>
@@ -39,12 +49,11 @@ function Dialog({ isDialogOpen, setIsDialogOpen, errorMessage, isLoading,  title
 Dialog.propTypes = {
     isDialogOpen: PropTypes.bool,
     setIsDialogOpen: PropTypes.func,
-    errorMessage: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-    isLoading: PropTypes.bool,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     okButtonTitle: PropTypes.node,
     okButton_onClick: PropTypes.func,
-    children: PropTypes.node
+    setDialogApi: PropTypes.func,
+    children: PropTypes.element
 };
 
 export default Dialog;

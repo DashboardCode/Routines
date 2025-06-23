@@ -1,4 +1,4 @@
-﻿import { useMemo, useState, useEffect } from 'react';
+﻿import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import {
     useReactTable, getCoreRowModel, getSortedRowModel, flexRender,
     getPaginationRowModel, getFilteredRowModel
@@ -15,15 +15,62 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
 function CrudTable({
-    list,
-    setList,
-    reload,
-    isLoading,
-    baseColumns,
-    options = {}
-}){
+    fetchList,
 
-    var { multiSelectActions, buttonHandlers = {} } = options;
+    //list,
+    //setList,
+    //reload,
+    //isLoading,
+    baseColumns,
+    multiSelectActions,
+    buttonHandlers,
+    setCrudTableApi
+}){
+    // ----------------------------
+    const [list, setList] = useState();
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessageList, setErrorMessageList] = useState(0);
+
+    const [incTrigger, setIncTrigger] = useState(0); // Changing this triggers refetch
+    const reload = useCallback(() => {
+        setIncTrigger(v => v + 1);
+    }, []);
+
+    useEffect(() => {
+        setCrudTableApi({
+           reload
+        });
+    }, [setCrudTableApi, reload]);
+
+    useEffect(() => {
+        // isMountCancelled prevent updating state on an unmounted component, which can cause warnings or memory leaks.
+        // It is a common pattern to use a flag to track whether the component is still mounted when the async operation completes.
+        // Otherwise you will get a warning in the console like "Can't perform a React state update on an unmounted component".
+        let isMountCancelled = false;
+
+        setIsLoading(true);
+        fetchList(setList, setErrorMessageList) // is async but we call it without await inside useEffect since this is a promise,
+            .then((result) => {
+                if (result) {
+                    setErrorMessageList(null);
+                }
+            })
+            .catch((error) => {
+                if (!isMountCancelled)
+                    console.error('Fetch failed', error);
+            })
+            .finally(() => {
+                if (!isMountCancelled)  // if component is still mounted, e.g. not navigated away or second time opened
+                    setIsLoading(false);
+            });
+
+        return () => {
+            isMountCancelled = true; // mark as cancelled
+        };
+    }, [incTrigger, fetchList]);
+// ----------------------------
+    
+    //var { multiSelectActions, buttonHandlers = {} } = options;
     const {
         handleCreateButtonClick,
         handleUpdateButtonClick,
@@ -37,9 +84,6 @@ function CrudTable({
     const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
     const [rowSelection, setRowSelection] = useState({})
     const [globalFilter, setGlobalFilter] = useState('');
-
-
-    
 
    
     const columns = useMemo(() => {
@@ -169,7 +213,14 @@ function CrudTable({
         }
     );
 
+    const isFirstRender = useRef(true);
     useEffect(() => {
+        // this pattern used to do not cause useEffect render on first time
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return; // skip execution on first mount
+        }
+
         if (!isMultiSelectEnabled) {
             tableInstance.resetRowSelection();
         }
@@ -200,7 +251,7 @@ function CrudTable({
                         );
                     }
                 }]} />
-           
+            {errorMessageList && <div className="alert alert-danger" role="alert">{errorMessageList}</div>}
             
             <div className={`d-flex ${multiSelectActions ? 'justify-content-between' : 'justify-content-end'} align-items-center gap-2`}>
                 {multiSelectActions &&
@@ -292,19 +343,17 @@ function CrudTable({
 }
 
 CrudTable.propTypes = {
-    list: PropTypes.array,
-    setList: PropTypes.func,
-    reload: PropTypes.func,
-    isLoading: PropTypes.bool,
-    baseColumns: PropTypes.array,
-    options: PropTypes.shape({
-        multiSelectActions: PropTypes.array,
-        buttonHandlers: PropTypes.shape({
-            handleCreateButtonClick: PropTypes.func/*.isRequired*/,
+    fetchList: PropTypes.func.isRequired, 
+    baseColumns: PropTypes.array.isRequired,
+    multiSelectActions: PropTypes.array,
+    buttonHandlers: PropTypes.shape({
+            handleCreateButtonClick: PropTypes.func,
             handleUpdateButtonClick: PropTypes.func,
             handleDeleteButtonClick: PropTypes.func,
             handleDetailsButtonClick: PropTypes.func
-        })
-    })
+        }),
+    setCrudTableApi: PropTypes.func
 }
+
+
 export default CrudTable;

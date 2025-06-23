@@ -19,6 +19,41 @@ import setupJwtTokenMsal from './setupJwtTokenMsal';
 
 import { isTokenExpired } from '@/fetchTokenized';
 
+
+//const Button = React.memo(({ onClick }) => {
+
+//    console.log(`Button rendered ${new Date().toLocaleTimeString()}`)
+//    return <button onClick={onClick}>onClick: props function</button>
+//})
+//Button.displayName = "Button"; // for debugging purposes
+
+//const Greeting = React.memo(({ name }) => {
+//    console.log(`Greeting rendered ${new Date().toLocaleTimeString()}`)
+
+//    return <h3>{`Hello, ${name}!`}</h3>
+//})
+//Greeting.displayName = "Button"; // for debugging purposes
+
+//const App = () => {
+//    const [name, setName] = React.useState('')
+//    //const buttonHandler = React.useMemo(() => () => setName('world'), [])
+//    const buttonHandler = React.useCallback(() => setName('world'), [])
+//    //const buttonHandler = () => setName('world')
+//    console.log(`App rendered ${new Date().toLocaleTimeString()}`)
+//    return (
+//        <>
+//            <input value={name} onChange={e => setName(e.target.value)} />
+//            <Greeting name={name} />
+//            <Button onClick={buttonHandler} />
+//        </>
+//    )
+//}
+
+//function onClick_buttonHandler(setName) {
+//    setName('world')
+//}
+
+
 // this is an react hook-based app
 const App = () => {
     // runs the function only once when the component mounts
@@ -49,30 +84,22 @@ const App = () => {
     //React.useEffect(() => {
     //    login(setIsLoggedIn, setIsLoading);
     //}, []); // means run once on mount (empty dependicies)
-
-    const rerender = React.useReducer(() => ({}), {})[1]
+    const [count, setCount] = React.useState(0);
+    const rerender = React.useReducer(x => x+1, 0)[1] // rerender = dispacth
     console.log("App render")
     return (
         <Router>
             <div>
                 <DebugMenu actions=
-                    {[{ name: "rerender", action: () => rerender() }]} />
+                    {[{ name: "rerender useReducer", action: () => rerender() },
+                    { name: "TWDR nochange", action: () => setCount(count) },
+                    { name: "TWDR change", action: () => setCount(count + 1) }
+                    ]} />
+
                 <BsRibbon breakpoint="lg" height="6rem">
                     <BsRibbonGroup title="" disabled={isLoading}>
                         <BsRibbonGroupItem className="d-inline-flex align-items-center gap-1">
                             <NavBar isLoggedIn={isLoggedIn} />
-                            {/*<BsRibbonButton disabled={!isLoggedIn}>*/}
-                            {/*    <Link to="/" className={`btn d-inline-flex align-items-center gap-1 ${location.pathname === '/' ? "btn-warning fs-1 fw-bold" : "btn-primary"}`} href="#" role="button">*/}{/*<img className="icon-centered" src="home.svg" />*/}{/*DshbX</Link>*/}
-                            {/*</BsRibbonButton>*/}
-                            {/*<BsRibbonButton disabled={!isLoggedIn}>*/}
-                            {/*    <Link to="/connections" className={`btn d-inline-flex align-items-center gap-1 ${location.pathname === '/connections' ? "btn-warning fs-1 fw-bold" : "btn-primary"}`} href="#" role="button"><img className="icon-centered" src="table.svg" />Connections</Link>*/}
-                            {/*</BsRibbonButton>*/}
-                            {/*<BsRibbonButton disabled={!isLoggedIn}>*/}
-                            {/*    <Link to="/tables" className="btn btn-primary d-inline-flex align-items-center gap-1" href="#" role="button"><img className="icon-centered" src="table.svg" />Tables</Link>*/}
-                            {/*</BsRibbonButton>*/}
-                            {/*<BsRibbonButton disabled={!isLoggedIn}>*/}
-                            {/*    <Link to="/settings" className="btn btn-primary d-inline-flex align-items-center gap-1" href="#" role="button"><img className="icon-centered" src="settings.svg" />Settings</Link>*/}
-                            {/*</BsRibbonButton>*/}
                         </BsRibbonGroupItem>
                     </BsRibbonGroup>
 
@@ -185,4 +212,7 @@ const loginMSAL = async (setIsLoggedIn, setIsLoading) => {
     }
 };
 
+App.whyDidYouRender = false;
+
 export default App;
+

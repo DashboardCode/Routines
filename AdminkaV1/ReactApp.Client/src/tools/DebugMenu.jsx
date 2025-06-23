@@ -21,7 +21,7 @@ const DebugMenu = (props) => {
     }, []);
 
     return ( ISDEVDEBUG && 
-        <span className="debug-menu">
+        <div className="debug-menu">
             {/* Small Button to Open Menu */}
             <button
                 onClick={toggleMenu}
@@ -32,14 +32,16 @@ const DebugMenu = (props) => {
             {isOpen && props!=null && props.actions!=null && (
                 <div
                     ref={menuRef}
-                    className="debug-menu-popup absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg"
+                    className="debug-menu-popup "
                 >
+                    <div className="debug-menu-popup-panel">
                     {props.actions.map((a, index) =>
-                        (<button key={index} className="debug-menu-popup-button" title={a.name} onClick={a.action} >{a.name}</button>)
+                        (<button key={index} className="debug-menu-popup-button bg-white border" title={a.name} onClick={a.action} >{a.name}</button>)
                         )}
+                    </div>
                 </div>
             )}
-        </span >
+        </div>
     );
 };
 

@@ -1,34 +1,39 @@
 .debug-menu {
     position: relative;
-    display:block;
     top: 0.5rem;
     left: 0;
     width: 1rem;
     height: 1rem;
     margin-top: -1rem;
+    z-index:1
+}
+
+.debug-menu-popup-panel {
+    padding: 3px;
+    border-radius: 8px;
 }
 
 .debug-menu .debug-menu-button {
     font-size: 0.4rem;
     margin: 0 0 0 0;
     padding: 0 0 0 0;
-    border: none; 
+    border: none;
     background-color: black;
     color: white;
 }
 
-    .debug-menu .debug-menu-button:hover {
-        background-color: darkgrey;
-        color:black;
-        transition: 0.2s;
-    }
+.debug-menu .debug-menu-button:hover {
+    background-color: darkgrey;
+    color:black;
+    transition: 0.2s;
+}
 
 .debug-menu .debug-menu-button::after {
     content: '\2630';
 }
 
 .debug-menu .debug-menu-popup {
-    background-color: gray;
+    background-color: lightgray;
     position: absolute;
     display: inline-flex;
     gap: 0.2rem;
