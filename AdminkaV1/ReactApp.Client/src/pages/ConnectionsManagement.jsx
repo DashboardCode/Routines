@@ -5,6 +5,29 @@ import { fetchTokenized } from '@/fetchTokenized';
 import DebugMenu from '@/tools/DebugMenu';
 import ConnectionEditForm from './ConnectionEditForm';
 
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+const connectionValidationSchema = z.object({
+    excConnectionId: z.string()
+        .max(8, "No more than 8 characters").regex(/^[0-9]+$/, {
+            message: "Only letters and numbers are allowed",
+        }).nonempty("Required"),
+    excConnectionCode: z.string().min(4, "At least 4 characters")
+        .max(8, "No more than 8 characters").regex(/^[a-zA-Z0-9]+$/, {
+            message: "Only letters and numbers are allowed",
+        }).nonempty("Required"),
+    excConnectionName: z.string().min(4, "At least 4 characters"),
+    excConnectionType: z.string().min(4, "At least 4 characters").regex(/^[a-zA-Z0-9]+$/, {
+        message: "Only letters and numbers are allowed",
+    }),
+    excConnectionDescription: z.string().min(4, "At least 4 characters"),
+
+    excConnectionXMeta: z.string().min(4, "At least 4 characters"),
+    excConnectionString: z.string().min(4, "At least 4 characters").nonempty("Required")
+});
+
 function createDefaultEmpty(){
     return {
         excConnectionId: "",
@@ -89,41 +112,63 @@ function ConnectionsManagement() {
     //}, [reload]);
 
 
-    const [editFormApi, setEditFormApi] = React.useState(null);
-    const handleSetEditFormApi = React.useCallback((api) => {
-        setEditFormApi(api);
-    }, []);
+    
+
+    //react-hook-form - state of the form with enabled zod validation
+    const {
+        register,
+        trigger,
+        getValues,
+        reset, // reset form before reuse dialog for other entities
+        setError /*set error for fields*/,
+        formState: { errors, /*isValid,*/ dirtyFields } }
+        = useForm(
+            {
+                resolver: zodResolver(connectionValidationSchema),
+                mode: 'onTouched', /* alternatives onChange, onBlur, onTouched, onSubmit , all(onChange + onBlur + onSubmit) */
+                defaultValues: createDefaultEmpty(),
+            }); 
+
+    var editForm = {
+        fetchCreate: (entity, fState, setErrorMessageEdit) => fetchCreate(entity, fState, setErrorMessageEdit, setError),
+        fetchReplace: (entity, fState, setErrorMessageEdit) => fetchReplace(entity, fState, setErrorMessageEdit, setError, dirtyFields),
+
+        form: <ConnectionEditForm
+            register={register}
+            errors={errors}
+        />,
+    }
+
+
+    //trigger = { trigger }
+    //getValues = { getValues }
+    //reset = { reset }
+    //setError = { setError }
+    //dirtyFields = { dirtyFields }
+
+    var multiSelectDialogs = [
+        //{
+        //    key: 'user',
+        //    label: 'Edit',
+        //    form: <ConnectionEditForm ... />,
+        //    onConfirm: handleUserSubmit,
+        //}
+    ];
 
     const contents = (<CrudTableWithDialogs
         baseColumns={baseColumns}
-        fetchList={(setList, setErrorMessageList) => fetchList(setList, setErrorMessageList)}
-        fetchDelete={(entity, setErrorMessageDelete) => fetchDelete(entity, setErrorMessageDelete)}
-        fetchBulkDelete={(entities, setErrorMessageDelete) => fetchBulkDelete(entities, setErrorMessageDelete)}
-        editFormApi={editFormApi}
+        fetchList={fetchList}
+        fetchDelete={fetchDelete}
+        fetchBulkDelete={fetchBulkDelete}
+        trigger={trigger}
+        getValues={getValues}
+        reset={reset}
         createDefaultEmpty={createDefaultEmpty}
         cloneEntity={cloneEntity}
-    >
-        editForm={
-            {
-                fetchCreate: (entity, formState, setErrorMessageEdit, setError) => fetchCreate(entity, formState, setErrorMessageEdit, setError),
-                fetchReplace: (entity, formState, setErrorMessageEdit, setError, dirtyFields) => fetchReplace(entity, formState, setErrorMessageEdit, setError, dirtyFields),
-                
-                form: <ConnectionEditForm
-                    getDefaultValues={createDefaultEmpty}
-                    setEditFormApi={handleSetEditFormApi}
-                />,
-            }
-        },
-
-        multiSelectDialogs={[
-            //{
-            //    key: 'user',
-            //    label: 'Edit',
-            //    form: <ConnectionEditForm ... />,
-            //    onConfirm: handleUserSubmit,
-            //}
-        ]}
-    </CrudTableWithDialogs>);
+        editForm={editForm}
+        multiSelectDialogs={multiSelectDialogs}
+    />
+    );
 
     console.log(ConnectionsManagement.name + " render") // TODO: trace.render();
     return (
@@ -155,7 +200,7 @@ async function fetchList(setList, setErrorMessageList) {
     }
 }
 
-async function fetchCreate(entity, formState, setErrorMessageEdit /*, setError*/) {
+async function fetchCreate(entity, formState, setErrorMessage /*, setError*/) {
     var body = JSON.stringify(formState);
     console.log(body)
     var response = await fetchTokenized(`/ui/connections`, body, "POST");
@@ -164,7 +209,7 @@ async function fetchCreate(entity, formState, setErrorMessageEdit /*, setError*/
         return true
     } else {
         var result = await response.json();
-        setErrorMessageEdit(result.message);
+        setErrorMessage(result.message);
         //Object.entries(result.errors).forEach(([field, message]) => {
         //    setError(field, { type: 'server', message });
         //});
@@ -172,7 +217,7 @@ async function fetchCreate(entity, formState, setErrorMessageEdit /*, setError*/
     }  
 }
 
-async function fetchReplace(entity, formState, setErrorMessageEdit, setError, dirtyFields) {
+async function fetchReplace(entity, formState, setErrorMessage, setError, dirtyFields) {
 
     var hookFormDelta = getDelta(formState, dirtyFields)
     var delta = JSON.stringify(hookFormDelta);
@@ -184,7 +229,7 @@ async function fetchReplace(entity, formState, setErrorMessageEdit, setError, di
     }
     else {
         var result = await response.json();
-        setErrorMessageEdit(result.message);
+        setErrorMessage(result.message);
         //Object.entries(result.errors).forEach(([field, message]) => {
         //    setError(field, { type: 'server', message });
         //});
@@ -192,19 +237,19 @@ async function fetchReplace(entity, formState, setErrorMessageEdit, setError, di
     }
 }
 
-async function fetchDelete(entity, setErrorMessageDelete) {
+async function fetchDelete(entity, setErrorMessage) {
     var responce = await fetchTokenized(`/ui/connections/${entity.excConnectionId}`, null, "DELETE");
     if (responce.ok) {
         return true; 
     } 
     else {
         var result = await responce.json();
-        setErrorMessageDelete(result.message);
+        setErrorMessage(result.message);
         return false
     }
 };
 
-async function fetchBulkDelete(entities, setErrorMessageDelete) {
+async function fetchBulkDelete(entities, setErrorMessage) {
     const ids = entities.map(e => e.excConnectionId);
     const jsonIds = JSON.stringify(ids);
     var responce = await fetchTokenized(`/ui/connections/bulkdelete`, jsonIds, "POST");
@@ -213,7 +258,7 @@ async function fetchBulkDelete(entities, setErrorMessageDelete) {
     }
     else {
         var result = await responce.json();
-        setErrorMessageDelete(result.message);
+        setErrorMessage(result.message);
         return false
     }
 };

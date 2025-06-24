@@ -12,16 +12,16 @@ function Selectable({ createDefaultEmpty, cloneEntity, setSelectableApi, childre
         });
     }, [createDefaultEmpty, cloneEntity, setSelectableApi, entity]);
 
-    return (
-        {children}
-    );
+    var content = <div>{children}</div>;
+
+    return content;
 }
 
 Selectable.propTypes = {
     createDefaultEmpty: PropTypes.func,
     cloneEntity: PropTypes.func,
     setSelectableApi: PropTypes.func,
-    children: PropTypes.element
+    children: PropTypes.node
 };
 
 export default Selectable;

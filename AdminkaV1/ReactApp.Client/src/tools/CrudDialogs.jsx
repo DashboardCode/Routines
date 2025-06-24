@@ -3,12 +3,7 @@ import './CrudTable.css';
 import Dialog from "./Dialog";
 
 function EditDialog(
-    {isDialogOpen,
-     setIsDialogOpen,
-     isForNew,
-     okButton_onClick,
-     setDialogApi,
-     children }) {
+    { isForNew, isDialogOpen, setIsDialogOpen, okButton_onClick, errorMessage, setErrorMessage, children }) {
     const title = isForNew ? (<div>Add</div>) : (<div>Edit</div>) ;
     const okButtonTitle = isForNew ? "Create" : "Update";
 
@@ -19,14 +14,15 @@ function EditDialog(
             title={title}
             okButtonTitle={okButtonTitle}
             okButton_onClick={okButton_onClick}
-            setDialogApi={setDialogApi}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
         >
             {children}
         </Dialog>
     )
 }
 
-function DeleteDialog({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onClick, setDialogApi }) {
+function DeleteDialog({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onClick, errorMessage, setErrorMessage, }) {
     const title = "Are you sure you want to delete this item?";
     const okButtonTitle = "Delete";
 
@@ -37,7 +33,8 @@ function DeleteDialog({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onCl
             title={title}
             okButtonTitle={okButtonTitle}
             okButton_onClick={okButton_onClick}
-            setDialogApi={setDialogApi}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
         />
     )
 }
@@ -47,15 +44,17 @@ EditDialog.propTypes = {
     setIsDialogOpen: PropTypes.func,
     isForNew: PropTypes.bool,
     okButton_onClick: PropTypes.func,
-    setDialogApi: PropTypes.func,
-    children: PropTypes.element
+    errorMessage: PropTypes.node,
+    setErrorMessage: PropTypes.func,
+    children: PropTypes.node
 };
 
 DeleteDialog.propTypes = {
     isDeleteDialogOpen: PropTypes.bool,
     setIsDeleteDialogOpen: PropTypes.func,
     okButton_onClick: PropTypes.func,
-    setDialogApi: PropTypes.func
+    errorMessage: PropTypes.node,
+    setErrorMessage: PropTypes.func
 };
 
 export { EditDialog, DeleteDialog };

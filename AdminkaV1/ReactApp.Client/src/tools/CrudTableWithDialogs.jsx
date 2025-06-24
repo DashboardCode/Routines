@@ -1,16 +1,22 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+
+import DebugMenu from './DebugMenu';
 
 import PropTypes from "prop-types";
 import CrudTable from './CrudTable';
-import Selectable from './Selectable';
 
 import { DeleteDialog, EditDialog } from './CrudDialogs'
 function CrudTableWithDialogs({
     baseColumns,
     fetchList,
     fetchDelete,
+
     //fetchBulkDelete,
-    editFormApi,
+
+    trigger,
+    getValues,
+    reset,
+    
     cloneEntity,
     createDefaultEmpty,
     editForm,
@@ -18,48 +24,46 @@ function CrudTableWithDialogs({
     
 }) {
 
+    const [errorMessageEdit, setErrorMessageEdit] = useState("");
+    const [errorMessageDelete, setErrorMessageDelete] = useState("");
+
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
     const [isForNew, setIsForNew] = useState(null); // pseudo-selected entity "clicked on button on the row"
 
-    const [editDialogApi, setEditDialogApi] = useState(null); // for dialogs, set by EditDialog and DeleteDialog
-    const handleSetEditDialogApi = useCallback((api) => { setEditDialogApi(api); }, []);
-    const [deleteDialogApi, setDeleteDialogApi] = useState(null); // for dialogs, set by EditDialog and DeleteDialog
-    const handleSetDeleteDialogApi = useCallback((api) => { setDeleteDialogApi(api); }, []);
-    const [crudTableApi, setCrudTableApi] = useState(null);
-    const handleSetCrudTableApi = useCallback((api) => { setCrudTableApi(api); }, []);
-    const [selectableApi, setSelectableApi] = useState(null);
-    const handleSetSelectableApi = useCallback((api) => { setSelectableApi(api); }, []);
+
+    const [entity, setEntity] = useState(null);
 
     const buttonHandlers = {
         handleCreateButtonClick: () => {
             setIsForNew(true);
-            //var copy = editForm.createDefaultEmpty();
-            var copy = selectableApi.resetEntity();
-            editFormApi.reset(copy, {
-                keepErrors: false,
-                keepDirty: false,
-                keepTouched: false,
-            }); // Set form to the selected item
-            editDialogApi.setErrorMessage(null);
+            var copy = createDefaultEmpty();
+            setEntity(copy);
+            reset(copy, {
+                    keepErrors: false,
+                    keepDirty: false,
+                    keepTouched: false,
+                }); // Set form to the selected item
+            setErrorMessageEdit(null);
             setIsEditDialogOpen(true);
         },
         handleUpdateButtonClick: (e) => {
             setIsForNew(false);
-            //var copy = editForm.cloneEntity(e);
-            var copy = selectableApi.setEntity(e);
-            editFormApi.reset(copy, {
-                keepErrors: false,
-                keepDirty: false,
-                keepTouched: false,
-            }); // Set form to the selected item
-            editDialogApi.setErrorMessage(null);
+            var copy = cloneEntity(e);
+            setEntity(copy); 
+            reset(copy, {
+                    keepErrors: false,
+                    keepDirty: false,
+                    keepTouched: false,
+                }); // Set form to the selected item
+            setErrorMessageEdit(null);
             setIsEditDialogOpen(true);
         },
         handleDeleteButtonClick: (e) => {
-            selectableApi.setEntity(e);
-            deleteDialogApi.setErrorMessageEdit(null);
+            var copy = cloneEntity(e);
+            setEntity(copy); 
+            setErrorMessageDelete(null);
             setIsDeleteDialogOpen(true);
         },
         handleDetailsButtonClick: null
@@ -85,50 +89,89 @@ function CrudTableWithDialogs({
         multiSelectActions.push({ handleButtonClick: () => { buttonHandlers.handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Delete" });
     }
 
-    //var { crudTableProps, reload } = useCrudTable({
-    //        fetchList,
-    //        baseColumns,
-    //        options: {
-    //            multiSelectActions,
-    //            buttonHandlers
-    //        }
-    //    }
-    //);
+    const [list, setList] = useState();
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessageList, setErrorMessageList] = useState(0);
+
+    const [incTrigger, setIncTrigger] = useState(0); // Changing this triggers refetch
+    const reload = useCallback(() => {
+        setIncTrigger(v => v + 1);
+    }, []);
+
+    useEffect(() => {
+        // isMountCancelled prevent updating state on an unmounted component, which can cause warnings or memory leaks.
+        // It is a common pattern to use a flag to track whether the component is still mounted when the async operation completes.
+        // Otherwise you will get a warning in the console like "Can't perform a React state update on an unmounted component".
+        let isMountCancelled = false;
+
+        setIsLoading(true);
+        console.log("CrudTableWithDialogs render.fetch")
+        fetchList(setList, setErrorMessageList) // is async but we call it without await inside useEffect since this is a promise,
+            .then((result) => {
+                if (result) {
+                    setErrorMessageList(null);
+                }
+            })
+            .catch((error) => {
+                if (!isMountCancelled)
+                    console.error('Fetch failed', error);
+            })
+            .finally(() => {
+                if (!isMountCancelled)  // if component is still mounted, e.g. not navigated away or second time opened
+                    setIsLoading(false);
+            });
+
+        return () => {
+            isMountCancelled = true; // mark as cancelled
+        };
+    }, [incTrigger, fetchList]);
+    // ----------------------------
+
     console.log("CrudTableWithDialogs render")
     return (
         <div>
-            <CrudTable fetchList={fetchList} baseColumns={baseColumns} multiSelectActions={multiSelectActions} buttonHandlers={buttonHandlers} setCrudTableApi={handleSetCrudTableApi} />
-            <Selectable createDefaultEmpty={createDefaultEmpty} cloneEntity={cloneEntity} setSelectableApi={handleSetSelectableApi}>
-                {   editForm ?? <EditDialog
+            <DebugMenu actions={[
+                { name: "refreshData", action: () => reload() },
+                { name: "Remove First Row", action: () => setList((l) => l.slice(1)) },
+            ]} />
+            <CrudTable
+                list={list}
+                errorMessage={errorMessageList}
+                isLoading={isLoading}
+                baseColumns={baseColumns}
+                multiSelectActions={multiSelectActions}
+                buttonHandlers={buttonHandlers}
+                />
+            {editForm && <EditDialog
                 isDialogOpen={isEditDialogOpen}
                 setIsDialogOpen={setIsEditDialogOpen}
                 isForNew={isForNew}
-                    okButton_onClick={(setErrorMessage, setIsLoading) => saveButton_onClick(isForNew, editForm, editFormApi, selectableApi, setErrorMessage, setIsEditDialogOpen, setIsLoading, crudTableApi)}
-                setDialogApi={handleSetEditDialogApi}
-                >
-                        {editForm.form} {/*was renderFormFields(entity). how to pass entity now?*/}
-                </EditDialog>}
+                okButton_onClick={(setErrorMessage, setIsLoading) => saveButton_onClick(isForNew, editForm, entity, setErrorMessage, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues)}
+                errorMessage={errorMessageEdit}
+                setErrorMessage = { setErrorMessageEdit }
+            >{editForm.form} {/*was renderFormFields(entity). how to pass entity now?*/}
+            </EditDialog>}
 
-                {fetchDelete && <DeleteDialog
-                    isDeleteDialogOpen={isDeleteDialogOpen}
-                    setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-                    okButton_onClick={(setErrorMessage, setIsLoading) => okButton_onClick(fetchDelete, selectableApi, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, crudTableApi)}
-                    setDialogApi={handleSetDeleteDialogApi}
-                    />}
-            </Selectable>
-            
+            {fetchDelete &&
+                <DeleteDialog
+                isDeleteDialogOpen={isDeleteDialogOpen}
+                setIsDeleteDialogOpen={setIsDeleteDialogOpen}
+                okButton_onClick={(setErrorMessage, setIsLoading) => okButton_onClick(fetchDelete, entity, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload)}
+                errorMessage={errorMessageDelete}
+                setErrorMessage = { setErrorMessageDelete }
+            />
+            }
         </div>
     );
 }
 
-async function okButton_onClick(fetchDelete, selectableApi, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, crudTableApi) {
-    var entity = selectableApi.getEntity();
+async function okButton_onClick(fetchDelete, entity, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload) {
     try {
         setIsLoading(true);
         var success = await fetchDelete(entity, setErrorMessage);
         if (success) { 
             setIsDeleteDialogOpen(false);
-            crudTableApi.reload();
+            reload();
         }
     } catch (err) {
         setErrorMessage(err.message);
@@ -138,26 +181,21 @@ async function okButton_onClick(fetchDelete, selectableApi, setErrorMessage, set
     }
 }
 
-async function saveButton_onClick(isForNew, editForm, editFormManager, selectableManager, setErrorMessage, setIsEditDialogOpen, setIsLoading, listManager) {
+async function saveButton_onClick(isForNew, editForm, entity, setErrorMessage, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues) {
     try {
-        var entity = selectableManager.getEntity();
-        var setError = editFormManager.setError;
-        var dirtyFields = editFormManager.dirtyFields;
-        var trigger = editFormManager.trigger;
-        var getValues = editFormManager.getValues
         setIsLoading(true);
         const isValid = await trigger(); // validate all fields
         if (isValid) {
             const hookFormState = getValues();
             var success;
             if (isForNew) {
-                success = await editForm.fetchCreate(entity, hookFormState, setErrorMessage, setError)
+                success = await editForm.fetchCreate(entity, hookFormState, setErrorMessage)
             } else {
-                success = await editForm.fetchReplace(entity, hookFormState, setErrorMessage, setError, dirtyFields)
+                success = await editForm.fetchReplace(entity, hookFormState, setErrorMessage)
             }
             if (success) {
                 setIsEditDialogOpen(false);
-                listManager.reload();
+                reload();
             }
         }
     } catch (err) {
@@ -185,21 +223,15 @@ CrudTableWithDialogs.propTypes = {
     formManager: PropTypes.object,
     cloneEntity: PropTypes.func.isRequired,
     createDefaultEmpty: PropTypes.func.isRequired,
-    editFormApi: PropTypes.shape({
-        reset: PropTypes.func.isRequired,
-        setError: PropTypes.func.isRequired,
-        dirtyFields: PropTypes.object.isRequired,
-        trigger: PropTypes.func.isRequired,
-        getValues: PropTypes.func.isRequired,
-        setEntity: PropTypes.func.isRequired,
-        getEntity: PropTypes.func.isRequired
-    }),
+    trigger: PropTypes.func.isRequired,
+    getValues: PropTypes.func.isRequired,
+    reset: PropTypes.func.isRequired,
     editForm: PropTypes.shape({
         fetchCreate: PropTypes.func,
         fetchReplace: PropTypes.func,
         form: PropTypes.element.isRequired
     }),
-
+    multiSelectDialogs: PropTypes.array
 };
 
 CrudTableWithDialogs.whyDidYouRender = false;

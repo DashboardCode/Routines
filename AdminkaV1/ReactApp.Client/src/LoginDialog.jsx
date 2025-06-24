@@ -13,11 +13,8 @@ function LoginDialog(
     }) {
 
     const [password, setPassword] = React.useState('');
-    const [errorMessage, setErrorMessage] = React.useState(null);
-
-    //const clear = React.useCallback(() => {
-    //    setErrorMessage(null);
-    //}, []);
+    const [login, setLogin] = React.useState('Anonymous');
+    const [errorMessage, setErrorMessage] = React.useState('');
 
     const loginButton_onClick = async () => {
         try {
@@ -39,21 +36,26 @@ function LoginDialog(
         }
     };
 
+    //var formAutoComplete = "off" and autoComplete="new-password" doesn't disable "save your password" in browser (at least in EDGE)
     return (
         <Dialog
             isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen}
-            errorMessage={errorMessage} title="Login (Middleware)"
+            errorMessage={errorMessage} setErrorMessage={setErrorMessage} title="Login (Middleware)"
             okButtonTitle="Login" okButton_onClick={loginButton_onClick}
         >
+            <form>
             <div className="px-2 py-2">
-                <label className="form-label">Password</label>
-                <input
+                    <label className="form-label">Password</label>
+                    <input type="text" name="username" autoComplete="username" value={login} onChange={e => setLogin(e.target.value)} hidden />
+                    <input
+                        autoComplete="current-password"
                     type="password"
                     className="form-control"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                 />
-            </div>
+                </div>
+            </form>
         </Dialog>
     );
 }

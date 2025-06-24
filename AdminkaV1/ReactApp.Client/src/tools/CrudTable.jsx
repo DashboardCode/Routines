@@ -1,4 +1,4 @@
-﻿import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
+﻿import React, {  useMemo, useState, useEffect, useRef} from 'react';
 import {
     useReactTable, getCoreRowModel, getSortedRowModel, flexRender,
     getPaginationRowModel, getFilteredRowModel
@@ -13,62 +13,14 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
-
-function CrudTable({
-    fetchList,
-
-    //list,
-    //setList,
-    //reload,
-    //isLoading,
+const CrudTable = React.memo(({
+    list,
+    errorMessage,
+    isLoading,
     baseColumns,
     multiSelectActions,
-    buttonHandlers,
-    setCrudTableApi
-}){
-    // ----------------------------
-    const [list, setList] = useState();
-    const [isLoading, setIsLoading] = useState(true);
-    const [errorMessageList, setErrorMessageList] = useState(0);
-
-    const [incTrigger, setIncTrigger] = useState(0); // Changing this triggers refetch
-    const reload = useCallback(() => {
-        setIncTrigger(v => v + 1);
-    }, []);
-
-    useEffect(() => {
-        setCrudTableApi({
-           reload
-        });
-    }, [setCrudTableApi, reload]);
-
-    useEffect(() => {
-        // isMountCancelled prevent updating state on an unmounted component, which can cause warnings or memory leaks.
-        // It is a common pattern to use a flag to track whether the component is still mounted when the async operation completes.
-        // Otherwise you will get a warning in the console like "Can't perform a React state update on an unmounted component".
-        let isMountCancelled = false;
-
-        setIsLoading(true);
-        fetchList(setList, setErrorMessageList) // is async but we call it without await inside useEffect since this is a promise,
-            .then((result) => {
-                if (result) {
-                    setErrorMessageList(null);
-                }
-            })
-            .catch((error) => {
-                if (!isMountCancelled)
-                    console.error('Fetch failed', error);
-            })
-            .finally(() => {
-                if (!isMountCancelled)  // if component is still mounted, e.g. not navigated away or second time opened
-                    setIsLoading(false);
-            });
-
-        return () => {
-            isMountCancelled = true; // mark as cancelled
-        };
-    }, [incTrigger, fetchList]);
-// ----------------------------
+    buttonHandlers
+})=>{
     
     //var { multiSelectActions, buttonHandlers = {} } = options;
     const {
@@ -233,8 +185,6 @@ function CrudTable({
         : <div className="crud-panel">
             {console.log("CrudTable render.content.Loaded")}
             <DebugMenu actions={[
-                { name: "refreshData", action: () => reload() },
-                { name: "Remove First Row", action: () => setList((l) => l.slice(1)) },
                 {
                     name: "log console table.getSelectedRowModel().flatRows", action: () => {
                         console.info(
@@ -251,7 +201,7 @@ function CrudTable({
                         );
                     }
                 }]} />
-            {errorMessageList && <div className="alert alert-danger" role="alert">{errorMessageList}</div>}
+            {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
             
             <div className={`d-flex ${multiSelectActions ? 'justify-content-between' : 'justify-content-end'} align-items-center gap-2`}>
                 {multiSelectActions &&
@@ -340,10 +290,14 @@ function CrudTable({
             }
         </div>;
     return contents;
-}
+})
+
+CrudTable.displayName ="CrudTable"
 
 CrudTable.propTypes = {
-    fetchList: PropTypes.func.isRequired, 
+    list: PropTypes.array,
+    errorMessage: PropTypes.node,
+    isLoading: PropTypes.bool.isRequired,
     baseColumns: PropTypes.array.isRequired,
     multiSelectActions: PropTypes.array,
     buttonHandlers: PropTypes.shape({

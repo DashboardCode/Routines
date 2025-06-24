@@ -1,59 +1,25 @@
-import { useEffect} from 'react';
 //import CrudTableWithDialogs from '@/tools/CrudTableWithDialogs';
 //import { fetchTokenized } from '@/fetchTokenized';
 //import DebugMenu from '@/tools/DebugMenu';
 
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import PropTypes from "prop-types";
 
-const connectionValidationSchema = z.object({
-    excConnectionId: z.string()
-        .max(8, "No more than 8 characters").regex(/^[0-9]+$/, {
-            message: "Only letters and numbers are allowed",
-        }).nonempty("Required"),
-    excConnectionCode: z.string().min(4, "At least 4 characters")
-        .max(8, "No more than 8 characters").regex(/^[a-zA-Z0-9]+$/, {
-            message: "Only letters and numbers are allowed",
-        }).nonempty("Required"),
-    excConnectionName: z.string().min(4, "At least 4 characters"),
-    excConnectionType: z.string().min(4, "At least 4 characters").regex(/^[a-zA-Z0-9]+$/, {
-        message: "Only letters and numbers are allowed",
-    }),
-    excConnectionDescription: z.string().min(4, "At least 4 characters"),
 
-    excConnectionXMeta: z.string().min(4, "At least 4 characters"),
-    excConnectionString: z.string().min(4, "At least 4 characters").nonempty("Required")
-});
 function ConnectionEditForm({
-    getDefaultValues,
-    setEditFormApi /* callback for data setuped */
+    register, errors  /* callback for data setuped */
 }) {
-    // react-hook-form - state of the form with enabled zod validation
-    const {
-        register,
-        trigger,
-        getValues,
-        reset, // reset form before reuse dialog for other entities 
-        setError /*set error for fields*/,
-        formState: { errors, /*isValid,*/ dirtyFields } }
-        = useForm(
-            {
-                resolver: zodResolver(connectionValidationSchema),
-                mode: 'onTouched', /* alternatives onChange, onBlur, onTouched, onSubmit , all(onChange + onBlur + onSubmit) */
-                defaultValues: getDefaultValues(),
-            }); 
 
-    useEffect(() => {
-        setEditFormApi({
-            trigger,
-            getValues,
-            reset,
-            setError,
-            dirtyFields
-        });
-    }, [setEditFormApi, trigger, getValues, reset, setError, dirtyFields]);
+
+    //useEffect(() => {
+    //    setEditFormApi({
+    //        trigger,
+    //        getValues,
+    //        reset,
+    //        setError,
+    //        dirtyFields
+    //    });
+    //}, [setEditFormApi, trigger, getValues, reset, setError, dirtyFields]);
     //const hookFormState = {
     //    excConnectionCode: register("excConnectionCode"),
     //    excConnectionName: register("excConnectionName"),
@@ -167,8 +133,8 @@ function ConnectionEditForm({
 }
 
 ConnectionEditForm.propTypes = {
-    getDefaultValues: PropTypes.func,
-    setEditFormApi: PropTypes.func /* callback for data change */
+    register: PropTypes.func,
+    errors: PropTypes.object
 };
 
 export default ConnectionEditForm;

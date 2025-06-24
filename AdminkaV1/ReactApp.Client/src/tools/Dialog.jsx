@@ -1,17 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import * as RadixDialog from "@radix-ui/react-dialog";
 import PropTypes from "prop-types";
-function Dialog({ isDialogOpen, setIsDialogOpen, title, okButtonTitle, okButton_onClick, setDialogApi, children }) {
-    const [errorMessage, setErrorMessage] = useState("");
+function Dialog({ isDialogOpen, setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, setErrorMessage, children }) {
     const [isLoading, setIsLoading] = useState("");
     const isError = !!errorMessage;    
-
-    useEffect(() => {
-        setDialogApi({
-            setErrorMessage
-        });
-    }, [setDialogApi, setErrorMessage]);
 
     return (
             <RadixDialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -53,7 +46,9 @@ Dialog.propTypes = {
     okButtonTitle: PropTypes.node,
     okButton_onClick: PropTypes.func,
     setDialogApi: PropTypes.func,
-    children: PropTypes.element
+    children: PropTypes.node,
+    errorMessage: PropTypes.node,
+    setErrorMessage: PropTypes.func
 };
 
 export default Dialog;
