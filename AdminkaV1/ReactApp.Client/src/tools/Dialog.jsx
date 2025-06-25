@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import * as RadixDialog from "@radix-ui/react-dialog";
 import PropTypes from "prop-types";
-function Dialog({ isDialogOpen, setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, setErrorMessage, children }) {
+
+const Dialog = React.memo(({ isDialogOpen, setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, setErrorMessage, children }) => {
     const [isLoading, setIsLoading] = useState("");
     const isError = !!errorMessage;    
 
+    console.log("Dialog render")
     return (
             <RadixDialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <RadixDialog.Portal>
@@ -37,7 +39,9 @@ function Dialog({ isDialogOpen, setIsDialogOpen, title, okButtonTitle, okButton_
             </RadixDialog.Portal>
         </RadixDialog.Root>
     );
-}
+})
+
+Dialog.displayName = "Dialog";
 
 Dialog.propTypes = {
     isDialogOpen: PropTypes.bool,

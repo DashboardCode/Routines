@@ -19,7 +19,6 @@ import setupJwtTokenMsal from './setupJwtTokenMsal';
 
 import { isTokenExpired } from '@/fetchTokenized';
 
-
 //const Button = React.memo(({ onClick }) => {
 
 //    console.log(`Button rendered ${new Date().toLocaleTimeString()}`)
@@ -52,7 +51,6 @@ import { isTokenExpired } from '@/fetchTokenized';
 //function onClick_buttonHandler(setName) {
 //    setName('world')
 //}
-
 
 // this is an react hook-based app
 const App = () => {

@@ -1,13 +1,145 @@
 import PropTypes from "prop-types";
 
+import React, { useState, useMemo } from 'react';
+
+import { Form, Row, Col } from 'react-bootstrap';
+
+import { useForm } from 'react-hook-form';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z, ZodObject } from 'zod';
+
+
+
+// Get shared values across all entities
+function getCommonFields(entities) {
+    const keys = Object.keys(entities[0]);
+    const result = {};
+    for (const key of keys) {
+        const first = entities[0][key];
+        if (entities.every((e) => e[key] === first)) {
+            result[key] = first;
+        } else {
+            result[key] = '';
+        }
+    }
+    return result;
+}
+
+// Dynamic schema factory
+function schemaFactory(enabledFields) {
+    const shape = {};
+
+    if (enabledFields.name) {
+        shape.name = z
+            .string()
+            .min(2, 'Name must be at least 2 characters');
+    }
+
+    if (enabledFields.email) {
+        shape.email = z
+            .string()
+            .email('Invalid email address');
+    }
+
+    if (enabledFields.role) {
+        shape.role = z
+            .string()
+            .min(1, 'Role is required')
+            .refine((val) => ['admin', 'manager', 'user'].includes(val), {
+                message: 'Invalid role',
+            });
+    }
+
+    return z.object(shape);
+}
+
+const useConnectionMultiEditForm =()=>{
+    const defaultValues = useMemo(() => getCommonFields(users), []);
+
+    const [enabledFields, setEnabledFields] = useState({
+        excConnectionId: false,
+        excConnectionCode: false,
+        excConnectionName: false,
+    });
+
+    // Rebuild schema based on enabled fields
+    const schema = useMemo(() => schemaFactory(enabledFields), [enabledFields]);
+
+    const {
+        register,
+        formState: { errors, dirtyFields },
+        watch,
+    } = useForm({
+        defaultValues,
+        resolver: zodResolver(schema),
+        mode: 'onTouched',
+    });
+
+    const getDelta = (values) => {
+        const delta = {};
+        for (const key in enabledFields) {
+            if (enabledFields[key] && dirtyFields[key]) {
+                delta[key] = values[key];
+            }
+        }
+        console.log('Changed fields (delta):', delta);
+    };
+
+    var connectionMultiEditFormProps = {
+        register, errors, dirtyFields, enabledFields, setEnabledFields 
+    };
+
+    return {
+        connectionMultiEditFormProps,
+        getDelta,
+        watch
+    };
+}
+
 // this form bad for memoization. 'errors' changes on every render, so the useMemo just adds the overhead
-const ConnectionEditForm =/*React.memo(*/({ register, errors, dirtyFields }) => {
+const ConnectionMultiEditForm =/*React.memo(*/({ register, errors, dirtyFields, enabledFields, setEnabledFields }) => {
     console.log("ConnectionEditForm render")
+
+    const fieldConfigs = [
+        {
+            name: 'excConnectionId',
+            label: 'excConnectionId',
+        },
+        {
+            name: 'excConnectionCode',
+            label: 'excConnectionCode',
+        },
+        {
+            name: 'excConnectionName',
+            label: 'excConnectionName',
+        },
+    ];
     return (
-        /*<div style={{ display: 'flex', flexWrap: 'wrap', gap: '2em' }}>*/
+        <Row>
+            <Col md={ 3}>
+            <h5 className="mb-3">Enable Fields</h5>
+            {fieldConfigs.map(({ name, label }) => (
+                <Form.Check
+                    key={name}
+                    type="checkbox"
+                    label={`Edit ${label}`}
+                    checked={enabledFields[name]}
+                    onChange={() =>
+                        setEnabledFields((prev) => ({
+                            ...prev,
+                            [name]: !prev[name],
+                        }))
+                    }
+                    className="mb-2"
+                />
+            ))}
+            </Col>
+            <Col md={9}>
+        {/*<div style={{ display: 'flex', flexWrap: 'wrap', gap: '2em' }}></div>*/}
         <div>
             <div className="px-2 py-2">
-                <label className="form-label">ExcConnectionId {dirtyFields.excConnectionId==true?<b>(changed)</b>:"" }</label>
+                <label className="form-label">ExcConnectionId {dirtyFields.excConnectionId == true ? <b>(changed)</b> : ""}</label>
                 <input
                     type="text"
                     className={`form-control ${errors.excConnectionId ? 'is-invalid' : ''}`}
@@ -103,16 +235,18 @@ const ConnectionEditForm =/*React.memo(*/({ register, errors, dirtyFields }) => 
                     </label>
                 </div>
             </div>
-        </div>
+                </div>
+            </Col>
+        </Row>
     )
-}/*)*/
+}
 
-ConnectionEditForm.displayName = "ConnectionEditForm";
+ConnectionMultiEditForm.displayName = "ConnectionEditForm";
 
-ConnectionEditForm.propTypes = {
+ConnectionMultiEditForm.propTypes = {
     register: PropTypes.func,
     errors: PropTypes.object,
     dirtyFields: PropTypes.object
 };
 
-export default ConnectionEditForm;
+export default ConnectionMultiEditForm;

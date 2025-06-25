@@ -32,38 +32,25 @@ const CrudTable = React.memo(({
     
     var hasRowActions = !(handleCreateButtonClick == null && handleUpdateButtonClick == null && handleDeleteButtonClick == null && handleDetailsButtonClick==null );
     
-    // UseMemo is for caching constants and "non side effects calculations"
-    const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
+    
     const [rowSelection, setRowSelection] = useState({})
     const [globalFilter, setGlobalFilter] = useState('');
 
-   
+
+    const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
     const columns = useMemo(() => {
         var copy = [...baseColumns];
         if (isMultiSelectEnabled) {
             copy.unshift({
                 id: "select",
                 header: ({ table }) => (<span className="crud-table-selected-total">
-                    {/*<Form.Check*/}
-                    {/*    type="checkbox"*/}
-                    
-                    {/*    checked={table.getIsAllRowsSelected()}*/}
-                    {/*    onChange={table.getToggleAllRowsSelectedHandler()}*/}
-                    {/*/>*/}
 
                     <IndeterminateCheckbox
                         {...{
                             checked: table.getIsAllRowsSelected(),
                             indeterminate: table.getIsSomeRowsSelected(),
-                            onChange: table.getToggleAllRowsSelectedHandler(),
-                            //label:
-                               
-                            
-                            // with page and filter from https://tanstack.com/table/v8/docs/framework/react/examples/row-selection
-                            //checked: table.getIsAllPageRowsSelected(),
-                            //indeterminate: table.getIsSomePageRowsSelected(),
-                            //onChange: table.getToggleAllPageRowsSelectedHandler()
-
+                            onChange: table.getToggleAllRowsSelectedHandler(), //it is referentially stable
+                            // with pagination and filter from https://tanstack.com/table/v8/docs/framework/react/examples/row-selection
                         }}
                     />
 
@@ -73,14 +60,6 @@ const CrudTable = React.memo(({
                         checked: table.getIsAllRowsSelected(),
                         indeterminate: table.getIsSomeRowsSelected(),
                         onChange: table.getToggleAllRowsSelectedHandler(),
-                        //label:
-
-
-                        // with page and filter from https://tanstack.com/table/v8/docs/framework/react/examples/row-selection
-                        //checked: table.getIsAllPageRowsSelected(),
-                        //indeterminate: table.getIsSomePageRowsSelected(),
-                        //onChange: table.getToggleAllPageRowsSelectedHandler()
-
                     }}
                 />,
                 cell: ({ row }) => (
@@ -165,6 +144,7 @@ const CrudTable = React.memo(({
         }
     );
 
+    
     const isFirstRender = useRef(true);
     useEffect(() => {
         // this pattern used to do not cause useEffect render on first time
@@ -179,28 +159,32 @@ const CrudTable = React.memo(({
     }, [isMultiSelectEnabled, tableInstance]);
 
     const { getHeaderGroups, getFooterGroups, getRowModel } = tableInstance;
-    
-    const contents = isLoading
+
+    const { pageIndex, pageSize } = tableInstance.getState().pagination;
+    const pageCount = tableInstance.getPageCount();
+
+    var actions = React.useMemo(() => [
+        {
+            name: "log console table.getSelectedRowModel().flatRows", action: () => {
+                console.info(
+                    'table.options',
+                    tableInstance.options
+                );
+                console.info(
+                    'table.getState()',
+                    tableInstance.getState()
+                );
+                console.info(
+                    'table.getSelectedRowModel().flatRows',
+                    tableInstance.getSelectedRowModel().flatRows
+                );
+            }
+        }], [tableInstance]);
+    return isLoading
         ? <p> {console.log("CrudTable render.content.isLoading")} <em>Loading... </em></p>
         : <div className="crud-panel">
             {console.log("CrudTable render.content.Loaded")}
-            <DebugMenu actions={[
-                {
-                    name: "log console table.getSelectedRowModel().flatRows", action: () => {
-                        console.info(
-                            'table.options',
-                            tableInstance.options
-                        );
-                        console.info(
-                            'table.getState()',
-                            tableInstance.getState()
-                        );
-                        console.info(
-                            'table.getSelectedRowModel().flatRows',
-                            tableInstance.getSelectedRowModel().flatRows
-                        );
-                    }
-                }]} />
+            <DebugMenu actions={actions} />
             {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
             
             <div className={`d-flex ${multiSelectActions ? 'justify-content-between' : 'justify-content-end'} align-items-center gap-2`}>
@@ -278,7 +262,7 @@ const CrudTable = React.memo(({
                     ))}
                 </tfoot>
                 </table>
-                    <Pagination tableInstance={tableInstance} />
+                    <Pagination tableInstance={tableInstance} pageIndex={pageIndex} pageSize={pageSize} pageCount={pageCount} />
                 </div>
             ) : (
                     tableInstance.getPreFilteredRowModel().rows.length === 0 ? 
@@ -289,7 +273,6 @@ const CrudTable = React.memo(({
         
             }
         </div>;
-    return contents;
 })
 
 CrudTable.displayName ="CrudTable"

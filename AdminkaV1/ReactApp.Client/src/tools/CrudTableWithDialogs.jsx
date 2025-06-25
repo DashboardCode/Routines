@@ -1,14 +1,16 @@
-import { useState, useCallback, useEffect } from 'react';
-
-import DebugMenu from './DebugMenu';
+import React, { useState, useMemo, useCallback } from 'react';
 
 import PropTypes from "prop-types";
 import CrudTable from './CrudTable';
 
 import { DeleteDialog, EditDialog } from './CrudDialogs'
-function CrudTableWithDialogs({
+const CrudTableWithDialogs = React.memo(({
     baseColumns,
-    fetchList,
+    list,
+    reload,
+    errorMessageList,
+    isLoadingList,
+
     fetchDelete,
 
     //fetchBulkDelete,
@@ -19,10 +21,11 @@ function CrudTableWithDialogs({
     
     cloneEntity,
     createDefaultEmpty,
+    editFormHandlers,
     editForm,
     //multiSelectDialogs
     
-}) {
+}) => {
 
     const [errorMessageEdit, setErrorMessageEdit] = useState("");
     const [errorMessageDelete, setErrorMessageDelete] = useState("");
@@ -35,7 +38,7 @@ function CrudTableWithDialogs({
 
     const [entity, setEntity] = useState(null);
 
-    const buttonHandlers = {
+    const buttonHandlers = useMemo(()=>({
         handleCreateButtonClick: () => {
             setIsForNew(true);
             var copy = createDefaultEmpty();
@@ -72,98 +75,73 @@ function CrudTableWithDialogs({
         //        //var id = getId(entity);
         //        //fetch(`${ADMINKA_API_BASE_URL}/ui/connections/${id}`, { headers: { "Content-Type": "application/json" } });
         //    }
-    }
+    }), [createDefaultEmpty, cloneEntity, setEntity, reset, setIsForNew, setErrorMessageEdit, setErrorMessageDelete, setIsEditDialogOpen]);
 
-    var multiSelectActions = null;
+    const multiSelectActionsMemo = useMemo(() => {
+        var multiSelectActions = null;
+        var isMultiSelectEdit = true;
+        var isMultiSelectDelete = true;
+        if (isMultiSelectEdit) {
+            if (multiSelectActions == null)
+                multiSelectActions = [];
+            multiSelectActions.push({ handleButtonClick: () => { buttonHandlers.handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Edit" });
+        }
+        if (isMultiSelectDelete) {
+            if (multiSelectActions == null)
+                multiSelectActions = [];
+            multiSelectActions.push({ handleButtonClick: () => { buttonHandlers.handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Delete" });
+        }
+        return multiSelectActions;
+    }, [ buttonHandlers]
+    );
 
-    var isMultiSelectEdit = true;
-    var isMultiSelectDelete = true;
-    if (isMultiSelectEdit) {
-        if (multiSelectActions == null)
-            multiSelectActions = [];
-        multiSelectActions.push({ handleButtonClick: () => { buttonHandlers.handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Edit" });
-    }
-    if (isMultiSelectDelete) {
-        if (multiSelectActions == null)
-            multiSelectActions = [];
-        multiSelectActions.push({ handleButtonClick: () => { buttonHandlers.handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Delete" });
-    }
+    const okButton_onClick_Edit = useCallback((setErrorMessage, setIsLoading) =>
+        saveButton_onClick(isForNew, editFormHandlers, entity, setErrorMessage, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues),
+        [isForNew, editFormHandlers, entity, setIsEditDialogOpen, reload, trigger, getValues]
+    );
 
-    const [list, setList] = useState();
-    const [isLoading, setIsLoading] = useState(true);
-    const [errorMessageList, setErrorMessageList] = useState(0);
-
-    const [incTrigger, setIncTrigger] = useState(0); // Changing this triggers refetch
-    const reload = useCallback(() => {
-        setIncTrigger(v => v + 1);
-    }, []);
-
-    useEffect(() => {
-        // isMountCancelled prevent updating state on an unmounted component, which can cause warnings or memory leaks.
-        // It is a common pattern to use a flag to track whether the component is still mounted when the async operation completes.
-        // Otherwise you will get a warning in the console like "Can't perform a React state update on an unmounted component".
-        let isMountCancelled = false;
-
-        setIsLoading(true);
-        console.log("CrudTableWithDialogs render.fetch")
-        fetchList(setList, setErrorMessageList) // is async but we call it without await inside useEffect since this is a promise,
-            .then((result) => {
-                if (result) {
-                    setErrorMessageList(null);
-                }
-            })
-            .catch((error) => {
-                if (!isMountCancelled)
-                    console.error('Fetch failed', error);
-            })
-            .finally(() => {
-                if (!isMountCancelled)  // if component is still mounted, e.g. not navigated away or second time opened
-                    setIsLoading(false);
-            });
-
-        return () => {
-            isMountCancelled = true; // mark as cancelled
-        };
-    }, [incTrigger, fetchList]);
-    // ----------------------------
+    const okButton_onClick_Delete = useCallback((setErrorMessage, setIsLoading) =>
+        okButton_onClick(fetchDelete, entity, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload),
+        [fetchDelete, entity, setIsDeleteDialogOpen, reload]
+    );
 
     console.log("CrudTableWithDialogs render")
     return (
         <div>
-            <DebugMenu actions={[
-                { name: "refreshData", action: () => reload() },
-                { name: "Remove First Row", action: () => setList((l) => l.slice(1)) },
-            ]} />
-            <CrudTable
-                list={list}
-                errorMessage={errorMessageList}
-                isLoading={isLoading}
-                baseColumns={baseColumns}
-                multiSelectActions={multiSelectActions}
-                buttonHandlers={buttonHandlers}
-                />
-            {editForm && <EditDialog
+             <CrudTable
+             list={list}
+             errorMessage={errorMessageList}
+             isLoading={isLoadingList}
+             baseColumns={baseColumns}
+             multiSelectActions={multiSelectActionsMemo}
+             buttonHandlers={buttonHandlers}
+             />
+
+            {editForm &&
+                <EditDialog
                 isDialogOpen={isEditDialogOpen}
                 setIsDialogOpen={setIsEditDialogOpen}
                 isForNew={isForNew}
-                okButton_onClick={(setErrorMessage, setIsLoading) => saveButton_onClick(isForNew, editForm, entity, setErrorMessage, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues)}
+                    okButton_onClick={okButton_onClick_Edit}
                 errorMessage={errorMessageEdit}
-                setErrorMessage = { setErrorMessageEdit }
-            >{editForm.form} {/*was renderFormFields(entity). how to pass entity now?*/}
-            </EditDialog>}
+                setErrorMessage={setErrorMessageEdit}>
+                    {editForm} {/*was renderFormFields(entity). how to pass entity now?*/}
+                </EditDialog>}
 
             {fetchDelete &&
                 <DeleteDialog
                 isDeleteDialogOpen={isDeleteDialogOpen}
                 setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-                okButton_onClick={(setErrorMessage, setIsLoading) => okButton_onClick(fetchDelete, entity, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload)}
+                okButton_onClick={okButton_onClick_Delete}
                 errorMessage={errorMessageDelete}
                 setErrorMessage = { setErrorMessageDelete }
-            />
+                />
             }
         </div>
     );
-}
+})
+
+CrudTableWithDialogs.displayName = "CrudTableWithDialogs"; // for debugging purposes
 
 async function okButton_onClick(fetchDelete, entity, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload) {
     try {
@@ -181,7 +159,7 @@ async function okButton_onClick(fetchDelete, entity, setErrorMessage, setIsDelet
     }
 }
 
-async function saveButton_onClick(isForNew, editForm, entity, setErrorMessage, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues) {
+async function saveButton_onClick(isForNew, editFormHandlers, entity, setErrorMessage, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues) {
     try {
         setIsLoading(true);
         const isValid = await trigger(); // validate all fields
@@ -189,9 +167,9 @@ async function saveButton_onClick(isForNew, editForm, entity, setErrorMessage, s
             const hookFormState = getValues();
             var success;
             if (isForNew) {
-                success = await editForm.fetchCreate(entity, hookFormState, setErrorMessage)
+                success = await editFormHandlers.fetchCreate(entity, hookFormState, setErrorMessage)
             } else {
-                success = await editForm.fetchReplace(entity, hookFormState, setErrorMessage)
+                success = await editFormHandlers.fetchReplace(entity, hookFormState, setErrorMessage)
             }
             if (success) {
                 setIsEditDialogOpen(false);
@@ -210,7 +188,10 @@ async function saveButton_onClick(isForNew, editForm, entity, setErrorMessage, s
 CrudTableWithDialogs.propTypes = {
 
     baseColumns: PropTypes.array, 
-    fetchList: PropTypes.func,
+    list: PropTypes.array,
+    reload: PropTypes.func,
+    errorMessageList: PropTypes.node,
+    isLoadingList: PropTypes.bool,
 
     //createDefaultEmpty: PropTypes.func,
     //cloneEntity: PropTypes.func,
@@ -226,11 +207,8 @@ CrudTableWithDialogs.propTypes = {
     trigger: PropTypes.func.isRequired,
     getValues: PropTypes.func.isRequired,
     reset: PropTypes.func.isRequired,
-    editForm: PropTypes.shape({
-        fetchCreate: PropTypes.func,
-        fetchReplace: PropTypes.func,
-        form: PropTypes.element.isRequired
-    }),
+    editForm: PropTypes.element,
+    editFormHandlers: PropTypes.object,
     multiSelectDialogs: PropTypes.array
 };
 

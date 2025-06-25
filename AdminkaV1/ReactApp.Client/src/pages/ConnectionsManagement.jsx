@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import CrudTableWithDialogs from '@/tools/CrudTableWithDialogs';
 
 import { fetchTokenized } from '@/fetchTokenized';
@@ -8,6 +8,132 @@ import ConnectionEditForm from './ConnectionEditForm';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+// ConnectionsManagement component - is not a pure component. it manages the state of all nested components.
+// To define which nested components should be memoized
+function ConnectionsManagement() {
+    const [, setTick] = React.useState(0);
+    const forceUpdate = () => setTick(tick => tick + 1);
+
+    // Hook "do something after render" Data fetching, setting up a subscription, and manually changing the DOM, logging in React
+    // components are all examples of side effects.
+    // useEffect here since this is fetch: async with side effects
+    //useEffect(() => {
+    //    setIsLoading(true);
+    //    fetchList(setList, setIsLoading); // setList - recalls the component render
+    //                                      // fetchList is async but we call it without await inside useEffect since this is a promise,
+    //                                      // istead useEffect fuctor can return a cleanup function
+    //    setIsLoading(false);
+    //}, [reload]);
+
+
+    //const [isInEditForm, setIsInEditForm] = React.useState(false);
+    //react-hook-form - state of the form with enabled zod validation
+    const {
+        register,
+        trigger,
+        getValues,
+        reset, // reset form before reuse dialog for other entities
+        /*setError, */ /*set error for fields, doesn't work well with schema validation - whe to show error as a customized generic error - not bad  */
+        formState: { errors, /*isValid,*/ dirtyFields } }
+        = useForm(
+            {
+                resolver: zodResolver(connectionValidationSchema),
+                mode: 'all', /* alternatives onChange, onBlur, onTouched, onSubmit , all(onChange + onBlur + onSubmit) */
+                defaultValues: createDefaultEmpty(),
+            }); 
+
+    const editFormHandlers = useMemo(() => ({
+        fetchCreate: (entity, state, setErrorMessage) =>
+            fetchCreate(entity, state, setErrorMessage/*, setError*/),
+
+        fetchReplace: (entity, state, setErrorMessage) =>
+            fetchReplace(entity, state, setErrorMessage/*, setError*/, dirtyFields),
+    }), [dirtyFields]);
+
+    // depends on errors and isValid status  - changes "every time" — can't be memoized
+    const editForm = (
+        <ConnectionEditForm
+            register={register}
+            errors={errors}
+            dirtyFields={dirtyFields}
+        />
+    );
+
+    var multiSelectDialogs = useMemo(()=>[], []);
+
+
+
+    const [list, setList] = useState([]);
+    const [isLoadingList, setIsLoadingList] = useState(true);
+    const [errorMessageList, setErrorMessageList] = useState(0);
+
+    const [incTrigger, setIncTrigger] = useState(0); // Changing this triggers refetch
+    const reload = useCallback(() => {
+        setIncTrigger(v => v + 1);
+    }, []);
+
+    useEffect(() => {
+        // isMountCancelled prevent updating state on an unmounted component, which can cause warnings or memory leaks.
+        // It is a common pattern to use a flag to track whether the component is still mounted when the async operation completes.
+        // Otherwise you will get a warning in the console like "Can't perform a React state update on an unmounted component".
+        let isMountCancelled = false;
+
+        setIsLoadingList(true);
+        console.log("ConnectionsManagement render.fetch")
+        fetchList(setList, setErrorMessageList) // is async but we call it without await inside useEffect since this is a promise,
+            .then((result) => {
+                if (result) {
+                    setErrorMessageList(null);
+                }
+            })
+            .catch((error) => {
+                if (!isMountCancelled)
+                    console.error('Fetch failed', error);
+            })
+            .finally(() => {
+                if (!isMountCancelled)  // if component is still mounted, e.g. not navigated away or second time opened
+                    setIsLoadingList(false);
+            });
+
+        return () => {
+            isMountCancelled = true; // mark as cancelled
+        };
+    }, [incTrigger]);
+    // ----------------------------
+
+    console.log(ConnectionsManagement.name + " render") // TODO: trace.render();
+    return (
+        <div>
+            <DebugMenu actions=
+                {[
+                { name: "forceRerender", action: () => forceUpdate() },
+                { name: "refreshData", action: () => reload() },
+                { name: "Remove First Row", action: () => setList((l) => l.slice(1)) }
+                ]} />
+            <div className="my-4">
+                <CrudTableWithDialogs
+                    baseColumns={baseColumns}
+                    list={list}
+                    reload={reload}
+                    errorMessageList={errorMessageList}
+                    isLoadingList={isLoadingList}
+                    fetchDelete={fetchDelete}
+                    fetchBulkDelete={fetchBulkDelete}
+                    trigger={trigger}
+                    getValues={getValues}
+                    reset={reset}
+                    createDefaultEmpty={createDefaultEmpty}
+                    cloneEntity={cloneEntity}
+                    editFormHandlers={editFormHandlers}
+                    editForm={editForm}
+                    multiSelectDialogs={multiSelectDialogs}
+                />
+            </div>
+            <br />
+        </div>
+    );
+};
 
 const connectionValidationSchema = z.object({
     excConnectionId: z.string()
@@ -28,7 +154,7 @@ const connectionValidationSchema = z.object({
     excConnectionString: z.string().min(4, "At least 4 characters").nonempty("Required")
 });
 
-function createDefaultEmpty(){
+function createDefaultEmpty() {
     return {
         excConnectionId: "",
         excConnectionCode: "",
@@ -41,7 +167,7 @@ function createDefaultEmpty(){
     }
 }
 
-function cloneEntity(entity){
+function cloneEntity(entity) {
     return {
         excConnectionId: entity.excConnectionId,
         excConnectionCode: entity.excConnectionCode, excConnectionName: entity.excConnectionName,
@@ -96,94 +222,6 @@ const baseColumns =
         }
     ];
 
-function ConnectionsManagement() {
-    const [, setTick] = React.useState(0);
-    const forceUpdate = () => setTick(tick => tick + 1);
-
-    // Hook "do something after render" Data fetching, setting up a subscription, and manually changing the DOM, logging in React
-    // components are all examples of side effects.
-    // useEffect here since this is fetch: async with side effects
-    //useEffect(() => {
-    //    setIsLoading(true);
-    //    fetchList(setList, setIsLoading); // setList - recalls the component render
-    //                                      // fetchList is async but we call it without await inside useEffect since this is a promise,
-    //                                      // istead useEffect fuctor can return a cleanup function
-    //    setIsLoading(false);
-    //}, [reload]);
-
-
-    
-
-    //react-hook-form - state of the form with enabled zod validation
-    const {
-        register,
-        trigger,
-        getValues,
-        reset, // reset form before reuse dialog for other entities
-        setError /*set error for fields*/,
-        formState: { errors, /*isValid,*/ dirtyFields } }
-        = useForm(
-            {
-                resolver: zodResolver(connectionValidationSchema),
-                mode: 'onTouched', /* alternatives onChange, onBlur, onTouched, onSubmit , all(onChange + onBlur + onSubmit) */
-                defaultValues: createDefaultEmpty(),
-            }); 
-
-    var editForm = {
-        fetchCreate: (entity, fState, setErrorMessageEdit) => fetchCreate(entity, fState, setErrorMessageEdit, setError),
-        fetchReplace: (entity, fState, setErrorMessageEdit) => fetchReplace(entity, fState, setErrorMessageEdit, setError, dirtyFields),
-
-        form: <ConnectionEditForm
-            register={register}
-            errors={errors}
-        />,
-    }
-
-
-    //trigger = { trigger }
-    //getValues = { getValues }
-    //reset = { reset }
-    //setError = { setError }
-    //dirtyFields = { dirtyFields }
-
-    var multiSelectDialogs = [
-        //{
-        //    key: 'user',
-        //    label: 'Edit',
-        //    form: <ConnectionEditForm ... />,
-        //    onConfirm: handleUserSubmit,
-        //}
-    ];
-
-    const contents = (<CrudTableWithDialogs
-        baseColumns={baseColumns}
-        fetchList={fetchList}
-        fetchDelete={fetchDelete}
-        fetchBulkDelete={fetchBulkDelete}
-        trigger={trigger}
-        getValues={getValues}
-        reset={reset}
-        createDefaultEmpty={createDefaultEmpty}
-        cloneEntity={cloneEntity}
-        editForm={editForm}
-        multiSelectDialogs={multiSelectDialogs}
-    />
-    );
-
-    console.log(ConnectionsManagement.name + " render") // TODO: trace.render();
-    return (
-        <div>
-            <DebugMenu actions=
-                {[
-                    { name: "forceRerender", action: () => forceUpdate() }
-                ]} />
-            <div className="my-4">
-                {contents}
-            </div>
-            <br />
-        </div>
-    );
-};
 
 async function fetchList(setList, setErrorMessageList) {
     
@@ -200,7 +238,7 @@ async function fetchList(setList, setErrorMessageList) {
     }
 }
 
-async function fetchCreate(entity, formState, setErrorMessage /*, setError*/) {
+async function fetchCreate(entity, formState, setErrorMessage) {
     var body = JSON.stringify(formState);
     console.log(body)
     var response = await fetchTokenized(`/ui/connections`, body, "POST");
@@ -217,7 +255,7 @@ async function fetchCreate(entity, formState, setErrorMessage /*, setError*/) {
     }  
 }
 
-async function fetchReplace(entity, formState, setErrorMessage, setError, dirtyFields) {
+async function fetchReplace(entity, formState, setErrorMessage, dirtyFields) {
 
     var hookFormDelta = getDelta(formState, dirtyFields)
     var delta = JSON.stringify(hookFormDelta);
@@ -271,7 +309,7 @@ function getDelta(allValues, dirtyFields){
     return delta;
 };
 
-ConnectionsManagement.whyDidYouRender = true;
+ConnectionsManagement.whyDidYouRender = false;
 
 
 export default ConnectionsManagement;

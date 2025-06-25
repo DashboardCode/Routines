@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import './DebugMenu.css';
 
-const DebugMenu = (props) => {
+const DebugMenu = ({actions}) => {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
     // Toggle menu open/close
@@ -29,13 +29,13 @@ const DebugMenu = (props) => {
             ></button>
 
             {/* Popup Menu */}
-            {isOpen && props!=null && props.actions!=null && (
+            {isOpen && actions!=null && (
                 <div
                     ref={menuRef}
                     className="debug-menu-popup "
                 >
                     <div className="debug-menu-popup-panel">
-                    {props.actions.map((a, index) =>
+                    {actions.map((a, index) =>
                         (<button key={index} className="debug-menu-popup-button bg-white border" title={a.name} onClick={a.action} >{a.name}</button>)
                         )}
                     </div>
