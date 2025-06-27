@@ -4,11 +4,13 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { EditDialog } from '@/tools/CrudDialogs'
+import { fetchTokenized } from '@/fetchTokenized';
 
 function useEditDialog(useEditDialogOptions) {
 
-    const { addForm, saveButton_onClick, connectionValidationSchema, createDefaultEmpty, fetchCreate, fetchReplace, setEntity, cloneEntity, entity,reload } = useEditDialogOptions;
+    const { addForm, validationSchema, createDefaultEmpty, fetchCreate, fetchReplace, cloneEntity, reload } = useEditDialogOptions;
 
+    const [entity, setEntity] = useState(null); // selectable list row "component"
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [errorMessageEdit, setErrorMessageEdit] = useState("");
     const [isForNew, setIsForNew] = useState(null); // pseudo-selected entity "clicked on button on the row"
@@ -23,7 +25,7 @@ function useEditDialog(useEditDialogOptions) {
         formState: { errors, /*isValid,*/ dirtyFields } }
         = useForm(
             {
-                resolver: zodResolver(connectionValidationSchema),
+                resolver: zodResolver(validationSchema),
                 mode: 'all', /* alternatives onChange, onBlur, onTouched, onSubmit , all(onChange + onBlur + onSubmit) */
                 defaultValues: createDefaultEmpty(),
             });
@@ -63,8 +65,8 @@ function useEditDialog(useEditDialogOptions) {
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     const okButton_onClick_Edit = useCallback((setIsLoading) =>
-        saveButton_onClick(isForNew, fetchCreate, fetchReplace, entity, errorMessageEdit, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues, dirtyFields),
-        [isForNew, entity, setIsEditDialogOpen, reload, trigger, getValues, dirtyFields, fetchCreate, fetchReplace, saveButton_onClick, errorMessageEdit]
+        saveButton_onClick(isForNew, fetchCreate, fetchReplace, entity, setErrorMessageEdit, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues, dirtyFields),
+        [isForNew, entity, setIsEditDialogOpen, reload, trigger, getValues, dirtyFields, fetchCreate, fetchReplace, setErrorMessageEdit]
     );
 
     var editDialog = null;
@@ -91,4 +93,84 @@ function useEditDialog(useEditDialogOptions) {
     };
 }
 
-export default useEditDialog;
+async function saveButton_onClick(isForNew, fetchCreate, fetchReplace, entity, setErrorMessageEdit, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues, dirtyFields) {
+    try {
+        setIsLoading(true);
+        const isValid = await trigger(); // validate all fields
+        if (isValid) {
+            const hookFormState = getValues();
+            var success;
+            if (isForNew) {
+                success = await fetchCreate(entity, hookFormState, setErrorMessageEdit)
+            } else {
+                success = await fetchReplace(entity, hookFormState, setErrorMessageEdit, dirtyFields)
+            }
+            if (success) {
+                setIsEditDialogOpen(false);
+                reload();
+            }
+        }
+    } catch (err) {
+        var message = (typeof err === 'string') ? err : (typeof err.message === 'string' ? err.message : String(err));
+        setErrorMessageEdit(message);
+        console.error(err);
+    } finally {
+        setIsLoading(false);
+    }
+};
+
+function useDefaultFetchCreate(uri) {
+    var fetch = useCallback((entity, formState, setErrorMessageEdit) => fetchCreateAsync(entity, formState, setErrorMessageEdit, uri), [uri])
+    return fetch;
+}
+
+async function fetchCreateAsync(entity, formState, setErrorMessageEdit, uri) {
+    var body = JSON.stringify(formState);
+    console.log(body)
+    var response = await fetchTokenized(uri, body, "POST");
+    if (response.ok) {
+        //await fetchList(setList, setIsLoading);
+        return true
+    } else {
+        var result = await response.json();
+        setErrorMessageEdit(result.message);
+        //Object.entries(result.errors).forEach(([field, message]) => {
+        //    setError(field, { type: 'server', message });
+        //});
+        return false
+    }
+}
+
+function useDefaultFetchReplace(createUri) {
+    var fetch = useCallback((entity, hookFormState, setErrorMessageEdit, dirtyFields) => fetchReplaceAync(entity, hookFormState, setErrorMessageEdit, dirtyFields, createUri(entity)), [createUri])
+    return fetch;
+}
+
+async function fetchReplaceAync(entity, formState, setErrorMessageEdit, dirtyFields, uri) {
+
+    var hookFormDelta = getDelta(formState, dirtyFields)
+    var delta = JSON.stringify(hookFormDelta);
+    var response = await fetchTokenized(uri, delta, "PATCH");
+    if (response.ok) {
+        //await fetchList(setList, setIsLoading);
+        return true;
+    }
+    else {
+        var result = await response.json();
+        setErrorMessageEdit(result.message);
+        //Object.entries(result.errors).forEach(([field, message]) => {
+        //    setError(field, { type: 'server', message });
+        //});
+        return false
+    }
+}
+
+function getDelta(allValues, dirtyFields) {
+    const delta = {};
+    Object.keys(dirtyFields).forEach((key) => {
+        delta[key] = allValues[key];
+    });
+    return delta;
+};
+
+export { useEditDialog, useDefaultFetchCreate, useDefaultFetchReplace }

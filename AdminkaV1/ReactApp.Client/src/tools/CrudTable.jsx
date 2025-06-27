@@ -13,6 +13,7 @@ import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
+
 const CrudTable = React.memo(({
     list,
     errorMessage,
@@ -95,7 +96,7 @@ const CrudTable = React.memo(({
 
                                     <Dropdown.Menu>
                                         {rowActions.map((action, index) => (
-                                            <Dropdown.Item key={index} ><Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { action.onClick(row.original); }}>
+                                            <Dropdown.Item key={index} onClick={() => { action.onClick(row.original); }}><Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" >
                                                 <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{action.icon}</span>
                                             </Button> {action.label}</Dropdown.Item>
                                         )) }
@@ -290,5 +291,6 @@ CrudTable.propTypes = {
     rowActions: PropTypes.array,
 
 }
+
 
 export default CrudTable;

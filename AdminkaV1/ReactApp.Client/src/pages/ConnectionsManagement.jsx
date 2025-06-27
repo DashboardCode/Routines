@@ -1,95 +1,50 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import CrudTable from '@/tools/CrudTable';
+import { useCallback, useMemo } from 'react';
+import { useCrudTable, useDefaultFetchList } from '@/tools/useCrudTable';
 
-import { fetchTokenized } from '@/fetchTokenized';
 import DebugMenu from '@/tools/DebugMenu';
 import ConnectionEditForm from './ConnectionEditForm';
 
 import { z } from 'zod';
 
-import useEditDialog from '@/tools/useEditDialog'
-import useDeleteDialog from '@/tools/useDeleteDialog'
+import { useEditDialog, useDefaultFetchCreate, useDefaultFetchReplace} from '@/tools/useEditDialog'
+import { useDeleteDialog, useDefaultFetchDelete } from '@/tools/useDeleteDialog'
 
 // ConnectionsManagement component - is not a pure component. it manages the state of all nested components.
 // To define which nested components should be memoized
 function ConnectionsManagement() {
-    const [, setTick] = React.useState(0);
-    const forceUpdate = () => setTick(tick => tick + 1);
 
-    // Hook "do something after render" Data fetching, setting up a subscription, and manually changing the DOM, logging in React
-    // components are all examples of side effects.
-    // useEffect here since this is fetch: async with side effects
-    //useEffect(() => {
-    //    setIsLoading(true);
-    //    fetchList(setList, setIsLoading); // setList - recalls the component render
-    //                                      // fetchList is async but we call it without await inside useEffect since this is a promise,
-    //                                      // istead useEffect fuctor can return a cleanup function
-    //    setIsLoading(false);
-    //}, [reload]);
+    const fetchList = useDefaultFetchList(`/ui/connections`)
 
+    const { reload, renderEditDialog} = useCrudTable({
+        fetchList, baseColumns 
+    })
 
-
-    const [list, setList] = useState([]);
-    const [isLoadingList, setIsLoadingList] = useState(true);
-    const [errorMessageList, setErrorMessageList] = useState(0);
-
-    const [incTrigger, setIncTrigger] = useState(0); // Changing this triggers refetch
-    const reload = useCallback(() => {
-        setIncTrigger(v => v + 1);
-    }, []);
-
-    useEffect(() => {
-        // isMountCancelled prevent updating state on an unmounted component, which can cause warnings or memory leaks.
-        // It is a common pattern to use a flag to track whether the component is still mounted when the async operation completes.
-        // Otherwise you will get a warning in the console like "Can't perform a React state update on an unmounted component".
-        let isMountCancelled = false;
-
-        setIsLoadingList(true);
-        console.log("ConnectionsManagement render.fetch")
-        fetchList(setList, setErrorMessageList) // is async but we call it without await inside useEffect since this is a promise,
-            .then((result) => {
-                if (result) {
-                    setErrorMessageList(null);
-                }
-            })
-            .catch((error) => {
-                if (!isMountCancelled)
-                    console.error('Fetch failed', error);
-            })
-            .finally(() => {
-                if (!isMountCancelled)  // if component is still mounted, e.g. not navigated away or second time opened
-                    setIsLoadingList(false);
-            });
-
-        return () => {
-            isMountCancelled = true; // mark as cancelled
-        };
-    }, [incTrigger]);
-
-
-    const [entity, setEntity] = useState(null); // selectable "component"
+    const fetchCreate = useDefaultFetchCreate(`/ui/connections`);
+    const fetchReplace = useDefaultFetchReplace((entity) => `/ui/connections/${entity.excConnectionId}`)
 
     const { editDialog, editAction, handleCreateButtonClick } = useEditDialog(
         {
-            createDefaultEmpty: createDefaultEmpty,
+            validationSchema: connectionValidationSchema,
             addForm: (isForNew, register, errors, dirtyFields) => <ConnectionEditForm
                     isForNew={isForNew}
                     register={register}
                     errors={errors}
                     dirtyFields={dirtyFields}
             />,
-            saveButton_onClick: saveButton_onClick,
-            connectionValidationSchema: connectionValidationSchema,
             fetchCreate,
             fetchReplace,
-            setEntity, cloneEntity, entity, reload
+            createDefaultEmpty,
+            cloneEntity,
+            reload
         }
     )
 
+    const fetchDelete = useDefaultFetchDelete((entity)=>`/ui/connections/${entity.excConnectionId}`)
+
     const { deleteDialog, deleteAction } = useDeleteDialog({
-            okButton_onClick: okButton_onClick,
             fetchDelete,
-            setEntity, cloneEntity, entity, reload
+            cloneEntity,
+            reload
         }
     )
 
@@ -127,21 +82,10 @@ function ConnectionsManagement() {
         <div>
             <DebugMenu actions=
                 {[
-                { name: "forceRerender", action: () => forceUpdate() },
-                { name: "refreshData", action: () => reload() },
-                { name: "Remove First Row", action: () => setList((l) => l.slice(1)) }
+                { name: "reload crudTable", action: () => reload() }
                 ]} />
             <div className="my-4">
-                <CrudTable
-                    list={list}
-                    errorMessage={errorMessageList}
-                    isLoading={isLoadingList}
-                    baseColumns={baseColumns}
-                    multiSelectActions={multiSelectActionsMemo}
-                    handleCreateButtonClick={handleCreateButtonClick}
-                    handleDetailsButtonClick={handleDetailsButtonClick}
-                    rowActions={rowActions}
-                />
+                {renderEditDialog(rowActions, handleDetailsButtonClick, handleCreateButtonClick, multiSelectActionsMemo)}
                 {editDialog}
                 {deleteDialog}
             </div>
@@ -150,47 +94,6 @@ function ConnectionsManagement() {
     );
 };
 
-async function okButton_onClick(fetchDelete, entity, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload) {
-    try {
-        setIsLoading(true);
-        var success = await fetchDelete(entity, setErrorMessage);
-        if (success) {
-            setIsDeleteDialogOpen(false);
-            reload();
-        }
-    } catch (err) {
-        setErrorMessage(err.message);
-        console.error(err);
-    } finally {
-        setIsLoading(false);
-    }
-}
-
-async function saveButton_onClick(isForNew, fetchCreate, fetchReplace, entity, setErrorMessage, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues, dirtyFields) {
-    try {
-        setIsLoading(true);
-        const isValid = await trigger(); // validate all fields
-        if (isValid) {
-            const hookFormState = getValues();
-            var success;
-            if (isForNew) {
-                success = await fetchCreate(entity, hookFormState, setErrorMessage)
-            } else {
-                success = await fetchReplace(entity, hookFormState, setErrorMessage, dirtyFields)
-            }
-            if (success) {
-                setIsEditDialogOpen(false);
-                reload();
-            }
-        }
-    } catch (err) {
-        var message = (typeof err === 'string') ? err : (typeof err.message === 'string' ? err.message : String(err));
-        setErrorMessage(message);
-        console.error(err);
-    } finally {
-        setIsLoading(false);
-    }
-};
 
 const connectionValidationSchema = z.object({
     excConnectionId: z.string()
@@ -279,71 +182,6 @@ const baseColumns =
         }
     ];
 
-
-async function fetchList(setList, setErrorMessageList) {
-    
-    const response = await fetchTokenized(`/ui/connections`);
-    if (response.ok) {
-        const odata = await response.json();
-        setList(odata.value);
-        return true;
-    }
-    else {
-        var result = await response.json();
-        setErrorMessageList(result.message);
-        return false
-    }
-}
-
-async function fetchCreate(entity, formState, setErrorMessage) {
-    var body = JSON.stringify(formState);
-    console.log(body)
-    var response = await fetchTokenized(`/ui/connections`, body, "POST");
-    if (response.ok) {
-        //await fetchList(setList, setIsLoading);
-        return true
-    } else {
-        var result = await response.json();
-        setErrorMessage(result.message);
-        //Object.entries(result.errors).forEach(([field, message]) => {
-        //    setError(field, { type: 'server', message });
-        //});
-        return false
-    }  
-}
-
-async function fetchReplace(entity, formState, setErrorMessage, dirtyFields) {
-
-    var hookFormDelta = getDelta(formState, dirtyFields)
-    var delta = JSON.stringify(hookFormDelta);
-    
-    var response = await fetchTokenized(`/ui/connections/${entity.excConnectionId}`, delta, "PATCH");
-    if (response.ok) {
-        //await fetchList(setList, setIsLoading);
-        return true;
-    }
-    else {
-        var result = await response.json();
-        setErrorMessage(result.message);
-        //Object.entries(result.errors).forEach(([field, message]) => {
-        //    setError(field, { type: 'server', message });
-        //});
-        return false
-    }
-}
-
-async function fetchDelete(entity, setErrorMessage) {
-    var responce = await fetchTokenized(`/ui/connections/${entity.excConnectionId}`, null, "DELETE");
-    if (responce.ok) {
-        return true; 
-    } 
-    else {
-        var result = await responce.json();
-        setErrorMessage(result.message);
-        return false
-    }
-};
-
 async function fetchBulkDelete(entities, setErrorMessage) {
     const ids = entities.map(e => e.excConnectionId);
     const jsonIds = JSON.stringify(ids);
@@ -356,14 +194,6 @@ async function fetchBulkDelete(entities, setErrorMessage) {
         setErrorMessage(result.message);
         return false
     }
-};
-
-function getDelta(allValues, dirtyFields){
-    const delta = {};
-    Object.keys(dirtyFields).forEach((key) => {
-        delta[key] = allValues[key];
-    });
-    return delta;
 };
 
 ConnectionsManagement.whyDidYouRender = false;

@@ -1,4 +1,4 @@
-.debug-menu {
+/*.debug-menu {
     position: relative;
     display:block;
     top: 0.5rem;
@@ -37,11 +37,11 @@
 .debug-menu .debug-menu-popup .debug-menu-popup-button {
     background-color: gray;
     font-size: 0.8rem;
-    border: none;
+    border: none;*/
     /*display: block;*/
-}
+/*}
 
 .debug-menu .debug-menu-popup .debug-menu-popup-button:hover {
     background-color: lightgrey;
     transition: 0.2s;
-}
+}*/

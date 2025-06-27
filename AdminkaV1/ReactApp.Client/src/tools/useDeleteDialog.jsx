@@ -1,11 +1,12 @@
 import{ useState, useCallback, useMemo } from 'react';
-
+import { fetchTokenized } from '@/fetchTokenized';
 import { DeleteDialog } from '@/tools/CrudDialogs'
 
 function useDeleteDialog(useDeleteDialogOptions) {
 
-    const { okButton_onClick, fetchDelete, setEntity, cloneEntity, entity, reload } = useDeleteDialogOptions;
+    const { fetchDelete, cloneEntity, reload } = useDeleteDialogOptions;
 
+    const [entity, setEntity] = useState(null); // selectable list row "component"
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [errorMessageDelete, setErrorMessageDelete] = useState("");
 
@@ -24,8 +25,8 @@ function useDeleteDialog(useDeleteDialogOptions) {
 
 
     const okButton_onClick_Delete = useCallback((setIsLoading) =>
-        okButton_onClick(fetchDelete, entity, setErrorMessageDelete, setIsDeleteDialogOpen, setIsLoading, reload),
-        [entity, setIsDeleteDialogOpen, reload, okButton_onClick, fetchDelete]
+        okButton_onClick_Async(fetchDelete, entity, setErrorMessageDelete, setIsDeleteDialogOpen, setIsLoading, reload),
+        [entity, setIsDeleteDialogOpen, reload, fetchDelete]
     );
 
     var deleteDialog = null;
@@ -37,12 +38,43 @@ function useDeleteDialog(useDeleteDialogOptions) {
             errorMessage={errorMessageDelete}
         />
     }
-    
 
     return {
         deleteDialog,
-        deleteAction
+        deleteAction,
     };
 }
 
-export default useDeleteDialog;
+function useDefaultFetchDelete(createUri) {
+    var fetch = useCallback((entity, setErrorMessage) => fetchDeleteAsync(setErrorMessage, createUri(entity)), [createUri])
+    return fetch;
+}
+
+async function fetchDeleteAsync(setErrorMessage, uri) {
+    var responce = await fetchTokenized(uri, null, "DELETE");
+    if (responce.ok) {
+        return true;
+    }
+    else {
+        var result = await responce.json();
+        setErrorMessage(result.message);
+        return false
+    }
+};
+
+async function okButton_onClick_Async(fetchDelete, entity, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload) {
+    try {
+        setIsLoading(true);
+        var success = await fetchDelete(entity, setErrorMessage);
+        if (success) {
+            setIsDeleteDialogOpen(false);
+            reload();
+        }
+    } catch (err) {
+        setErrorMessage(err.message);
+        console.error(err);
+    } finally {
+        setIsLoading(false);
+    }
+}
+export { useDeleteDialog, useDefaultFetchDelete };
