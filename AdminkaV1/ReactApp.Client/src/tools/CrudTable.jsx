@@ -19,23 +19,23 @@ const CrudTable = React.memo(({
     isLoading,
     baseColumns,
     multiSelectActions,
-    buttonHandlers
+    handleCreateButtonClick,
+    handleDetailsButtonClick,
+    rowActions
 })=>{
     
-    //var { multiSelectActions, buttonHandlers = {} } = options;
-    const {
-        handleCreateButtonClick,
-        handleUpdateButtonClick,
-        handleDeleteButtonClick,
-        handleDetailsButtonClick
-    } = buttonHandlers;
-    
-    var hasRowActions = !(handleCreateButtonClick == null && handleUpdateButtonClick == null && handleDeleteButtonClick == null && handleDetailsButtonClick==null );
-    
+    const cornerButton = useMemo(() => (<button className="btn  btn-sm btn-outline-primary" onClick={() => { handleCreateButtonClick(); }} >
+        <span style={{ verticalAlign: 'middle', }} className="material-symbols-outlined">add</span>
+    </button>), [handleCreateButtonClick]);
+
+    var hasRowOrHeaderActions = (handleCreateButtonClick != null || (Array.isArray(rowActions) && rowActions.length > 0) || handleDetailsButtonClick!=null );
     
     const [rowSelection, setRowSelection] = useState({})
     const [globalFilter, setGlobalFilter] = useState('');
 
+
+
+    
 
     const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
     const columns = useMemo(() => {
@@ -73,49 +73,51 @@ const CrudTable = React.memo(({
         }
         else
         {
-            if (hasRowActions) {
+            if (hasRowOrHeaderActions) {
                 copy.unshift({
                     id: "actions",
-                    header: () => (<button className="btn  btn-sm btn-outline-primary" onClick={() => { handleCreateButtonClick(); }} >
-                        <span style={{ verticalAlign: 'middle',  }} className="material-symbols-outlined">add</span>
-                    </button>),
-                    footer: () => (<button className="btn btn-sm btn-outline-primary" onClick={() => { handleCreateButtonClick(); }} >
-                        <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">add</span>
-                    </button>),
-                    cell: ({ row }) =>
-                    (<div style={{ display: "flex", gap: "5px" }}>
+                    header: () => cornerButton,
+                    footer: () => cornerButton,
+                    cell: ({ row }) => {
+                        var headerActions = null;
+                        var firstAction = rowActions[0];
+                        if (rowActions.length > 0) {
+                            if (rowActions.length == 1) {
+                                headerActions = <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { firstAction.onClick(row.original); }}>
+                                    <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{firstAction.icon}</span>
+                                </Button>;
+                            } else {
+                                headerActions = <Dropdown as={ButtonGroup}>
+                                    <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { firstAction.onClick(row.original); }}>
+                                        <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{firstAction.icon}</span>
+                                    </Button>
+                                    <Dropdown.Toggle split variant="outline-primary" id="dropdown-split-basic" />
 
-                        <Dropdown as={ButtonGroup}>
-                            <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { handleUpdateButtonClick(row.original); }}>
-                                <span style={{ verticalAlign: 'middle'}} className="material-symbols-outlined">edit_document</span>
-                            </Button>
-                            <Dropdown.Toggle split variant="outline-primary" id="dropdown-split-basic" />
+                                    <Dropdown.Menu>
+                                        {rowActions.map((action, index) => (
+                                            <Dropdown.Item key={index} ><Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { action.onClick(row.original); }}>
+                                                <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{action.icon}</span>
+                                            </Button> {action.label}</Dropdown.Item>
+                                        )) }
+                                    </Dropdown.Menu>
+                                </Dropdown>;
+                            }
+                        }
+                        return (<div style={{ display: "flex", gap: "5px" }}>
+                            {headerActions}
+                            <button type="button" className="btn btn-primary btn-sm" >
+                                <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">draft</span>
+                            </button>
 
-                            <Dropdown.Menu>
-                                <Dropdown.Item><Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { handleUpdateButtonClick(row.original); }}>
-                                    <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">edit_document</span>
-                                </Button> Edit</Dropdown.Item>
-                                <Dropdown.Item onClick={() => { handleDeleteButtonClick(row.original); }}>
-                                    <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" >
-                                        <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">delete_forever</span>
-                                    </Button> Delete
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <button type="button" className="btn btn-primary btn-sm" >
-                            <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">draft</span>
-                        </button>
-      
 
-                        {handleDetailsButtonClick && <button className="btn  btn-sm" onClick={() => { handleDetailsButtonClick(row.original); }} style={{ color: "gray" }}>
-                            Details
-                        </button>}
-                    </div>)
+                            {handleDetailsButtonClick && <button className="btn  btn-sm" onClick={() => { handleDetailsButtonClick(row.original); }} style={{ color: "gray" }}></button>}
+                        </div>)
+                    }
                 });
             }
         }
         return copy;
-    }, [handleCreateButtonClick, handleUpdateButtonClick, handleDeleteButtonClick, handleDetailsButtonClick, isMultiSelectEnabled, baseColumns, hasRowActions]
+    }, [handleDetailsButtonClick, isMultiSelectEnabled, baseColumns, hasRowOrHeaderActions, rowActions, cornerButton]
     );
 
     const tableInstance = useReactTable(
@@ -283,14 +285,10 @@ CrudTable.propTypes = {
     isLoading: PropTypes.bool.isRequired,
     baseColumns: PropTypes.array.isRequired,
     multiSelectActions: PropTypes.array,
-    buttonHandlers: PropTypes.shape({
-            handleCreateButtonClick: PropTypes.func,
-            handleUpdateButtonClick: PropTypes.func,
-            handleDeleteButtonClick: PropTypes.func,
-            handleDetailsButtonClick: PropTypes.func
-        }),
-    setCrudTableApi: PropTypes.func
-}
+    handleCreateButtonClick: PropTypes.func,
+    handleDetailsButtonClick: PropTypes.func,
+    rowActions: PropTypes.array,
 
+}
 
 export default CrudTable;

@@ -5,7 +5,7 @@ import './CrudTable.css';
 import Dialog from "./Dialog";
 
 const EditDialog = React.memo((
-    { isForNew, isDialogOpen, setIsDialogOpen, okButton_onClick, errorMessage, setErrorMessage, children }) => {
+    { isForNew, isDialogOpen, setIsDialogOpen, okButton_onClick, errorMessage, children }) => {
     const title = useMemo(() => isForNew ? (<div>Add</div>) : (<div>Edit</div>), [isForNew]) ;
     const okButtonTitle = isForNew ? "Create" : "Update"; // string literals could not be memoized since should have the same references
 
@@ -18,7 +18,6 @@ const EditDialog = React.memo((
             okButtonTitle={okButtonTitle}
             okButton_onClick={okButton_onClick}
             errorMessage={errorMessage}
-            setErrorMessage={setErrorMessage}
         >
             {children}
         </Dialog>
@@ -26,7 +25,7 @@ const EditDialog = React.memo((
 })
 EditDialog.displayName = "EditDialog";
 
-const DeleteDialog = React.memo(({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onClick, errorMessage, setErrorMessage }) => {
+const DeleteDialog = React.memo(({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onClick, errorMessage}) => {
     const title = "Are you sure you want to delete this item?";
     const okButtonTitle = "Delete";
 
@@ -38,7 +37,6 @@ const DeleteDialog = React.memo(({ isDeleteDialogOpen, setIsDeleteDialogOpen, ok
             okButtonTitle={okButtonTitle}
             okButton_onClick={okButton_onClick}
             errorMessage={errorMessage}
-            setErrorMessage={setErrorMessage}
         />
     )
 })
@@ -51,8 +49,6 @@ EditDialog.propTypes = {
     isForNew: PropTypes.bool,
     okButton_onClick: PropTypes.func,
     errorMessage: PropTypes.node,
-    setErrorMessage: PropTypes.func,
-    children: PropTypes.node
 };
 
 DeleteDialog.propTypes = {

@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import CrudTableWithDialogs from '@/tools/CrudTableWithDialogs';
+import CrudTable from '@/tools/CrudTable';
 
 import { fetchTokenized } from '@/fetchTokenized';
 import DebugMenu from '@/tools/DebugMenu';
 import ConnectionEditForm from './ConnectionEditForm';
 
 import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
+import useEditDialog from '@/tools/useEditDialog'
+import useDeleteDialog from '@/tools/useDeleteDialog'
 
 // ConnectionsManagement component - is not a pure component. it manages the state of all nested components.
 // To define which nested components should be memoized
@@ -25,42 +26,6 @@ function ConnectionsManagement() {
     //                                      // istead useEffect fuctor can return a cleanup function
     //    setIsLoading(false);
     //}, [reload]);
-
-
-    //const [isInEditForm, setIsInEditForm] = React.useState(false);
-    //react-hook-form - state of the form with enabled zod validation
-    const {
-        register,
-        trigger,
-        getValues,
-        reset, // reset form before reuse dialog for other entities
-        /*setError, */ /*set error for fields, doesn't work well with schema validation - whe to show error as a customized generic error - not bad  */
-        formState: { errors, /*isValid,*/ dirtyFields } }
-        = useForm(
-            {
-                resolver: zodResolver(connectionValidationSchema),
-                mode: 'all', /* alternatives onChange, onBlur, onTouched, onSubmit , all(onChange + onBlur + onSubmit) */
-                defaultValues: createDefaultEmpty(),
-            }); 
-
-    const editFormHandlers = useMemo(() => ({
-        fetchCreate: (entity, state, setErrorMessage) =>
-            fetchCreate(entity, state, setErrorMessage/*, setError*/),
-
-        fetchReplace: (entity, state, setErrorMessage) =>
-            fetchReplace(entity, state, setErrorMessage/*, setError*/, dirtyFields),
-    }), [dirtyFields]);
-
-    // depends on errors and isValid status  - changes "every time" — can't be memoized
-    const editForm = (
-        <ConnectionEditForm
-            register={register}
-            errors={errors}
-            dirtyFields={dirtyFields}
-        />
-    );
-
-    var multiSelectDialogs = useMemo(()=>[], []);
 
 
 
@@ -100,7 +65,62 @@ function ConnectionsManagement() {
             isMountCancelled = true; // mark as cancelled
         };
     }, [incTrigger]);
-    // ----------------------------
+
+
+    const [entity, setEntity] = useState(null); // selectable "component"
+
+    const { editDialog, editAction, handleCreateButtonClick } = useEditDialog(
+        {
+            createDefaultEmpty: createDefaultEmpty,
+            addForm: (isForNew, register, errors, dirtyFields) => <ConnectionEditForm
+                    isForNew={isForNew}
+                    register={register}
+                    errors={errors}
+                    dirtyFields={dirtyFields}
+            />,
+            saveButton_onClick: saveButton_onClick,
+            connectionValidationSchema: connectionValidationSchema,
+            fetchCreate,
+            fetchReplace,
+            setEntity, cloneEntity, entity, reload
+        }
+    )
+
+    const { deleteDialog, deleteAction } = useDeleteDialog({
+            okButton_onClick: okButton_onClick,
+            fetchDelete,
+            setEntity, cloneEntity, entity, reload
+        }
+    )
+
+    const handleDetailsButtonClick = useCallback(() => {
+        // TODO await? get id
+        //var id = getId(entity);
+        //fetch(`${ADMINKA_API_BASE_URL}/ui/connections/${id}`, { headers: { "Content-Type": "application/json" } });
+    }, []);
+
+    const rowActions = useMemo(() => ([
+        editAction,
+        deleteAction,
+    ]), [editAction, deleteAction]);
+
+    const multiSelectActionsMemo = useMemo(() => {
+        var multiSelectActions = null;
+        var isMultiSelectEdit = true;
+        var isMultiSelectDelete = true;
+        if (isMultiSelectEdit) {
+            if (multiSelectActions == null)
+                multiSelectActions = [];
+            multiSelectActions.push({ handleButtonClick: () => { handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Edit" });
+        }
+        if (isMultiSelectDelete) {
+            if (multiSelectActions == null)
+                multiSelectActions = [];
+            multiSelectActions.push({ handleButtonClick: () => { handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Delete" });
+        }
+        return multiSelectActions;
+    }, [handleCreateButtonClick]
+    );
 
     console.log(ConnectionsManagement.name + " render") // TODO: trace.render();
     return (
@@ -112,27 +132,64 @@ function ConnectionsManagement() {
                 { name: "Remove First Row", action: () => setList((l) => l.slice(1)) }
                 ]} />
             <div className="my-4">
-                <CrudTableWithDialogs
-                    baseColumns={baseColumns}
+                <CrudTable
                     list={list}
-                    reload={reload}
-                    errorMessageList={errorMessageList}
-                    isLoadingList={isLoadingList}
-                    fetchDelete={fetchDelete}
-                    fetchBulkDelete={fetchBulkDelete}
-                    trigger={trigger}
-                    getValues={getValues}
-                    reset={reset}
-                    createDefaultEmpty={createDefaultEmpty}
-                    cloneEntity={cloneEntity}
-                    editFormHandlers={editFormHandlers}
-                    editForm={editForm}
-                    multiSelectDialogs={multiSelectDialogs}
+                    errorMessage={errorMessageList}
+                    isLoading={isLoadingList}
+                    baseColumns={baseColumns}
+                    multiSelectActions={multiSelectActionsMemo}
+                    handleCreateButtonClick={handleCreateButtonClick}
+                    handleDetailsButtonClick={handleDetailsButtonClick}
+                    rowActions={rowActions}
                 />
+                {editDialog}
+                {deleteDialog}
             </div>
             <br />
         </div>
     );
+};
+
+async function okButton_onClick(fetchDelete, entity, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload) {
+    try {
+        setIsLoading(true);
+        var success = await fetchDelete(entity, setErrorMessage);
+        if (success) {
+            setIsDeleteDialogOpen(false);
+            reload();
+        }
+    } catch (err) {
+        setErrorMessage(err.message);
+        console.error(err);
+    } finally {
+        setIsLoading(false);
+    }
+}
+
+async function saveButton_onClick(isForNew, fetchCreate, fetchReplace, entity, setErrorMessage, setIsEditDialogOpen, setIsLoading, reload, trigger, getValues, dirtyFields) {
+    try {
+        setIsLoading(true);
+        const isValid = await trigger(); // validate all fields
+        if (isValid) {
+            const hookFormState = getValues();
+            var success;
+            if (isForNew) {
+                success = await fetchCreate(entity, hookFormState, setErrorMessage)
+            } else {
+                success = await fetchReplace(entity, hookFormState, setErrorMessage, dirtyFields)
+            }
+            if (success) {
+                setIsEditDialogOpen(false);
+                reload();
+            }
+        }
+    } catch (err) {
+        var message = (typeof err === 'string') ? err : (typeof err.message === 'string' ? err.message : String(err));
+        setErrorMessage(message);
+        console.error(err);
+    } finally {
+        setIsLoading(false);
+    }
 };
 
 const connectionValidationSchema = z.object({

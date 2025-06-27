@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import * as RadixDialog from "@radix-ui/react-dialog";
 import PropTypes from "prop-types";
 
-const Dialog = React.memo(({ isDialogOpen, setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, setErrorMessage, children }) => {
+const Dialog = React.memo(({ isDialogOpen, setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, children }) => {
     const [isLoading, setIsLoading] = useState("");
     const isError = !!errorMessage;    
 
@@ -29,7 +29,7 @@ const Dialog = React.memo(({ isDialogOpen, setIsDialogOpen, title, okButtonTitle
                                 <button type="button" className="btn btn-sm btn-secondary" onClick={() => setIsDialogOpen(false)}>
                                     Cancel
                                 </button>
-                                <button type="button" className="btn btn-sm btn-danger" disabled={isLoading} onClick={() => okButton_onClick(setErrorMessage, setIsLoading)}>
+                                <button type="button" className="btn btn-sm btn-danger" disabled={isLoading} onClick={() => okButton_onClick(setIsLoading)}>
                                     {okButtonTitle}
                                 </button>
                             </div>
@@ -51,8 +51,7 @@ Dialog.propTypes = {
     okButton_onClick: PropTypes.func,
     setDialogApi: PropTypes.func,
     children: PropTypes.node,
-    errorMessage: PropTypes.node,
-    setErrorMessage: PropTypes.func
+    errorMessage: PropTypes.node
 };
 
 export default Dialog;
