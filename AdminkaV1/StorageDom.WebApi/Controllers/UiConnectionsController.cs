@@ -119,7 +119,8 @@ public class UiConnectionsController(ILogger<UiConnectionsController> logger) : 
     {
         using var dbContext = StaticTools.CreateExcDbContext();
         var entity = dbContext.ExcConnections.Find(key);
-        if (entity == null) return NotFound();
+        if (entity == null) 
+            return NotFound(); // alernative custom error: return BadRequest(new { error = "Not Found " });
 
         dbContext.ExcConnections.Remove(entity);
         dbContext.SaveChanges();

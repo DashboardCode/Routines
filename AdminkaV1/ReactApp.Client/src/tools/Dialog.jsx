@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import PropTypes from "prop-types";
 
-const Dialog = React.memo(({ setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, children }) => {
-    const [isLoading, setIsLoading] = useState("");
+const Dialog = React.memo(({ setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, isPending, children }) => {
+    //const [isLoading, setIsLoading] = useState("");
     const isError = !!errorMessage;    
 
     // WARN: simple is the best. attempt to using Radix dialog lead to annoying warning in browser console "focusing input when the parent is hidden"
@@ -20,37 +20,33 @@ const Dialog = React.memo(({ setIsDialogOpen, title, okButtonTitle, okButton_onC
                                 </div>
                                 <div className="modal-body">
                                     {children}
-                                    <div className={`alert alert-danger px-2 py-2 mx-2 ${isError == true ? '' : 'd-none'}`}>{errorMessage}</div>
+                            <div style={{ overflowWrap: "break-word" }} className={`alert alert-danger px-2 py-2 mx-2 ${isError == true ? '' : 'd-none'}`}>{errorMessage}</div>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-sm btn-secondary" onClick={() => setIsDialogOpen(false)}>
                                         Cancel
                                     </button>
-                                    <button type="button" className="btn btn-sm btn-danger" disabled={isLoading} onClick={() => okButton_onClick(setIsLoading)}>
+                            <button type="button" className="btn btn-sm btn-danger" disabled={isPending} onClick={() => okButton_onClick(/*setIsLoading*/)}>
                                         {okButtonTitle}
                                     </button>
                                 </div>
                             </div>
                 </div>
             </div>
-            </div>
+        </div>
     );
 })
 
 Dialog.displayName = "Dialog";
 
 Dialog.propTypes = {
-    isDialogOpen: PropTypes.bool,
     setIsDialogOpen: PropTypes.func,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
     okButtonTitle: PropTypes.node,
     okButton_onClick: PropTypes.func,
-    setDialogApi: PropTypes.func,
-    children: PropTypes.node,
     errorMessage: PropTypes.node,
-    initialFocusRef: PropTypes.shape({
-        current: PropTypes.instanceOf(Element)
-    })
+    isPending: PropTypes.bool,
+    children: PropTypes.node
 };
 
 export default Dialog;

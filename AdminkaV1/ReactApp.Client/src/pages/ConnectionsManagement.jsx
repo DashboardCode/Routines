@@ -38,7 +38,7 @@ function ConnectionsManagement() {
 
     const { dialog: deleteDialog, action: deleteAction } = useDeleteDialog({
             fetchDelete,
-            adoptSelected: ({ excConnectionId }) => ({ excConnectionId }),
+            adoptSelected: ({ excConnectionId }) => ({ excConnectionId }), // short for (selected=> { return{ excConnectionId: selected.excConnectionId }}
             reload
         }
     )

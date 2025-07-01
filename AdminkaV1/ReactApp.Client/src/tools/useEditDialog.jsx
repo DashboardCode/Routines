@@ -14,6 +14,7 @@ function useEditDialog(useEditDialogOptions) {
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [errorMessageEdit, setErrorMessageEdit] = useState("");
     const [isForNew, setIsForNew] = useState(null); // pseudo-selected  "clicked on button on the row"
+    const [isPending, setIsPending] = useState(false);
     
     //react-hook-form - state of the form with enabled zod validation
     const {
@@ -68,8 +69,8 @@ function useEditDialog(useEditDialogOptions) {
         }, [setSelected, reset, setIsForNew, setErrorMessageEdit, setIsEditDialogOpen, transformSelected]);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    const okButton_onClick_Edit = useCallback((setIsLoading) =>
-        saveButton_onClick(formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, setIsLoading, reload),
+    const okButton_onClick_Edit = useCallback(() =>
+        saveButton_onClick(formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, setIsPending, reload),
         [formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, reload]
     );
 
@@ -79,10 +80,11 @@ function useEditDialog(useEditDialogOptions) {
         const editForm = addForm(formState);
 
         dialog = (<EditDialog
-                setIsDialogOpen={setIsEditDialogOpen}
-                isForNew={isForNew}
-                okButton_onClick={okButton_onClick_Edit}
-                errorMessage={errorMessageEdit}
+            setIsDialogOpen={setIsEditDialogOpen}
+            isForNew={isForNew}
+            okButton_onClick={okButton_onClick_Edit}
+            errorMessage={errorMessageEdit}
+            isPending={isPending}
         >{editForm}</EditDialog>)
     }
 
@@ -93,9 +95,9 @@ function useEditDialog(useEditDialogOptions) {
     };
 }
 
-async function saveButton_onClick(formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, setIsLoading, reload) {
+async function saveButton_onClick(formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, setIsPending, reload) {
     try {
-        setIsLoading(true);
+        setIsPending(true);
         const { isForNew, trigger} = formState;
         const isValid = await trigger(); // validate all fields
         if (isValid) {
@@ -115,7 +117,7 @@ async function saveButton_onClick(formState, fetchCreate, fetchReplace, setError
         setErrorMessageEdit(message);
         console.error(err);
     } finally {
-        setIsLoading(false);
+        setIsPending(false);
     }
 };
 

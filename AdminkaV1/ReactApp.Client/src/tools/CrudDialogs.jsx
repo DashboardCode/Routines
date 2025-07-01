@@ -5,7 +5,7 @@ import './CrudTable.css';
 import Dialog from "./Dialog";
 
 const EditDialog = React.memo((
-    { isForNew, setIsDialogOpen, okButton_onClick, errorMessage, children }) => {
+    { isForNew, setIsDialogOpen, okButton_onClick, errorMessage, isPending, children }) => {
     const title = useMemo(() => isForNew ? (<div>Add</div>) : (<div>Edit</div>), [isForNew]) ;
     const okButtonTitle = isForNew ? "Create" : "Update"; // string literals could not be memoized since should have the same references
 
@@ -17,6 +17,7 @@ const EditDialog = React.memo((
             okButtonTitle={okButtonTitle}
             okButton_onClick={okButton_onClick}
             errorMessage={errorMessage}
+            isPending={isPending}
         >
             {children}
         </Dialog>
@@ -24,37 +25,37 @@ const EditDialog = React.memo((
 })
 EditDialog.displayName = "EditDialog";
 
-const DeleteDialog = React.memo(({ setIsDeleteDialogOpen, okButton_onClick, errorMessage}) => {
+const DeleteDialog = React.memo(({ setIsDialogOpen, okButton_onClick, errorMessage, isPending }) => {
     const title = "Are you sure you want to delete this item?";
     const okButtonTitle = "Delete";
 
     return (
         <Dialog
-            setIsDialogOpen={setIsDeleteDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
             title={title}
             okButtonTitle={okButtonTitle}
             okButton_onClick={okButton_onClick}
             errorMessage={errorMessage}
+            isPending={isPending}
         />
     )
 })
-
 DeleteDialog.displayName = "DeleteDialog";
 
 EditDialog.propTypes = {
-    isDialogOpen: PropTypes.bool,
-    setIsDialogOpen: PropTypes.func,
     isForNew: PropTypes.bool,
+    isPending: PropTypes.bool, 
+    setIsDialogOpen: PropTypes.func,
     okButton_onClick: PropTypes.func,
     errorMessage: PropTypes.node,
+    children: PropTypes.node
 };
 
 DeleteDialog.propTypes = {
-    isDeleteDialogOpen: PropTypes.bool,
-    setIsDeleteDialogOpen: PropTypes.func,
+    setIsDialogOpen: PropTypes.func,
     okButton_onClick: PropTypes.func,
     errorMessage: PropTypes.node,
-    setErrorMessage: PropTypes.func
+    isPending: PropTypes.bool
 };
 
 export { EditDialog, DeleteDialog };

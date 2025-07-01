@@ -1,5 +1,7 @@
-import{ useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useActionState, startTransition } from 'react';
 import { fetchTokenized } from '@/fetchTokenized';
+import { parseErrorResponseAsync } from '@/parseErrorResponse';
+
 import { DeleteDialog } from '@/tools/CrudDialogs'
 
 function useDeleteDialog(useDeleteDialogOptions) {
@@ -7,8 +9,7 @@ function useDeleteDialog(useDeleteDialogOptions) {
     const { fetchDelete, adoptSelected, reload } = useDeleteDialogOptions;
 
     const [selected, setSelected] = useState(null); // selectable list row "component"
-    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-    const [errorMessageDelete, setErrorMessageDelete] = useState("");
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const action = useMemo(() => {
         return {
@@ -17,24 +18,48 @@ function useDeleteDialog(useDeleteDialogOptions) {
             onClick: (e) => {
                 var s = adoptSelected(e);
                 setSelected(s);
-                setErrorMessageDelete(null);
-                setIsDeleteDialogOpen(true);
+                setIsDialogOpen(true);
             }
         }
-    }, [setSelected, setErrorMessageDelete, setIsDeleteDialogOpen, adoptSelected]);
+    }, [setSelected, setIsDialogOpen, adoptSelected]);
 
-
-    const okButton_onClick_Delete = useCallback((setIsLoading) =>
-        okButton_onClick_Async(fetchDelete, selected, setErrorMessageDelete, setIsDeleteDialogOpen, setIsLoading, reload),
-        [selected, setIsDeleteDialogOpen, reload, fetchDelete]
+    const [errorMessageDelete, deleteButton_onClick, isPending] = useActionState(
+        async () => {
+            try {
+                var error = await fetchDelete(selected);
+                if (error) {
+                    return error; 
+                } 
+            } catch (err) {
+                console.error(err);
+                return err.message;
+            } 
+            // handle success
+            setIsDialogOpen(false);
+            reload();
+            return null;
+        },
+        null,
     );
 
+    //const okButton_onClick_Delete = useCallback((setIsLoading) =>
+    //    okButton_onClick_Async(fetchDelete, selected, setErrorMessageDelete, setIsDeleteDialogOpen, setIsLoading, reload),
+    //    [selected, setIsDeleteDialogOpen, reload, fetchDelete]
+    //);
+
+    function okButton_onClick() {
+        startTransition(() => {  // updating UI after data fetch is not urgent, prioritize user input (e.g. press close button)
+            deleteButton_onClick();
+        });
+    }
+
     var dialog = null;
-    if (isDeleteDialogOpen) {
+    if (isDialogOpen) {
         dialog = <DeleteDialog
-            setIsDeleteDialogOpen={setIsDeleteDialogOpen}
-            okButton_onClick={okButton_onClick_Delete}
+            setIsDialogOpen={setIsDialogOpen}
+            okButton_onClick={okButton_onClick}
             errorMessage={errorMessageDelete}
+            isPending={isPending}
         />
     }
 
@@ -45,35 +70,22 @@ function useDeleteDialog(useDeleteDialogOptions) {
 }
 
 function useDefaultFetchDelete(createUri) {
-    var fetch = useCallback((selected, setErrorMessage) => fetchDeleteAsync(setErrorMessage, createUri(selected)), [createUri])
+    var fetch = useCallback((selected) => fetchDeleteAsync(createUri(selected)), [createUri])
     return fetch;
 }
 
-async function fetchDeleteAsync(setErrorMessage, uri) {
-    var responce = await fetchTokenized(uri, null, "DELETE");
-    if (responce.ok) {
-        return true;
+async function fetchDeleteAsync(uri) {
+    var response = await fetchTokenized(uri, null, "DELETE");
+    if (response.ok) {
+        return null; // success
     }
     else {
-        var result = await responce.json();
-        setErrorMessage(result.message);
-        return false
+        var errorContent = await parseErrorResponseAsync(response);
+        console.error(errorContent);
+        return errorContent.message;
     }
 };
 
-async function okButton_onClick_Async(fetchDelete, selected, setErrorMessage, setIsDeleteDialogOpen, setIsLoading, reload) {
-    try {
-        setIsLoading(true);
-        var success = await fetchDelete(selected, setErrorMessage);
-        if (success) {
-            setIsDeleteDialogOpen(false);
-            reload();
-        }
-    } catch (err) {
-        setErrorMessage(err.message);
-        console.error(err);
-    } finally {
-        setIsLoading(false);
-    }
-}
+
+
 export { useDeleteDialog, useDefaultFetchDelete };
