@@ -16,3 +16,7 @@ Note: prefix VITE_ is required for environment variables to be exposed to your c
 
 # icons
 from here : https://fonts.google.com/icons?selected=Material+Symbols+Outlined:delete:FILL@1;wght@0;GRAD@0;opsz@24&icon.size=24&icon.color=white&icon.platform=web&icon.set=Material+Symbols
+
+# tools
+"why-did-you-render" trace tool doesn't work well with react 9, since there are batch paralleled renders. in my case it reported only "high level page" render when 
+all nested components absent in report (console.log, and randoms in propse shows that renders happend) 

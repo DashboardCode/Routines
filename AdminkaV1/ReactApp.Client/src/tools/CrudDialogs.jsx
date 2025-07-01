@@ -5,14 +5,13 @@ import './CrudTable.css';
 import Dialog from "./Dialog";
 
 const EditDialog = React.memo((
-    { isForNew, isDialogOpen, setIsDialogOpen, okButton_onClick, errorMessage, children }) => {
+    { isForNew, setIsDialogOpen, okButton_onClick, errorMessage, children }) => {
     const title = useMemo(() => isForNew ? (<div>Add</div>) : (<div>Edit</div>), [isForNew]) ;
     const okButtonTitle = isForNew ? "Create" : "Update"; // string literals could not be memoized since should have the same references
 
     console.log("EditDialog render")
     return (
         <Dialog
-            isDialogOpen={isDialogOpen}
             setIsDialogOpen={setIsDialogOpen}
             title={title}
             okButtonTitle={okButtonTitle}
@@ -25,13 +24,12 @@ const EditDialog = React.memo((
 })
 EditDialog.displayName = "EditDialog";
 
-const DeleteDialog = React.memo(({ isDeleteDialogOpen, setIsDeleteDialogOpen, okButton_onClick, errorMessage}) => {
+const DeleteDialog = React.memo(({ setIsDeleteDialogOpen, okButton_onClick, errorMessage}) => {
     const title = "Are you sure you want to delete this item?";
     const okButtonTitle = "Delete";
 
     return (
         <Dialog
-            isDialogOpen={isDeleteDialogOpen}
             setIsDialogOpen={setIsDeleteDialogOpen}
             title={title}
             okButtonTitle={okButtonTitle}

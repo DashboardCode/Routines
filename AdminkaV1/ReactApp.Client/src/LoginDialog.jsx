@@ -52,7 +52,7 @@ function LoginDialog(
     //var formAutoComplete = "off" and autoComplete="new-password" doesn't disable "save your password" in browser (at least in EDGE)
     return (
         <Dialog
-            isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
             errorMessage={errorMessage} setErrorMessage={setErrorMessage} title="Login (Middleware)"
             okButtonTitle="Login" okButton_onClick={loginButton_onClick}
             //initialFocusRef={inputRef}

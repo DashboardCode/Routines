@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 
 // this form bad for memoization. 'errors' changes on every render, so the useMemo just adds the overhead
-const ConnectionEditForm =/*React.memo(*/({ register, errors, dirtyFields }) => {
+const ConnectionEditForm =/*React.memo(*/({ formState }) => {
+    const { register, errors, dirtyFields } = formState;
     console.log("ConnectionEditForm render")
     return (
         /*<div style={{ display: 'flex', flexWrap: 'wrap', gap: '2em' }}>*/
@@ -30,7 +31,6 @@ const ConnectionEditForm =/*React.memo(*/({ register, errors, dirtyFields }) => 
             </div>
             <div className="px-2 py-2">
                 <label className="form-label">ExcConnectionName {dirtyFields.excConnectionName == true ? <b>(changed)</b> : ""}</label>
-                {console.log(errors.excConnectionName)}
                 <input
                     type="text"
                     className={`form-control ${errors.excConnectionName ? 'is-invalid' : ''}`}
@@ -110,9 +110,11 @@ const ConnectionEditForm =/*React.memo(*/({ register, errors, dirtyFields }) => 
 ConnectionEditForm.displayName = "ConnectionEditForm";
 
 ConnectionEditForm.propTypes = {
-    register: PropTypes.func,
-    errors: PropTypes.object,
-    dirtyFields: PropTypes.object
+    formState: PropTypes.shape({
+        register: PropTypes.func,
+        errors: PropTypes.object,
+        dirtyFields: PropTypes.object
+    })
 };
 
 export default ConnectionEditForm;

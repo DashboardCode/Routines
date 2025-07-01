@@ -2,9 +2,9 @@ import{ useState, useCallback, useMemo } from 'react';
 import { fetchTokenized } from '@/fetchTokenized';
 import { DeleteDialog } from '@/tools/CrudDialogs'
 
-function useDeleteDialog(useDeleteDialogOptions) {
+function useDeleteBulkDialog(useDeleteBulkDialogOptions) {
 
-    const { fetchDelete, adoptSelected, reload } = useDeleteDialogOptions;
+    const { fetchDelete, adoptSelected, reload } = useDeleteBulkDialogOptions;
 
     const [selected, setSelected] = useState(null); // selectable list row "component"
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -13,15 +13,15 @@ function useDeleteDialog(useDeleteDialogOptions) {
     const action = useMemo(() => {
         return {
             icon: 'delete_forever',
-            label: 'Delete',
-            onClick: (e) => {
-                var s = adoptSelected(e);
+            label: 'Bulk Delete',
+            onClick: (r) => {
+                var s = adoptSelected(r);
                 setSelected(s);
                 setErrorMessageDelete(null);
                 setIsDeleteDialogOpen(true);
             }
         }
-    }, [setSelected, setErrorMessageDelete, setIsDeleteDialogOpen, adoptSelected]);
+    }, [setErrorMessageDelete, setIsDeleteDialogOpen, adoptSelected]);
 
 
     const okButton_onClick_Delete = useCallback((setIsLoading) =>
@@ -32,6 +32,7 @@ function useDeleteDialog(useDeleteDialogOptions) {
     var dialog = null;
     if (isDeleteDialogOpen) {
         dialog = <DeleteDialog
+            isDeleteDialogOpen={isDeleteDialogOpen}
             setIsDeleteDialogOpen={setIsDeleteDialogOpen}
             okButton_onClick={okButton_onClick_Delete}
             errorMessage={errorMessageDelete}
@@ -40,16 +41,16 @@ function useDeleteDialog(useDeleteDialogOptions) {
 
     return {
         dialog,
-        action,
+        action
     };
 }
 
-function useDefaultFetchDelete(createUri) {
-    var fetch = useCallback((selected, setErrorMessage) => fetchDeleteAsync(setErrorMessage, createUri(selected)), [createUri])
+function useDefaultFetchDeleteBulk(createUri) {
+    var fetch = useCallback((selected, setErrorMessage) => fetchDeleteBulkAsync(setErrorMessage, createUri(selected)), [createUri])
     return fetch;
 }
 
-async function fetchDeleteAsync(setErrorMessage, uri) {
+async function fetchDeleteBulkAsync(setErrorMessage, uri) {
     var responce = await fetchTokenized(uri, null, "DELETE");
     if (responce.ok) {
         return true;
@@ -76,4 +77,4 @@ async function okButton_onClick_Async(fetchDelete, selected, setErrorMessage, se
         setIsLoading(false);
     }
 }
-export { useDeleteDialog, useDefaultFetchDelete };
+export { useDeleteBulkDialog, useDefaultFetchDeleteBulk };

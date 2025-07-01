@@ -19,12 +19,13 @@ const CrudTable = React.memo(({
     errorMessage,
     isLoading,
     baseColumns,
-    multiSelectActions,
     handleCreateButtonClick,
     handleDetailsButtonClick,
-    rowActions
-})=>{
-    
+    rowActions,
+    multiSelectActions/*,
+    parentTrigger*/
+}) => {
+    //console.log('Parent / Nested (render triggers):', parentTrigger, Math.random());
     const cornerButton = useMemo(() => (<button className="btn  btn-sm btn-outline-primary" onClick={() => { handleCreateButtonClick(); }} >
         <span style={{ verticalAlign: 'middle', }} className="material-symbols-outlined">add</span>
     </button>), [handleCreateButtonClick]);
@@ -33,10 +34,6 @@ const CrudTable = React.memo(({
     
     const [rowSelection, setRowSelection] = useState({})
     const [globalFilter, setGlobalFilter] = useState('');
-
-
-
-    
 
     const [isMultiSelectEnabled, setIsMultiSelectEnabled] = useState(false);
     const columns = useMemo(() => {
@@ -68,7 +65,7 @@ const CrudTable = React.memo(({
                         type="checkbox"
                         checked={row.getIsSelected()}
                         onChange={row.getToggleSelectedHandler()}
-                         />
+                    />
                 ),
             });
         }
@@ -80,38 +77,36 @@ const CrudTable = React.memo(({
                     header: () => cornerButton,
                     footer: () => cornerButton,
                     cell: ({ row }) => {
+                        if (rowActions?.length > 0) { 
                         var headerActions = null;
                         var firstAction = rowActions[0];
-                        if (rowActions.length > 0) {
-                            if (rowActions.length == 1) {
-                                headerActions = <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { firstAction.onClick(row.original); }}>
-                                    <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{firstAction.icon}</span>
-                                </Button>;
-                            } else {
-                                headerActions = <Dropdown as={ButtonGroup}>
-                                    <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { firstAction.onClick(row.original); }}>
+                            if (rowActions.length > 0) {
+                                if (rowActions.length == 1) {
+                                    headerActions = <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { firstAction.onClick(row.original); }}>
                                         <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{firstAction.icon}</span>
-                                    </Button>
-                                    <Dropdown.Toggle split variant="outline-primary" id="dropdown-split-basic" />
+                                    </Button>;
+                                } else {
+                                    headerActions = <Dropdown as={ButtonGroup}>
+                                        <Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" onClick={() => { firstAction.onClick(row.original); }}>
+                                            <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{firstAction.icon}</span>
+                                        </Button>
+                                        <Dropdown.Toggle split variant="outline-primary" id="dropdown-split-basic" />
 
-                                    <Dropdown.Menu>
-                                        {rowActions.map((action, index) => (
-                                            <Dropdown.Item key={index} onClick={() => { action.onClick(row.original); }}><Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" >
-                                                <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{action.icon}</span>
-                                            </Button> {action.label}</Dropdown.Item>
-                                        )) }
-                                    </Dropdown.Menu>
-                                </Dropdown>;
+                                        <Dropdown.Menu>
+                                            {rowActions.map((action, index) => (
+                                                <Dropdown.Item key={index} onClick={() => { action.onClick(row.original); }}><Button type="button" variant="outline-primary" className="btn btn-sm btn-outline-primary" >
+                                                    <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">{action.icon}</span>
+                                                </Button> {action.label}</Dropdown.Item>
+                                            ))}
+                                        </Dropdown.Menu>
+                                    </Dropdown>;
+                                }
+
                             }
                         }
                         return (<div style={{ display: "flex", gap: "5px" }}>
                             {headerActions}
-                            <button type="button" className="btn btn-primary btn-sm" >
-                                <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">draft</span>
-                            </button>
-
-
-                            {handleDetailsButtonClick && <button className="btn  btn-sm" onClick={() => { handleDetailsButtonClick(row.original); }} style={{ color: "gray" }}></button>}
+                            {handleDetailsButtonClick && <button className="btn btn-primary btn-sm" onClick={() => { handleDetailsButtonClick(row.original); }} ><span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">draft</span></button>}
                         </div>)
                     }
                 });
@@ -166,9 +161,11 @@ const CrudTable = React.memo(({
     const { pageIndex, pageSize } = tableInstance.getState().pagination;
     const pageCount = tableInstance.getPageCount();
 
-    var actions = React.useMemo(() => [
-        {
-            name: "log console table.getSelectedRowModel().flatRows", action: () => {
+    const selectedRowModel = tableInstance.getSelectedRowModel();
+
+    var debugActions = React.useMemo(() => [
+            {
+            name: "log console table state", action: () => {
                 console.info(
                     'table.options',
                     tableInstance.options
@@ -178,16 +175,20 @@ const CrudTable = React.memo(({
                     tableInstance.getState()
                 );
                 console.info(
-                    'table.getSelectedRowModel().flatRows',
-                    tableInstance.getSelectedRowModel().flatRows
+                    'selectedRowModel.flatRows',
+                    selectedRowModel.flatRows
                 );
-            }
-        }], [tableInstance]);
+            },
+        },
+            {
+                name: "switch isMultiSelectEnabled", action: () => {
+                    setIsMultiSelectEnabled(!isMultiSelectEnabled)
+            },
+        }], [tableInstance, selectedRowModel, isMultiSelectEnabled]);
     return isLoading
         ? <p> {console.log("CrudTable render.content.isLoading")} <em>Loading... </em></p>
         : <div className="crud-panel">
-            {console.log("CrudTable render.content.Loaded")}
-            <DebugMenu actions={actions} />
+            <DebugMenu actions={debugActions} />
             {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
             
             <div className={`d-flex ${multiSelectActions ? 'justify-content-between' : 'justify-content-end'} align-items-center gap-2`}>
@@ -205,12 +206,12 @@ const CrudTable = React.memo(({
 
                         <div className={`slide-panel ${isMultiSelectEnabled ? 'show' : ''} mx-2`}>
                             <div>
-                                {multiSelectActions.map(item => (
-                                    <button key={item.buttonTitle}
+                                {multiSelectActions.map(action => (
+                                    <button key={action.label}
                                         className="btn btn-outline-primary btn-sm mx-1"
-                                        onClick={() => item.handleButtonClick()}
-                                        disabled={tableInstance.getSelectedRowModel().rows.length ==  0}>
-                                        {item.buttonTitle}
+                                        onClick={() => action.onClick(selectedRowModel.rows)}
+                                        disabled={selectedRowModel.rows.length ==  0}>
+                                        <span style={{ verticalAlign: 'middle', paddingRight: '0.3rem'}} className="material-symbols-outlined">{action.icon}</span>{action.label}
                                     </button>
                                 ))}
                             </div>
@@ -280,6 +281,8 @@ const CrudTable = React.memo(({
 
 CrudTable.displayName ="CrudTable"
 
+CrudTable.whyDidYouRender = true;
+
 CrudTable.propTypes = {
     list: PropTypes.array,
     errorMessage: PropTypes.node,
@@ -289,8 +292,7 @@ CrudTable.propTypes = {
     handleCreateButtonClick: PropTypes.func,
     handleDetailsButtonClick: PropTypes.func,
     rowActions: PropTypes.array,
-
+    parentTrigger: PropTypes.number
 }
-
 
 export default CrudTable;

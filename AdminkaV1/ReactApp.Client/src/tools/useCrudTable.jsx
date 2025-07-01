@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import CrudTable from './CrudTable';
 import { fetchTokenized } from '@/fetchTokenized';
 
@@ -24,6 +24,7 @@ function useCrudTable(useCrudTableOptions) {
 
     const [incTrigger, setIncTrigger] = useState(0); // Changing this triggers refetch
     const reload = useCallback(() => {
+        console.log("reload")
         setIncTrigger(v => v + 1);
     }, []);
 
@@ -55,24 +56,44 @@ function useCrudTable(useCrudTableOptions) {
         };
     }, [incTrigger, fetchList]);
 
-    const renderEditDialog = (rowActions, handleDetailsButtonClick, handleCreateButtonClick, multiSelectActions )=> (<CrudTable
-        list={list}
-        errorMessage={errorMessageList}
-        isLoading={isLoadingList}
-        baseColumns={baseColumns}
-        multiSelectActions={multiSelectActions}
-        handleCreateButtonClick={handleCreateButtonClick}
-        handleDetailsButtonClick={handleDetailsButtonClick}
-        rowActions={rowActions}
-    />)
+    const crudTableProps = useMemo(() => ({
+        list,
+        errorMessage: errorMessageList,
+        isLoading: isLoadingList,
+        baseColumns
 
-    var crudTableProps = {
-        reload, list, errorMessageList, isLoadingList, baseColumns
-    };
-    
+    }), [
+        list,
+        errorMessageList,
+        isLoadingList,
+        baseColumns
+    ]);
 
+    const renderCrudTable = useCallback(
+        (
+            {   rowActions,
+                handleDetailsButtonClick,
+                handleCreateButtonClick,
+                multiSelectActions }
+        ) => (
+            <CrudTable
+                {...crudTableProps}
+                multiSelectActions={multiSelectActions}
+                handleCreateButtonClick={handleCreateButtonClick}
+                handleDetailsButtonClick={handleDetailsButtonClick}
+                rowActions={rowActions}
+            />
+        ),
+        [crudTableProps]
+    );
     return {
-        crudTableProps, reload, list, errorMessageList, isLoadingList, renderEditDialog
+        crudTableProps,
+        renderCrudTable,
+        reload,
+        errorMessageList,
+        isLoadingList,
+        list,
+        setList
     };
 }
 

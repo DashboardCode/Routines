@@ -9,41 +9,36 @@ import { z } from 'zod';
 import { useEditDialog, useDefaultFetchCreate, useDefaultFetchReplace} from '@/tools/useEditDialog'
 import { useDeleteDialog, useDefaultFetchDelete } from '@/tools/useDeleteDialog'
 
+import { useDeleteBulkDialog, useDefaultFetchDeleteBulk } from '@/tools/useDeleteBulkDialog'
+
 // ConnectionsManagement component - is not a pure component. it manages the state of all nested components.
 // To define which nested components should be memoized
 function ConnectionsManagement() {
 
-    const fetchList = useDefaultFetchList(`/ui/connections`)
+    const fetchList = useDefaultFetchList(baseUrl)
 
-    const { reload, renderEditDialog} = useCrudTable({
-        fetchList, baseColumns 
-    })
+    const { renderCrudTable, reload} = useCrudTable({fetchList, baseColumns})
 
-    const fetchCreate = useDefaultFetchCreate(`/ui/connections`);
-    const fetchReplace = useDefaultFetchReplace((entity) => `/ui/connections/${entity.excConnectionId}`)
+    const fetchCreate = useDefaultFetchCreate(baseUrl);
+    const fetchReplace = useDefaultFetchReplace((formState) => `${baseUrl}/${formState.selected.excConnectionId}`)
 
-    const { editDialog, editAction, handleCreateButtonClick } = useEditDialog(
+    const { dialog: editDialog, action: editAction, handleCreateButtonClick } = useEditDialog(
         {
-            validationSchema: connectionValidationSchema,
-            addForm: (isForNew, register, errors, dirtyFields) => <ConnectionEditForm
-                    isForNew={isForNew}
-                    register={register}
-                    errors={errors}
-                    dirtyFields={dirtyFields}
-            />,
+            validationSchema,
+            addForm: (formState) => <ConnectionEditForm formState={formState}/>,
             fetchCreate,
             fetchReplace,
             createDefaultEmpty,
-            cloneEntity,
+            transformSelected:cloneEntity,
             reload
         }
     )
 
-    const fetchDelete = useDefaultFetchDelete((entity)=>`/ui/connections/${entity.excConnectionId}`)
+    const fetchDelete = useDefaultFetchDelete((selected) => `${baseUrl}/${selected.excConnectionId}`)
 
-    const { deleteDialog, deleteAction } = useDeleteDialog({
+    const { dialog: deleteDialog, action: deleteAction } = useDeleteDialog({
             fetchDelete,
-            cloneEntity,
+            adoptSelected: ({ excConnectionId }) => ({ excConnectionId }),
             reload
         }
     )
@@ -59,22 +54,21 @@ function ConnectionsManagement() {
         deleteAction,
     ]), [editAction, deleteAction]);
 
-    const multiSelectActionsMemo = useMemo(() => {
-        var multiSelectActions = null;
-        var isMultiSelectEdit = true;
-        var isMultiSelectDelete = true;
-        if (isMultiSelectEdit) {
-            if (multiSelectActions == null)
-                multiSelectActions = [];
-            multiSelectActions.push({ handleButtonClick: () => { handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Edit" });
-        }
-        if (isMultiSelectDelete) {
-            if (multiSelectActions == null)
-                multiSelectActions = [];
-            multiSelectActions.push({ handleButtonClick: () => { handleCreateButtonClick() /*TEST*/ }, buttonTitle: "Delete" });
-        }
-        return multiSelectActions;
-    }, [handleCreateButtonClick]
+    // -------------------------------------------------------------------------------------
+
+    const fetchDeleteBulk = useDefaultFetchDeleteBulk((formState) => `${baseUrl}/${formState.selected.excConnectionId}`)
+
+    const { dialog: deleteDialogBulk, action: deleteBulkAction } = useDeleteBulkDialog({
+        fetchDelete: fetchDeleteBulk,
+        adoptSelected: (array) => array.map(({ excConnectionId }) => ({ excConnectionId })),
+        reload
+    }); 
+
+    const multiSelectActions = useMemo(() => {
+        var array = [];
+        array.push(deleteBulkAction);
+        return array;
+    }, [deleteBulkAction]
     );
 
     console.log(ConnectionsManagement.name + " render") // TODO: trace.render();
@@ -82,20 +76,32 @@ function ConnectionsManagement() {
         <div>
             <DebugMenu actions=
                 {[
-                { name: "reload crudTable", action: () => reload() }
+                   { name: "reload crudTable", action: () => reload() }
                 ]} />
             <div className="my-4">
-                {renderEditDialog(rowActions, handleDetailsButtonClick, handleCreateButtonClick, multiSelectActionsMemo)}
-                {editDialog}
-                {deleteDialog}
+                {/*<CrudTable*/}
+                {/*    list={list}*/}
+                {/*    errorMessage={errorMessageList}*/}
+                {/*    isLoading={isLoadingList }*/}
+                {/*    baseColumns={baseColumns}*/}
+                {/*    handleCreateButtonClick={handleCreateButtonClick}*/}
+                {/*    handleDetailsButtonClick={handleDetailsButtonClick}*/}
+                {/*    rowActions={rowActions}*/}
+                {/*    multiSelectActions={multiSelectActions}*/}
+                {/*/>*/}
+                {renderCrudTable({ rowActions, handleDetailsButtonClick, handleCreateButtonClick, multiSelectActions })}
+               {editDialog}
+               {deleteDialog}
+               {deleteDialogBulk}
             </div>
             <br />
         </div>
     );
 };
 
+const baseUrl = "/ui/connections";
 
-const connectionValidationSchema = z.object({
+const validationSchema = z.object({
     excConnectionId: z.string()
         .max(8, "No more than 8 characters").regex(/^[0-9]+$/, {
             message: "Only letters and numbers are allowed",
@@ -196,7 +202,7 @@ async function fetchBulkDelete(entities, setErrorMessage) {
     }
 };
 
-ConnectionsManagement.whyDidYouRender = false;
+ConnectionsManagement.whyDidYouRender = true;
 
 
 export default ConnectionsManagement;

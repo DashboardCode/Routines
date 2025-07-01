@@ -77,7 +77,7 @@ const App = () => {
     });
     const [isLoading, setIsLoading] = React.useState(true); // loading state
 
-    const [isDialogOpen, setIsDialogOpen] = React.useState(false); // login status
+    const [isLoginDialogOpen, setIsLoginDialogOpen] = React.useState(false); // login status
 
     //React.useEffect(() => {
     //    login(setIsLoggedIn, setIsLoading);
@@ -107,7 +107,7 @@ const App = () => {
                                 <BsRibbonButton className="btn btn-warning mx-2" onClick={() => { setIsExpiredToken(false); loginMSAL(setIsLoggedIn, setIsLoading) }}>
                                     <span style={{ verticalAlign: 'middle' }} className="material-symbols-outlined">login</span>Log in (MSAL)
                                 </BsRibbonButton>
-                                <BsRibbonButton className="btn btn-warning mx-2" onClick={() => { setIsExpiredToken(false); setIsDialogOpen(true) } }>
+                                <BsRibbonButton className="btn btn-warning mx-2" onClick={() => { setIsExpiredToken(false); setIsLoginDialogOpen(true) } }>
                                     <span style={{  verticalAlign: 'middle' }} className="material-symbols-outlined">login</span>Log in (Middleware)
                                 </BsRibbonButton>
                             </BsRibbonGroupItem>
@@ -118,11 +118,13 @@ const App = () => {
                         }
                     </BsRibbonGroup>
                 </BsRibbon>
-                <LoginDialog
-                    isDialogOpen={isDialogOpen}
-                    setIsDialogOpen={setIsDialogOpen}
-                    setIsLoggedIn={setIsLoggedIn}
-                    setIsLoading={setIsLoading} />
+                {isLoginDialogOpen &&
+                    <LoginDialog
+                        isDialogOpen={isLoginDialogOpen}
+                        setIsDialogOpen={setIsLoginDialogOpen}
+                        setIsLoggedIn={setIsLoggedIn}
+                        setIsLoading={setIsLoading} />
+                }
             </div>
             <main>
                 {isExpiredToken && <div className="alert alert-warning my-4" role="alert" >Session expired!</div>}
@@ -209,8 +211,6 @@ const loginMSAL = async (setIsLoggedIn, setIsLoading) => {
         setIsLoading(false);   // re-enable buttons
     }
 };
-
-App.whyDidYouRender = false;
 
 export default App;
 
