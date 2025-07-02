@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useActionState, startTransition } from 'react';
+import React, { useRef, useEffect, useActionState, startTransition, useCallback } from 'react';
 import PropTypes from "prop-types";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -48,11 +48,12 @@ function LoginDialog(
         null,
     );
 
-    function okButton_onClick() {
-        startTransition(() => {  // updating UI after data fetch is not urgent, prioritize user input (e.g. press close button)
-            loginButton_onClick(); 
+    const okButton_onClick = useCallback(() => {
+        startTransition(() => { // updating UI after data fetch is not urgent, prioritize user input (e.g. press close button)
+            loginButton_onClick();
         });
-    }
+    }, [loginButton_onClick]); 
+
     return (
         <Dialog
             setIsDialogOpen={setIsDialogOpen}

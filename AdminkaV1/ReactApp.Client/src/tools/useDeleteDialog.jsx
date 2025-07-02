@@ -42,11 +42,12 @@ function useDeleteDialog(useDeleteDialogOptions) {
         null,
     );
 
-    function okButton_onClick() {
+    const okButton_onClick = useCallback(() => {
         startTransition(() => {  // updating UI after data fetch is not urgent, prioritize user input (e.g. press close button)
             deleteButton_onClick();
         });
-    }
+    }, [deleteButton_onClick]); 
+
 
     var dialog = null;
     if (isDialogOpen) {
@@ -65,7 +66,7 @@ function useDeleteDialog(useDeleteDialogOptions) {
 }
 
 function useDefaultFetchDelete(createUri) {
-    var fetch = async  (selected) => await fetchDeleteAsync(createUri(selected))
+    var fetch = useCallback(async (selected) => await fetchDeleteAsync(createUri(selected)), [createUri])
     return fetch;
 }
 

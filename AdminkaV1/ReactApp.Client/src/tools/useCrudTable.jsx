@@ -98,7 +98,7 @@ function useCrudTable(useCrudTableOptions) {
 }
 
 function useDefaultFetchList(uri) {
-    var fetch = useCallback((setList, setErrorMessage) => fetchListAsync(setList, setErrorMessage, uri), [uri])
+    var fetch = useCallback( async (setList, setErrorMessage) => await fetchListAsync(setList, setErrorMessage, uri), [uri])
     return fetch;
 }
 
