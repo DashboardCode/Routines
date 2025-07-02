@@ -69,8 +69,8 @@ function useEditDialog(useEditDialogOptions) {
         }, [setSelected, reset, setIsForNew, setErrorMessageEdit, setIsEditDialogOpen, transformSelected]);
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    const okButton_onClick_Edit = useCallback(() =>
-        saveButton_onClick(formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, setIsPending, reload),
+    const okButton_onClick_Edit = useCallback(async () =>
+        await saveButton_onClick(formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, setIsPending, reload),
         [formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, reload]
     );
 
@@ -122,7 +122,7 @@ async function saveButton_onClick(formState, fetchCreate, fetchReplace, setError
 };
 
 function useDefaultFetchCreate(uri) {
-    var fetch = useCallback((formState, setErrorMessageEdit) => fetchCreateAsync(formState, setErrorMessageEdit, uri), [uri])
+    var fetch = useCallback(async (formState, setErrorMessageEdit) => await fetchCreateAsync(formState, setErrorMessageEdit, uri), [uri])
     return fetch;
 }
 
@@ -145,7 +145,7 @@ async function fetchCreateAsync(formState, setErrorMessageEdit, uri) {
 }
 
 function useDefaultFetchReplace(createUri) {
-    const fetch = useCallback((formState, setErrorMessageEdit) => fetchReplaceAync(formState, setErrorMessageEdit, createUri(formState)), [createUri])
+    const fetch = useCallback(async (formState, setErrorMessageEdit) => await fetchReplaceAync(formState, setErrorMessageEdit, createUri(formState)), [createUri])
     return fetch;
 }
 

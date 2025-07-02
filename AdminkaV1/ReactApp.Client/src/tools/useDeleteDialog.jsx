@@ -6,7 +6,7 @@ import { DeleteDialog } from '@/tools/CrudDialogs'
 
 function useDeleteDialog(useDeleteDialogOptions) {
 
-    const { fetchDelete, adoptSelected, reload } = useDeleteDialogOptions;
+    const { fetchDelete,  adoptSelected, reload } = useDeleteDialogOptions;
 
     const [selected, setSelected] = useState(null); // selectable list row "component"
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -42,11 +42,6 @@ function useDeleteDialog(useDeleteDialogOptions) {
         null,
     );
 
-    //const okButton_onClick_Delete = useCallback((setIsLoading) =>
-    //    okButton_onClick_Async(fetchDelete, selected, setErrorMessageDelete, setIsDeleteDialogOpen, setIsLoading, reload),
-    //    [selected, setIsDeleteDialogOpen, reload, fetchDelete]
-    //);
-
     function okButton_onClick() {
         startTransition(() => {  // updating UI after data fetch is not urgent, prioritize user input (e.g. press close button)
             deleteButton_onClick();
@@ -70,7 +65,7 @@ function useDeleteDialog(useDeleteDialogOptions) {
 }
 
 function useDefaultFetchDelete(createUri) {
-    var fetch = useCallback((selected) => fetchDeleteAsync(createUri(selected)), [createUri])
+    var fetch = async  (selected) => await fetchDeleteAsync(createUri(selected))
     return fetch;
 }
 
