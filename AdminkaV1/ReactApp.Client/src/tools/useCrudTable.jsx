@@ -1,71 +1,67 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef, useActionState, startTransition } from 'react';
 import CrudTable from './CrudTable';
 import { fetchTokenized } from '@/fetchTokenized';
+import { parseErrorResponseAsync } from '@/parseErrorResponse';
+
 
 function useCrudTable(useCrudTableOptions) {
 
     const { fetchList, baseColumns } = useCrudTableOptions;
 
-    // Hook "do something after render" Data fetching, setting up a subscription, and manually changing the DOM, logging in React
-    // components are all examples of side effects.
-    // useEffect here since this is fetch: async with side effects
-    //useEffect(() => {
-    //    setIsLoading(true);
-    //    fetchList(setList, setIsLoading); // setList - recalls the component render
-    //                                      // fetchList is async but we call it without await inside useEffect since this is a promise,
-    //                                      // istead useEffect fuctor can return a cleanup function
-    //    setIsLoading(false);
-    //}, [reload]);
-
-
     const [list, setList] = useState([]);
-    const [isLoadingList, setIsLoadingList] = useState(true);
-    const [errorMessageList, setErrorMessageList] = useState(0);
 
-    const [incTrigger, setIncTrigger] = useState(0); // Changing this triggers refetch
+    const [incTrigger, setIncTrigger] = useState(0); // used to trigger reload
     const reload = useCallback(() => {
         console.log("reload")
         setIncTrigger(v => v + 1);
     }, []);
 
-    useEffect(() => {
-        // isMountCancelled prevent updating state on an unmounted component, which can cause warnings or memory leaks.
-        // It is a common pattern to use a flag to track whether the component is still mounted when the async operation completes.
-        // Otherwise you will get a warning in the console like "Can't perform a React state update on an unmounted component".
-        let isMountCancelled = false;
-
-        setIsLoadingList(true);
-        console.log("ConnectionsManagement render.fetch")
-        fetchList(setList, setErrorMessageList) // is async but we call it without await inside useEffect since this is a promise,
-            .then((result) => {
-                if (result) {
-                    setErrorMessageList(null);
+    // isMountedRef prevent updating state on an unmounted component, which can cause warnings or memory leaks.
+    // mount can be canceled because we allow to switch to another page from menu.
+    // It is a common pattern to use a flag to track whether the component is still mounted when the async operation completes.
+    // Otherwise you will get a warning in the console like "Can't perform a React state update on an unmounted component".
+    const isMountedRef = useRef(true);
+    const [errorMessage, loadList_onClickOrStart, isPending] = useActionState(
+        async (/*prevState, formData, thirdArgument*/) => {
+            try {
+                var result = await fetchList();
+                if (isMountedRef.current) {
+                    if (result.success) {
+                        setList(result.data);
+                    } else {
+                        console.error(result.errorContent);
+                        return result.errorContent.message;
+                    }
                 }
-            })
-            .catch((error) => {
-                if (!isMountCancelled)
-                    console.error('Fetch failed', error);
-            })
-            .finally(() => {
-                if (!isMountCancelled)  // if component is still mounted, e.g. not navigated away or second time opened
-                    setIsLoadingList(false);
-            });
+                return null;   
+            } catch (err) {
+                return err.message; 
+            }
+        },
+        null, // initial state for errorMessage, (no error)
+        null // third arg to your action, not used
+    );
 
+    useEffect(() => {
+        isMountedRef.current = true;
+        startTransition(() => {
+            loadList_onClickOrStart();
+        });
         return () => {
-            isMountCancelled = true; // mark as cancelled
+            isMountedRef.current = false;
         };
-    }, [incTrigger, fetchList]);
+    }, [incTrigger, loadList_onClickOrStart]);
 
     const crudTableProps = useMemo(() => ({
         list,
-        errorMessage: errorMessageList,
-        isLoading: isLoadingList,
+        errorMessage,
+        isPending,
         baseColumns
 
     }), [
         list,
-        errorMessageList,
-        isLoadingList,
+        errorMessage,
+        isPending,
         baseColumns
     ]);
 
@@ -90,30 +86,27 @@ function useCrudTable(useCrudTableOptions) {
         crudTableProps,
         renderCrudTable,
         reload,
-        errorMessageList,
-        isLoadingList,
+        errorMessage,
+        isPending,
         list,
         setList
     };
 }
 
 function useDefaultFetchList(uri) {
-    var fetch = useCallback( async (setList, setErrorMessage) => await fetchListAsync(setList, setErrorMessage, uri), [uri])
+    var fetch = useCallback( async () => await fetchListAsync(uri), [uri])
     return fetch;
 }
 
-async function fetchListAsync(setList, setErrorMessageList, uri) {
-
+async function fetchListAsync( uri) {
     const response = await fetchTokenized(uri);
     if (response.ok) {
         const odata = await response.json();
-        setList(odata.value);
-        return true;
+        return { success:true, data:odata.value };
     }
     else {
-        var result = await response.json();
-        setErrorMessageList(result.message);
-        return false
+        var errorContent = await parseErrorResponseAsync(response);
+        return { success: false, errorContent: errorContent };
     }
 }
 export { useCrudTable, useDefaultFetchList }

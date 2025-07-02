@@ -17,7 +17,7 @@ import Form from 'react-bootstrap/Form';
 const CrudTable = React.memo(({
     list,
     errorMessage,
-    isLoading,
+    isPending,
     baseColumns,
     handleCreateButtonClick,
     handleDetailsButtonClick,
@@ -185,8 +185,8 @@ const CrudTable = React.memo(({
                     setIsMultiSelectEnabled(!isMultiSelectEnabled)
             },
         }], [tableInstance, selectedRowModel, isMultiSelectEnabled]);
-    return isLoading
-        ? <p> {console.log("CrudTable render.content.isLoading")} <em>Loading... </em></p>
+    return isPending
+        ? <p> {console.log("CrudTable render.content.isPending")} <em>Loading... </em></p>
         : <div className="crud-panel">
             <DebugMenu actions={debugActions} />
             {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
@@ -286,7 +286,7 @@ CrudTable.whyDidYouRender = true;
 CrudTable.propTypes = {
     list: PropTypes.array,
     errorMessage: PropTypes.node,
-    isLoading: PropTypes.bool.isRequired,
+    isPending: PropTypes.bool.isRequired,
     baseColumns: PropTypes.array.isRequired,
     multiSelectActions: PropTypes.array,
     handleCreateButtonClick: PropTypes.func,

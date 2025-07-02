@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import PropTypes from "prop-types";
 
 const Dialog = React.memo(({ setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, isPending, children }) => {
-    //const [isLoading, setIsLoading] = useState("");
     const isError = !!errorMessage;    
+    const contentRef = useRef(null);
+    useEffect(() => {
+        const firstInput = contentRef.current?.querySelector(
+            'input:not([type=hidden]):not([hidden]):not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        firstInput?.focus();
+    }, []);
 
     // WARN: simple is the best. attempt to using Radix dialog lead to annoying warning in browser console "focusing input when the parent is hidden"
     console.log("Dialog render")
@@ -13,7 +19,7 @@ const Dialog = React.memo(({ setIsDialogOpen, title, okButtonTitle, okButton_onC
             <div className="modal-backdrop show"  />
             <div className="modal show" tabIndex="-1" style={{ display: "block"}} role="dialog" aria-modal="true">
                 <div className="modal-dialog" >
-                    <div className="modal-content"  >
+                    <div className="modal-content"  ref={contentRef} >
                                 <div className="modal-header">
                                     <h5 className="modal-title">{title}</h5>
                                     <button type="button" className="btn-close" onClick={() => setIsDialogOpen(false)}></button>
