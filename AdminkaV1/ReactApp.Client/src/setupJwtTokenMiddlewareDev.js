@@ -1,5 +1,5 @@
 import { ADMINKA_API_BASE_URL } from '@/config';
-import extractMessage from '@/extractMessage';
+import { parseErrorResponseAsync } from '@/parseErrorResponse';
 
 async function setupJwtTokenMiddleware(password) {
     const response = await fetch(`${ADMINKA_API_BASE_URL}/ui/authenticationdev`, {
@@ -9,16 +9,10 @@ async function setupJwtTokenMiddleware(password) {
     });
     if (response.ok === true) {
         const data = await response.json();
-        localStorage.setItem("access_token", data.token);
-        return true;
+        return {success: true, data};
     } else {
-        if (response.status == 401) {
-            return false;
-        }
-        else {
-            var message = await extractMessage(response);
-            throw new Error(`Failed to authenticate: ${message}`);
-        }
+        var errorContent = await parseErrorResponseAsync(response);
+        return { success: false, errorContent };
     }
 }
 

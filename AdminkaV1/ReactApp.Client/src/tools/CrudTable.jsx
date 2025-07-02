@@ -188,6 +188,7 @@ const CrudTable = React.memo(({
     return isPending
         ? <p> {console.log("CrudTable render.content.isPending")} <em>Loading... </em></p>
         : <div className="crud-panel">
+            {console.log("CrudTable render.content.table")}
             <DebugMenu actions={debugActions} />
             {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
             

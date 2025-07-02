@@ -98,8 +98,8 @@ function useDefaultFetchList(uri) {
     return fetch;
 }
 
-async function fetchListAsync( uri) {
-    const response = await fetchTokenized(uri);
+async function fetchListAsync(uri) {
+        const response = await fetchTokenized(uri);
     if (response.ok) {
         const odata = await response.json();
         return { success:true, data:odata.value };

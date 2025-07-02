@@ -1,4 +1,4 @@
-import{ useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useActionState, startTransition, useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,15 +6,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { EditDialog } from '@/tools/CrudDialogs'
 import { fetchTokenized } from '@/fetchTokenized';
 
+import { parseErrorResponseAsync, parseErrorException } from '@/parseErrorResponse';
 function useEditDialog(useEditDialogOptions) {
-
+    console.log("useEditDialog")
     const { addForm, validationSchema, createDefaultEmpty, fetchCreate, fetchReplace, transformSelected, reload } = useEditDialogOptions;
 
     const [selected, setSelected] = useState(null); // selectable list row "component"
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const [errorMessageEdit, setErrorMessageEdit] = useState("");
+    
     const [isForNew, setIsForNew] = useState(null); // pseudo-selected  "clicked on button on the row"
-    const [isPending, setIsPending] = useState(false);
+    //const [isPending, setIsPending] = useState(false);
     
     //react-hook-form - state of the form with enabled zod validation
     const {
@@ -35,6 +36,7 @@ function useEditDialog(useEditDialogOptions) {
         selected, register, errors, dirtyFields, isForNew, trigger, getValues
     }), [selected, register, errors, dirtyFields, isForNew, trigger, getValues]) 
 
+    const [errorMessage, setErrorMessage] = useState("");
     const handleCreateButtonClick = useCallback(() => {
         setIsForNew(true);
         var copy = createDefaultEmpty();
@@ -44,9 +46,9 @@ function useEditDialog(useEditDialogOptions) {
             keepDirty: false,
             keepTouched: false,
         }); // Set form to the selected item
-        setErrorMessageEdit(null);
+        setErrorMessage(null); // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! test it
         setIsEditDialogOpen(true);
-    }, [setSelected, reset, setIsForNew, setErrorMessageEdit, setIsEditDialogOpen, createDefaultEmpty]);
+    }, [setSelected, reset, setIsForNew, setErrorMessage, setIsEditDialogOpen, createDefaultEmpty]);
 
     const action = useMemo(
         () => {
@@ -62,17 +64,52 @@ function useEditDialog(useEditDialogOptions) {
                         keepDirty: false,
                         keepTouched: false,
                     }); // Set form to the selected item
-                    setErrorMessageEdit(null);
+                    setErrorMessage(null);
                     setIsEditDialogOpen(true);
                 }
             }
-        }, [setSelected, reset, setIsForNew, setErrorMessageEdit, setIsEditDialogOpen, transformSelected]);
+        }, [setSelected, reset, setIsForNew, setErrorMessage, setIsEditDialogOpen, transformSelected]);
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    const okButton_onClick_Edit = useCallback(async () =>
-        await saveButton_onClick(formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, setIsPending, reload),
-        [formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, reload]
+    const [, okButton_onClick_Edit, isPending] = useActionState(
+        async () => {
+            try {
+                
+                const { isForNew, trigger } = formState;
+                const isValid = await trigger(); // validate all fields
+                if (isValid) {
+                    var result;
+                    if (isForNew) {
+                        result = await fetchCreate(formState)
+                    } else {
+                        result = await fetchReplace(formState)
+                    }
+                    if (result.success) {
+                        setIsEditDialogOpen(false);
+                        reload();
+                        setErrorMessage(null);
+                        return null;
+                    } else {
+                        console.error(result.errorContent);
+                        setErrorMessage(result.errorContent.message);
+                        return result.errorContent.message;
+
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                setErrorMessage(parseErrorException(err));
+                return parseErrorException(err);
+            } 
+        },
+        null,
     );
+
+    const okButton_onClick = useCallback(() => {
+        startTransition(() => {  // updating UI after data fetch is not urgent, prioritize user input (e.g. press close button)
+            okButton_onClick_Edit();
+        });
+    }, [okButton_onClick_Edit]); 
+
 
     var dialog = null;
     if (isEditDialogOpen) {
@@ -82,8 +119,8 @@ function useEditDialog(useEditDialogOptions) {
         dialog = (<EditDialog
             setIsDialogOpen={setIsEditDialogOpen}
             isForNew={isForNew}
-            okButton_onClick={okButton_onClick_Edit}
-            errorMessage={errorMessageEdit}
+            okButton_onClick={okButton_onClick}
+            errorMessage={errorMessage}
             isPending={isPending}
         >{editForm}</EditDialog>)
     }
@@ -95,77 +132,40 @@ function useEditDialog(useEditDialogOptions) {
     };
 }
 
-async function saveButton_onClick(formState, fetchCreate, fetchReplace, setErrorMessageEdit, setIsEditDialogOpen, setIsPending, reload) {
-    try {
-        setIsPending(true);
-        const { isForNew, trigger} = formState;
-        const isValid = await trigger(); // validate all fields
-        if (isValid) {
-            var success;
-            if (isForNew) {
-                success = await fetchCreate(formState, setErrorMessageEdit)
-            } else {
-                success = await fetchReplace(formState, setErrorMessageEdit)
-            }
-            if (success) {
-                setIsEditDialogOpen(false);
-                reload();
-            }
-        }
-    } catch (err) {
-        var message = (typeof err === 'string') ? err : (typeof err.message === 'string' ? err.message : String(err));
-        setErrorMessageEdit(message);
-        console.error(err);
-    } finally {
-        setIsPending(false);
-    }
-};
-
 function useDefaultFetchCreate(uri) {
-    var fetch = useCallback(async (formState, setErrorMessageEdit) => await fetchCreateAsync(formState, setErrorMessageEdit, uri), [uri])
+    var fetch = useCallback(async (formState) => await fetchCreateAsync(formState, uri), [uri])
     return fetch;
 }
 
-async function fetchCreateAsync(formState, setErrorMessageEdit, uri) {
+async function fetchCreateAsync(formState, uri) {
     const { getValues } = formState;
     var hookFormValues = getValues();
     var body = JSON.stringify(hookFormValues);
     var response = await fetchTokenized(uri, body, "POST");
     if (response.ok) {
-        //await fetchList(setList, setIsLoading);
-        return true
+        return { success:true }
     } else {
-        var result = await response.json();
-        setErrorMessageEdit(result.message);
-        //Object.entries(result.errors).forEach(([field, message]) => {
-        //    setError(field, { type: 'server', message });
-        //});
-        return false
+        var errorContent = await parseErrorResponseAsync(response);
+        return { success: false, errorContent }
     }
 }
 
 function useDefaultFetchReplace(createUri) {
-    const fetch = useCallback(async (formState, setErrorMessageEdit) => await fetchReplaceAync(formState, setErrorMessageEdit, createUri(formState)), [createUri])
+    const fetch = useCallback(async (formState) => await fetchReplaceAync(formState, createUri(formState)), [createUri])
     return fetch;
 }
 
-async function fetchReplaceAync(formState, setErrorMessageEdit, uri) {
+async function fetchReplaceAync(formState, uri) {
     const { getValues, dirtyFields } = formState;
     const hookFormValues = getValues();
     const hookFormDelta = getDelta(hookFormValues, dirtyFields)
     const delta = JSON.stringify(hookFormDelta);
     const response = await fetchTokenized(uri, delta, "PATCH");
     if (response.ok) {
-        //await fetchList(setList, setIsLoading);
-        return true;
-    }
-    else {
-        const result = await response.json();
-        setErrorMessageEdit(result.message);
-        //Object.entries(result.errors).forEach(([field, message]) => {
-        //    setError(field, { type: 'server', message });
-        //});
-        return false;
+        return { success: true }
+    } else {
+        var errorContent = await parseErrorResponseAsync(response);
+        return { success: false, errorContent }
     }
 }
 

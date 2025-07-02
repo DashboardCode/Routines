@@ -1,18 +1,20 @@
 async function parseErrorResponseAsync(response) {
     const statusText = `(${response.status}) ` + getHttpStatusMessage(response.status);
 
-    const contentType = response.headers.get("Content-Type");
+    const contentType = response.headers.get("Content-Type") || '';
 
     if (contentType && contentType.includes("application/json")) {
         const json = await response.json();
-        return { message: json.error ?? statusText, json };
+        //const text = JSON.stringify(json)
+        return { message: json.error ?? statusText, status: response.status, json };
     } else if (contentType && contentType.includes("application/problem+json")) {
         const json = await response.json();
-        return { message: json.title, json };
+        //const text = JSON.stringify(json)
+        return { message: json.title, status: response.status, json };
     } else {
         const text = await response.text();
         const firstLine = text.split('\n')[0];
-        return { message: firstLine, text };
+        return { message: firstLine, status: response.status, text };
     }
 }
 
@@ -46,4 +48,9 @@ function getHttpStatusMessage(status) {
     return messages[status] || `Unknown HTTP status: ${status}`;
 }
 
-export { parseErrorResponseAsync };
+function parseErrorException(err) {
+    var message = (typeof err === 'string') ? err : (typeof err.message === 'string' ? err.message : String(err));
+    return message;
+}
+
+export { parseErrorResponseAsync, parseErrorException };

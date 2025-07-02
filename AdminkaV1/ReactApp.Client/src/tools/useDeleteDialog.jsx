@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useActionState, startTransition } from 'react';
 import { fetchTokenized } from '@/fetchTokenized';
-import { parseErrorResponseAsync } from '@/parseErrorResponse';
+import { parseErrorResponseAsync, parseErrorException } from '@/parseErrorResponse';
 
 import { DeleteDialog } from '@/tools/CrudDialogs'
 
@@ -19,27 +19,34 @@ function useDeleteDialog(useDeleteDialogOptions) {
                 var s = adoptSelected(e);
                 setSelected(s);
                 setIsDialogOpen(true);
+                setErrorMessage(null)
             }
         }
     }, [setSelected, setIsDialogOpen, adoptSelected]);
 
-    const [errorMessageDelete, deleteButton_onClick, isPending] = useActionState(
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [, deleteButton_onClick, isPending] = useActionState(
         async () => {
             try {
-                var error = await fetchDelete(selected);
-                if (error) {
-                    return error; 
+                
+                var result = await fetchDelete(selected);
+                if (!result.success) {
+                    console.error(result.errorContent);
+                    setErrorMessage(result.errorContent.message)
+                    return result.errorContent.message; 
                 } 
             } catch (err) {
                 console.error(err);
-                return err.message;
+                setErrorMessage(parseErrorException(err))
+                return parseErrorException(err);
             } 
             // handle success
             setIsDialogOpen(false);
             reload();
+            setErrorMessage(null)
             return null;
         },
-        null,
+        null
     );
 
     const okButton_onClick = useCallback(() => {
@@ -54,7 +61,7 @@ function useDeleteDialog(useDeleteDialogOptions) {
         dialog = <DeleteDialog
             setIsDialogOpen={setIsDialogOpen}
             okButton_onClick={okButton_onClick}
-            errorMessage={errorMessageDelete}
+            errorMessage={errorMessage}
             isPending={isPending}
         />
     }
@@ -73,12 +80,11 @@ function useDefaultFetchDelete(createUri) {
 async function fetchDeleteAsync(uri) {
     var response = await fetchTokenized(uri, null, "DELETE");
     if (response.ok) {
-        return null; // success
+        return { success:true }; // success
     }
     else {
         var errorContent = await parseErrorResponseAsync(response);
-        console.error(errorContent);
-        return errorContent.message;
+        return { success: false, errorContent };
     }
 };
 
