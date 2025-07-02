@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 const Dialog = React.memo(({ setIsDialogOpen, title, okButtonTitle, okButton_onClick, errorMessage, isPending, children }) => {
     const isError = !!errorMessage;    
     const contentRef = useRef(null);
+    // TODO: it is simpler to past the input for focus as prop
     useEffect(() => {
         const firstInput = contentRef.current?.querySelector(
             'input:not([type=hidden]):not([hidden]):not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
