@@ -17,6 +17,8 @@ import './App.css';
 import LoginDialog from './LoginDialog';
 import setupJwtTokenMsal from './setupJwtTokenMsal';
 
+import FilterPage from './FilterPage';
+
 import { isTokenExpired } from '@/fetchTokenized';
 
 //const Button = React.memo(({ onClick }) => {
@@ -133,6 +135,7 @@ const App = () => {
                     <Route path="/connections" element={<ConnectionsManagement />} />
                     <Route path="/tables" element={<TablesManagement />} />
                     <Route path="/settings/*" element={<Settings />} />
+                    <Route path="/filerPage" element={<FilterPage />} />
                 </Routes>
             </main>
         </Router>
@@ -152,6 +155,9 @@ const NavBar = ({ isLoggedIn }) => {
         },
         {
             path: "/tables", label: (<div><span style={{ fontSize: '150%', verticalAlign: 'middle', marginRight: '4px', marginBottom: '4px' }} className="material-symbols-outlined">table_view</span>Tables</div>)
+        },
+        {
+            path: "/filerPage", label: (<div><span style={{ fontSize: '150%', verticalAlign: 'middle', marginRight: '4px', marginBottom: '4px' }} className="material-symbols-outlined">table_view</span>Tables</div>)
         },
         {
             path: "/settings", label: (<div><span style={{ fontSize: '150%', verticalAlign: 'middle', marginRight: '4px', marginBottom: '4px' }} className="material-symbols-outlined">settings</span>Settings</div>)

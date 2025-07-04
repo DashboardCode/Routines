@@ -1,4 +1,11 @@
-﻿import React, {  useMemo, useState, useEffect, useRef} from 'react';
+﻿import { useSearchParams } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
+import 'react-datepicker/dist/react-datepicker.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import {
     useReactTable, getCoreRowModel, getSortedRowModel, flexRender,
     getPaginationRowModel, getFilteredRowModel
@@ -7,11 +14,11 @@ import PropTypes from "prop-types";
 import './CrudTable.css';
 import DebugMenu from './DebugMenu';
 import Pagination from './Pagination';
+import { FILTER_TYPES, FilterTags, FilterInput } from './FilterPanel';
+
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 
-import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 
 const CrudTable = React.memo(({
@@ -25,6 +32,32 @@ const CrudTable = React.memo(({
     multiSelectActions/*,
     parentTrigger*/
 }) => {
+    //-------------------------------------
+    //const data = useMemo(() => [
+    //    { id: 1, name: 'Item A', value: '1', date: '2024-01-01' },
+    //    { id: 2, name: 'Item B', value: '2', date: '2024-03-01' },
+    //    { id: 3, name: 'Filter Me', value: '1', date: '2024-05-01' },
+    //], []);
+
+    //const columns = useMemo(() => [
+    //    {
+    //        accessorKey: 'id',
+    //        header: 'ID'
+    //    },
+    //    {
+    //        accessorKey: 'name',
+    //        header: 'Name'
+    //    },
+    //    {
+    //        accessorKey: 'value',
+    //        header: 'Value'
+    //    },
+    //    {
+    //        accessorKey: 'date',
+    //        header: 'Date'
+    //    },
+    //], []);
+    // ---------------------------
     //console.log('Parent / Nested (render triggers):', parentTrigger, Math.random());
     const cornerButton = useMemo(() => (<button className="btn  btn-sm btn-outline-primary" onClick={() => { handleCreateButtonClick(); }} >
         <span style={{ verticalAlign: 'middle', }} className="material-symbols-outlined">add</span>
@@ -185,13 +218,113 @@ const CrudTable = React.memo(({
                     setIsMultiSelectEnabled(!isMultiSelectEnabled)
             },
         }], [tableInstance, selectedRowModel, isMultiSelectEnabled]);
+
+    // --------------------------
+    const [filters, setFilters] = useState([]);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    
+    const table = useReactTable({
+        data,
+        columns,
+        state: {
+            globalFilter: filters.find(f => f.type === 'text')?.value || '',
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        globalFilterFn: (row, columnId, filterValue) => {
+            return String(row.getValue('name')).toLowerCase().includes(filterValue.toLowerCase());
+        }
+    });
+
+    
+    const rows = useMemo(() => {
+        return table.getFilteredRowModel().rows.filter(row => {
+            return filters.every(filter => {
+                if (filter.type === 'value') {
+                    return row.original.value === filter.value?.value;
+                }
+                if (filter.type === 'date') {
+                    const d = new Date(row.original.date);
+                    const from = filter.value?.from;
+                    const to = filter.value?.to;
+                    return (!from || d >= from) && (!to || d <= to);
+                }
+                return true;
+            });
+        });
+    }, [table, filters]);
+
+    useEffect(() => {
+        const value = searchParams.get('value');
+        const from = searchParams.get('from');
+        const to = searchParams.get('to');
+        const text = searchParams.get('text') || '';
+
+        const newFilters = [];
+        if (value) {
+            newFilters.push({ id: 'value', type: FILTER_TYPES.VALUE, value: { label: value, value } });
+        }
+        if (from || to) {
+            newFilters.push({
+                id: 'date',
+                type: FILTER_TYPES.DATE,
+                value: {
+                    from: from ? new Date(from) : null,
+                    to: to ? new Date(to) : null,
+                },
+            });
+        }
+        if (text) {
+            newFilters.unshift({ id: 'text', type: FILTER_TYPES.TEXT, value: text });
+        }
+        setFilters(newFilters);
+    }, [searchParams]);
+
+    const syncToSearchParams = (updatedFilters) => {
+        const params = new URLSearchParams();
+        updatedFilters.forEach((f) => {
+            if (f.type === FILTER_TYPES.VALUE && f.value) {
+                params.set('value', f.value.value);
+            }
+            if (f.type === FILTER_TYPES.DATE && f.value) {
+                if (f.value.from) params.set('from', f.value.from.toISOString());
+                if (f.value.to) params.set('to', f.value.to.toISOString());
+            }
+            if (f.type === FILTER_TYPES.TEXT && f.value) {
+                params.set('text', f.value);
+            }
+        });
+        setSearchParams(params);
+    };
+
+    const updateFilter = (id, value) => {
+        let updated = filters.filter((f) => f.id !== id);
+        if (value !== undefined && value !== '') {
+            updated = [{ id, type: id, value }, ...updated];
+        }
+        setFilters(updated);
+        syncToSearchParams(updated);
+    };
+
+    const removeFilter = (id) => {
+        const updated = filters.filter((f) => f.id !== id);
+        setFilters(updated);
+        syncToSearchParams(updated);
+    };
+
+
+
+    // --------------------------
     return isPending
         ? <p> {console.log("CrudTable render.content.isPending")} <em>Loading... </em></p>
         : <div className="crud-panel">
             {console.log("CrudTable render.content.table")}
             <DebugMenu actions={debugActions} />
             {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
-            
+
+            <FilterTags filters={filters} removeFilter={removeFilter} />
+
             <div className={`d-flex ${multiSelectActions ? 'justify-content-between' : 'justify-content-end'} align-items-center gap-2`}>
                 {multiSelectActions &&
                     <div className="d-flex align-items-center gap-1">
@@ -219,13 +352,19 @@ const CrudTable = React.memo(({
                         </div>
                     </div>
                 }
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={globalFilter}
-                    onChange={(e) => setGlobalFilter(e.target.value)}
+                
+                <FilterInput
+                    filters={filters}
+                    updateFilter={updateFilter}
                     className="border p-1 mb-2"
                 />
+                {/*<input*/}
+                {/*    type="text"*/}
+                {/*    placeholder="Search..."*/}
+                {/*    value={globalFilter}*/}
+                {/*    onChange={(e) => setGlobalFilter(e.target.value)}*/}
+                {/*    className="border p-1 mb-2"*/}
+                {/*/>*/}
             </div>
 
             {tableInstance.getRowModel().rows.length > 0 ? (
